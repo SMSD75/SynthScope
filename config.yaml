@@ -1,0 +1,20 @@
+transform_list:
+  - resize
+  - to_tensor
+  - normalize
+train_dir: /nvmestore/ssalehi/AGID/AIGIBench/train
+val_dir: /nvmestore/ssalehi/AGID/AIGIBench/val
+test_dir: /nvmestore/ssalehi/AGID/AIGIBench/test
+save_path: /nvmestore/ssalehi/AGID/AIGIBench/models
+setting: Setting-I
+batch_size: 32
+backbone_name: dinov2_vitb14
+bottleneck_dim: 64
+epochs: 10
+lr: 0.001
+val_interval: 1
+test_interval: 1
+save_interval: 1
+metrics:
+  - real_accuracy
+  - fake_accuracy
