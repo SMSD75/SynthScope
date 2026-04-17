@@ -17,17 +17,20 @@ class AGIDModelTrainer:
         self.train_metrics = AIGIMetrics(config.metrics)
         self.val_metrics = AIGIMetrics(config.metrics)
         self.test_metrics = AIGIMetrics(config.metrics)
-        self.use_metrics = len(config.metrics) > 0
         self.accelerator = Accelerator()
+        self.use_metrics = len(config.metrics) > 0
         self.model, self.optimizer, self.train_loader, self.val_loader, self.test_loader = self.accelerator.prepare(
             self.model, self.optimizer, self.train_loader, self.val_loader, self.test_loader)
+        self.train_metrics = self.train_metrics.to(self.accelerator.device)
+        self.val_metrics = self.val_metrics.to(self.accelerator.device)
+        self.test_metrics = self.test_metrics.to(self.accelerator.device)
 
     def train_step(self, batch):
         images, labels, folder_ids = batch
         outputs = self.model(images)      
         loss = self.criterion(outputs, labels)
         if self.use_metrics:
-            outputs_g, labels_g, folder_ids_g = self.accelerator.gather_for_metrics((outputs, labels, folder_ids))
+            outputs_g, labels_g, folder_ids_g = self.accelerator.gather_for_metrics((outputs.detach(), labels.detach(), folder_ids.detach()))
             self.train_metrics(outputs_g, labels_g, folder_ids_g)  
         return loss
 

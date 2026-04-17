@@ -5,9 +5,10 @@ transform_list:
 train_dir: /nvmestore/ssalehi/AGID/AIGIBench/train
 val_dir: /nvmestore/ssalehi/AGID/AIGIBench/val
 test_dir: /nvmestore/ssalehi/AGID/AIGIBench/test
-save_path: /nvmestore/ssalehi/AGID/AIGIBench/models
+save_path: /nvmestore/ssalehi/AGID/models
 setting: Setting-I
-batch_size: 32
+batch_size: 256
+num_workers: 4
 backbone_name: dinov2_vitb14
 bottleneck_dim: 64
 epochs: 10

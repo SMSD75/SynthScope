@@ -31,7 +31,7 @@ class AGIDModel(nn.Module):
         self.adapters = nn.ModuleList(
             [Adapter(embed_dim, bottleneck_dim) for _ in range(num_blocks)]
         )
-        self.head = nn.Linear(embed_dim, 1)
+        self.head = nn.Linear(embed_dim, 2)
 
     def forward(self, x):
         x = self.backbone.prepare_tokens_with_masks(x)
