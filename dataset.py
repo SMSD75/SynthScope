@@ -65,22 +65,22 @@ class AIGIBenchDataset(Dataset):
 class AIGIDatasetModule:
     def __init__(self, config):
         self.config = config
-        if config.transform_list != []:
-            self.transform = AIGITransformations(config.transform_list)
+        if config.DatasetConfig.transform_list != []:
+            self.transform = AIGITransformations(config.DatasetConfig.transform_list)
         else:
             self.transform = None
-        self.train_dataset = AIGIBenchDataset(config.train_dir, "train", config.setting, self.transform)
-        self.val_dataset = AIGIBenchDataset(config.val_dir, "val", config.setting, self.transform)
-        self.test_dataset = AIGIBenchDataset(config.test_dir, "test", config.setting, self.transform)
+        self.train_dataset = AIGIBenchDataset(config.DatasetConfig.train_dir, "train", config.DatasetConfig.setting, self.transform)
+        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.val_dir, "val", config.DatasetConfig.setting, self.transform)
+        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.test_dir, "test", config.DatasetConfig.setting, self.transform)
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.config.batch_size, shuffle=True, num_workers=self.config.num_workers)
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.config.batch_size, shuffle=True, num_workers=self.config.num_workers)
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.config.batch_size, shuffle=True, num_workers=self.config.num_workers)
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
 
 
 if __name__ == "__main__":

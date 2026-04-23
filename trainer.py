@@ -4,11 +4,14 @@ from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import OmegaConf
 from accelerate import Accelerator
+import os
+from logger import build_logger
+
 
 class AGIDModelTrainer:
     def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
-        self.model = AGIDModel(config.backbone_name, config.bottleneck_dim)
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config.lr)
+        self.model = AGIDModel(config.ModelConfig.backbone_name, config.ModelConfig.bottleneck_dim)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config.TrainerConfig.lr)
         self.criterion = torch.nn.CrossEntropyLoss()
         self.train_loader = dataset_module.train_dataloader()
         self.val_loader = dataset_module.val_dataloader()
@@ -24,7 +27,10 @@ class AGIDModelTrainer:
         self.train_metrics = self.train_metrics.to(self.accelerator.device)
         self.val_metrics = self.val_metrics.to(self.accelerator.device)
         self.test_metrics = self.test_metrics.to(self.accelerator.device)
-
+        self.global_step = 0
+        self.best_val_loss = float("inf")
+        self.best_test_loss = float("inf")
+        self.logger = build_logger(config, self.accelerator)
     def train_step(self, batch):
         images, labels, folder_ids = batch
         outputs = self.model(images)      
@@ -60,6 +66,8 @@ class AGIDModelTrainer:
             loss  = self.train_step(batch)
             self.accelerator.backward(loss)
             self.optimizer.step()
+            if self.accelerator.sync_gradients:
+                self.global_step += 1
             loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
             total_loss += loss_sum.item()
         if self.use_metrics:
@@ -113,18 +121,34 @@ class AGIDModelTrainer:
         self.accelerator.wait_for_everyone()
         unwrapped_model = self.accelerator.unwrap_model(self.model)
         if self.accelerator.is_main_process:
+            os.makedirs(save_path, exist_ok=True)
             self.accelerator.save(unwrapped_model.state_dict(), f"{save_path}/model_{epoch}.pth")
 
     def train(self):
-        for epoch in range(self.config.epochs):
-            train_loss, train_metrics_dict = self.train_epoch()
-            self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
-            if epoch % self.config.val_interval == 0:
-                val_loss, val_metrics_dict = self.val_epoch()
-                self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss}, Val Metrics: {val_metrics_dict}")
-            if epoch % self.config.test_interval == 0:
+        for epoch in range(self.config.TrainerConfig.epochs):
+            if epoch == 0:
                 test_loss, test_metrics_dict = self.test_epoch()
                 self.accelerator.print(f"Epoch {epoch}, Test Loss: {test_loss}, Test Metrics: {test_metrics_dict}")
-            if epoch % self.config.save_interval == 0:
-                self.save_model(epoch, self.config.save_path)
-                self.accelerator.print(f"Epoch {epoch}, Model Saved")
+                self.logger.log_metrics({"test/loss": test_loss, **{f"test/{metric}": value for metric, value in test_metrics_dict.items()}}, self.global_step)
+            train_loss, train_metrics_dict = self.train_epoch()
+            self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
+            if epoch % self.config.TrainerConfig.val_interval == 0:
+                val_loss, val_metrics_dict = self.val_epoch()
+                self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss}, Val Metrics: {val_metrics_dict}")
+                self.logger.log_metrics({"val/loss": val_loss, **{f"val/{metric}": value for metric, value in val_metrics_dict.items()}}, self.global_step)
+            if epoch % self.config.TrainerConfig.test_interval == 0:
+                test_loss, test_metrics_dict = self.test_epoch()
+                self.accelerator.print(f"Epoch {epoch}, Test Loss: {test_loss}, Test Metrics: {test_metrics_dict}")
+                self.logger.log_metrics({"test/loss": test_loss, **{f"test/{metric}": value for metric, value in test_metrics_dict.items()}}, self.global_step)
+            if epoch % self.config.TrainerConfig.save_interval == 0:
+                if self.config.TrainerConfig.save:
+                    if self.config.TrainerConfig.save_policy == "max":
+                        if val_loss > self.best_val_loss:
+                            self.best_val_loss = val_loss
+                            self.save_model(epoch, self.config.TrainerConfig.save_path)
+                    elif self.config.TrainerConfig.save_policy == "min":
+                        if val_loss < self.best_val_loss:
+                            self.best_val_loss = val_loss
+                            self.save_model(epoch, self.config.TrainerConfig.save_path)
+                    self.accelerator.print(f"Epoch {epoch}, Model Saved")
+        self.logger.finish()
