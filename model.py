@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+from omegaconf import OmegaConf
 
 class Adapter(nn.Module):
     """Bottleneck adapter with residual connection and learnable scale."""
@@ -17,10 +17,10 @@ class Adapter(nn.Module):
 
 
 class AGIDModel(nn.Module):
-    def __init__(self, backbone_name="dinov2_vitb14", bottleneck_dim=64):
+    def __init__(self, config: OmegaConf):
         super().__init__()
         self.backbone = torch.hub.load(
-            "facebookresearch/dinov2", backbone_name
+            "facebookresearch/dinov2", config.ModelConfig.backbone_name
         )
         for param in self.backbone.parameters():
             param.requires_grad = False
@@ -28,9 +28,12 @@ class AGIDModel(nn.Module):
         embed_dim = self.backbone.embed_dim
         num_blocks = len(self.backbone.blocks)
 
-        self.adapters = nn.ModuleList(
-            [Adapter(embed_dim, bottleneck_dim) for _ in range(num_blocks)]
-        )
+        if config.ModelConfig.use_adapter:
+            self.adapters = nn.ModuleList(
+                [Adapter(embed_dim, config.ModelConfig.bottleneck_dim) for _ in range(num_blocks)]
+            )
+        else:
+            self.adapters = nn.ModuleList([nn.Identity() for _ in range(num_blocks)])
         self.head = nn.Linear(embed_dim, 2)
 
     def forward(self, x):

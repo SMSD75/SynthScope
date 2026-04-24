@@ -74,13 +74,13 @@ class AIGIDatasetModule:
         self.test_dataset = AIGIBenchDataset(config.DatasetConfig.test_dir, "test", config.DatasetConfig.setting, self.transform)
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers)
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ from logger import build_logger
 
 class AGIDModelTrainer:
     def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
-        self.model = AGIDModel(config.ModelConfig.backbone_name, config.ModelConfig.bottleneck_dim)
+        self.model = AGIDModel(config)
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=config.TrainerConfig.lr)
         self.criterion = torch.nn.CrossEntropyLoss()
         self.train_loader = dataset_module.train_dataloader()
@@ -31,6 +31,13 @@ class AGIDModelTrainer:
         self.best_val_loss = float("inf")
         self.best_test_loss = float("inf")
         self.logger = build_logger(config, self.accelerator)
+        if self.accelerator.is_main_process:    
+            self.print_trainable_parameters()
+    
+    def print_trainable_parameters(self):
+        trainable_parameters = [n for (n, p) in self.model.named_parameters() if p.requires_grad]
+        self.accelerator.print(f"Trainable Parameters: {trainable_parameters}")
+
     def train_step(self, batch):
         images, labels, folder_ids = batch
         outputs = self.model(images)      

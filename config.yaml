@@ -5,6 +5,8 @@ DatasetConfig:
   test_dir: /nvmestore/ssalehi/AGID/AIGIBench/test
   batch_size: 512
   num_workers: 8
+  persistent_workers: true
+  pin_memory: true
   transform_list:
     - resize
     - to_tensor
@@ -23,6 +25,7 @@ TrainerConfig:
 ModelConfig:
   backbone_name: dinov2_vits14
   bottleneck_dim: 64
+  use_adapter: false
 
 metrics:
   - real_accuracy
