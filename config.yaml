@@ -1,15 +1,17 @@
 DatasetConfig:
-  setting: Setting-I
+  setting: Setting-II
   train_dir: /nvmestore/ssalehi/AGID/AIGIBench/train
   val_dir: /nvmestore/ssalehi/AGID/AIGIBench/val
   test_dir: /nvmestore/ssalehi/AGID/AIGIBench/test
-  batch_size: 512
+  train_batch_size: 512
+  val_batch_size: 2048
+  test_batch_size: 2048
   num_workers: 8
   persistent_workers: true
   pin_memory: true
   transform_list:
     - resize
-    - to_tensor
+    - to_dtype
     - normalize
 
 TrainerConfig:

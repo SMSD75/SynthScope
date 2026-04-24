@@ -1,8 +1,9 @@
 from typing import Callable
-from torchvision import transforms
 from PIL import Image
 from omegaconf import OmegaConf
 from matplotlib import pyplot as plt
+import torchvision.transforms.v2 as v2
+import torch
 
 class AIGITransformations:
     def __init__(self, transform_list: list[Callable]):
@@ -11,11 +12,13 @@ class AIGITransformations:
     
     def _create_transform(self, transform_name: str):
         if transform_name == "resize":
-            return transforms.Resize((224, 224))
+            return v2.Resize((224, 224))
         elif transform_name == "to_tensor":
-            return transforms.ToTensor()
+            return v2.ToTensor()
+        elif transform_name == "to_dtype":
+            return v2.ToDtype(torch.float32, scale=True)
         elif transform_name == "normalize":
-            return transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            return v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
     

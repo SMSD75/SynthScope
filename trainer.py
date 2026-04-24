@@ -6,7 +6,7 @@ from omegaconf import OmegaConf
 from accelerate import Accelerator
 import os
 from logger import build_logger
-
+from tqdm import tqdm
 
 class AGIDModelTrainer:
     def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
@@ -68,7 +68,7 @@ class AGIDModelTrainer:
     def train_epoch(self):
         self.model.train()
         total_loss = 0
-        for batch in self.train_loader:
+        for batch in tqdm(self.train_loader, desc="Training"):
             self.optimizer.zero_grad()
             loss  = self.train_step(batch)
             self.accelerator.backward(loss)
@@ -91,7 +91,7 @@ class AGIDModelTrainer:
         self.model.eval()
         total_loss = 0
         with torch.no_grad():
-            for batch in self.val_loader:
+            for batch in tqdm(self.val_loader, desc="Validating"):
                 loss = self.val_step(batch)
                 loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
                 total_loss += loss_sum.item()
@@ -109,10 +109,11 @@ class AGIDModelTrainer:
         self.model.eval()
         total_loss = 0
         with torch.no_grad():
-            for batch in self.test_loader:
+            for batch in tqdm(self.test_loader, desc="Testing"):
                 loss = self.test_step(batch)
                 loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
                 total_loss += loss_sum.item()
+           
         if self.use_metrics:
             total_metrics_dict = {
                 metric: self.test_metrics.metrics_dict[metric].compute().item()

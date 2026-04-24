@@ -2,10 +2,12 @@ from torch.utils.data import Dataset
 from typing import Literal, Callable
 from pathlib import Path
 from PIL import Image
+from matplotlib import pyplot as plt
 import torch
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from omegaconf import OmegaConf
+from torchvision.io import decode_image, ImageReadMode
 
 class AIGIBenchDataset(Dataset):
     def __init__(
@@ -28,7 +30,7 @@ class AIGIBenchDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = Image.open(self.images[idx]).convert("RGB")
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -74,13 +76,13 @@ class AIGIDatasetModule:
         self.test_dataset = AIGIBenchDataset(config.DatasetConfig.test_dir, "test", config.DatasetConfig.setting, self.transform)
 
     def train_dataloader(self):
-        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
     def val_dataloader(self):
-        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.val_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
     def test_dataloader(self):
-        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
 if __name__ == "__main__":
@@ -97,4 +99,6 @@ if __name__ == "__main__":
         break
     for batch in test_dataloader:
         print(batch)
+        plt.imshow(batch[0].permute(1, 2, 0))
+        plt.savefig(fname='test_image.png')
         break
