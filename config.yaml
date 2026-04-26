@@ -38,6 +38,7 @@ ModelConfig:
   backbone_name: dinov2_vits14
   bottleneck_dim: 64
   use_adapter: false
+  freeze_backbone: true
 
 metrics:
   - real_accuracy

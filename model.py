@@ -22,9 +22,9 @@ class AGIDModel(nn.Module):
         self.backbone = torch.hub.load(
             "facebookresearch/dinov2", config.ModelConfig.backbone_name
         )
-        for param in self.backbone.parameters():
-            param.requires_grad = False
-
+        if config.ModelConfig.freeze_backbone:
+            self._freeze_backbone()
+        self.config = config
         embed_dim = self.backbone.embed_dim
         num_blocks = len(self.backbone.blocks)
 
@@ -35,6 +35,10 @@ class AGIDModel(nn.Module):
         else:
             self.adapters = nn.ModuleList([nn.Identity() for _ in range(num_blocks)])
         self.head = nn.Linear(embed_dim, 2)
+    
+    def _freeze_backbone(self):
+        for param in self.backbone.parameters():
+            param.requires_grad = False
 
     def forward(self, x):
         x = self.backbone.prepare_tokens_with_masks(x)
