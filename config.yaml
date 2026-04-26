@@ -11,11 +11,11 @@ DatasetConfig:
   pin_memory: true
   train_transform_list:
     - resize_short
+    - gaussian_blur
+    - jpeg_compression
     - random_crop
     - random_horizontal_flip
-    - jpeg_compression
     - to_dtype
-    - gaussian_blur
     - normalize
   eval_transform_list:
     - resize_short

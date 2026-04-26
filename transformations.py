@@ -23,14 +23,14 @@ class AIGITransformations:
             return v2.ToDtype(torch.float32, scale=True)
         elif transform_name == "gaussian_blur":
             return v2.RandomApply(
-                [v2.GaussianBlur(kernel_size=5, sigma=(0.1, 3.0))], p=0.1
+                [v2.GaussianBlur(kernel_size=11, sigma=(1e-3, 3.0))], p=0.5
             )
         elif transform_name == "random_horizontal_flip":
             return v2.RandomHorizontalFlip(p=0.5)
         elif transform_name == "random_vertical_flip":
             return v2.RandomVerticalFlip(p=0.5)
         elif transform_name == "jpeg_compression":
-            return v2.RandomApply([v2.JPEG(quality=(30, 100))], p=0.1)
+            return v2.RandomApply([v2.JPEG(quality=(30, 100))], p=0.5)
         elif transform_name == "random_crop":
             return v2.RandomCrop(size=(224, 224))
         elif transform_name == "normalize":
