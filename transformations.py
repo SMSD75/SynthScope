@@ -13,10 +13,26 @@ class AIGITransformations:
     def _create_transform(self, transform_name: str):
         if transform_name == "resize":
             return v2.Resize((224, 224))
+        elif transform_name == "resize_short":
+            return v2.Resize(256)
+        elif transform_name == "center_crop":
+            return v2.CenterCrop(224)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":
             return v2.ToDtype(torch.float32, scale=True)
+        elif transform_name == "gaussian_blur":
+            return v2.RandomApply(
+                [v2.GaussianBlur(kernel_size=5, sigma=(0.1, 3.0))], p=0.1
+            )
+        elif transform_name == "random_horizontal_flip":
+            return v2.RandomHorizontalFlip(p=0.5)
+        elif transform_name == "random_vertical_flip":
+            return v2.RandomVerticalFlip(p=0.5)
+        elif transform_name == "jpeg_compression":
+            return v2.RandomApply([v2.JPEG(quality=(30, 100))], p=0.1)
+        elif transform_name == "random_crop":
+            return v2.RandomCrop(size=(224, 224))
         elif transform_name == "normalize":
             return v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         else:
@@ -30,7 +46,7 @@ class AIGITransformations:
 
 if __name__ == "__main__":
     config = OmegaConf.load("config.yaml")
-    transform = AIGITransformations(config.transform_list)
+    transform = AIGITransformations(list(config.DatasetConfig.eval_transform_list))
     image = Image.open("//nvmestore/ssalehi/AGID/AIGIBench/train/car/0_real/00000.png")
     plt.imshow(image)
     plt.show()

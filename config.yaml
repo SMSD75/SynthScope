@@ -9,8 +9,17 @@ DatasetConfig:
   num_workers: 8
   persistent_workers: true
   pin_memory: true
-  transform_list:
-    - resize
+  train_transform_list:
+    - resize_short
+    - random_crop
+    - random_horizontal_flip
+    - jpeg_compression
+    - to_dtype
+    - gaussian_blur
+    - normalize
+  eval_transform_list:
+    - resize_short
+    - center_crop
     - to_dtype
     - normalize
 
@@ -23,6 +32,7 @@ TrainerConfig:
   save: false
   save_policy: max
   save_path: /nvmestore/ssalehi/AGID/models
+  seed: 42
 
 ModelConfig:
   backbone_name: dinov2_vits14

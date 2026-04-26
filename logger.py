@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 from PIL import Image
 from omegaconf import DictConfig, OmegaConf
-
+import datetime
 
 class AIGILogger(ABC):
     def __init__(self, config: DictConfig):
@@ -37,7 +37,7 @@ class AIGILoggerWandb(AIGILogger):
         self._wandb = wandb
         self.run = wandb.init(
             project=config.logger.project,
-            name=config.logger.name,
+            name=config.logger.name + "_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
             tags=list(config.logger.tags),
             config=OmegaConf.to_container(config, resolve=True),
         )

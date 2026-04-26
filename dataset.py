@@ -67,13 +67,13 @@ class AIGIBenchDataset(Dataset):
 class AIGIDatasetModule:
     def __init__(self, config):
         self.config = config
-        if config.DatasetConfig.transform_list != []:
-            self.transform = AIGITransformations(config.DatasetConfig.transform_list)
-        else:
-            self.transform = None
-        self.train_dataset = AIGIBenchDataset(config.DatasetConfig.train_dir, "train", config.DatasetConfig.setting, self.transform)
-        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.val_dir, "val", config.DatasetConfig.setting, self.transform)
-        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.test_dir, "test", config.DatasetConfig.setting, self.transform)
+        train_list = list(config.DatasetConfig.train_transform_list)
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_dataset = AIGIBenchDataset(config.DatasetConfig.train_dir, "train", config.DatasetConfig.setting, self.train_transform)
+        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.val_dir, "val", config.DatasetConfig.setting, self.eval_transform)
+        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.test_dir, "test", config.DatasetConfig.setting, self.eval_transform)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
