@@ -1,6 +1,6 @@
 import torch
 from accelerate.utils import set_seed
-from model import AGIDModel
+from model import AGIDDINOModel
 from dataset import AIGIDatasetModule
 from omegaconf import OmegaConf
 from trainer import AGIDModelTrainer

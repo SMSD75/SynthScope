@@ -35,6 +35,11 @@ class AIGITransformations:
             return v2.RandomCrop(size=(224, 224))
         elif transform_name == "normalize":
             return v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        elif transform_name == "normalize_clip":
+            return v2.Normalize(
+                mean=[0.48145466, 0.4578275, 0.40821073],
+                std=[0.26862954, 0.26130258, 0.27577711],
+            )
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
     

@@ -6,6 +6,3 @@ export CUDA_VISIBLE_DEVICES=1,2,3,5
 export OMP_NUM_THREADS=1
 
 accelerate launch --config_file accelerate_config.yaml --num_processes 4 main.py
-# Just for testing
-accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py
-accelerate launch --config_file accelerate_config.yaml --num_processes 4 main.py

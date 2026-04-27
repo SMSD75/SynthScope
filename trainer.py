@@ -1,5 +1,5 @@
 import torch
-from model import AGIDModel
+from model import AGIDCLIPModel, AGIDCNNModel, AGIDDINOModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import OmegaConf
@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 class AGIDModelTrainer:
     def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
-        self.model = AGIDModel(config)
+        self.model = self._build_model(config)
         self.optimizer = torch.optim.Adam(self._filter_trainable_parameters(), lr=config.TrainerConfig.lr)
         self.criterion = torch.nn.CrossEntropyLoss()
         self.train_loader = dataset_module.train_dataloader()
@@ -37,6 +37,16 @@ class AGIDModelTrainer:
     def print_trainable_parameters(self):
         trainable_parameters = [n for (n, p) in self.model.named_parameters() if p.requires_grad]
         self.accelerator.print(f"Trainable Parameters: {trainable_parameters}")
+
+    def _build_model(self, config: OmegaConf):
+        model_type = config.ModelConfig.get("model_type", "dino").lower()
+        if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
+            return AGIDCLIPModel(config)
+        if model_type == "cnn":
+            return AGIDCNNModel(config)
+        if model_type == "dino":
+            return AGIDDINOModel(config)
+        raise ValueError(f"Invalid model_type: {model_type}")
     
     def _filter_trainable_parameters(self):
         return [p for p in self.model.parameters() if p.requires_grad]

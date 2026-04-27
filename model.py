@@ -1,6 +1,10 @@
 import torch
 import torch.nn as nn
 from omegaconf import OmegaConf
+from abc import ABC, abstractmethod
+import torchvision
+from torchvision.models import ResNet50_Weights
+import clip
 
 class Adapter(nn.Module):
     """Bottleneck adapter with residual connection and learnable scale."""
@@ -16,7 +20,7 @@ class Adapter(nn.Module):
         return x + self.scale * self.up(self.act(self.down(x)))
 
 
-class AGIDModel(nn.Module):
+class AGIDDINOModel(nn.Module):
     def __init__(self, config: OmegaConf):
         super().__init__()
         self.backbone = torch.hub.load(
@@ -50,3 +54,44 @@ class AGIDModel(nn.Module):
         x = self.backbone.norm(x)
         cls_token = x[:, 0]
         return self.head(cls_token)
+
+
+class AGIDCNNModel(nn.Module):
+    def __init__(self, config: OmegaConf):
+        super().__init__()
+        self.backbone = torchvision.models.resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
+        if config.ModelConfig.freeze_backbone:
+            self._freeze_backbone()
+        self.config = config
+        self.head = nn.Linear(self.backbone.fc.in_features, 2)
+        self.backbone.fc = nn.Identity()
+
+    def _freeze_backbone(self):
+        for param in self.backbone.parameters():
+            param.requires_grad = False
+
+    def forward(self, x):
+        out = self.backbone(x)
+        return self.head(out)
+
+
+class AGIDCLIPModel(nn.Module):
+    def __init__(self, config: OmegaConf):
+        super().__init__()
+        backbone_name = config.ModelConfig.backbone_name
+        if backbone_name.startswith("CLIP:"):
+            backbone_name = backbone_name.removeprefix("CLIP:")
+
+        self.backbone, _ = clip.load(backbone_name)
+        if config.ModelConfig.freeze_backbone:
+            self._freeze_backbone()
+        self.config = config
+        self.head = nn.Linear(self.backbone.visual.output_dim, 2)
+
+    def _freeze_backbone(self):
+        for param in self.backbone.parameters():
+            param.requires_grad = False
+    
+    def forward(self, images):
+        image_features = self.backbone.encode_image(images)
+        return self.head(image_features.float())
