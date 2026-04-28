@@ -58,6 +58,6 @@ class AIGILoggerWandb(AIGILogger):
 def build_logger(config, accelerator=None) -> AIGILogger:
     is_main = accelerator.is_main_process if accelerator is not None else True
     kind = config.logger.type
-    if kind == "wandb":   return AIGILoggerWandb(config, is_main_process=is_main)
+    if kind == "wandb":   return AIGILoggerWandb(config, mode=config.logger.get("mode", "offline"), is_main_process=is_main)
     if kind in (None, "none", "null"):  return NullLogger(config)
     raise ValueError(f"Unknown logger type: {kind}")

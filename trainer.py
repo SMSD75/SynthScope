@@ -11,7 +11,7 @@ from tqdm import tqdm
 class AGIDModelTrainer:
     def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
-        self.optimizer = torch.optim.Adam(self._filter_trainable_parameters(), lr=config.TrainerConfig.lr)
+        self.optimizer = torch.optim.AdamW(self._filter_trainable_parameters(), lr=config.TrainerConfig.lr, betas=(0.9, 0.999))
         self.criterion = torch.nn.CrossEntropyLoss()
         self.train_loader = dataset_module.train_dataloader()
         self.val_loader = dataset_module.val_dataloader()
