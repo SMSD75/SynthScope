@@ -1,0 +1,13 @@
+name: ditfake
+root_dir: /nvmestore/ssalehi/AGID/DiTFake
+repo_id: lioooox/DiTFake
+test_batch_size: 2048
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short
+  - center_crop
+  - to_dtype
+  - normalize_clip

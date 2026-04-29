@@ -1,0 +1,21 @@
+defaults:
+  - trainer@TrainerConfig: default
+  - model@ModelConfig: default
+  - dataset@DatasetConfig: ditfake
+  - _self_
+
+hydra:
+  job:
+    chdir: false
+
+metrics:
+  - real_accuracy
+  - fake_accuracy
+
+logger:
+  mode: offline
+  type: wandb
+  project: AGID
+  name: AGID
+  tags:
+    - AGID

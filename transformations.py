@@ -1,6 +1,5 @@
 from typing import Callable
 from PIL import Image
-from omegaconf import OmegaConf
 from matplotlib import pyplot as plt
 import torchvision.transforms.v2 as v2
 import torch
@@ -50,7 +49,9 @@ class AIGITransformations:
     
 
 if __name__ == "__main__":
-    config = OmegaConf.load("config.yaml")
+    from config_utils import compose_app_config
+
+    config = compose_app_config()
     transform = AIGITransformations(list(config.DatasetConfig.eval_transform_list))
     image = Image.open("//nvmestore/ssalehi/AGID/AIGIBench/train/car/0_real/00000.png")
     plt.imshow(image)

@@ -2,14 +2,14 @@ import torch
 from model import AGIDCLIPModel, AGIDCNNModel, AGIDDINOModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
 from accelerate import Accelerator
 import os
 from logger import build_logger
 from tqdm import tqdm
 
 class AGIDModelTrainer:
-    def __init__(self, config: OmegaConf, dataset_module: AIGIDatasetModule):
+    def __init__(self, config: DictConfig, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
         self.optimizer = torch.optim.AdamW(self._filter_trainable_parameters(), lr=config.TrainerConfig.lr, betas=(0.9, 0.999))
         self.criterion = torch.nn.CrossEntropyLoss()
@@ -38,7 +38,7 @@ class AGIDModelTrainer:
         trainable_parameters = [n for (n, p) in self.model.named_parameters() if p.requires_grad]
         self.accelerator.print(f"Trainable Parameters: {trainable_parameters}")
 
-    def _build_model(self, config: OmegaConf):
+    def _build_model(self, config: DictConfig):
         model_type = config.ModelConfig.get("model_type", "dino").lower()
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
             return AGIDCLIPModel(config)

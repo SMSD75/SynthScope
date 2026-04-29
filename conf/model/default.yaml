@@ -1,0 +1,5 @@
+model_type: clip
+backbone_name: CLIP:ViT-L/14
+bottleneck_dim: 64
+use_adapter: false
+freeze_backbone: true

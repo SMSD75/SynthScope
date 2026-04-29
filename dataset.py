@@ -2,14 +2,260 @@ from torch.utils.data import Dataset
 from typing import Literal
 from pathlib import Path
 import zipfile
+import shutil
+import subprocess
 from matplotlib import pyplot as plt
 import torch
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
-from omegaconf import OmegaConf
 from torchvision.io import decode_image, ImageReadMode
-import os
-os.environ["HF_TOKEN"] = "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"
+from config_utils import compose_config
+
+
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+
+def _iter_images(directory: Path):
+    return (p for p in directory.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS)
+
+
+def _has_images(directory: Path) -> bool:
+    return directory.is_dir() and any(_iter_images(directory))
+
+
+def _safe_extract_zip(zip_path: str | Path, destination_dir: str | Path) -> None:
+    """Extract a zip file without allowing path traversal outside destination_dir."""
+    zip_path = Path(zip_path)
+    destination_dir = Path(destination_dir)
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    destination_root = destination_dir.resolve()
+
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        for member in zf.infolist():
+            member_path = (destination_dir / member.filename).resolve()
+            if not member_path.is_relative_to(destination_root):
+                raise RuntimeError(f"Refusing to extract unsafe zip member: {member.filename}")
+        zf.extractall(destination_dir)
+
+
+def _download_hf_file(
+    repo_id: str,
+    filename: str,
+    download_dir: str | Path,
+    repo_type: str = "dataset",
+) -> Path:
+    """Download one file from the Hugging Face Hub into download_dir and return its local path."""
+    from huggingface_hub import hf_hub_download
+
+    download_dir = Path(download_dir)
+    download_dir.mkdir(parents=True, exist_ok=True)
+    return Path(
+        hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            repo_type=repo_type,
+            local_dir=download_dir,
+        )
+    )
+
+
+class CNNDetectionDataset(Dataset):
+    google_drive_folder_url = "https://drive.google.com/drive/u/0/folders/1RwCSaraEUctIwFgoQXWMKFvW07gM80_3"
+    archive_name_markers = {
+        "train": ("progan_train", "train"),
+        "val": ("progan_val", "val"),
+        "test": ("cnn_synth_testset", "test"),
+    }
+
+    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False):
+        super().__init__()
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.prefetch = prefetch
+        self.destination_dir = self.root_dir / self.split
+        if prefetch and not _has_images(self.destination_dir):
+            print(f"Downloading {self.split} split from Google Drive...")
+            self._download_data()
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def download_archives(
+        cls,
+        archive_dir: str | Path,
+        url: str | None = None,
+        force: bool = False,
+    ) -> Path:
+        """Download the shared CNNDetection Google Drive folder into archive_dir."""
+        archive_dir = Path(archive_dir)
+        if archive_dir.exists() and any(archive_dir.iterdir()) and not force:
+            return archive_dir
+
+        archive_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            import gdown
+        except ImportError as exc:
+            raise ImportError(
+                "Downloading a Google Drive folder requires `gdown`. "
+                "Install it with `pip install gdown`."
+            ) from exc
+
+        gdown.download_folder(
+            url=url or cls.google_drive_folder_url,
+            output=str(archive_dir),
+            quiet=False,
+            use_cookies=False,
+        )
+        return archive_dir
+
+    @classmethod
+    def _find_split_archives(
+        cls,
+        archive_dir: Path,
+        split: Literal["train", "val", "test"],
+    ) -> list[Path]:
+        markers = cls.archive_name_markers[split]
+        archive_suffixes = (".zip", ".7z", ".001")
+        archives = [
+            p
+            for p in archive_dir.rglob("*")
+            if p.is_file()
+            and p.name.lower().endswith(archive_suffixes)
+            and any(marker in p.name.lower() for marker in markers)
+        ]
+
+        if split == "train":
+            zip_archives = [p for p in archives if p.suffix.lower() == ".zip"]
+            if zip_archives:
+                return sorted(zip_archives)
+            first_7z_parts = [p for p in archives if p.name.lower().endswith(".7z.001")]
+            if first_7z_parts:
+                return sorted(first_7z_parts)
+
+        return sorted(archives)
+
+    @staticmethod
+    def _extract_7z(archive_path: Path, destination_dir: Path) -> None:
+        seven_zip = shutil.which("7z") or shutil.which("7za")
+        if seven_zip is None:
+            raise RuntimeError("Extracting .7z archives requires the `7z` command. Install p7zip-full.")
+
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [seven_zip, "x", str(archive_path), f"-o{destination_dir}", "-y"],
+            cwd=archive_path.parent,
+            check=True,
+        )
+
+    @classmethod
+    def _extract_archive(cls, archive_path: Path, destination_dir: Path) -> None:
+        if archive_path.suffix.lower() == ".zip":
+            _safe_extract_zip(archive_path, destination_dir)
+            return
+
+        if archive_path.name.lower().endswith(".7z") or archive_path.name.lower().endswith(".7z.001"):
+            cls._extract_7z(archive_path, destination_dir)
+            for zip_path in destination_dir.rglob("*.zip"):
+                _safe_extract_zip(zip_path, destination_dir)
+            return
+
+        raise RuntimeError(f"Unsupported archive type: {archive_path}")
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["train", "val", "test"],
+        force: bool = False,
+        keep_archives: bool = True,
+    ) -> None:
+        """Download and extract one CNNDetection split under root_dir/split."""
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_images(destination_dir):
+            return
+
+        archive_dir = root_dir / "_archives" / "CNNDetection"
+        cls.download_archives(archive_dir)
+        archive_paths = cls._find_split_archives(archive_dir, split)
+        if not archive_paths:
+            raise RuntimeError(f"No archive found for CNNDetection {split!r} split in {archive_dir}")
+
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        for archive_path in archive_paths:
+            cls._extract_archive(archive_path, destination_dir)
+
+        if not keep_archives:
+            shutil.rmtree(archive_dir, ignore_errors=True)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        splits: tuple[Literal["train", "val", "test"], ...] = ("train", "val", "test"),
+        force: bool = False,
+        keep_archives: bool = True,
+    ) -> None:
+        """Download and extract the requested CNNDetection splits."""
+        for split in splits:
+            cls.prepare_split(root_dir, split, force=force, keep_archives=keep_archives)
+
+    def _download_data(self, force: bool = False) -> None:
+        """Download and extract this dataset split under root_dir/split."""
+        self.prepare_split(self.root_dir, self.split, force=force)
+    
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
+    
+    def _iter_images(self, directory: Path):
+        return _iter_images(directory)
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        split_dir = self.destination_dir
+        for filepath in self._iter_images(split_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(filepath.parent.parent.name if filepath.parent.parent != split_dir.parent else self.split)
+        return images, labels, folder_names
+
+
+class CNNDetectionDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        train_list = list(config.DatasetConfig.train_transform_list)
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
+        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
+        self.test_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
+
+    def train_dataloader(self):
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.val_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 class AIGIBenchDataset(Dataset):
     def __init__(
@@ -18,8 +264,9 @@ class AIGIBenchDataset(Dataset):
         split: Literal["train", "val", "test"],
         setting: Literal["Setting-I", "Setting-II"],
         transform: AIGITransformations | None = None,
-        prefetch_hf: bool = False,
+        prefetch: bool = False,
     ):
+        super().__init__()
         self.root_dir = Path(root_dir)
         self.split = split
         self.setting = setting
@@ -28,22 +275,19 @@ class AIGIBenchDataset(Dataset):
         self.destination_dir = self.root_dir / self.split
         self.huggingface_path = "https://huggingface.co/datasets/HorizonTEL/AIGIBench/tree/main"
         self.huggingface_repo_id = "HorizonTEL/AIGIBench"
-        if prefetch_hf:
-            if os.is_dir(self.destination_dir):
+        if prefetch:
+            if _has_images(self.destination_dir):
                 print(f"on prefetch_hf mode, {self.destination_dir} already exists")
-        else:
-            print(f"Downloading {self.split} split from Hugging Face...")
-            self._download_data()
+            else:
+                print(f"Downloading {self.split} split from Hugging Face...")
+                self._download_data()
         if self.split != "train":
-            self.unique_folder_names += [d.name for d in self.destination_dir.iterdir() if d.is_dir()]
+            self.unique_folder_names += [d.name for d in self.destination_dir.iterdir() if d.is_dir()] if self.destination_dir.exists() else []
         self.images, self.labels, self.folder_names = self._load_data()
 
     @staticmethod
     def _split_has_images(directory: Path) -> bool:
-        for p in directory.rglob("*"):
-            if p.is_file() and p.suffix.lower() in (".jpg", ".png", ".jpeg", ".webp"):
-                return True
-        return False
+        return _has_images(directory)
 
     @classmethod
     def prepare_split(
@@ -75,8 +319,25 @@ class AIGIBenchDataset(Dataset):
                 filename=rel,
                 repo_type="dataset",
             )
-            with zipfile.ZipFile(local_zip, "r") as zf:
-                zf.extractall(destination_dir)
+            _safe_extract_zip(local_zip, destination_dir)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        splits: tuple[Literal["train", "val", "test"], ...] = ("train", "val", "test"),
+        repo_id: str = "HorizonTEL/AIGIBench",
+        force: bool = False,
+    ) -> None:
+        """Download and extract AIGIBench split archives under root_dir/train, root_dir/val, root_dir/test."""
+        root_dir = Path(root_dir)
+        for split in splits:
+            cls.prepare_split(
+                destination_dir=root_dir / split,
+                split=split,
+                repo_id=repo_id,
+                force=force,
+            )
 
     def _download_data(self, force: bool = False) -> None:
         """Download and extract this dataset split from Hugging Face (skips subsets that already contain images)."""
@@ -107,7 +368,7 @@ class AIGIBenchDataset(Dataset):
         raise ValueError(f"Cannot determine label from filename: {filepath}")
     
     def _iter_images(self, directory: Path):
-        return (p for p in directory.rglob("*") if p.suffix.lower() in (".jpg", ".png"))
+        return _iter_images(directory)
 
     def _load_data(self):
         images, labels, folder_names = [], [], []
@@ -127,6 +388,126 @@ class AIGIBenchDataset(Dataset):
         return images, labels, folder_names
 
 
+class DiTFakeDataset(Dataset):
+    repo_id = "lioooox/DiTFake"
+
+    def __init__(
+        self,
+        root_dir: str | Path,
+        split: Literal["test"],
+        transform: AIGITransformations | None = None,
+        prefetch: bool = False,
+        repo_id: str | None = None,
+    ):
+        super().__init__()
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.repo_id = repo_id or self.repo_id
+        self.destination_dir = self.root_dir / self.split
+        self._normalize_existing_layout()
+
+        if prefetch and not _has_images(self.destination_dir):
+            print("Downloading DiTFake test split from Hugging Face...")
+            self._download_data()
+            self.destination_dir = self.root_dir / self.split
+            self._normalize_existing_layout()
+
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    def _normalize_existing_layout(self) -> None:
+        nested_split_dir = self.root_dir / "DiTFake" / self.split
+        if _has_images(nested_split_dir) and not _has_images(self.destination_dir):
+            if self.destination_dir.exists():
+                shutil.rmtree(self.destination_dir)
+            self.destination_dir.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(nested_split_dir), str(self.destination_dir))
+        nested_root = self.root_dir / "DiTFake"
+        if nested_root.exists() and not any(nested_root.rglob("*")):
+            shutil.rmtree(nested_root, ignore_errors=True)
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["test"] = "test",
+        repo_id: str = "lioooox/DiTFake",
+        force: bool = False,
+    ) -> None:
+        """Download one DiTFake split subtree into root_dir/split."""
+        from huggingface_hub import snapshot_download
+
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_images(destination_dir):
+            return
+
+        root_dir.mkdir(parents=True, exist_ok=True)
+        download_dir = root_dir / "_downloads" / "DiTFake"
+        snapshot_download(
+            repo_id=repo_id,
+            repo_type="dataset",
+            local_dir=download_dir,
+            allow_patterns=[f"DiTFake/{split}/**"],
+        )
+        downloaded_split_dir = download_dir / "DiTFake" / split
+        if downloaded_split_dir.exists() and downloaded_split_dir != destination_dir:
+            if destination_dir.exists() and (force or not _has_images(destination_dir)):
+                shutil.rmtree(destination_dir)
+            destination_dir.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(downloaded_split_dir), str(destination_dir))
+        shutil.rmtree(root_dir / "_downloads", ignore_errors=True)
+        nested_root = root_dir / "DiTFake"
+        if nested_root.exists():
+            shutil.rmtree(nested_root, ignore_errors=True)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        repo_id: str = "lioooox/DiTFake",
+        force: bool = False,
+    ) -> None:
+        """Download DiTFake test split under root_dir."""
+        cls.prepare_split(root_dir=root_dir, split="test", repo_id=repo_id, force=force)
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.split,
+            repo_id=self.repo_id,
+            force=force,
+        )
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        for filepath in _iter_images(self.destination_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(filepath.parent.parent.name)
+        return images, labels, folder_names
+
+
 class AIGIBenchDatasetModule:
     def __init__(self, config):
         self.config = config
@@ -134,9 +515,10 @@ class AIGIBenchDatasetModule:
         eval_list = list(config.DatasetConfig.eval_transform_list)
         self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
         self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
-        self.train_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "train", config.DatasetConfig.setting, self.train_transform)
-        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "val", config.DatasetConfig.setting, self.eval_transform)
-        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "test", config.DatasetConfig.setting, self.eval_transform)
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        self.train_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "train", config.DatasetConfig.setting, self.train_transform, prefetch=prefetch)
+        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "val", config.DatasetConfig.setting, self.eval_transform, prefetch=prefetch)
+        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "test", config.DatasetConfig.setting, self.eval_transform, prefetch=prefetch)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -148,9 +530,42 @@ class AIGIBenchDatasetModule:
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
+class DiTFakeDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        repo_id = config.DatasetConfig.get("repo_id", DiTFakeDataset.repo_id)
+        self.test_dataset = DiTFakeDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch, repo_id=repo_id)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+
+class AIGIDatasetModule:
+    def __init__(self, config):
+        self.delegate = AGIDModuleDict[config.DatasetConfig.name](config)
+
+    def train_dataloader(self):
+        return self.delegate.train_dataloader()
+
+    def val_dataloader(self):
+        return self.delegate.val_dataloader()
+
+    def test_dataloader(self):
+        return self.delegate.test_dataloader()
+
+AGIDModuleDict = {
+    "aigibench": AIGIBenchDatasetModule,
+    "cnndetection": CNNDetectionDatasetModule,
+    "ditfake": DiTFakeDatasetModule,
+}
+
+
 if __name__ == "__main__":
-    config = OmegaConf.load('config.yaml')
-    dataset_module = AIGIBenchDatasetModule(config)
+    config = compose_config()
+    dataset_module = AGIDModuleDict[config.DatasetConfig.name](config)
     train_dataloader = dataset_module.train_dataloader()
     val_dataloader = dataset_module.val_dataloader()
     test_dataloader = dataset_module.test_dataloader()

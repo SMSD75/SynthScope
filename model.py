@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
 from abc import ABC, abstractmethod
 import torchvision
 from torchvision.models import ResNet50_Weights
@@ -21,7 +21,7 @@ class Adapter(nn.Module):
 
 
 class AGIDDINOModel(nn.Module):
-    def __init__(self, config: OmegaConf):
+    def __init__(self, config: DictConfig):
         super().__init__()
         self.backbone = torch.hub.load(
             "facebookresearch/dinov2", config.ModelConfig.backbone_name
@@ -57,7 +57,7 @@ class AGIDDINOModel(nn.Module):
 
 
 class AGIDCNNModel(nn.Module):
-    def __init__(self, config: OmegaConf):
+    def __init__(self, config: DictConfig):
         super().__init__()
         self.backbone = torchvision.models.resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)
         if config.ModelConfig.freeze_backbone:
@@ -76,7 +76,7 @@ class AGIDCNNModel(nn.Module):
 
 
 class AGIDCLIPModel(nn.Module):
-    def __init__(self, config: OmegaConf):
+    def __init__(self, config: DictConfig):
         super().__init__()
         backbone_name = config.ModelConfig.backbone_name
         if backbone_name.startswith("CLIP:"):

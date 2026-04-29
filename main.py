@@ -1,13 +1,17 @@
-import torch
+import hydra
 from accelerate.utils import set_seed
-from model import AGIDDINOModel
-from dataset import AIGIBenchDatasetModule
-from omegaconf import OmegaConf
+from omegaconf import DictConfig
+from dataset import AIGIDatasetModule
 from trainer import AGIDModelTrainer
 
-if __name__ == "__main__":
-    config = OmegaConf.load("config.yaml")
-    set_seed(getattr(config.TrainerConfig, "seed", 42))
-    dataset_module = AIGIBenchDatasetModule(config)
-    trainer = AGIDModelTrainer(config, dataset_module)
+
+@hydra.main(version_base=None, config_path="conf", config_name="config")
+def main(cfg: DictConfig) -> None:
+    set_seed(getattr(cfg.TrainerConfig, "seed", 42))
+    dataset_module = AIGIDatasetModule(cfg)
+    trainer = AGIDModelTrainer(cfg, dataset_module)
     trainer.train()
+
+
+if __name__ == "__main__":
+    main()

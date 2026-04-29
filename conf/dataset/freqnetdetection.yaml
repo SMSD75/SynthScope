@@ -1,0 +1,23 @@
+name: cnndetection
+root_dir: /nvmestore/ssalehi/AGID/CNNDetection
+source_url: https://drive.google.com/drive/folders/11E0Knf9J1qlv2UuTnJSOFUjIIi90czSj
+train_batch_size: 512
+val_batch_size: 2048
+test_batch_size: 2048
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+train_transform_list:
+  - resize_short
+  - gaussian_blur
+  - jpeg_compression
+  - random_crop
+  - random_horizontal_flip
+  - to_dtype
+  - normalize_clip
+eval_transform_list:
+  - resize_short
+  - center_crop
+  - to_dtype
+  - normalize_clip
