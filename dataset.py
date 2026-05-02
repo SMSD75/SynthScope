@@ -1,6 +1,8 @@
 from torch.utils.data import Dataset
 from typing import Literal
 from pathlib import Path
+import hashlib
+import re
 import zipfile
 import shutil
 import subprocess
@@ -56,6 +58,233 @@ def _download_hf_file(
             local_dir=download_dir,
         )
     )
+
+class GenImageDataset(Dataset):
+    google_drive_folder_url = "https://drive.google.com/drive/folders/1jGt10bwTbhEZuGXLyvrCuxOI0cBqQ1FS"
+    split_aliases = {
+        "train": "train",
+        "val": "test",
+        "test": "test",
+    }
+    source_split_markers = {
+        "train": ("train",),
+        "test": ("val", "validation", "test"),
+    }
+    class_dir_to_label = {
+        "nature": "real",
+        "real": "real",
+        "ai": "fake",
+        "fake": "fake",
+        "false": "fake",
+    }
+
+    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False):
+        super().__init__()
+        self.root_dir = Path(root_dir)
+        self.requested_split = split
+        self.split = self.split_aliases[split]
+        self.transform = transform
+        self.prefetch = prefetch
+        self.destination_dir = self.root_dir / self.split
+        if prefetch and not _has_images(self.destination_dir):
+            print(f"Downloading {self.split} split from Google Drive...")
+            self._download_data()
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @staticmethod
+    def _tokens(path: Path) -> list[str]:
+        tokens: list[str] = []
+        for part in path.parts:
+            tokens.extend(token for token in re.split(r"[^a-z0-9]+", part.lower()) if token)
+        return tokens
+
+    @classmethod
+    def download_files(
+        cls,
+        download_dir: str | Path,
+        url: str | None = None,
+        force: bool = False,
+    ) -> Path:
+        """Download the shared GenImage Google Drive folder into download_dir."""
+        download_dir = Path(download_dir)
+        if download_dir.exists() and any(download_dir.iterdir()) and not force:
+            return download_dir
+
+        if force:
+            shutil.rmtree(download_dir, ignore_errors=True)
+        download_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            import gdown
+        except ImportError as exc:
+            raise ImportError(
+                "Downloading the GenImage Google Drive folder requires `gdown`. "
+                "Install it with `pip install gdown`."
+            ) from exc
+
+        gdown.download_folder(
+            url=url or cls.google_drive_folder_url,
+            output=str(download_dir),
+            quiet=False,
+            use_cookies=False,
+        )
+        return download_dir
+
+    @classmethod
+    def _extract_downloaded_archives(cls, download_dir: Path) -> None:
+        for zip_path in sorted(download_dir.rglob("*.zip")):
+            extract_dir = zip_path.with_suffix("")
+            if _has_images(extract_dir):
+                continue
+            _safe_extract_zip(zip_path, extract_dir)
+
+    @classmethod
+    def _source_split_for_path(cls, filepath: Path, destination_split: Literal["train", "test"]) -> bool:
+        tokens = cls._tokens(filepath.parent)
+        return any(marker in tokens for marker in cls.source_split_markers[destination_split])
+
+    @classmethod
+    def _label_dir_for_path(cls, filepath: Path) -> str | None:
+        tokens = cls._tokens(filepath.parent)
+        for source_name, label_dir in cls.class_dir_to_label.items():
+            if source_name in tokens:
+                return label_dir
+        return None
+
+    @classmethod
+    def _relative_image_path(cls, filepath: Path) -> Path:
+        parts = list(filepath.parts)
+        lower_parts = [part.lower() for part in parts]
+        marker_index = -1
+        for idx, part in enumerate(lower_parts[:-1]):
+            tokens = cls._tokens(Path(part))
+            if any(token in cls.source_split_markers["train"] + cls.source_split_markers["test"] for token in tokens):
+                marker_index = idx
+            if any(token in cls.class_dir_to_label for token in tokens):
+                marker_index = idx
+        relative_parts = parts[marker_index + 1 :] if marker_index >= 0 else [filepath.name]
+        return Path(*relative_parts)
+
+    @staticmethod
+    def _deduplicated_destination(destination_path: Path, source_path: Path) -> Path:
+        if not destination_path.exists():
+            return destination_path
+
+        digest = hashlib.sha1(str(source_path).encode("utf-8")).hexdigest()[:10]
+        return destination_path.with_name(f"{destination_path.stem}_{digest}{destination_path.suffix}")
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        url: str | None = None,
+        force: bool = False,
+        keep_downloads: bool = True,
+    ) -> None:
+        """Download GenImage and normalize it to root/train and root/test."""
+        root_dir = Path(root_dir)
+        train_dir = root_dir / "train"
+        test_dir = root_dir / "test"
+        if not force and _has_images(train_dir) and _has_images(test_dir):
+            return
+
+        if force:
+            shutil.rmtree(train_dir, ignore_errors=True)
+            shutil.rmtree(test_dir, ignore_errors=True)
+
+        download_dir = root_dir / "_downloads" / "GenImage"
+        cls.download_files(download_dir, url=url, force=force)
+        cls._extract_downloaded_archives(download_dir)
+
+        copied = {"train": 0, "test": 0}
+        for destination_split in ("train", "test"):
+            destination_split_dir = root_dir / destination_split
+            destination_split_dir.mkdir(parents=True, exist_ok=True)
+
+            for source_path in _iter_images(download_dir):
+                source_relative_path = source_path.relative_to(download_dir)
+                if not cls._source_split_for_path(source_relative_path, destination_split):
+                    continue
+
+                label_dir = cls._label_dir_for_path(source_relative_path)
+                if label_dir is None:
+                    continue
+
+                relative_path = cls._relative_image_path(source_relative_path)
+                destination_path = cls._deduplicated_destination(
+                    destination_split_dir / label_dir / relative_path,
+                    source_path,
+                )
+                destination_path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source_path, destination_path)
+                copied[destination_split] += 1
+
+        missing = [split for split, count in copied.items() if count == 0]
+        if missing:
+            raise RuntimeError(
+                "GenImage download did not contain recognizable images for "
+                f"{', '.join(missing)}. Expected train/val split folders and ai/nature class folders."
+            )
+
+        if not keep_downloads:
+            shutil.rmtree(root_dir / "_downloads", ignore_errors=True)
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["train", "val", "test"],
+        url: str | None = None,
+        force: bool = False,
+        keep_downloads: bool = True,
+    ) -> None:
+        """Download and normalize GenImage; val is stored as the test split."""
+        destination_split = cls.split_aliases[split]
+        destination_dir = Path(root_dir) / destination_split
+        if not force and _has_images(destination_dir):
+            return
+        cls.prepare_dataset(root_dir, url=url, force=force, keep_downloads=keep_downloads)
+
+    def _download_data(self, force: bool = False) -> None:
+        """Download and normalize this dataset split from Google Drive."""
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.requested_split,
+            url=self.google_drive_folder_url,
+            force=force,
+        )
+    
+    def __len__(self):
+        return len(self.images)
+    
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+    
+    def _iter_images(self, directory: Path):
+        return _iter_images(directory)
+    
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        split_dir = self.destination_dir
+        for filepath in self._iter_images(split_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(self.split)
+        return images, labels, folder_names
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        names = [part.lower() for part in filepath.parent.parts]
+        if "real" in names:
+            return 0
+        if "fake" in names or "false" in names:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
 
 
 class CNNDetectionDataset(Dataset):
@@ -256,6 +485,31 @@ class CNNDetectionDatasetModule:
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+
+class GenImageDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        train_list = list(config.DatasetConfig.train_transform_list)
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        source_url = config.DatasetConfig.get("source_url", GenImageDataset.google_drive_folder_url)
+        GenImageDataset.google_drive_folder_url = source_url
+        self.train_dataset = GenImageDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
+        self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
+        self.test_dataset = GenImageDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
+
+    def train_dataloader(self):
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.val_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
 
 class AIGIBenchDataset(Dataset):
     def __init__(
@@ -560,6 +814,7 @@ AGIDModuleDict = {
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
     "ditfake": DiTFakeDatasetModule,
+    "genimage": GenImageDatasetModule,
 }
 
 

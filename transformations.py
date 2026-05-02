@@ -10,12 +10,14 @@ class AIGITransformations:
         self.transforms = [self._create_transform(transform) for transform in self.transform_list]
     
     def _create_transform(self, transform_name: str):
-        if transform_name == "resize":
+        if transform_name == "resize_224":
             return v2.Resize((224, 224))
-        elif transform_name == "resize_short":
+        elif transform_name == "resize_short_256":
             return v2.Resize(256)
-        elif transform_name == "center_crop":
+        elif transform_name == "center_crop_224":
             return v2.CenterCrop(224)
+        elif transform_name == "center_crop_256":
+            return v2.CenterCrop(256)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":
@@ -30,14 +32,24 @@ class AIGITransformations:
             return v2.RandomVerticalFlip(p=0.5)
         elif transform_name == "jpeg_compression":
             return v2.RandomApply([v2.JPEG(quality=(30, 100))], p=0.5)
-        elif transform_name == "random_crop":
+        elif transform_name == "random_crop_224":
             return v2.RandomCrop(size=(224, 224))
-        elif transform_name == "normalize":
-            return v2.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        elif transform_name == "random_crop_256":
+            return v2.RandomCrop(size=(256, 256))
+        elif transform_name == "normalize_dinov2":
+            return v2.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
         elif transform_name == "normalize_clip":
             return v2.Normalize(
                 mean=[0.48145466, 0.4578275, 0.40821073],
                 std=[0.26862954, 0.26130258, 0.27577711],
+            )
+        elif transform_name == "normalize_dinov3":
+            return v2.Normalize(
+                mean=(0.430, 0.411, 0.296),
+                std=(0.213, 0.156, 0.143),
             )
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")

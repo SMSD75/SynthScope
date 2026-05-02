@@ -9,15 +9,15 @@ persistent_workers: true
 pin_memory: true
 prefetch: true
 train_transform_list:
-  - resize_short
+  - resize_short_256
   - gaussian_blur
   - jpeg_compression
-  - random_crop
+  - random_crop_224
   - random_horizontal_flip
   - to_dtype
   - normalize_clip
 eval_transform_list:
-  - resize_short
-  - center_crop
+  - resize_short_256  
+  - center_crop_224
   - to_dtype
   - normalize_clip
