@@ -1,9 +1,14 @@
 import torch
-from model import AGIDCLIPModel, AGIDCNNModel, AGIDDINOModel
+from models.image.clip_detection.clip_detection import AGIDCLIPModel
+from models.image.cnn_detection.cnn_detection import AGIDCNNModel
+from models.image.dino_detection.dino_detection import AGIDDINOModel, AGIDDINOv3Model
+from models.image.adapted_dino.adapted_dino import AGIDAdaptedDINOModel
+from models.image.safe.safe import AGIDSAFEModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
 from accelerate import Accelerator
+from transformers import get_scheduler
 import os
 from logger import build_logger
 from tqdm import tqdm
@@ -22,8 +27,13 @@ class AGIDModelTrainer:
         self.test_metrics = AIGIMetrics(config.metrics)
         self.accelerator = Accelerator()
         self.use_metrics = len(config.metrics) > 0
-        self.model, self.optimizer, self.train_loader, self.val_loader, self.test_loader = self.accelerator.prepare(
-            self.model, self.optimizer, self.train_loader, self.val_loader, self.test_loader)
+        self.scheduler = None
+        warmup = config.TrainerConfig.warmup
+        if warmup.mode != "off":
+            num_training_steps = config.TrainerConfig.epochs * (len(self.train_loader) // self.accelerator.gradient_accumulation_steps)
+            self.scheduler = get_scheduler(warmup.lr_scheduler, optimizer=self.optimizer, num_warmup_steps=int(warmup.warmup_ratio * num_training_steps), num_training_steps=num_training_steps)
+        self.model, self.optimizer, self.scheduler, self.train_loader, self.val_loader, self.test_loader = self.accelerator.prepare(
+            self.model, self.optimizer, self.scheduler, self.train_loader, self.val_loader, self.test_loader)
         self.train_metrics = self.train_metrics.to(self.accelerator.device)
         self.val_metrics = self.val_metrics.to(self.accelerator.device)
         self.test_metrics = self.test_metrics.to(self.accelerator.device)
@@ -40,13 +50,20 @@ class AGIDModelTrainer:
 
     def _build_model(self, config: DictConfig):
         model_type = config.ModelConfig.get("model_type", "dino").lower()
+        if model_type == "safe":
+            return AGIDSAFEModel(config)
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
             return AGIDCLIPModel(config)
         if model_type == "cnn":
             return AGIDCNNModel(config)
-        if model_type == "dino":
+        if model_type == "adapted_dino":
+            return AGIDAdaptedDINOModel(config)
+        if model_type == "dinov2":
             return AGIDDINOModel(config)
-        raise ValueError(f"Invalid model_type: {model_type}")
+        if model_type == "dinov3":
+            return AGIDDINOv3Model(config)
+        else:   
+            raise ValueError(f"Invalid model_type: {model_type}")
     
     def _filter_trainable_parameters(self):
         return [p for p in self.model.parameters() if p.requires_grad]
@@ -86,6 +103,8 @@ class AGIDModelTrainer:
             loss  = self.train_step(batch)
             self.accelerator.backward(loss)
             self.optimizer.step()
+            if self.scheduler is not None:
+                self.scheduler.step()
             if self.accelerator.sync_gradients:
                 self.global_step += 1
             loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
@@ -138,35 +157,46 @@ class AGIDModelTrainer:
         return total_loss / len(self.test_loader), total_metrics_dict
 
 
-    def save_model(self, epoch, save_path):
+    def _save_model(self, epoch, save_path):
         self.accelerator.wait_for_everyone()
         unwrapped_model = self.accelerator.unwrap_model(self.model)
         if self.accelerator.is_main_process:
             os.makedirs(save_path, exist_ok=True)
             self.accelerator.save(unwrapped_model.state_dict(), f"{save_path}/model_{epoch}.pth")
 
+    def _save(self, val_loss, epoch):
+        if self.config.TrainerConfig.save_policy == "max":
+            if val_loss > self.best_val_loss:
+                self.best_val_loss = val_loss
+                self._save_model(epoch, self.config.TrainerConfig.save_path)
+        elif self.config.TrainerConfig.save_policy == "min":
+            if val_loss < self.best_val_loss:
+                self.best_val_loss = val_loss
+                self._save_model(epoch, self.config.TrainerConfig.save_path)
+        self.accelerator.print(f"Epoch {epoch}, Model Saved")
+
     def train(self):
         for epoch in range(self.config.TrainerConfig.epochs):
             if epoch % self.config.TrainerConfig.val_interval == 0:
-                val_loss, val_metrics_dict = self.val_epoch()
-                self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss}, Val Metrics: {val_metrics_dict}")
-                self.logger.log_metrics({"val/loss": val_loss, **{f"val/{metric}": value for metric, value in val_metrics_dict.items()}}, self.global_step)
+                val_loss, val_metrics_dict = self.val()
             if epoch % self.config.TrainerConfig.test_interval == 0:
-                test_loss, test_metrics_dict = self.test_epoch()
-                self.accelerator.print(f"Epoch {epoch}, Test Loss: {test_loss}, Test Metrics: {test_metrics_dict}")
-                self.logger.log_metrics({"test/loss": test_loss, **{f"test/{metric}": value for metric, value in test_metrics_dict.items()}}, self.global_step)   
+                test_loss, test_metrics_dict = self.test()   
             train_loss, train_metrics_dict = self.train_epoch()
             self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
             self.logger.log_metrics({"train/loss": train_loss, **{f"train/{metric}": value for metric, value in train_metrics_dict.items()}}, self.global_step)
             if epoch % self.config.TrainerConfig.save_interval == 0:
                 if self.config.TrainerConfig.save:
-                    if self.config.TrainerConfig.save_policy == "max":
-                        if val_loss > self.best_val_loss:
-                            self.best_val_loss = val_loss
-                            self.save_model(epoch, self.config.TrainerConfig.save_path)
-                    elif self.config.TrainerConfig.save_policy == "min":
-                        if val_loss < self.best_val_loss:
-                            self.best_val_loss = val_loss
-                            self.save_model(epoch, self.config.TrainerConfig.save_path)
-                    self.accelerator.print(f"Epoch {epoch}, Model Saved")
+                    self._save(val_loss, epoch)
         self.logger.finish()
+    
+    def test(self):
+        test_loss, test_metrics_dict = self.test_epoch()
+        self.accelerator.print(f"Test Loss: {test_loss}, Test Metrics: {test_metrics_dict}")
+        self.logger.log_metrics({"test/loss": test_loss, **{f"test/{metric}": value for metric, value in test_metrics_dict.items()}}, self.global_step)
+        return test_loss, test_metrics_dict
+    
+    def val(self):
+        val_loss, val_metrics_dict = self.val_epoch()
+        self.accelerator.print(f"Val Loss: {val_loss}, Val Metrics: {val_metrics_dict}")
+        self.logger.log_metrics({"val/loss": val_loss, **{f"val/{metric}": value for metric, value in val_metrics_dict.items()}}, self.global_step)
+        return val_loss, val_metrics_dict

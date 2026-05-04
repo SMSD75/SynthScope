@@ -7,3 +7,7 @@ save: false
 save_policy: max
 save_path: /nvmestore/ssalehi/AGID/models
 seed: 42
+warmup:
+ mode: off
+ warmup_ratio: 0.05
+ lr_scheduler: linear
