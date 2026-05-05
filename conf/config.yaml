@@ -1,7 +1,7 @@
 defaults:
   - trainer@TrainerConfig: default
   - model@ModelConfig: default
-  - dataset@DatasetConfig: cnndetection
+  - dataset@DatasetConfig: genimage
   - _self_
 
 hydra:
@@ -13,7 +13,7 @@ metrics:
   - fake_accuracy
 
 logger:
-  mode: online
+  mode: offline
   type: wandb
   project: AGID
   name: AGID

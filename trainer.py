@@ -186,11 +186,16 @@ class AGIDModelTrainer:
         for epoch in range(self.config.TrainerConfig.epochs):
             if epoch % self.config.TrainerConfig.val_interval == 0:
                 val_loss, val_metrics_dict = self.val()
+                self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss}, Val Metrics: {val_metrics_dict}")
+                self.logger.log_metrics({"val/loss": val_loss, **{f"val/{metric}": value for metric, value in val_metrics_dict.items()}}, self.global_step)
             if epoch % self.config.TrainerConfig.test_interval == 0:
                 test_loss, test_metrics_dict = self.test()   
+                self.accelerator.print(f"Epoch {epoch}, Test Loss: {test_loss}, Test Metrics: {test_metrics_dict}")
+                self.logger.log_metrics({"test/loss": test_loss, **{f"test/{metric}": value for metric, value in test_metrics_dict.items()}}, self.global_step)
             train_loss, train_metrics_dict = self.train_epoch()
             self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
             self.logger.log_metrics({"train/loss": train_loss, **{f"train/{metric}": value for metric, value in train_metrics_dict.items()}}, self.global_step)
+            self.accelerator.print(f"Epoch{epoch}, Training Loss: {train_loss}, Training Metrics: {train_metrics_dict}")
             if epoch % self.config.TrainerConfig.save_interval == 0:
                 if self.config.TrainerConfig.save:
                     self._save(val_loss, epoch)

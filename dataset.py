@@ -4,6 +4,7 @@ from pathlib import Path
 import hashlib
 import re
 import zipfile
+import tarfile
 import shutil
 import subprocess
 from matplotlib import pyplot as plt
@@ -37,6 +38,21 @@ def _safe_extract_zip(zip_path: str | Path, destination_dir: str | Path) -> None
             if not member_path.is_relative_to(destination_root):
                 raise RuntimeError(f"Refusing to extract unsafe zip member: {member.filename}")
         zf.extractall(destination_dir)
+
+
+def _safe_extract_tar(tar_path: str | Path, destination_dir: str | Path) -> None:
+    """Extract a tar file without allowing path traversal outside destination_dir."""
+    tar_path = Path(tar_path)
+    destination_dir = Path(destination_dir)
+    destination_dir.mkdir(parents=True, exist_ok=True)
+    destination_root = destination_dir.resolve()
+
+    with tarfile.open(tar_path, "r:*") as tf:
+        for member in tf.getmembers():
+            member_path = (destination_dir / member.name).resolve()
+            if not member_path.is_relative_to(destination_root):
+                raise RuntimeError(f"Refusing to extract unsafe tar member: {member.name}")
+        tf.extractall(destination_dir)
 
 
 def _download_hf_file(
@@ -762,6 +778,307 @@ class DiTFakeDataset(Dataset):
         return images, labels, folder_names
 
 
+
+class FreqNetDetectionDataset(Dataset):
+    google_drive_folder_url = "https://drive.google.com/drive/folders/11E0Knf9J1qlv2UuTnJSOFUjIIi90czSj"
+
+    def __init__(
+        self,
+        root_dir: str | Path,
+        split: Literal["test"],
+        transform: AIGITransformations | None = None,
+        prefetch: bool = False,
+        source_url: str | None = None,
+    ):
+        super().__init__()
+        if split != "test":
+            raise ValueError("FreqNetDetectionDataset only supports the test split.")
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.prefetch = prefetch
+        self.source_url = source_url or self.google_drive_folder_url
+        self.destination_dir = self.root_dir / self.split
+        if prefetch and not _has_images(self.destination_dir):
+            print("Downloading FreqNetDetection test split from Google Drive...")
+            self._download_data()
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def download_archives(
+        cls,
+        archive_dir: str | Path,
+        url: str | None = None,
+        force: bool = False,
+    ) -> Path:
+        """Download the shared FreqNetDetection Google Drive folder into archive_dir."""
+        archive_dir = Path(archive_dir)
+        if archive_dir.exists() and any(archive_dir.iterdir()) and not force:
+            return archive_dir
+
+        if force:
+            shutil.rmtree(archive_dir, ignore_errors=True)
+        archive_dir.mkdir(parents=True, exist_ok=True)
+
+        try:
+            import gdown
+        except ImportError as exc:
+            raise ImportError(
+                "Downloading the FreqNetDetection Google Drive folder requires `gdown`. "
+                "Install it with `pip install gdown`."
+            ) from exc
+
+        gdown.download_folder(
+            url=url or cls.google_drive_folder_url,
+            output=str(archive_dir),
+            quiet=False,
+            use_cookies=False,
+        )
+        return archive_dir
+
+    @staticmethod
+    def _archive_paths(archive_dir: Path) -> list[Path]:
+        archive_suffixes = (".tar.gz", ".tgz", ".tar")
+        return sorted(
+            p
+            for p in archive_dir.rglob("*")
+            if p.is_file() and p.name.lower().endswith(archive_suffixes)
+        )
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["test"] = "test",
+        source_url: str | None = None,
+        force: bool = False,
+        keep_archives: bool = True,
+    ) -> None:
+        """Download FreqNetDetection generator archives and extract them under root_dir/test."""
+        if split != "test":
+            raise ValueError("FreqNetDetectionDataset only supports the test split.")
+
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if _has_images(destination_dir) and not force:
+            return
+        if force:
+            shutil.rmtree(destination_dir, ignore_errors=True)
+
+        archive_dir = root_dir / "_archives" / "FreqNetDetection"
+        cls.download_archives(archive_dir, url=source_url, force=force)
+        archive_paths = cls._archive_paths(archive_dir)
+        if not archive_paths:
+            raise RuntimeError(f"No .tar archives found for FreqNetDetection in {archive_dir}")
+
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        for archive_path in archive_paths:
+            _safe_extract_tar(archive_path, destination_dir)
+
+        if not _has_images(destination_dir):
+            raise RuntimeError("FreqNetDetection archives did not contain recognizable images.")
+        if not keep_archives:
+            shutil.rmtree(archive_dir, ignore_errors=True)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        source_url: str | None = None,
+        force: bool = False,
+        keep_archives: bool = True,
+    ) -> None:
+        """Download FreqNetDetection as a test-only dataset under root_dir/test."""
+        cls.prepare_split(
+            root_dir=root_dir,
+            split="test",
+            source_url=source_url,
+            force=force,
+            keep_archives=keep_archives,
+        )
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.split,
+            source_url=self.source_url,
+            force=force,
+        )
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        for filepath in _iter_images(self.destination_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(filepath.parent.parent.name)
+        return images, labels, folder_names
+
+
+class UniversialFakeDetectionDataset(Dataset):
+    source_url = "https://drive.google.com/file/d/1FXlGIRh_Ud3cScMgSVDbEWmPDmjcrm1t/view"
+
+    def __init__(
+        self,
+        root_dir: str | Path,
+        split: Literal["test"],
+        transform: AIGITransformations | None = None,
+        prefetch: bool = False,
+        source_url: str | None = None,
+    ):
+        super().__init__()
+        if split != "test":
+            raise ValueError("UniversialFakeDetectionDataset only supports the test split.")
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.prefetch = prefetch
+        self.source_url = source_url or self.source_url
+        self.destination_dir = self.root_dir / self.split
+        if prefetch and not _has_images(self.destination_dir):
+            print(f"Downloading {self.split} split from Google Drive...")
+            self._download_data()
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _flatten_extracted_tree(extract_dir: Path, destination_dir: Path) -> None:
+        source_dir = extract_dir / "diffusion_models"
+        if not source_dir.exists():
+            nested = [p for p in extract_dir.rglob("diffusion_models") if p.is_dir()]
+            source_dir = nested[0] if nested else extract_dir
+        container_names = {"diffusion_datasets", "diffusion_dataset", "datasets", "data"}
+        child_dirs = [p for p in source_dir.iterdir() if p.is_dir()]
+        if len(child_dirs) == 1 and child_dirs[0].name.lower() in container_names:
+            source_dir = child_dirs[0]
+
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        for child in source_dir.iterdir():
+            target = destination_dir / child.name
+            if target.exists():
+                if target.is_dir():
+                    shutil.rmtree(target)
+                else:
+                    target.unlink()
+            shutil.move(str(child), str(target))
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["test"] = "test",
+        source_url: str | None = None,
+        force: bool = False,
+        keep_downloads: bool = False,
+    ) -> None:
+        """Download the Universal Fake Detection zip and flatten diffusion_models under root_dir/test."""
+        if split != "test":
+            raise ValueError("UniversialFakeDetectionDataset only supports the test split.")
+
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if _has_images(destination_dir) and not force:
+            return
+        if force:
+            shutil.rmtree(destination_dir, ignore_errors=True)
+
+        import gdown
+
+        download_dir = root_dir / "_downloads" / "UniversialFakeDetection"
+        extract_dir = download_dir / "extracted"
+        zip_path = download_dir / "universial_fake_detection.zip"
+        shutil.rmtree(download_dir, ignore_errors=True)
+        download_dir.mkdir(parents=True, exist_ok=True)
+
+        download_source = source_url or cls.source_url
+        file_id_match = re.search(r"/d/([^/]+)", download_source) or re.search(r"[?&]id=([^&]+)", download_source)
+        download_kwargs = {"id": file_id_match.group(1)} if file_id_match else {"url": download_source}
+        gdown.download(
+            output=str(zip_path),
+            quiet=False,
+            **download_kwargs,
+        )
+        _safe_extract_zip(zip_path, extract_dir)
+        cls._flatten_extracted_tree(extract_dir, destination_dir)
+
+        if not _has_images(destination_dir):
+            raise RuntimeError(
+                "Universal Fake Detection download did not contain images after "
+                "flattening diffusion_models into the test split."
+            )
+        if not keep_downloads:
+            shutil.rmtree(download_dir, ignore_errors=True)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        source_url: str | None = None,
+        force: bool = False,
+        keep_downloads: bool = False,
+    ) -> None:
+        """Download Universal Fake Detection as a test-only dataset under root_dir/test."""
+        cls.prepare_split(
+            root_dir=root_dir,
+            split="test",
+            source_url=source_url,
+            force=force,
+            keep_downloads=keep_downloads,
+        )
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        for filepath in _iter_images(self.destination_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(filepath.parent.parent.name)
+        return images, labels, folder_names
+
+    def _get_label(self, filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.split,
+            source_url=self.source_url,
+            force=force,
+        )
+
 class AIGIBenchDatasetModule:
     def __init__(self, config):
         self.config = config
@@ -797,6 +1114,56 @@ class DiTFakeDatasetModule:
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
+class FreqNetDetectionDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        source_url = config.DatasetConfig.get("source_url", FreqNetDetectionDataset.google_drive_folder_url)
+        self.test_dataset = FreqNetDetectionDataset(
+            config.DatasetConfig.root_dir,
+            "test",
+            self.eval_transform,
+            prefetch=prefetch,
+            source_url=source_url,
+        )
+
+    def train_dataloader(self):
+        return None
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+
+class UniversialFakeDetectionDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        source_url = config.DatasetConfig.get("source_url", UniversialFakeDetectionDataset.source_url)
+        self.test_dataset = UniversialFakeDetectionDataset(
+            config.DatasetConfig.root_dir,
+            "test",
+            self.eval_transform,
+            prefetch=prefetch,
+            source_url=source_url,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def train_dataloader(self):
+        return None
+
+    def val_dataloader(self):
+        return None
+
+
 class AIGIDatasetModule:
     def __init__(self, config):
         self.delegate = AGIDModuleDict[config.DatasetConfig.name](config)
@@ -814,7 +1181,10 @@ AGIDModuleDict = {
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
     "ditfake": DiTFakeDatasetModule,
+    "freqnet": FreqNetDetectionDatasetModule,
+    "freqnetdetection": FreqNetDetectionDatasetModule,
     "genimage": GenImageDatasetModule,
+    "universialfakedetection": UniversialFakeDetectionDatasetModule,
 }
 
 

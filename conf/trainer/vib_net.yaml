@@ -1,0 +1,14 @@
+defaults:
+  - default
+  - _self_
+
+trainer_type: vib_net
+epochs: 10
+lr: 0.0001
+weight_decay: 0.05
+label_smoothing: 0.1
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: false
+save_policy: max
