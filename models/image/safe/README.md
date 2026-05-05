@@ -1,0 +1,169 @@
+# SAFE: Simple Preserved and Augmented Features
+
+## Short method explanation
+
+**SAFE** is a lightweight synthetic-image detector from the paper **"Improving Synthetic Image Detection Towards Generalization: An Image Transformation Perspective"** by Li et al., accepted to KDD 2025.
+
+The paper argues that generalizable synthetic image detection is limited not only by model architecture, but also by the training image transformations. The authors identify two common problems:
+
+1. **Weakened artifact features:** resizing and down-sampling can distort or suppress the low-level artifacts that distinguish synthetic images from real images.
+2. **Overfitted artifact features:** detectors can overfit to color, semantic, or generator-specific shortcuts in the training data.
+
+SAFE addresses these issues with a simple detector and a targeted transformation recipe. Instead of relying on a large pretrained representation, it uses local high-frequency artifact evidence and training augmentations that encourage the model to focus on robust image traces.
+
+Official repo: https://github.com/Ouxiang-Li/SAFE  
+Paper: https://huggingface.co/papers/2408.06741
+
+## Pipeline
+
+Given an input image:
+
+1. Convert the image to a tensor in `[0, 1]`.
+2. Apply a discrete wavelet transform.
+3. Keep the high-high frequency sub-band from the first DWT level.
+4. Resize the high-frequency map back to the input resolution.
+5. Feed the transformed image into a lightweight ResNet-50-style binary classifier.
+6. Output real/fake logits.
+
+The model is trained as a binary classifier with real images as class `0` and generated images as class `1`.
+
+## Training dataset
+
+SAFE follows the CNNDetection training setup and trains on the **CNNDetection / ForenSynths** real-vs-fake dataset.
+
+The official repository lists:
+
+| Split | Source |
+|---|---|
+| Train | CNNDetection CVPR 2020 |
+| Val | CNNDetection CVPR 2020 |
+| Test Set 1 | CNNDetection CVPR 2020 |
+| Test Set 2 | FreqNet |
+| Test Set 3 | UniversalFakeDetect |
+| Test Set 4 | GenImage |
+| Test Set 5 | DiTFake |
+| Test Set 6 | GPT-ImgEval |
+| Test Set 7 | T2I-CoReBench |
+
+In this repo, the SAFE pre-test launcher selects the CNNDetection config explicitly:
+
+```bash
+dataset@DatasetConfig=cnndetection
+```
+
+## Augmentation details
+
+SAFE's main contribution is its image transformation recipe. The official training transform uses crop-based preprocessing, horizontal flip, 180-degree random rotation, color jitter, tensor conversion, and patch-based random masking.
+
+| Component | Official SAFE setting | AGID SAFE setting |
+|---|---|---|
+| Input size | `256` | `256` |
+| Train crop | Random crop with `pad_if_needed=True` | `random_crop_256_pad` |
+| Eval crop | Center crop | `center_crop_256` |
+| Horizontal flip | `p = 0.5` | `random_horizontal_flip` |
+| Rotation | `RandomRotation(180)` | `random_rotation_180` |
+| Color jitter | brightness, contrast, saturation `0.5` | `color_jitter_safe` |
+| Tensor conversion | `ToTensor()` | `to_dtype` |
+| Random mask | ratio `(0.00, 0.75)`, patch size `16`, `p = 0.5` | `random_mask_safe` |
+| Normalization | None | None |
+
+The current SAFE experiment launcher uses:
+
+```bash
+DatasetConfig.train_transform_list=[random_crop_256_pad,random_horizontal_flip,random_rotation_180,color_jitter_safe,to_dtype,random_mask_safe]
+DatasetConfig.eval_transform_list=[center_crop_256,to_dtype]
+```
+
+This matches the official transform order closely. `to_dtype` plays the same role as `ToTensor()` in the official code: it converts the loaded image tensor to `float32` and scales values to `[0, 1]`.
+
+## Model details
+
+The official SAFE model is a ResNet-50-style detector with a DWT preprocessing step. The active forward path applies:
+
+1. `DWTForward(J=1, mode="symmetric", wave="bior1.3")`
+2. The HH sub-band: `Yh[0][:, :, 2, :, :]`
+3. A small ResNet trunk using `conv1`, `layer1`, and `layer2`
+4. Global average pooling
+5. A binary linear classifier
+
+The AGID implementation follows the same active path:
+
+```python
+self.dwt_filter = DWTForward(J=1, mode="symmetric", wave="bior1.3")
+_, high_bands = self.dwt_filter(x)
+high_high = high_bands[0][:, :, 2, :, :]
+```
+
+It then feeds the high-frequency image through the same ResNet-50-style stem, `layer1`, `layer2`, average pooling, and binary head.
+
+## Training setup
+
+The official SAFE training defaults include:
+
+| Setting | Official SAFE | AGID SAFE pre-test |
+|---|---:|---:|
+| Model | SAFE / ResNet50-style | `ModelConfig.model_type=safe` |
+| Per-GPU batch size | `64` | `64` |
+| Epochs | `100` | `100` |
+| Base learning rate | `5e-4` | `0.0005` |
+| Optimizer | AdamW | AdamW |
+| Weight decay | `0.05` | `0.05` |
+| Label smoothing | `0.1` | `0.1` |
+| Warmup | `20` epochs | `warmup_ratio=0.2` |
+| Scheduler | Cosine-style decay | `cosine` scheduler |
+
+The AGID launcher is:
+
+```bash
+experiments/safe_pretest.sh
+```
+
+It runs through Accelerate and the `AGID` conda environment.
+
+## Similarity to the official SAFE implementation
+
+The AGID implementation is intentionally close to the official SAFE implementation in the parts that define the method:
+
+| Area | Similarity |
+|---|---|
+| DWT preprocessing | Same `pytorch_wavelets.DWTForward`, same level, mode, wavelet, and HH sub-band |
+| Architecture | Same lightweight ResNet-50-style active path using stem, `layer1`, `layer2`, average pooling, and binary classifier |
+| Input scale | Same 256-pixel input size |
+| Train augmentations | Same crop, flip, rotation, color jitter, tensor conversion, and random mask recipe |
+| Dataset choice | Same CNNDetection / ForenSynths training source |
+| Training hyperparameters | Same main defaults: batch size, epochs, learning rate, weight decay, label smoothing, warmup length |
+
+The remaining differences are minor integration differences caused by adapting SAFE to this repo's trainer and config system:
+
+| Difference | Why it exists |
+|---|---|
+| Classifier name is `head` instead of `fc1` | Matches the naming convention used by other AGID image models |
+| DWT module is created once in `__init__` | Avoids recreating `DWTForward` every forward pass; the DWT settings are the same |
+| DWT resize uses `F.interpolate` | Keeps resizing inside PyTorch tensor operations; it is equivalent in purpose to resizing the HH band back to input size |
+| Training loop uses AGID + Accelerate | Keeps distributed training, metrics, and logging consistent with the rest of this project |
+| Scheduler uses Hugging Face `get_scheduler` | Matches AGID's scheduler integration; it approximates SAFE's warmup plus cosine schedule |
+| Metrics use AGID metrics | Current repo reports real/fake accuracy through `AIGIMetrics`; official SAFE also reports average precision in evaluation |
+
+These differences should not change the conceptual method: the detector still trains on CNNDetection with SAFE's DWT high-frequency input and SAFE's transformation recipe.
+
+## Core novelties
+
+### 1. Crop instead of resize-heavy preprocessing
+
+SAFE avoids relying on down-sampling as the main preprocessing step. The paper argues that down-sampling can weaken subtle artifact features, while crop-based preprocessing better preserves local traces.
+
+### 2. DWT high-frequency artifact features
+
+SAFE uses a wavelet transform and keeps the high-high frequency component. This emphasizes local high-frequency evidence where synthetic-image artifacts can appear.
+
+### 3. Color and rotation augmentation
+
+Color jitter and random rotation reduce shortcut learning from color discrepancies or semantic biases in the training set.
+
+### 4. Patch-based random masking
+
+Random masking forces the detector to use local regions instead of depending too strongly on one global cue. This is meant to improve local awareness and cross-generator generalization.
+
+## Summary
+
+SAFE is a compact synthetic-image detector built around high-frequency DWT features and a SID-specific augmentation recipe. In AGID, `AGIDSAFEModel` follows the official SAFE active model path and `experiments/safe_pretest.sh` uses the official-style CNNDetection training setup. The implementation is not a byte-for-byte copy of the official repo, but it is method-aligned: same core DWT feature, same lightweight classifier path, same 256-pixel transformation recipe, and same main training hyperparameters.

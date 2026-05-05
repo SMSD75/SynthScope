@@ -16,8 +16,15 @@ from tqdm import tqdm
 class AGIDModelTrainer:
     def __init__(self, config: DictConfig, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
-        self.optimizer = torch.optim.AdamW(self._filter_trainable_parameters(), lr=config.TrainerConfig.lr, betas=(0.9, 0.999))
-        self.criterion = torch.nn.CrossEntropyLoss()
+        self.optimizer = torch.optim.AdamW(
+            self._filter_trainable_parameters(),
+            lr=config.TrainerConfig.lr,
+            betas=(0.9, 0.999),
+            weight_decay=config.TrainerConfig.get("weight_decay", 0.01),
+        )
+        self.criterion = torch.nn.CrossEntropyLoss(
+            label_smoothing=config.TrainerConfig.get("label_smoothing", 0.0)
+        )
         self.train_loader = dataset_module.train_dataloader()
         self.val_loader = dataset_module.val_dataloader()
         self.test_loader = dataset_module.test_dataloader()

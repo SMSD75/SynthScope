@@ -3,6 +3,35 @@ from PIL import Image
 from matplotlib import pyplot as plt
 import torchvision.transforms.v2 as v2
 import torch
+import random
+
+
+class RandomMask:
+    def __init__(self, ratio=(0.0, 0.75), patch_size=16, p=0.5):
+        self.ratio = ratio
+        self.patch_size = patch_size
+        self.p = p
+
+    def __call__(self, tensor):
+        if random.random() > self.p:
+            return tensor
+
+        _, height, width = tensor.shape
+        ratio = random.uniform(*self.ratio)
+        num_masks = int((height * width * ratio) / (self.patch_size ** 2))
+        mask = torch.ones((height, width), dtype=tensor.dtype, device=tensor.device)
+        max_top = max((height // self.patch_size) - 1, 0)
+        max_left = max((width // self.patch_size) - 1, 0)
+
+        positions = set()
+        while len(positions) < num_masks:
+            top = random.randint(0, max_top) * self.patch_size
+            left = random.randint(0, max_left) * self.patch_size
+            positions.add((top, left))
+
+        for top, left in positions:
+            mask[top:top + self.patch_size, left:left + self.patch_size] = 0
+        return tensor * mask.expand_as(tensor)
 
 class AIGITransformations:
     def __init__(self, transform_list: list[Callable]):
@@ -36,6 +65,14 @@ class AIGITransformations:
             return v2.RandomCrop(size=(224, 224))
         elif transform_name == "random_crop_256":
             return v2.RandomCrop(size=(256, 256))
+        elif transform_name == "random_crop_256_pad":
+            return v2.RandomCrop(size=(256, 256), pad_if_needed=True)
+        elif transform_name == "random_rotation_180":
+            return v2.RandomRotation(180)
+        elif transform_name == "color_jitter_safe":
+            return v2.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5)
+        elif transform_name == "random_mask_safe":
+            return RandomMask(ratio=(0.0, 0.75), patch_size=16, p=0.5)
         elif transform_name == "normalize_dinov2":
             return v2.Normalize(
                 mean=[0.485, 0.456, 0.406],
