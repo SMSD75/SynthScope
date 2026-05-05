@@ -4,7 +4,8 @@ defaults:
 
 model_type: vib_net
 backbone_name: CLIP:ViT-L/14
-vib_head_dim: 64
-vib_output_dim: 64
-final_classifier_dim: 64
+vib_hidden_dim: 1024
+vib_latent_dim: 256
+dropout: 0.5
+std_shift: 5.0
 freeze_backbone: true
