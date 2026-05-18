@@ -1,7 +1,7 @@
 import torch.nn as nn
 from omegaconf import DictConfig
 import clip
-
+import torch
 
 class AGIDCLIPModel(nn.Module):
     def __init__(self, config: DictConfig):
@@ -15,6 +15,9 @@ class AGIDCLIPModel(nn.Module):
             self._freeze_backbone()
         self.config = config
         self.head = nn.Linear(self.backbone.visual.output_dim, 2)
+        self.criterion = torch.nn.CrossEntropyLoss(
+            label_smoothing=config.TrainerConfig.get("label_smoothing", 0.0)
+        )
 
     def _freeze_backbone(self):
         for param in self.backbone.parameters():
@@ -23,3 +26,9 @@ class AGIDCLIPModel(nn.Module):
     def forward(self, images):
         image_features = self.backbone.encode_image(images)
         return self.head(image_features.float())
+    
+    def compute_loss(self, batch):
+        images, labels, folder_ids = batch
+        outputs = self.forward(images)
+        loss = self.criterion(outputs, labels)
+        return {"loss": loss, "outputs": outputs}

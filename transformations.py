@@ -43,10 +43,14 @@ class AIGITransformations:
             return v2.Resize((224, 224))
         elif transform_name == "resize_short_256":
             return v2.Resize(256)
+        elif transform_name == "resize_short_384":
+            return v2.Resize(384)
         elif transform_name == "center_crop_224":
             return v2.CenterCrop(224)
         elif transform_name == "center_crop_256":
             return v2.CenterCrop(256)
+        elif transform_name == "center_crop_384":
+            return v2.CenterCrop(384)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":
@@ -67,6 +71,10 @@ class AIGITransformations:
             return v2.RandomCrop(size=(256, 256))
         elif transform_name == "random_crop_256_pad":
             return v2.RandomCrop(size=(256, 256), pad_if_needed=True)
+        elif transform_name == "random_crop_384":
+            return v2.RandomCrop(size=(384, 384))
+        elif transform_name == "random_crop_384_pad":
+            return v2.RandomCrop(size=(384, 384), pad_if_needed=True)
         elif transform_name == "random_rotation_180":
             return v2.RandomRotation(180)
         elif transform_name == "color_jitter_safe":

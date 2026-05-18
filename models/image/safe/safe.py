@@ -65,6 +65,9 @@ class AGIDSAFEModel(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.head = nn.Linear(128 * Bottleneck.expansion, 2)
         self.dwt_filter = DWTForward(J=1, mode="symmetric", wave="bior1.3")
+        self.criterion = torch.nn.CrossEntropyLoss(
+            label_smoothing=config.TrainerConfig.get("label_smoothing", 0.0)
+        )
 
         self._init_weights()
         if config.ModelConfig.get("freeze_backbone", False):
@@ -125,3 +128,9 @@ class AGIDSAFEModel(nn.Module):
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
         return self.head(x)
+    
+    def compute_loss(self, batch):
+        images, labels, folder_ids = batch
+        outputs = self.forward(images)
+        loss = self.criterion(outputs, labels)
+        return {"loss": loss, "outputs": outputs}

@@ -1,0 +1,13 @@
+defaults:
+  - default
+  - _self_
+
+model_type: fat_former
+backbone_name: CLIP:ViT-L/14
+num_vit_adapter: 8
+num_context_embedding: 8
+init_context_embedding: ""
+num_classes: 2
+classnames: [real, fake]
+freeze_backbone: true
+force_fp32: true

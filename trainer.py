@@ -4,6 +4,8 @@ from models.image.cnn_detection.cnn_detection import AGIDCNNModel
 from models.image.dino_detection.dino_detection import AGIDDINOModel, AGIDDINOv3Model
 from models.image.adapted_dino.adapted_dino import AGIDAdaptedDINOModel
 from models.image.safe.safe import AGIDSAFEModel
+from models.image.fat_former.fat_former import AGIDFatFormerModel
+from models.image.co_spy.co_spy import AGIDCoSpyModel
 from models.image.aide.aide import AGIDAIDEModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
@@ -60,6 +62,10 @@ class AGIDModelTrainer:
         model_type = config.ModelConfig.get("model_type", "dino").lower()
         if model_type == "safe":
             return AGIDSAFEModel(config)
+        if model_type == "fat_former":
+            return AGIDFatFormerModel(config)
+        if model_type == "co_spy":
+            return AGIDCoSpyModel(config)
         if model_type == "aide":
             return AGIDAIDEModel(config)
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
@@ -79,27 +85,33 @@ class AGIDModelTrainer:
         return [p for p in self.model.parameters() if p.requires_grad]
 
     def train_step(self, batch):
-        images, labels, folder_ids = batch
-        outputs = self.model(images)      
-        loss = self.criterion(outputs, labels)
-        if self.use_metrics:
+        loss_dict = self.model.compute_loss(batch)
+        loss = loss_dict["loss"]
+        outputs = loss_dict["outputs"]
+        labels = batch[1]
+        folder_ids = batch[2]
+        if self.use_metrics:    
             outputs_g, labels_g, folder_ids_g = self.accelerator.gather_for_metrics((outputs.detach(), labels.detach(), folder_ids.detach()))
             self.train_metrics(outputs_g, labels_g, folder_ids_g)  
         return loss
 
     def val_step(self, batch):
-        images, labels, folder_ids = batch
-        outputs = self.model(images)
-        loss = self.criterion(outputs, labels)
+        loss_dict = self.model.compute_loss(batch)
+        loss = loss_dict["loss"]
+        outputs = loss_dict["outputs"]
+        labels = batch[1]
+        folder_ids = batch[2]
         if self.use_metrics:
             outputs_g, labels_g, folder_ids_g = self.accelerator.gather_for_metrics((outputs.detach(), labels.detach(), folder_ids.detach()))
             self.val_metrics(outputs_g, labels_g, folder_ids_g)
         return loss
     
     def test_step(self, batch):
-        images, labels, folder_ids = batch
-        outputs = self.model(images)
-        loss = self.criterion(outputs, labels)
+        loss_dict = self.model.compute_loss(batch)
+        loss = loss_dict["loss"]
+        outputs = loss_dict["outputs"]
+        labels = batch[1]
+        folder_ids = batch[2]
         if self.use_metrics:
             outputs_g, labels_g, folder_ids_g = self.accelerator.gather_for_metrics((outputs.detach(), labels.detach(), folder_ids.detach()))
             self.test_metrics(outputs_g, labels_g, folder_ids_g)

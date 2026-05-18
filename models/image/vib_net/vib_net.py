@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from omegaconf import DictConfig
-
+import torch.nn.functional as f
 
 class AGIDVIBNetModel(nn.Module):
     def __init__(self, config: DictConfig):
@@ -31,6 +31,14 @@ class AGIDVIBNetModel(nn.Module):
         self.fc_2 = nn.Linear(hidden_dim, hidden_dim)
         self.fc_3 = nn.Linear(hidden_dim, 2 * self.latent_dim)
         self.decode = nn.Linear(self.latent_dim, 1)
+        self.loss_1 = nn.BCEWithLogitsLoss(reduction="mean")
+        self.loss_2 = self._kl_to_standard_normal
+
+    def _kl_to_standard_normal(self, mu, std, eps=1e-8):
+        """KL( N(mu, std^2 I) || N(0, I) ), mean over batch, sum over latent dims."""
+        var = std.pow(2)
+        kl = 0.5 * (mu.pow(2) + var - torch.log(var + eps) - 1.0)
+        return kl.sum(dim=1).mean()
 
     def _freeze_backbone(self):
         for param in self.backbone.parameters():
@@ -55,14 +63,27 @@ class AGIDVIBNetModel(nn.Module):
             image_features = image_features.view(image_features.size(0), -1)
         image_features = self.dropout(image_features.float())
 
-        statistics = self.fc_1(image_features)
-        statistics = self.relu(statistics)
-        statistics = self.fc_2(statistics)
-        statistics = self.relu(statistics)
-        statistics = self.fc_3(statistics)
+        fc1_out = self.fc_1(image_features)
+        relu1_out = self.relu(fc1_out)
+        fc2_out = self.fc_2(relu1_out)
+        relu2_out = self.relu(fc2_out)
+        fc3_out = self.fc_3(relu2_out)
 
-        mu = statistics[:, :self.latent_dim]
-        std = F.softplus(statistics[:, self.latent_dim:] - self.std_shift, beta=1)
+        mu = fc3_out[:, :self.latent_dim]
+        std = F.softplus(fc3_out[:, self.latent_dim:] - self.std_shift, beta=1)
+
         encoding = self._reparameterize(mu, std, num_samples=1)
         logit = self.decode(encoding)
-        return (mu, std), logit
+        return (mu, std), logit.squeeze(-1)
+        
+    def compute_loss(self, batch):
+        images, labels, folder_ids = batch
+        (mu, std), logit = self.forward(images)
+        loss_1 = self.loss_1(logit, labels.float())
+        loss_2 = self.loss_2(mu, std)
+        beta = self.config.ModelConfig.get("vib_beta", 1e-3)
+        loss = loss_1 + beta * loss_2
+        pos = logit                            
+        neg = -logit                            
+        outputs = torch.stack([neg, pos], dim=1)
+        return {"loss": loss, "outputs": outputs}

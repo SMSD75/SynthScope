@@ -2,6 +2,7 @@ from torch.utils.data import Dataset
 from typing import Literal
 from pathlib import Path
 import hashlib
+import os
 import re
 import zipfile
 import tarfile
@@ -74,6 +75,411 @@ def _download_hf_file(
             local_dir=download_dir,
         )
     )
+
+
+class CoSpyDataset(Dataset):
+    """CO-SPY-Bench test-only dataset (Cheng et al., CVPR 2025).
+
+    The benchmark lives in two HuggingFace dataset repos:
+
+    * Synthetic images: ``ruojiruoli/Co-Spy-Bench`` as
+      ``{source_dataset}/{model}/images_with_metadata.tar.gz`` archives,
+      with five real-image source datasets and 22 generator models.
+    * Real images: ``ruojiruoli/Co-Spy-Misc`` as a single
+      ``real_image_examples.zip`` archive (one subfolder per source).
+
+    After download, ``prepare_split`` restructures the data into the exact
+    layout used by ``CNNDetectionDataset`` (``cnn_synth_testset``)::
+
+        <root>/test/
+        ├── <source>__<model>/
+        │   ├── 0_real/*.png   (hardlinks into a single shared real pool)
+        │   └── 1_fake/*.png   (moved from the extracted tarball)
+        ├── ...
+        └── (5 * 22 = 110 class folders)
+
+    The class name uses ``<source>__<model>`` (separator ``__``), which gives
+    up to 110 unique ``folder_name``s matching the granularity of Table 2 in
+    the paper. Real images are physically stored once per source under
+    ``<root>/test/_real_pool/<source>/`` and exposed inside each per-model
+    ``0_real/`` directory via ``os.link`` (zero extra disk usage); a
+    ``shutil.copy2`` fallback is used on filesystems that do not support
+    hardlinks. With this layout, label and folder extraction reuse the
+    same convention as ``CNNDetectionDataset``: the leaf folder name
+    (``0_real``/``1_fake``) drives the label and the grandparent folder
+    (``<source>__<model>``) drives ``folder_name``.
+
+    Note: ``ruojiruoli/Co-Spy-Misc/real_image_examples.zip`` is a *partial*
+    release that ships reals for ``CC3M``/``SBU``/``TextCaps`` only (with
+    that exact casing). Reals for ``mscoco`` and ``flickr`` must be obtained
+    from their original sources and placed under
+    ``<root>/test/_real_pool/<source>/``; class folders without reals will
+    contain only ``1_fake/``.
+    """
+
+    repo_id = "ruojiruoli/Co-Spy-Bench"
+    real_repo_id = "ruojiruoli/Co-Spy-Misc"
+    real_filename = "real_image_examples.zip"
+
+    default_source_datasets: tuple[str, ...] = (
+        "mscoco",
+        "flickr",
+        "cc3m",
+        "textcaps",
+        "sbu",
+    )
+    default_generator_models: tuple[str, ...] = (
+        "CompVis@ldm-text2im-large-256",
+        "CompVis@stable-diffusion-v1-4",
+        "runwayml@stable-diffusion-v1-5",
+        "segmind@SSD-1B",
+        "segmind@tiny-sd",
+        "segmind@SegMoE-SD-4x2-v0",
+        "segmind@small-sd",
+        "stabilityai@stable-diffusion-2-1",
+        "stabilityai@stable-diffusion-3-medium-diffusers",
+        "stabilityai@sdxl-turbo",
+        "stabilityai@stable-diffusion-2",
+        "stabilityai@stable-diffusion-xl-base-1.0",
+        "playgroundai@playground-v2.5-1024px-aesthetic",
+        "playgroundai@playground-v2-1024px-aesthetic",
+        "playgroundai@playground-v2-512px-base",
+        "playgroundai@playground-v2-256px-base",
+        "PixArt-alpha@PixArt-XL-2-1024-MS",
+        "PixArt-alpha@PixArt-XL-2-512x512",
+        "latent-consistency@lcm-lora-sdxl",
+        "latent-consistency@lcm-lora-sdv1-5",
+        "black-forest-labs@FLUX.1-schnell",
+        "black-forest-labs@FLUX.1-dev",
+    )
+
+    CLASS_SEPARATOR = "__"
+    REAL_LABEL_DIR = "0_real"
+    FAKE_LABEL_DIR = "1_fake"
+    REAL_POOL_DIR = "_real_pool"
+
+    def __init__(
+        self,
+        root_dir: str | Path,
+        split: Literal["test"] = "test",
+        transform: AIGITransformations | None = None,
+        prefetch: bool = False,
+        source_datasets: tuple[str, ...] | list[str] | None = None,
+        generator_models: tuple[str, ...] | list[str] | None = None,
+        include_real: bool = True,
+        repo_id: str | None = None,
+        real_repo_id: str | None = None,
+        real_filename: str | None = None,
+    ):
+        super().__init__()
+        if split != "test":
+            raise ValueError("CoSpyDataset only supports the 'test' split.")
+
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.repo_id = repo_id or self.repo_id
+        self.real_repo_id = real_repo_id or self.real_repo_id
+        self.real_filename = real_filename or self.real_filename
+        self.source_datasets = tuple(source_datasets) if source_datasets else self.default_source_datasets
+        self.generator_models = tuple(generator_models) if generator_models else self.default_generator_models
+        self.include_real = include_real
+        self.destination_dir = self.root_dir / self.split
+
+        if prefetch and not _has_images(self.destination_dir):
+            print("Downloading CO-SPY-Bench test split from Hugging Face...")
+            self._download_data()
+
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["test"] = "test",
+        source_datasets: tuple[str, ...] | list[str] | None = None,
+        generator_models: tuple[str, ...] | list[str] | None = None,
+        include_real: bool = True,
+        repo_id: str = "ruojiruoli/Co-Spy-Bench",
+        real_repo_id: str = "ruojiruoli/Co-Spy-Misc",
+        real_filename: str = "real_image_examples.zip",
+        force: bool = False,
+        keep_downloads: bool = False,
+    ) -> None:
+        """Download CO-SPY-Bench and lay it out in CNNDetection-style ``test/`` tree."""
+        if split != "test":
+            raise ValueError("CoSpyDataset only supports the 'test' split.")
+
+        from huggingface_hub import hf_hub_download, snapshot_download
+
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_images(destination_dir):
+            return
+        if force:
+            shutil.rmtree(destination_dir, ignore_errors=True)
+        destination_dir.mkdir(parents=True, exist_ok=True)
+
+        sources = tuple(source_datasets) if source_datasets else cls.default_source_datasets
+        models = tuple(generator_models) if generator_models else cls.default_generator_models
+
+        bench_download_dir = root_dir / "_downloads" / "Co-Spy-Bench"
+        patterns = [
+            f"{ds}/{model}/images_with_metadata.tar.gz"
+            for ds in sources
+            for model in models
+        ]
+        snapshot_download(
+            repo_id=repo_id,
+            repo_type="dataset",
+            local_dir=bench_download_dir,
+            allow_patterns=patterns,
+        )
+
+        for tar_path in sorted(bench_download_dir.rglob("images_with_metadata.tar.gz")):
+            rel = tar_path.relative_to(bench_download_dir)
+            if len(rel.parts) < 2:
+                continue
+            source_name = rel.parts[0]
+            extract_target = bench_download_dir / source_name
+            _safe_extract_tar(tar_path, extract_target)
+
+        real_extracted_root: Path | None = None
+        if include_real:
+            real_download_dir = root_dir / "_downloads" / "Co-Spy-Misc"
+            real_download_dir.mkdir(parents=True, exist_ok=True)
+            real_path = hf_hub_download(
+                repo_id=real_repo_id,
+                filename=real_filename,
+                repo_type="dataset",
+                local_dir=real_download_dir,
+            )
+            real_extract_dir = real_download_dir / "extracted"
+            _safe_extract_zip(real_path, real_extract_dir)
+            real_extracted_root = cls._find_real_root(real_extract_dir, sources)
+
+        cls._restructure_to_cnndet_layout(
+            synthetic_root=bench_download_dir,
+            real_root=real_extracted_root,
+            destination_dir=destination_dir,
+            sources=sources,
+            models=models,
+        )
+
+        if not _has_images(destination_dir):
+            raise RuntimeError(
+                "CO-SPY-Bench download did not produce any recognizable images. "
+                f"Check that the HuggingFace repo {repo_id!r} is reachable and "
+                "that at least one (source_dataset, model) pair has been requested."
+            )
+
+        if not keep_downloads:
+            shutil.rmtree(root_dir / "_downloads", ignore_errors=True)
+
+    @classmethod
+    def prepare_dataset(
+        cls,
+        root_dir: str | Path,
+        source_datasets: tuple[str, ...] | list[str] | None = None,
+        generator_models: tuple[str, ...] | list[str] | None = None,
+        include_real: bool = True,
+        repo_id: str = "ruojiruoli/Co-Spy-Bench",
+        real_repo_id: str = "ruojiruoli/Co-Spy-Misc",
+        real_filename: str = "real_image_examples.zip",
+        force: bool = False,
+        keep_downloads: bool = False,
+    ) -> None:
+        """Download CO-SPY-Bench as a test-only dataset under ``root_dir/test``."""
+        cls.prepare_split(
+            root_dir=root_dir,
+            split="test",
+            source_datasets=source_datasets,
+            generator_models=generator_models,
+            include_real=include_real,
+            repo_id=repo_id,
+            real_repo_id=real_repo_id,
+            real_filename=real_filename,
+            force=force,
+            keep_downloads=keep_downloads,
+        )
+
+    @staticmethod
+    def _case_insensitive_subdir(parent: Path, name: str) -> Path | None:
+        """Return ``parent/<entry>`` whose lowercase name equals ``name.lower()``."""
+        if not parent.is_dir():
+            return None
+        target = name.lower()
+        for entry in parent.iterdir():
+            if entry.is_dir() and entry.name.lower() == target:
+                return entry
+        return None
+
+    @classmethod
+    def _find_real_root(cls, real_extract_dir: Path, sources: tuple[str, ...]) -> Path | None:
+        """Locate the directory that holds per-source real-image subfolders.
+
+        The upstream ``real_image_examples.zip`` only ships reals for a subset
+        of the five Co-Spy sources (currently ``CC3M``/``SBU``/``TextCaps``)
+        and uses an inconsistent casing for the per-source folder names, so
+        the search is case-insensitive and accepts a partial source set.
+        """
+        candidates: list[Path] = [
+            real_extract_dir / "real_image_examples",
+            real_extract_dir,
+        ]
+        candidates.extend(p for p in real_extract_dir.rglob("real_image_examples") if p.is_dir())
+        for candidate in candidates:
+            if not candidate.is_dir():
+                continue
+            if any(cls._case_insensitive_subdir(candidate, src) is not None for src in sources):
+                return candidate
+        for candidate in real_extract_dir.rglob("*"):
+            if not candidate.is_dir():
+                continue
+            if any(cls._case_insensitive_subdir(candidate, src) is not None for src in sources):
+                return candidate
+        return None
+
+    @classmethod
+    def _restructure_to_cnndet_layout(
+        cls,
+        synthetic_root: Path,
+        real_root: Path | None,
+        destination_dir: Path,
+        sources: tuple[str, ...],
+        models: tuple[str, ...],
+    ) -> None:
+        """Move synthetic + hardlink real images into ``<source>__<model>/{0_real,1_fake}``."""
+        destination_dir.mkdir(parents=True, exist_ok=True)
+
+        real_pool_dir = destination_dir / cls.REAL_POOL_DIR
+        if real_root is not None:
+            for source in sources:
+                source_real_dir = cls._case_insensitive_subdir(real_root, source)
+                if source_real_dir is None:
+                    continue
+                pool_target = real_pool_dir / source
+                pool_target.mkdir(parents=True, exist_ok=True)
+                for img in _iter_images(source_real_dir):
+                    target = cls._dedup_name(pool_target / img.name, img)
+                    if target.exists():
+                        continue
+                    shutil.move(str(img), str(target))
+
+        report: list[tuple[str, str, int, int]] = []
+        for source in sources:
+            for model in models:
+                model_synthetic_dir = synthetic_root / source / model
+                model_images = (
+                    list(_iter_images(model_synthetic_dir))
+                    if model_synthetic_dir.is_dir()
+                    else []
+                )
+                source_real_pool = real_pool_dir / source
+                pool_images = (
+                    list(_iter_images(source_real_pool))
+                    if source_real_pool.is_dir()
+                    else []
+                )
+                if not model_images and not pool_images:
+                    continue
+
+                class_dir = destination_dir / f"{source}{cls.CLASS_SEPARATOR}{model}"
+                if model_images:
+                    fake_dir = class_dir / cls.FAKE_LABEL_DIR
+                    fake_dir.mkdir(parents=True, exist_ok=True)
+                    for img in model_images:
+                        target = cls._dedup_name(fake_dir / img.name, img)
+                        if target.exists():
+                            continue
+                        shutil.move(str(img), str(target))
+                if pool_images:
+                    real_dir = class_dir / cls.REAL_LABEL_DIR
+                    real_dir.mkdir(parents=True, exist_ok=True)
+                    for img in pool_images:
+                        target = cls._dedup_name(real_dir / img.name, img)
+                        if target.exists():
+                            continue
+                        cls._hardlink_or_copy(img, target)
+
+                report.append((source, model, len(model_images), len(pool_images)))
+
+        if report:
+            sources_missing_reals = sorted({src for src, _, _, n_real in report if n_real == 0})
+            sources_with_reals = sorted({src for src, _, _, n_real in report if n_real > 0})
+            print(f"[CoSpyDataset] reals available for sources : {sources_with_reals}")
+            if sources_missing_reals:
+                print(
+                    f"[CoSpyDataset] reals MISSING for sources    : {sources_missing_reals}  "
+                    f"(class folders will have only '{cls.FAKE_LABEL_DIR}/'; provide reals "
+                    f"under '{real_pool_dir}/<source>/' to include them)"
+                )
+
+    @staticmethod
+    def _hardlink_or_copy(src: Path, dst: Path) -> None:
+        """Create ``dst`` as a hardlink to ``src``; fall back to a copy on failure."""
+        try:
+            os.link(src, dst)
+        except OSError:
+            shutil.copy2(src, dst)
+
+    @staticmethod
+    def _dedup_name(target: Path, source: Path) -> Path:
+        """Append a short SHA-1 prefix to ``target`` when its name already exists."""
+        if not target.exists():
+            return target
+        digest = hashlib.sha1(str(source).encode("utf-8")).hexdigest()[:10]
+        return target.with_name(f"{target.stem}_{digest}{target.suffix}")
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.split,
+            source_datasets=self.source_datasets,
+            generator_models=self.generator_models,
+            include_real=self.include_real,
+            repo_id=self.repo_id,
+            real_repo_id=self.real_repo_id,
+            real_filename=self.real_filename,
+            force=force,
+        )
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from filename: {filepath}")
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        split_dir = self.destination_dir
+        pool_marker = self.REAL_POOL_DIR
+        for filepath in _iter_images(split_dir):
+            if pool_marker in filepath.parts:
+                continue
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(
+                filepath.parent.parent.name
+                if filepath.parent.parent != split_dir.parent
+                else self.split
+            )
+        return images, labels, folder_names
+
 
 class GenImageDataset(Dataset):
     google_drive_folder_url = "https://drive.google.com/drive/folders/1jGt10bwTbhEZuGXLyvrCuxOI0cBqQ1FS"
@@ -1164,6 +1570,41 @@ class UniversialFakeDetectionDatasetModule:
         return None
 
 
+class CoSpyDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        eval_list = list(config.DatasetConfig.eval_transform_list)
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = getattr(config.DatasetConfig, "prefetch", False)
+        source_datasets = config.DatasetConfig.get("source_datasets", None)
+        generator_models = config.DatasetConfig.get("generator_models", None)
+        include_real = bool(config.DatasetConfig.get("include_real", True))
+        repo_id = config.DatasetConfig.get("repo_id", CoSpyDataset.repo_id)
+        real_repo_id = config.DatasetConfig.get("real_repo_id", CoSpyDataset.real_repo_id)
+        real_filename = config.DatasetConfig.get("real_filename", CoSpyDataset.real_filename)
+        self.test_dataset = CoSpyDataset(
+            config.DatasetConfig.root_dir,
+            "test",
+            self.eval_transform,
+            prefetch=prefetch,
+            source_datasets=list(source_datasets) if source_datasets else None,
+            generator_models=list(generator_models) if generator_models else None,
+            include_real=include_real,
+            repo_id=repo_id,
+            real_repo_id=real_repo_id,
+            real_filename=real_filename,
+        )
+
+    def train_dataloader(self):
+        return None
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+
 class AIGIDatasetModule:
     def __init__(self, config):
         self.delegate = AGIDModuleDict[config.DatasetConfig.name](config)
@@ -1180,6 +1621,7 @@ class AIGIDatasetModule:
 AGIDModuleDict = {
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
+    "cospy": CoSpyDatasetModule,
     "ditfake": DiTFakeDatasetModule,
     "freqnet": FreqNetDetectionDatasetModule,
     "freqnetdetection": FreqNetDetectionDatasetModule,

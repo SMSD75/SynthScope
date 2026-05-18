@@ -1,0 +1,51 @@
+name: cospy
+root_dir: /hddstore/ssalehi/AGID/CoSpyBench
+
+repo_id: ruojiruoli/Co-Spy-Bench
+real_repo_id: ruojiruoli/Co-Spy-Misc
+real_filename: real_image_examples.zip
+include_real: true
+
+source_datasets:
+  - mscoco
+  - flickr
+  - cc3m
+  - textcaps
+  - sbu
+
+generator_models:
+  - CompVis@ldm-text2im-large-256
+  - CompVis@stable-diffusion-v1-4
+  - runwayml@stable-diffusion-v1-5
+  - segmind@SSD-1B
+  - segmind@tiny-sd
+  - segmind@SegMoE-SD-4x2-v0
+  - segmind@small-sd
+  - stabilityai@stable-diffusion-2-1
+  - stabilityai@stable-diffusion-3-medium-diffusers
+  - stabilityai@sdxl-turbo
+  - stabilityai@stable-diffusion-2
+  - stabilityai@stable-diffusion-xl-base-1.0
+  - playgroundai@playground-v2.5-1024px-aesthetic
+  - playgroundai@playground-v2-1024px-aesthetic
+  - playgroundai@playground-v2-512px-base
+  - playgroundai@playground-v2-256px-base
+  - PixArt-alpha@PixArt-XL-2-1024-MS
+  - PixArt-alpha@PixArt-XL-2-512x512
+  - latent-consistency@lcm-lora-sdxl
+  - latent-consistency@lcm-lora-sdv1-5
+  - black-forest-labs@FLUX.1-schnell
+  - black-forest-labs@FLUX.1-dev
+
+train_batch_size: 16
+val_batch_size: 16
+test_batch_size: 16
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+train_transform_list: []
+eval_transform_list:
+  - resize_short_384
+  - center_crop_384
+  - to_dtype

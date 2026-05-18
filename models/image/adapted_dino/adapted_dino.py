@@ -36,11 +36,14 @@ class AGIDAdaptedDINOModel(nn.Module):
         else:
             self.adapters = nn.ModuleList([nn.Identity() for _ in range(num_blocks)])
         self.head = nn.Linear(embed_dim, 2)
+        self.criterion = torch.nn.CrossEntropyLoss(
+            label_smoothing=config.TrainerConfig.get("label_smoothing", 0.0)
+        )
     
     def _freeze_backbone(self):
         for param in self.backbone.parameters():
             param.requires_grad = False
-
+            
     def forward(self, x):
         x = self.backbone.prepare_tokens_with_masks(x)
 
@@ -51,3 +54,9 @@ class AGIDAdaptedDINOModel(nn.Module):
         x = self.backbone.norm(x)
         cls_token = x[:, 0]
         return self.head(cls_token)
+    
+    def compute_loss(self, batch):
+        images, labels, folder_ids = batch
+        outputs = self.forward(images)
+        loss = self.criterion(outputs, labels)
+        return {"loss": loss, "outputs": outputs}

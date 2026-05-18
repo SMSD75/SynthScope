@@ -1,0 +1,21 @@
+defaults:
+  - default
+  - _self_
+
+model_type: co_spy
+
+semantic_model_name: ViT-SO400M-14-SigLIP-384
+semantic_pretrained: webli
+semantic_image_size: 384
+
+vae_id: CompVis/stable-diffusion-v1-4
+vae_subfolder: vae
+artifact_image_size: 224
+artifact_residual_scale: 14.285714285714286
+
+coeff_dropout: 0.3
+feat_interp_prob: 0.5
+feat_interp_alpha: 0.2
+
+num_classes: 2
+freeze_backbone: true

@@ -7,7 +7,7 @@ export OMP_NUM_THREADS=1
 
 /home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
     trainer@TrainerConfig=safe \
-    dataset@DatasetConfig=cnndetection \
+    dataset@DatasetConfig=aigibench \
     ModelConfig.model_type=safe \
     ModelConfig.freeze_backbone=false \
     DatasetConfig.train_batch_size=64 \
@@ -22,6 +22,6 @@ export OMP_NUM_THREADS=1
     TrainerConfig.warmup.mode=on \
     TrainerConfig.warmup.warmup_ratio=0.2 \
     TrainerConfig.warmup.lr_scheduler=cosine \
-    logger.name=safe_pretest \
+    logger.name=safe \
     logger.mode=online \
-    logger.tags=[AGID,SAFE,pretest]
+    logger.tags=[AGID,SAFE,aigibench]
