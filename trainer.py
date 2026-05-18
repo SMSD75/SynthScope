@@ -4,6 +4,7 @@ from models.image.cnn_detection.cnn_detection import AGIDCNNModel
 from models.image.dino_detection.dino_detection import AGIDDINOModel, AGIDDINOv3Model
 from models.image.adapted_dino.adapted_dino import AGIDAdaptedDINOModel
 from models.image.safe.safe import AGIDSAFEModel
+from models.image.aide.aide import AGIDAIDEModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
@@ -59,6 +60,8 @@ class AGIDModelTrainer:
         model_type = config.ModelConfig.get("model_type", "dino").lower()
         if model_type == "safe":
             return AGIDSAFEModel(config)
+        if model_type == "aide":
+            return AGIDAIDEModel(config)
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
             return AGIDCLIPModel(config)
         if model_type == "cnn":

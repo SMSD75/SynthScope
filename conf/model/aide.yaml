@@ -1,0 +1,21 @@
+defaults:
+  - default
+  - _self_
+
+model_type: aide
+
+convnext_model_name: convnext_xxlarge
+convnext_pretrained: laion2b_s34b_b82k_augreg_soup
+freeze_convnext: true
+semantic_dim: 3072
+semantic_proj_dim: 256
+
+resnet_pretrained: true
+head_hidden: 1024
+num_classes: 2
+
+dct:
+  window_size: 32
+  stride: 16
+  output_size: 256
+  grade_N: 6
