@@ -9,7 +9,10 @@ import tarfile
 import shutil
 import subprocess
 from matplotlib import pyplot as plt
+import numpy as np
 import torch
+import torch.nn.functional as F
+from decord import VideoReader, cpu
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
@@ -17,6 +20,7 @@ from config_utils import compose_config
 
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+VIDEO_EXTENSIONS = (".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v", ".gif")
 
 def _iter_images(directory: Path):
     return (p for p in directory.rglob("*") if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS)
@@ -24,6 +28,51 @@ def _iter_images(directory: Path):
 
 def _has_images(directory: Path) -> bool:
     return directory.is_dir() and any(_iter_images(directory))
+
+
+def _iter_videos(directory: Path):
+    return (p for p in directory.rglob("*") if p.is_file() and p.suffix.lower() in VIDEO_EXTENSIONS)
+
+
+def _has_videos(directory: Path) -> bool:
+    return directory.is_dir() and any(_iter_videos(directory))
+
+
+def sample_video_frames(
+    path: str | Path,
+    num_frames: int,
+    fps: float | None = None,
+    window_seconds: float = 2.0,
+    size: int = 224,
+) -> torch.Tensor:
+    """Decode a clip of exactly ``num_frames`` frames and return ``[T, 3, size, size]`` float in ``[0, 1]``.
+
+    Frames are sampled over the first ``window_seconds`` of the video. When ``fps`` is given
+    (e.g. D3 samples at 8 fps), the window is shortened to ``num_frames / fps`` seconds so the
+    effective sampling rate matches ``fps``; when ``fps`` is ``None`` the frames are spread evenly
+    across ``window_seconds`` (ReStraV). The output frame count is always ``num_frames`` so the
+    default collate can stack clips into ``[B, T, 3, size, size]``.
+    """
+    reader = VideoReader(str(path), ctx=cpu(0))
+    num_source = len(reader)
+    if num_source == 0:
+        return torch.zeros(num_frames, 3, size, size)
+
+    avg_fps = float(reader.get_avg_fps()) or 30.0
+    duration = num_source / avg_fps
+    window = min(window_seconds, duration)
+    if fps and fps > 0:
+        window = min(window, num_frames / float(fps))
+
+    last_index = min(max(int(round(window * avg_fps)) - 1, 0), num_source - 1)
+    indices = np.linspace(0, last_index, num=num_frames)
+    indices = np.clip(np.rint(indices).astype(np.int64), 0, num_source - 1)
+
+    frames = reader.get_batch(indices.tolist()).asnumpy()  # [T, H, W, 3] uint8
+    clip = torch.from_numpy(frames).permute(0, 3, 1, 2).float() / 255.0
+    if clip.shape[-2:] != (size, size):
+        clip = F.interpolate(clip, size=(size, size), mode="bilinear", align_corners=False)
+    return clip.clamp_(0.0, 1.0)
 
 
 def _safe_extract_zip(zip_path: str | Path, destination_dir: str | Path) -> None:
@@ -483,6 +532,8 @@ class CoSpyDataset(Dataset):
 
 class GenImageDataset(Dataset):
     google_drive_folder_url = "https://drive.google.com/drive/folders/1jGt10bwTbhEZuGXLyvrCuxOI0cBqQ1FS"
+    hf_repo_id = None
+    hf_subdir = None
     split_aliases = {
         "train": "train",
         "val": "test",
@@ -537,6 +588,26 @@ class GenImageDataset(Dataset):
             shutil.rmtree(download_dir, ignore_errors=True)
         download_dir.mkdir(parents=True, exist_ok=True)
 
+        if cls.hf_repo_id:
+            from huggingface_hub import hf_hub_download, list_repo_files
+
+            repo_files = [f for f in list_repo_files(cls.hf_repo_id, repo_type="dataset") if not f.endswith("/")]
+            if cls.hf_subdir:
+                prefix = str(cls.hf_subdir).rstrip("/") + "/"
+                repo_files = [f for f in repo_files if f.startswith(prefix)]
+            if not repo_files:
+                raise RuntimeError(
+                    f"No files found in HF dataset {cls.hf_repo_id!r} under subdir {cls.hf_subdir!r}."
+                )
+            for filename in sorted(repo_files):
+                hf_hub_download(
+                    repo_id=cls.hf_repo_id,
+                    filename=filename,
+                    repo_type="dataset",
+                    local_dir=str(download_dir),
+                )
+            return download_dir
+
         try:
             import gdown
         except ImportError as exc:
@@ -559,7 +630,25 @@ class GenImageDataset(Dataset):
             extract_dir = zip_path.with_suffix("")
             if _has_images(extract_dir):
                 continue
-            _safe_extract_zip(zip_path, extract_dir)
+            if zip_path.with_suffix(".z01").exists():
+                cls._extract_spanned_zip(zip_path, extract_dir)
+            else:
+                _safe_extract_zip(zip_path, extract_dir)
+
+    @staticmethod
+    def _extract_spanned_zip(zip_path: Path, destination_dir: Path) -> None:
+        """Extract a multi-part (spanned) zip (.z01..+.zip) using 7z."""
+        seven_zip = shutil.which("7z") or shutil.which("7za")
+        if seven_zip is None:
+            raise RuntimeError(
+                "Extracting multi-part (spanned) zip archives requires the `7z` command. Install p7zip-full."
+            )
+        destination_dir.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [seven_zip, "x", str(zip_path), f"-o{destination_dir}", "-y"],
+            cwd=zip_path.parent,
+            check=True,
+        )
 
     @classmethod
     def _source_split_for_path(cls, filepath: Path, destination_split: Literal["train", "test"]) -> bool:
@@ -919,6 +1008,8 @@ class GenImageDatasetModule:
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         source_url = config.DatasetConfig.get("source_url", GenImageDataset.google_drive_folder_url)
         GenImageDataset.google_drive_folder_url = source_url
+        GenImageDataset.hf_repo_id = config.DatasetConfig.get("hf_repo_id", None)
+        GenImageDataset.hf_subdir = config.DatasetConfig.get("hf_subdir", None)
         self.train_dataset = GenImageDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
         self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
         self.test_dataset = GenImageDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
@@ -1605,6 +1696,167 @@ class CoSpyDatasetModule:
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
+class VideoFolderDataset(Dataset):
+    """Generic AI-generated-video benchmark backed by a folder of video files.
+
+    Expected layout under ``root_dir/<split>`` (mirrors ``CNNDetectionDataset``)::
+
+        <root>/<split>/
+        ├── <generator_a>/
+        │   ├── 0_real/*.mp4   (or real/)
+        │   └── 1_fake/*.mp4   (or fake/)
+        ├── <generator_b>/
+        │   └── ...
+        └── ...
+
+    A flat ``<root>/<split>/{0_real,1_fake}`` layout (no per-generator subdir) is also
+    supported. The label is read from the leaf directory name (``real`` -> 0,
+    ``fake``/``false`` -> 1) and the per-generator ``folder_name`` from the grandparent
+    directory, exactly like the image datasets, so the per-generator AP/AUROC metrics keep
+    working. ``__getitem__`` returns ``(frames[T, 3, H, W] float in [0, 1], label, folder_id_index)``.
+
+    Downloading the (large) video benchmarks is out of scope: ``prefetch`` defaults to
+    ``False``. If ``hf_repo_id`` is configured the download stub fetches the split subtree
+    from the Hugging Face Hub; otherwise it raises ``NotImplementedError`` with guidance.
+    """
+
+    def __init__(
+        self,
+        root_dir: str | Path,
+        split: Literal["train", "val", "test"],
+        transform: AIGITransformations | None = None,
+        prefetch: bool = False,
+        num_frames: int = 16,
+        fps: float | None = None,
+        window_seconds: float = 2.0,
+        frame_size: int = 224,
+        hf_repo_id: str | None = None,
+    ):
+        super().__init__()
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.num_frames = int(num_frames)
+        self.fps = fps if fps else None
+        self.window_seconds = float(window_seconds)
+        self.frame_size = int(frame_size)
+        self.hf_repo_id = hf_repo_id
+        self.destination_dir = self.root_dir / self.split
+
+        if prefetch and not _has_videos(self.destination_dir):
+            print(f"Downloading {self.split} video split into {self.destination_dir}...")
+            self._download_data()
+
+        self.videos, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def prepare_split(
+        cls,
+        root_dir: str | Path,
+        split: Literal["train", "val", "test"],
+        hf_repo_id: str | None = None,
+        force: bool = False,
+    ) -> None:
+        """Download one video split into ``root_dir/split`` (HF Hub only; stub otherwise)."""
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_videos(destination_dir):
+            return
+        if hf_repo_id:
+            from huggingface_hub import snapshot_download
+
+            destination_dir.mkdir(parents=True, exist_ok=True)
+            snapshot_download(
+                repo_id=hf_repo_id,
+                repo_type="dataset",
+                local_dir=str(destination_dir),
+                allow_patterns=[f"{split}/**", f"{split}/*"],
+            )
+            return
+        raise NotImplementedError(
+            f"No automatic downloader is configured for video split {destination_dir!s}. "
+            "Place the benchmark videos under '<root>/<split>/<generator>/{0_real,1_fake}/' "
+            "manually, or set 'hf_repo_id' in the dataset config to a Hugging Face dataset repo."
+        )
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(
+            root_dir=self.root_dir,
+            split=self.split,
+            hf_repo_id=self.hf_repo_id,
+            force=force,
+        )
+
+    def __len__(self):
+        return len(self.videos)
+
+    def __getitem__(self, idx):
+        frames = sample_video_frames(
+            self.videos[idx],
+            num_frames=self.num_frames,
+            fps=self.fps,
+            window_seconds=self.window_seconds,
+            size=self.frame_size,
+        )
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            frames = self.transform(frames)
+        return frames, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name:
+            return 0
+        if "fake" in name or "false" in name:
+            return 1
+        raise ValueError(f"Cannot determine label from path: {filepath}")
+
+    def _load_data(self):
+        videos, labels, folder_names = [], [], []
+        split_dir = self.destination_dir
+        for filepath in _iter_videos(split_dir):
+            videos.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(
+                filepath.parent.parent.name
+                if filepath.parent.parent != split_dir.parent
+                else self.split
+            )
+        return videos, labels, folder_names
+
+
+class VideoFolderDatasetModule:
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        train_list = list(cfg.get("train_transform_list", []))
+        eval_list = list(cfg.get("eval_transform_list", []))
+        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        prefetch = bool(cfg.get("prefetch", False))
+        common = dict(
+            num_frames=cfg.get("num_frames", 16),
+            fps=cfg.get("fps", None),
+            window_seconds=cfg.get("window_seconds", 2.0),
+            frame_size=cfg.get("frame_size", 224),
+            hf_repo_id=cfg.get("hf_repo_id", None),
+        )
+        self.train_dataset = VideoFolderDataset(cfg.root_dir, "train", self.train_transform, prefetch=prefetch, **common)
+        self.val_dataset = VideoFolderDataset(cfg.root_dir, "val", self.eval_transform, prefetch=prefetch, **common)
+        self.test_dataset = VideoFolderDataset(cfg.root_dir, "test", self.eval_transform, prefetch=prefetch, **common)
+
+    def train_dataloader(self):
+        return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def val_dataloader(self):
+        return DataLoader(self.val_dataset, batch_size=self.config.DatasetConfig.val_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+    def test_dataloader(self):
+        return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
+
+
 class AIGIDatasetModule:
     def __init__(self, config):
         self.delegate = AGIDModuleDict[config.DatasetConfig.name](config)
@@ -1627,6 +1879,13 @@ AGIDModuleDict = {
     "freqnetdetection": FreqNetDetectionDatasetModule,
     "genimage": GenImageDatasetModule,
     "universialfakedetection": UniversialFakeDetectionDatasetModule,
+    # Video benchmarks (D3 + ReStraV); all served by the generic VideoFolderDatasetModule.
+    "genvideo": VideoFolderDatasetModule,
+    "videophy": VideoFolderDatasetModule,
+    "evalcrafter": VideoFolderDatasetModule,
+    "vidprom": VideoFolderDatasetModule,
+    "genvidbench": VideoFolderDatasetModule,
+    "physics_iq": VideoFolderDatasetModule,
 }
 
 
