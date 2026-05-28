@@ -1,6 +1,10 @@
 name: genimage
-root_dir: /nvmestore/ssalehi/AGID/GenImage
+root_dir: /hddstore/ssalehi/AGID/GenImage
 source_url: https://drive.google.com/drive/folders/1jGt10bwTbhEZuGXLyvrCuxOI0cBqQ1FS
+# HuggingFace mirror (used instead of source_url when hf_repo_id is set).
+# hf_subdir selects one GenImage generator dir; null/"" downloads the whole repo.
+hf_repo_id: jzousz/GenImage
+hf_subdir: stable_diffusion_v_1_4
 train_batch_size: 512
 val_batch_size: 2048
 test_batch_size: 2048

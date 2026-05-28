@@ -1,0 +1,10 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: spai
+backbone_name: ViT-B/16
+freeze_backbone: true
+input_size: 224
+mask_radius: 16
+projection_dim: 1024

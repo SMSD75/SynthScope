@@ -6,8 +6,8 @@ export CUDA_VISIBLE_DEVICES=1,2
 export OMP_NUM_THREADS=1
 
 /home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
-    trainer@TrainerConfig=safe \
-    dataset@DatasetConfig=aigibench \
+    trainer@TrainerConfig=image/safe \
+    dataset@DatasetConfig=image/aigibench \
     ModelConfig.model_type=safe \
     ModelConfig.freeze_backbone=false \
     DatasetConfig.train_batch_size=64 \

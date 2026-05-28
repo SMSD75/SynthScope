@@ -1,0 +1,16 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: d3
+# Frozen per-frame visual encoder (HF, matches official D3): clip | clip-32 | dinov2-base | dinov2-large | resnet18
+backbone_name: clip
+# First-order inter-frame feature: l2 (paper default) | cos
+first_order: l2
+# Decision threshold tau for argmax accuracy (AP/AUROC are threshold-free and primary).
+threshold: 0.0
+# Sampling interval scale; a constant that does not change the std-based ranking.
+dt: 1.0
+# Number of sampled frames per clip (must match the dataset config).
+num_frames: 16
+freeze_backbone: true

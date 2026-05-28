@@ -1,0 +1,7 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: npr
+num_classes: 2
+freeze_backbone: false

@@ -1,7 +1,7 @@
 defaults:
   - trainer@TrainerConfig: default
   - model@ModelConfig: default
-  - dataset@DatasetConfig: genimage
+  - dataset@DatasetConfig: image/genimage
   - _self_
 
 hydra:

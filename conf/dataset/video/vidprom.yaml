@@ -1,0 +1,26 @@
+name: vidprom
+# VidProM benchmark (Wang & Yang 2024). Shared by D3 and ReStraV. Lay out videos as
+# <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
+root_dir: /hddstore/ssalehi/AGID/VidProM
+# WenhaoWang/VidProM on the Hugging Face Hub hosts the prompts/videos; set this to enable
+# the download stub once the desired split layout is known. null = manual placement.
+hf_repo_id: null
+# 24 frames evenly across 2 s works for both ReStraV (needs >=8) and D3 (needs >=4).
+# Override num_frames/fps on the command line if you want D3's 16-frame@8fps sampling.
+num_frames: 24
+fps: null
+window_seconds: 2.0
+frame_size: 224
+train_batch_size: 8
+val_batch_size: 8
+test_batch_size: 8
+num_workers: 4
+persistent_workers: true
+pin_memory: true
+prefetch: false
+# Normalization happens HERE (not in the model). Default normalize_dinov2 = ReStraV's
+# DINOv2 backbone; for D3 (XCLIP/CLIP) override to normalize_clip in the experiment script.
+train_transform_list:
+  - normalize_dinov2
+eval_transform_list:
+  - normalize_dinov2

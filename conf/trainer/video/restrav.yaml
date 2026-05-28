@@ -1,0 +1,20 @@
+defaults:
+  - /trainer/default
+  - _self_
+
+# ReStraV trains only the small MLP classifier on top of the frozen DINOv2 features,
+# so a short run converges quickly.
+trainer_type: restrav
+epochs: 15
+lr: 1.0e-3
+weight_decay: 0.01
+label_smoothing: 0.0
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: false
+save_policy: max
+warmup:
+  mode: off
+  warmup_ratio: 0.05
+  lr_scheduler: cosine

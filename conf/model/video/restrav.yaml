@@ -1,0 +1,12 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: restrav
+# Frozen self-supervised backbone (torch.hub facebookresearch/dinov2).
+backbone_name: dinov2_vits14
+# Number of sampled frames per clip (must match the dataset config).
+num_frames: 24
+# Trainable classifier MLP hidden sizes (paper: two layers 64 -> 32).
+mlp_hidden: [64, 32]
+freeze_backbone: true

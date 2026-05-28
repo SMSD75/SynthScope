@@ -1,0 +1,25 @@
+name: genvideo
+# GenVideo benchmark (DeMamba, Chen et al. 2024). Lay out videos as
+# <root>/<split>/<generator>/{0_real,1_fake}/*.mp4 (test split is what D3 uses).
+root_dir: /hddstore/ssalehi/AGID/GenVideo
+# Set to a Hugging Face dataset repo to enable the download stub; null = manual placement.
+hf_repo_id: null
+# Frame sampling: D3 uses ~8 fps over up to 2 s.
+num_frames: 16
+fps: 8
+window_seconds: 2.0
+frame_size: 224
+train_batch_size: 8
+val_batch_size: 8
+test_batch_size: 8
+num_workers: 4
+persistent_workers: true
+pin_memory: true
+prefetch: false
+# Frames are decoded to 224x224 in [0, 1]; normalization happens HERE (not in the model).
+# normalize_clip matches D3's default XCLIP/CLIP backbone; switch to normalize_dinov2 for a
+# DINOv2/ResNet backbone.
+train_transform_list:
+  - normalize_clip
+eval_transform_list:
+  - normalize_clip
