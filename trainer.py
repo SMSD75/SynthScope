@@ -7,6 +7,11 @@ from models.image.safe.safe import AGIDSAFEModel
 from models.image.fat_former.fat_former import AGIDFatFormerModel
 from models.image.co_spy.co_spy import AGIDCoSpyModel
 from models.image.aide.aide import AGIDAIDEModel
+from models.image.spai.spai import SPAI
+from models.image.vib_net.vib_net import AGIDVIBNetModel
+from models.image.npr.npr import NPR
+from models.video.d3.d3 import AGIDD3Model
+from models.video.restrav.restrav import AGIDReStraVModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
@@ -68,6 +73,16 @@ class AGIDModelTrainer:
             return AGIDCoSpyModel(config)
         if model_type == "aide":
             return AGIDAIDEModel(config)
+        if model_type == "spai":
+            return SPAI(config)
+        if model_type == "vib_net":
+            return AGIDVIBNetModel(config)
+        if model_type == "npr":
+            return NPR(config)
+        if model_type == "d3":
+            return AGIDD3Model(config)
+        if model_type == "restrav":
+            return AGIDReStraVModel(config)
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
             return AGIDCLIPModel(config)
         if model_type == "cnn":
