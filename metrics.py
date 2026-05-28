@@ -14,6 +14,17 @@ class AIGIMetrics(torch.nn.Module):
             "AUC": lambda: AUROC(task="binary", sync_on_compute=False),
         }
 
+    @staticmethod
+    def _fake_score(outputs):
+        """Positive-class (fake) probability for threshold-free metrics (AP/AUROC).
+
+        ``outputs`` are two-class real/fake logits ``[N, 2]``; binary AveragePrecision/AUROC
+        expect a 1-D score per sample, so we return ``softmax(outputs)[:, 1]``.
+        """
+        if outputs.dim() == 2 and outputs.shape[1] == 2:
+            return torch.softmax(outputs, dim=1)[:, 1]
+        return outputs
+
     def _get_metrics_dict(self):
         return self.metrics_dict
 
@@ -47,14 +58,14 @@ class AIGIMetrics(torch.nn.Module):
                     if f"{metric}_{model_id}" not in self.metrics_dict:
                         self.metrics_dict[f"{metric}_{model_id}"] = self.factory_dict[metric]().to(outputs.device)
                     if ap_outputs.shape[0] > 0:
-                        self.metrics_dict[f"{metric}_{model_id}"].update(ap_outputs, ap_labels)
+                        self.metrics_dict[f"{metric}_{model_id}"].update(self._fake_score(ap_outputs), ap_labels)
             elif metric == "AUC":
                 for model_id in model_ids:
                     roc_auc_outputs = outputs[(folder_ids == model_id)]
                     roc_auc_labels = labels[(folder_ids == model_id)]
                     if f"{metric}_{model_id}" not in self.metrics_dict:
-                        self.metrics_dict[f"{metric}_{model_id}"] = self.factory_dict[metric]().to(outputs.device)  
+                        self.metrics_dict[f"{metric}_{model_id}"] = self.factory_dict[metric]().to(outputs.device)
                     if roc_auc_outputs.shape[0] > 0:
-                        self.metrics_dict[f"{metric}_{model_id}"].update(roc_auc_outputs, roc_auc_labels)
+                        self.metrics_dict[f"{metric}_{model_id}"].update(self._fake_score(roc_auc_outputs), roc_auc_labels)
             else:
                 raise ValueError(f"Invalid metric: {metric}")
