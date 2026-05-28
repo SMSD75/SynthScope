@@ -2,6 +2,7 @@ from typing import Callable
 from PIL import Image
 from matplotlib import pyplot as plt
 import torchvision.transforms.v2 as v2
+from torchvision import tv_tensors
 import torch
 import random
 
@@ -99,7 +100,13 @@ class AIGITransformations:
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
     
-    def __call__(self, image: Image.Image):
+    def __call__(self, image):
+        # A 4D [T, C, H, W] tensor is a video clip. Wrap it as tv_tensors.Video so the v2
+        # transforms (crops, flips, normalize, ...) apply with the SAME sampled parameters to
+        # every frame (temporal consistency) instead of treating the frames as an independent
+        # batch. Single images ([C, H, W] tensors or PIL) pass through unchanged.
+        if isinstance(image, torch.Tensor) and image.ndim == 4:
+            image = tv_tensors.Video(image)
         for transform in self.transforms:
             image = transform(image)
         return image
