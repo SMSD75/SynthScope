@@ -16,7 +16,22 @@ from decord import VideoReader, cpu
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
+from PIL import Image
 from config_utils import compose_config
+
+
+def _decode_rgb(path) -> torch.Tensor:
+    """Decode an image to a uint8 [3, H, W] RGB tensor.
+
+    Uses torchvision's fast native decoder, falling back to PIL for the rare files
+    its backend rejects (e.g. CMYK / progressive / slightly-malformed JPEGs that
+    raise "Internal error"). Keeps the uint8 CHW contract the transform pipeline expects.
+    """
+    try:
+        return decode_image(str(path), mode=ImageReadMode.RGB)
+    except Exception:
+        img = Image.open(str(path)).convert("RGB")
+        return torch.from_numpy(np.array(img)).permute(2, 0, 1).contiguous()
 
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
@@ -498,7 +513,7 @@ class CoSpyDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -770,7 +785,7 @@ class GenImageDataset(Dataset):
         return len(self.images)
     
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -948,7 +963,7 @@ class CNNDetectionDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -1119,7 +1134,7 @@ class AIGIBenchDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -1251,7 +1266,7 @@ class DiTFakeDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -1407,7 +1422,7 @@ class FreqNetDetectionDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
@@ -1461,7 +1476,7 @@ class UniversialFakeDetectionDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        image = decode_image(str(self.images[idx]), mode=ImageReadMode.RGB)
+        image = _decode_rgb(self.images[idx])
         label = torch.tensor(self.labels[idx])
         if self.transform:
             image = self.transform(image)
