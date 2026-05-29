@@ -1,4 +1,3 @@
-from sys import api_version
 import torch
 from torchmetrics import Accuracy, AveragePrecision, AUROC
 

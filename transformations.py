@@ -1,6 +1,4 @@
 from typing import Callable
-from PIL import Image
-from matplotlib import pyplot as plt
 import torchvision.transforms.v2 as v2
 from torchvision import tv_tensors
 import torch
@@ -110,19 +108,3 @@ class AIGITransformations:
         for transform in self.transforms:
             image = transform(image)
         return image
-    
-
-if __name__ == "__main__":
-    from config_utils import compose_app_config
-
-    config = compose_app_config()
-    transform = AIGITransformations(list(config.DatasetConfig.eval_transform_list))
-    image = Image.open("//nvmestore/ssalehi/AGID/AIGIBench/train/car/0_real/00000.png")
-    plt.imshow(image)
-    plt.show()
-    plt.savefig(fname='original_image.png')
-    image = transform(image)
-    plt.imshow(image.permute(1, 2, 0))
-    plt.show()
-    plt.savefig(fname='transformations_test.png')
-    print(image.shape)
