@@ -83,8 +83,6 @@ class AGIDModelTrainer:
             return AGIDD3Model(config)
         if model_type == "restrav":
             return AGIDReStraVModel(config)
-        if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
-            return AGIDCLIPModel(config)
         if model_type == "cnn":
             return AGIDCNNModel(config)
         if model_type == "adapted_dino":
@@ -93,8 +91,11 @@ class AGIDModelTrainer:
             return AGIDDINOModel(config)
         if model_type == "dinov3":
             return AGIDDINOv3Model(config)
-        else:   
-            raise ValueError(f"Invalid model_type: {model_type}")
+        # Explicit model_type wins above; the CLIP-prefixed backbone is only a last-resort
+        # fallback, so e.g. model_type=cnn with the default CLIP:ViT-L/14 backbone is not hijacked.
+        if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
+            return AGIDCLIPModel(config)
+        raise ValueError(f"Invalid model_type: {model_type}")
     
     def _filter_trainable_parameters(self):
         return [p for p in self.model.parameters() if p.requires_grad]
