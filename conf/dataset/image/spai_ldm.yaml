@@ -1,0 +1,22 @@
+# 'name' must be a key in dataset.py AGIDModuleDict; the staged data uses the
+# CNNDetection gen/{0_real,1_fake} ImageFolder layout, so reuse that module.
+name: cnndetection
+root_dir: /hddstore/ssalehi/AGID/spai_train/staged
+train_batch_size: 32
+val_batch_size: 64
+test_batch_size: 64
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: false
+# SPAI expects images in [0,1]; ImageNet normalization happens INSIDE the model.
+# So NO normalize_* transform here (to_dtype scales uint8->[0,1]).
+train_transform_list:
+  - resize_short_256
+  - random_crop_224
+  - random_horizontal_flip
+  - to_dtype
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype

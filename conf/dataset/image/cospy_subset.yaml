@@ -1,0 +1,23 @@
+# CO-SPY from-scratch: balanced ~120K ProGAN subset for train; full ForenSynths val/test.
+# 'name' must be a registered dataset module -> reuse cnndetection (same gen/{0_real,1_fake} layout).
+name: cnndetection
+root_dir: /hddstore/ssalehi/AGID/spai_train/cospy_subset
+train_batch_size: 32
+val_batch_size: 64
+test_batch_size: 64
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: false
+# CO-SPY normalizes per-branch INSIDE forward; feed raw [0,1] (to_dtype scales uint8->[0,1]).
+train_transform_list:
+  - resize_short_256
+  - gaussian_blur
+  - jpeg_compression
+  - random_crop_224
+  - random_horizontal_flip
+  - to_dtype
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
