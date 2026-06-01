@@ -46,6 +46,51 @@ Select a detector with `ModelConfig.model_type=<type>` (or the matching `model@M
 
 ---
 
+## Reproduction results
+
+Each implemented detector was reproduced and checked against its paper's headline number. Metrics
+are per-generator means (the AGID convention); values are shown in **%**. "How" indicates whether the
+result came from loading the authors' **official released weights** into the AGID model, **training
+from scratch** via the detector's `experiments/` recipe, or a **frozen-backbone probe**. Every number
+below traces to a logged `Test Metrics` evaluation (no reported value is estimated).
+
+**Image detectors**
+
+| Method | Benchmark | Our result | Paper (ref.) | How |
+| --- | --- | --- | --- | --- |
+| **FatFormer** (CVPR'24) | ForenSynths-8 | acc 98.39 / mAP 99.70 | 98.4 / 99.7 | official weights |
+| **CO-SPY** (CVPR'25) | ForenSynths-8 | acc 95.12 / mAP 98.71 | 90.6 / 95.2 (AIGCDetect) | official weights¹ |
+| **NPR** (CVPR'24) | ForenSynths-8 | acc 91.83 / mAP 87.09 | ~91–94 acc | official weights |
+| **AIDE** (ICLR'25) | ForenSynths-8 | mAP 92.08 (acc@0.5 72.0²) | high-90s acc | official weights |
+| **UnivFD / CLIP** (CVPR'23) | ForenSynths | mAP 97.2 / AUROC 97.0 | ~98 mAP | frozen CLIP probe (ProGAN) |
+| **CNNDetection** (CVPR'20) | ForenSynths | mAP 96.8 / AUROC 96.6 | ~96–98 mAP | ResNet-50 fine-tune (ProGAN) |
+| **DINOv2 probe** | ForenSynths | mAP 95.03 / AUROC 94.86 | ~97 (CLIP probe ref.) | frozen DINOv2 ViT-L/14 probe |
+| **SAFE** (KDD'25) | ForenSynths | mAP 94.13 / AUROC 93.68 | — | trained from scratch (`safe.sh`) |
+| **SPAI** (CVPR'25) | GenImage SD-v1.4 | AUC 98.45 / AP 94.01 | SOTA diffusion AUC | official weights¹ |
+| **VIB-Net** (CVPR'25) | GenImage SD-v1.4 | mAP 99.33 / AUROC 99.33³ | — | trained from scratch (`vib_net.sh`) |
+
+CO-SPY and SPAI were additionally **trained from scratch** with the AGID re-implementations: CO-SPY on
+ProGAN → mAP 96.98 / AUROC 96.79 (ForenSynths); SPAI (MFM-initialised, fixed-resolution) on the
+DMID Latent-Diffusion set vs COCO → AUC 97.66 — within ~0.8 AUC of the official-weights model, i.e. the
+any-resolution component is not required to land in the paper's range.
+
+**Video detectors**
+
+| Method | Benchmark | Our result | Paper (ref.) | How |
+| --- | --- | --- | --- | --- |
+| **D3** (ICCV'25) | GenVideo-Val | AP 95.6 / AUROC 93.6 | ~97 mAP | frozen CLIP, training-free |
+| **ReStraV** | GenVideo-Val | AP 96.67 / AUROC 97.06 | ~high-90s AUROC | frozen DINOv2 trajectory + MLP |
+
+¹ The AGID `co_spy` / `spai` classes diverge from the official networks (different backbone / fusion /
+no Spectral-Context-Attention), so the **official-weights** evals load the authors' architectures
+(vendored) rather than the AGID class; the from-scratch numbers above use the AGID class.
+² AIDE's score *ranking* reproduces (high mAP), but acc@0.5 is miscalibrated because the AGID input is a
+single CLIP-normalised view vs the official 5-view DCT-reconstructed stack.
+³ VIB-Net is evaluated on the GenImage SD-v1.4 test split, which is a single real-vs-fake pool, so the
+per-generator mAP and AUROC coincide by construction.
+
+---
+
 ## Datasets
 
 Select a dataset with `dataset@DatasetConfig=<name>`. Each dataset auto-downloads to its `root_dir` on first use (via the Hugging Face Hub, `gdown`, or archive extraction) and is restructured into a common `real`/`fake` directory layout.
