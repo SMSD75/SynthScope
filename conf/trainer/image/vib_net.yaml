@@ -12,3 +12,7 @@ test_interval: 1
 save_interval: 1
 save: false
 save_policy: max
+warmup:
+  mode: on
+  warmup_ratio: 0.05
+  lr_scheduler: cosine

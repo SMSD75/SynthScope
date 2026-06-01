@@ -6,6 +6,7 @@ from models.image.adapted_dino.adapted_dino import Adapter
 class AGIDDINOModel(nn.Module):
     MODEL_DICT = {
         "dinov2": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
+        "adapted_dino": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
         "dinov3": lambda backbone_name: torch.hub.load("/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/", source="local", model=backbone_name, weights=f"/nvmestore/ssalehi/AGID/dinov3_checkpoints/{backbone_name}_pretrain_lvd1689m-8aa4cbdd.pth"),
     }
     def __init__(self, config: DictConfig):
@@ -41,6 +42,12 @@ class AGIDDINOModel(nn.Module):
         x = self.backbone.norm(x)
         cls_token = x[:, 0]
         return self.head(cls_token)
+
+    def compute_loss(self, batch):
+        images, labels, folder_ids = batch
+        outputs = self.forward(images)
+        loss = self.criterion(outputs, labels)
+        return {"loss": loss, "outputs": outputs}
 
 class AGIDDINOv3Model(AGIDDINOModel):
     def forward(self, x):

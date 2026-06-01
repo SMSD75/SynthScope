@@ -30,8 +30,14 @@ def _decode_rgb(path) -> torch.Tensor:
     try:
         return decode_image(str(path), mode=ImageReadMode.RGB)
     except Exception:
+        pass
+    try:
         img = Image.open(str(path)).convert("RGB")
         return torch.from_numpy(np.array(img)).permute(2, 0, 1).contiguous()
+    except Exception:
+        # Corrupt / truncated / empty file (some GenImage PNGs are 0-byte): don't kill the
+        # whole run — return a black 256x256 image so this sample is just uninformative.
+        return torch.zeros(3, 256, 256, dtype=torch.uint8)
 
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
@@ -68,8 +74,11 @@ def sample_video_frames(
     across ``window_seconds`` (ReStraV). The output frame count is always ``num_frames`` so the
     default collate can stack clips into ``[B, T, 3, size, size]``.
     """
-    reader = VideoReader(str(path), ctx=cpu(0))
-    num_source = len(reader)
+    try:
+        reader = VideoReader(str(path), ctx=cpu(0))
+        num_source = len(reader)
+    except Exception:
+        return torch.zeros(num_frames, 3, size, size)
     if num_source == 0:
         return torch.zeros(num_frames, 3, size, size)
 
@@ -83,10 +92,35 @@ def sample_video_frames(
     indices = np.linspace(0, last_index, num=num_frames)
     indices = np.clip(np.rint(indices).astype(np.int64), 0, num_source - 1)
 
-    frames = reader.get_batch(indices.tolist()).asnumpy()  # [T, H, W, 3] uint8
-    clip = torch.from_numpy(frames).permute(0, 3, 1, 2).float() / 255.0
-    if clip.shape[-2:] != (size, size):
-        clip = F.interpolate(clip, size=(size, size), mode="bilinear", align_corners=False)
+    # decord's batched get_batch raises a size-mismatch DECORDError on videos whose frames
+    # vary in resolution (or are partly corrupt); fall back to per-frame decode+resize, and
+    # finally to a black clip, so one bad video never crashes the whole DataLoader worker.
+    def _resize(t):  # t: [T,3,H,W] float
+        if t.shape[-2:] != (size, size):
+            t = F.interpolate(t, size=(size, size), mode="bilinear", align_corners=False)
+        return t
+
+    try:
+        frames = reader.get_batch(indices.tolist()).asnumpy()  # [T, H, W, 3] uint8
+        clip = torch.from_numpy(frames).permute(0, 3, 1, 2).float() / 255.0
+        clip = _resize(clip)
+    except Exception:
+        per_frame = []
+        for i in indices.tolist():
+            try:
+                f = reader[i].asnumpy()  # [H, W, 3]
+                ft = torch.from_numpy(f).permute(2, 0, 1).unsqueeze(0).float() / 255.0
+                per_frame.append(_resize(ft))
+            except Exception:
+                per_frame.append(torch.zeros(1, 3, size, size))
+        clip = torch.cat(per_frame, dim=0) if per_frame else torch.zeros(num_frames, 3, size, size)
+    # Coerce to exactly 3 channels: some clips decode to 1 (grayscale), 4 (RGBA) or more
+    # (e.g. packed/stereo streams) channels, which breaks the 3-channel Normalize downstream.
+    c = clip.shape[1]
+    if c == 1:
+        clip = clip.repeat(1, 3, 1, 1)
+    elif c != 3:
+        clip = clip[:, :3]
     return clip.clamp_(0.0, 1.0)
 
 

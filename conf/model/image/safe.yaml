@@ -1,0 +1,8 @@
+defaults:
+  - /model/default
+  - _self_
+
+# SAFE builds its own lightweight ResNet-50-style trunk + DWT high-frequency front end;
+# it does NOT use backbone_name. model_type=safe is dispatched before the CLIP fallback.
+model_type: safe
+freeze_backbone: false

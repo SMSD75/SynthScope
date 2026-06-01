@@ -36,7 +36,7 @@ class AGIDVIBNetModel(nn.Module):
 
     def _kl_to_standard_normal(self, mu, std, eps=1e-8):
         """KL( N(mu, std^2 I) || N(0, I) ), mean over batch, sum over latent dims."""
-        var = std.pow(2)
+        var = std.pow(2).clamp(min=eps)
         kl = 0.5 * (mu.pow(2) + var - torch.log(var + eps) - 1.0)
         return kl.sum(dim=1).mean()
 
@@ -70,7 +70,10 @@ class AGIDVIBNetModel(nn.Module):
         fc3_out = self.fc_3(relu2_out)
 
         mu = fc3_out[:, :self.latent_dim]
-        std = F.softplus(fc3_out[:, self.latent_dim:] - self.std_shift, beta=1)
+        # Floor std away from 0: training can drive the pre-softplus input very negative,
+        # collapsing std->0 -> var->0 -> KL's -log(var)->+inf -> NaN (caused a CUDA
+        # device-side assert after the first epoch). 1e-4 floor keeps the VIB stable.
+        std = F.softplus(fc3_out[:, self.latent_dim:] - self.std_shift, beta=1).clamp(min=1e-4)
 
         encoding = self._reparameterize(mu, std, num_samples=1)
         logit = self.decode(encoding)
