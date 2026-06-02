@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AGID benchmark submission (v1)",
+  "description": "One result for one (method, track). Lives in benchmark/submissions/*.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["method", "track", "modality", "evaluation", "metrics", "submitted_by"],
+  "properties": {
+    "method": {"type": "string", "description": "Human-readable method name."},
+    "track": {"type": "string", "enum": ["forensynths", "genimage-sdv1.4", "genvideo-val"]},
+    "modality": {"type": "string", "enum": ["image", "video"]},
+    "model_type": {"type": ["string", "null"], "description": "AGID detector key, if applicable."},
+    "paper": {"type": ["string", "null"]},
+    "url": {"type": ["string", "null"], "description": "Paper or code URL."},
+    "evaluation": {
+      "type": "string",
+      "enum": ["official-weights", "from-scratch", "frozen-probe", "training-free", "external"]
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Percentages (0-100). At least one must be non-null.",
+      "properties": {
+        "acc": {"type": ["number", "null"]},
+        "map": {"type": ["number", "null"], "description": "mean AP over generators"},
+        "ap": {"type": ["number", "null"]},
+        "auroc": {"type": ["number", "null"]}
+      }
+    },
+    "per_generator": {
+      "type": ["object", "null"],
+      "description": "Optional per-generator metric breakdown."
+    },
+    "submitted_by": {"type": "string"},
+    "date": {"type": ["string", "null"], "description": "YYYY-MM-DD."},
+    "verified": {"type": "boolean", "description": "Traces to a logged AGID evaluation."},
+    "source": {"type": ["string", "null"], "description": "Log / run path or external reference."},
+    "protocol_notes": {"type": ["string", "null"]},
+    "agid_version": {"type": ["string", "null"]}
+  }
+}

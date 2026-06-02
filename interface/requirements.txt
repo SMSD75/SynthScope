@@ -1,0 +1,5 @@
+# Web-interface backend deps (installed on top of the existing `AGID` conda env, which
+# already provides torch, torchvision, decord, clip, open_clip, diffusers, hydra, PIL, ...).
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9

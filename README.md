@@ -1,8 +1,76 @@
-# AGID — AI-Generated Image Detection
+# AGID — AI-Generated Image & Video Detection
+
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![CI](https://github.com/SMSD75/AGID/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/AGID/actions/workflows/ci.yml)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 AGID is a unified research framework for **training and evaluating AI-generated (synthetic) image detectors**. It re-implements a range of state-of-the-art real-vs-fake image detectors behind a single [Hydra](https://hydra.cc/) configuration system and an [Accelerate](https://huggingface.co/docs/accelerate) (DeepSpeed) training loop, so that different methods can be trained and benchmarked on the same datasets, transforms, metrics, and logging stack.
 
 Every detector is a binary classifier (`real` vs `fake`). Metrics are reported **per generator / data source**, which is the standard way to measure how well a detector generalizes across unseen generative models.
+
+---
+
+## Install
+
+```bash
+git clone https://github.com/SMSD75/AGID.git
+cd AGID
+pip install -e .                 # editable install (recommended for the flat research layout)
+# extras:  ".[web]" web demo · ".[train]" wandb+dataset download · ".[dev]" contributor tooling
+```
+
+Install the [PyTorch](https://pytorch.org) build that matches your CUDA. A few detectors
+(`clip`, `fat_former`) also need OpenAI CLIP: `pip install git+https://github.com/openai/CLIP.git`.
+See [LICENSES.md](LICENSES.md) for per-method/weight licenses.
+
+## Quick start — Python API & CLI
+
+> **Try it without installing:** open the [Colab quickstart](notebooks/agid_quickstart.ipynb), or
+> launch the [Gradio demo](demo/) (`pip install -e ".[demo]" && python demo/app.py`) locally or as a
+> Hugging Face Space.
+
+Run any detector on an image or video and get the probability it is AI-generated:
+
+```python
+import agid
+
+agid.list_models()                         # detectors + which weights are present
+det = agid.load("fat_former")              # builds lazily; downloads backbones on first use
+det.predict("photo.png")
+# -> {'model': 'fat_former', 'fake_probability': 0.98, 'verdict': 'fake', 'confidence': 0.98, ...}
+
+det.predict("clip.mp4")                    # image detectors sample frames; video detectors score the clip
+agid.load("d3").predict("clip.mp4")        # D3 is training-free — no checkpoint needed
+```
+
+From the shell:
+
+```bash
+agid list                                  # list detectors and weight availability
+agid detect photo.png --model fat_former   # human-readable verdict
+agid detect clip.mp4  --model d3 --json    # machine-readable
+```
+
+Checkpoints are resolved from `$AGID_CKPT_DIR` (default `~/.cache/agid/checkpoints`); pass
+`agid.load(..., checkpoint="/path/to.pth")` to use your own trained weights. Training-free
+detectors (D3, STALL) need none.
+
+### Model zoo (Hugging Face Hub)
+
+When a detector's weights aren't present locally, `agid.load(...)` **auto-downloads** them from a
+Hub model-zoo repo (set `AGID_HUB_REPO`, or pass `agid.load(..., repo="user/agid-checkpoints")`).
+Maintainers publish with:
+
+```bash
+agid push --repo user/agid-checkpoints --public        # AGID-trained checkpoints (license-safe)
+agid push --repo user/agid-checkpoints --include-official   # also official weights — verify LICENSES.md first
+agid pull --model clip                                 # fetch a single checkpoint
+```
+
+`push` uploads only AGID-trained checkpoints by default; checkpoints derived from authors' official
+released weights are held back unless you opt in and confirm their upstream license permits
+redistribution.
 
 ---
 
@@ -43,6 +111,25 @@ Select a detector with `ModelConfig.model_type=<type>` (or the matching `model@M
 | `spai` | **SPAI** (Karageorgiou et al., CVPR 2025) | `SPAI` | Spectral learning: Spectral Reconstruction Similarity + Spectral Context Attention for any-resolution detection. |
 | `vib_net` | **VIB-Net** (Zhang et al., CVPR 2025) | `AGIDVIBNetModel` | Variational Information Bottleneck between frozen CLIP features and the classifier. |
 | `npr` | **NPR** (Tan et al., CVPR 2024) | `NPR` | Small ResNet trained from scratch on neighboring-pixel residuals that expose up-sampling artifacts. |
+
+---
+
+## Benchmark & leaderboard
+
+AGID ships a **versioned, standardized benchmark** (v1) so detectors are comparable under one
+protocol — fixed test sets, per-generator metrics, and a single evaluation pipeline. See the
+ranked **[LEADERBOARD.md](LEADERBOARD.md)** and the protocol in **[benchmark/](benchmark/)**.
+
+```bash
+# evaluate a detector and write a submission, then refresh the table
+python benchmark/evaluate.py --model fat_former --track forensynths --data <root> \
+    --out benchmark/submissions/fat_former.json
+python benchmark/leaderboard.py
+```
+
+Submit your own result via PR — one JSON file under [benchmark/submissions/](benchmark/submissions/);
+CI validates it against the [schema](benchmark/schema.json) and checks the table is current. The
+seed entries below are the reproductions, transcribed into the leaderboard.
 
 ---
 

@@ -1,0 +1,22 @@
+{
+  "method": "CO-SPY (from scratch)",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "co_spy",
+  "paper": "Cheng et al., CVPR'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "from-scratch",
+  "metrics": {
+    "acc": null,
+    "map": 96.98,
+    "ap": null,
+    "auroc": 96.79
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths; AGID re-implementation trained on ProGAN",
+  "agid_version": "0.1.0"
+}

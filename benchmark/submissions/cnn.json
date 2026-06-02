@@ -1,0 +1,22 @@
+{
+  "method": "CNNDetection",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "cnn",
+  "paper": "Wang et al., CVPR'20",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "from-scratch",
+  "metrics": {
+    "acc": null,
+    "map": 96.8,
+    "ap": null,
+    "auroc": 96.6
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths; ResNet-50 fine-tune (ProGAN)",
+  "agid_version": "0.1.0"
+}

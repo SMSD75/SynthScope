@@ -1,0 +1,22 @@
+{
+  "method": "UnivFD / CLIP",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "clip",
+  "paper": "Ojha et al., CVPR'23",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "frozen-probe",
+  "metrics": {
+    "acc": null,
+    "map": 97.2,
+    "ap": null,
+    "auroc": 97.0
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths; frozen CLIP ViT-L/14 probe (ProGAN)",
+  "agid_version": "0.1.0"
+}

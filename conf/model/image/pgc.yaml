@@ -1,0 +1,16 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: pgc
+# RGB backbone: a Hugging Face DINO ViT (auto-downloaded). Paper default: DINOv2-Large (D=1024).
+backbone_name: facebook/dinov2-large
+freeze_backbone: true          # backbone frozen; only the injected LoRA adapters train
+# LoRA (paper defaults).
+lora_rank: 8
+lora_alpha: 1.0
+lora_dropout: 0.1
+# Peak-aggregation temperatures + RGB-branch weight (paper Eq. 4).
+tau_rgb: 0.5
+tau_res: 0.5
+num_classes: 1

@@ -1,0 +1,63 @@
+# Licenses and attribution
+
+The **AGID framework** — the training/eval pipeline, the unified config system, the dataset
+modules, the metrics/transform/logging stack, the `agid` Python API, and the web interface — is
+released under the **Apache License 2.0** (see [LICENSE](LICENSE)).
+
+AGID **re-implements** a range of published detectors and, for a few methods, **vendors** the
+authors' original network code so their released weights can be loaded faithfully. Those
+third-party components, and every **pretrained checkpoint / backbone** AGID loads, remain under
+**their original licenses**. AGID does not relicense them.
+
+> ⚠️ **Before redistributing any model weights** (e.g. via a public model zoo / Hugging Face Hub),
+> confirm that the upstream license permits redistribution and your intended use. Several
+> AI-generated-image-detection paper repos and some pretrained backbones are **research- or
+> non-commercial-only**, and some weights are **gated** (require accepting an upstream license).
+> The table below is a starting point — verify each entry against its source. (`⚠ verify` = please
+> confirm and fill in from the official repo before relying on it.)
+
+## Detectors
+
+| `model_type` | Method (venue) | Upstream code | Code license | Released weights AGID can load | Weights license |
+| --- | --- | --- | --- | --- | --- |
+| `cnn` | CNNDetection (CVPR'20) | PeterWang512/CNNDetection | ⚠ verify | ProGAN-trained (AGID-trained here) | ⚠ verify |
+| `clip` | UnivFD (CVPR'23) | WisconsinAIVision/UniversalFakeDetect | ⚠ verify | — (AGID-trained probe) | n/a |
+| `npr` | NPR (CVPR'24) | chuangchuangtan/NPR-DeepfakeDetection | ⚠ verify | **official** ProGAN weights | ⚠ verify |
+| `fat_former` | FatFormer (CVPR'24) | Michel-liu/FatFormer (verify) | ⚠ verify | **official** weights | ⚠ verify |
+| `aide` | AIDE (ICLR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
+| `co_spy` | CO-SPY (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
+| `spai` | SPAI (CVPR'25) | mever-team/spai (verify) | ⚠ verify | **official** weights | ⚠ verify |
+| `vib_net` | VIB-Net (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `safe` | SAFE (KDD'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
+| `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
+| `adapted_dino` | Adapter-tuned DINOv2 (AGID) | this repo | Apache-2.0 | — (AGID-trained) | n/a |
+| `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
+| `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `stall` | STALL (CVPR'26) | ⚠ verify (official repo) | ⚠ verify | training-free; needs DINOv3 backbone | gated (DINOv3) |
+
+## Backbones / foundation models (downloaded on first use)
+
+| Backbone | Used by | License |
+| --- | --- | --- |
+| OpenAI CLIP (ViT-L/14) | `clip`, `fat_former`, `d3` | MIT (verify) |
+| OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
+| DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav` | Apache-2.0 (verify) |
+| DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** — DINOv3 License (non-commercial; accept upstream) |
+| SigLIP | `co_spy` | Apache-2.0 (verify) |
+| MFM ViT-B/16 | `spai` | ⚠ verify |
+| Stable Diffusion VAE | `co_spy` | CreativeML Open RAIL-M (verify) |
+
+## Datasets
+
+The dataset auto-downloaders fetch third-party datasets (GenImage, ForenSynths/CNNDetection,
+AIGIBench, Co-Spy-Bench, DiTFake, UniversalFakeDetect, GenVideo, …). Each dataset is governed by
+its **own** terms / license at the source; AGID only automates retrieval and restructuring. Review
+and comply with each dataset's terms before use or redistribution.
+
+---
+
+*This file is a good-faith attribution map, not legal advice. Maintainers: replace every `⚠ verify`
+with the confirmed upstream repository URL and license before publishing a model zoo or any
+redistributed weights.*

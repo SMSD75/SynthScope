@@ -1,0 +1,22 @@
+{
+  "method": "VIB-Net",
+  "track": "genimage-sdv1.4",
+  "modality": "image",
+  "model_type": "vib_net",
+  "paper": "Zhang et al., CVPR'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "from-scratch",
+  "metrics": {
+    "acc": null,
+    "map": 99.33,
+    "ap": null,
+    "auroc": 99.33
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "GenImage SD-v1.4 single real/fake pool (mAP == AUROC by construction)",
+  "agid_version": "0.1.0"
+}

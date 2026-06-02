@@ -1,0 +1,22 @@
+{
+  "method": "ReStraV",
+  "track": "genvideo-val",
+  "modality": "video",
+  "model_type": "restrav",
+  "paper": "2025",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "frozen-probe",
+  "metrics": {
+    "acc": null,
+    "map": null,
+    "ap": 96.67,
+    "auroc": 97.06
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "Frozen DINOv2 trajectory geometry + MLP",
+  "agid_version": "0.1.0"
+}

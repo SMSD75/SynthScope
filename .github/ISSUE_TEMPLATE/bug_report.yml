@@ -1,0 +1,39 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug, including the full error/traceback.
+      placeholder: Paste the traceback here.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: How to reproduce
+      description: The exact command or minimal code snippet (model, dataset, overrides).
+      placeholder: |
+        bash experiments/aide.sh
+        # or
+        import agid; agid.load("fat_former").predict("x.png")
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Detector / dataset
+      description: Which `model_type` and/or dataset config is involved?
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: OS, Python, PyTorch + CUDA versions, GPU, and `agid` / commit hash.
+      placeholder: |
+        python -c "import torch, agid; print(agid.__version__, torch.__version__, torch.version.cuda)"
+      render: shell
+    validations:
+      required: true

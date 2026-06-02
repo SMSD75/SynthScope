@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Lightweight, always-green-on-day-one checks. We deliberately do NOT build the heavy model
+# stack (torch + large backbones + dataset downloads) on GitHub runners; functional smoke tests
+# run on a GPU machine. See tests/ for the local smoke suite.
+jobs:
+  compile:
+    name: Byte-compile (syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile all Python sources
+        run: python -m compileall -q agid interface models benchmark *.py
+
+  leaderboard:
+    name: Benchmark submissions + leaderboard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Pure-stdlib check: validates every submissions/*.json and that LEADERBOARD.md is current.
+      - run: python benchmark/leaderboard.py --check
+
+  lint:
+    name: Ruff (errors only)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "ruff>=0.4"
+      # Lint the maintained library surface (config + ignores in pyproject.toml [tool.ruff]).
+      # Repo-wide syntax is covered by the byte-compile job above.
+      - run: ruff check agid
+
+  package:
+    name: Build + metadata check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "build>=1" "twine>=5"
+      - run: python -m build
+      - run: twine check dist/*

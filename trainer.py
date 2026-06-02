@@ -10,8 +10,10 @@ from models.image.aide.aide import AGIDAIDEModel
 from models.image.spai.spai import SPAI
 from models.image.vib_net.vib_net import AGIDVIBNetModel
 from models.image.npr.npr import NPR
+from models.image.pgc.pgc import AGIDPGCModel
 from models.video.d3.d3 import AGIDD3Model
 from models.video.restrav.restrav import AGIDReStraVModel
+from models.video.stall.stall import AGIDSTALLModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
@@ -79,10 +81,14 @@ class AGIDModelTrainer:
             return AGIDVIBNetModel(config)
         if model_type == "npr":
             return NPR(config)
+        if model_type == "pgc":
+            return AGIDPGCModel(config)
         if model_type == "d3":
             return AGIDD3Model(config)
         if model_type == "restrav":
             return AGIDReStraVModel(config)
+        if model_type == "stall":
+            return AGIDSTALLModel(config)
         if model_type == "cnn":
             return AGIDCNNModel(config)
         if model_type == "adapted_dino":

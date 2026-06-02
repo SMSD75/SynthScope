@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agid"
+version = "0.1.0"
+description = "A unified library and benchmark for AI-generated image & video detection."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Seyed Salehi Dehnavi", email = "s.salehidehnavi@uva.nl" }]
+keywords = [
+    "deepfake-detection", "ai-generated-images", "synthetic-image-detection",
+    "ai-generated-video", "forensics", "benchmark", "pytorch",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Image Recognition",
+]
+
+# Core runtime: everything the public API (`import agid`) pulls at import/inference time.
+# `interface.backend.{engine,media}` import the repo decoders at module load, so torch/
+# torchvision/decord/matplotlib are genuinely required, not optional.
+dependencies = [
+    "torch>=2.0",
+    "torchvision>=0.15",
+    "numpy",
+    "Pillow",
+    "matplotlib",
+    "decord>=0.6",
+    "tqdm",
+    "hydra-core>=1.3,<2",
+    "omegaconf>=2.3",
+    "huggingface-hub>=0.20",
+    "accelerate>=0.27",
+    "transformers>=4.38",
+    "torchmetrics>=1.0",
+    "timm>=0.9",
+    "open_clip_torch>=2.24",
+    "diffusers>=0.27",
+    "pytorch_wavelets>=1.3",
+    "PyWavelets>=1.9",
+]
+
+[project.optional-dependencies]
+# FastAPI + React web demo (interface/). Not imported by `import agid`.
+web = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
+# Training + dataset auto-download stack.
+train = ["wandb>=0.16", "gdown>=5"]
+# Gradio demo (demo/app.py, Hugging Face Spaces).
+demo = ["gradio>=4"]
+# Tooling for contributors / CI.
+dev = ["ruff>=0.4", "pytest>=7", "build>=1", "twine>=5"]
+all = [
+    "fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9",
+    "wandb>=0.16", "gdown>=5", "gradio>=4",
+]
+
+[project.urls]
+Homepage = "https://github.com/SMSD75/AGID"
+Repository = "https://github.com/SMSD75/AGID"
+Issues = "https://github.com/SMSD75/AGID/issues"
+
+[project.scripts]
+agid = "agid.cli:main"
+
+# Flat (research) layout: top-level modules + the model/interface/agid packages. Editable
+# install (`pip install -e .`) is the supported path — it puts the repo root on sys.path so
+# the existing flat imports (dataset, trainer, models.*, config_utils, interface.*) all resolve.
+[tool.setuptools]
+py-modules = ["main", "trainer", "dataset", "metrics", "transformations", "logger", "config_utils"]
+
+[tool.setuptools.packages.find]
+include = ["agid*", "models*", "interface*"]
+exclude = ["tests*", "outputs*", "wandb*", "docs*", "experiments*", "conf*"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+# Heavy research / vendored model code is not held to the package lint bar; CI lints `agid`.
+extend-exclude = ["models", "outputs", "wandb", "experiments", "docs", "interface/frontend", ".cache"]
+
+[tool.ruff.lint]
+# Start conservative: real errors (pyflakes F + a few correctness rules), not style churn.
+select = ["E9", "F"]
+ignore = ["F401", "F403", "F405"]  # research modules use re-export / star-import patterns

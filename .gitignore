@@ -9,3 +9,9 @@ wandb/
 outputs/
 .cache/
 .claude/
+# packaging / tooling artifacts
+build/
+dist/
+*.egg-info/
+.ruff_cache/
+.pytest_cache/

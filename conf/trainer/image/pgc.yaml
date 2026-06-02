@@ -1,0 +1,21 @@
+defaults:
+  - /trainer/default
+  - _self_
+
+# PGC trains LoRA adapters + the residual stream + PGCM + classifier (DINO backbone frozen).
+# Paper: Adam, lr 5e-4? -> repo uses lr 5e-5, weight_decay 0.05, ~100 epochs. Epochs reduced
+# here for turnaround; raise for a full reproduction.
+trainer_type: pgc
+epochs: 10
+lr: 5.0e-5
+weight_decay: 0.05
+label_smoothing: 0.0
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: false
+save_policy: max
+warmup:
+  mode: on
+  warmup_ratio: 0.05
+  lr_scheduler: cosine

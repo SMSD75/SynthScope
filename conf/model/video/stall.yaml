@@ -1,0 +1,27 @@
+defaults:
+  - /model/default
+  - _self_
+
+model_type: stall
+# Frozen DINOv3 ViT-L/16 — the backbone the shipped VATEX calibration params were computed with.
+backbone_name: dinov3_vitl16
+freeze_backbone: true
+# Per-video aggregation (paper): spatial = max over frames, temporal = min over frame-pairs.
+spat_agg: max
+temp_agg: min
+# Frames sampled per clip (must match the dataset config). Paper uses 16.
+num_frames: 16
+# Calibration / whitening params (real-data statistics). null => the VATEX/DINOv3 npz shipped
+# next to the model. The model recomputes the params from real videos when recompute_params=true
+# OR when this path does not exist, then saves them here.
+stall_params_path: null
+recompute_params: false
+# When recomputing: which split of DatasetConfig to calibrate on, whether to keep only real
+# (label 0) clips, and an optional cap on the number of clips (0 = all). Point DatasetConfig at
+# a real-video set DISJOINT from your eval set to avoid leakage.
+calib_split: train
+calib_real_only: true
+calib_max_videos: 0
+# DINOv3 backbone source (gated weights). null => DINO_V3_REPO_DIR / DINO_V3_WEIGHTS env vars.
+dino_repo: null
+dino_weights: null

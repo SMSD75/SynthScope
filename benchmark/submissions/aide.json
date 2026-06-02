@@ -1,0 +1,22 @@
+{
+  "method": "AIDE",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "aide",
+  "paper": "Yan et al., ICLR'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "official-weights",
+  "metrics": {
+    "acc": null,
+    "map": 92.08,
+    "ap": null,
+    "auroc": null
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths-8; mAP reproduces, acc@0.5 miscalibrated (single-view vs official 5-view DCT)",
+  "agid_version": "0.1.0"
+}

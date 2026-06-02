@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use AGID in your research, please cite it."
+title: "AGID: A Unified Library and Benchmark for AI-Generated Image and Video Detection"
+abstract: >-
+  AGID re-implements a range of state-of-the-art AI-generated (synthetic) image and video
+  detectors behind a single configuration system, training loop, datasets, transforms, and
+  metrics, so that different methods can be trained and benchmarked under identical conditions,
+  with results reported per generator/source.
+type: software
+authors:
+  # TODO(maintainer): verify the author name(s) and affiliation, and add ORCID(s).
+  - family-names: "Salehi Dehnavi"
+    given-names: "Seyed"
+    email: "s.salehidehnavi@uva.nl"
+    affiliation: "University of Amsterdam"
+repository-code: "https://github.com/SMSD75/AGID"
+url: "https://github.com/SMSD75/AGID"
+license: Apache-2.0
+version: "0.1.0"
+keywords:
+  - AI-generated image detection
+  - synthetic media detection
+  - deepfake detection
+  - benchmark

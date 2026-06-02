@@ -1,0 +1,22 @@
+{
+  "method": "SAFE",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "safe",
+  "paper": "Li et al., KDD'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "from-scratch",
+  "metrics": {
+    "acc": null,
+    "map": 94.13,
+    "ap": null,
+    "auroc": 93.68
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths; trained from scratch",
+  "agid_version": "0.1.0"
+}

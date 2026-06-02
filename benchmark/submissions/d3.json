@@ -1,0 +1,22 @@
+{
+  "method": "D3",
+  "track": "genvideo-val",
+  "modality": "video",
+  "model_type": "d3",
+  "paper": "ICCV'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "training-free",
+  "metrics": {
+    "acc": null,
+    "map": null,
+    "ap": 95.6,
+    "auroc": 93.6
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "Training-free frozen CLIP 2nd-order trajectory",
+  "agid_version": "0.1.0"
+}

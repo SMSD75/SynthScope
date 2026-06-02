@@ -1,0 +1,27 @@
+name: Feature request / new detector or dataset
+description: Propose a new detector, dataset, or capability
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type
+      options:
+        - New detector (method)
+        - New dataset / benchmark
+        - API / usability
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like?
+      description: Describe the method/dataset/feature. For a new detector, link the paper and official repo.
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: Why is it useful?
+      description: What does it add to the benchmark (e.g. a generator family or modality not yet covered)?

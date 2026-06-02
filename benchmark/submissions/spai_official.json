@@ -1,0 +1,22 @@
+{
+  "method": "SPAI (official weights)",
+  "track": "genimage-sdv1.4",
+  "modality": "image",
+  "model_type": "spai",
+  "paper": "Karageorgiou et al., CVPR'25",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "official-weights",
+  "metrics": {
+    "acc": null,
+    "map": null,
+    "ap": 94.01,
+    "auroc": 98.45
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "GenImage SD-v1.4; vendored official architecture, fixed-res 2x2x224",
+  "agid_version": "0.1.0"
+}

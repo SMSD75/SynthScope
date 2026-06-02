@@ -1,13 +1,20 @@
+import os
 import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 from models.image.adapted_dino.adapted_dino import Adapter
 
+# DINOv3 local repo + gated weights dir (env-overridable). The weights were downloaded to
+# /hddstore on cn023 (the original /nvmestore path is not mounted here).
+_DINOV3_REPO = os.environ.get("DINO_V3_REPO_DIR", "/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/")
+_DINOV3_WEIGHTS_DIR = os.environ.get("DINO_V3_WEIGHTS_DIR", "/hddstore/ssalehi/AGID/dinov3_checkpoints")
+
+
 class AGIDDINOModel(nn.Module):
     MODEL_DICT = {
         "dinov2": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
         "adapted_dino": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
-        "dinov3": lambda backbone_name: torch.hub.load("/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/", source="local", model=backbone_name, weights=f"/nvmestore/ssalehi/AGID/dinov3_checkpoints/{backbone_name}_pretrain_lvd1689m-8aa4cbdd.pth"),
+        "dinov3": lambda backbone_name: torch.hub.load(_DINOV3_REPO, source="local", model=backbone_name, weights=f"{_DINOV3_WEIGHTS_DIR}/{backbone_name}_pretrain_lvd1689m-8aa4cbdd.pth"),
     }
     def __init__(self, config: DictConfig):
         super().__init__()

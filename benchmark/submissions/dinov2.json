@@ -1,0 +1,22 @@
+{
+  "method": "DINOv2 probe",
+  "track": "forensynths",
+  "modality": "image",
+  "model_type": "dinov2",
+  "paper": "Oquab et al., 2023",
+  "url": "https://github.com/SMSD75/AGID",
+  "evaluation": "frozen-probe",
+  "metrics": {
+    "acc": null,
+    "map": 95.03,
+    "ap": null,
+    "auroc": 94.86
+  },
+  "per_generator": null,
+  "submitted_by": "AGID",
+  "date": "2026-06-02",
+  "verified": true,
+  "source": "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
+  "protocol_notes": "ForenSynths; frozen DINOv2 ViT-L/14 probe",
+  "agid_version": "0.1.0"
+}
