@@ -54,22 +54,16 @@
     .empty { color: var(--muted); text-align: center; padding: 40px 0; font-size: 14px; }
     a { color: var(--accent); }
   </style>
-  <script type="importmap">
-  {
-    "imports": {
-      "react": "https://esm.sh/react@18.2.0",
-      "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-      "htm/react": "https://esm.sh/htm@3.1.1/react?deps=react@18.2.0"
-    }
-  }
-  </script>
+  <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
+  <script src="/static/vendor/react.production.min.js"></script>
+  <script src="/static/vendor/react-dom.production.min.js"></script>
+  <script src="/static/vendor/htm.umd.js"></script>
 </head>
 <body>
   <div id="root"></div>
-  <script type="module">
-    import React, { useState, useEffect, useRef } from "react";
-    import { createRoot } from "react-dom/client";
-    import htm from "htm/react";
+  <script>
+    const { useState, useEffect, useRef } = React;
+    const { createRoot } = ReactDOM;
     const html = htm.bind(React.createElement);
 
     const API = (p) => (window.AGID_API || "") + p;

@@ -116,6 +116,9 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
 if FRONTEND_DIST.is_dir():
     app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="assets")
 
+# Serve the standalone page's local assets (vendored React/htm) so the UI needs no external CDN.
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
 
 @app.get("/")
 def index():
