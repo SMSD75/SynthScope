@@ -20,12 +20,19 @@ DEFAULT_PROMPT = "make another image conceptually similar to this"
 class Generator:
     key: str
     name: str
-    env_key: str          # API-key env var
+    env_key: str          # API-key env var (hosted generators); HF token for the gated download (local)
     uses_image: bool      # True = image-conditioned (edit); False = text-to-image only
     call: Callable[[bytes, str], bytes]
     note: str = ""
+    local: bool = False   # True = open-weight, runs locally (no paid API key)
 
     def available(self) -> bool:
+        if self.local:                       # local = available if the inference pipeline is importable
+            try:
+                from diffusers import Ideogram4Pipeline  # noqa: F401
+                return True
+            except Exception:
+                return False
         return bool(os.environ.get(self.env_key))
 
 
@@ -85,18 +92,26 @@ def _flux(image_png: bytes, prompt: str) -> bytes:
     return requests.get(img_url, timeout=120).content
 
 
-# --- Ideogram 4.0 (remix / image-to-image) -------------------------------------------------------
-# Ideogram 4.0 (June 2026) is OPEN-WEIGHT (9.3B DiT; Apache-2.0 inference code, weights under a
-# non-commercial license, on HF/GitHub). This uses the hosted remix API for parity with the other
-# generators; for a fully-local path, load the open weights from HF and swap the call here.
-def _ideogram(image_png: bytes, prompt: str) -> bytes:
-    key = os.environ["IDEOGRAM_API_KEY"]
-    r = requests.post("https://api.ideogram.ai/v1/ideogram-v3/remix",
-                      headers={"Api-Key": key},
-                      data={"prompt": prompt, "rendering_speed": "DEFAULT", "image_weight": "50"},
-                      files={"image": ("src.png", image_png, "image/png")}, timeout=180)
-    r.raise_for_status()
-    return requests.get(r.json()["data"][0]["url"], timeout=120).content
+# --- Ideogram 4.0 — OPEN-WEIGHT, runs LOCALLY (no paid API key) -----------------------------------
+# Ideogram 4.0 (June 2026) is open-weight (9.3B DiT; Apache-2.0 inference code). The nf4 checkpoint
+# (`ideogram-ai/ideogram-4-nf4-diffusers`) fits on a single 24 GB GPU. We load it via diffusers and
+# run inference locally — no Ideogram API key. A free HF token (HF_TOKEN) is only needed ONCE to
+# download the license-gated weights; after that it runs offline. Text-to-image (flow-matching DiT),
+# so it generates from the prompt rather than conditioning on the source image.
+_IDEOGRAM_PIPE = None
+
+
+def _ideogram_local(image_png: bytes, prompt: str) -> bytes:
+    global _IDEOGRAM_PIPE
+    if _IDEOGRAM_PIPE is None:
+        import torch
+        from diffusers import Ideogram4Pipeline
+        pipe = Ideogram4Pipeline.from_pretrained(
+            "ideogram-ai/ideogram-4-nf4-diffusers", torch_dtype=torch.bfloat16,
+            token=os.environ.get("HF_TOKEN"))
+        _IDEOGRAM_PIPE = pipe.to("cuda" if __import__("torch").cuda.is_available() else "cpu")
+    out = _IDEOGRAM_PIPE(prompt=prompt, height=1024, width=1024).images[0]
+    return _png_bytes(out)
 
 
 GENERATORS = {
@@ -109,9 +124,9 @@ GENERATORS = {
                   "xAI text-to-image; generates from the prompt (no image input)."),
         Generator("flux", "FLUX.1 (img2img, via fal.ai)", "FAL_KEY", True, _flux,
                   "Black Forest Labs FLUX image-to-image."),
-        Generator("ideogram", "Ideogram 4.0 (remix)", "IDEOGRAM_API_KEY", True, _ideogram,
-                  "Ideogram 4.0 — open-weight (Apache-2.0 code, weights on HF). Hosted remix API here; "
-                  "swap for local HF inference if preferred."),
+        Generator("ideogram", "Ideogram 4.0 (open-weight, local)", "HF_TOKEN", False, _ideogram_local,
+                  "Open-weight 9.3B DiT, nf4 on a 24GB GPU — runs locally via diffusers, NO paid API "
+                  "key. HF_TOKEN only to download the license-gated weights once.", local=True),
     ]
 }
 
