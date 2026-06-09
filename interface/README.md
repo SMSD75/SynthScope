@@ -152,3 +152,9 @@ The backend auto-loads `.env` at startup (`interface/backend/config.py`). Real s
 secrets manager override the file. A generator whose key is unset shows greyed-out "(no API key)" in
 the UI; the rest of the demo (real-image serving, detector scoring) works without any key. For
 production, prefer real env vars / a secrets manager over the `.env` file.
+
+**Local Ideogram 4.0 (open-weight, no paid API key):** needs `Ideogram4Pipeline`, currently only in diffusers `main`:
+```bash
+pip install "git+https://github.com/huggingface/diffusers.git"
+```
+and a free `HF_TOKEN` (once) to download the license-gated nf4 weights (accept at hf.co/ideogram-ai/ideogram-4-nf4-diffusers). It then runs locally on a 24 GB GPU.
