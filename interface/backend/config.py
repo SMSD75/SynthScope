@@ -18,6 +18,27 @@ REPO_ROOT = INTERFACE_DIR.parent
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+
+def _load_dotenv() -> None:
+    """Load secrets (SOTA-generator API keys, etc.) from a gitignored ``.env`` at the repo root.
+
+    No dependency required: a minimal KEY=VALUE parser. Existing real env vars take precedence
+    (``setdefault``), so a shell export or a secrets manager always overrides the file. The ``.env``
+    file is gitignored — never commit keys; commit only ``.env.example``.
+    """
+    for env_path in (REPO_ROOT / ".env", INTERFACE_DIR / ".env"):
+        if not env_path.is_file():
+            continue
+        for line in env_path.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+
+
+_load_dotenv()
+
 # Central checkpoint directory. Defaults to a node-local location next to the datasets;
 # override with AGID_CKPT_DIR when running elsewhere.
 CHECKPOINTS_DIR = Path(

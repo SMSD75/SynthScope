@@ -15,3 +15,8 @@ dist/
 *.egg-info/
 .ruff_cache/
 .pytest_cache/
+
+# Secrets — never commit; use .env.example as the template
+.env
+.env.local
+.env.*.local

@@ -136,3 +136,19 @@ available). See `MANIFEST.md` there for status.
   run the backend on that node, or set `AGID_CKPT_DIR`/`AGID_CACHE_DIR` to wherever the weights are.
 * First use of a model downloads its pretrained backbone (CLIP/DINOv2/SigLIP/…) into the cache.
 * GPU is auto-detected; falls back to CPU (slow for the large backbones).
+
+## Configuring SOTA generator API keys
+
+The "SOTA vs Detectors" demo calls external image generators (Nano Banana / GPT Image / Grok / FLUX).
+Keys are read from environment variables — **never commit them**:
+
+```bash
+cp .env.example .env        # at the repo root; .env is gitignored
+# edit .env and fill in the keys you have:
+#   GEMINI_API_KEY=...   OPENAI_API_KEY=...   XAI_API_KEY=...   FAL_KEY=...
+```
+
+The backend auto-loads `.env` at startup (`interface/backend/config.py`). Real shell exports or a
+secrets manager override the file. A generator whose key is unset shows greyed-out "(no API key)" in
+the UI; the rest of the demo (real-image serving, detector scoring) works without any key. For
+production, prefer real env vars / a secrets manager over the `.env` file.
