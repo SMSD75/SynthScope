@@ -85,6 +85,20 @@ def _flux(image_png: bytes, prompt: str) -> bytes:
     return requests.get(img_url, timeout=120).content
 
 
+# --- Ideogram 4.0 (remix / image-to-image) -------------------------------------------------------
+# Ideogram 4.0 (June 2026) is OPEN-WEIGHT (9.3B DiT; Apache-2.0 inference code, weights under a
+# non-commercial license, on HF/GitHub). This uses the hosted remix API for parity with the other
+# generators; for a fully-local path, load the open weights from HF and swap the call here.
+def _ideogram(image_png: bytes, prompt: str) -> bytes:
+    key = os.environ["IDEOGRAM_API_KEY"]
+    r = requests.post("https://api.ideogram.ai/v1/ideogram-v3/remix",
+                      headers={"Api-Key": key},
+                      data={"prompt": prompt, "rendering_speed": "DEFAULT", "image_weight": "50"},
+                      files={"image": ("src.png", image_png, "image/png")}, timeout=180)
+    r.raise_for_status()
+    return requests.get(r.json()["data"][0]["url"], timeout=120).content
+
+
 GENERATORS = {
     g.key: g for g in [
         Generator("nanobanana", "Nano Banana (Gemini 2.5 Flash Image)", "GEMINI_API_KEY", True, _gemini,
@@ -95,6 +109,9 @@ GENERATORS = {
                   "xAI text-to-image; generates from the prompt (no image input)."),
         Generator("flux", "FLUX.1 (img2img, via fal.ai)", "FAL_KEY", True, _flux,
                   "Black Forest Labs FLUX image-to-image."),
+        Generator("ideogram", "Ideogram 4.0 (remix)", "IDEOGRAM_API_KEY", True, _ideogram,
+                  "Ideogram 4.0 — open-weight (Apache-2.0 code, weights on HF). Hosted remix API here; "
+                  "swap for local HF inference if preferred."),
     ]
 }
 
