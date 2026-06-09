@@ -94,6 +94,20 @@ CNNDetection shows that a detector trained only on ProGAN can detect many other 
 | Other CNN synthesis tasks | CRN, IMLE, SITD, SAN | Often above chance |
 | Face manipulation | DeepFake, WhichFaceIsReal | Detectable but domain-dependent |
 
+### AGID reproduction (paper vs reproduced)
+
+Reproduced through `benchmark/bench_eval.py` (mean acc@0.5 / mAP, %). **Official** loads the authors'
+released `blur_jpg_prob0.1` ResNet-50 into the AGID class; **AGID** fine-tunes ResNet-50 from scratch on
+ProGAN via the AGID recipe.
+
+| Benchmark | Paper mAP (Blur+JPEG 0.1) | Reproduced — official | Reproduced — AGID-trained |
+|---|---|---|---|
+| ForenSynths | 92.6 | 74.30 / 91.15 | 72.23 / 91.05 |
+
+Both reproduce the paper's ForenSynths mAP (~91 vs 92.6); the lower acc@0.5 reflects the AGID per-generator
+mean over the full on-disk set (including non-256 sources the paper's headline omits), while the *ranking*
+metric (mAP) matches.
+
 ## Core novelties
 
 ### 1. Generalization from one generator
@@ -125,3 +139,11 @@ The results suggest that many CNN-based generators leave common detectable artif
 ## Summary
 
 CNNDetection is a foundational fake-image detection baseline. It trains an ImageNet-pretrained ResNet-50 on ProGAN real/fake images and shows strong transfer to many other CNN-generated image types. Its main practical recipe is simple: train on ProGAN, use a standard binary CNN classifier, and apply blur/JPEG augmentation to improve generalization.
+
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| ForenSynths test set (CVPR paper Table 2 = 11  | AP and acc@0.5 | map=90.8 | map_fs8=94.42 / acc_fs8=76.36 / map_fs13=91.05 / official_fs8=92.67 / official_fs13=91.15 / ckpt=cnn.pth (AGID-trained ResNet-50, ckpt_kind=agid) / tags=cnn_agid_forensynths / cnn_official_forensynths | reproduced |

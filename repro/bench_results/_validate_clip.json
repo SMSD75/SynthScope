@@ -1,0 +1,31 @@
+{
+  "tag": "_validate_clip",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 2,
+  "means": {
+    "acc": 95.0,
+    "map": 99.04,
+    "mauroc": 98.78
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 98.08,
+      "auroc": 97.56,
+      "real_acc": 88.0,
+      "fake_acc": 92.0,
+      "acc": 90.0
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    }
+  },
+  "date": "2026-06-04T10:57:05",
+  "agid_version": "0.1.0"
+}

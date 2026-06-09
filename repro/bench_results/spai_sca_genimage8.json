@@ -1,0 +1,73 @@
+{
+  "tag": "spai_sca_genimage8",
+  "model": "spai",
+  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/spai_sca/model_4.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 50.0,
+    "map": 50.0,
+    "mauroc": 50.0
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "biggan": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "glide": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "midjourney": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "sdv1.4": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "sdv1.5": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "vqdm": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    },
+    "wukong": {
+      "ap": 50.0,
+      "auroc": 50.0,
+      "real_acc": 0.0,
+      "fake_acc": 100.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-06-05T14:50:00",
+  "agid_version": "0.1.0"
+}

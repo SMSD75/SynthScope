@@ -1,0 +1,171 @@
+{
+  "tag": "cospy_flickr_clean",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/CoSpyBench/test",
+  "n_generators": 22,
+  "means": {
+    "acc": 54.77,
+    "map": 76.99,
+    "mauroc": 74.05
+  },
+  "per_generator": {
+    "flickr__CompVis@ldm-text2im-large-256": {
+      "ap": 95.94,
+      "auroc": 94.75,
+      "real_acc": 100.0,
+      "fake_acc": 40.5,
+      "acc": 70.25
+    },
+    "flickr__CompVis@stable-diffusion-v1-4": {
+      "ap": 85.82,
+      "auroc": 83.7,
+      "real_acc": 100.0,
+      "fake_acc": 10.5,
+      "acc": 55.25
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 76.31,
+      "auroc": 75.27,
+      "real_acc": 100.0,
+      "fake_acc": 2.0,
+      "acc": 51.0
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 74.26,
+      "auroc": 70.98,
+      "real_acc": 100.0,
+      "fake_acc": 4.0,
+      "acc": 52.0
+    },
+    "flickr__black-forest-labs@FLUX.1-dev": {
+      "ap": 59.39,
+      "auroc": 55.9,
+      "real_acc": 100.0,
+      "fake_acc": 0.5,
+      "acc": 50.25
+    },
+    "flickr__black-forest-labs@FLUX.1-schnell": {
+      "ap": 65.16,
+      "auroc": 61.37,
+      "real_acc": 100.0,
+      "fake_acc": 0.5,
+      "acc": 50.25
+    },
+    "flickr__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 59.11,
+      "auroc": 53.38,
+      "real_acc": 100.0,
+      "fake_acc": 1.0,
+      "acc": 50.5
+    },
+    "flickr__latent-consistency@lcm-lora-sdxl": {
+      "ap": 68.54,
+      "auroc": 59.25,
+      "real_acc": 100.0,
+      "fake_acc": 2.0,
+      "acc": 51.0
+    },
+    "flickr__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 69.92,
+      "auroc": 70.32,
+      "real_acc": 100.0,
+      "fake_acc": 0.5,
+      "acc": 50.25
+    },
+    "flickr__playgroundai@playground-v2-256px-base": {
+      "ap": 72.05,
+      "auroc": 64.2,
+      "real_acc": 100.0,
+      "fake_acc": 7.5,
+      "acc": 53.75
+    },
+    "flickr__playgroundai@playground-v2-512px-base": {
+      "ap": 74.45,
+      "auroc": 71.51,
+      "real_acc": 100.0,
+      "fake_acc": 6.0,
+      "acc": 53.0
+    },
+    "flickr__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 68.27,
+      "auroc": 65.71,
+      "real_acc": 100.0,
+      "fake_acc": 0.5,
+      "acc": 50.25
+    },
+    "flickr__runwayml@stable-diffusion-v1-5": {
+      "ap": 83.57,
+      "auroc": 81.58,
+      "real_acc": 100.0,
+      "fake_acc": 11.5,
+      "acc": 55.75
+    },
+    "flickr__segmind@SSD-1B": {
+      "ap": 90.7,
+      "auroc": 88.85,
+      "real_acc": 100.0,
+      "fake_acc": 19.5,
+      "acc": 59.75
+    },
+    "flickr__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 77.14,
+      "auroc": 76.86,
+      "real_acc": 100.0,
+      "fake_acc": 0.5,
+      "acc": 50.25
+    },
+    "flickr__segmind@small-sd": {
+      "ap": 94.4,
+      "auroc": 93.0,
+      "real_acc": 100.0,
+      "fake_acc": 35.5,
+      "acc": 67.75
+    },
+    "flickr__segmind@tiny-sd": {
+      "ap": 97.81,
+      "auroc": 97.25,
+      "real_acc": 100.0,
+      "fake_acc": 44.5,
+      "acc": 72.25
+    },
+    "flickr__stabilityai@sdxl-turbo": {
+      "ap": 64.73,
+      "auroc": 58.87,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "flickr__stabilityai@stable-diffusion-2": {
+      "ap": 83.23,
+      "auroc": 79.66,
+      "real_acc": 100.0,
+      "fake_acc": 10.0,
+      "acc": 55.0
+    },
+    "flickr__stabilityai@stable-diffusion-2-1": {
+      "ap": 84.76,
+      "auroc": 83.03,
+      "real_acc": 100.0,
+      "fake_acc": 8.5,
+      "acc": 54.25
+    },
+    "flickr__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 68.66,
+      "auroc": 65.92,
+      "real_acc": 100.0,
+      "fake_acc": 1.0,
+      "acc": 50.5
+    },
+    "flickr__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 79.45,
+      "auroc": 77.71,
+      "real_acc": 100.0,
+      "fake_acc": 3.5,
+      "acc": 51.75
+    }
+  },
+  "date": "2026-06-07T13:52:55",
+  "agid_version": "0.1.0"
+}

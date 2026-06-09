@@ -45,7 +45,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from omegaconf import DictConfig
-from transformers import CLIPVisionModel, AutoModel
+from transformers import CLIPVisionModel, XCLIPVisionModel, AutoModel
 from torchvision.models import ResNet18_Weights, resnet18
 
 
@@ -58,6 +58,19 @@ class _ClipEncoder(nn.Module):
 
     def encode_frames(self, x):
         return self.model(pixel_values=x).pooler_output
+
+
+class _XClipEncoder(nn.Module):
+    """HF X-CLIP vision tower -> per-frame pooled feature ``[N, D]`` (the paper's headline encoder).
+    Used exactly like CLIP per-frame (official D3 ``D3_model.py`` flattens B*T and takes ``pooler_output``);
+    X-CLIP's video-pretrained vision tower gives stronger per-frame features (paper 98.46 vs CLIP ~97)."""
+
+    def __init__(self, hf_name: str):
+        super().__init__()
+        self.model = XCLIPVisionModel.from_pretrained(hf_name)
+
+    def encode_frames(self, x):
+        return self.model(pixel_values=x, output_hidden_states=True).pooler_output
 
 
 class _DinoEncoder(nn.Module):
@@ -119,6 +132,10 @@ class AGIDD3Model(nn.Module):
             return _ClipEncoder("openai/clip-vit-base-patch16")
         if name in ("clip-32", "clip-b/32"):
             return _ClipEncoder("openai/clip-vit-base-patch32")
+        if name in ("xclip", "xclip-16", "xclip-b/16"):
+            return _XClipEncoder("microsoft/xclip-base-patch16")
+        if name in ("xclip-32", "xclip-b/32"):
+            return _XClipEncoder("microsoft/xclip-base-patch32")
         if name in ("dinov2", "dinov2-base", "dino-base"):
             return _DinoEncoder("facebook/dinov2-base")
         if name in ("dinov2-large", "dino-large"):

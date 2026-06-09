@@ -58,11 +58,34 @@ npm run dev
 * The fake probability is the model's native positive-class score: `softmax(logits)[fake]` for the
   cross-entropy heads, `sigmoid(logit)` for the BCE heads. Label index **1 = fake**
   (`dataset.py:_get_label`).
-* **Video**: native video detectors (D3, ReStraV) decode a clip and score it directly; image
+* **Video**: native video detectors (D3, ReStraV, STALL) decode a clip and score it directly; image
   detectors sample frames (default 16), score each as an image, and report the **mean** P(fake)
   plus a per-frame breakdown.
 * Models load lazily on first request and are kept in a small LRU (`AGID_MAX_RESIDENT_MODELS`,
   default 2) so the GPU is not exhausted by the large backbones.
+
+## Detectors (16) & helper scripts
+
+13 image (`clip`, `cnn`, `dinov2`, `dinov3`, `adapted_dino`, `safe`, `fat_former`, `co_spy`, `aide`,
+`spai`, `vib_net`, `npr`, `pgc`) + 3 video (`d3`, `restrav`, `stall`). Per-model held-out numbers and the
+checkpoint-zoo table are in the top-level [README](../README.md#web-interface--checkpoint-zoo).
+
+| script | purpose |
+| --- | --- |
+| `scripts/collect_checkpoints.py` | symlink official weights into `$AGID_CKPT_DIR` + write `MANIFEST.md` |
+| `scripts/train_model.sh <key> <gpus> <port> [epochs]` | train an AGID-class detector (saving on) |
+| `scripts/promote_checkpoint.py <key>` | publish the best trained epoch as `<key>.pth` |
+| `scripts/verify_model.py <key>` | quick held-out check on ForenSynths |
+| `scripts/build_restrav_data.py` | stage GenVideo into the image-style `<split>/<gen>/{0_real,1_fake}` layout |
+| `scripts/calibrate_d3.py` | calibrate D3's score→probability |
+| `scripts/restrav_repro.py` | **faithful** ReStraV reproduction (in-distribution + cross-generator) |
+
+Notes:
+* **STALL** is training-free; it ships the official VATEX calibration npz and can recompute it on your own
+  real videos (`ModelConfig.recompute_params=true`). It and the **`dinov3`** probe need the gated **DINOv3
+  ViT-L/16** weights (set `DINO_V3_WEIGHTS` / `DINO_V3_WEIGHTS_DIR`).
+* **ReStraV** uses raw `[0,1]` input + standardized 21-d features (matching the official repo); see the
+  README footnote on in-distribution vs cross-generator results.
 
 ## API
 
@@ -71,11 +94,20 @@ npm run dev
 | GET | `/api/health` | – | status, device, checkpoints dir |
 | GET | `/api/models` | – | detectors + availability |
 | POST | `/api/predict` | multipart `file`, `model` | `{fake_probability, real_probability, verdict, …}` |
+| GET | `/api/datasets` | – | on-disk datasets + per-model training dataset |
+| GET | `/api/datasets/{key}/sample` | query `split`, `n`, `seed` | random balanced batch `{items:[{rel,label,modality}]}` |
+| GET | `/api/datasets/{key}/media` | query `rel`, `thumb` | the file (or a JPEG thumbnail / video middle-frame) |
+| POST | `/api/predict_dataset` | form `dataset`, `rel`, `model` | prediction on a dataset file + `ground_truth`, `correct` |
 
 ```bash
 curl -s -X POST http://localhost:8000/api/predict \
   -F model=fat_former -F file=@/path/to/image.png | python -m json.tool
 ```
+
+The UI has two tabs: **Detect** (upload an image/video) and **Data Explorer** (pick a dataset —
+the one used to train the chosen detector is starred — sample a random batch of thumbnails, click any
+item to run the detector and see prediction vs. ground truth, and "↻ New batch" to resample). Datasets
+are auto-discovered from disk (`backend/datasets.py`), so only those present on the node appear.
 
 ## Checkpoints
 

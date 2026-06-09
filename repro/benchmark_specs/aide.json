@@ -1,0 +1,54 @@
+{
+  "model": "aide",
+  "paper": "A Sanity Check for AI-generated Image Detection (Yan et al., ICLR 2025)",
+  "arxiv_id": "2406.19435",
+  "official_repo": "https://github.com/shilinyan99/AIDE (official_repos/AIDE)",
+  "training_set_in_paper": "Two settings. Setting-I (B1 AIGCDetectBenchmark): trained on 4-class? -> whole-class ProGAN (CNNSpot/ForenSynths, real=LSUN, fake=ProGAN, 360k). Setting-I (B2 GenImage): trained on ImageNet reals + SDv1.4 fakes (324k). Setting-II (B3 Chameleon): trained on ProGAN, or SDv1.4, or 'All GenImage' (paper sec.4.1/Tables 10,11). 5 epochs, AdamW, blr=1e-4 on B1 / 5e-4 on B2, bs=32, 8xA100; aug = random JPEG QF~U(30,100) p=0.1 + Gaussian blur sigma~U(0.1,3.0) p=0.1.",
+  "benchmarks": [
+    {
+      "name": "AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained)",
+      "datasets": ["AIGCDetectBenchmark"],
+      "subsets_or_generators": ["ProGAN", "StyleGAN", "BigGAN", "CycleGAN", "StarGAN", "GauGAN", "StyleGAN2", "WFIR", "ADM", "Glide", "Midjourney", "SD v1.4", "SD v1.5", "VQDM", "Wukong", "DALLE2"],
+      "metric": "acc",
+      "n_generators_in_paper": 16,
+      "paper_number": {"map": null, "acc": 92.77},
+      "paper_per_generator": {"ProGAN": 99.99, "StyleGAN": 99.64, "BigGAN": 83.95, "CycleGAN": 98.48, "StarGAN": 99.91, "GauGAN": 73.25, "StyleGAN2": 98.00, "WFIR": 94.20, "ADM": 93.43, "Glide": 95.09, "Midjourney": 77.20, "SD_v1.4": 93.00, "SD_v1.5": 92.85, "VQDM": 95.16, "Wukong": 93.55, "DALLE2": 96.60},
+      "paper_section": "Table 3 (p.8); AP version Table 12 (appendix). Trained on ProGAN per text 'all methods except DIRE-D trained on ProGAN'.",
+      "official_eval_protocol": "Official data/datasets.py TestDataset: NO resize of the input image. transform_before_test=ToTensor only -> DCT_base_Rec_Module runs on NATIVE resolution (unfold window=32 stride=16 over full image, K=6 band-pass filters, log|DCT|+1, 2k=weight, pick 2 highest + 2 lowest patches). Selected patches AND x_0 token are then Resize([256,256])+Normalize(ImageNet); semantic branch CLIP-remaps ImageNet->CLIP, ConvNeXt-XXL asserts (3072,8,8). softmax[:,1], acc@0.5 + AP. Checkpoint AIDE_checkpoints/progan_train.pth.",
+      "our_status": "reproduced",
+      "our_number": {"map": 97.94, "acc": 91.89, "note": "AGID metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."},
+      "gap_cause": "none for official-weights faithful eval. AGID-class trained-from-scratch (registry default) only reached 72.25 mAP / 61.64 acc on AIGCDetect because of the native-res DCT divergence (see GenImage entry).",
+      "dataset_source": "on-disk /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test (17 gens present incl sd_xl)"
+    },
+    {
+      "name": "GenImage (B2, Setting-I, SDv1.4-trained)",
+      "datasets": ["GenImage"],
+      "subsets_or_generators": ["Midjourney", "SD v1.4", "SD v1.5", "ADM", "GLIDE", "Wukong", "VQDM", "BigGAN"],
+      "metric": "acc",
+      "n_generators_in_paper": 8,
+      "paper_number": {"map": null, "acc": 86.88},
+      "paper_per_generator": {"Midjourney": 79.38, "SD_v1.4": 99.74, "SD_v1.5": 99.76, "ADM": 78.54, "GLIDE": 91.82, "Wukong": 98.65, "VQDM": 80.26, "BigGAN": 66.89},
+      "paper_section": "Table 4 (p.7-8). Trained on ImageNet reals + SDv1.4 fakes, eval over 8 generators.",
+      "official_eval_protocol": "Same TestDataset path: native-res DCT patch selection, patches+token resized to 256 + ImageNet-norm, ConvNeXt-XXL semantic branch. Checkpoint AIDE_checkpoints/sd14_train.pth. (A GenImage_train.pth checkpoint also exists and scores ~99.96 mAP but that is trained on the full GenImage train, not the paper's SDv1.4-only Setting-I.)",
+      "our_status": "reproduced",
+      "our_number": {"map": 97.12, "acc": 85.91, "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88. tag=aide_official_genimage8 2026-06-05. AGID-class-from-scratch (registry) = 55.67 mAP/53.8 acc; AGID trained-in-repo on GenImage = 91.75 mAP/72.0 acc; faithful-fix retrain = 92.47 mAP/73.5 acc (model_4)."},
+      "gap_cause": "AGID-class-from-scratch GenImage collapse (55.67) and AGID-trained residual to official 97.12 are caused by a PREPROCESSING DIVERGENCE: models/image/aide/aide.py:221 does F.interpolate(x_pixel,256x256) BEFORE _DCTPatchSelector, and the dataset transform also Resize(256)s the input, so the DCT patch picker never sees native-resolution frequency content. Official data/datasets.py runs DCT_base_Rec_Module on the FULL native image (512x512 SD, 256x256 ADM) and only resizes the 4 selected patches + the x_0 token afterward. Squashing to 256 first destroys the native high-frequency artifacts that separate adm (58.6->65 after code-fix) and vqdm, the two generators that collapse. The faithful code-fix retrain lifted adm/vqdm but a residual remains because true native-res DCT was not fully restored in-class. Confirmed in models/image/aide/aide.py:217-235.",
+      "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (8 gens present)"
+    },
+    {
+      "name": "Chameleon (B3, Setting-II, in-the-wild)",
+      "datasets": ["Chameleon"],
+      "subsets_or_generators": ["Scene", "Object", "Animal", "Human"],
+      "metric": "acc",
+      "n_subsets_in_paper": 4,
+      "paper_number": {"map": null, "acc_ProGAN_trained": 58.37, "acc_SDv14_trained": 62.60, "acc_AllGenImage_trained": 65.77},
+      "paper_per_generator": {"note": "Per-category not broken out; Table 1 statistics = 14,863 real + 11,170 fake (Scene 3574/2976, Object 3578/2016, Animal 3998/313, Human 3713/5865). Table 5 reports overall Acc + 'fake/real' acc split: AIDE ProGAN 58.37 (5.04/98.46), SDv1.4 62.60 (20.33/94.38), All-GenImage 65.77 (26.80/95.06)."},
+      "paper_section": "Sec.3 (dataset, Table 1) + Table 5 (p.8, results). Headline contribution of the paper.",
+      "official_eval_protocol": "Same AIDE TestDataset native-res-DCT path; trained under each of ProGAN / SDv1.4 / 'All GenImage' to show Setting-II generalization. Chameleon is the paper's own collected in-the-wild test set (11k+ AI images from art/civitai/lib + real photos from Unsplash).",
+      "our_status": "missing",
+      "our_number": null,
+      "gap_cause": "GATED dataset — not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'academic research only, commercial use prohibited'. No HF/gdrive mirror; access is by author email request only. find over /hddstore and home dirs returned no chameleon path.",
+      "dataset_source": "gated (request by email tattoo.ysl@gmail.com; docs/Chameleon.jpg only ships a teaser image, not the data)"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+#!/bin/bash
+#SBATCH --job-name=cpdata29
+#SBATCH --partition=cees
+#SBATCH --account=ceesusers
+#SBATCH --time=7-00:00:00
+#SBATCH --nodelist=ivi-cn029
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=16G
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/copy_data_cn029_%j.log
+set -uo pipefail
+echo "node=$(hostname) start=$(date)"
+SCRATCH=$(for d in /hddstore /ssdstore /sddstore; do [ -d "$d" ] && [ -w "$d" ] && echo "$d" && break; done)
+DEST="$SCRATCH/ssalehi/AGID"; mkdir -p "$DEST"
+echo "scratch=$SCRATCH dest=$DEST free=$(df -h $SCRATCH|tail -1|awk '{print $4}')"
+SSH="ssh -o BatchMode=yes -o StrictHostKeyChecking=no ivi-cn023"
+$SSH 'echo SSH_BACK_OK from $(hostname)' || { echo "SSH to cn023 FAILED"; exit 1; }
+RS="rsync -a --bwlimit=150m --info=progress2 -e 'ssh -o BatchMode=yes -o StrictHostKeyChecking=no'"
+# non-contending sets first (not read by the running retrains), then the training sets
+for ds in repro/benchmark_specs mfm GenImage_full CNNDetection AIGIBench AIGCDetectBenchmark spai_train GenImage; do
+  SRC="ivi-cn023:/hddstore/ssalehi/AGID/$ds"
+  echo "=== rsync $ds  $(date) ==="
+  eval $RS "$SRC" "$DEST/" 2>&1 | tail -2
+  echo "  -> $(du -sh $DEST/$(basename $ds) 2>/dev/null | awk '{print $1}')"
+done
+echo "=== COPY DONE $(date) ==="

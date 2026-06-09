@@ -1,0 +1,115 @@
+{
+  "tag": "d3_evalcrafter",
+  "model": "d3",
+  "ckpt": "registry-default",
+  "benchmark": "video:fakeonly",
+  "data_root": "/hddstore/ssalehi/AGID/EvalCrafter/test/1_fake",
+  "n_generators": 14,
+  "means": {
+    "acc": 87.67,
+    "map": 91.19,
+    "mauroc": 95.41
+  },
+  "per_generator": {
+    "MoonValley": {
+      "ap": 95.09,
+      "auroc": 98.47,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "floor33": {
+      "ap": 93.03,
+      "auroc": 97.43,
+      "real_acc": 81.33,
+      "fake_acc": 99.33,
+      "acc": 90.33
+    },
+    "gen2": {
+      "ap": 94.37,
+      "auroc": 98.44,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "gen2_december": {
+      "ap": 94.93,
+      "auroc": 98.49,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "hotshot": {
+      "ap": 53.7,
+      "auroc": 62.08,
+      "real_acc": 81.33,
+      "fake_acc": 18.0,
+      "acc": 49.67
+    },
+    "lavie-base": {
+      "ap": 93.25,
+      "auroc": 96.94,
+      "real_acc": 81.33,
+      "fake_acc": 99.33,
+      "acc": 90.33
+    },
+    "lavie-interpolation": {
+      "ap": 93.5,
+      "auroc": 97.72,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "mix-sr": {
+      "ap": 94.09,
+      "auroc": 98.09,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "modelscope": {
+      "ap": 93.26,
+      "auroc": 97.25,
+      "real_acc": 81.33,
+      "fake_acc": 99.33,
+      "acc": 90.33
+    },
+    "pika": {
+      "ap": 94.88,
+      "auroc": 98.5,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "pika_v1_december_1": {
+      "ap": 94.95,
+      "auroc": 98.38,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "show_1": {
+      "ap": 94.1,
+      "auroc": 98.3,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "videocrafter-v1.0": {
+      "ap": 94.51,
+      "auroc": 98.06,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    },
+    "zeroscope": {
+      "ap": 92.94,
+      "auroc": 97.54,
+      "real_acc": 81.33,
+      "fake_acc": 100.0,
+      "acc": 90.67
+    }
+  },
+  "date": "2026-06-04T18:21:29",
+  "agid_version": "video"
+}

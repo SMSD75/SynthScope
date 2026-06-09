@@ -1,0 +1,94 @@
+{
+  "tag": "stall_videofeedback",
+  "model": "stall",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/hddstore/ssalehi/AGID/VideoFeedback/test",
+  "n_generators": 11,
+  "means": {
+    "acc": 62.12,
+    "map": 83.07,
+    "mauroc": 85.1
+  },
+  "per_generator": {
+    "AnimateDiff": {
+      "ap": 85.18,
+      "auroc": 86.9,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    },
+    "Fast-SVD": {
+      "ap": 92.67,
+      "auroc": 92.88,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    },
+    "Hotshot-XL": {
+      "ap": 79.11,
+      "auroc": 81.23,
+      "real_acc": 24.67,
+      "fake_acc": 98.67,
+      "acc": 61.67
+    },
+    "LVDM": {
+      "ap": 85.57,
+      "auroc": 88.83,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    },
+    "LaVie-base": {
+      "ap": 80.86,
+      "auroc": 82.58,
+      "real_acc": 24.67,
+      "fake_acc": 99.33,
+      "acc": 62.0
+    },
+    "ModelScope": {
+      "ap": 80.67,
+      "auroc": 83.7,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    },
+    "Pika": {
+      "ap": 83.64,
+      "auroc": 84.02,
+      "real_acc": 24.67,
+      "fake_acc": 99.33,
+      "acc": 62.0
+    },
+    "SoRA-Clip": {
+      "ap": 77.22,
+      "auroc": 80.18,
+      "real_acc": 24.67,
+      "fake_acc": 98.67,
+      "acc": 61.67
+    },
+    "Text2Video-Zero": {
+      "ap": 83.76,
+      "auroc": 84.08,
+      "real_acc": 24.67,
+      "fake_acc": 99.33,
+      "acc": 62.0
+    },
+    "VideoCrafter2": {
+      "ap": 93.06,
+      "auroc": 93.44,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    },
+    "ZeroScope-576w": {
+      "ap": 72.03,
+      "auroc": 78.27,
+      "real_acc": 24.67,
+      "fake_acc": 100.0,
+      "acc": 62.33
+    }
+  },
+  "date": "2026-06-04T18:42:02",
+  "agid_version": "video"
+}

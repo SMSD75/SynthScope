@@ -3,11 +3,12 @@ defaults:
   - _self_
 
 # ReStraV trains only the small MLP classifier on top of the frozen DINOv2 features,
-# so a short run converges quickly.
+# so a short run converges quickly. Official recipe: plain Adam (no weight decay), 10 epochs
+# (the trainer uses AdamW, so weight_decay=0.0 makes it Adam-equivalent).
 trainer_type: restrav
-epochs: 15
+epochs: 10
 lr: 1.0e-3
-weight_decay: 0.01
+weight_decay: 0.0
 label_smoothing: 0.0
 val_interval: 1
 test_interval: 1

@@ -1,0 +1,24 @@
+{
+  "tag": "_probe_safe_off_v",
+  "model": "safe",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/safe/checkpoint-best.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 100.0,
+    "map": 100.0,
+    "mauroc": 100.0
+  },
+  "per_generator": {
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    }
+  },
+  "date": "2026-06-04T11:26:58",
+  "agid_version": "official-vendored"
+}

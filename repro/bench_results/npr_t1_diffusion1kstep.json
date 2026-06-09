@@ -1,0 +1,52 @@
+{
+  "tag": "npr_t1_diffusion1kstep",
+  "model": "npr",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/NPR_table1.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/Diffusion1kStep/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 80.12,
+    "map": 82.48,
+    "mauroc": 86.54
+  },
+  "per_generator": {
+    "DALLE": {
+      "ap": 77.95,
+      "auroc": 84.16,
+      "real_acc": 65.9,
+      "fake_acc": 90.4,
+      "acc": 78.15
+    },
+    "ddpm": {
+      "ap": 99.97,
+      "auroc": 99.97,
+      "real_acc": 99.9,
+      "fake_acc": 96.2,
+      "acc": 98.05
+    },
+    "guided-diffusion": {
+      "ap": 75.3,
+      "auroc": 80.79,
+      "real_acc": 65.9,
+      "fake_acc": 81.4,
+      "acc": 73.65
+    },
+    "improved-diffusion": {
+      "ap": 81.77,
+      "auroc": 85.63,
+      "real_acc": 65.9,
+      "fake_acc": 86.5,
+      "acc": 76.2
+    },
+    "midjourney": {
+      "ap": 77.39,
+      "auroc": 82.17,
+      "real_acc": 65.9,
+      "fake_acc": 83.2,
+      "acc": 74.55
+    }
+  },
+  "date": "2026-06-09T09:22:47",
+  "agid_version": "0.1.0"
+}

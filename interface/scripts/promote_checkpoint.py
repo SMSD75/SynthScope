@@ -26,8 +26,10 @@ def best_epoch_file(stage_dir: Path, epoch: int | None) -> Path:
         if not f.exists():
             raise FileNotFoundError(f"{f} not found")
         return f
-    # highest epoch == last improvement under save_policy=min
-    return max(files, key=lambda p: int(re.search(r"model_(\d+)\.pth", p.name).group(1)))
+    # Most recently written = the current run's best (save_policy=min writes the best last).
+    # Use mtime, NOT the epoch number, so stale higher-epoch checkpoints left in the staging dir
+    # by a *previous* run (possibly a different architecture) are never picked.
+    return max(files, key=lambda p: p.stat().st_mtime)
 
 
 def main():

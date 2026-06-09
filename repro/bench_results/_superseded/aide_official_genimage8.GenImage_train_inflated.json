@@ -1,0 +1,73 @@
+{
+  "tag": "aide_official_genimage8",
+  "model": "aide",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/GenImage_train.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 99.69,
+    "map": 99.96,
+    "mauroc": 99.98
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.87,
+      "fake_acc": 99.6,
+      "acc": 99.73
+    },
+    "biggan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.87,
+      "fake_acc": 99.93,
+      "acc": 99.9
+    },
+    "glide": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.87,
+      "fake_acc": 99.87,
+      "acc": 99.87
+    },
+    "midjourney": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.67,
+      "fake_acc": 98.33,
+      "acc": 99.0
+    },
+    "sdv1.4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.87,
+      "fake_acc": 99.72,
+      "acc": 99.79
+    },
+    "sdv1.5": {
+      "ap": 99.84,
+      "auroc": 99.94,
+      "real_acc": 99.87,
+      "fake_acc": 99.8,
+      "acc": 99.83
+    },
+    "vqdm": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.93,
+      "fake_acc": 99.67,
+      "acc": 99.8
+    },
+    "wukong": {
+      "ap": 99.85,
+      "auroc": 99.94,
+      "real_acc": 99.8,
+      "fake_acc": 99.47,
+      "acc": 99.63
+    }
+  },
+  "date": "2026-06-04T22:40:23",
+  "agid_version": "official-vendored"
+}

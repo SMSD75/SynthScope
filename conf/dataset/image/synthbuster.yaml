@@ -1,0 +1,11 @@
+name: synthbuster
+root_dir: /hddstore/ssalehi/AGID/Synthbuster
+zenodo_record: "10066460"
+test_batch_size: 32
+num_workers: 8
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

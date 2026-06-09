@@ -70,22 +70,49 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
     return frames
 
 
+def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:
+    """A small JPEG thumbnail for the dataset explorer grid.
+
+    Image -> downscaled still; video -> its middle frame (decord), downscaled. Returns raw
+    JPEG bytes so the endpoint can stream them without writing temp files.
+    """
+    if modality == "video":
+        import decord  # heavy; only needed for video
+        decord.bridge.set_bridge("native")
+        reader = decord.VideoReader(str(path), ctx=decord.cpu(0))
+        n = len(reader)
+        if n == 0:
+            raise ValueError("Could not decode any frames from the video.")
+        arr = reader[n // 2].asnumpy()             # [H,W,3] uint8, middle frame
+        img = Image.fromarray(arr).convert("RGB")
+    else:
+        img = Image.open(path).convert("RGB")
+    img.thumbnail((size, size))
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=82)
+    return buf.getvalue()
+
+
 def video_clip_tensor(
     path: str | Path,
     num_frames: int,
     fps: float | None,
     frame_size: int,
     window_seconds: float = 2.0,
+    window_center: bool = False,
+    interp: str = "bilinear",
 ) -> torch.Tensor:
     """Decode a clip for a *video* detector: [T, 3, frame_size, frame_size] float in [0, 1].
 
-    Delegates to the repo's ``sample_video_frames`` so sampling matches D3 / ReStraV exactly.
+    Delegates to the repo's ``sample_video_frames`` so inference sampling matches each detector's
+    training decode (e.g. ReStraV uses ``window_center=True, interp="bicubic"`` per the official repo).
     """
-    clip = sample_video_frames(
+    return sample_video_frames(
         path,
         num_frames=num_frames,
         fps=fps,
         window_seconds=window_seconds,
         size=frame_size,
+        window_center=window_center,
+        interp=interp,
     )
-    return clip

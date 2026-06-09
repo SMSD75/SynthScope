@@ -15,8 +15,8 @@ self-supervised feature space (DINOv2 ViT-S/14), natural video trajectories are
      - curvature ``theta_i = arccos(cos(dz_i, dz_{i+1}))`` in degrees (cosine clamped
        to [-1, 1] for numerical safety).
 3. Builds a 21-d per-video feature ``y`` = first 7 distances + first 6 curvatures
-   + (mean, var, min, max) of all distances + (mean, var, min, max) of all
-   curvatures.
+   + (mean, min, max, var) of all distances + (mean, min, max, var) of all
+   curvatures (this 8-stat order matches the official ``moment4``).
 4. Trains a small MLP classifier (default 64 -> 32) on ``y`` with cross-entropy.
    The DINOv2 backbone stays frozen; only the MLP is trained.
 
@@ -25,10 +25,22 @@ self-supervised feature space (DINOv2 ViT-S/14), natural video trajectories are
 
 Normalization note
 ------------------
-This model does NOT normalize internally. It expects frames already normalized by the
-dataset transform pipeline -- use ``normalize_dinov2`` (ImageNet stats, what DINOv2 was
-trained with) in the experiment script / dataset config, consistent with the image
-CLIP/DINO detectors. The frozen backbone will silently degrade on un-normalized frames.
+This model does NOT normalize internally, and -- unlike the image CLIP/DINO detectors -- it
+must be fed **raw [0,1] frames with NO ImageNet normalization**. The official ReStraV
+``preprocess`` is exactly ``frames/255`` + BICUBIC resize (no ``Normalize``), so the
+experiment script and the deployed serving spec both use raw [0,1] (do NOT add
+``normalize_dinov2``). ReStraV's signal is the *relative* geometry of the DINOv2 trajectory,
+which the authors compute on un-normalized inputs; training on ImageNet-normalized frames
+while serving raw [0,1] (or vice versa) is a train/serve mismatch that destroys transfer.
+
+Fidelity vs the official repo
+-----------------------------
+This class is a *deployable* re-implementation, faithful to the official recipe except for a
+few framework-imposed differences (the bit-exact reproduction is ``interface/scripts/
+restrav_repro.py``): standardization uses an in-model ``BatchNorm1d(affine=False)`` (running
+stats) rather than fixed ``mean.npy``/``std.npy`` saved from the train set, and the head
+emits the AGID 2-column ``[-logit, logit]`` (col 1 is the single BCE logit -- functionally
+identical for ranking metrics). Feed it with plain Adam (no weight decay), 10 epochs.
 """
 
 from __future__ import annotations
@@ -60,10 +72,15 @@ class AGIDReStraVModel(nn.Module):
 
         self.feature_dim = NUM_DIRECT_DISTANCES + NUM_DIRECT_CURVATURES + 4 + 4  # 21
         hidden = list(cfg.get("mlp_hidden", [64, 32]))
-        self.classifier = self._build_mlp([self.feature_dim, *hidden, 2])
-        self.criterion = nn.CrossEntropyLoss(
-            label_smoothing=config.TrainerConfig.get("label_smoothing", 0.0)
-        )
+        # Standardize the 21-d geometry features before the MLP (official ReStraV does
+        # (X-mean)/std with saved train stats; BatchNorm1d(affine=False) is the running-stat
+        # equivalent). The 21 features have very different scales (distance norms vs degrees vs
+        # variances), so without this the MLP is dominated by large-magnitude features and fails
+        # to transfer across generators.
+        self.feature_norm = nn.BatchNorm1d(self.feature_dim, affine=False)
+        # Official ReStraV head: a single-logit MLP trained with BCE (+ standardized features).
+        self.classifier = self._build_mlp([self.feature_dim, *hidden, 1])
+        self.criterion = nn.BCEWithLogitsLoss()
 
     @staticmethod
     def _build_mlp(dims: list[int]) -> nn.Sequential:
@@ -89,13 +106,18 @@ class AGIDReStraVModel(nn.Module):
 
     @staticmethod
     def _moment_stats(values: torch.Tensor) -> torch.Tensor:
-        """``[mean, var, min, max]`` over the time axis of ``values`` [B, L] -> [B, 4]."""
+        """``[mean, min, max, var]`` over the time axis of ``values`` [B, L] -> [B, 4].
+
+        Order matches the official ReStraV ``moment4`` (``dinov2_features.py``):
+        ``(mean, amin, amax, var)``. The order is otherwise arbitrary for a from-scratch
+        MLP, but keeping it exact lets official feature vectors / weights interoperate.
+        """
         return torch.stack(
             [
                 values.mean(dim=1),
-                values.var(dim=1, unbiased=False),
                 values.amin(dim=1),
                 values.amax(dim=1),
+                values.var(dim=1, unbiased=False),
             ],
             dim=1,
         )
@@ -118,10 +140,11 @@ class AGIDReStraVModel(nn.Module):
     def forward(self, frames: torch.Tensor) -> torch.Tensor:
         z = self._encode(frames)
         y = self._geometry_features(z)
-        return self.classifier(y)
+        logit = self.classifier(self.feature_norm(y)).squeeze(-1)   # [B], P(fake) logit
+        return torch.stack([-logit, logit], dim=1)                  # [B, 2] (col 1 = fake) for AGID metrics
 
     def compute_loss(self, batch):
         frames, labels, _folder_ids = batch
-        logits = self.forward(frames)
-        loss = self.criterion(logits, labels)
-        return {"loss": loss, "outputs": logits}
+        outputs = self.forward(frames)
+        loss = self.criterion(outputs[:, 1], labels.float())        # BCE on the fake logit (label 1 = fake)
+        return {"loss": loss, "outputs": outputs}

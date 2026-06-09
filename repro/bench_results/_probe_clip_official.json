@@ -1,0 +1,24 @@
+{
+  "tag": "_probe_clip_official",
+  "model": "clip",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/clip/fc_weights.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 42.5,
+    "map": 55.06,
+    "mauroc": 58.75
+  },
+  "per_generator": {
+    "progan": {
+      "ap": 55.06,
+      "auroc": 58.75,
+      "real_acc": 85.0,
+      "fake_acc": 0.0,
+      "acc": 42.5
+    }
+  },
+  "date": "2026-06-04T11:20:52",
+  "agid_version": "0.1.0"
+}

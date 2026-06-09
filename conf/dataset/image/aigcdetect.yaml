@@ -1,0 +1,14 @@
+name: aigcdetect
+# AIGCDetectBenchmark 16-generator test set (ModelScope aemilia/AIGCDetectionBenchmark).
+# Used by Co-Spy (ProGAN/AIGCDetect table) and AIDE.
+root_dir: /hddstore/ssalehi/AGID/AIGCDetectBenchmark
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

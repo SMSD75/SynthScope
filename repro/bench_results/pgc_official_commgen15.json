@@ -1,0 +1,122 @@
+{
+  "tag": "pgc_official_commgen15",
+  "model": "pgc",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/CommGen15/test",
+  "n_generators": 15,
+  "means": {
+    "acc": 97.39,
+    "map": 99.26,
+    "mauroc": 98.89
+  },
+  "per_generator": {
+    "Akool": {
+      "ap": 99.96,
+      "auroc": 99.96,
+      "real_acc": 100.0,
+      "fake_acc": 94.9,
+      "acc": 97.45
+    },
+    "ChatGPT": {
+      "ap": 99.63,
+      "auroc": 99.5,
+      "real_acc": 100.0,
+      "fake_acc": 96.34,
+      "acc": 98.17
+    },
+    "Doubao": {
+      "ap": 99.98,
+      "auroc": 99.98,
+      "real_acc": 99.9,
+      "fake_acc": 91.6,
+      "acc": 95.75
+    },
+    "Flux": {
+      "ap": 99.64,
+      "auroc": 99.48,
+      "real_acc": 99.9,
+      "fake_acc": 96.9,
+      "acc": 98.4
+    },
+    "GoogleImagen": {
+      "ap": 99.51,
+      "auroc": 99.3,
+      "real_acc": 100.0,
+      "fake_acc": 96.6,
+      "acc": 98.3
+    },
+    "Hailuo": {
+      "ap": 99.94,
+      "auroc": 99.93,
+      "real_acc": 100.0,
+      "fake_acc": 95.6,
+      "acc": 97.8
+    },
+    "Hunyuan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.33,
+      "acc": 99.17
+    },
+    "Ideogram": {
+      "ap": 99.7,
+      "auroc": 99.6,
+      "real_acc": 100.0,
+      "fake_acc": 96.7,
+      "acc": 98.35
+    },
+    "Kling": {
+      "ap": 99.71,
+      "auroc": 99.54,
+      "real_acc": 100.0,
+      "fake_acc": 96.3,
+      "acc": 98.15
+    },
+    "Lexica": {
+      "ap": 99.84,
+      "auroc": 99.81,
+      "real_acc": 100.0,
+      "fake_acc": 93.6,
+      "acc": 96.8
+    },
+    "Midjourney": {
+      "ap": 99.21,
+      "auroc": 98.89,
+      "real_acc": 100.0,
+      "fake_acc": 93.8,
+      "acc": 96.9
+    },
+    "NanoBanana": {
+      "ap": 92.1,
+      "auroc": 87.78,
+      "real_acc": 100.0,
+      "fake_acc": 76.29,
+      "acc": 88.14
+    },
+    "Sora": {
+      "ap": 99.91,
+      "auroc": 99.83,
+      "real_acc": 99.9,
+      "fake_acc": 99.5,
+      "acc": 99.7
+    },
+    "StableDiffusion": {
+      "ap": 99.81,
+      "auroc": 99.76,
+      "real_acc": 100.0,
+      "fake_acc": 97.3,
+      "acc": 98.65
+    },
+    "Veo": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.2,
+      "acc": 99.1
+    }
+  },
+  "date": "2026-06-04T18:09:05",
+  "agid_version": "official-vendored"
+}

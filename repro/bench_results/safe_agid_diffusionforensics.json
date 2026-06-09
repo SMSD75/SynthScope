@@ -1,0 +1,73 @@
+{
+  "tag": "safe_agid_diffusionforensics",
+  "model": "safe",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/DiffusionForensics/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 91.99,
+    "map": 97.44,
+    "mauroc": 96.78
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 99.52,
+      "auroc": 99.38,
+      "real_acc": 99.5,
+      "fake_acc": 90.9,
+      "acc": 95.2
+    },
+    "ddpm": {
+      "ap": 99.89,
+      "auroc": 99.92,
+      "real_acc": 99.5,
+      "fake_acc": 97.14,
+      "acc": 98.32
+    },
+    "iddpm": {
+      "ap": 99.38,
+      "auroc": 99.26,
+      "real_acc": 99.5,
+      "fake_acc": 87.4,
+      "acc": 93.45
+    },
+    "ldm": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.5,
+      "fake_acc": 100.0,
+      "acc": 99.75
+    },
+    "pndm": {
+      "ap": 83.4,
+      "auroc": 78.25,
+      "real_acc": 99.5,
+      "fake_acc": 24.4,
+      "acc": 61.95
+    },
+    "sdv1": {
+      "ap": 97.47,
+      "auroc": 97.55,
+      "real_acc": 94.4,
+      "fake_acc": 87.1,
+      "acc": 90.75
+    },
+    "sdv2": {
+      "ap": 99.84,
+      "auroc": 99.85,
+      "real_acc": 99.5,
+      "fake_acc": 94.0,
+      "acc": 96.75
+    },
+    "vqdiffusion": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.5,
+      "fake_acc": 100.0,
+      "acc": 99.75
+    }
+  },
+  "date": "2026-06-04T14:04:40",
+  "agid_version": "0.1.0"
+}

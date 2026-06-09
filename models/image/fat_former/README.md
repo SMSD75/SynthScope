@@ -126,6 +126,16 @@ experiments/fat_former.sh
 
 It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `center_crop_224` / `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format.
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| GANs dataset — 8 GANs (4-class ProGAN supervis | acc and AP (mean ACCM / APM) | map=99.7 / acc=98.4 | map=99.7 / acc=98.39 / ckpt=fat_former.pth (= fatformer_official.pth, OFFICIAL 4-class CLIP:ViT-L/14 weights remapped into the AGID class; ckpt_kind=official_fatformer) / tag=fatformer_official_forensynths | reproduced |
+| GANs dataset — 8 GANs (2-class ProGAN supervis | acc and AP (mean ACCM / APM) | map=99.2 / acc=95.8 | — | missing |
+| Diffusion-model (DMs) dataset — 10 subsets (4- | acc and AP (mean ACCM / APM) | map=98.8 / acc=95.0 | map_ufd8=98.6 / acc_ufd8=93.72 / ckpt=fat_former.pth (official weights in AGID class) / tag=fatformer_official_ufd | below |
+
 ## Integration notes
 
 The FatFormer model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:

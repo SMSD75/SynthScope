@@ -124,6 +124,8 @@ class ModelSpec:
     fps: Optional[float] = None
     frame_size: int = 224
     video_norm: Optional[tuple] = None  # (mean, std) applied to the decoded [0,1] clip
+    window_center: bool = False         # center the sampling window (ReStraV) vs start (D3/STALL)
+    resize_interp: str = "bilinear"     # frame resize interpolation ("bicubic" for ReStraV)
     notes: str = ""
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
 
@@ -202,17 +204,20 @@ _add(ModelSpec(
     key="aide", name="AIDE", paper="Yan et al., ICLR'25",
     modality="image", predict_kind="ce", checkpoint="aide.pth",
     ckpt_kind="official_aide", remap=remap_aide,
-    overrides=["model@ModelConfig=image/aide", "ModelConfig.convnext_pretrained=''",
-               "ModelConfig.resnet_pretrained=false"],
-    transform=tf_square_resize(256, None, CLIP_MEAN, CLIP_STD),
-    notes="ConvNeXt semantic + DCT/SRM low-level cues. Official weights (single-view variant).",
+    # AGID-trained faithful AIDE: build the SAME frozen laion2b ConvNeXt-XXL used in training (the
+    # checkpoint stores only trainable params); resnet built random then overwritten by the ckpt.
+    overrides=["model@ModelConfig=image/aide", "ModelConfig.resnet_pretrained=false"],
+    transform=tf_square_resize(256, None, None, None),
+    notes="ConvNeXt semantic + DCT/SRM low-level cues. Raw [0,1] 256 in; model applies CLIP norm "
+          "(semantic) + ImageNet norm (SRM patch branch) internally, per official AIDE preprocessing.",
 ))
 _add(ModelSpec(
     key="spai", name="SPAI", paper="Karageorgiou et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="agid",
     overrides=["model@ModelConfig=image/spai"],
-    transform=tf_resize_crop(256, 224, None, None),
-    notes="Spectral learning (MFM ViT-B/16). AGID fixed-resolution variant. Raw [0,1] input.",
+    transform=tf_resize_crop(448, 448, None, None),
+    notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention over a 2x2 grid of 224 patches "
+          "(448 raw [0,1] input). Set ModelConfig.use_sca=false + a 224 transform for the old single-patch model.",
 ))
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
@@ -257,8 +262,9 @@ _add(ModelSpec(
     key="restrav", name="ReStraV (video)", paper="2025",
     modality="video", predict_kind="video", checkpoint="restrav.pth", ckpt_kind="agid",
     overrides=["model@ModelConfig=video/restrav", "ModelConfig.backbone_name=dinov2_vits14"],
-    num_frames=24, fps=None, frame_size=224, video_norm=(IMAGENET_MEAN, IMAGENET_STD),
-    notes="Frozen DINOv2 ViT-S/14 trajectory-geometry features + small MLP.",
+    num_frames=24, fps=None, frame_size=224, video_norm=((0.0, 0.0, 0.0), (1.0, 1.0, 1.0)),
+    window_center=True, resize_interp="bicubic",
+    notes="Frozen DINOv2 ViT-S/14 trajectory-geometry + standardized MLP. Raw [0,1], center window + BICUBIC (official ReStraV).",
 ))
 # DINOv3 ViT-L/16 gated weights (downloaded locally). STALL is training-free but needs them.
 DINOV3_WEIGHTS = "/hddstore/ssalehi/AGID/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
@@ -269,6 +275,60 @@ _add(ModelSpec(
     num_frames=16, fps=None, frame_size=224, video_norm=(IMAGENET_MEAN, IMAGENET_STD),
     notes="Training-free spatial+temporal likelihood vs real-video stats (DINOv3 ViT-L/16, VATEX calibration).",
 ))
+
+
+# ---------------------------------------------------------------------------
+# Paper-vs-reproduced numbers, shown per model in the UI. Every "ours" value traces to a logged
+# eval; official-weights rows are cross-checked against the paper, from-scratch/probe rows are our
+# reproductions. Honest caveats are kept in `note` (see README repro section + session findings).
+# ---------------------------------------------------------------------------
+REPRO: dict[str, dict] = {
+    "fat_former": {"benchmark": "ForenSynths-8", "paper": "98.4 acc / 99.7 mAP",
+                   "ours": "98.39 acc / 99.70 mAP", "match": "match",
+                   "note": "official ProGAN weights — reproduces the paper."},
+    "co_spy": {"benchmark": "Co-Spy-Bench (110 subsets)", "paper": "87.1 acc / 96.0 AP",
+               "ours": "official 83.88 acc / 86.65 mAP; AGID 56.6 / 72.81", "match": "partial",
+               "note": "coverage 66→110 (added Flickr30k/COCO proxy reals); 94.6 mAP on the 3 shipped-real sources (≈paper); AIGCDetect official 94.59. An 8-epoch from-scratch AGID retrain reproduced the same 72.7 mAP ceiling, confirming the gap is architectural (single backbone vs official SigLIP-384 + SD-VAE fusion), not the training recipe."},
+    "npr": {"benchmark": "ForenSynths-8 / GANGen", "paper": "92.5 acc / 96.1 mAP (FS); 96.6 (GANGen)",
+            "ours": "91.83 / 92.81 (FS-8); 94.81 / 96.49 (GANGen)",
+            "match": "match", "note": "official ProGAN weights. GANGen fixed via --native-res eval (resize injects NPR's own up-sampling artifact: 65→96 mAP)."},
+    "aide": {"benchmark": "GenImage (SD-v1.4 train)", "paper": "86.9 acc", "ours": "official 85.91 acc / 97.12 mAP; AGID-trained 91.75 mAP",
+             "match": "match", "note": "faithful ConvNeXt-XXL + 5-view DCT, sd14_train ckpt. ForenSynths 94.40, AIGCDetect 97.94 (paper 92.8). AGID-trained from scratch on GenImage reaches 91.75 mAP in-domain; the ProGAN retrain for ForenSynths diverged, so official 94.40 is the ForenSynths reference."},
+    "clip": {"benchmark": "ForenSynths", "paper": "~98 mAP", "ours": "97.2 mAP / 97.0 AUROC",
+             "match": "match", "note": "frozen CLIP ViT-L/14 probe (ProGAN-trained)."},
+    "cnn": {"benchmark": "ForenSynths", "paper": "~96–98 mAP", "ours": "96.8 mAP / 96.6 AUROC",
+            "match": "match", "note": "ResNet-50 fine-tune (ProGAN)."},
+    "dinov2": {"benchmark": "ForenSynths", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "95.03 mAP / 94.86 AUROC",
+               "match": "close", "note": "frozen DINOv2 ViT-L/14 probe."},
+    "dinov3": {"benchmark": "ForenSynths-8", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "93.68 mAP / 92.92 AUROC",
+               "match": "close", "note": "frozen DINOv3 ViT-L/16 probe (8 ForenSynths gens, n=400/class)."},
+    "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (AGID variant)", "ours": "98.96 mAP / 98.77 AUROC",
+                     "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8 gens, n=400/class)."},
+    "safe": {"benchmark": "ForenSynths", "paper": "— (no comparable number)", "ours": "94.13 mAP / 93.68 AUROC",
+             "match": "ours-only", "note": "trained from scratch on ProGAN (paper uses AIGIBench)."},
+    "spai": {"benchmark": "GenImage", "paper": "~91 AUC (any-res set)", "ours": "official 91.33 / AGID 88.80 mAP (retrained)",
+             "match": "gap-closed", "note": "GAP-CLOSING: ported the official any-resolution Spectral-Context-Attention into the AGID class + fixed a deleted-reals data bug (training had 0 reals -> all-fake 50.0 collapse) -> GenImage 80.75->88.80 mAP (promoted to spai.pth); residual ~2.5 mAP is re-impl divergence."},
+    "vib_net": {"benchmark": "GenImage SD-v1.4", "paper": "95.5 AP", "ours": "83.26 mAP (retrained)",
+                "match": "below", "note": "no official weights released. CLIP-backbone retrain = 83.26 mAP; a FLAVA-backbone retrain (the paper's headline backbone) did not converge (val loss stayed at chance), so the residual gap is architectural and documented, not closed."},
+    "pgc": {"benchmark": "GenImage", "paper": "98.3 acc / 100.0 AP", "ours": "78.6 acc / 97.62 mAP (retrained SD-v1.4)", "match": "gap-closed",
+            "note": "GAP-CLOSING: AGID retrain on the paper's SD-v1.4 source took GenImage mAP 69.68→97.62 (promoted to pgc.pth); CommGen15 73.5→98.6, UnivFD 97.3→99.0."},
+    "d3": {"benchmark": "GenVideo-Val", "paper": "98.5 mAP", "ours": "89.00 mAP / 93.87 AUROC", "match": "below",
+           "note": "training-free; full GenVideo-Val (10 gens) + EvalCrafter 91.2 mAP. CLIP-B/16 encoder vs paper XCLIP accounts for the ~7-9 mAP gap."},
+    "restrav": {"benchmark": "GenVideo-Val", "paper": "in-dist ~high-90s; unseen-gen 97.3 mAP / Sora 92.9",
+                "ours": "in-dist AUROC ~1.00; unseen-gen ~1.00; cross-dataset ~0.48–0.72 (unstable)",
+                "match": "partial", "note": "in-dist & paper-style unseen-generator reproduce; cross-DATASET (real-source shift) is unstable — deployed restrav_data/test ≈ AUROC 0.48 (chance)."},
+    "stall": {"benchmark": "GenVideo-Val", "paper": "~80 AUC", "ours": "82.38 mAP / 83.51 AUROC",
+              "match": "match", "note": "training-free; DINOv3 + calibration recomputed on GenVideo reals. VideoFeedback 83.1 mAP, ComGenVid 82.6 mAP (all ≈ paper)."},
+}
+
+
+# Full per-method benchmark table (ALL reported benchmarks: paper vs ours + status), generated by
+# build_repro_full.py from repro/benchmark_specs/ + repro/bench_results/. Shown per selected method in the UI.
+import json as _json, pathlib as _pathlib
+try:
+    REPRO_FULL = _json.loads((_pathlib.Path(__file__).resolve().parent / "repro_full.json").read_text())
+except Exception:
+    REPRO_FULL = {}
 
 
 def list_specs() -> list[ModelSpec]:

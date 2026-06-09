@@ -1,3 +1,4 @@
+import os
 from contextlib import nullcontext
 from functools import partial
 
@@ -12,7 +13,9 @@ from .filters import filter_image_frequencies, generate_circular_mask
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
-MFM_CKPT = "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth"
+# Path to the MFM-pretrained ViT-B/16 backbone weights. Override per-node (e.g. on a non-cn023 node
+# with a local copy) via the AGID_MFM_CKPT env var.
+MFM_CKPT = os.environ.get("AGID_MFM_CKPT", "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth")
 
 
 def _init(m):
@@ -58,10 +61,59 @@ class SpectralContext(nn.Module):
         return self.proj2(x)
 
 
+def patchify_image(img, patch=224, stride=224):
+    """Split B x C x H x W into a grid of patches -> B x L x C x patch x patch.
+
+    Ported verbatim from the official SPAI ``spai.models.utils.patchify_image`` (unfold-based).
+    A 448x448 input with patch=stride=224 yields the fixed 2x2 grid (L=4) used by the official
+    fixed-resolution variant; a 224x224 input yields L=1 (degenerates to the single-patch path)."""
+    img = img.unfold(2, patch, stride).unfold(3, patch, stride)      # B x C x nH x nW x patch x patch
+    img = img.permute(0, 2, 3, 1, 4, 5).contiguous()                 # B x nH x nW x C x patch x patch
+    return img.view(img.size(0), -1, img.size(3), patch, patch)      # B x L x C x patch x patch
+
+
+class SpectralContextAttention(nn.Module):
+    """SCA: cross-attention between a learnable aggregator vector and the per-patch feature vectors,
+    aggregating the L grid patches into one descriptor. Faithful port of the official
+    ``PatchBasedMFViT.patches_attention`` (plain-torch multi-head, no einops)."""
+
+    def __init__(self, cls_vector_dim, num_heads=12, attn_embed_dim=1536, dropout=0.0):
+        super().__init__()
+        self.heads = num_heads
+        self.dim_head = attn_embed_dim // num_heads
+        self.scale = self.dim_head ** -0.5
+        self.attend = nn.Softmax(dim=-1)
+        self.dropout = nn.Dropout(dropout)
+        self.to_kv = nn.Linear(cls_vector_dim, attn_embed_dim * 2, bias=False)
+        self.patch_aggregator = nn.Parameter(torch.zeros(num_heads, 1, self.dim_head))
+        nn.init.trunc_normal_(self.patch_aggregator, std=0.02)
+        self.to_out = nn.Sequential(nn.Linear(attn_embed_dim, cls_vector_dim, bias=False),
+                                    nn.Dropout(dropout))
+
+    def _split(self, t):                                             # B x L x (H*dh) -> B x H x L x dh
+        b, l, _ = t.shape
+        return t.view(b, l, self.heads, self.dim_head).permute(0, 2, 1, 3)
+
+    def forward(self, x):                                            # x: B x L x cls_vector_dim
+        b = x.size(0)
+        agg = self.patch_aggregator.expand(b, -1, -1, -1)           # B x H x 1 x dh
+        k, v = (self._split(t) for t in self.to_kv(x).chunk(2, dim=-1))
+        dots = torch.matmul(agg, k.transpose(-1, -2)) * self.scale  # B x H x 1 x L
+        attn = self.dropout(self.attend(dots))
+        out = torch.matmul(attn, v)                                 # B x H x 1 x dh
+        out = out.permute(0, 2, 1, 3).reshape(b, 1, self.heads * self.dim_head)
+        return self.to_out(out).squeeze(1)                          # B x cls_vector_dim
+
+
 class SPAI(nn.Module):
-    """Fixed-resolution SPAI (https://arxiv.org/abs/2411.19417): spectral reconstruction
-    similarity + spectral context vector over an MFM-pretrained ViT-B/16. Expects images in [0, 1];
-    ImageNet normalization happens inside."""
+    """SPAI (https://arxiv.org/abs/2411.19417): spectral reconstruction similarity + spectral
+    context over an MFM-pretrained ViT-B/16. Expects images in [0, 1]; ImageNet normalization
+    happens inside.
+
+    With ``use_sca`` (default), the input is tiled into a grid of 224x224 patches (a 448 input ->
+    the official 2x2 grid) and the per-patch descriptors are aggregated by the Spectral Context
+    Attention before classification, matching the official any-/fixed-resolution variant. With
+    ``use_sca=False`` it reduces to the previous single-patch fixed-resolution model."""
 
     def __init__(self, config: DictConfig):
         super().__init__()
@@ -75,12 +127,29 @@ class SPAI(nn.Module):
         self.proj = nn.ModuleList([Projector(d, dim) for _ in range(n)])
         self.context = SpectralContext(n, dim)
         z_dim, hidden = 6 * n + dim, 3 * (6 * n + dim)
+
+        # Spectral Context Attention over grid patches (the official cross-patch aggregator).
+        self.use_sca = bool(cfg.get("use_sca", True))
+        self.patch_size = cfg.get("patch_size", cfg.input_size)
+        self.patch_stride = cfg.get("patch_stride", self.patch_size)
+        # Official any-/native-resolution variant: patchify each image at its native size; if it yields
+        # fewer than MINIMUM_PATCHES (4) 224-patches (small images), fall back to a 5-crop (sid.py:198-202).
+        self.minimum_patches = int(cfg.get("minimum_patches", 4))
+        if self.use_sca:
+            self.sca = SpectralContextAttention(
+                z_dim, num_heads=cfg.get("num_heads", 12),
+                attn_embed_dim=cfg.get("attn_embed_dim", 1536), dropout=cfg.get("sca_dropout", 0.0))
+            self.attn_norm = nn.LayerNorm(z_dim)
+
         self.classifier = nn.Sequential(
             nn.Linear(z_dim, hidden), nn.ReLU(), nn.Dropout(0.5),
             nn.Linear(hidden, hidden), nn.ReLU(), nn.Dropout(0.5),
             nn.Linear(hidden, 1),
         )
-        for mod in (self.proj, self.context, self.classifier):
+        mods = [self.proj, self.context, self.classifier]
+        if self.use_sca:
+            mods += [self.sca, self.attn_norm]
+        for mod in mods:
             mod.apply(_init)
 
         self.register_buffer("mask", generate_circular_mask(cfg.input_size, cfg.mask_radius))
@@ -111,12 +180,24 @@ class SPAI(nn.Module):
         s = F.cosine_similarity(a, b, dim=-1)                   # B x N x L
         return torch.cat([s.mean(-1), s.std(-1)], dim=1)        # B x 2N
 
-    def forward(self, x):
+    def _patch_z(self, x):                                      # x: B x C x 224 x 224 in [0, 1]
+        """Per-patch spectral descriptor z = [SRS, SCV], shape B x (6N + dim)."""
         low, hi = filter_image_frequencies(x, self.mask)
         orig, low, hi = (self._branch_features(t) for t in (x, low, hi))
         srs = torch.cat([self._srs(orig, low), self._srs(orig, hi), self._srs(low, hi)], dim=1)
-        z = torch.cat([srs, self.context(orig)], dim=1)         # B x (6N + dim)
-        return self.classifier(z).squeeze(-1)                   # B
+        return torch.cat([srs, self.context(orig)], dim=1)      # B x (6N + dim)
+
+    def forward(self, x):
+        if not self.use_sca:
+            return self.classifier(self._patch_z(x)).squeeze(-1)                       # B
+        patches = patchify_image(x, self.patch_size, self.patch_stride)                # B x L x C x p x p
+        if patches.size(1) < self.minimum_patches:                                     # native-res small image
+            from torchvision.transforms.functional import five_crop
+            crops = five_crop(x, [self.patch_size, self.patch_size])                   # 5 x (B x C x p x p)
+            patches = torch.stack(crops, dim=1)                                        # B x 5 x C x p x p
+        z = torch.stack([self._patch_z(patches[:, i]) for i in range(patches.size(1))], dim=1)  # B x L x z
+        z = self.attn_norm(self.sca(z))                                                # B x z
+        return self.classifier(z).squeeze(-1)                                          # B
 
     def compute_loss(self, batch):
         images, labels, _ = batch

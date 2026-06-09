@@ -57,7 +57,8 @@ def main():
     probs, labels = [], []
     for i, (p, y) in enumerate(items):
         try:
-            clip = media.video_clip_tensor(p, spec.num_frames, spec.fps, spec.frame_size)
+            clip = media.video_clip_tensor(p, spec.num_frames, spec.fps, spec.frame_size,
+                                           window_center=spec.window_center, interp=spec.resize_interp)
             clip = ((clip - mean) / std)
             probs.append(float(engine._video_fake_prob(model, spec, clip).item()))
             labels.append(y)

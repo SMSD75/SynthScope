@@ -1,0 +1,76 @@
+{
+  "model": "d3",
+  "paper": "D3: Training-Free AI-Generated Video Detection Using Second-Order Features (Zheng et al., ICCV 2025)",
+  "arxiv_id": "n/a (CVF Open Access ICCV 2025; code github.com/Zig-HS/D3)",
+  "official_repo": "https://github.com/Zig-HS/D3",
+  "training_set_in_paper": "NONE — D3 is training-free (inference only). Baselines (re-implemented for comparison) were trained on real videos from Youku-mPLUG + Pika fakes, following DeMamba (paper Sec 4.1).",
+  "encoder_in_paper": "XCLIP-B/16 (X-CLIP ViT-B/16, Ni et al. ECCV'22, paper ref [34]) as the frozen per-frame visual encoder; first-order = L2 distance. CLIP-B/16 is the ablation runner-up (~97 on GenVideo, Table 7).",
+  "paper_protocol": "Extract up to a 2 s segment, sample frames at 8 fps, JPEG; crop 10% of the longer edge then resize to 224x224. Score = std of 2nd-order central-difference of inter-frame L2 distances (Eq.8). Metric reported: AP (real-class); AUROC in supplementary. Hardware RTX 4090. (paper Sec 4.1 'Implementation Details')",
+  "agid_encoder": "CLIP ViT-B/16 (openai/clip-vit-base-patch16, per-frame pooler_output). XCLIP intentionally removed from the AGID port (HF XCLIPVisionModel does cross-frame message-token attention, violating D3's per-frame premise). See models/video/d3/README.md.",
+  "benchmarks": [
+    {
+      "name": "GenVideo (DeMamba GenVideo-Val, Table 1)",
+      "datasets": ["GenVideo-Val"],
+      "subsets_or_generators": ["Crafter", "Gen2", "HotShot", "Lavie", "ModelScope", "MoonValley", "MorphStudio", "Show-1", "Sora", "WildScrape"],
+      "metric": "AP",
+      "paper_number": {"mAP": 98.46},
+      "paper_per_generator": {"Crafter": 98.53, "Gen2": 99.39, "HotShot": 98.52, "Lavie": 97.22, "ModelScope": 97.12, "MoonValley": 99.52, "MorphStudio": 98.68, "Show-1": 99.18, "Sora": 99.91, "WildScrape": 96.49},
+      "paper_per_generator_note": "These are the D3 (XCLIP-B/16) AP values from paper Table 1. With CLIP-B/16 (Table 7) GenVideo mAP = 97.00 (L2) / 87.82 (cos).",
+      "official_eval_protocol": "XCLIP-B/16 frozen, 8 fps over <=2 s, JPEG, 10% longer-edge crop, resize 224x224, L2 first-order, std of 2nd-order central diff; AP computed real-class (positive=real, score=+std), max_len=1000 per class (official eval.py).",
+      "our_status": "below",
+      "our_number": {"mAP": 89.0, "mAUROC": 93.87, "acc": 86.04},
+      "our_per_generator_ap": {"Crafter": 94.26, "Gen2": 94.15, "HotShot": 54.94, "Lavie": 91.69, "ModelScope": 91.94, "MoonValley": 94.92, "MorphStudio": 93.01, "Show-1": 94.02, "Sora": 85.56, "WildScrape": 95.49},
+      "gap_cause": "Two compounding causes confirmed against the official repo (d3_repro/REPRODUCTION_NOTES.md). (1) ENCODER: AGID uses CLIP-B/16, the paper headline uses XCLIP-B/16 (~+1 mAP on GenVideo: paper CLIP-B/16=97.0 vs XCLIP=97.72 in Table-7 ablation; 98.46 is the full-protocol XCLIP number). (2) PREPROCESSING: AGID's generic decord loader resizes directly (no 10% longer-edge crop, even-interval sampling); in the d3_repro standalone run, adding the crop + official 16-frame@8fps sampling + ImageNet-norm + real-class/max_len=1000 AP raised CLIP-B/16 to mAP_real=95.6 / AUROC=0.936. The AGID-pipeline number (89.0) is lower than the standalone CLIP run (95.6) because the AGID video loader omits the edge-crop and the official AP capping. The single biggest visible drag is HotShot AP 54.9 (a 1-second generator the paper scores against 1 s clips; AGID's 2 s window mis-samples it). Headline 89 vs 98.5 gap is recoverable: XCLIP-B/16 + edge-crop + per-duration (1 s for HotShot) sampling.",
+      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val (14 GB; downloaded from ModelScope cccnju/Gen-Video GenVideo-Val.zip). The real source is MSR-VTT.",
+      "xclip_weights_downloadable": "YES — microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights."
+    },
+    {
+      "name": "EvalCrafter (Table 2, 14 generators, fake-only)",
+      "datasets": ["EvalCrafter"],
+      "subsets_or_generators": ["MoonValley", "Floor33", "Gen2", "Gen2-December", "HotShot", "LaVie-Base", "LaVie-Interpolation", "Mix-SR", "ModelScope", "Pika", "Pika-v1", "Show-1", "VideoCrafter", "ZeroScope"],
+      "metric": "AP",
+      "paper_number": {"mAP": 98.87},
+      "paper_per_generator": {"MoonValley": 99.52, "Floor33": 98.68, "Gen2": 99.46, "Gen2-December": 99.74, "HotShot": 98.52, "LaVie-Base": 97.79, "LaVie-Interpolation": 98.48, "Mix-SR": 99.16, "ModelScope": 97.13, "Pika": 99.43, "Pika-v1": 99.55, "Show-1": 99.18, "VideoCrafter": 98.77, "ZeroScope": 98.83},
+      "paper_per_generator_note": "D3 (XCLIP-B/16) AP from paper Table 2. CLIP-B/16 EvalCrafter mAP = 97.63 (L2) in Table-7 ablation.",
+      "official_eval_protocol": "Same XCLIP-B/16 protocol as GenVideo. EvalCrafter is fake-only; AP is scored by pairing each generator's fakes against a shared real pool (AGID reuses the GenVideo-Val MSR-VTT reals; real_acc=81.33 across all rows).",
+      "our_status": "below",
+      "our_number": {"mAP": 91.19, "mAUROC": 95.41, "acc": 87.67},
+      "gap_cause": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) — a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 92.9-95.1. Recoverable with XCLIP + edge-crop + 1 s HotShot window.",
+      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/EvalCrafter/test/1_fake (19 GB; HF RaphaelLiu/EvalCrafter_T2V_Dataset). Fake-only; reals borrowed from GenVideo-Val."
+    },
+    {
+      "name": "VideoPhy (Table 3, 10 generators)",
+      "datasets": ["VideoPhy"],
+      "subsets_or_generators": ["LaVie", "OpenSora", "CogVideoX-5B", "CogVideoX", "Dream-Machine", "Gen-2", "Pika", "SVD", "VC2", "ZeroScope"],
+      "metric": "AP",
+      "paper_number": {"mAP": 99.16},
+      "paper_per_generator": {"LaVie": 98.49, "OpenSora": 98.55, "CogVideoX-5B": 99.03, "CogVideoX": 98.87, "Dream-Machine": 99.54, "Gen-2": 99.87, "Pika": 99.70, "SVD": 98.75, "VC2": 99.46, "ZeroScope": 99.38},
+      "official_eval_protocol": "Same XCLIP-B/16 protocol. VideoPhy = Bansal et al. arXiv:2406.03520.",
+      "our_status": "missing",
+      "our_number": null,
+      "gap_cause": "Not evaluated in AGID — VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the AGID encoder.",
+      "dataset_source": "github/HF: VideoPhy (Bansal et al., arXiv:2406.03520; github.com/Hritikbansal/videophy). Needs download."
+    },
+    {
+      "name": "VidProM (Table 4, 6 generators)",
+      "datasets": ["VidProM"],
+      "subsets_or_generators": ["ModelScope", "OpenSora", "Pika", "StreamingT2V", "Text2Video-Zero", "VideoCrafter2"],
+      "metric": "AP",
+      "paper_number": {"mAP": 88.46},
+      "paper_per_generator": {"ModelScope": 96.85, "OpenSora": 97.85, "Pika": 99.14, "StreamingT2V": 93.13, "Text2Video-Zero": 45.11, "VideoCrafter2": 98.70},
+      "paper_per_generator_note": "Text2Video-Zero (T2VZ) AP=45.11 is a known D3 failure mode (low-quality, semantically-incoherent generation looks 'chaotic'/high-volatility like real). CLIP-B/16 VidProM mAP = 84.79 (Table 7).",
+      "official_eval_protocol": "Same XCLIP-B/16 protocol. VidProM = Wang & Yang, NeurIPS'24.",
+      "our_status": "missing",
+      "our_number": null,
+      "gap_cause": "Not evaluated in AGID — VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)",
+      "dataset_source": "HF: VidProM (Wang & Yang, openreview pYNl76onJL; huggingface VidProM). Needs download."
+    }
+  ],
+  "summary": {
+    "n_benchmarks_reported": 4,
+    "n_reproduced_in_agid": 0,
+    "n_below": 2,
+    "n_missing": 2,
+    "key_finding": "D3 GenVideo 89.0 (AGID) vs 98.46 (paper) gap is CONFIRMED to be (a) CLIP-B/16 vs the paper's XCLIP-B/16 encoder and (b) missing 10%-edge-crop + per-duration (1 s) frame sampling, NOT a method bug. X-CLIP-B/16 weights ARE downloadable (microsoft/xclip-base-patch16, not gated), so the gap is closable. A standalone CLIP-B/16 run with full official preprocessing already reaches 95.6 AP_real (d3_repro). VideoPhy and VidProM are reported in the paper but not yet run in AGID (datasets not downloaded)."
+  }
+}

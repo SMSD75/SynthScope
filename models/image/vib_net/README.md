@@ -121,6 +121,17 @@ The current trainer config uses AdamW through the AGID trainer:
 
 `label_smoothing` is part of the shared trainer configuration and is used by the cross-entropy models. VIB-Net uses `BCEWithLogitsLoss`, so label smoothing is not part of its current loss unless it is explicitly added to `AGIDVIBNetModel.compute_loss`.
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| Diffusion-source (SDv1.4-trained), AP -- HEADL | AP | map=95.53 | map=83.94 / acc=77.57 | below |
+| Diffusion-source (SDv1.4-trained), ACC | acc | acc=85.83 | map=83.94 / acc=77.57 | below |
+| GAN-source (ForenSynths/ProGAN-trained), AP | AP | map=93.14 | map=61.71 / acc=57.91 | below |
+| GAN-source (ForenSynths/ProGAN-trained), ACC | acc | acc=82.5 | — | missing |
+
 ## Integration notes
 
 The VIB-Net model is designed to be called through the shared `compute_loss(batch)` interface used by the AGID trainer. It returns:

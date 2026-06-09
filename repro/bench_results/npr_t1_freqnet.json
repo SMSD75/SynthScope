@@ -1,0 +1,24 @@
+{
+  "tag": "npr_t1_freqnet",
+  "model": "npr",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/NPR_table1.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/freqnet",
+  "n_generators": 1,
+  "means": {
+    "acc": 93.22,
+    "map": 96.6,
+    "mauroc": 97.81
+  },
+  "per_generator": {
+    "test": {
+      "ap": 96.6,
+      "auroc": 97.81,
+      "real_acc": 94.11,
+      "fake_acc": 92.34,
+      "acc": 93.22
+    }
+  },
+  "date": "2026-06-09T09:20:32",
+  "agid_version": "0.1.0"
+}

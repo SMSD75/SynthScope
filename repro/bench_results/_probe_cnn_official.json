@@ -1,0 +1,24 @@
+{
+  "tag": "_probe_cnn_official",
+  "model": "cnn",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/cnn/blur_jpg_prob0.5.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 57.5,
+    "map": 72.65,
+    "mauroc": 67.0
+  },
+  "per_generator": {
+    "progan": {
+      "ap": 72.65,
+      "auroc": 67.0,
+      "real_acc": 70.0,
+      "fake_acc": 45.0,
+      "acc": 57.5
+    }
+  },
+  "date": "2026-06-04T11:20:14",
+  "agid_version": "0.1.0"
+}

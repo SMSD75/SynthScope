@@ -1,0 +1,31 @@
+{
+  "tag": "_validate_d3_video",
+  "model": "d3",
+  "ckpt": "registry-default",
+  "benchmark": "video:genvideo",
+  "data_root": "/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val",
+  "n_generators": 2,
+  "means": {
+    "acc": 75.0,
+    "map": 100.0,
+    "mauroc": 100.0
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 50.0,
+      "fake_acc": 100.0,
+      "acc": 75.0
+    },
+    "Sora": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 50.0,
+      "fake_acc": 100.0,
+      "acc": 75.0
+    }
+  },
+  "date": "2026-06-04T12:05:25",
+  "agid_version": "video"
+}

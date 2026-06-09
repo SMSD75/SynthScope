@@ -1,0 +1,108 @@
+{
+  "tag": "pgc_official_forensynths",
+  "model": "pgc",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 13,
+  "means": {
+    "acc": 83.73,
+    "map": 96.25,
+    "mauroc": 96.64
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 99.69,
+      "auroc": 99.67,
+      "real_acc": 96.7,
+      "fake_acc": 97.3,
+      "acc": 97.0
+    },
+    "crn": {
+      "ap": 97.09,
+      "auroc": 97.64,
+      "real_acc": 81.79,
+      "fake_acc": 99.09,
+      "acc": 90.44
+    },
+    "cyclegan": {
+      "ap": 99.93,
+      "auroc": 99.94,
+      "real_acc": 98.86,
+      "fake_acc": 99.09,
+      "acc": 98.98
+    },
+    "deepfake": {
+      "ap": 93.9,
+      "auroc": 96.48,
+      "real_acc": 97.97,
+      "fake_acc": 46.26,
+      "acc": 72.11
+    },
+    "gaugan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 98.04,
+      "fake_acc": 99.94,
+      "acc": 98.99
+    },
+    "imle": {
+      "ap": 99.48,
+      "auroc": 99.57,
+      "real_acc": 81.79,
+      "fake_acc": 99.97,
+      "acc": 90.88
+    },
+    "progan": {
+      "ap": 99.83,
+      "auroc": 99.8,
+      "real_acc": 96.95,
+      "fake_acc": 98.9,
+      "acc": 97.93
+    },
+    "san": {
+      "ap": 98.88,
+      "auroc": 99.06,
+      "real_acc": 98.17,
+      "fake_acc": 78.54,
+      "acc": 88.36
+    },
+    "seeingdark": {
+      "ap": 87.05,
+      "auroc": 87.51,
+      "real_acc": 11.11,
+      "fake_acc": 100.0,
+      "acc": 55.56
+    },
+    "stargan": {
+      "ap": 97.58,
+      "auroc": 97.54,
+      "real_acc": 91.55,
+      "fake_acc": 89.89,
+      "acc": 90.72
+    },
+    "stylegan": {
+      "ap": 95.36,
+      "auroc": 95.4,
+      "real_acc": 98.66,
+      "fake_acc": 56.75,
+      "acc": 77.71
+    },
+    "stylegan2": {
+      "ap": 96.37,
+      "auroc": 96.31,
+      "real_acc": 98.54,
+      "fake_acc": 61.17,
+      "acc": 79.85
+    },
+    "whichfaceisreal": {
+      "ap": 86.13,
+      "auroc": 87.36,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-06-04T17:17:54",
+  "agid_version": "official-vendored"
+}

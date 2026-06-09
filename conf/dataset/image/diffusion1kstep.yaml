@@ -1,0 +1,14 @@
+name: diffusion1kstep
+# Diffusion-1kStep self-synthesis test set (DALLE, ddpm, guided-diffusion, improved-diffusion,
+# midjourney). Used by NPR (Table 5).
+root_dir: /hddstore/ssalehi/AGID/Diffusion1kStep
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

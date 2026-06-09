@@ -1,0 +1,31 @@
+{
+  "tag": "stall_comgenvid",
+  "model": "stall",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/hddstore/ssalehi/AGID/ComGenVid/test",
+  "n_generators": 2,
+  "means": {
+    "acc": 57.34,
+    "map": 82.59,
+    "mauroc": 84.0
+  },
+  "per_generator": {
+    "Sora": {
+      "ap": 80.87,
+      "auroc": 82.38,
+      "real_acc": 15.33,
+      "fake_acc": 98.67,
+      "acc": 57.0
+    },
+    "VEO3": {
+      "ap": 84.3,
+      "auroc": 85.61,
+      "real_acc": 15.33,
+      "fake_acc": 100.0,
+      "acc": 57.67
+    }
+  },
+  "date": "2026-06-04T19:55:01",
+  "agid_version": "video"
+}

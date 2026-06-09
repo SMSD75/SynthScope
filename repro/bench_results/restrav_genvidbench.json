@@ -1,0 +1,73 @@
+{
+  "tag": "restrav_genvidbench",
+  "model": "restrav",
+  "ckpt": "registry-default",
+  "benchmark": "video:genvideo",
+  "data_root": "/hddstore/ssalehi/AGID/GenVidBench/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 86.87,
+    "map": 92.7,
+    "mauroc": 95.9
+  },
+  "per_generator": {
+    "cogvideo": {
+      "ap": 99.79,
+      "auroc": 99.85,
+      "real_acc": 88.67,
+      "fake_acc": 100.0,
+      "acc": 94.33
+    },
+    "mora": {
+      "ap": 89.76,
+      "auroc": 94.73,
+      "real_acc": 88.67,
+      "fake_acc": 92.67,
+      "acc": 90.67
+    },
+    "ms": {
+      "ap": 99.62,
+      "auroc": 99.68,
+      "real_acc": 88.67,
+      "fake_acc": 99.33,
+      "acc": 94.0
+    },
+    "musev": {
+      "ap": 96.24,
+      "auroc": 98.42,
+      "real_acc": 88.67,
+      "fake_acc": 100.0,
+      "acc": 94.33
+    },
+    "pika": {
+      "ap": 91.9,
+      "auroc": 94.85,
+      "real_acc": 88.67,
+      "fake_acc": 87.33,
+      "acc": 88.0
+    },
+    "svd": {
+      "ap": 97.98,
+      "auroc": 98.72,
+      "real_acc": 88.67,
+      "fake_acc": 99.33,
+      "acc": 94.0
+    },
+    "t2vz": {
+      "ap": 66.78,
+      "auroc": 81.23,
+      "real_acc": 88.67,
+      "fake_acc": 2.0,
+      "acc": 45.33
+    },
+    "vc2": {
+      "ap": 99.55,
+      "auroc": 99.68,
+      "real_acc": 88.67,
+      "fake_acc": 100.0,
+      "acc": 94.33
+    }
+  },
+  "date": "2026-06-04T19:50:57",
+  "agid_version": "video"
+}

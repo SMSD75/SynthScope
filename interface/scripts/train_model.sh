@@ -98,7 +98,8 @@ case "$MODEL" in
   spai)
     OV=(trainer@TrainerConfig=image/spai model@ModelConfig=image/spai
         dataset@DatasetConfig=image/spai_ldm
-        DatasetConfig.train_transform_list=$T_RAW_TRAIN DatasetConfig.eval_transform_list=$T_RAW_EVAL)
+        DatasetConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]"
+        DatasetConfig.eval_transform_list="[resize_short_448,center_crop_448,to_dtype]")  # 448 raw [0,1] -> 2x2 grid + SCA
     EPOCHS=${EPOCHS_OVERRIDE:-5} ;;
   co_spy)
     OV=(trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy
@@ -118,8 +119,9 @@ case "$MODEL" in
         dataset@DatasetConfig=video/genvideo DatasetConfig.root_dir=/hddstore/ssalehi/AGID/restrav_data
         DatasetConfig.num_frames=24 DatasetConfig.num_workers=8
         DatasetConfig.train_batch_size=16 DatasetConfig.val_batch_size=16 DatasetConfig.test_batch_size=16
-        ++TrainerConfig.test_interval=5
-        DatasetConfig.train_transform_list="[normalize_dinov2]" DatasetConfig.eval_transform_list="[normalize_dinov2]")
+        ++TrainerConfig.test_interval=5 ++TrainerConfig.weight_decay=0.0 ++TrainerConfig.warmup.mode=off
+        ++DatasetConfig.window_center=true ++DatasetConfig.resize_interp=bicubic
+        DatasetConfig.train_transform_list="[]" DatasetConfig.eval_transform_list="[]")  # raw [0,1], center window + BICUBIC (official ReStraV)
     EPOCHS=${EPOCHS_OVERRIDE:-10} ;;
   *) echo "unknown model: $MODEL"; exit 2 ;;
 esac

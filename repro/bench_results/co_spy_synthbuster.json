@@ -1,0 +1,80 @@
+{
+  "tag": "co_spy_synthbuster",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/Synthbuster/test",
+  "n_generators": 9,
+  "means": {
+    "acc": 90.86,
+    "map": 98.48,
+    "mauroc": 98.62
+  },
+  "per_generator": {
+    "dalle2": {
+      "ap": 97.06,
+      "auroc": 97.35,
+      "real_acc": 98.9,
+      "fake_acc": 65.1,
+      "acc": 82.0
+    },
+    "dalle3": {
+      "ap": 99.58,
+      "auroc": 99.72,
+      "real_acc": 98.9,
+      "fake_acc": 98.0,
+      "acc": 98.45
+    },
+    "firefly": {
+      "ap": 98.42,
+      "auroc": 98.7,
+      "real_acc": 98.9,
+      "fake_acc": 77.1,
+      "acc": 88.0
+    },
+    "glide": {
+      "ap": 95.45,
+      "auroc": 95.27,
+      "real_acc": 98.9,
+      "fake_acc": 59.0,
+      "acc": 78.95
+    },
+    "midjourney-v5": {
+      "ap": 98.56,
+      "auroc": 98.85,
+      "real_acc": 98.9,
+      "fake_acc": 81.3,
+      "acc": 90.1
+    },
+    "stable-diffusion-1-3": {
+      "ap": 99.75,
+      "auroc": 99.78,
+      "real_acc": 98.9,
+      "fake_acc": 97.9,
+      "acc": 98.4
+    },
+    "stable-diffusion-1-4": {
+      "ap": 99.72,
+      "auroc": 99.75,
+      "real_acc": 98.9,
+      "fake_acc": 96.5,
+      "acc": 97.7
+    },
+    "stable-diffusion-2": {
+      "ap": 98.7,
+      "auroc": 98.86,
+      "real_acc": 98.9,
+      "fake_acc": 82.8,
+      "acc": 90.85
+    },
+    "stable-diffusion-xl": {
+      "ap": 99.11,
+      "auroc": 99.29,
+      "real_acc": 98.9,
+      "fake_acc": 87.6,
+      "acc": 93.25
+    }
+  },
+  "date": "2026-06-09T10:11:48",
+  "agid_version": "0.1.0"
+}

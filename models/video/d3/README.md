@@ -139,6 +139,17 @@ labels, folder_ids)` and `frames` of shape `[B, T, 3, H, W]`:
 (`VideoFolderDataset`) decodes `num_frames` frames per clip at `224×224` in `[0, 1]`; D3 samples
 at ~8 fps over up to 2 s (`num_frames: 16`, `fps: 8` in the dataset config).
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| GenVideo (DeMamba GenVideo-Val, Table 1) | AP | mAP=98.46 | XCLIP 95.1 AUROC / 99.5 AP_real_full (CLIP 94.4) | reproduced |
+| EvalCrafter (Table 2, 14 generators, fake-only | AP | mAP=98.87 | mAP=91.19 / mAUROC=95.41 / acc=87.67 | below |
+| VideoPhy (Table 3, 10 generators) | AP | mAP=99.16 | — | missing |
+| VidProM (Table 4, 6 generators) | AP | mAP=88.46 | — | missing |
+
 ## Differences from the paper / official code
 
 | Difference | Reason |

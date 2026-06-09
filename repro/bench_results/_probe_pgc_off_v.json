@@ -1,0 +1,24 @@
+{
+  "tag": "_probe_pgc_off_v",
+  "model": "pgc",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 97.5,
+    "map": 100.0,
+    "mauroc": 100.0
+  },
+  "per_generator": {
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 95.0,
+      "fake_acc": 100.0,
+      "acc": 97.5
+    }
+  },
+  "date": "2026-06-04T11:29:35",
+  "agid_version": "official-vendored"
+}

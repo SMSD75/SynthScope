@@ -189,6 +189,12 @@ class AGIDAIDEModel(nn.Module):
 
         self.register_buffer("clip_mean", torch.tensor(_CLIP_MEAN).view(1, 3, 1, 1))
         self.register_buffer("clip_std", torch.tensor(_CLIP_STD).view(1, 3, 1, 1))
+        # ImageNet/DINOv2 stats used by the official AIDE for the SRM/HPF patch branch
+        # (transform_train = Resize(256) + Normalize(ImageNet)). The semantic branch instead
+        # gets CLIP normalization (official applies ImageNet then remaps ImageNet->CLIP, which
+        # is algebraically identical to CLIP-normalizing the raw image directly).
+        self.register_buffer("imnet_mean", torch.tensor((0.485, 0.456, 0.406)).view(1, 3, 1, 1))
+        self.register_buffer("imnet_std", torch.tensor((0.229, 0.224, 0.225)).view(1, 3, 1, 1))
 
     def train(self, mode: bool = True):  # noqa: D401  (override)
         super().train(mode)
@@ -196,7 +202,10 @@ class AGIDAIDEModel(nn.Module):
             self.convnext.eval()
         return self
 
-    def _semantic_features(self, x_clip: torch.Tensor) -> torch.Tensor:
+    def _semantic_features(self, x_pixel: torch.Tensor) -> torch.Tensor:
+        # Official: tokens are ImageNet-normalized then remapped ImageNet->CLIP inside the model,
+        # which equals CLIP-normalizing the raw image directly. ConvNeXt-XXL on 256 -> [B,3072,8,8].
+        x_clip = (x_pixel - self.clip_mean) / self.clip_std
         if self._freeze_convnext:
             with torch.no_grad():
                 feat = self.convnext(x_clip)
@@ -206,22 +215,31 @@ class AGIDAIDEModel(nn.Module):
         return self.semantic_proj(feat)
 
     def _patchwise_features(self, x_pixel: torch.Tensor) -> torch.Tensor:
+        # DCT patch selection on the raw [0,1] image (ToTensor space, matching the official
+        # DCT_base_Rec_Module which runs on the un-normalized tensor).
         size = (self.dct_size, self.dct_size)
         x = F.interpolate(x_pixel, size=size, mode="bilinear", align_corners=False)
         x_minmin, x_maxmax, x_minmin1, x_maxmax1 = self.dct(x)
 
-        def _up(p: torch.Tensor) -> torch.Tensor:
-            return F.interpolate(p, size=size, mode="bilinear", align_corners=False)
+        def _view(p: torch.Tensor) -> torch.Tensor:
+            # Official transform_train applied to each patch: Resize(256) + Normalize(ImageNet),
+            # then HPF (30 SRM kernels). The patch branch is normalized with ImageNet stats.
+            p = F.interpolate(p, size=size, mode="bilinear", align_corners=False)
+            p = (p - self.imnet_mean) / self.imnet_std
+            return self.hpf(p)
 
-        f_min = self.model_min(self.hpf(_up(x_minmin)))
-        f_max = self.model_max(self.hpf(_up(x_maxmax)))
-        f_min1 = self.model_min(self.hpf(_up(x_minmin1)))
-        f_max1 = self.model_max(self.hpf(_up(x_maxmax1)))
+        f_min = self.model_min(_view(x_minmin))
+        f_max = self.model_max(_view(x_maxmax))
+        f_min1 = self.model_min(_view(x_minmin1))
+        f_max1 = self.model_max(_view(x_maxmax1))
         return (f_min + f_max + f_min1 + f_max1) / 4.0
 
     def forward(self, images: torch.Tensor) -> torch.Tensor:
-        v_sem = self._semantic_features(images)
-        x_pixel = (images * self.clip_std + self.clip_mean).clamp(0.0, 1.0)
+        # ``images`` is a raw [0,1] tensor (the AIDE transform is now Resize(256)+ToTensor, no
+        # normalization) so the DCT runs in pixel space and each branch applies its own
+        # normalization (CLIP for semantic, ImageNet for the SRM patch branch), as in official AIDE.
+        x_pixel = images.clamp(0.0, 1.0)
+        v_sem = self._semantic_features(x_pixel)
         v_art = self._patchwise_features(x_pixel)
         return self.head(torch.cat([v_sem, v_art], dim=1))
 

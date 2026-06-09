@@ -3,6 +3,10 @@ defaults:
   - _self_
 
 model_type: vib_net
+# Backbone: CLIP:ViT-L/14 is the shipped/working config (the released vib_net.pth is CLIP-based, GenImage
+# mAP 83.26). A FLAVA-full path (the paper's Fig. 5 headline backbone) is also implemented in
+# AGIDVIBNetModel, but frozen-FLAVA + VIB-head training was unstable here (val loss stayed at chance over
+# 5 epochs), so CLIP is the default; set backbone_name: FLAVA:facebook/flava-full to experiment.
 backbone_name: CLIP:ViT-L/14
 vib_hidden_dim: 1024
 vib_latent_dim: 256

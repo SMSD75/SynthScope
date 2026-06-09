@@ -1,0 +1,73 @@
+{
+  "tag": "npr_t1_diffusionforensics",
+  "model": "npr",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/NPR_table1.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/DiffusionForensics/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 94.86,
+    "map": 99.8,
+    "mauroc": 99.8
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 99.16,
+      "auroc": 99.14,
+      "real_acc": 100.0,
+      "fake_acc": 69.5,
+      "acc": 84.75
+    },
+    "ddpm": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.61,
+      "acc": 99.8
+    },
+    "iddpm": {
+      "ap": 99.66,
+      "auroc": 99.6,
+      "real_acc": 100.0,
+      "fake_acc": 83.6,
+      "acc": 91.8
+    },
+    "ldm": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "pndm": {
+      "ap": 99.98,
+      "auroc": 99.98,
+      "real_acc": 100.0,
+      "fake_acc": 82.4,
+      "acc": 91.2
+    },
+    "sdv1": {
+      "ap": 99.6,
+      "auroc": 99.72,
+      "real_acc": 98.4,
+      "fake_acc": 96.7,
+      "acc": 97.55
+    },
+    "sdv2": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 100.0,
+      "fake_acc": 87.6,
+      "acc": 93.8
+    },
+    "vqdiffusion": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    }
+  },
+  "date": "2026-06-09T09:21:55",
+  "agid_version": "0.1.0"
+}

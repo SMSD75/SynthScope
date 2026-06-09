@@ -1,0 +1,80 @@
+{
+  "tag": "spai_synthbuster",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/Synthbuster/test",
+  "n_generators": 9,
+  "means": {
+    "acc": 55.99,
+    "map": 55.67,
+    "mauroc": 55.87
+  },
+  "per_generator": {
+    "dalle2": {
+      "ap": 46.88,
+      "auroc": 46.77,
+      "real_acc": 86.8,
+      "fake_acc": 10.9,
+      "acc": 48.85
+    },
+    "dalle3": {
+      "ap": 38.99,
+      "auroc": 34.21,
+      "real_acc": 86.8,
+      "fake_acc": 2.6,
+      "acc": 44.7
+    },
+    "firefly": {
+      "ap": 42.7,
+      "auroc": 40.9,
+      "real_acc": 86.8,
+      "fake_acc": 6.3,
+      "acc": 46.55
+    },
+    "glide": {
+      "ap": 89.94,
+      "auroc": 93.81,
+      "real_acc": 86.8,
+      "fake_acc": 89.3,
+      "acc": 88.05
+    },
+    "midjourney-v5": {
+      "ap": 44.19,
+      "auroc": 43.21,
+      "real_acc": 86.8,
+      "fake_acc": 7.6,
+      "acc": 47.2
+    },
+    "stable-diffusion-1-3": {
+      "ap": 74.28,
+      "auroc": 76.69,
+      "real_acc": 86.8,
+      "fake_acc": 47.3,
+      "acc": 67.05
+    },
+    "stable-diffusion-1-4": {
+      "ap": 74.74,
+      "auroc": 77.46,
+      "real_acc": 86.8,
+      "fake_acc": 47.8,
+      "acc": 67.3
+    },
+    "stable-diffusion-2": {
+      "ap": 42.62,
+      "auroc": 40.89,
+      "real_acc": 86.8,
+      "fake_acc": 6.1,
+      "acc": 46.45
+    },
+    "stable-diffusion-xl": {
+      "ap": 46.7,
+      "auroc": 48.91,
+      "real_acc": 86.8,
+      "fake_acc": 8.8,
+      "acc": 47.8
+    }
+  },
+  "date": "2026-06-09T09:45:16",
+  "agid_version": "0.1.0"
+}

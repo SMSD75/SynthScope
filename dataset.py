@@ -65,14 +65,19 @@ def sample_video_frames(
     fps: float | None = None,
     window_seconds: float = 2.0,
     size: int = 224,
+    window_center: bool = False,
+    interp: str = "bilinear",
 ) -> torch.Tensor:
     """Decode a clip of exactly ``num_frames`` frames and return ``[T, 3, size, size]`` float in ``[0, 1]``.
 
-    Frames are sampled over the first ``window_seconds`` of the video. When ``fps`` is given
-    (e.g. D3 samples at 8 fps), the window is shortened to ``num_frames / fps`` seconds so the
-    effective sampling rate matches ``fps``; when ``fps`` is ``None`` the frames are spread evenly
-    across ``window_seconds`` (ReStraV). The output frame count is always ``num_frames`` so the
-    default collate can stack clips into ``[B, T, 3, size, size]``.
+    Frames are sampled over a ``window_seconds`` window. By default the window starts at the
+    beginning of the video; set ``window_center=True`` to center it at the video midpoint (this is
+    what the official ReStraV pipeline does). When ``fps`` is given (e.g. D3 samples at 8 fps), the
+    window is shortened to ``num_frames / fps`` seconds so the effective sampling rate matches
+    ``fps``; when ``fps`` is ``None`` the frames are spread evenly across ``window_seconds``. The
+    resize interpolation is ``interp`` (``"bilinear"`` default; ``"bicubic"`` for ReStraV, with
+    antialiasing, matching the official preprocessing). The output frame count is always
+    ``num_frames`` so the default collate can stack clips into ``[B, T, 3, size, size]``.
     """
     try:
         reader = VideoReader(str(path), ctx=cpu(0))
@@ -88,8 +93,13 @@ def sample_video_frames(
     if fps and fps > 0:
         window = min(window, num_frames / float(fps))
 
-    last_index = min(max(int(round(window * avg_fps)) - 1, 0), num_source - 1)
-    indices = np.linspace(0, last_index, num=num_frames)
+    n_window = max(int(round(window * avg_fps)), 1)        # frames spanning the window
+    start_index = 0
+    if window_center:                                      # center the window at the midpoint
+        start_index = int(round((duration / 2.0 - window / 2.0) * avg_fps))
+    start_index = min(max(start_index, 0), num_source - 1)
+    end_index = min(start_index + n_window - 1, num_source - 1)
+    indices = np.linspace(start_index, end_index, num=num_frames)
     indices = np.clip(np.rint(indices).astype(np.int64), 0, num_source - 1)
 
     # decord's batched get_batch raises a size-mismatch DECORDError on videos whose frames
@@ -97,7 +107,10 @@ def sample_video_frames(
     # finally to a black clip, so one bad video never crashes the whole DataLoader worker.
     def _resize(t):  # t: [T,3,H,W] float
         if t.shape[-2:] != (size, size):
-            t = F.interpolate(t, size=(size, size), mode="bilinear", align_corners=False)
+            # Default ("bilinear") preserves the original no-antialias behavior (D3/STALL unchanged);
+            # "bicubic" enables antialiasing to match the official ReStraV resize.
+            t = F.interpolate(t, size=(size, size), mode=interp, align_corners=False,
+                              antialias=(interp == "bicubic"))
         return t
 
     try:
@@ -1780,6 +1793,8 @@ class VideoFolderDataset(Dataset):
         window_seconds: float = 2.0,
         frame_size: int = 224,
         hf_repo_id: str | None = None,
+        window_center: bool = False,
+        resize_interp: str = "bilinear",
     ):
         super().__init__()
         self.root_dir = Path(root_dir)
@@ -1790,6 +1805,8 @@ class VideoFolderDataset(Dataset):
         self.window_seconds = float(window_seconds)
         self.frame_size = int(frame_size)
         self.hf_repo_id = hf_repo_id
+        self.window_center = bool(window_center)
+        self.resize_interp = str(resize_interp)
         self.destination_dir = self.root_dir / self.split
 
         if prefetch and not _has_videos(self.destination_dir):
@@ -1847,6 +1864,8 @@ class VideoFolderDataset(Dataset):
             fps=self.fps,
             window_seconds=self.window_seconds,
             size=self.frame_size,
+            window_center=self.window_center,
+            interp=self.resize_interp,
         )
         label = torch.tensor(self.labels[idx])
         if self.transform:
@@ -1891,6 +1910,8 @@ class VideoFolderDatasetModule:
             window_seconds=cfg.get("window_seconds", 2.0),
             frame_size=cfg.get("frame_size", 224),
             hf_repo_id=cfg.get("hf_repo_id", None),
+            window_center=cfg.get("window_center", False),
+            resize_interp=cfg.get("resize_interp", "bilinear"),
         )
         self.train_dataset = VideoFolderDataset(cfg.root_dir, "train", self.train_transform, prefetch=prefetch, **common)
         self.val_dataset = VideoFolderDataset(cfg.root_dir, "val", self.eval_transform, prefetch=prefetch, **common)
@@ -1919,6 +1940,529 @@ class AIGIDatasetModule:
     def test_dataloader(self):
         return self.delegate.test_dataloader()
 
+class EvalCrafterDataset(VideoFolderDataset):
+    """EvalCrafter T2V benchmark (Liu et al. 2024) — used by D3.
+
+    All clips are AI-generated (no real videos), so every generator is placed under
+    ``<root>/test/1_fake/<generator>/*.mp4``. ``prepare_split`` snapshots the per-generator
+    ``*.tar.gz`` from the Hugging Face Hub and safe-extracts each into the ``1_fake`` tree.
+    """
+
+    hf_repo_id = "RaphaelLiu/EvalCrafter_T2V_Dataset"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_videos(destination_dir):
+            return
+        from huggingface_hub import snapshot_download
+
+        download_dir = root_dir / "_downloads"
+        snapshot_download(
+            repo_id=hf_repo_id or cls.hf_repo_id, repo_type="dataset",
+            local_dir=str(download_dir), allow_patterns=["*.tar.gz"],
+        )
+        fake_dir = destination_dir / "1_fake"
+        fake_dir.mkdir(parents=True, exist_ok=True)
+        for tar in sorted(download_dir.glob("*.tar.gz")):
+            _safe_extract_tar(tar, fake_dir)          # -> 1_fake/<generator>/*.mp4
+        shutil.rmtree(download_dir, ignore_errors=True)
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class GenVidBenchDataset(VideoFolderDataset):
+    """GenVidBench (Ni et al. 2025) — used by ReStraV.
+
+    Real sources (Vript, HD-VG-130M) -> ``<root>/test/0_real/<src>/``; the 8 generators
+    (ms, pika, t2vz, vc2, cogvideo, mora, musev, svd) -> ``<root>/test/1_fake/<gen>/``.
+    ``prepare_split`` snapshots the per-source ``.rar``/multi-part ``.7z`` archives and
+    extracts them (needs the ``unrar`` binary; ``7z`` for the HD-VG archive).
+    """
+
+    hf_repo_id = "bitmind/GenVidBench"
+    REAL_SOURCES = {"vript", "hd_vg_130m"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir)
+        destination_dir = root_dir / split
+        if not force and _has_videos(destination_dir):
+            return
+        from huggingface_hub import snapshot_download
+
+        download_dir = root_dir / "_downloads"
+        snapshot_download(repo_id=hf_repo_id or cls.hf_repo_id, repo_type="dataset", local_dir=str(download_dir))
+        for rar in sorted(download_dir.glob("**/*.rar")):
+            label = "0_real" if rar.stem.lower() in cls.REAL_SOURCES else "1_fake"
+            out = destination_dir / label
+            out.mkdir(parents=True, exist_ok=True)
+            cls._extract_rar(rar, out)
+        seven = sorted(download_dir.glob("**/hd_vg_130m.7z.001"))   # multi-part 7z real source
+        if seven:
+            out = destination_dir / "0_real"
+            out.mkdir(parents=True, exist_ok=True)
+            cls._extract_7z(seven[0], out)
+        shutil.rmtree(download_dir, ignore_errors=True)
+
+    @staticmethod
+    def _extract_rar(archive, out):
+        unrar = shutil.which("unrar") or "unrar"
+        subprocess.run([unrar, "x", "-o+", str(archive), str(out) + "/"], check=True, capture_output=True)
+
+    @staticmethod
+    def _extract_7z(archive, out):
+        seven = shutil.which("7z") or "7z"
+        subprocess.run([seven, "x", "-y", f"-o{out}", str(archive)], check=True, capture_output=True)
+        for nested in Path(out).glob("*.7z"):
+            subprocess.run([seven, "x", "-y", f"-o{out}", str(nested)], check=True, capture_output=True)
+            nested.unlink(missing_ok=True)
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class _TestOnlyVideoModule:
+    """Shared loader for the eval-only video benchmarks (test split only)."""
+
+    DATASET_CLASS = VideoFolderDataset
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        eval_list = list(cfg.get("eval_transform_list", []))
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_dataset = self.DATASET_CLASS(
+            cfg.root_dir, "test", self.eval_transform, prefetch=bool(cfg.get("prefetch", False)),
+            num_frames=cfg.get("num_frames", 16), fps=cfg.get("fps", None),
+            window_seconds=cfg.get("window_seconds", 2.0), frame_size=cfg.get("frame_size", 224),
+            hf_repo_id=cfg.get("hf_repo_id", self.DATASET_CLASS.hf_repo_id),
+            window_center=cfg.get("window_center", False), resize_interp=cfg.get("resize_interp", "bilinear"),
+        )
+
+    def train_dataloader(self):
+        return None
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.test_dataset, batch_size=cfg.test_batch_size, shuffle=False,
+                          num_workers=cfg.num_workers, persistent_workers=cfg.persistent_workers, pin_memory=cfg.pin_memory)
+
+
+class EvalCrafterDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = EvalCrafterDataset
+
+
+class GenVidBenchDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = GenVidBenchDataset
+
+
+# ---------------------------------------------------------------------------
+# Eval-only cross-generator benchmark datasets (reproduction suite). Image benchmarks share a
+# small test-only base + module (mirroring the video VideoFolderDataset / _TestOnlyVideoModule
+# pattern); each subclass only declares its download source and restructures the download into
+# the common ``<root>/test/<generator>/{0_real,1_fake}/`` layout used by the per-generator metrics.
+# ---------------------------------------------------------------------------
+
+def _extract_archives_into(download_dir, staging_dir):
+    """Extract every .zip/.tar(.gz) under ``download_dir`` into ``staging_dir`` and return the dir
+    that holds the extracted generator tree (``staging_dir``; or ``download_dir`` if already flat)."""
+    download_dir, staging_dir = Path(download_dir), Path(staging_dir)
+    archives = [p for p in download_dir.rglob("*")
+                if p.is_file() and (p.suffix.lower() == ".zip"
+                                    or p.name.lower().endswith((".tar.gz", ".tgz", ".tar")))]
+    if not archives:
+        return download_dir
+    staging_dir.mkdir(parents=True, exist_ok=True)
+    for a in archives:
+        if a.suffix.lower() == ".zip":
+            _safe_extract_zip(a, staging_dir)
+        else:
+            _safe_extract_tar(a, staging_dir)
+    return staging_dir
+
+
+def _restructure_image_pergen(src_root, dest_split, cap=None, rename=None):
+    """Lay a downloaded tree out as ``<dest_split>/<generator>/{0_real,1_fake}/``.
+
+    For each immediate subdirectory of ``src_root`` (one generator), images found under any
+    real-token dir (0_real/real/nature) become 0_real and fake-token dir (1_fake/fake/ai) become
+    1_fake — searched recursively so per-class source-domain sublevels (e.g. DIRE's
+    ``<subset>/<domain>/{0_real,1_fake}``) are merged. ``cap`` limits images/class; ``rename`` maps
+    the generator dir name (e.g. strip GenImage's ``_imagenet`` suffix)."""
+    src_root, dest_split = Path(src_root), Path(dest_split)
+    real_toks = ("0_real", "real", "reals", "nature", "natural")
+    fake_toks = ("1_fake", "fake", "fakes", "ai", "generated")
+    for gen_dir in sorted(p for p in src_root.iterdir() if p.is_dir()):
+        name = rename(gen_dir.name) if rename else gen_dir.name
+        for label, toks in (("0_real", real_toks), ("1_fake", fake_toks)):
+            imgs = []
+            for tok in toks:
+                for sub in gen_dir.rglob(tok):
+                    if sub.is_dir():
+                        imgs += [p for p in sub.rglob("*")
+                                 if p.is_file() and p.suffix.lower() in IMAGE_EXTENSIONS]
+            imgs = sorted(set(imgs))
+            if cap:
+                imgs = imgs[:cap]
+            if not imgs:
+                continue
+            out = dest_split / name / label
+            out.mkdir(parents=True, exist_ok=True)
+            for i, p in enumerate(imgs):
+                tgt = out / f"{i:06d}_{p.name}"
+                if tgt.exists():
+                    continue
+                try:
+                    os.link(p, tgt)
+                except OSError:
+                    shutil.copy2(p, tgt)
+
+
+def _restructure_video_pergen(src_root, dest_split, cap=None):
+    """Video analogue of ``_restructure_image_pergen`` → ``<dest_split>/<gen>/{0_real,1_fake}/``."""
+    src_root, dest_split = Path(src_root), Path(dest_split)
+    real_toks = ("0_real", "real", "reals")
+    fake_toks = ("1_fake", "fake", "fakes")
+    for gen_dir in sorted(p for p in src_root.iterdir() if p.is_dir()):
+        for label, toks in (("0_real", real_toks), ("1_fake", fake_toks)):
+            vids = []
+            for tok in toks:
+                for sub in gen_dir.rglob(tok):
+                    if sub.is_dir():
+                        vids += [p for p in sub.rglob("*")
+                                 if p.is_file() and p.suffix.lower() in VIDEO_EXTENSIONS]
+            vids = sorted(set(vids))
+            if cap:
+                vids = vids[:cap]
+            if not vids:
+                continue
+            out = dest_split / gen_dir.name / label
+            out.mkdir(parents=True, exist_ok=True)
+            for i, p in enumerate(vids):
+                tgt = out / f"{i:06d}_{p.name}"
+                if tgt.exists():
+                    continue
+                try:
+                    os.link(p, tgt)
+                except OSError:
+                    shutil.copy2(p, tgt)
+
+
+def _iter_images_follow(directory):
+    """Like ``_iter_images`` but follows symlinked directories (``os.walk`` with followlinks),
+    so generators whose ``0_real``/``1_fake`` are directory symlinks (e.g. GenImage's SD-v1.4 slice
+    reused from the single-pool dataset) are still discovered."""
+    for dirpath, _dirnames, filenames in os.walk(Path(directory), followlinks=True):
+        for fn in filenames:
+            if Path(fn).suffix.lower() in IMAGE_EXTENSIONS:
+                yield Path(dirpath) / fn
+
+
+class _TestOnlyImageDataset(Dataset):
+    """Base for eval-only image benchmarks laid out as ``<root>/test/<generator>/{0_real,1_fake}/``.
+
+    Subclasses declare a download source and override ``prepare_split``; everything else (label
+    from the leaf dir name, per-generator ``folder_name`` from the grandparent dir, ``__getitem__``
+    returning ``(image, label, folder_id)``) matches the other image datasets so the per-generator
+    AP/AUROC metrics keep working."""
+
+    def __init__(self, root_dir, split: Literal["test"] = "test",
+                 transform: AIGITransformations | None = None, prefetch: bool = False):
+        super().__init__()
+        self.root_dir = Path(root_dir)
+        self.split = split
+        self.transform = transform
+        self.destination_dir = self.root_dir / self.split
+        if prefetch and not _has_images(self.destination_dir):
+            print(f"Downloading {type(self).__name__} {split} split...")
+            self._download_data()
+        self.images, self.labels, self.folder_names = self._load_data()
+        self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def prepare_split(cls, root_dir, split: str = "test", force: bool = False) -> None:
+        raise NotImplementedError(
+            f"No downloader configured for {cls.__name__}; place the benchmark under "
+            f"'{Path(root_dir) / split}/<generator>/{{0_real,1_fake}}/' manually.")
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(self.root_dir, self.split, force=force)
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        image = _decode_rgb(self.images[idx])
+        label = torch.tensor(self.labels[idx])
+        if self.transform:
+            image = self.transform(image)
+        return image, label, self.unique_folder_names.index(self.folder_names[idx])
+
+    @staticmethod
+    def _get_label(filepath: Path) -> int:
+        name = filepath.parent.name.lower()
+        if "real" in name or name in ("nature", "natural"):
+            return 0
+        if "fake" in name or "false" in name or name == "ai":
+            return 1
+        raise ValueError(f"Cannot determine label from path: {filepath}")
+
+    def _load_data(self):
+        images, labels, folder_names = [], [], []
+        for filepath in _iter_images_follow(self.destination_dir):
+            images.append(filepath)
+            labels.append(self._get_label(filepath))
+            folder_names.append(filepath.parent.parent.name)
+        return images, labels, folder_names
+
+
+class DiffusionForensicsDataset(_TestOnlyImageDataset):
+    """DiffusionForensics / DIRE diffusion test set (Wang et al. 2023) — used by NPR (Table 3) and
+    FatFormer's diffusion table. 8 subsets (adm, ddpm, iddpm, ldm, pndm, sdv1, sdv2, vqdiffusion),
+    each with its own paired reals (LSUN/ImageNet/CelebA-HQ)."""
+    gdrive_folder_id = "1tKsOU-6FDdstrrKLPYuZ7RpQwtOSHxUD"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        import gdown
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        gdown.download_folder(id=cls.gdrive_folder_id, output=str(dl), quiet=False, use_cookies=False)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        _restructure_image_pergen(staging, dest, cap=1000)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class Diffusion1kStepDataset(_TestOnlyImageDataset):
+    """Diffusion-1kStep self-synthesis test set — used by NPR (Table 5). 5 subsets (DALLE, ddpm,
+    guided-diffusion=ADM, improved-diffusion=IDDPM, midjourney)."""
+    gdrive_folder_id = "14f0vApTLiukiPvIHukHDzLujrvJpDpRq"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        import gdown
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        gdown.download_folder(id=cls.gdrive_folder_id, output=str(dl), quiet=False, use_cookies=False)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        _restructure_image_pergen(staging, dest, cap=1000)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class AIGCDetectBenchmarkDataset(_TestOnlyImageDataset):
+    """AIGCDetectBenchmark 16-generator test set — used by Co-Spy (ProGAN/AIGCDetect table) and
+    AIDE. Sourced from the ModelScope dataset ``aemilia/AIGCDetectionBenchmark`` (test_set.zip)."""
+    modelscope_url = ("https://modelscope.cn/api/v1/datasets/aemilia/AIGCDetectionBenchmark/"
+                      "repo?Revision=master&FilePath=AIGCDetectionBenchMark%2Ftest_set.zip")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        zip_path = dl / "test_set.zip"
+        subprocess.run(["curl", "-L", "--fail", "-C", "-", "-o", str(zip_path), cls.modelscope_url],
+                       check=True)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        _restructure_image_pergen(staging, dest, cap=1000)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class CommGen15Dataset(_TestOnlyImageDataset):
+    """CommGen15 — 15 commercial-generator test set introduced by PGC (Table 3). Sourced from the
+    Hugging Face dataset ``xiaoyuzhou68/CommGen15`` (CommGen15.zip; com_plat_v3/<gen>/{0_real,1_fake})."""
+    hf_repo_id = "xiaoyuzhou68/CommGen15"
+    hf_filename = "CommGen15.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import hf_hub_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        z = hf_hub_download(repo_id=cls.hf_repo_id, filename=cls.hf_filename,
+                            repo_type="dataset", local_dir=str(dl))
+        staging = _extract_archives_into(Path(z).parent, root_dir / "_staging")
+        inner = next((p for p in staging.rglob("com_plat_v3") if p.is_dir()), staging)
+        _restructure_image_pergen(inner, dest, cap=1000)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class GenImageFullDataset(_TestOnlyImageDataset):
+    """Full 8-generator GenImage test set (Midjourney, SD-v1.4/1.5, ADM, GLIDE, Wukong, VQDM,
+    BigGAN) — used by AIDE/VIB-Net/SAFE/PGC/Co-Spy for the cross-generator GenImage table. (The
+    single-pool SD-v1.4 slice is the separate ``genimage`` dataset.) Sourced from the HF mirror
+    ``jzousz/GenImage`` (genimage_test.zip: test/<gen>_imagenet/{nature,ai})."""
+    hf_repo_id = "jzousz/GenImage"
+    hf_filename = "genimage_test.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import hf_hub_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        z = hf_hub_download(repo_id=cls.hf_repo_id, filename=cls.hf_filename,
+                            repo_type="dataset", local_dir=str(dl))
+        staging = _extract_archives_into(Path(z).parent, root_dir / "_staging")
+        inner = next((p for p in staging.rglob("test") if p.is_dir()), staging)
+        _restructure_image_pergen(inner, dest, cap=1500, rename=lambda n: n.replace("_imagenet", ""))
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class SynthbusterDataset(_TestOnlyImageDataset):
+    """Synthbuster (Bammey, 2023) — 9 generators (DALL-E 2/3, Firefly, GLIDE, Midjourney-v5, SD 1.3/1.4/2/XL),
+    1000 fakes each. Used by SPAI (Table 1) and other detectors as a high-quality diffusion test set.
+    Sourced from Zenodo record 10066460 (synthbuster.zip = <gen>/*.png, fakes only). Synthbuster ships
+    NO reals (the originals are RAISE-1k, which require a separate request); this loader pairs each
+    generator's fakes against a shared clean-real pool (GenImage nature photos) as a documented proxy —
+    the detector keys on generative artifacts, so proxy reals give a valid per-generator AP/AUROC."""
+    zenodo_record = "10066460"
+    zenodo_file = "synthbuster.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False, real_pool=None, cap=1000):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        import urllib.request
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        zpath = dl / cls.zenodo_file
+        if not zpath.exists():
+            url = f"https://zenodo.org/records/{cls.zenodo_record}/files/{cls.zenodo_file}?download=1"
+            print(f"Downloading Synthbuster from {url} ...")
+            urllib.request.urlretrieve(url, zpath)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        inner = next((p for p in staging.rglob("synthbuster") if p.is_dir()), staging)
+        # proxy reals: a clean real-photo pool (GenImage nature by default)
+        pool = real_pool or "/hddstore/ssalehi/AGID/GenImage/test/real"
+        reals = sorted(p for p in Path(pool).glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
+        for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
+            fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
+            for label, imgs in (("1_fake", fakes), ("0_real", reals)):
+                out = dest / gen_dir.name / label; out.mkdir(parents=True, exist_ok=True)
+                for i, p in enumerate(imgs):
+                    tgt = out / f"{i:05d}_{p.name}"
+                    if not tgt.exists():
+                        try: os.link(p, tgt)
+                        except OSError: shutil.copy2(p, tgt)
+        shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class _TestOnlyImageModule:
+    """Shared loader for the eval-only image benchmarks (test split only)."""
+    DATASET_CLASS = _TestOnlyImageDataset
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        eval_list = list(cfg.get("eval_transform_list", []))
+        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_dataset = self.DATASET_CLASS(
+            cfg.root_dir, "test", self.eval_transform, prefetch=bool(cfg.get("prefetch", False)))
+
+    def train_dataloader(self):
+        return None
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.test_dataset, batch_size=cfg.test_batch_size, shuffle=False,
+                          num_workers=cfg.num_workers, persistent_workers=cfg.persistent_workers,
+                          pin_memory=cfg.pin_memory)
+
+
+class DiffusionForensicsDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = DiffusionForensicsDataset
+
+
+class Diffusion1kStepDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = Diffusion1kStepDataset
+
+
+class AIGCDetectBenchmarkDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = AIGCDetectBenchmarkDataset
+
+
+class CommGen15DatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = CommGen15Dataset
+
+
+class GenImageFullDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = GenImageFullDataset
+
+
+class SynthbusterDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = SynthbusterDataset
+
+
+class VideoFeedbackDataset(VideoFolderDataset):
+    """VideoFeedback (TIGER-Lab) — used by STALL. 11 generators vs DiDeMo+Panda70M real, laid out
+    as ``<root>/test/<generator>/{0_real,1_fake}/*.mp4``."""
+    hf_repo_id = "TIGER-Lab/VideoFeedback"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"
+        snapshot_download(repo_id=hf_repo_id or cls.hf_repo_id, repo_type="dataset", local_dir=str(dl))
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        _restructure_video_pergen(staging, dest, cap=150)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class ComGenVidDataset(VideoFolderDataset):
+    """ComGenVid (STALL's new benchmark) — Sora + VEO3 fakes vs MSVD real, laid out as
+    ``<root>/test/<generator>/{0_real,1_fake}/*.mp4``. The HF repo ``OmerXYZ/comgenvid`` also ships
+    precomputed embeddings for STALL's official embedding-based eval."""
+    hf_repo_id = "OmerXYZ/comgenvid"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"
+        snapshot_download(repo_id=hf_repo_id or cls.hf_repo_id, repo_type="dataset",
+                          local_dir=str(dl), allow_patterns=["*.mp4", "**/*.mp4"])
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        _restructure_video_pergen(staging, dest, cap=150)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class VideoFeedbackDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = VideoFeedbackDataset
+
+
+class ComGenVidDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = ComGenVidDataset
+
+
 AGIDModuleDict = {
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
@@ -1928,13 +2472,24 @@ AGIDModuleDict = {
     "freqnetdetection": FreqNetDetectionDatasetModule,
     "genimage": GenImageDatasetModule,
     "universialfakedetection": UniversialFakeDetectionDatasetModule,
-    # Video benchmarks (D3 + ReStraV); all served by the generic VideoFolderDatasetModule.
+    # Cross-generator image benchmarks added for the reproduction suite (test-only).
+    "genimage_full": GenImageFullDatasetModule,
+    "synthbuster": SynthbusterDatasetModule,
+    "diffusionforensics": DiffusionForensicsDatasetModule,
+    "diffusion1kstep": Diffusion1kStepDatasetModule,
+    "aigcdetect": AIGCDetectBenchmarkDatasetModule,
+    "commgen15": CommGen15DatasetModule,
+    # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
+    # download + extract their HF archives into the real/fake layout; the rest use the generic
+    # VideoFolderDatasetModule.
     "genvideo": VideoFolderDatasetModule,
     "videophy": VideoFolderDatasetModule,
-    "evalcrafter": VideoFolderDatasetModule,
+    "evalcrafter": EvalCrafterDatasetModule,
     "vidprom": VideoFolderDatasetModule,
-    "genvidbench": VideoFolderDatasetModule,
+    "genvidbench": GenVidBenchDatasetModule,
     "physics_iq": VideoFolderDatasetModule,
+    "videofeedback": VideoFeedbackDatasetModule,
+    "comgenvid": ComGenVidDatasetModule,
 }
 
 

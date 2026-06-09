@@ -1,0 +1,80 @@
+{
+  "tag": "safe_agid_freqnet",
+  "model": "safe",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/freqnet/test",
+  "n_generators": 9,
+  "means": {
+    "acc": 61.46,
+    "map": 75.38,
+    "mauroc": 77.72
+  },
+  "per_generator": {
+    "AttGAN": {
+      "ap": 98.35,
+      "auroc": 98.03,
+      "real_acc": 76.5,
+      "fake_acc": 98.1,
+      "acc": 87.3
+    },
+    "BEGAN": {
+      "ap": 60.38,
+      "auroc": 65.05,
+      "real_acc": 0.3,
+      "fake_acc": 100.0,
+      "acc": 50.15
+    },
+    "CramerGAN": {
+      "ap": 81.79,
+      "auroc": 83.72,
+      "real_acc": 1.55,
+      "fake_acc": 100.0,
+      "acc": 50.77
+    },
+    "InfoMaxGAN": {
+      "ap": 45.71,
+      "auroc": 45.45,
+      "real_acc": 1.55,
+      "fake_acc": 98.5,
+      "acc": 50.03
+    },
+    "MMDGAN": {
+      "ap": 71.81,
+      "auroc": 74.96,
+      "real_acc": 1.55,
+      "fake_acc": 100.0,
+      "acc": 50.77
+    },
+    "RelGAN": {
+      "ap": 99.69,
+      "auroc": 99.65,
+      "real_acc": 73.2,
+      "fake_acc": 99.7,
+      "acc": 86.45
+    },
+    "S3GAN": {
+      "ap": 87.75,
+      "auroc": 89.09,
+      "real_acc": 91.5,
+      "fake_acc": 60.2,
+      "acc": 75.85
+    },
+    "SNGAN": {
+      "ap": 58.46,
+      "auroc": 63.16,
+      "real_acc": 1.55,
+      "fake_acc": 99.95,
+      "acc": 50.75
+    },
+    "STGAN": {
+      "ap": 74.48,
+      "auroc": 80.34,
+      "real_acc": 2.15,
+      "fake_acc": 100.0,
+      "acc": 51.08
+    }
+  },
+  "date": "2026-06-04T13:58:17",
+  "agid_version": "0.1.0"
+}

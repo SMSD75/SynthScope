@@ -5,6 +5,14 @@ defaults:
 model_type: spai
 backbone_name: ViT-B/16
 freeze_backbone: true
-input_size: 224
+input_size: 224          # per-patch size (the circular spectral mask is built at this size)
 mask_radius: 16
 projection_dim: 1024
+# Spectral Context Attention over a grid of 224 patches (official fixed-res variant = 448 -> 2x2 grid).
+# Feed the model 448x448 inputs (see the spai transform); set use_sca=false to recover the old
+# single-patch fixed-resolution model.
+use_sca: true
+patch_size: 224
+patch_stride: 224
+num_heads: 12
+attn_embed_dim: 1536

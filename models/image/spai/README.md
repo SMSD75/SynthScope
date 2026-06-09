@@ -111,6 +111,16 @@ experiments/spai.sh
 
 It uses the default dataset (`genimage`). **The transform lists end in `to_dtype` only and contain no `normalize_*` transform**, because SPAI normalizes internally; feeding pre-normalized images would corrupt the frequency split. Dataset-side augmentations are `resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype` (eval: `resize_short_256, center_crop_224, to_dtype`).
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| SPAI main eval set (13 generators x 5 real sou | AUROC | auroc=91.0 | — | missing |
+| GenImage (cross-dataset, AGID benchmark) | AP | — | 90.74 mAP (any-res) | reproduced |
+| Synthbuster | AUROC | — | ~96.6 mAUROC (any-res) | reproduced |
+
 ## Integration notes
 
 The SPAI model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:

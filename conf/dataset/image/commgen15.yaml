@@ -1,0 +1,15 @@
+name: commgen15
+# CommGen15 — 15 commercial-generator test set introduced by PGC (Table 3).
+# (HF xiaoyuzhou68/CommGen15)
+root_dir: /hddstore/ssalehi/AGID/CommGen15
+hf_repo_id: xiaoyuzhou68/CommGen15
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

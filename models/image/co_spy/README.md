@@ -98,6 +98,18 @@ experiments/co_spy.sh
 
 It uses the default dataset (`genimage`) and a CO-SPY-style transform pipeline that produces raw `[0, 1]` images at `384 x 384`. Importantly, **the experiment script omits any `normalize_*` transform**, because CO-SPY applies per-branch normalization inside `forward` (SigLIP normalization for the semantic branch, raw `[0, 1]` for the artifact branch). Augmentations applied at the dataset side are `resize_short_384, gaussian_blur, jpeg_compression, random_crop_384, random_horizontal_flip, to_dtype`.
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| Co-Spy-Bench | AP | map=96.02 / acc=87.06 | map=96.7 / acc=90.28 / ckpt=checkpoints_retrain/cospy_full/model_1.pth (AGID retrain, full SD-v1.4 data, flickr-reals bug fixed) / tag=cospy_full_cospybench / official_wts_in_agid=86.65 | reproduced |
+| AIGCDetectionBenchmark (AIGCDetect) | AP | map=95.21 / acc=90.58 | map=94.59 / acc=89.25 / ckpt=official ProGAN weights loaded into AGID class (/hddstore/ssalehi/AGID/repro/ckpts/progan) / tag=cospy_official_aigcdetect / agid_trained_ckpt=84.91 | reproduced |
+| GenImage | AP | — | map_official_wts=92.41 / map_agid_retrain=90.59 / acc=75.91 / ckpt=checkpoints_retrain/cospy_full/model_2.pth / tag=cospy_full_g8 | below |
+| ForenSynths (CNNDetection test) | AP | — | map_official_wts=87.97 / map_agid_retrain=96.17 / ckpt=AGID co_spy.pth / tag=cospy_official_forensynths / co_spy_retrain_forensynths | reproduced |
+| In-the-wild (Co-Spy-Bench in-the-wild) | AP | map=84.65 / acc=77.41 | — | missing |
+
 ## Integration notes
 
 The CO-SPY model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:

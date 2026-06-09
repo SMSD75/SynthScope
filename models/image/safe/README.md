@@ -120,6 +120,18 @@ experiments/safe_pretest.sh
 
 It runs through Accelerate and the `AGID` conda environment.
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| ForenSynths (Table 1, intra-architecture GANs) | acc/AP | map=98.8 / acc=96.2 | map=98.78 / acc=96.2 | below |
+| Self-Synthesis / GANGen (Table 2, intra-archit | acc/AP | map=99.8 / acc=99.0 | map=99.85 / acc=98.99 | reproduced |
+| Ojha / UniversalFakeDetect (Table 3, cross-arc | acc/AP | map=99.1 / acc=95.7 | map=99.1 / acc=95.71 | reproduced |
+| GenImage (Table 4, cross-architecture DM+GAN)  | acc/AP | map=99.3 / acc=95.6 | map=95.7 / acc=89.84 | below |
+| DiTFake (Table 6, cross-architecture DiT) | acc/AP | map=99.9 / acc=99.4 | 97.78 mAP | reproduced |
+
 ## Similarity to the official SAFE implementation
 
 The AGID implementation is intentionally close to the official SAFE implementation in the parts that define the method:

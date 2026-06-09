@@ -1,0 +1,36 @@
+{
+  "model": "clip",
+  "paper": "Towards Universal Fake Image Detectors that Generalize Across Generative Models (UnivFD / UniversalFakeDetect). Ojha, Li, Lee — CVPR 2023.",
+  "arxiv_id": "2302.10174",
+  "official_repo": "https://github.com/WisconsinAIVision/UniversalFakeDetect  (on-disk: /hddstore/ssalehi/AGID/official_repos/UniversalFakeDetect)",
+  "training_set_in_paper": "ProGAN real-vs-fake from Wang et al. CNNDetection (the 20-class 'wang2020' set): 20 LSUN object categories, 360k real + 360k ProGAN fake = 720k images (18k fake/category). CLIP:ViT-L/14 backbone FROZEN; only a linear fc is trained (--fix_backbone). README L74-94; train cmd L92. The NN variant uses no trained head (k-NN in frozen CLIP feature space).",
+  "benchmarks": [
+    {
+      "name": "ForenSynths GAN/low-level test (11 of the paper's 19 models; from Wang et al.)",
+      "datasets": ["ForenSynths / CNNDetection test"],
+      "subsets_or_generators": ["ProGAN", "CycleGAN", "BigGAN", "StyleGAN", "GauGAN", "StarGAN", "DeepFake", "SITD(SeeingDark)", "SAN", "CRN", "IMLE"],
+      "metric": "AP (Table 2) and acc@0.5 (Table 3); paper also reports best-threshold acc",
+      "paper_number": {"map": null, "acc": null, "note": "The paper does NOT report a single 'ForenSynths-N mAP' cell. It reports per-generator AP (Table 2) and per-generator acc (Table 3) for the LC (linear-classifier) and NN (k=1) variants. GAN-family AP subtotal for the LC variant ≈ 99.31 (ar5iv). 19-model totals (per README + PDF-derived spec): AP_LC 93.38 / acc_LC 81.38; AP_NN 90.32 / acc_NN 82.30. There is no clean paper '~98' headline mAP — that loose figure is the GAN-only LC subtotal."},
+      "paper_per_generator": {"format": "AP for the linear-classifier (LC) variant, %", "AP_LC": {"ProGAN": 100.0, "CycleGAN": 99.46, "BigGAN": 99.59, "StyleGAN": 97.24, "GauGAN": 99.98, "StarGAN": 99.60, "DeepFake": 82.45, "SITD": 61.32, "SAN": 79.02, "CRN": 96.72, "IMLE": 99.00}, "note": "These per-generator AP_LC values are from the prior PDF-derived spec; the GAN subset {ProGAN,CycleGAN,BigGAN,StyleGAN,GauGAN,StarGAN,DeepFake} dominates the headline."},
+      "official_eval_protocol": "validate.py RealFakeDataset.transform (L198-202): transforms.CenterCrop(224) ONLY — NO Resize — then ToTensor + Normalize with CLIP mean/std (MEAN['clip']/STD['clip'], L31-39). Model = CLIP:ViT-L/14 frozen, only model.fc loaded from fc_weights.pth (L278-280). set_seed(0) per domain (L23-28, L293). AP via sklearn average_precision_score; acc@0.5 + best-threshold acc (validate L97-128). dataset_paths.py lists the 13 ForenSynths dirs (progan..imle) wang2020 mode (must_contain 0_real/1_fake, L207-209).",
+      "our_status": "reproduced",
+      "our_number": {"map_fs8": 97.22, "acc_fs8": 88.28, "map_fs13": 92.99, "official_fs8": 96.95, "official_fs13": 93.14, "ckpt": "clip.pth (AGID-trained linear head, ckpt_kind=agid)", "tags": "clip_agid_forensynths / clip_official_forensynths", "note": "AGID ForenSynths-8 mAP 97.22 (official-weights-in-AGID 96.95); ForenSynths-13 92.99 (official 93.14). AGID-trained head matches the official fc_weights.pth."},
+      "gap_cause": "n/a — reproduced. AGID 92.99 (FS-13) ≈ official 93.14 ≈ paper AP_LC 19-model total 93.38. AGID transform tf_resize_crop(256,224,CLIP_MEAN,CLIP_STD) (registry.py:150) adds a Resize(256) the official lacks (CenterCrop(224) only); the tiny FS-13 difference (92.99 vs 93.14) is consistent with that resize plus the AGID-trained vs official head, well within match tolerance.",
+      "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test (all 13 dirs incl. the 11 paper subsets). Origin: ForenSynths test ~19GB, gdrive 1z_fD3UKgWQyOTZIBbYSaQ-hz4AzUrLC1."
+    },
+    {
+      "name": "UniversalFakeDetect diffusion/autoregressive test (the other 8 of the 19 models)",
+      "datasets": ["UniversalFakeDetect / Ojha diffusion test"],
+      "subsets_or_generators": ["Guided(ADM)", "LDM_200", "LDM_200_cfg", "LDM_100", "Glide_100_27", "Glide_50_27", "Glide_100_10", "DALLE"],
+      "metric": "AP and acc@0.5",
+      "paper_number": {"map": 95.0, "acc": null, "note": "Headline: on unseen diffusion+AR models the LC mean AP ≈ 95.0 (+19.49 over the 75.51 SoTA baseline per ar5iv); the NN variant mean AP ≈ 90.58 (+15.07). The widely cited claim is '+15.07 mAP / +25.90% acc over prior SoTA' (NN). Paper reports diffusion AP over 10k sampled images/domain; the public release ships only 1k/1k per domain."},
+      "paper_per_generator": {"format": "AP_LC, %", "AP_LC": {"Guided": 87.77, "LDM_200": 99.14, "LDM_200_cfg": 92.15, "LDM_100": 99.17, "Glide_100_27": 94.74, "Glide_50_27": 95.34, "Glide_100_10": 94.57, "DALLE": 97.15}, "note": "From the prior PDF-derived spec."},
+      "official_eval_protocol": "Same CenterCrop(224)+CLIP-norm transform; reals = imagenet (for guided) / laion (for ldm/glide/dalle); dataset_paths.py L90-149. max_sample default 1000 (validate L259); paper used 10k.",
+      "our_status": "reproduced",
+      "our_number": {"map": 96.44, "acc": 87.23, "official": 95.66, "ckpt": "clip.pth (AGID-trained head)", "tags": "clip_agid_ufd / clip_official_ufd", "note": "AGID UFD-8 mAP 96.44, official-weights 95.66, both ≈ paper LC diffusion AP ~95."},
+      "gap_cause": "n/a — reproduced (AGID 96.44 ≥ official 95.66 ≈ paper ~95). Evaluated on the public 1k/domain release, not the paper's 10k sampling, so a small drift from the exact paper cells is expected.",
+      "dataset_source": "on-disk /hddstore/ssalehi/AGID/universialfakedetection/test (1k-release: 8 fake subsets + imagenet/laion reals). Full: gdrive 1FXlGIRh_Ud3cScMgSVDbEWmPDmjcrm1t (only 1k/domain is publicly released)."
+    }
+  ],
+  "summary": "UnivFD reports per-generator AP (Table 2) + acc (Table 3) over 19 models split into a ForenSynths GAN/low-level group (11) and a diffusion/AR group (8), for LC and NN variants — i.e. 2 benchmark groups (no single headline mAP cell). We reproduce BOTH: ForenSynths AGID 92.99 (FS-13) / 97.22 (FS-8) ≈ official 93.14/96.95 ≈ paper AP_LC total 93.38; diffusion AGID 96.44 ≈ official 95.66 ≈ paper LC ~95. Nothing missing or below. CLIP is reproduced via an AGID-trained linear head (ckpt_kind=agid) that matches the official fc_weights.pth. Caveat: diffusion eval uses the public 1k/domain release vs the paper's 10k sampling. Note: AGID's eval transform adds a Resize(256) before CenterCrop(224) that the official CenterCrop-only protocol omits — negligible effect at match level."
+}

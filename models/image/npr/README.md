@@ -65,6 +65,18 @@ The paper evaluates NPR across 28 generation models from GAN and diffusion famil
 
 The paper reports both accuracy and average precision, with the main result showing strong cross-generator generalization from the NPR representation.
 
+## Reproduced benchmark results
+
+All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+
+| Benchmark | Metric | Paper | Ours | Status |
+|---|---|---|---|---|
+| Table 1 — ForenSynths / Cross-GAN-Sources (8 G | AP (and acc@0.5) | map=96.1 / acc=92.5 | 94.22 mAP (correct ckpt) | reproduced |
+| Table 2 — GANGen-Detection / Self-Synthesis 9  | AP (and acc@0.5) | map=96.6 / acc=93.2 | map=96.49 / acc=94.81 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_freqnet / eval=run with bench_eval.py --native-res to drop the up-scaling Resize, matching official no_resize=True | reproduced |
+| Table 3 — DiffusionForensics / DIRE | AP (and acc@0.5) | map=99.8 / acc=95.3 | map=99.4 / acc=95.03 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusionforensics | reproduced |
+| Table 4 — UniversalFakeDetect / Ojha | AP (and acc@0.5) | acc=95.2 | map=96.69 / acc=93.94 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_ufd | reproduced |
+| Table 5 — Diffusion1kStep / Self-Synthesis Dif | AP (and acc@0.5) | acc=80.1 | map=83.47 / acc=79.13 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusion1kstep | reproduced |
+
 ## Model details
 
 The AGID implementation lives in:
