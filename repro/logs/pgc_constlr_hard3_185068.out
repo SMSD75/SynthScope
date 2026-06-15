@@ -1,0 +1,64 @@
+NODE=ivi-cn005 GPU=0 Fri Jun 12 12:05:44 CEST 2026
+hard-3 test gens: deepfake san seeingdark 
+CUDA OK
+[wait] ep10 -> /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep10.pth  Fri Jun 12 12:05:48 CEST 2026
+[eval] ep10 hard-3  Fri Jun 12 15:10:14 CEST 2026
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   7%|▋         | 29/439 [00:00<00:01, 289.86it/s]Loading weights:  13%|█▎        | 58/439 [00:01<00:11, 32.21it/s] Loading weights:  16%|█▋        | 72/439 [00:01<00:09, 40.05it/s]Loading weights:  19%|█▉        | 84/439 [00:02<00:14, 24.66it/s]Loading weights:  24%|██▍       | 106/439 [00:02<00:08, 38.39it/s]Loading weights:  27%|██▋       | 119/439 [00:03<00:09, 35.10it/s]Loading weights:  30%|███       | 132/439 [00:03<00:07, 43.54it/s]Loading weights:  33%|███▎      | 143/439 [00:04<00:10, 28.31it/s]Loading weights:  36%|███▌      | 159/439 [00:04<00:07, 38.93it/s]Loading weights:  45%|████▍     | 197/439 [00:04<00:04, 57.45it/s]Loading weights:  48%|████▊     | 211/439 [00:04<00:03, 65.17it/s]Loading weights:  51%|█████     | 222/439 [00:04<00:03, 68.28it/s]Loading weights:  53%|█████▎    | 232/439 [00:05<00:02, 70.39it/s]Loading weights:  56%|█████▌    | 246/439 [00:05<00:02, 81.50it/s]Loading weights:  60%|█████▉    | 262/439 [00:05<00:01, 96.52it/s]Loading weights:  63%|██████▎   | 275/439 [00:05<00:01, 93.70it/s]Loading weights:  65%|██████▌   | 287/439 [00:05<00:02, 56.07it/s]Loading weights:  68%|██████▊   | 297/439 [00:05<00:02, 61.94it/s]Loading weights:  73%|███████▎  | 322/439 [00:06<00:01, 94.63it/s]Loading weights:  77%|███████▋  | 336/439 [00:07<00:03, 33.37it/s]Loading weights:  82%|████████▏ | 361/439 [00:07<00:02, 37.90it/s]Loading weights:  86%|████████▌ | 377/439 [00:08<00:01, 37.89it/s]Loading weights:  89%|████████▉ | 391/439 [00:08<00:01, 45.77it/s]Loading weights:  92%|█████████▏| 403/439 [00:08<00:00, 51.76it/s]Loading weights:  94%|█████████▍| 412/439 [00:08<00:00, 40.23it/s]Loading weights: 100%|██████████| 439/439 [00:08<00:00, 49.52it/s]
+=== bench_eval pgc_constlr_ep10_hard3 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep10.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=54.1 AP=72.27 AUROC=66.77 (real_acc=100.0 fake_acc=8.19)
+  san: 219 real + 219 fake ...
+    san: acc=50.91 AP=68.08 AUROC=63.9 (real_acc=100.0 fake_acc=1.83)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=55.28 AP=84.36 AUROC=78.81 (real_acc=100.0 fake_acc=10.56)
+
+=== RESULT pgc_constlr_ep10_hard3: mAP=74.9 mAUROC=69.83 acc=53.43 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep10_hard3.json ===
+[wait] ep25 -> /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth  Fri Jun 12 15:26:05 CEST 2026
+[eval] ep25 hard-3  Fri Jun 12 19:50:30 CEST 2026
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 6533.76it/s]
+=== bench_eval pgc_constlr_ep25_hard3 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=50.06 AP=56.36 AUROC=57.51 (real_acc=100.0 fake_acc=0.11)
+  san: 219 real + 219 fake ...
+    san: acc=50.0 AP=52.93 AUROC=51.66 (real_acc=100.0 fake_acc=0.0)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=50.56 AP=58.62 AUROC=56.01 (real_acc=100.0 fake_acc=1.11)
+
+=== RESULT pgc_constlr_ep25_hard3: mAP=55.97 mAUROC=55.06 acc=50.21 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep25_hard3.json ===
+[wait] ep50 -> /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep50.pth  Fri Jun 12 19:59:06 CEST 2026
+[eval] ep50 hard-3  Sat Jun 13 03:39:32 CEST 2026
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 7398.73it/s]
+=== bench_eval pgc_constlr_ep50_hard3 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep50.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=53.76 AP=73.08 AUROC=67.86 (real_acc=100.0 fake_acc=7.52)
+  san: 219 real + 219 fake ...
+    san: acc=50.46 AP=61.97 AUROC=59.08 (real_acc=100.0 fake_acc=0.91)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=53.89 AP=79.8 AUROC=74.1 (real_acc=100.0 fake_acc=7.78)
+
+=== RESULT pgc_constlr_ep50_hard3: mAP=71.62 mAUROC=67.01 acc=52.7 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep50_hard3.json ===
+[wait] ep75 -> /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep75.pth  Sat Jun 13 03:48:12 CEST 2026
+[eval] ep75 hard-3  Sat Jun 13 11:26:37 CEST 2026
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 6502.73it/s]
+=== bench_eval pgc_constlr_ep75_hard3 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep75.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=50.37 AP=75.67 AUROC=75.63 (real_acc=100.0 fake_acc=0.74)
+  san: 219 real + 219 fake ...
+    san: acc=50.23 AP=62.28 AUROC=60.98 (real_acc=100.0 fake_acc=0.46)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=51.39 AP=71.73 AUROC=65.39 (real_acc=100.0 fake_acc=2.78)
+
+=== RESULT pgc_constlr_ep75_hard3: mAP=69.89 mAUROC=67.33 acc=50.66 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep75_hard3.json ===
+[wait] ep100 -> /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep100.pth  Sat Jun 13 11:35:13 CEST 2026
+[eval] ep100 hard-3  Sat Jun 13 19:13:38 CEST 2026
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 7228.83it/s]
+=== bench_eval pgc_constlr_ep100_hard3 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep100.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=52.24 AP=76.12 AUROC=72.97 (real_acc=100.0 fake_acc=4.48)
+  san: 219 real + 219 fake ...
+    san: acc=50.91 AP=70.65 AUROC=68.24 (real_acc=100.0 fake_acc=1.83)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=54.44 AP=89.8 AUROC=86.41 (real_acc=100.0 fake_acc=8.89)
+
+=== RESULT pgc_constlr_ep100_hard3: mAP=78.86 mAUROC=75.87 acc=52.53 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep100_hard3.json ===
+=== CONST-LR HARD-3 TRAJECTORY DONE Sat Jun 13 19:22:22 CEST 2026 ===

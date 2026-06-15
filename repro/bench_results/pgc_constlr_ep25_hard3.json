@@ -1,0 +1,38 @@
+{
+  "tag": "pgc_constlr_ep25_hard3",
+  "model": "pgc",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth",
+  "benchmark": "forensynths",
+  "data_root": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 50.21,
+    "map": 55.97,
+    "mauroc": 55.06
+  },
+  "per_generator": {
+    "deepfake": {
+      "ap": 56.36,
+      "auroc": 57.51,
+      "real_acc": 100.0,
+      "fake_acc": 0.11,
+      "acc": 50.06
+    },
+    "san": {
+      "ap": 52.93,
+      "auroc": 51.66,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "seeingdark": {
+      "ap": 58.62,
+      "auroc": 56.01,
+      "real_acc": 100.0,
+      "fake_acc": 1.11,
+      "acc": 50.56
+    }
+  },
+  "date": "2026-06-12T19:59:04",
+  "agid_version": "0.1.0"
+}

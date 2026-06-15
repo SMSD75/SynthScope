@@ -1,0 +1,9 @@
+NODE=ivi-cn023 GPU=0 PORT=8021 Mon Jun 15 15:59:36 CEST 2026
+CUDA OK
+[webui] serving on http://ivi-cn023:8021  (CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints)
+[webui] access from your machine:  ssh -N -L 8021:ivi-cn023:8021 <you>@<login-host>   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [129299]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)

@@ -1,47 +1,202 @@
-"""Build interface/backend/repro_full.json: per-method list of ALL reported benchmarks
-(paper vs our number + status), from the verified specs in repro/benchmark_specs/ merged with
-the latest repro/bench_results/ where a matching number exists. Surfaced in the web UI."""
-import json, glob, os
+"""Build interface/backend/repro_full.json: per-method list of ALL reported benchmarks with
+SEPARATE columns for the AGID-trained checkpoint and the official-weights-in-AGID-class number.
+
+Source of truth = the verified specs in repro/benchmark_specs/*.json. Numbers that the specs only
+record in prose notes (the AGID/official split is structured inconsistently across methods) are
+pulled into an explicit, auditable VAL table below — every value here traces to a file under
+repro/bench_results/ (see the per-row tags in the spec notes). Run with --audit to print the table.
+"""
+import json, glob, os, sys
+
 ROOT = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
 
-def fmt(v):
-    if isinstance(v, dict):
-        parts = [f"{k}={x}" for k, x in v.items() if k != "note" and x not in (None, "")]
-        return " / ".join(parts) if parts else "—"
-    return "—" if v in (None, "") else str(v)
+# (model, benchmark-name-substring) -> verified {agid:{...}, official:{...}} numbers.
+# These resolve the AGID-vs-official ambiguity in the spec our_number dicts and surface the number
+# that the spec only kept in prose. Each traces to a repro/bench_results/*.json (tag in spec note).
+VAL = {
+    ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}, "agid": {"map": 72.25, "acc": 61.64}},
+    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "agid": {"map": 92.47, "acc": 73.5}},
+    ("clip", "ForenSynths"):             {"agid": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
+    ("clip", "UniversalFakeDetect"):     {"agid": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
+    ("cnn", "ForenSynths"):              {"agid": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},
+    ("co_spy", "Co-Spy-Bench"):          {"agid": {"map": 96.6, "acc": 89.9}, "official": {"map": 86.65, "acc": 83.88}},
+    ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "agid": {"map": 84.91}},
+    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "agid": {"map": 90.59, "acc": 75.91}},
+    ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "agid": {"map": 96.17}},
+    ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
+    ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
+    ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},
+    ("npr", "Table 2"):                  {"official": {"map": 96.49, "acc": 94.81}},
+    ("npr", "Table 3"):                  {"official": {"map": 99.4, "acc": 95.03}},
+    ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}},
+    ("npr", "Table 5"):                  {"official": {"map": 83.47, "acc": 79.13}},
+    ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "agid": {"map": 81.74, "acc": 80.1}},
+    ("safe", "GANGen"):                  {"official": {"map": 99.85, "acc": 99.0}, "agid": {"map": 75.38, "acc": 61.5}},
+    ("safe", "UniversalFakeDetect"):     {"official": {"map": 99.1, "acc": 95.71}, "agid": {"map": 96.77, "acc": 91.7}},
+    ("safe", "GenImage"):                {"official": {"map": 99.32, "acc": 95.62}, "agid": {"map": 95.7, "acc": 89.84}},
+    ("safe", "DiTFake"):                 {"agid": {"map": 97.78, "acc": 92.42}},
+    ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "agid": {"map": 97.62, "acc": 78.6}},
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "agid": {"map": 99.01}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "agid": {"map": 89.03}},
+    ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "agid": {"map": 86.88}},
+    ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "agid": {"map": 98.61, "acc": 66.66}},
+    ("spai", "GenImage"):                {"official": {"map": 91.33, "auroc": 92.3}, "agid": {"map": 88.8, "acc": 82.81}},
+    ("d3", "GenVideo"):                  {"agid": {"map": 89.0, "auroc": 93.87, "acc": 86.04}},
+    ("d3", "EvalCrafter"):               {"agid": {"map": 91.19, "auroc": 95.41, "acc": 87.67}},
+    ("restrav", "GenVidBench"):          {"agid": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
+    ("stall", "GenVideo"):               {"agid": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
+    ("stall", "VideoFeedback"):          {"agid": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
+    ("stall", "ComGenVid"):              {"agid": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
+    ("vib_net", "Diffusion-source (SDv1.4-trained), AP"):  {"agid": {"map": 83.94, "acc": 77.57}},
+    ("vib_net", "Diffusion-source (SDv1.4-trained), ACC"): {"agid": {"map": 83.94, "acc": 77.57}},
+    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), AP"):  {"agid": {"map": 61.71, "acc": 57.91}},
+    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), ACC"): {"agid": {"map": 61.71, "acc": 57.91}},
+    ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
+}
+
+# Tolerance (percentage points) for calling a number a reproduction of the paper.
+TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}
+
+LAB = {"map": "mAP", "acc": "acc", "auroc": "AUROC"}
+
+
+def paper_metrics(d):
+    """Normalize a paper_number dict to {map,acc,auroc} in PERCENT (fractions like 0.80 -> 80)."""
+    out = {}
+    if not isinstance(d, dict):
+        return out
+    for k, v in d.items():
+        if not isinstance(v, (int, float)):
+            continue
+        kl = k.lower()
+        val = v * 100 if 0 < v <= 1.0 else v
+        if "auc" in kl or "auroc" in kl:
+            out.setdefault("auroc", val)
+        elif kl == "acc" or kl.startswith("acc") or "_acc" in kl:
+            out.setdefault("acc", val)
+        elif "ap" in kl or "map" in kl:
+            out.setdefault("map", val)
+    return out
+
+
+def cmp_ok(ours, pm):
+    """True/False if ours reproduces the paper on every shared metric; None if not comparable."""
+    shared = [m for m in ("map", "acc", "auroc") if m in ours and m in pm]
+    if not shared:
+        return None
+    return all(ours[m] >= pm[m] - TOL[m] for m in shared)
+
+
+def fmt_paper(d):
+    if not isinstance(d, dict):
+        return "—" if d in (None, "") else str(d)
+    parts = [f"{k}={v}" for k, v in d.items()
+             if k != "note" and v not in (None, "") and not isinstance(v, (dict, list))]
+    return " / ".join(parts) if parts else "—"
+
+
+def has_paper_number(d):
+    if not isinstance(d, dict):
+        return d not in (None, "")
+    return any(k != "note" and v not in (None, "") and not isinstance(v, (dict, list))
+               for k, v in d.items())
+
+
+def fmt_ours(d):
+    if not d:
+        return ""
+    return " / ".join(f"{LAB[k]}={d[k]}" for k in ("map", "acc", "auroc") if k in d)
+
+
+def combined(agid, official):
+    a, o = fmt_ours(agid), fmt_ours(official)
+    if a and o:
+        return f"AGID {a} · official {o}"
+    if o:
+        return f"{o} (official wts)"
+    return a
+
+
+def match_val(model, name):
+    """Return (agid, official, matched_substr) for the best VAL hit. A prefix match wins over a
+    mid-string match (so 'In-the-wild (Co-Spy-Bench ...)' matches the In-the-wild entry, not Co-Spy-Bench)."""
+    best = None  # (is_prefix, len, sub, v)
+    nl = name.lower()
+    for (m, sub), v in VAL.items():
+        if m == model and sub.lower() in nl:
+            cand = (nl.startswith(sub.lower()), len(sub), sub, v)
+            if best is None or cand[:2] > best[:2]:
+                best = cand
+    if not best:
+        return {}, {}, None
+    return best[3].get("agid", {}), best[3].get("official", {}), best[2]
+
+
+def status_for(name, paper, agid, official, spec_status):
+    """reproduced = AGID-trained matches paper; official = official-weights-in-AGID matches paper
+    (AGID-trained number shown alongside where attempted); below = neither; reference = paper gives
+    no number for this cross-dataset; missing = not evaluated. Falls back to the spec's label only
+    when the paper metric keys are not numerically comparable (e.g. ReStraV's nested per-split dicts)."""
+    if not has_paper_number(paper):
+        return "reference" if (agid or official) else "missing"
+    if not (agid or official):
+        return "missing"
+    pm = paper_metrics(paper)
+    if not pm:                                   # paper has numbers but not in comparable keys
+        return spec_status or "below"
+    agid_ok, off_ok = cmp_ok(agid, pm), cmp_ok(official, pm)
+    if agid_ok:
+        return "reproduced"
+    if off_ok:
+        return "official"
+    if agid_ok is None and off_ok is None:       # neither comparable -> trust the spec
+        return spec_status or "below"
+    return "below"
+
 
 out = {}
+audit = []
 for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
     d = json.load(open(f))
-    m = d.get("model")
+    model = d.get("model")
     rows = []
     for b in d.get("benchmarks", []):
+        name = b.get("name", "") or ""
+        paper = b.get("paper_number")
+        spec_status = b.get("our_status", "")
+        agid, official, sub = match_val(model, name)
+        status = status_for(name, paper, agid, official, spec_status)
+        on = b.get("our_number")
+        note = ""
+        if isinstance(on, dict) and on.get("note"):
+            note = on["note"]
+        else:
+            note = (b.get("gap_cause") or b.get("dataset_source") or "")
         rows.append({
-            "benchmark": (b.get("name", "") or "")[:46],
+            "benchmark": name[:46],
             "metric": b.get("metric", ""),
-            "paper": fmt(b.get("paper_number")),
-            "ours": fmt(b.get("our_number")),
-            "status": b.get("our_status", ""),
-            "note": (b.get("gap_cause") or b.get("dataset_source") or "")[:160],
+            "paper": fmt_paper(paper),
+            "ours": combined(agid, official),
+            "ours_agid": fmt_ours(agid),
+            "ours_official": fmt_ours(official),
+            "status": status,
+            "note": note[:240],
         })
-    out[m] = rows
-
-# This session's closures (override stale spec "ours" with the verified new numbers).
-updates = {
-    "spai":  {"GenImage": "90.74 mAP (any-res)", "Synthbuster": "~96.6 mAUROC (any-res)"},
-    "d3":    {"GenVideo": "XCLIP 95.1 AUROC / 99.5 AP_real_full (CLIP 94.4)"},
-    "npr":   {"ForenSynths": "94.22 mAP (correct ckpt)"},
-    "safe":  {"DiTFake": "97.78 mAP"},
-    "co_spy": {"Synthbuster": "98.48 mAP"},
-}
-for m, bm in updates.items():
-    for r in out.get(m, []):
-        for k, v in bm.items():
-            if k.lower() in r["benchmark"].lower():
-                r["ours"] = v
-                if r["status"] in ("missing", "below"):
-                    r["status"] = "reproduced"
+        audit.append((model, name[:38], fmt_paper(paper)[:22],
+                      (fmt_ours(agid) or "-")[:22], (fmt_ours(official) or "-")[:22],
+                      f"{spec_status}->{status}"))
+    out[model] = rows
 
 json.dump(out, open(f"{ROOT}/interface/backend/repro_full.json", "w"), indent=2)
 n = sum(len(v) for v in out.values())
-print(f"wrote repro_full.json: {len(out)} methods, {n} benchmark rows")
+counts = {}
+for v in out.values():
+    for r in v:
+        counts[r["status"]] = counts.get(r["status"], 0) + 1
+print(f"wrote repro_full.json: {len(out)} methods, {n} rows  status={counts}")
+
+if "--audit" in sys.argv:
+    print(f"\n{'model':10} {'benchmark':38} {'paper':22} {'AGID':22} {'official':22} status")
+    print("-" * 140)
+    for r in audit:
+        print(f"{r[0]:10} {r[1]:38} {r[2]:22} {r[3]:22} {r[4]:22} {r[5]}")

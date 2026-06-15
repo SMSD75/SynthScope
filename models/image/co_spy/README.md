@@ -100,15 +100,17 @@ It uses the default dataset (`genimage`) and a CO-SPY-style transform pipeline t
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| Co-Spy-Bench | AP | map=96.02 / acc=87.06 | map=96.7 / acc=90.28 / ckpt=checkpoints_retrain/cospy_full/model_1.pth (AGID retrain, full SD-v1.4 data, flickr-reals bug fixed) / tag=cospy_full_cospybench / official_wts_in_agid=86.65 | reproduced |
-| AIGCDetectionBenchmark (AIGCDetect) | AP | map=95.21 / acc=90.58 | map=94.59 / acc=89.25 / ckpt=official ProGAN weights loaded into AGID class (/hddstore/ssalehi/AGID/repro/ckpts/progan) / tag=cospy_official_aigcdetect / agid_trained_ckpt=84.91 | reproduced |
-| GenImage | AP | — | map_official_wts=92.41 / map_agid_retrain=90.59 / acc=75.91 / ckpt=checkpoints_retrain/cospy_full/model_2.pth / tag=cospy_full_g8 | below |
-| ForenSynths (CNNDetection test) | AP | — | map_official_wts=87.97 / map_agid_retrain=96.17 / ckpt=AGID co_spy.pth / tag=cospy_official_forensynths / co_spy_retrain_forensynths | reproduced |
-| In-the-wild (Co-Spy-Bench in-the-wild) | AP | map=84.65 / acc=77.41 | — | missing |
+| Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.60 / acc=89.9 | reproduced |
+| AIGCDetectionBenchmark (AIGCDetect) | map=95.21 / acc=90.58 | mAP=94.59 / acc=89.25 | mAP=86.18 / acc=73.0 | official |
+| GenImage | — | mAP=92.41 | mAP=90.59 / acc=75.91 | reference |
+| ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
+| In-the-wild (Co-Spy-Bench in-the-wild) | map=84.65 / acc=77.41 | — | — | missing |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 

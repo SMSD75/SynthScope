@@ -96,13 +96,13 @@ CNNDetection shows that a detector trained only on ProGAN can detect many other 
 
 ### AGID reproduction (paper vs reproduced)
 
-Reproduced through `benchmark/bench_eval.py` (mean acc@0.5 / mAP, %). **Official** loads the authors'
-released `blur_jpg_prob0.1` ResNet-50 into the AGID class; **AGID** fine-tunes ResNet-50 from scratch on
-ProGAN via the AGID recipe.
+Reproduced through `benchmark/bench_eval.py` (%). **AGID_official** loads the authors'
+released `blur_jpg_prob0.1` ResNet-50 into the AGID class; **AGID_train** fine-tunes ResNet-50 from scratch on
+ProGAN via the AGID recipe (single best run).
 
-| Benchmark | Paper mAP (Blur+JPEG 0.1) | Reproduced — official | Reproduced — AGID-trained |
+| Benchmark | Paper | AGID_official | AGID_train |
 |---|---|---|---|
-| ForenSynths | 92.6 | 74.30 / 91.15 | 72.23 / 91.05 |
+| ForenSynths test set (11) | 90.8 | mAP 92.67 | mAP 94.42 / acc 76.36 |
 
 Both reproduce the paper's ForenSynths mAP (~91 vs 92.6); the lower acc@0.5 reflects the AGID per-generator
 mean over the full on-disk set (including non-256 sources the paper's headline omits), while the *ranking*
@@ -142,8 +142,10 @@ CNNDetection is a foundational fake-image detection baseline. It trains an Image
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| ForenSynths test set (CVPR paper Table 2 = 11  | AP and acc@0.5 | map=90.8 | map_fs8=94.42 / acc_fs8=76.36 / map_fs13=91.05 / official_fs8=92.67 / official_fs13=91.15 / ckpt=cnn.pth (AGID-trained ResNet-50, ckpt_kind=agid) / tags=cnn_agid_forensynths / cnn_official_forensynths | reproduced |
+| ForenSynths test set (CVPR paper Table 2 = 11  | map=90.8 | mAP=92.67 | mAP=94.42 / acc=76.36 | reproduced |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

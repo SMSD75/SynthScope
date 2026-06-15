@@ -67,15 +67,19 @@ The paper reports both accuracy and average precision, with the main result show
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+Values are `mAP / acc`. **AGID_official** = the authors' released weights run through the AGID class / eval. **AGID_train** = the AGID class trained from scratch by us. For all NPR entries we did not train from scratch, so AGID_train is `—`.
+
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| Table 1 — ForenSynths / Cross-GAN-Sources (8 G | AP (and acc@0.5) | map=96.1 / acc=92.5 | 94.22 mAP (correct ckpt) | reproduced |
-| Table 2 — GANGen-Detection / Self-Synthesis 9  | AP (and acc@0.5) | map=96.6 / acc=93.2 | map=96.49 / acc=94.81 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_freqnet / eval=run with bench_eval.py --native-res to drop the up-scaling Resize, matching official no_resize=True | reproduced |
-| Table 3 — DiffusionForensics / DIRE | AP (and acc@0.5) | map=99.8 / acc=95.3 | map=99.4 / acc=95.03 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusionforensics | reproduced |
-| Table 4 — UniversalFakeDetect / Ojha | AP (and acc@0.5) | acc=95.2 | map=96.69 / acc=93.94 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_ufd | reproduced |
-| Table 5 — Diffusion1kStep / Self-Synthesis Dif | AP (and acc@0.5) | acc=80.1 | map=83.47 / acc=79.13 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusion1kstep | reproduced |
+| Table 1 — ForenSynths / Cross-GAN (8) | 96.1 / 92.5 | 94.22 / 92.3 | — | official |
+| Table 2 — GANGen-Detection (9) | 96.6 / 93.2 | 96.49 / 94.81 | — | official |
+| Table 3 — DiffusionForensics / DIRE | 99.8 / 95.3 | 99.4 / 95.03 | — | official |
+| Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 96.69 / 93.94 | — | official |
+| Table 5 — Diffusion1kStep | acc 80.1 | 83.47 / 79.13 | — | official |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Model details
 

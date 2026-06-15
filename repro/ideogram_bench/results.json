@@ -1,0 +1,112 @@
+[
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 93.66,
+    "ap": 90.67,
+    "acc": 69.0,
+    "fake_detect_rate": 45.0,
+    "real_false_pos": 7.0,
+    "mean_p_fake_on_fakes": 0.4506,
+    "mean_p_fake_on_reals": 0.0638
+  },
+  {
+    "detector": "co_spy",
+    "name": "CO-SPY",
+    "auroc": 92.53,
+    "ap": 91.27,
+    "acc": 75.0,
+    "fake_detect_rate": 53.0,
+    "real_false_pos": 3.0,
+    "mean_p_fake_on_fakes": 0.5224,
+    "mean_p_fake_on_reals": 0.116
+  },
+  {
+    "detector": "safe",
+    "name": "SAFE",
+    "auroc": 91.94,
+    "ap": 88.42,
+    "acc": 89.0,
+    "fake_detect_rate": 95.0,
+    "real_false_pos": 17.0,
+    "mean_p_fake_on_fakes": 0.8734,
+    "mean_p_fake_on_reals": 0.2308
+  },
+  {
+    "detector": "vib_net",
+    "name": "VIB-Net",
+    "auroc": 88.65,
+    "ap": 89.4,
+    "acc": 77.0,
+    "fake_detect_rate": 73.0,
+    "real_false_pos": 19.0,
+    "mean_p_fake_on_fakes": 0.6998,
+    "mean_p_fake_on_reals": 0.2316
+  },
+  {
+    "detector": "npr",
+    "name": "NPR",
+    "auroc": 83.41,
+    "ap": 76.53,
+    "acc": 77.0,
+    "fake_detect_rate": 97.0,
+    "real_false_pos": 43.0,
+    "mean_p_fake_on_fakes": 0.9656,
+    "mean_p_fake_on_reals": 0.4365
+  },
+  {
+    "detector": "fat_former",
+    "name": "FatFormer",
+    "auroc": 81.58,
+    "ap": 82.24,
+    "acc": 68.0,
+    "fake_detect_rate": 40.0,
+    "real_false_pos": 4.0,
+    "mean_p_fake_on_fakes": 0.4,
+    "mean_p_fake_on_reals": 0.0412
+  },
+  {
+    "detector": "aide",
+    "name": "AIDE",
+    "auroc": 76.96,
+    "ap": 78.64,
+    "acc": 68.5,
+    "fake_detect_rate": 72.0,
+    "real_false_pos": 35.0,
+    "mean_p_fake_on_fakes": 0.6579,
+    "mean_p_fake_on_reals": 0.3556
+  },
+  {
+    "detector": "clip",
+    "name": "UnivFD / CLIP",
+    "auroc": 73.72,
+    "ap": 78.09,
+    "acc": 65.5,
+    "fake_detect_rate": 38.0,
+    "real_false_pos": 7.0,
+    "mean_p_fake_on_fakes": 0.3765,
+    "mean_p_fake_on_reals": 0.1656
+  },
+  {
+    "detector": "cnn",
+    "name": "CNNDetection (ResNet-50)",
+    "auroc": 70.08,
+    "ap": 73.75,
+    "acc": 60.5,
+    "fake_detect_rate": 22.0,
+    "real_false_pos": 1.0,
+    "mean_p_fake_on_fakes": 0.2239,
+    "mean_p_fake_on_reals": 0.0083
+  },
+  {
+    "detector": "spai",
+    "name": "SPAI",
+    "auroc": 61.64,
+    "ap": 56.45,
+    "acc": 52.5,
+    "fake_detect_rate": 17.0,
+    "real_false_pos": 12.0,
+    "mean_p_fake_on_fakes": 0.1682,
+    "mean_p_fake_on_reals": 0.1252
+  }
+]

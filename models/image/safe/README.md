@@ -122,15 +122,18 @@ It runs through Accelerate and the `AGID` conda environment.
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| ForenSynths (Table 1, intra-architecture GANs) | acc/AP | map=98.8 / acc=96.2 | map=98.78 / acc=96.2 | below |
-| Self-Synthesis / GANGen (Table 2, intra-archit | acc/AP | map=99.8 / acc=99.0 | map=99.85 / acc=98.99 | reproduced |
-| Ojha / UniversalFakeDetect (Table 3, cross-arc | acc/AP | map=99.1 / acc=95.7 | map=99.1 / acc=95.71 | reproduced |
-| GenImage (Table 4, cross-architecture DM+GAN)  | acc/AP | map=99.3 / acc=95.6 | map=95.7 / acc=89.84 | below |
-| DiTFake (Table 6, cross-architecture DiT) | acc/AP | map=99.9 / acc=99.4 | 97.78 mAP | reproduced |
+| ForenSynths (Table 1, intra-architecture GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=81.74 / acc=80.1 | official |
+| Self-Synthesis / GANGen (Table 2, intra-archit | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | mAP=75.38 / acc=61.5 | official |
+| Ojha / UniversalFakeDetect (Table 3, cross-arc | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=96.77 / acc=91.7 | official |
+| GenImage (Table 4, cross-architecture DM+GAN)  | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=95.70 / acc=88.7 | official |
+| DiTFake (Table 6, cross-architecture DiT) | map=99.9 / acc=99.4 | — | mAP=97.78 / acc=92.42 | below |
+| DiffusionForensics-8 | — | — | mAP=97.44 / acc=92.0 | reference |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Similarity to the official SAFE implementation
 

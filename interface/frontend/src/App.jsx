@@ -2,8 +2,152 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   fetchModels, predict, fetchDatasets, sampleDataset, datasetMediaUrl,
   predictDataset, scoreBatch, verdictAt, autoCalibrate, targetFprThreshold, batchStats,
-  sotaGenerators, sotaRealImage, sotaCompare,
+  sotaGenerators, sotaRealImage, sotaCompare, fetchLeaderboard, fetchGeneratorBenchmarks,
+  fetchTrending,
 } from "./api.js";
+
+// Which weights back the default inference checkpoint for each detector (shown in the UI).
+const WEIGHTS_LABEL = {
+  official: "official weights",
+  agid_trained: "AGID-trained",
+  training_free: "training-free",
+};
+const wlabel = (m) => WEIGHTS_LABEL[m && m.weights] || "AGID-trained";
+
+const REPRO_LEGEND = (
+  <div className="repro-legend">
+    <b>reproduced</b> = AGID-trained checkpoint matches the paper · <b>official</b> = official weights loaded
+    into the AGID class match (AGID-trained shown alongside where trained from scratch) · <b>below</b> = gap
+    remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
+  </div>
+);
+
+function TrendingView() {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState("");
+  useEffect(() => { fetchTrending().then(setData).catch((e) => setErr(e.message)); }, []);
+  if (err) return <div className="err">{err}</div>;
+  if (!data) return <p className="muted">Loading…</p>;
+  const card = (e, i) => {
+    const link = e.github || e.arxiv || "";
+    const venue = [e.authors, e.venue, e.year].filter(Boolean).join(" · ");
+    return (
+      <div className="trend-card" key={i}>
+        <div className="trend-head">
+          {link ? <a href={link} target="_blank" rel="noreferrer">{e.title}</a> : <b>{e.title}</b>}
+          {e.agid && <span className="wtag wtag-agid_trained">in AGID: {e.agid}</span>}
+        </div>
+        {venue && <div className="muted" style={{ fontSize: 12 }}>{venue}</div>}
+        {e.summary && <div style={{ margin: "4px 0", fontSize: 13 }}>{e.summary}</div>}
+        {e.result && <div className="muted" style={{ fontSize: 12 }}><i>Results: {e.result}</i></div>}
+        <div className="trend-links">
+          {e.github && <a href={e.github} target="_blank" rel="noreferrer">code ↗</a>}
+          {e.arxiv && <a href={e.arxiv} target="_blank" rel="noreferrer">arXiv ↗</a>}
+        </div>
+      </div>
+    );
+  };
+  return (
+    <div className="trending">
+      <h2>📈 What's Trending — AIGC detection</h2>
+      <p className="muted">{data.criteria}{data.updated ? ` Last updated: ${data.updated}.` : ""}</p>
+      <h3>Image detectors</h3>
+      <div className="trend-grid">{(data.image || []).map(card)}</div>
+      <h3>Video detectors</h3>
+      <div className="trend-grid">{(data.video || []).map(card)}</div>
+      <h3>Benchmarks &amp; curated lists</h3>
+      <ul className="trend-landscape">
+        {(data.landscape || []).map((e, i) => (
+          <li key={i}><a href={e.github} target="_blank" rel="noreferrer">{e.title}</a> — {e.summary}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function LeaderboardView() {
+  const [groups, setGroups] = useState([]);
+  const [sel, setSel] = useState("");
+  const [err, setErr] = useState("");
+  useEffect(() => {
+    fetchLeaderboard().then((d) => setGroups(d.groups || [])).catch((e) => setErr(e.message));
+  }, []);
+  const shown = sel ? groups.filter((g) => g.benchmark === sel) : groups;
+  return (
+    <div className="lead">
+      <div className="lead-head">
+        <p className="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>AGID-trained</b>
+          checkpoint, and <b>official weights</b> loaded into the AGID class. Grouped by benchmark so methods that
+          share one can be compared head-to-head (sorted best-first).</p>
+        <label>Benchmark:
+          <select value={sel} onChange={(e) => setSel(e.target.value)}>
+            <option value="">All benchmarks ({groups.length})</option>
+            {groups.map((g) => <option key={g.benchmark} value={g.benchmark}>{g.benchmark} ({g.n_methods})</option>)}
+          </select>
+        </label>
+      </div>
+      {err && <div className="err">{err}</div>}
+      {shown.map((g) => (
+        <div key={g.benchmark} className="card lead-card">
+          <h2>{g.benchmark} <span className="pill">{g.n_methods} method{g.n_methods > 1 ? "s" : ""}</span></h2>
+          <div className="repro-scroll">
+            <table className="repro repro-full">
+              <thead><tr><th>Method</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <tbody>
+                {g.rows.map((r, i) => (
+                  <tr key={i}>
+                    <td><b>{r.method}</b><div className="lead-bn">{r.benchmark}</div></td>
+                    <td>{r.paper}</td><td>{r.agid || "—"}</td><td>{r.official || "—"}</td>
+                    <td className={"status-" + (r.status || "")}>{r.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+      {REPRO_LEGEND}
+    </div>
+  );
+}
+
+function TopGeneratorsView() {
+  const [bm, setBm] = useState([]);
+  const [err, setErr] = useState("");
+  useEffect(() => {
+    fetchGeneratorBenchmarks().then((d) => setBm(d.benchmarks || [])).catch((e) => setErr(e.message));
+  }, []);
+  const medal = (i) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1);
+  return (
+    <div className="topgen">
+      <p className="muted">How our detectors hold up against today's SOTA image generators. Each: a balanced
+        real-vs-generated set scored by every AGID detector (promoted checkpoints), ranked by AUROC. None of the
+        detectors were trained on these generators — cross-generator generalization.</p>
+      {err && <div className="err">{err}</div>}
+      {!bm.length && !err && <div className="empty">No generator benchmarks yet.</div>}
+      {bm.map((b) => (
+        <div key={b.key} className="card">
+          <h2>vs {b.generator} <span className="pill">{b.n_real}+{b.n_fake} imgs · {b.settings}</span></h2>
+          <div className="meta" style={{ marginBottom: 8 }}>{b.note}</div>
+          <div className="repro-scroll">
+            <table className="repro repro-full lb-gen">
+              <thead><tr><th>#</th><th>Detector</th><th>AUROC</th><th>AP</th><th>acc@.5</th><th>fake-detect %</th><th>real-FP %</th></tr></thead>
+              <tbody>
+                {b.rows.map((r, i) => (
+                  <tr key={i} className={i < 3 ? "lb-top" : ""}>
+                    <td>{medal(i)}</td><td><b>{r.name || r.detector}</b></td>
+                    <td className="lb-best">{r.auroc}</td>
+                    <td>{r.ap}</td><td>{r.acc}</td><td>{r.fake_detect_rate}</td><td>{r.real_false_pos}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function b64ToFile(b64, name) {
   const bin = atob(b64), arr = new Uint8Array(bin.length);
@@ -81,7 +225,8 @@ function SotaView({ models }) {
       <div className="detpick">Detectors:
         {imgDetectors.map((m) => (
           <label key={m.key}><input type="checkbox" checked={!!picked[m.key]}
-            onChange={(e) => setPicked({ ...picked, [m.key]: e.target.checked })} /> {m.name}</label>
+            onChange={(e) => setPicked({ ...picked, [m.key]: e.target.checked })} /> {m.name}{" "}
+            <span className={"wtag wtag-" + (m.weights || "agid_trained")}>{wlabel(m)}</span></label>
         ))}
       </div>
       <button className="primary" disabled={busy} onClick={run}>{busy ? "Generating + scoring…" : "Generate & compare"}</button>
@@ -90,7 +235,7 @@ function SotaView({ models }) {
         {realB64 && <figure><img src={"data:image/png;base64," + realB64} alt="real" />
           <figcaption>Real {realSrc && "· " + realSrc.join("/")}</figcaption></figure>}
         {res && res.generated_b64 && <figure><img src={"data:image/png;base64," + res.generated_b64} alt="generated" />
-          <figcaption>Generated · {res.generator}</figcaption></figure>}
+          <figcaption>Generated · {res.generator}{res.prompt && <><br /><span className="muted" style={{ fontSize: 11 }}>prompt: {res.prompt}</span></>}</figcaption></figure>}
       </div>
       {res && (
         <table className="repro repro-full">
@@ -114,7 +259,7 @@ function SotaView({ models }) {
 
 const isVideoName = (name = "", type = "") =>
   type.startsWith("video") || /\.(mp4|mov|avi|mkv|webm|m4v)$/i.test(name);
-const optLabel = (m) => `${m.name} — ${m.paper}${m.available ? "" : "  (no checkpoint)"}`;
+const optLabel = (m) => `${m.name} — ${m.paper} · ${wlabel(m)}${m.available ? "" : "  (no checkpoint)"}`;
 
 function ModelSelect({ models, model, setModel, onChange }) {
   const img = models.filter((m) => m.modality === "image");
@@ -136,29 +281,40 @@ function ReproTable({ m }) {
   const full = m && m.repro_full;
   if (!rep && !(full && full.length)) return null;
   return (
-    <div>
+    <div className="repro-wrap">
       {rep && (
         <table className="repro"><tbody>
+          <tr><td>Inference weights</td><td><span className={"wtag wtag-" + (m.weights || "agid_trained")}>{wlabel(m)}</span></td></tr>
           <tr><td>Headline</td><td>{rep.benchmark}</td></tr>
           <tr><td>Paper</td><td>{rep.paper}</td></tr>
           <tr><td>Reproduced</td><td className={"match-" + (rep.match || "")}>{rep.ours}</td></tr>
-          {rep.note && <tr><td colSpan="2" className="rnote">{rep.note}</td></tr>}
         </tbody></table>
       )}
       {full && full.length > 0 && (
-        <table className="repro repro-full">
-          <thead><tr><th>Benchmark</th><th>Paper</th><th>Ours</th><th>Status</th></tr></thead>
-          <tbody>
-            {full.map((r, i) => (
-              <tr key={i}>
-                <td title={r.note}>{r.benchmark}</td>
-                <td>{r.paper}</td>
-                <td className={"match-" + (r.status || "")}>{r.ours}</td>
-                <td className={"status-" + (r.status || "")}>{r.status}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <details className="repro-details">
+          <summary>All {full.length} reported benchmarks — paper vs AGID vs official</summary>
+          <div className="repro-scroll">
+            <table className="repro repro-full">
+              <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <tbody>
+                {full.map((r, i) => (
+                  <tr key={i}>
+                    <td>{r.benchmark}</td>
+                    <td>{r.paper}</td>
+                    <td>{r.ours_agid || "—"}</td>
+                    <td>{r.ours_official || "—"}</td>
+                    <td className={"status-" + (r.status || "")}>{r.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="repro-legend">
+            <b>reproduced</b> = AGID-trained checkpoint matches the paper · <b>official</b> = official weights
+            loaded into the AGID class match (AGID-trained number shown where we trained from scratch) ·
+            <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
+          </div>
+        </details>
       )}
     </div>
   );
@@ -203,11 +359,17 @@ export default function App() {
         <button className={"tab" + (tab === "detect" ? " active" : "")} onClick={() => setTab("detect")}>Detect</button>
         <button className={"tab" + (tab === "explore" ? " active" : "")} onClick={() => setTab("explore")}>Data Explorer</button>
         <button className={"tab" + (tab === "sota" ? " active" : "")} onClick={() => setTab("sota")}>SOTA vs Detectors</button>
+        <button className={"tab" + (tab === "leaderboard" ? " active" : "")} onClick={() => setTab("leaderboard")}>Leaderboard</button>
+        <button className={"tab" + (tab === "topgen" ? " active" : "")} onClick={() => setTab("topgen")}>Top Generators</button>
+        <button className={"tab" + (tab === "trending" ? " active" : "")} onClick={() => setTab("trending")}>What's Trending</button>
       </div>
       {error && <div className="err">{error}</div>}
       {tab === "detect" && <DetectView {...shared} />}
       {tab === "explore" && <ExploreView {...shared} />}
       {tab === "sota" && <SotaView models={models} />}
+      {tab === "leaderboard" && <LeaderboardView />}
+      {tab === "topgen" && <TopGeneratorsView />}
+      {tab === "trending" && <TrendingView />}
     </div>
   );
 }
@@ -452,10 +614,21 @@ function Result({ r, threshold, gt }) {
         {r.media_type && <Row k="Media" v={`${r.media_type}${r.num_frames ? " · " + r.num_frames + " frames" : ""}`} />}
         {r.elapsed_ms && <Row k="Inference" v={`${r.elapsed_ms} ms`} />}
       </div>
-      {r.per_frame && (
-        <div>
-          <div className="meta">Per-frame P(fake) ({r.aggregation}):</div>
-          <div className="spark">{r.per_frame.map((v, i) => <i key={i} title={`${(v * 100).toFixed(1)}%`} style={{ height: v * 100 + "%" }} />)}</div>
+      {r.per_frame && r.per_frame.length > 1 && (
+        <div className="frames">
+          <div className="meta">Per-frame P(fake) — {r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
+          <div className="spark">
+            <span className="thr50"></span>
+            {r.per_frame.map((v, i) => (
+              <i key={i} title={`frame ${i + 1}: ${(v * 100).toFixed(1)}%`}
+                style={{ height: Math.max(3, v * 100) + "%", background: v >= 0.5 ? "var(--fake)" : "var(--accent)" }} />
+            ))}
+          </div>
+          <div className="frame-stats">
+            <span>min <b>{(Math.min(...r.per_frame) * 100).toFixed(0)}%</b></span>
+            <span>mean <b>{(r.per_frame.reduce((a, b) => a + b, 0) / r.per_frame.length * 100).toFixed(0)}%</b></span>
+            <span>max <b>{(Math.max(...r.per_frame) * 100).toFixed(0)}%</b></span>
+          </div>
         </div>
       )}
     </div>

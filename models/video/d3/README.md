@@ -141,14 +141,16 @@ at ~8 fps over up to 2 s (`num_frames: 16`, `fps: 8` in the dataset config).
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| GenVideo (DeMamba GenVideo-Val, Table 1) | AP | mAP=98.46 | XCLIP 95.1 AUROC / 99.5 AP_real_full (CLIP 94.4) | reproduced |
-| EvalCrafter (Table 2, 14 generators, fake-only | AP | mAP=98.87 | mAP=91.19 / mAUROC=95.41 / acc=87.67 | below |
-| VideoPhy (Table 3, 10 generators) | AP | mAP=99.16 | — | missing |
-| VidProM (Table 4, 6 generators) | AP | mAP=88.46 | — | missing |
+| GenVideo (DeMamba GenVideo-Val, Table 1) | mAP=98.46 | — | mAP=89.0 / acc=86.04 / AUROC=93.87 | below |
+| EvalCrafter (Table 2, 14 generators, fake-only | mAP=98.87 | — | mAP=91.19 / acc=87.67 / AUROC=95.41 | below |
+| VideoPhy (Table 3, 10 generators) | mAP=99.16 | — | — | missing |
+| VidProM (Table 4, 6 generators) | mAP=88.46 | — | — | missing |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Differences from the paper / official code
 

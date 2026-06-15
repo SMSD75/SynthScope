@@ -217,6 +217,9 @@ class AGIDPGCModel(nn.Module):
         self.register_buffer("imagenet_mean", torch.tensor(_IMAGENET_MEAN).view(1, 3, 1, 1))
         self.register_buffer("imagenet_std", torch.tensor(_IMAGENET_STD).view(1, 3, 1, 1))
         self.criterion = nn.BCEWithLogitsLoss()
+        # PGC uses BCE on its own fused logit, so the trainer's CrossEntropy label-smoothing is bypassed;
+        # read it here so it still applies (official trains with 0.1). y' = y(1-eps) + eps/2.
+        self.label_smoothing = float(cfg.get("label_smoothing", 0.0))
 
     # ── residual (paper Eq. 1) ───────────────────────────────────────────────
     def _quantization_residual(self, x01: torch.Tensor) -> torch.Tensor:
@@ -246,6 +249,9 @@ class AGIDPGCModel(nn.Module):
     def compute_loss(self, batch):
         images, labels, _folder_ids = batch
         logits = self.forward(images)                                         # [B]
-        loss = self.criterion(logits, labels.float())
+        target = labels.float()
+        if self.label_smoothing > 0:                                          # official recipe: y'=y(1-eps)+eps/2
+            target = target * (1.0 - self.label_smoothing) + 0.5 * self.label_smoothing
+        loss = self.criterion(logits, target)
         outputs = torch.stack([-logits, logits], dim=1)                       # [B,2]; col1 = fake
         return {"loss": loss, "outputs": outputs}

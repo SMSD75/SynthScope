@@ -19,6 +19,26 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
+def _strip_env_value(v: str) -> str:
+    """Parse a ``.env`` value: honor quotes, drop an inline ``# comment``.
+
+    Tolerates the common mistake of filling a key in next to the template's trailing comment, e.g.
+    ``OPENAI_API_KEY=sk-... # GPT Image -> platform.openai.com/api-keys`` — without this, the comment
+    becomes part of the key and the API rejects it. A ``#`` only starts a comment when it is at the
+    start or preceded by whitespace, so keys/values that legitimately contain ``#`` are preserved.
+    """
+    v = v.strip()
+    if v[:1] in ('"', "'"):                       # quoted: take quoted span, ignore trailing comment
+        q = v[0]
+        end = v.find(q, 1)
+        return v[1:end] if end != -1 else v[1:]
+    for i, ch in enumerate(v):                    # unquoted: cut at the first whitespace-led '#'
+        if ch == "#" and (i == 0 or v[i - 1] in " \t"):
+            v = v[:i]
+            break
+    return v.strip()
+
+
 def _load_dotenv() -> None:
     """Load secrets (SOTA-generator API keys, etc.) from a gitignored ``.env`` at the repo root.
 
@@ -34,7 +54,9 @@ def _load_dotenv() -> None:
             if not line or line.startswith("#") or "=" not in line:
                 continue
             k, v = line.split("=", 1)
-            os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+            val = _strip_env_value(v)
+            if val:                               # skip empty values (unfilled template keys)
+                os.environ.setdefault(k.strip(), val)
 
 
 _load_dotenv()

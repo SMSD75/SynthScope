@@ -8,6 +8,7 @@ Endpoints:
 Serves the built Vite frontend from ``frontend/dist`` if present, otherwise the no-build
 standalone page in ``static/index.html`` (works without Node).
 """
+import json
 import tempfile
 from pathlib import Path
 
@@ -38,6 +39,19 @@ def health():
             "checkpoints_dir": str(config.CHECKPOINTS_DIR)}
 
 
+_TRENDING_PATH = Path(__file__).resolve().parent / "trending.json"
+
+
+@app.get("/api/trending")
+def trending():
+    """High-quality trending AIGC-detection papers (image + video). Refreshed daily by a
+    scheduled task that updates trending.json; the README section is regenerated from the same file."""
+    try:
+        return json.loads(_TRENDING_PATH.read_text())
+    except FileNotFoundError:
+        return {"updated": None, "image": [], "video": [], "landscape": [], "criteria": ""}
+
+
 @app.get("/api/models")
 def models():
     engine = get_engine()
@@ -50,6 +64,7 @@ def models():
             "modality": spec.modality,
             "available": engine.is_available(spec),
             "checkpoint": spec.checkpoint,
+            "weights": spec.weights,   # "official" | "agid_trained" | "training_free"
             "notes": spec.notes,
             "repro": REPRO.get(spec.key),
             "repro_full": REPRO_FULL.get(spec.key),
@@ -159,6 +174,8 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
     real_bytes = await file.read()
     if not real_bytes:
         raise HTTPException(status_code=400, detail="Empty image.")
+    # text-to-image generators get a caption-derived prompt (see generators.effective_prompt)
+    prompt = _gens.effective_prompt(generator, real_bytes, prompt)
     try:
         gen_bytes = _gens.generate(generator, real_bytes, prompt)
     except KeyError as e:
@@ -185,6 +202,94 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
             results.append({"detector": key, "error": f"{type(e).__name__}: {e}"})
     return {"generator": generator, "prompt": prompt,
             "generated_b64": _b64.b64encode(gen_bytes).decode(), "results": results}
+
+
+# --- Leaderboard: all methods x benchmarks (paper vs AGID-trained vs official), by benchmark ------
+_METHOD_NAMES = {
+    "clip": "CLIP / UnivFD", "cnn": "CNNDetection", "fat_former": "FatFormer", "npr": "NPR",
+    "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
+    "pgc": "PGC", "d3": "D3", "restrav": "ReStraV", "stall": "STALL",
+}
+_FAMILY = [  # (substring -> benchmark family label); first match wins
+    ("genimage", "GenImage"), ("forensynth", "ForenSynths"), ("universalfakedetect", "UniversalFakeDetect"),
+    ("ojha", "UniversalFakeDetect"), ("ufd", "UniversalFakeDetect"), ("aigcdetect", "AIGCDetect"),
+    ("co-spy-bench", "Co-Spy-Bench"), ("aigibench", "AIGIBench"), ("aigi", "AIGIBench"),
+    ("commgen", "CommGen15"), ("genvideo", "GenVideo"), ("evalcrafter", "EvalCrafter"),
+    ("videophy", "VideoPhy"), ("vidprom", "VidProM"), ("genvidbench", "GenVidBench"),
+    ("ditfake", "DiTFake"), ("diffusionforensics", "DiffusionForensics"),
+    ("diffusion1kstep", "Diffusion1kStep"),  # before self-synthesis (NPR Table 5 contains both)
+    ("gangen", "GANGen / Self-Synthesis"), ("self-synthesis", "GANGen / Self-Synthesis"),
+    ("chameleon", "Chameleon"), ("synthbuster", "Synthbuster"), ("in-the-wild", "In-the-wild"),
+    ("videofeedback", "VideoFeedback"), ("comgenvid", "ComGenVid"),
+    ("physics-iq", "Physics-IQ"), ("veo3", "Veo3 zero-shot"), ("demamba", "DeMamba"),
+    ("gan-source", "GAN-source"), ("diffusion-source", "Diffusion-source"),
+]
+
+
+def _family(name: str) -> str:
+    n = (name or "").lower()
+    for sub, fam in _FAMILY:
+        if sub in n:
+            return fam
+    return (name.split("(")[0].strip() or name)[:28]
+
+
+def _lead_num(s: str) -> float:
+    import re as _re
+    m = _re.search(r"(\d+\.?\d*)", s or "")
+    return float(m.group(1)) if m else -1.0
+
+
+@app.get("/api/leaderboard")
+def leaderboard():
+    """Every method x benchmark with paper / AGID-trained / official-weights numbers, grouped by
+    benchmark family so methods that share a benchmark can be compared head-to-head."""
+    groups: dict[str, list] = {}
+    for key, rows in REPRO_FULL.items():
+        for r in rows:
+            fam = _family(r["benchmark"])
+            groups.setdefault(fam, []).append({
+                "method": _METHOD_NAMES.get(key, key), "key": key,
+                "benchmark": r["benchmark"], "paper": r["paper"],
+                "agid": r.get("ours_agid", ""), "official": r.get("ours_official", ""),
+                "status": r["status"],
+                "_sort": max(_lead_num(r.get("ours_agid")), _lead_num(r.get("ours_official"))),
+            })
+    out = []
+    for fam, methods in groups.items():
+        methods.sort(key=lambda m: m["_sort"], reverse=True)
+        for m in methods:
+            m.pop("_sort", None)
+        out.append({"benchmark": fam, "n_methods": len(methods), "rows": methods})
+    out.sort(key=lambda g: (-g["n_methods"], g["benchmark"]))  # most cross-method-compared first
+    return {"groups": out}
+
+
+@app.get("/api/generator_benchmarks")
+def generator_benchmarks():
+    """Detector-vs-SOTA-generator benchmarks. Scans repro/ideogram_bench* (e.g. 512px and 1024px runs);
+    extensible to FLUX / Nano Banana / GPT-Image by dropping in more results.json dirs."""
+    import json as _json, glob as _glob2
+    out = []
+    for d in sorted(_glob2.glob(str(config.REPO_ROOT / "repro" / "ideogram_bench*"))):
+        res_f, man_f = Path(d) / "results.json", Path(d) / "manifest.json"
+        if not res_f.is_file():
+            continue
+        rows = _json.loads(res_f.read_text())
+        meta = _json.loads(man_f.read_text()) if man_f.is_file() else {}
+        out.append({
+            "generator": meta.get("label") or "Ideogram 4.0",
+            "key": Path(d).name,
+            "n_real": meta.get("n"), "n_fake": meta.get("n"), "res": meta.get("res", 0),
+            "settings": f"{meta.get('res','?')}px · {meta.get('steps','?')} steps"
+                        + (f" · {meta['attempts']} attempts" if meta.get("attempts") else ""),
+            "note": "Balanced real (GenImage/CNNDetection) vs Ideogram fakes from BLIP-caption prompts; "
+                    "people excluded (Ideogram refuses them). Detectors = promoted AGID checkpoints. "
+                    "None were trained on Ideogram, so this is cross-generator generalization. Ranked by AUROC.",
+            "rows": rows,
+        })
+    out.sort(key=lambda b: b.get("res", 0), reverse=True)   # highest-res first
+    return {"benchmarks": out}
 
 
 # --- dataset explorer --------------------------------------------------------
@@ -306,8 +411,11 @@ if FRONTEND_DIST.is_dir():
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
+_NO_CACHE = {"Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache", "Expires": "0"}
+
+
 @app.get("/")
 def index():
-    if (FRONTEND_DIST / "index.html").is_file():
-        return FileResponse(str(FRONTEND_DIST / "index.html"))
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    # Serve the UI with no-store so a plain reload always picks up edits (no stale cached page).
+    src = FRONTEND_DIST / "index.html" if (FRONTEND_DIST / "index.html").is_file() else STATIC_DIR / "index.html"
+    return FileResponse(str(src), headers=_NO_CACHE)

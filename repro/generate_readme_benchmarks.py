@@ -15,15 +15,21 @@ PATHS = {
     "stall": ("models/video/stall", "STALL"),
 }
 HDR = "## Reproduced benchmark results"
+LEGEND = ("**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights "
+          "loaded into the AGID class match (the AGID-trained number is shown alongside where we trained "
+          "from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · "
+          "**missing** = not yet evaluated.")
 
 def section(model):
     rows = full.get(model, [])
     out = [HDR, "",
-           "All benchmarks the paper reports, with our reproduced numbers (verified, traced to "
+           "All benchmarks the paper reports, with our numbers (verified, traced to "
            "`repro/bench_results/` + `repro/benchmark_specs/`).", "",
-           "| Benchmark | Metric | Paper | Ours | Status |", "|---|---|---|---|---|"]
+           "| Benchmark | Paper | AGID (trained) | Official wts | Status |", "|---|---|---|---|---|"]
     for r in rows:
-        out.append(f"| {r['benchmark']} | {r.get('metric','')} | {r['paper']} | {r['ours']} | {r['status']} |")
+        out.append(f"| {r['benchmark']} | {r['paper']} | {r.get('ours_agid') or '—'} | "
+                   f"{r.get('ours_official') or '—'} | {r['status']} |")
+    out += ["", LEGEND]
     return "\n".join(out) + "\n"
 
 def upsert(readme: pathlib.Path, sec: str):
@@ -41,12 +47,25 @@ for model, (d, _name) in PATHS.items():
 
 # Aggregated table for the main README
 agg = ["## Full-benchmark reproduction (all models × all reported benchmarks)", "",
-       "Every benchmark each paper reports, reproduced and verified. Per-model detail in each "
+       "Every benchmark each paper reports, with our verified numbers. Per-model detail in each "
        "`models/*/<name>/README.md`; raw results in `repro/bench_results/`, specs in "
        "`repro/benchmark_specs/`, matrix in `repro/BENCHMARK_COVERAGE_MATRIX.md`.", "",
-       "| Model | Benchmark | Paper | Ours | Status |", "|---|---|---|---|---|"]
+       LEGEND, "",
+       "| Model | Benchmark | Paper | AGID (trained) | Official wts | Status |", "|---|---|---|---|---|---|"]
 for model, (_d, name) in PATHS.items():
     for r in full.get(model, []):
-        agg.append(f"| {name} | {r['benchmark']} | {r['paper']} | {r['ours']} | {r['status']} |")
-(ROOT / "repro/AGGREGATED_BENCHMARK.md").write_text("\n".join(agg) + "\n")
+        agg.append(f"| {name} | {r['benchmark']} | {r['paper']} | {r.get('ours_agid') or '—'} | "
+                   f"{r.get('ours_official') or '—'} | {r['status']} |")
+agg_md = "\n".join(agg) + "\n"
+(ROOT / "repro/AGGREGATED_BENCHMARK.md").write_text(agg_md)
 print("wrote repro/AGGREGATED_BENCHMARK.md")
+
+# Keep the same aggregated section in the top-level README in sync.
+readme = ROOT / "README.md"
+rtxt = readme.read_text()
+rpat = re.compile(r"## Full-benchmark reproduction \(all models × all reported benchmarks\).*?(?=\n## )", re.S)
+if rpat.search(rtxt):
+    readme.write_text(rpat.sub(agg_md.rstrip() + "\n", rtxt))
+    print("updated README.md aggregated section")
+else:
+    print("WARN: aggregated section header not found in README.md — left unchanged")

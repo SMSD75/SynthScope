@@ -20,3 +20,6 @@ dist/
 .env
 .env.local
 .env.*.local
+
+# Large shared HF/torch cache (node-local downloads)
+.cache_shared/

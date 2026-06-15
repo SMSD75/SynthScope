@@ -1,0 +1,105 @@
+{
+  "updated": "2026-06-15",
+  "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
+  "image": [
+    {
+      "title": "PGC: Peak-Guided Calibration for AI-Generated Image Detection",
+      "authors": "Zhou et al.", "venue": "2026", "agid": "pgc",
+      "github": "https://github.com/xiaoyu6868/PGC",
+      "arxiv": "",
+      "summary": "LoRA-tuned DINOv2 RGB stream + a YCbCr-quantization-residual CNN, fused by a peak-guided (log-sum-exp) calibration. Strong cross-generator transfer.",
+      "result": "ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)."
+    },
+    {
+      "title": "Co-Spy: Fusing Semantic and Artifact Cues for Synthetic Image Detection",
+      "authors": "Cheng et al.", "venue": "CVPR", "year": "2025", "agid": "co_spy",
+      "github": "https://github.com/Megum1/Co-Spy",
+      "arxiv": "",
+      "summary": "Adaptive fusion of a SigLIP semantic stream and an SD-VAE artifact-residual stream.",
+      "result": "Co-Spy-Bench ~96 mAP; AGID retrain reaches 96.6 (beats released weights on that bench)."
+    },
+    {
+      "title": "SAFE: High-Frequency Artifact Detector with Targeted Augmentation",
+      "authors": "Ouxiang Li et al.", "venue": "KDD", "year": "2025", "agid": "safe",
+      "github": "https://github.com/Ouxiang-Li/SAFE",
+      "arxiv": "",
+      "summary": "Lightweight DWT high-frequency artifact detector with a carefully designed augmentation recipe.",
+      "result": "ForenSynths 98.78 mAP / GenImage 99.32 mAP (official weights)."
+    },
+    {
+      "title": "AIDE: ConvNeXt Semantic + Low-Level DCT/SRM Cues",
+      "authors": "Yan et al.", "venue": "ICLR", "year": "2025", "agid": "aide",
+      "github": "",
+      "arxiv": "https://arxiv.org/abs/2406.19435",
+      "summary": "Fuses ConvNeXt semantic features with low-level DCT/SRM frequency cues; native-resolution preprocessing.",
+      "result": "GenImage 97.12 mAP / AIGCDetect 97.94 mAP (official weights)."
+    },
+    {
+      "title": "SPAI: Spectral AI-Image Detection (any-resolution)",
+      "authors": "Karageorgiou et al.", "venue": "CVPR", "year": "2025", "agid": "spai",
+      "github": "https://github.com/mever-team/spai",
+      "arxiv": "",
+      "summary": "Spectral Reconstruction Similarity + Spectral Context Attention; detects at native/arbitrary resolution.",
+      "result": "~91 AUROC on the SPAI eval; GenImage 91.33 mAP (official weights)."
+    },
+    {
+      "title": "FatFormer: Forgery-Aware Adaptive Transformer",
+      "authors": "Liu et al.", "venue": "CVPR", "year": "2024", "agid": "fat_former",
+      "github": "https://github.com/Michel-liu/FatFormer",
+      "arxiv": "",
+      "summary": "Frozen CLIP + forgery-aware adapters + learnable text-prompt context.",
+      "result": "ForenSynths-8 99.7 mAP (official weights)."
+    },
+    {
+      "title": "NPR: Neighboring-Pixel Relationships",
+      "authors": "Tan et al.", "venue": "CVPR", "year": "2024", "agid": "npr",
+      "github": "https://github.com/chuangchuangtan/NPR-DeepfakeDetection",
+      "arxiv": "",
+      "summary": "Small ResNet on neighboring-pixel residuals that expose generator up-sampling artifacts.",
+      "result": "GANGen 96.49 mAP / DiffusionForensics 99.4 mAP (official weights)."
+    },
+    {
+      "title": "UnivFD / CLIP: Towards Universal Fake Image Detectors",
+      "authors": "Ojha et al.", "venue": "CVPR", "year": "2023", "agid": "clip",
+      "github": "https://github.com/WisconsinAIVision/UniversalFakeDetect",
+      "arxiv": "",
+      "summary": "Linear probe on frozen CLIP ViT-L/14 features — a simple, strong cross-generator baseline.",
+      "result": "UniversalFakeDetect 95.66 mAP; AGID-trained 96.44."
+    }
+  ],
+  "video": [
+    {
+      "title": "D3: Disentangled Detail Dynamics (training-free)",
+      "authors": "Zheng et al.", "venue": "ICCV", "year": "2025", "agid": "d3",
+      "github": "https://github.com/Zig-HS/D3",
+      "arxiv": "",
+      "summary": "Training-free: 2nd-order std of frozen per-frame features as the score.",
+      "result": "GenVideo-Val ~98 mAP (paper); AGID 89.0 mAP."
+    },
+    {
+      "title": "ReStraV: Representation-Trajectory Geometry",
+      "authors": "Internò et al.", "venue": "2025", "agid": "restrav",
+      "github": "https://github.com/ChristianInterno/ReStraV",
+      "arxiv": "",
+      "summary": "Frozen DINOv2 trajectory-geometry features + a standardized MLP head.",
+      "result": "GenVidBench Main ~93; AGID 92.7 mAP."
+    },
+    {
+      "title": "STALL: Spatio-Temporal whitened Log-Likelihoods (training-free)",
+      "authors": "Ben Hayun et al.", "venue": "CVPR", "year": "2026", "agid": "stall",
+      "github": "https://github.com/OmerBenHayun/STALL",
+      "arxiv": "",
+      "summary": "Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.",
+      "result": "GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5."
+    }
+  ],
+  "landscape": [
+    {"title": "GenImage: million-scale real-vs-fake benchmark", "github": "https://github.com/GenImage-Dataset/GenImage", "summary": "ImageNet-1k reals + ~equal synthetic from diverse generators."},
+    {"title": "AIGIBench: robustness/generalization benchmark (23 fake subsets)", "github": "https://github.com/HorizonTEL/AIGIBench", "summary": "Multi-source generalization, degradation robustness, augmentation sensitivity, preprocessing impact."},
+    {"title": "AI-GenBench: temporal (GAN→diffusion) generalization benchmark", "github": "https://github.com/MI-BioLab/AI-GenBench", "summary": "Incremental, historically-ordered training to test generalization to new generators (Verimedia @ IJCNN 2025)."},
+    {"title": "GenVidBench: 6M AI-generated video detection benchmark", "github": "https://arxiv.org/abs/2501.11340", "summary": "Large-scale benchmark for AI-generated video detection."},
+    {"title": "DeepfakeBench: comprehensive deepfake-detection benchmark", "github": "https://github.com/SCLBD/DeepfakeBench", "summary": "Unified benchmark across many deepfake datasets/detectors."},
+    {"title": "Awesome-AIGC-Image-Video-Detection (curated list)", "github": "https://github.com/ant-research/Awesome-AIGC-Image-Video-Detection", "summary": "Continuously-updated collection of image + video AIGC-detection papers and code."},
+    {"title": "Awesome-Comprehensive-Deepfake-Detection (curated list)", "github": "https://github.com/qiqitao77/Awesome-Comprehensive-Deepfake-Detection", "summary": "Broad survey-style index of deepfake-detection research and repos."}
+  ]
+}

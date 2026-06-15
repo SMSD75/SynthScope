@@ -88,16 +88,18 @@ Physics-IQ**; configs exist for all three under `conf/dataset/`.
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| A) VidProM vs image-based detectors (Table 2) | acc | acc=97.06 / mAP=98.81 | — | missing |
-| B) VidProM vs VideoSwin — seen/unseen/future ( | acc | seen={'acc': 97.05, 'mAP': 98.78} / unseen={'acc': 89.45, 'mAP': 97.32} / future_Sora={'acc': 80.05, 'mAP': 92.85} | — | missing |
-| B) GenVidBench vs SoTA video detectors — Main  | acc | Main_M_avg=93.01 / Plants_P_avg=96.96 | acc=86.87 / mAP=92.7 / mAUROC=95.9 | reproduced |
-| C) DeMamba one-to-many generalization (Table 5 | AP | train_Pika={'R': 0.735, 'F1': 0.827, 'AP': 0.797} / train_SEINE={'R': 0.82, 'F1': 0.898, 'AP': 0.854} / train_OpenSora={'R': 0.771, 'F1': 0.797, 'AP': 0.717} | — | missing |
-| D) Veo3 zero-shot generalization (Sec 7-D) | acc | acc=83.2 / F1=85.1 / AUROC=86.9 | — | missing |
-| E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E, | acc (2AFC) | Pika=97.5 / Runway=94.9 / Sora=99.0 | — | missing |
+| A) VidProM vs image-based detectors (Table 2) | acc=97.06 / mAP=98.81 | — | — | missing |
+| B) VidProM vs VideoSwin — seen/unseen/future ( | — | — | — | missing |
+| B) GenVidBench vs SoTA video detectors — Main  | Main_M_avg=93.01 / Plants_P_avg=96.96 | — | mAP=92.7 / acc=86.87 / AUROC=95.9 | reproduced |
+| C) DeMamba one-to-many generalization (Table 5 | — | — | — | missing |
+| D) Veo3 zero-shot generalization (Sec 7-D) | acc=83.2 / F1=85.1 / AUROC=86.9 | — | — | missing |
+| E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E, | Pika=97.5 / Runway=94.9 / Sora=99.0 | — | — | missing |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 

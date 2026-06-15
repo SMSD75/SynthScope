@@ -6,10 +6,15 @@ model_type: pgc
 # RGB backbone: a Hugging Face DINO ViT (auto-downloaded). Paper default: DINOv2-Large (D=1024).
 backbone_name: facebook/dinov2-large
 freeze_backbone: true          # backbone frozen; only the injected LoRA adapters train
-# LoRA (paper defaults).
+# LoRA (paper defaults). The official released checkpoints carry LoRA on the MLP only (their attn
+# target names did not match the HF DINOv2 module names), so to reproduce their exact recipe we target
+# MLP only — a strictly smaller, better-conditioned adapter than tuning attention+MLP.
 lora_rank: 8
 lora_alpha: 1.0
 lora_dropout: 0.1
+lora_targets: [mlp.fc1, mlp.fc2]
+# Label smoothing (official: 0.1). PGC's compute_loss applies it directly (the trainer's CE is bypassed).
+label_smoothing: 0.1
 # Peak-aggregation temperatures + RGB-branch weight (paper Eq. 4).
 tau_rgb: 0.5
 tau_res: 0.5

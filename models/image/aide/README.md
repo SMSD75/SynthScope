@@ -17,10 +17,13 @@ The semantic (256-d) and artifact (2048-d) features are concatenated and classif
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| AIGCDetectBenchmark (B1, Setting-I, ProGAN-tra | acc | acc=92.77 | map=97.94 / acc=91.89 | reproduced |
-| GenImage (B2, Setting-I, SDv1.4-trained) | acc | acc=86.88 | map=97.12 / acc=85.91 | reproduced |
-| Chameleon (B3, Setting-II, in-the-wild) | acc | acc_ProGAN_trained=58.37 / acc_SDv14_trained=62.6 / acc_AllGenImage_trained=65.77 | — | missing |
+| AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | mAP=72.25 / acc=61.64 | official |
+| GenImage (B2, Setting-I, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 | mAP=92.47 / acc=73.5 | official |
+| ForenSynths-13 | — | mAP=94.40 / acc=81.8 | mAP=74.92 (cross-domain) | reference |
+| Chameleon (B3, Setting-II, in-the-wild) | acc=58–66 | — | — | missing |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

@@ -1,0 +1,288 @@
+NODE=ivi-cn029  GPUS=0,1,2,3,4,5,6,7  Fri Jun 12 12:00:53 CEST 2026
+CUDA OK, 8 GPUs
+[data] REUSING /ssdstore/ssalehi/AGID/CNNDetection (72G train)
+[train] DDP on 8 GPUs (ProGAN, const-LR / official-matched schedule)
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   5%|▍         | 20/439 [00:00<00:09, 45.30it/s]Loading weights:   5%|▍         | 20/439 [00:00<00:09, 43.81it/s]Loading weights:   5%|▍         | 21/439 [00:00<00:16, 25.94it/s]Loading weights:   5%|▍         | 20/439 [00:00<00:17, 23.60it/s]Loading weights:   5%|▌         | 23/439 [00:00<00:15, 27.12it/s]Loading weights:   5%|▌         | 23/439 [00:00<00:14, 28.01it/s]Loading weights:   6%|▌         | 25/439 [00:00<00:15, 27.58it/s]Loading weights:   6%|▌         | 25/439 [00:00<00:15, 26.51it/s]Loading weights:   8%|▊         | 35/439 [00:00<00:09, 41.76it/s]Loading weights:   9%|▉         | 41/439 [00:01<00:13, 28.65it/s]Loading weights:   8%|▊         | 36/439 [00:01<00:15, 26.78it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:  10%|█         | 45/439 [00:01<00:17, 22.18it/s]Loading weights:   8%|▊         | 36/439 [00:01<00:23, 17.25it/s]Loading weights:  10%|█         | 45/439 [00:01<00:15, 25.56it/s]Loading weights:   9%|▊         | 38/439 [00:01<00:19, 20.41it/s]Loading weights:   9%|▊         | 38/439 [00:01<00:19, 20.66it/s]Loading weights:  10%|█         | 45/439 [00:01<00:17, 23.04it/s]Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:  11%|█         | 49/439 [00:02<00:21, 18.56it/s]Loading weights:   9%|▉         | 41/439 [00:02<00:22, 17.45it/s]Loading weights:  11%|█         | 48/439 [00:02<00:18, 21.44it/s]Loading weights:  12%|█▏        | 51/439 [00:02<00:18, 21.14it/s]Loading weights:  11%|█         | 48/439 [00:02<00:18, 21.13it/s]Loading weights:  11%|█         | 49/439 [00:00<00:03, 127.71it/s]Loading weights:  12%|█▏        | 51/439 [00:02<00:35, 10.80it/s]Loading weights:  12%|█▏        | 51/439 [00:02<00:26, 14.50it/s]Loading weights:  11%|█         | 48/439 [00:01<00:09, 39.78it/s]Loading weights:  13%|█▎        | 56/439 [00:02<00:26, 14.49it/s]Loading weights:  11%|█▏        | 50/439 [00:03<00:34, 11.12it/s]Loading weights:  12%|█▏        | 52/439 [00:01<00:12, 30.58it/s]Loading weights:  12%|█▏        | 53/439 [00:03<00:51,  7.52it/s]Loading weights:  13%|█▎        | 56/439 [00:03<00:29, 12.96it/s]Loading weights:  12%|█▏        | 53/439 [00:03<00:38, 10.03it/s]Loading weights:  13%|█▎        | 55/439 [00:01<00:15, 24.07it/s]Loading weights:  13%|█▎        | 56/439 [00:03<00:33, 11.56it/s]Loading weights:  12%|█▏        | 54/439 [00:04<00:42,  9.15it/s]Loading weights:  13%|█▎        | 58/439 [00:04<00:33, 11.31it/s]Loading weights:  14%|█▍        | 62/439 [00:04<00:29, 12.62it/s]Loading weights:  14%|█▍        | 61/439 [00:04<00:32, 11.55it/s]Loading weights:  13%|█▎        | 57/439 [00:02<00:21, 17.48it/s]Loading weights:  14%|█▍        | 61/439 [00:04<00:36, 10.26it/s]Loading weights:  13%|█▎        | 59/439 [00:04<00:44,  8.48it/s]Loading weights:  14%|█▍        | 62/439 [00:02<00:17, 21.88it/s] Loading weights:  17%|█▋        | 73/439 [00:04<00:22, 16.34it/s]Loading weights:  17%|█▋        | 76/439 [00:04<00:21, 17.27it/s]Loading weights:  17%|█▋        | 74/439 [00:02<00:15, 24.16it/s]Loading weights:  16%|█▌        | 69/439 [00:04<00:31, 11.83it/s]Loading weights:  16%|█▋        | 72/439 [00:04<00:22, 16.11it/s]Loading weights:  16%|█▌        | 71/439 [00:02<00:15, 23.20it/s]Loading weights:  17%|█▋        | 73/439 [00:04<00:23, 15.56it/s]Loading weights:  17%|█▋        | 73/439 [00:04<00:26, 14.07it/s]Loading weights:  18%|█▊        | 78/439 [00:04<00:23, 15.53it/s]Loading weights:  18%|█▊        | 80/439 [00:03<00:15, 23.32it/s]Loading weights:  17%|█▋        | 76/439 [00:04<00:26, 13.85it/s]Loading weights:  19%|█▊        | 82/439 [00:04<00:19, 18.20it/s]Loading weights:  19%|█▊        | 82/439 [00:04<00:21, 16.55it/s]Loading weights:  18%|█▊        | 81/439 [00:04<00:22, 16.19it/s]Loading weights:  18%|█▊        | 81/439 [00:03<00:15, 22.41it/s]Loading weights:  21%|██        | 90/439 [00:05<00:18, 19.01it/s]Loading weights:  22%|██▏       | 95/439 [00:05<00:16, 20.91it/s]Loading weights:  20%|██        | 89/439 [00:03<00:16, 21.78it/s]Loading weights:  20%|█▉        | 86/439 [00:05<00:21, 16.30it/s]Loading weights:  21%|██        | 90/439 [00:05<00:20, 17.01it/s]Loading weights:  21%|██        | 93/439 [00:05<00:16, 20.86it/s]Loading weights:  22%|██▏       | 95/439 [00:04<00:16, 20.49it/s]Loading weights:  22%|██▏       | 95/439 [00:03<00:17, 19.72it/s]Loading weights:  21%|██        | 92/439 [00:05<00:22, 15.60it/s]Loading weights:  23%|██▎       | 99/439 [00:05<00:18, 18.17it/s]Loading weights:  22%|██▏       | 95/439 [00:06<00:24, 13.91it/s]Loading weights:  23%|██▎       | 103/439 [00:06<00:20, 16.06it/s]Loading weights:  23%|██▎       | 102/439 [00:04<00:17, 19.16it/s]Loading weights:  23%|██▎       | 99/439 [00:06<00:21, 15.51it/s]Loading weights:  22%|██▏       | 98/439 [00:06<00:25, 13.15it/s]Loading weights:  22%|██▏       | 98/439 [00:06<00:22, 15.36it/s]Loading weights:  22%|██▏       | 98/439 [00:04<00:19, 17.11it/s]Loading weights:  23%|██▎       | 99/439 [00:06<00:21, 15.70it/s]Loading weights:  26%|██▌       | 114/439 [00:06<00:13, 24.01it/s]Loading weights:  28%|██▊       | 124/439 [00:06<00:09, 33.11it/s]Loading weights:  26%|██▌       | 115/439 [00:06<00:12, 25.63it/s]Loading weights:  28%|██▊       | 121/439 [00:04<00:09, 34.01it/s]Loading weights:  29%|██▉       | 127/439 [00:06<00:09, 31.59it/s]Loading weights:  30%|██▉       | 131/439 [00:06<00:10, 29.37it/s]Loading weights:  29%|██▉       | 128/439 [00:06<00:11, 25.93it/s]Loading weights:  29%|██▉       | 129/439 [00:04<00:10, 28.76it/s]Loading weights:  29%|██▊       | 126/439 [00:04<00:10, 28.71it/s]Loading weights:  30%|██▉       | 131/439 [00:06<00:10, 29.11it/s]Loading weights:  30%|███       | 132/439 [00:06<00:10, 28.99it/s]Loading weights:  31%|███       | 134/439 [00:06<00:10, 29.94it/s]Loading weights:  31%|███▏      | 138/439 [00:06<00:09, 30.11it/s]Loading weights:  33%|███▎      | 146/439 [00:05<00:07, 41.65it/s]Loading weights:  33%|███▎      | 144/439 [00:06<00:08, 36.15it/s]Loading weights:  34%|███▎      | 148/439 [00:06<00:06, 43.31it/s]Loading weights:  34%|███▎      | 148/439 [00:04<00:06, 44.70it/s]Loading weights:  33%|███▎      | 147/439 [00:06<00:08, 34.91it/s]Loading weights:  33%|███▎      | 145/439 [00:06<00:07, 38.49it/s]Loading weights:  34%|███▎      | 148/439 [00:06<00:07, 37.87it/s]Loading weights:  34%|███▍      | 150/439 [00:06<00:07, 39.26it/s]Loading weights:  36%|███▌      | 156/439 [00:07<00:08, 34.09it/s]Loading weights:  35%|███▌      | 154/439 [00:05<00:10, 26.53it/s]Loading weights:  35%|███▍      | 152/439 [00:07<00:12, 23.33it/s]Loading weights:  36%|███▌      | 156/439 [00:07<00:12, 23.33it/s]Loading weights:  35%|███▌      | 155/439 [00:07<00:11, 24.71it/s]Loading weights:  36%|███▌      | 158/439 [00:07<00:10, 26.23it/s]Loading weights:  36%|███▌      | 157/439 [00:07<00:10, 25.87it/s]Loading weights:  36%|███▌      | 157/439 [00:05<00:10, 26.43it/s]Loading weights:  37%|███▋      | 163/439 [00:07<00:09, 28.32it/s]Loading weights:  43%|████▎     | 187/439 [00:07<00:06, 37.05it/s]Loading weights:  42%|████▏     | 186/439 [00:06<00:06, 37.99it/s]Loading weights:  43%|████▎     | 189/439 [00:07<00:06, 38.26it/s]Loading weights:  43%|████▎     | 188/439 [00:07<00:06, 36.69it/s]Loading weights:  43%|████▎     | 189/439 [00:07<00:06, 37.42it/s]Loading weights:  43%|████▎     | 188/439 [00:08<00:06, 38.79it/s]Loading weights:  45%|████▍     | 196/439 [00:08<00:07, 32.72it/s]Loading weights:  44%|████▍     | 195/439 [00:06<00:07, 33.34it/s]Loading weights:  43%|████▎     | 189/439 [00:08<00:07, 31.90it/s]Loading weights:  43%|████▎     | 187/439 [00:06<00:08, 31.47it/s]Loading weights:  44%|████▍     | 195/439 [00:08<00:07, 31.37it/s]Loading weights:  44%|████▍     | 195/439 [00:08<00:07, 31.58it/s]Loading weights:  44%|████▍     | 195/439 [00:08<00:07, 32.22it/s]Loading weights:  44%|████▍     | 193/439 [00:08<00:08, 29.54it/s]Loading weights:  46%|████▌     | 203/439 [00:06<00:06, 37.41it/s]Loading weights:  46%|████▌     | 202/439 [00:08<00:06, 38.45it/s]Loading weights:  47%|████▋     | 206/439 [00:08<00:06, 37.94it/s]Loading weights:  46%|████▌     | 200/439 [00:08<00:07, 33.01it/s]Loading weights:  46%|████▌     | 201/439 [00:08<00:06, 34.04it/s]Loading weights:  46%|████▌     | 201/439 [00:06<00:06, 38.37it/s]Loading weights:  48%|████▊     | 212/439 [00:08<00:05, 43.68it/s]Loading weights:  47%|████▋     | 208/439 [00:08<00:05, 40.34it/s]Loading weights:  51%|█████     | 222/439 [00:06<00:03, 54.27it/s]Loading weights:  52%|█████▏    | 228/439 [00:08<00:03, 58.37it/s]Loading weights:  51%|█████▏    | 226/439 [00:08<00:03, 56.27it/s]Loading weights:  52%|█████▏    | 227/439 [00:08<00:03, 56.11it/s]Loading weights:  51%|█████▏    | 225/439 [00:07<00:05, 41.70it/s]Loading weights:  51%|█████▏    | 225/439 [00:09<00:05, 38.13it/s]Loading weights:  52%|█████▏    | 229/439 [00:09<00:04, 42.30it/s]Loading weights:  53%|█████▎    | 232/439 [00:09<00:04, 43.12it/s]Loading weights:  53%|█████▎    | 232/439 [00:07<00:05, 41.28it/s]Loading weights:  54%|█████▍    | 236/439 [00:09<00:06, 33.51it/s]Loading weights:  54%|█████▍    | 236/439 [00:09<00:05, 35.73it/s]Loading weights:  54%|█████▍    | 237/439 [00:09<00:06, 32.00it/s]Loading weights:  54%|█████▍    | 239/439 [00:09<00:05, 34.57it/s]Loading weights:  54%|█████▍    | 238/439 [00:09<00:06, 31.54it/s]Loading weights:  55%|█████▍    | 240/439 [00:07<00:05, 38.72it/s]Loading weights:  55%|█████▍    | 240/439 [00:08<00:08, 24.74it/s]Loading weights:  56%|█████▌    | 244/439 [00:09<00:07, 27.77it/s]Loading weights:  56%|█████▋    | 247/439 [00:09<00:05, 32.95it/s]Loading weights:  56%|█████▌    | 246/439 [00:09<00:06, 28.33it/s]Loading weights:  56%|█████▌    | 245/439 [00:09<00:06, 28.66it/s]Loading weights:  54%|█████▍    | 239/439 [00:09<00:07, 26.00it/s]Loading weights:  56%|█████▌    | 244/439 [00:09<00:06, 28.93it/s]Loading weights:  56%|█████▌    | 246/439 [00:08<00:05, 32.31it/s]Loading weights:  58%|█████▊    | 256/439 [00:10<00:06, 27.54it/s]Loading weights:  58%|█████▊    | 253/439 [00:10<00:06, 27.12it/s]Loading weights:  57%|█████▋    | 251/439 [00:10<00:07, 23.87it/s]Loading weights:  57%|█████▋    | 249/439 [00:10<00:08, 23.34it/s]Loading weights:  59%|█████▉    | 258/439 [00:10<00:05, 30.17it/s]Loading weights:  58%|█████▊    | 254/439 [00:10<00:07, 25.22it/s]Loading weights:  59%|█████▊    | 257/439 [00:08<00:06, 28.21it/s]Loading weights:  57%|█████▋    | 251/439 [00:08<00:07, 25.42it/s]Loading weights:  59%|█████▊    | 257/439 [00:09<00:07, 23.54it/s]Loading weights:  59%|█████▉    | 261/439 [00:10<00:07, 23.37it/s]Loading weights:  59%|█████▉    | 259/439 [00:10<00:07, 23.45it/s]Loading weights:  60%|██████    | 265/439 [00:08<00:06, 26.03it/s]Loading weights:  60%|██████    | 264/439 [00:10<00:06, 25.03it/s]Loading weights:  60%|██████    | 265/439 [00:10<00:06, 26.70it/s]Loading weights:  60%|██████    | 265/439 [00:10<00:06, 26.74it/s]Loading weights:  59%|█████▊    | 257/439 [00:10<00:08, 21.37it/s]Loading weights:  62%|██████▏   | 272/439 [00:11<00:07, 23.37it/s]Loading weights:  62%|██████▏   | 272/439 [00:11<00:07, 23.01it/s]Loading weights:  62%|██████▏   | 271/439 [00:11<00:07, 23.22it/s]Loading weights:  62%|██████▏   | 273/439 [00:09<00:06, 23.74it/s]Loading weights:  62%|██████▏   | 270/439 [00:09<00:06, 24.70it/s]Loading weights:  59%|█████▉    | 260/439 [00:11<00:10, 17.60it/s]Loading weights:  62%|██████▏   | 273/439 [00:11<00:06, 26.03it/s]Loading weights:  62%|██████▏   | 272/439 [00:11<00:07, 23.19it/s]Loading weights:  63%|██████▎   | 277/439 [00:09<00:07, 22.15it/s]Loading weights:  64%|██████▍   | 282/439 [00:11<00:05, 27.51it/s]Loading weights:  64%|██████▍   | 281/439 [00:11<00:07, 22.48it/s]Loading weights:  65%|██████▍   | 284/439 [00:11<00:06, 24.76it/s]Loading weights:  63%|██████▎   | 278/439 [00:11<00:07, 21.34it/s]Loading weights:  64%|██████▍   | 280/439 [00:11<00:07, 20.96it/s]Loading weights:  65%|██████▍   | 284/439 [00:09<00:06, 23.27it/s]Loading weights:  63%|██████▎   | 278/439 [00:11<00:08, 19.15it/s]Loading weights:  68%|██████▊   | 300/439 [00:12<00:04, 28.43it/s]Loading weights:  67%|██████▋   | 293/439 [00:12<00:05, 24.52it/s]Loading weights:  68%|██████▊   | 298/439 [00:10<00:04, 29.02it/s]Loading weights:  68%|██████▊   | 298/439 [00:12<00:05, 26.59it/s]Loading weights:  68%|██████▊   | 297/439 [00:12<00:05, 26.37it/s]Loading weights:  68%|██████▊   | 298/439 [00:12<00:05, 27.70it/s]Loading weights:  69%|██████▊   | 301/439 [00:10<00:05, 27.54it/s]Loading weights:  68%|██████▊   | 300/439 [00:12<00:04, 30.14it/s]Loading weights:  70%|██████▉   | 306/439 [00:12<00:03, 34.12it/s]Loading weights:  69%|██████▉   | 305/439 [00:12<00:04, 30.20it/s]Loading weights:  69%|██████▉   | 305/439 [00:12<00:04, 30.77it/s]Loading weights:  73%|███████▎  | 322/439 [00:12<00:02, 46.05it/s]Loading weights:  73%|███████▎  | 320/439 [00:10<00:02, 44.11it/s]Loading weights:  72%|███████▏  | 316/439 [00:12<00:03, 38.65it/s]Loading weights:  72%|███████▏  | 315/439 [00:12<00:03, 39.73it/s]Loading weights:  73%|███████▎  | 319/439 [00:10<00:02, 40.28it/s]Loading weights:  75%|███████▍  | 329/439 [00:12<00:02, 52.46it/s]Loading weights:  75%|███████▍  | 329/439 [00:12<00:02, 38.96it/s]Loading weights:  75%|███████▍  | 328/439 [00:12<00:02, 40.37it/s]Loading weights:  74%|███████▍  | 327/439 [00:10<00:03, 34.33it/s]Loading weights:  74%|███████▍  | 327/439 [00:12<00:03, 35.07it/s]Loading weights:  75%|███████▌  | 331/439 [00:12<00:02, 38.36it/s]Loading weights:  76%|███████▌  | 333/439 [00:11<00:03, 27.66it/s]Loading weights:  76%|███████▌  | 333/439 [00:13<00:03, 30.84it/s]Loading weights:  75%|███████▌  | 330/439 [00:11<00:03, 28.72it/s]Loading weights:  76%|███████▋  | 335/439 [00:13<00:03, 30.68it/s]Loading weights:  75%|███████▌  | 330/439 [00:13<00:03, 30.59it/s]Loading weights:  77%|███████▋  | 339/439 [00:13<00:03, 31.21it/s]Loading weights:  76%|███████▋  | 335/439 [00:13<00:04, 23.02it/s]Loading weights:  77%|███████▋  | 338/439 [00:13<00:04, 24.08it/s]Loading weights:  77%|███████▋  | 339/439 [00:13<00:03, 28.45it/s]Loading weights:  77%|███████▋  | 338/439 [00:11<00:04, 22.87it/s]Loading weights:  77%|███████▋  | 336/439 [00:11<00:04, 25.11it/s]Loading weights:  77%|███████▋  | 337/439 [00:13<00:04, 24.25it/s]Loading weights:  77%|███████▋  | 340/439 [00:13<00:04, 24.46it/s]Loading weights:  79%|███████▉  | 347/439 [00:13<00:04, 21.09it/s]Loading weights:  79%|███████▉  | 349/439 [00:13<00:03, 24.14it/s]Loading weights:  79%|███████▉  | 346/439 [00:12<00:03, 24.22it/s]Loading weights:  79%|███████▉  | 347/439 [00:13<00:03, 23.95it/s]Loading weights:  78%|███████▊  | 344/439 [00:13<00:04, 19.59it/s]Loading weights:  80%|███████▉  | 350/439 [00:13<00:03, 25.71it/s]Loading weights:  79%|███████▉  | 348/439 [00:13<00:03, 25.87it/s]Loading weights:  79%|███████▉  | 348/439 [00:12<00:04, 22.56it/s]Loading weights:  81%|████████  | 356/439 [00:12<00:04, 20.64it/s]Loading weights:  83%|████████▎ | 365/439 [00:14<00:02, 28.89it/s]Loading weights:  82%|████████▏ | 362/439 [00:14<00:03, 25.53it/s]Loading weights:  82%|████████▏ | 359/439 [00:14<00:03, 23.13it/s]Loading weights:  82%|████████▏ | 358/439 [00:14<00:03, 21.56it/s]Loading weights:  82%|████████▏ | 360/439 [00:14<00:03, 24.26it/s]Loading weights:  83%|████████▎ | 366/439 [00:12<00:02, 29.59it/s]Loading weights:  83%|████████▎ | 365/439 [00:14<00:02, 26.86it/s]Loading weights:  87%|████████▋ | 380/439 [00:14<00:01, 29.54it/s]Loading weights:  87%|████████▋ | 382/439 [00:13<00:01, 30.69it/s]Loading weights:  87%|████████▋ | 381/439 [00:14<00:01, 29.89it/s]Loading weights:  87%|████████▋ | 380/439 [00:14<00:01, 29.83it/s]Loading weights:  87%|████████▋ | 382/439 [00:14<00:01, 28.89it/s]Loading weights:  87%|████████▋ | 381/439 [00:14<00:01, 29.34it/s]Loading weights:  86%|████████▌ | 376/439 [00:13<00:02, 26.78it/s]Loading weights:  87%|████████▋ | 382/439 [00:14<00:01, 29.86it/s]Loading weights:  88%|████████▊ | 388/439 [00:15<00:02, 25.22it/s]Loading weights:  90%|████████▉ | 394/439 [00:13<00:01, 30.70it/s]Loading weights:  89%|████████▉ | 390/439 [00:15<00:01, 26.50it/s]Loading weights:  88%|████████▊ | 386/439 [00:15<00:02, 23.95it/s]Loading weights:  89%|████████▉ | 392/439 [00:13<00:01, 27.62it/s]Loading weights:  90%|████████▉ | 394/439 [00:15<00:01, 29.58it/s]Loading weights:  88%|████████▊ | 387/439 [00:15<00:02, 24.11it/s]Loading weights:  89%|████████▉ | 392/439 [00:15<00:01, 28.05it/s]Loading weights:  91%|█████████ | 398/439 [00:15<00:01, 25.18it/s]Loading weights:  90%|█████████ | 396/439 [00:14<00:01, 23.14it/s]Loading weights:  91%|█████████ | 399/439 [00:15<00:01, 26.42it/s]Loading weights:  90%|█████████ | 396/439 [00:15<00:01, 23.47it/s]Loading weights:  90%|█████████ | 397/439 [00:16<00:02, 19.12it/s]Loading weights:  92%|█████████▏| 403/439 [00:16<00:02, 17.19it/s]Loading weights:  90%|████████▉ | 393/439 [00:16<00:03, 14.11it/s]Loading weights:  91%|█████████▏| 401/439 [00:16<00:02, 16.03it/s]Loading weights:  91%|█████████ | 399/439 [00:14<00:02, 14.75it/s]Loading weights:  92%|█████████▏| 402/439 [00:16<00:02, 17.71it/s]Loading weights:  91%|█████████ | 398/439 [00:16<00:02, 15.75it/s]Loading weights:  91%|█████████ | 398/439 [00:14<00:02, 16.25it/s]Loading weights:  92%|█████████▏| 406/439 [00:15<00:02, 16.12it/s]Loading weights:  92%|█████████▏| 403/439 [00:17<00:02, 13.55it/s]Loading weights:  92%|█████████▏| 405/439 [00:17<00:02, 14.21it/s]Loading weights:  92%|█████████▏| 404/439 [00:17<00:02, 15.95it/s]Loading weights:  93%|█████████▎| 408/439 [00:17<00:02, 15.12it/s]Loading weights:  92%|█████████▏| 406/439 [00:15<00:02, 14.47it/s]Loading weights:  93%|█████████▎| 407/439 [00:17<00:02, 14.83it/s]Loading weights:  93%|█████████▎| 410/439 [00:17<00:01, 17.66it/s]Loading weights:  95%|█████████▍| 417/439 [00:17<00:01, 19.17it/s]Loading weights:  96%|█████████▌| 420/439 [00:17<00:00, 19.61it/s]Loading weights:  94%|█████████▍| 414/439 [00:15<00:01, 15.48it/s]Loading weights:  95%|█████████▌| 419/439 [00:15<00:01, 19.27it/s]Loading weights:  96%|█████████▌| 420/439 [00:17<00:01, 18.78it/s]Loading weights:  95%|█████████▍| 416/439 [00:17<00:01, 16.32it/s]Loading weights:  95%|█████████▌| 419/439 [00:17<00:01, 18.35it/s]Loading weights:  95%|█████████▌| 419/439 [00:17<00:01, 17.68it/s]Loading weights:  96%|█████████▌| 422/439 [00:17<00:01, 16.26it/s]Loading weights:  97%|█████████▋| 424/439 [00:17<00:00, 17.16it/s]Loading weights:  97%|█████████▋| 425/439 [00:16<00:00, 18.79it/s]Loading weights:  97%|█████████▋| 427/439 [00:17<00:00, 19.02it/s]Loading weights:  97%|█████████▋| 427/439 [00:17<00:00, 20.80it/s]Loading weights:  96%|█████████▋| 423/439 [00:17<00:00, 16.73it/s]Loading weights:  97%|█████████▋| 425/439 [00:17<00:00, 17.31it/s]Loading weights:  97%|█████████▋| 427/439 [00:16<00:00, 19.74it/s]Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.62it/s]
+Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.62it/s]
+Loading weights: 100%|██████████| 439/439 [00:16<00:00, 27.17it/s]
+Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.59it/s]
+Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.59it/s]
+Loading weights: 100%|██████████| 439/439 [00:16<00:00, 27.40it/s]
+Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.64it/s]
+Loading weights: 100%|██████████| 439/439 [00:17<00:00, 24.62it/s]
+[ddp] gpus=8 per_gpu_bs=16 eff_bs=128 lr=5.00e-05 items=720119 steps/epoch=5625 epochs=100 data=/ssdstore/ssalehi/AGID/CNNDetection/train tmax_mult=4.0 milestones=[10, 25, 50, 75, 100]
+[epoch 1/100] loss=0.2062 time=1117s lr=5.00e-05
+Warning: The cache directory for DeepSpeed Triton autotune, /home/ssalehi/.triton/autotune, appears to be on an NFS system. While this is generally acceptable, if you experience slowdowns or hanging when DeepSpeed exits, it is recommended to set the TRITON_CACHE_DIR environment variable to a non-NFS path.
+[epoch 2/100] loss=0.1986 time=1117s lr=5.00e-05
+[epoch 3/100] loss=0.1986 time=1116s lr=5.00e-05
+[epoch 4/100] loss=0.1986 time=1116s lr=5.00e-05
+[epoch 5/100] loss=0.1985 time=1115s lr=5.00e-05
+[epoch 6/100] loss=0.1986 time=1116s lr=5.00e-05
+[epoch 7/100] loss=0.1985 time=1117s lr=5.00e-05
+[epoch 8/100] loss=0.1985 time=1119s lr=5.00e-05
+[epoch 9/100] loss=0.1985 time=1117s lr=4.99e-05
+[epoch 10/100] loss=0.1985 time=1119s lr=4.99e-05
+[snapshot] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep10.pth
+[epoch 11/100] loss=0.1985 time=1118s lr=4.99e-05
+[epoch 12/100] loss=0.1985 time=1117s lr=4.99e-05
+[epoch 13/100] loss=0.1985 time=1116s lr=4.99e-05
+[epoch 14/100] loss=0.1985 time=1116s lr=4.99e-05
+[epoch 15/100] loss=0.1985 time=1117s lr=4.98e-05
+[epoch 16/100] loss=0.1985 time=1117s lr=4.98e-05
+[epoch 17/100] loss=0.1985 time=1118s lr=4.98e-05
+[epoch 18/100] loss=0.1985 time=1117s lr=4.98e-05
+[epoch 19/100] loss=0.1985 time=1117s lr=4.97e-05
+[epoch 20/100] loss=0.1985 time=1117s lr=4.97e-05
+[epoch 21/100] loss=0.1985 time=1118s lr=4.97e-05
+[epoch 22/100] loss=0.1985 time=1116s lr=4.96e-05
+[epoch 23/100] loss=0.1985 time=1116s lr=4.96e-05
+[epoch 24/100] loss=0.1985 time=1117s lr=4.96e-05
+[epoch 25/100] loss=0.1985 time=1119s lr=4.95e-05
+[snapshot] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth
+[epoch 26/100] loss=0.1985 time=1118s lr=4.95e-05
+[epoch 27/100] loss=0.1985 time=1116s lr=4.94e-05
+[epoch 28/100] loss=0.1985 time=1117s lr=4.94e-05
+[epoch 29/100] loss=0.1985 time=1116s lr=4.94e-05
+[epoch 30/100] loss=0.1985 time=1116s lr=4.93e-05
+[epoch 31/100] loss=0.1985 time=1116s lr=4.93e-05
+[epoch 32/100] loss=0.1985 time=1117s lr=4.92e-05
+[epoch 33/100] loss=0.1985 time=1116s lr=4.92e-05
+[epoch 34/100] loss=0.1985 time=1116s lr=4.91e-05
+[epoch 35/100] loss=0.1985 time=1117s lr=4.91e-05
+[epoch 36/100] loss=0.1985 time=1115s lr=4.90e-05
+[epoch 37/100] loss=0.1985 time=1116s lr=4.90e-05
+[epoch 38/100] loss=0.1985 time=1116s lr=4.89e-05
+[epoch 39/100] loss=0.1985 time=1116s lr=4.88e-05
+[epoch 40/100] loss=0.1985 time=1116s lr=4.88e-05
+[epoch 41/100] loss=0.1985 time=1116s lr=4.87e-05
+[epoch 42/100] loss=0.1985 time=1115s lr=4.87e-05
+[epoch 43/100] loss=0.1985 time=1115s lr=4.86e-05
+[epoch 44/100] loss=0.1985 time=1116s lr=4.85e-05
+[epoch 45/100] loss=0.1985 time=1117s lr=4.85e-05
+[epoch 46/100] loss=0.1985 time=1118s lr=4.84e-05
+[epoch 47/100] loss=0.1985 time=1118s lr=4.83e-05
+[epoch 48/100] loss=0.1985 time=1117s lr=4.83e-05
+[epoch 49/100] loss=0.1985 time=1116s lr=4.82e-05
+[epoch 50/100] loss=0.1985 time=1116s lr=4.81e-05
+[snapshot] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep50.pth
+[epoch 51/100] loss=0.1985 time=1117s lr=4.80e-05
+[epoch 52/100] loss=0.1985 time=1117s lr=4.80e-05
+[epoch 53/100] loss=0.1985 time=1117s lr=4.79e-05
+[epoch 54/100] loss=0.1985 time=1116s lr=4.78e-05
+[epoch 55/100] loss=0.1985 time=1115s lr=4.77e-05
+[epoch 56/100] loss=0.1985 time=1116s lr=4.76e-05
+[epoch 57/100] loss=0.1985 time=1117s lr=4.76e-05
+[epoch 58/100] loss=0.1985 time=1115s lr=4.75e-05
+[epoch 59/100] loss=0.1985 time=1117s lr=4.74e-05
+[epoch 60/100] loss=0.1985 time=1115s lr=4.73e-05
+[epoch 61/100] loss=0.1985 time=1116s lr=4.72e-05
+[epoch 62/100] loss=0.1985 time=1118s lr=4.71e-05
+[epoch 63/100] loss=0.1985 time=1116s lr=4.70e-05
+[epoch 64/100] loss=0.1985 time=1117s lr=4.69e-05
+[epoch 65/100] loss=0.1985 time=1116s lr=4.68e-05
+[epoch 66/100] loss=0.1985 time=1117s lr=4.67e-05
+[epoch 67/100] loss=0.1985 time=1115s lr=4.67e-05
+[epoch 68/100] loss=0.1985 time=1115s lr=4.66e-05
+[epoch 69/100] loss=0.1985 time=1116s lr=4.65e-05
+[epoch 70/100] loss=0.1985 time=1115s lr=4.64e-05
+[epoch 71/100] loss=0.1985 time=1116s lr=4.63e-05
+[epoch 72/100] loss=0.1985 time=1115s lr=4.61e-05
+[epoch 73/100] loss=0.1985 time=1117s lr=4.60e-05
+[epoch 74/100] loss=0.1985 time=1116s lr=4.59e-05
+[epoch 75/100] loss=0.1985 time=1116s lr=4.58e-05
+[snapshot] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep75.pth
+[epoch 76/100] loss=0.1985 time=1117s lr=4.57e-05
+[epoch 77/100] loss=0.1985 time=1115s lr=4.56e-05
+[epoch 78/100] loss=0.1985 time=1115s lr=4.55e-05
+[epoch 79/100] loss=0.1985 time=1116s lr=4.54e-05
+[epoch 80/100] loss=0.1985 time=1115s lr=4.53e-05
+[epoch 81/100] loss=0.1985 time=1116s lr=4.52e-05
+[epoch 82/100] loss=0.1985 time=1116s lr=4.50e-05
+[epoch 83/100] loss=0.1985 time=1115s lr=4.49e-05
+[epoch 84/100] loss=0.1985 time=1116s lr=4.48e-05
+[epoch 85/100] loss=0.1985 time=1116s lr=4.47e-05
+[epoch 86/100] loss=0.1985 time=1117s lr=4.46e-05
+[epoch 87/100] loss=0.1985 time=1115s lr=4.44e-05
+[epoch 88/100] loss=0.1985 time=1116s lr=4.43e-05
+[epoch 89/100] loss=0.1985 time=1116s lr=4.42e-05
+[epoch 90/100] loss=0.1985 time=1117s lr=4.41e-05
+[epoch 91/100] loss=0.1985 time=1116s lr=4.39e-05
+[epoch 92/100] loss=0.1985 time=1115s lr=4.38e-05
+[epoch 93/100] loss=0.1985 time=1116s lr=4.37e-05
+[epoch 94/100] loss=0.1985 time=1116s lr=4.36e-05
+[epoch 95/100] loss=0.1985 time=1117s lr=4.34e-05
+[epoch 96/100] loss=0.1985 time=1115s lr=4.33e-05
+[epoch 97/100] loss=0.1985 time=1115s lr=4.32e-05
+[epoch 98/100] loss=0.1985 time=1116s lr=4.30e-05
+[epoch 99/100] loss=0.1985 time=1115s lr=4.29e-05
+[epoch 100/100] loss=0.1985 time=1117s lr=4.28e-05
+[snapshot] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep100.pth
+[done] saved /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model.pth
+[train] done Sat Jun 13 19:12:26 CEST 2026
+[eval] === model_ep10 on ForenSynths ===
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 9172.83it/s]
+=== bench_eval pgc_constlr_ep10 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep10.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=99.02 AP=99.84 AUROC=99.75 (real_acc=99.95 fake_acc=98.1)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=99.55 AP=99.99 AUROC=99.99 (real_acc=99.95 fake_acc=99.14)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=97.27 AP=99.69 AUROC=99.71 (real_acc=99.77 fake_acc=94.78)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=54.1 AP=72.27 AUROC=66.77 (real_acc=100.0 fake_acc=8.19)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=99.96 AP=99.99 AUROC=99.98 (real_acc=100.0 fake_acc=99.92)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=99.67 AP=100.0 AUROC=100.0 (real_acc=99.95 fake_acc=99.39)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=50.91 AP=68.08 AUROC=63.9 (real_acc=100.0 fake_acc=1.83)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=55.28 AP=84.36 AUROC=78.81 (real_acc=100.0 fake_acc=10.56)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=71.86 AP=95.4 AUROC=93.45 (real_acc=100.0 fake_acc=43.72)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=84.02 AP=95.74 AUROC=94.55 (real_acc=100.0 fake_acc=68.04)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=76.86 AP=93.65 AUROC=91.05 (real_acc=100.0 fake_acc=53.72)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=74.75 AP=96.94 AUROC=95.48 (real_acc=100.0 fake_acc=49.5)
+
+=== RESULT pgc_constlr_ep10: mAP=92.77 mAUROC=91.03 acc=81.79 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep10.json ===
+[eval] === model_ep25 on ForenSynths ===
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 8182.21it/s]
+=== bench_eval pgc_constlr_ep25 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=95.38 AP=98.43 AUROC=97.5 (real_acc=100.0 fake_acc=90.75)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=95.03 AP=99.38 AUROC=98.91 (real_acc=100.0 fake_acc=90.07)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=78.43 AP=94.69 AUROC=92.59 (real_acc=99.92 fake_acc=56.93)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=50.06 AP=56.37 AUROC=57.51 (real_acc=100.0 fake_acc=0.11)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=99.47 AP=99.95 AUROC=99.93 (real_acc=100.0 fake_acc=98.94)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=96.8 AP=99.55 AUROC=99.2 (real_acc=100.0 fake_acc=93.59)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=50.0 AP=52.93 AUROC=51.66 (real_acc=100.0 fake_acc=0.0)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=50.56 AP=58.63 AUROC=56.02 (real_acc=100.0 fake_acc=1.11)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=52.4 AP=60.81 AUROC=53.08 (real_acc=100.0 fake_acc=4.8)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=81.88 AP=91.9 AUROC=89.08 (real_acc=100.0 fake_acc=63.76)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=68.26 AP=86.24 AUROC=81.61 (real_acc=100.0 fake_acc=36.53)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=56.25 AP=75.49 AUROC=68.86 (real_acc=100.0 fake_acc=12.5)
+
+=== RESULT pgc_constlr_ep25: mAP=82.64 mAUROC=80.46 acc=74.96 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep25.json ===
+[eval] === model_ep50 on ForenSynths ===
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 8999.29it/s]
+=== bench_eval pgc_constlr_ep50 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep50.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=98.9 AP=99.87 AUROC=99.78 (real_acc=99.95 fake_acc=97.85)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=99.29 AP=100.0 AUROC=100.0 (real_acc=99.98 fake_acc=98.61)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=97.24 AP=99.64 AUROC=99.76 (real_acc=99.92 fake_acc=94.55)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=53.76 AP=73.08 AUROC=67.86 (real_acc=100.0 fake_acc=7.52)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=99.9 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.8)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=99.48 AP=100.0 AUROC=100.0 (real_acc=99.98 fake_acc=98.97)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=50.46 AP=61.97 AUROC=59.08 (real_acc=100.0 fake_acc=0.91)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=53.89 AP=79.8 AUROC=74.1 (real_acc=100.0 fake_acc=7.78)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=77.59 AP=97.28 AUROC=95.97 (real_acc=100.0 fake_acc=55.18)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=84.28 AP=94.39 AUROC=92.48 (real_acc=100.0 fake_acc=68.55)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=83.04 AP=95.85 AUROC=94.04 (real_acc=100.0 fake_acc=66.09)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=73.5 AP=95.61 AUROC=93.39 (real_acc=100.0 fake_acc=47.0)
+
+=== RESULT pgc_constlr_ep50: mAP=92.11 mAUROC=90.5 acc=82.41 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep50.json ===
+[eval] === model_ep75 on ForenSynths ===
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 9291.47it/s]
+=== bench_eval pgc_constlr_ep75 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep75.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=97.65 AP=99.64 AUROC=99.46 (real_acc=100.0 fake_acc=95.3)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=94.37 AP=99.98 AUROC=99.98 (real_acc=100.0 fake_acc=88.75)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=90.16 AP=99.26 AUROC=98.9 (real_acc=99.92 fake_acc=80.39)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=50.37 AP=75.67 AUROC=75.63 (real_acc=100.0 fake_acc=0.74)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=99.85 AP=99.99 AUROC=99.99 (real_acc=100.0 fake_acc=99.7)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=96.76 AP=99.94 AUROC=99.92 (real_acc=100.0 fake_acc=93.53)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=50.23 AP=62.28 AUROC=60.98 (real_acc=100.0 fake_acc=0.46)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=51.39 AP=71.73 AUROC=65.39 (real_acc=100.0 fake_acc=2.78)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=59.93 AP=91.21 AUROC=88.4 (real_acc=100.0 fake_acc=19.86)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=82.46 AP=91.02 AUROC=87.15 (real_acc=100.0 fake_acc=64.91)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=71.51 AP=93.42 AUROC=90.86 (real_acc=100.0 fake_acc=43.03)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=66.7 AP=93.32 AUROC=90.35 (real_acc=100.0 fake_acc=33.4)
+
+=== RESULT pgc_constlr_ep75: mAP=90.57 mAUROC=89.0 acc=77.8 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep75.json ===
+[eval] === model_ep100 on ForenSynths ===
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 9016.30it/s]
+=== bench_eval pgc_constlr_ep100 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep100.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=99.4 AP=99.96 AUROC=99.95 (real_acc=99.9 fake_acc=98.9)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=99.96 AP=99.87 AUROC=99.98 (real_acc=99.94 fake_acc=99.98)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=98.94 AP=99.95 AUROC=99.95 (real_acc=99.85 fake_acc=98.03)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=52.24 AP=76.12 AUROC=72.97 (real_acc=100.0 fake_acc=4.48)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=99.97 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.94)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=99.96 AP=99.89 AUROC=99.98 (real_acc=99.94 fake_acc=99.98)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=50.91 AP=70.65 AUROC=68.24 (real_acc=100.0 fake_acc=1.83)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=54.44 AP=89.8 AUROC=86.41 (real_acc=100.0 fake_acc=8.89)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=78.01 AP=99.3 AUROC=99.12 (real_acc=100.0 fake_acc=56.03)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=84.28 AP=96.24 AUROC=95.51 (real_acc=100.0 fake_acc=68.57)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=87.19 AP=98.16 AUROC=97.39 (real_acc=100.0 fake_acc=74.39)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=79.0 AP=99.43 AUROC=99.32 (real_acc=100.0 fake_acc=58.0)
+
+=== RESULT pgc_constlr_ep100: mAP=94.57 mAUROC=93.76 acc=83.41 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_constlr_ep100.json ===
+=== PGC CONST-LR PIPELINE COMPLETE Sat Jun 13 22:36:06 CEST 2026 ===

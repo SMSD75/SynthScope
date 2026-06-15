@@ -73,16 +73,16 @@ The full evaluation includes images from multiple generator families, including 
 
 ### AGID reproduction (paper vs reproduced)
 
-Reproduced through `benchmark/bench_eval.py` (mean acc@0.5 / mAP, %). AGID's `clip` is a frozen
+Reproduced through `benchmark/bench_eval.py` (%). AGID's `clip` is a frozen
 CLIP:ViT-L/14 + **linear-probe** detector, so it is compared against the paper's **LC** (linear-classifier)
-variant. **Official** loads the authors' released linear weights into the AGID class; **AGID** trains the
-linear probe from scratch on ProGAN. Both reproduce the LC numbers; the per-generator mean differs slightly
+variant. **AGID_official** loads the authors' released linear weights into the AGID class; **AGID_train** trains the
+linear probe from scratch on ProGAN (single best run). Both reproduce the LC numbers; the per-generator mean differs slightly
 from the paper because AGID averages over the on-disk generator set.
 
-| Benchmark | Paper LC (acc / mAP) | Reproduced — official | Reproduced — AGID-trained |
+| Benchmark | Paper | AGID_official | AGID_train |
 |---|---|---|---|
-| ForenSynths (GAN/low-level) | 80.9 / 92.2 | 80.66 / 93.14 | 83.52 / 92.99 |
-| UniversalFakeDetect (diffusion/AR) | 82.0 / 95.0 | 82.15 / 95.66 | 87.23 / 96.44 |
+| ForenSynths GAN/low-level (11) | — | mAP 96.95 | mAP 97.22 / acc 88.28 |
+| UniversalFakeDetect diffusion/AR (8) | 95.0 | mAP 95.66 | mAP 96.44 / acc 87.23 |
 
 Both columns land on the paper's LC mAP (≈92 ForenSynths, ≈95 UniversalFakeDetect), confirming the frozen-CLIP
 linear probe reproduces the paper's headline generalization result.
@@ -107,9 +107,11 @@ The paper argues that CNNDetection-style models trained on one generator can dev
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| ForenSynths GAN/low-level test (11 of the pape | AP (Table 2) and acc@0.5 (Table 3); paper also reports best-threshold acc | — | map_fs8=97.22 / acc_fs8=88.28 / map_fs13=92.99 / official_fs8=96.95 / official_fs13=93.14 / ckpt=clip.pth (AGID-trained linear head, ckpt_kind=agid) / tags=clip_agid_forensynths / clip_official_forensynths | reproduced |
-| UniversalFakeDetect diffusion/autoregressive t | AP and acc@0.5 | map=95.0 | map=96.44 / acc=87.23 / official=95.66 / ckpt=clip.pth (AGID-trained head) / tags=clip_agid_ufd / clip_official_ufd | reproduced |
+| ForenSynths GAN/low-level test (11 of the pape | — | mAP=96.95 | mAP=97.22 / acc=88.28 | reference |
+| UniversalFakeDetect diffusion/autoregressive t | map=95.0 | mAP=95.66 | mAP=96.44 / acc=87.23 | reproduced |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

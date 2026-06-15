@@ -80,10 +80,14 @@ class AIGITransformations:
             return v2.RandomCrop(size=(448, 448))
         elif transform_name == "random_crop_384_pad":
             return v2.RandomCrop(size=(384, 384), pad_if_needed=True)
+        elif transform_name == "pad_random_crop_224":      # PGC: pad-then-crop 224 (official PadRandomCrop)
+            return v2.RandomCrop(size=(224, 224), pad_if_needed=True)
         elif transform_name == "random_rotation_180":
             return v2.RandomRotation(180)
         elif transform_name == "color_jitter_safe":
             return v2.ColorJitter(brightness=0.5, contrast=0.5, saturation=0.5)
+        elif transform_name == "color_jitter_pgc":         # PGC: official RandomApply(ColorJitter, p=0.2)
+            return v2.RandomApply([v2.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=0.05)], p=0.2)
         elif transform_name == "random_mask_safe":
             return RandomMask(ratio=(0.0, 0.75), patch_size=16, p=0.5)
         elif transform_name == "normalize_dinov2":

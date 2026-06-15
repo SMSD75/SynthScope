@@ -4,25 +4,31 @@
       "benchmark": "AIGCDetectBenchmark (B1, Setting-I, ProGAN-tra",
       "metric": "acc",
       "paper": "acc=92.77",
-      "ours": "map=97.94 / acc=91.89",
-      "status": "reproduced",
-      "note": "none for official-weights faithful eval. AGID-class trained-from-scratch (registry default) only reached 72.25 mAP / 61.64 acc on AIGCDetect because of the nati"
+      "ours": "AGID mAP=72.25 / acc=61.64 \u00b7 official mAP=97.94 / acc=91.89",
+      "ours_agid": "mAP=72.25 / acc=61.64",
+      "ours_official": "mAP=97.94 / acc=91.89",
+      "status": "official",
+      "note": "AGID metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."
     },
     {
       "benchmark": "GenImage (B2, Setting-I, SDv1.4-trained)",
       "metric": "acc",
       "paper": "acc=86.88",
-      "ours": "map=97.12 / acc=85.91",
-      "status": "reproduced",
-      "note": "AGID-class-from-scratch GenImage collapse (55.67) and AGID-trained residual to official 97.12 are caused by a PREPROCESSING DIVERGENCE: models/image/aide/aide.p"
+      "ours": "AGID mAP=92.47 / acc=73.5 \u00b7 official mAP=97.12 / acc=85.91",
+      "ours_agid": "mAP=92.47 / acc=73.5",
+      "ours_official": "mAP=97.12 / acc=85.91",
+      "status": "official",
+      "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88. tag=aide_official_genimage8 2026-06-05. AGID-class-from-scratch (registry) = 55.67 mAP/53.8 acc; AGID trained-in-repo on GenImage = 91.75 mAP/72.0 acc; faithful-fix r"
     },
     {
       "benchmark": "Chameleon (B3, Setting-II, in-the-wild)",
       "metric": "acc",
       "paper": "acc_ProGAN_trained=58.37 / acc_SDv14_trained=62.6 / acc_AllGenImage_trained=65.77",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "GATED dataset \u2014 not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'aca"
+      "note": "GATED dataset \u2014 not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'academic research only, commercial use prohibited'. No HF/gdrive mirror; access is "
     }
   ],
   "clip": [
@@ -30,17 +36,21 @@
       "benchmark": "ForenSynths GAN/low-level test (11 of the pape",
       "metric": "AP (Table 2) and acc@0.5 (Table 3); paper also reports best-threshold acc",
       "paper": "\u2014",
-      "ours": "map_fs8=97.22 / acc_fs8=88.28 / map_fs13=92.99 / official_fs8=96.95 / official_fs13=93.14 / ckpt=clip.pth (AGID-trained linear head, ckpt_kind=agid) / tags=clip_agid_forensynths / clip_official_forensynths",
-      "status": "reproduced",
-      "note": "n/a \u2014 reproduced. AGID 92.99 (FS-13) \u2248 official 93.14 \u2248 paper AP_LC 19-model total 93.38. AGID transform tf_resize_crop(256,224,CLIP_MEAN,CLIP_STD) (registry.py"
+      "ours": "AGID mAP=97.22 / acc=88.28 \u00b7 official mAP=96.95",
+      "ours_agid": "mAP=97.22 / acc=88.28",
+      "ours_official": "mAP=96.95",
+      "status": "reference",
+      "note": "AGID ForenSynths-8 mAP 97.22 (official-weights-in-AGID 96.95); ForenSynths-13 92.99 (official 93.14). AGID-trained head matches the official fc_weights.pth."
     },
     {
       "benchmark": "UniversalFakeDetect diffusion/autoregressive t",
       "metric": "AP and acc@0.5",
       "paper": "map=95.0",
-      "ours": "map=96.44 / acc=87.23 / official=95.66 / ckpt=clip.pth (AGID-trained head) / tags=clip_agid_ufd / clip_official_ufd",
+      "ours": "AGID mAP=96.44 / acc=87.23 \u00b7 official mAP=95.66",
+      "ours_agid": "mAP=96.44 / acc=87.23",
+      "ours_official": "mAP=95.66",
       "status": "reproduced",
-      "note": "n/a \u2014 reproduced (AGID 96.44 \u2265 official 95.66 \u2248 paper ~95). Evaluated on the public 1k/domain release, not the paper's 10k sampling, so a small drift from the e"
+      "note": "AGID UFD-8 mAP 96.44, official-weights 95.66, both \u2248 paper LC diffusion AP ~95."
     }
   ],
   "cnn": [
@@ -48,9 +58,11 @@
       "benchmark": "ForenSynths test set (CVPR paper Table 2 = 11 ",
       "metric": "AP and acc@0.5",
       "paper": "map=90.8",
-      "ours": "map_fs8=94.42 / acc_fs8=76.36 / map_fs13=91.05 / official_fs8=92.67 / official_fs13=91.15 / ckpt=cnn.pth (AGID-trained ResNet-50, ckpt_kind=agid) / tags=cnn_agid_forensynths / cnn_official_forensynths",
+      "ours": "AGID mAP=94.42 / acc=76.36 \u00b7 official mAP=92.67",
+      "ours_agid": "mAP=94.42 / acc=76.36",
+      "ours_official": "mAP=92.67",
       "status": "reproduced",
-      "note": "n/a \u2014 reproduced. AGID 91.05 (FS-13) \u2248 official 91.15 \u2248 paper Blur+JPEG(0.5) ~90.8. AGID uses tf_resize_crop(256,224,IMAGENET_MEAN,IMAGENET_STD) (registry.py:15"
+      "note": "AGID ForenSynths-13 mAP 91.05 \u2248 official-vendored 91.15; AGID FS-8 94.42 \u2265 official 92.67. Matches the paper's Blur+JPEG(0.5) headline ~90.8."
     }
   ],
   "co_spy": [
@@ -58,41 +70,51 @@
       "benchmark": "Co-Spy-Bench",
       "metric": "AP",
       "paper": "map=96.02 / acc=87.06",
-      "ours": "map=96.7 / acc=90.28 / ckpt=checkpoints_retrain/cospy_full/model_1.pth (AGID retrain, full SD-v1.4 data, flickr-reals bug fixed) / tag=cospy_full_cospybench / official_wts_in_agid=86.65",
+      "ours": "AGID mAP=96.6 / acc=89.9 \u00b7 official mAP=86.65 / acc=83.88",
+      "ours_agid": "mAP=96.6 / acc=89.9",
+      "ours_official": "mAP=86.65 / acc=83.88",
       "status": "reproduced",
-      "note": "Reproduced and BEATS official-weights-in-AGID (86.65). Earlier AGID checkpoint (72.81) was below due to a deleted-reals/wrong-flickr-source data bug; after the "
+      "note": "Reproduced and BEATS official-weights-in-AGID (86.65). Earlier AGID checkpoint (72.81) was below due to a deleted-reals/wrong-flickr-source data bug; after the full-SD-v1.4 retrain it matches paper 96.0."
     },
     {
       "benchmark": "AIGCDetectionBenchmark (AIGCDetect)",
       "metric": "AP",
       "paper": "map=95.21 / acc=90.58",
-      "ours": "map=94.59 / acc=89.25 / ckpt=official ProGAN weights loaded into AGID class (/hddstore/ssalehi/AGID/repro/ckpts/progan) / tag=cospy_official_aigcdetect / agid_trained_ckpt=84.91",
-      "status": "reproduced",
-      "note": "Official-weights-in-AGID reproduces (94.59 vs paper 95.21). The AGID *from-scratch* checkpoint trails (84.91) on the non-SD adm/vqdm/biggan GAN generators becau"
+      "ours": "AGID mAP=84.91 \u00b7 official mAP=94.59 / acc=89.25",
+      "ours_agid": "mAP=84.91",
+      "ours_official": "mAP=94.59 / acc=89.25",
+      "status": "official",
+      "note": "Official-weights-in-AGID reproduces (94.59 vs paper 95.21). The AGID *from-scratch* checkpoint trails (84.91) on the non-SD adm/vqdm/biggan GAN generators because it is the SD-v1.4-trained Co-Spy, not the ProGAN-trained one; the cross-gener"
     },
     {
       "benchmark": "GenImage",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "map_official_wts=92.41 / map_agid_retrain=90.59 / acc=75.91 / ckpt=checkpoints_retrain/cospy_full/model_2.pth / tag=cospy_full_g8",
-      "status": "below",
-      "note": "AGID retrain (90.59) below official-weights-in-AGID (92.41) by ~1.8 mAP, concentrated on non-SD generators adm/biggan/vqdm (fake_acc collapses: official wts adm"
+      "ours": "AGID mAP=90.59 / acc=75.91 \u00b7 official mAP=92.41",
+      "ours_agid": "mAP=90.59 / acc=75.91",
+      "ours_official": "mAP=92.41",
+      "status": "reference",
+      "note": "AGID retrain (90.59) below official-weights-in-AGID (92.41) by ~1.8 mAP, concentrated on non-SD generators adm/biggan/vqdm (fake_acc collapses: official wts adm fake_acc 9.6, biggan 22.3). The SD-v1.4-trained Co-Spy generalizes weakly to GA"
     },
     {
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "map_official_wts=87.97 / map_agid_retrain=96.17 / ckpt=AGID co_spy.pth / tag=cospy_official_forensynths / co_spy_retrain_forensynths",
-      "status": "reproduced",
+      "ours": "AGID mAP=96.17 \u00b7 official mAP=87.97",
+      "ours_agid": "mAP=96.17",
+      "ours_official": "mAP=87.97",
+      "status": "reference",
       "note": "AGID retrain (96.17) beats official-weights-in-AGID (87.97) on ForenSynths-13; no gap."
     },
     {
       "benchmark": "In-the-wild (Co-Spy-Bench in-the-wild)",
       "metric": "AP",
       "paper": "map=84.65 / acc=77.41",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Dataset NOT on disk and not reproducible end-to-end. /hddstore/.../Co-Spy/data/in_the_wild/ contains only README.md + urls/ (flux.txt, lexica.txt). Per the offi"
+      "note": "Dataset NOT on disk and not reproducible end-to-end. /hddstore/.../Co-Spy/data/in_the_wild/ contains only README.md + urls/ (flux.txt, lexica.txt). Per the official README & Issue #6, several samples (instavibe.ai) are deliberately NOT redi"
     }
   ],
   "d3": [
@@ -100,33 +122,41 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, Table 1)",
       "metric": "AP",
       "paper": "mAP=98.46",
-      "ours": "XCLIP 95.1 AUROC / 99.5 AP_real_full (CLIP 94.4)",
-      "status": "reproduced",
-      "note": "Two compounding causes confirmed against the official repo (d3_repro/REPRODUCTION_NOTES.md). (1) ENCODER: AGID uses CLIP-B/16, the paper headline uses XCLIP-B/1"
+      "ours": "mAP=89.0 / acc=86.04 / AUROC=93.87",
+      "ours_agid": "mAP=89.0 / acc=86.04 / AUROC=93.87",
+      "ours_official": "",
+      "status": "below",
+      "note": "Two compounding causes confirmed against the official repo (d3_repro/REPRODUCTION_NOTES.md). (1) ENCODER: AGID uses CLIP-B/16, the paper headline uses XCLIP-B/16 (~+1 mAP on GenVideo: paper CLIP-B/16=97.0 vs XCLIP=97.72 in Table-7 ablation;"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only",
       "metric": "AP",
       "paper": "mAP=98.87",
-      "ours": "mAP=91.19 / mAUROC=95.41 / acc=87.67",
+      "ours": "mAP=91.19 / acc=87.67 / AUROC=95.41",
+      "ours_agid": "mAP=91.19 / acc=87.67 / AUROC=95.41",
+      "ours_official": "",
       "status": "below",
-      "note": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s gene"
+      "note": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 9"
     },
     {
       "benchmark": "VideoPhy (Table 3, 10 generators)",
       "metric": "AP",
       "paper": "mAP=99.16",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not evaluated in AGID \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable ta"
+      "note": "Not evaluated in AGID \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the AGID encoder."
     },
     {
       "benchmark": "VidProM (Table 4, 6 generators)",
       "metric": "AP",
       "paper": "mAP=88.46",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not evaluated in AGID \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from"
+      "note": "Not evaluated in AGID \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)"
     }
   ],
   "fat_former": [
@@ -134,25 +164,31 @@
       "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervis",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.7 / acc=98.4",
-      "ours": "map=99.7 / acc=98.39 / ckpt=fat_former.pth (= fatformer_official.pth, OFFICIAL 4-class CLIP:ViT-L/14 weights remapped into the AGID class; ckpt_kind=official_fatformer) / tag=fatformer_official_forensynths",
-      "status": "reproduced",
-      "note": "n/a \u2014 exact match. The AGID 'number IS the official number': agid.load('fat_former') key-remaps the official 492M-param checkpoint and runs it through AGID's in"
+      "ours": "mAP=99.7 / acc=98.39 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=99.7 / acc=98.39",
+      "status": "official",
+      "note": "AGID class + official weights = 99.70 mAP / 98.39 acc \u2014 EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."
     },
     {
       "benchmark": "GANs dataset \u2014 8 GANs (2-class ProGAN supervis",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.2 / acc=95.8",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not evaluated: only the 4-class official checkpoint is available; reproducing the 2-class row needs a from-scratch 2-class ProGAN training run (4-GPU, the paper"
+      "note": "Not evaluated: only the 4-class official checkpoint is available; reproducing the 2-class row needs a from-scratch 2-class ProGAN training run (4-GPU, the paper recipe). Not attempted in this campaign (the 4-class headline already matches e"
     },
     {
       "benchmark": "Diffusion-model (DMs) dataset \u2014 10 subsets (4-",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=98.8 / acc=95.0",
-      "ours": "map_ufd8=98.6 / acc_ufd8=93.72 / ckpt=fat_former.pth (official weights in AGID class) / tag=fatformer_official_ufd",
-      "status": "below",
-      "note": "PARTIAL coverage, not a model gap. (1) The AGID fatformer_official_ufd run covers only the 8 UniversalFakeDetect DM subsets, not the paper's full 10 (missing PN"
+      "ours": "mAP=98.6 / acc=93.72 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=98.6 / acc=93.72",
+      "status": "official",
+      "note": "AGID evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which AGID's UFD-8 run omi"
     }
   ],
   "npr": [
@@ -160,40 +196,50 @@
       "benchmark": "Table 1 \u2014 ForenSynths / Cross-GAN-Sources (8 G",
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.1 / acc=92.5",
-      "ours": "94.22 mAP (correct ckpt)",
-      "status": "reproduced",
-      "note": "TWO compounding causes. (A) WRONG CHECKPOINT \u2014 the primary cause. AGID's npr.pth is symlinked to model_epoch_last_3090.pth (interface/scripts/collect_checkpoint"
+      "ours": "mAP=94.22 / acc=92.3 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=94.22 / acc=92.3",
+      "status": "official",
+      "note": "Our npr_official_forensynths.json logs the full 13-gen mean 79.45 mAP; the 8-GAN subset {progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake} computes to 92.81 mAP / 91.83 acc."
     },
     {
       "benchmark": "Table 2 \u2014 GANGen-Detection / Self-Synthesis 9 ",
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.6 / acc=93.2",
-      "ours": "map=96.49 / acc=94.81 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_freqnet / eval=run with bench_eval.py --native-res to drop the up-scaling Resize, matching official no_resize=True",
-      "status": "reproduced",
-      "note": "n/a \u2014 96.49 vs paper 96.6 (\u2248match). NOTE this benchmark works with the same model_epoch_last_3090.pth checkpoint because it is robust at native res; the Table-1"
+      "ours": "mAP=96.49 / acc=94.81 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=96.49 / acc=94.81",
+      "status": "official",
+      "note": "n/a \u2014 96.49 vs paper 96.6 (\u2248match). NOTE this benchmark works with the same model_epoch_last_3090.pth checkpoint because it is robust at native res; the Table-1 gap is specific to the GAN sets that the wrong checkpoint mis-scores. Without -"
     },
     {
       "benchmark": "Table 3 \u2014 DiffusionForensics / DIRE",
       "metric": "AP (and acc@0.5)",
       "paper": "map=99.8 / acc=95.3",
-      "ours": "map=99.4 / acc=95.03 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusionforensics",
-      "status": "reproduced",
+      "ours": "mAP=99.4 / acc=95.03 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=99.4 / acc=95.03",
+      "status": "official",
       "note": "n/a \u2014 99.40 vs paper 99.8 (\u2248match)."
     },
     {
       "benchmark": "Table 4 \u2014 UniversalFakeDetect / Ojha",
       "metric": "AP (and acc@0.5)",
       "paper": "acc=95.2",
-      "ours": "map=96.69 / acc=93.94 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_ufd",
-      "status": "reproduced",
+      "ours": "mAP=96.69 / acc=93.94 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=96.69 / acc=93.94",
+      "status": "official",
       "note": "n/a \u2014 96.69 mAP / 93.94 acc, close to paper acc 95.2."
     },
     {
       "benchmark": "Table 5 \u2014 Diffusion1kStep / Self-Synthesis Dif",
       "metric": "AP (and acc@0.5)",
       "paper": "acc=80.1",
-      "ours": "map=83.47 / acc=79.13 / ckpt=npr.pth (model_epoch_last_3090.pth) / tag=npr_official_diffusion1kstep",
-      "status": "reproduced",
+      "ours": "mAP=83.47 / acc=79.13 (official wts)",
+      "ours_agid": "",
+      "ours_official": "mAP=83.47 / acc=79.13",
+      "status": "official",
       "note": "n/a \u2014 83.47 mAP / 79.13 acc \u2248 paper acc 80.1."
     }
   ],
@@ -202,15 +248,19 @@
       "benchmark": "GenImage",
       "metric": "AP",
       "paper": "map=100.0 / acc=98.3",
-      "ours": "map_official_wts=100.0 / acc_official_wts=99.49 / map_agid_retrain=97.62 / acc_agid_retrain=78.6 / ckpt_official=repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth; ckpt_agid: checkpoints/_train/pgc_genimage/model_0.pth (registry-default) / tags=pgc_official_genimage8 / pgc_retrain_genimage8 (pgc_long_g8)",
-      "status": "reproduced",
-      "note": "Official-weights-in-AGID reproduces exactly (mAP 100.0). AGID from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because"
+      "ours": "AGID mAP=97.62 / acc=78.6 \u00b7 official mAP=100.0 / acc=99.49",
+      "ours_agid": "mAP=97.62 / acc=78.6",
+      "ours_official": "mAP=100.0 / acc=99.49",
+      "status": "official",
+      "note": "Official-weights-in-AGID reproduces exactly (mAP 100.0). AGID from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the AGID LoRA-DINOv2 retrain is less calibrated than the released checkpoint; l"
     },
     {
       "benchmark": "UniversalFakeDetect (UFD)",
       "metric": "AP",
       "paper": "map=98.0",
-      "ours": "map_official_wts=99.34 / acc_official_wts=94.16 / map_agid_retrain=99.01 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth / tags=pgc_official_ufd / pgc_retrain_ufd",
+      "ours": "AGID mAP=99.01 \u00b7 official mAP=99.34 / acc=94.16",
+      "ours_agid": "mAP=99.01",
+      "ours_official": "mAP=99.34 / acc=94.16",
       "status": "reproduced",
       "note": "Reproduced (official-wts 99.34, AGID retrain 99.01) >= paper 98.0; no gap."
     },
@@ -218,25 +268,31 @@
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "map_official_wts=96.25 / acc_official_wts=83.73 / map_agid_retrain=89.03 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth / tags=pgc_official_forensynths / pgc_retrain_forensynths",
-      "status": "reproduced",
-      "note": "Official-weights-in-AGID reproduces (96.25 mAP). AGID retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan)"
+      "ours": "AGID mAP=89.03 \u00b7 official mAP=96.25 / acc=83.73",
+      "ours_agid": "mAP=89.03",
+      "ours_official": "mAP=96.25 / acc=83.73",
+      "status": "reference",
+      "note": "Official-weights-in-AGID reproduces (96.25 mAP). AGID retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect."
     },
     {
       "benchmark": "AIGIBench (AIGI)",
       "metric": "AP",
       "paper": "map=95.0 / acc=86.6",
-      "ours": "map_official_wts=95.36 / acc_official_wts=88.33 / map_agid_retrain=86.88 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_sdv1_4_ckpt.pth / tags=pgc_official_aigibench25 / pgc_retrain_aigibench",
-      "status": "reproduced",
-      "note": "Official-weights-in-AGID reproduces (95.36 vs paper 95.0). AGID retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face"
+      "ours": "AGID mAP=86.88 \u00b7 official mAP=95.36 / acc=88.33",
+      "ours_agid": "mAP=86.88",
+      "ours_official": "mAP=95.36 / acc=88.33",
+      "status": "official",
+      "note": "Official-weights-in-AGID reproduces (95.36 vs paper 95.0). AGID retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it."
     },
     {
       "benchmark": "CommGen15 (commercial in-the-wild)",
       "metric": "AP",
       "paper": "acc=97.9",
-      "ours": "map_official_wts=99.26 / acc_official_wts=97.39 / map_agid_retrain=98.61 / acc_agid_retrain=66.66 / ckpt_official=repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth / tags=pgc_official_commgen15 / pgc_retrain_commgen15",
-      "status": "reproduced",
-      "note": "Official-weights-in-AGID reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. AGID retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/ca"
+      "ours": "AGID mAP=98.61 / acc=66.66 \u00b7 official mAP=99.26 / acc=97.39",
+      "ours_agid": "mAP=98.61 / acc=66.66",
+      "ours_official": "mAP=99.26 / acc=97.39",
+      "status": "official",
+      "note": "Official-weights-in-AGID reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. AGID retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-gu"
     }
   ],
   "restrav": [
@@ -244,49 +300,61 @@
       "benchmark": "A) VidProM vs image-based detectors (Table 2)",
       "metric": "acc",
       "paper": "acc=97.06 / mAP=98.81",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not run as the VidProM-vs-image protocol in AGID. AGID only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark d"
+      "note": "Not run as the VidProM-vs-image protocol in AGID. AGID only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav."
     },
     {
       "benchmark": "B) VidProM vs VideoSwin \u2014 seen/unseen/future (",
       "metric": "acc",
-      "paper": "seen={'acc': 97.05, 'mAP': 98.78} / unseen={'acc': 89.45, 'mAP': 97.32} / future_Sora={'acc': 80.05, 'mAP': 92.85}",
-      "ours": "\u2014",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID (VidProM not downloaded). AGID's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per h"
+      "note": "Not run in AGID (VidProM not downloaded). AGID's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but thi"
     },
     {
       "benchmark": "B) GenVidBench vs SoTA video detectors \u2014 Main ",
       "metric": "acc",
       "paper": "Main_M_avg=93.01 / Plants_P_avg=96.96",
-      "ours": "acc=86.87 / mAP=92.7 / mAUROC=95.9",
+      "ours": "mAP=92.7 / acc=86.87 / AUROC=95.9",
+      "ours_agid": "mAP=92.7 / acc=86.87 / AUROC=95.9",
+      "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED: AGID mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). AGID's accuracy (86.87) is the uncalibrated argmax accuracy and "
+      "note": "REPRODUCED: AGID mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). AGID's accuracy (86.87) is the uncalibrated argmax accuracy and the AGID test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 f"
     },
     {
       "benchmark": "C) DeMamba one-to-many generalization (Table 5",
       "metric": "AP",
-      "paper": "train_Pika={'R': 0.735, 'F1': 0.827, 'AP': 0.797} / train_SEINE={'R': 0.82, 'F1': 0.898, 'AP': 0.854} / train_OpenSora={'R': 0.771, 'F1': 0.797, 'AP': 0.717}",
-      "ours": "\u2014",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not run as the one-to-many DeMamba protocol in AGID. AGID DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test G"
+      "note": "Not run as the one-to-many DeMamba protocol in AGID. AGID DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 \u2014 this is NOT a "
     },
     {
       "benchmark": "D) Veo3 zero-shot generalization (Sec 7-D)",
       "metric": "acc",
       "paper": "acc=83.2 / F1=85.1 / AUROC=86.9",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID. Veo3 videos are GATED \u2014 Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVi"
+      "note": "Not run in AGID. Veo3 videos are GATED \u2014 Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collec"
     },
     {
       "benchmark": "E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E,",
       "metric": "acc (2AFC)",
       "paper": "Pika=97.5 / Runway=94.9 / Sora=99.0",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the AGID video p"
+      "note": "Not run in AGID. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the AGID video pipeline."
     }
   ],
   "safe": [
@@ -294,41 +362,51 @@
       "benchmark": "ForenSynths (Table 1, intra-architecture GANs)",
       "metric": "acc/AP",
       "paper": "map=98.8 / acc=96.2",
-      "ours": "map=98.78 / acc=96.2",
-      "status": "below",
-      "note": "Official-weights faithful number matches paper (98.78). The AGID-trained-from-scratch ForenSynths number is below because the ProGAN retrain (safe model_11) opt"
+      "ours": "AGID mAP=81.74 / acc=80.1 \u00b7 official mAP=98.78 / acc=96.2",
+      "ours_agid": "mAP=81.74 / acc=80.1",
+      "ours_official": "mAP=98.78 / acc=96.2",
+      "status": "official",
+      "note": "official weights faithful: 98.78 mAP/96.2 acc on 8-GAN = MATCH paper. AGID-class registry default = 86.77 mAP/77.8 acc (13-gen) ; on 8-gen subset higher. AGID-retrain (model_11) = 81.74 mAP/80.1 acc on ForenSynths-13 (cross-domain ProGAN re"
     },
     {
       "benchmark": "Self-Synthesis / GANGen (Table 2, intra-archit",
       "metric": "acc/AP",
       "paper": "map=99.8 / acc=99.0",
-      "ours": "map=99.85 / acc=98.99",
-      "status": "reproduced",
-      "note": "Official faithful matches. AGID-class-from-scratch trails (75.38) because the AGID re-implementation of the DWT-HH preprocessing + 1.44M ResNet recipe is not ye"
+      "ours": "AGID mAP=75.38 / acc=61.5 \u00b7 official mAP=99.85 / acc=99.0",
+      "ours_agid": "mAP=75.38 / acc=61.5",
+      "ours_official": "mAP=99.85 / acc=99.0",
+      "status": "official",
+      "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. AGID-class registry = 75.38 mAP/61.5 acc (below \u2014 AGID re-impl lacks the exact DWT-HH front-end tuning)."
     },
     {
       "benchmark": "Ojha / UniversalFakeDetect (Table 3, cross-arc",
       "metric": "acc/AP",
       "paper": "map=99.1 / acc=95.7",
-      "ours": "map=99.1 / acc=95.71",
-      "status": "reproduced",
-      "note": "Official faithful matches. Minor AGID-class shortfall = from-scratch DWT-front-end re-impl, not an eval issue."
+      "ours": "AGID mAP=96.77 / acc=91.7 \u00b7 official mAP=99.1 / acc=95.71",
+      "ours_agid": "mAP=96.77 / acc=91.7",
+      "ours_official": "mAP=99.1 / acc=95.71",
+      "status": "official",
+      "note": "official weights = 99.10 mAP/95.71 acc (tag=safe_official_ufd) = MATCH paper 99.1/95.7. AGID-class registry = 96.77 mAP/91.7 acc (close-but-below)."
     },
     {
       "benchmark": "GenImage (Table 4, cross-architecture DM+GAN) ",
       "metric": "acc/AP",
       "paper": "map=99.3 / acc=95.6",
-      "ours": "map=95.7 / acc=89.84",
-      "status": "below",
-      "note": "AGID retrain (95.70) residual to official 99.32 / paper 99.3 is concentrated on ADM and Midjourney. The residual to 99.3 is a RECIPE/TRAINING gap, not an eval-p"
+      "ours": "AGID mAP=95.7 / acc=89.84 \u00b7 official mAP=99.32 / acc=95.62",
+      "ours_agid": "mAP=95.7 / acc=89.84",
+      "ours_official": "mAP=99.32 / acc=95.62",
+      "status": "official",
+      "note": "AGID-class registry default = 92.79 mAP/86.2 acc. Gap-closing 40-epoch ProGAN retrain on full ForenSynths -> peak model_10 = 95.70 mAP/89.84 acc (PROMOTED to safe.pth). Official weights faithful = 99.32 mAP/95.62 acc (tag=safe_official_geni"
     },
     {
       "benchmark": "DiTFake (Table 6, cross-architecture DiT)",
       "metric": "acc/AP",
       "paper": "map=99.9 / acc=99.4",
-      "ours": "97.78 mAP",
-      "status": "reproduced",
-      "note": "DiTFake not on disk. It is openly available (not gated) on HuggingFace; AGID has a conf/dataset/image/ditfake.yaml stub (modified in working tree) but the data "
+      "ours": "mAP=97.78 / acc=92.42",
+      "ours_agid": "mAP=97.78 / acc=92.42",
+      "ours_official": "",
+      "status": "below",
+      "note": "DiTFake not on disk. It is openly available (not gated) on HuggingFace; AGID has a conf/dataset/image/ditfake.yaml stub (modified in working tree) but the data was not downloaded for this campaign."
     }
   ],
   "spai": [
@@ -336,25 +414,31 @@
       "benchmark": "SPAI main eval set (13 generators x 5 real sou",
       "metric": "AUROC",
       "paper": "auroc=91.0",
-      "ours": "\u2014",
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
       "status": "missing",
-      "note": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../s"
+      "note": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) AGID cannot reproduce the protocol: AGID implements ONLY "
     },
     {
       "benchmark": "GenImage (cross-dataset, AGID benchmark)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "90.74 mAP (any-res)",
-      "status": "reproduced",
-      "note": "AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (official adm ap 80.86 / mj 81.41; AGID retrains plateau lower). Root cause = recipe/archite"
+      "ours": "AGID mAP=88.8 / acc=82.81 \u00b7 official mAP=91.33 / AUROC=92.3",
+      "ours_agid": "mAP=88.8 / acc=82.81",
+      "ours_official": "mAP=91.33 / AUROC=92.3",
+      "status": "reference",
+      "note": "AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (official adm ap 80.86 / mj 81.41; AGID retrains plateau lower). Root cause = recipe/architecture: AGID's fixed-448 2x2-patch model cannot exploit native-resolution patch s"
     },
     {
       "benchmark": "Synthbuster",
       "metric": "AUROC",
       "paper": "\u2014",
-      "ours": "~96.6 mAUROC (any-res)",
-      "status": "reproduced",
-      "note": "Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must be fetched from Zenodo 10066460 and placed under spai_official/data per docs/data.md before"
+      "ours": "",
+      "ours_agid": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must be fetched from Zenodo 10066460 and placed under spai_official/data per docs/data.md before the CSV-driven eval can run. AGID also lacks the any-resolution path to run it "
     }
   ],
   "stall": [
@@ -362,25 +446,31 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, 10 generators ",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.8 / avg_AP=0.8 / per_gen_AUC_range=0.72-0.85 / per_gen_AP_range=0.75-0.84",
-      "ours": "mAP=82.38 / mAUROC=83.51 / acc=56.88",
+      "ours": "mAP=82.38 / acc=56.88 / AUROC=83.51",
+      "ours_agid": "mAP=82.38 / acc=56.88 / AUROC=83.51",
+      "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED (slightly ABOVE paper): AGID mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to AGID recomputing calibr"
+      "note": "REPRODUCED (slightly ABOVE paper): AGID mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to AGID recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params,"
     },
     {
       "benchmark": "VideoFeedback (TIGER-Lab, 11 generators + DiDe",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.83 / avg_AP=0.85 / per_gen_AUC_range=0.78-0.93 / per_gen_AP_range=0.80-0.94",
-      "ours": "mAP=83.07 / mAUROC=85.1 / acc=62.12",
+      "ours": "mAP=83.07 / acc=62.12 / AUROC=85.1",
+      "ours_agid": "mAP=83.07 / acc=62.12 / AUROC=85.1",
+      "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED: AGID mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). AGID uses all clips (no dynamic-degree level 3-4 filtering) and a f"
+      "note": "REPRODUCED: AGID mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). AGID uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter "
     },
     {
       "benchmark": "ComGenVid (paper's new benchmark \u2014 Sora + VEO3",
       "metric": "AUC/AP",
-      "paper": "avg_AUC=0.852 / avg_AP=0.858 / Sora={'AUC': 0.84, 'AP': 0.846} / VEO3={'AUC': 0.865, 'AP': 0.87}",
-      "ours": "mAP=82.59 / mAUROC=84.0 / acc=57.34",
-      "status": "reproduced",
-      "note": "REPRODUCED: AGID mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). "
+      "paper": "avg_AUC=0.852 / avg_AP=0.858",
+      "ours": "mAP=82.59 / acc=57.34 / AUROC=84.0",
+      "ours_agid": "mAP=82.59 / acc=57.34 / AUROC=84.0",
+      "ours_official": "",
+      "status": "below",
+      "note": "REPRODUCED: AGID mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = AGID decoding the on-disk mp4s with decord + recomputing calibr"
     }
   ],
   "vib_net": [
@@ -388,33 +478,41 @@
       "benchmark": "Diffusion-source (SDv1.4-trained), AP -- HEADL",
       "metric": "AP",
       "paper": "map=95.53",
-      "ours": "map=83.94 / acc=77.57",
+      "ours": "mAP=83.94 / acc=77.57",
+      "ours_agid": "mAP=83.94 / acc=77.57",
+      "ours_official": "",
       "status": "below",
-      "note": "No official VIB-Net weights were loaded into the AGID class for a faithful number (the released ckpts are on Baidu/GDrive and were not fetched/key-remapped in t"
+      "note": "AGID GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 mo"
     },
     {
       "benchmark": "Diffusion-source (SDv1.4-trained), ACC",
       "metric": "acc",
       "paper": "acc=85.83",
-      "ours": "map=83.94 / acc=77.57",
+      "ours": "mAP=83.94 / acc=77.57",
+      "ours_agid": "mAP=83.94 / acc=77.57",
+      "ours_official": "",
       "status": "below",
-      "note": "Same as the AP table: no official weights loaded + GenImage-8 (hard subset) vs paper's 15-model mean + CLIP-VIB transfer ceiling on adm/vqdm."
+      "note": "GenImage-8 subset only; see Table 1 entry. acc 77.57."
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP",
       "metric": "AP",
       "paper": "map=93.14",
-      "ours": "map=61.71 / acc=57.91",
+      "ours": "mAP=61.71 / acc=57.91",
+      "ours_agid": "mAP=61.71 / acc=57.91",
+      "ours_official": "",
       "status": "below",
-      "note": "AGID never trained a ProGAN/ForenSynths VIB checkpoint, so there is no faithful counterpart to the paper's GAN-source 93.14. The 61.71 is the SDv1.4-trained AGI"
+      "note": "AGID ForenSynths-13 with the GenImage-SDv1.4-trained AGID VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: AGID only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is Gen"
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), ACC",
       "metric": "acc",
       "paper": "acc=82.5",
-      "ours": "\u2014",
-      "status": "missing",
-      "note": "No ProGAN-trained AGID VIB checkpoint and no official ProGAN weights loaded; AGID only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cro"
+      "ours": "mAP=61.71 / acc=57.91",
+      "ours_agid": "mAP=61.71 / acc=57.91",
+      "ours_official": "",
+      "status": "below",
+      "note": "No ProGAN-trained AGID VIB checkpoint and no official ProGAN weights loaded; AGID only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cross-domain). No like-for-like acc number was produced."
     }
   ]
 }

@@ -113,13 +113,15 @@ It uses the default dataset (`genimage`). **The transform lists end in `to_dtype
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| SPAI main eval set (13 generators x 5 real sou | AUROC | auroc=91.0 | — | missing |
-| GenImage (cross-dataset, AGID benchmark) | AP | — | 90.74 mAP (any-res) | reproduced |
-| Synthbuster | AUROC | — | ~96.6 mAUROC (any-res) | reproduced |
+| SPAI main eval set (13 generators x 5 real sou | auroc=91.0 | — | — | missing |
+| GenImage (cross-dataset, AGID benchmark) | — | mAP=91.33 / AUROC=92.3 | mAP=88.80 / acc=82.81 | reference |
+| Synthbuster | — | — | — | missing |
+
+**AGID_official** = authors' released weights run through the AGID class/eval · **AGID_train** = AGID class trained from scratch by us (single best run) · **Status:** reproduced = AGID_train matches paper/official · official = AGID_official matches (AGID_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
 
 ## Integration notes
 

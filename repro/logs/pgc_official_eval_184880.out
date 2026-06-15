@@ -1,0 +1,36 @@
+NODE=ivi-cn010 GPU=0 Thu Jun 11 21:40:57 CEST 2026
+CUDA OK
+2026-06-11 21:41:13,358 - root - INFO - Logging to file: checkpoints/test_hard3_official_test.log
+2026-06-11 21:41:13,358 - root - INFO - ==== Test configuration ====
+2026-06-11 21:41:13,358 - root - INFO - Checkpoint: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth
+2026-06-11 21:41:13,359 - root - INFO - Test root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test
+2026-06-11 21:41:13,359 - root - INFO - Batch size: 32
+2026-06-11 21:41:13,359 - root - INFO - Num workers: 8
+2026-06-11 21:41:13,359 - root - INFO - Devices: [0]
+2026-06-11 21:41:13,359 - root - INFO - Crop size: 224
+2026-06-11 21:41:13,359 - root - INFO - DINO variant: dinov2-large
+2026-06-11 21:41:13,359 - root - INFO - LoRA rank: 8
+2026-06-11 21:41:13,359 - root - INFO - LoRA alpha: 1.00
+2026-06-11 21:41:13,359 - root - INFO - LoRA dropout: 0.10
+2026-06-11 21:41:13,359 - root - INFO - DINO pretrained root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino
+2026-06-11 21:41:13,359 - root - INFO - PGCM tau (RGB): 0.5000
+2026-06-11 21:41:13,359 - root - INFO - PGCM tau (Residual): 0.5000
+2026-06-11 21:41:13,359 - root - INFO - Using device: cuda:0
+2026-06-11 21:41:13,359 - data.transforms - INFO - [Eval] Using deterministic PadCenterCrop to 224 x 224
+2026-06-11 21:41:13,360 - root - INFO - Loading test dataset: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test
+2026-06-11 21:41:13,365 - data.eval_dataset - INFO - Subset 'san': 219 real images (0_real), 219 fake images (1_fake)
+2026-06-11 21:41:13,410 - data.eval_dataset - INFO - Subset 'deepfake': 2707 real images (0_real), 2698 fake images (1_fake)
+2026-06-11 21:41:13,415 - data.eval_dataset - INFO - Subset 'seeingdark': 180 real images (0_real), 180 fake images (1_fake)
+2026-06-11 21:41:13,418 - data.eval_dataset - INFO - Loaded 6203 images from 3 UniversalFakeDetect subsets
+2026-06-11 21:41:13,419 - models.encoder.rgb_stream - INFO - [DINO] Using local checkpoint at: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino/dinov2-large
+2026-06-11 21:41:13,419 - models.encoder.rgb_stream - INFO - [DINO] Loading backbone 'dinov2-large' from: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino/dinov2-large
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   5%|▍         | 21/439 [00:00<00:06, 60.83it/s]Loading weights:   6%|▋         | 28/439 [00:00<00:07, 58.06it/s]Loading weights:   8%|▊         | 36/439 [00:00<00:12, 32.58it/s]Loading weights:  11%|█         | 49/439 [00:01<00:11, 33.50it/s]Loading weights:  12%|█▏        | 53/439 [00:01<00:15, 25.00it/s]Loading weights:  16%|█▌        | 70/439 [00:01<00:08, 43.09it/s]Loading weights:  21%|██        | 91/439 [00:02<00:07, 44.36it/s]Loading weights:  24%|██▍       | 105/439 [00:02<00:05, 55.81it/s]Loading weights:  26%|██▌       | 114/439 [00:02<00:08, 36.45it/s]Loading weights:  31%|███       | 135/439 [00:03<00:07, 40.44it/s]Loading weights:  34%|███▍      | 150/439 [00:03<00:05, 50.27it/s]Loading weights:  36%|███▌      | 158/439 [00:03<00:05, 52.73it/s]Loading weights:  41%|████      | 178/439 [00:03<00:03, 72.53it/s]Loading weights:  43%|████▎     | 189/439 [00:04<00:06, 37.07it/s]Loading weights:  45%|████▌     | 198/439 [00:04<00:07, 30.81it/s]Loading weights:  49%|████▉     | 217/439 [00:05<00:04, 46.17it/s]Loading weights:  54%|█████▍    | 236/439 [00:05<00:03, 62.88it/s]Loading weights:  57%|█████▋    | 249/439 [00:05<00:03, 52.58it/s]Loading weights:  60%|██████    | 264/439 [00:05<00:02, 63.99it/s]Loading weights:  64%|██████▍   | 281/439 [00:06<00:03, 51.38it/s]Loading weights:  67%|██████▋   | 293/439 [00:06<00:02, 58.29it/s]Loading weights:  70%|███████   | 308/439 [00:06<00:03, 35.75it/s]Loading weights:  72%|███████▏  | 315/439 [00:07<00:03, 31.57it/s]Loading weights:  73%|███████▎  | 321/439 [00:07<00:04, 26.18it/s]Loading weights:  74%|███████▍  | 326/439 [00:08<00:05, 22.22it/s]Loading weights:  78%|███████▊  | 343/439 [00:08<00:02, 35.75it/s]Loading weights:  80%|███████▉  | 350/439 [00:08<00:03, 29.41it/s]Loading weights:  83%|████████▎ | 363/439 [00:09<00:02, 29.36it/s]Loading weights:  87%|████████▋ | 381/439 [00:09<00:01, 31.48it/s]Loading weights:  88%|████████▊ | 386/439 [00:09<00:02, 26.40it/s]Loading weights:  89%|████████▉ | 390/439 [00:10<00:02, 20.80it/s]Loading weights:  94%|█████████▍| 413/439 [00:10<00:00, 40.02it/s]Loading weights: 100%|██████████| 439/439 [00:10<00:00, 41.43it/s]
+2026-06-11 21:41:24,947 - models.pgc - INFO - [PGCNetwork] Injecting LoRA (rank=8, alpha=1.000, dropout=0.100, targets=['attn.qkv', 'attn.proj', 'mlp.fc1', 'mlp.fc2']) into RGB backbone.
+2026-06-11 21:41:24,966 - root - INFO - Loading checkpoint: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth
+2026-06-11 21:42:18,489 - root - INFO - Starting evaluation...
+2026-06-11 21:43:31,658 - utils.metrics - INFO - deepfake - ACC: 0.7216 | Real_ACC: 0.9797 | Fake_ACC: 0.4626 | AP: 0.9391 | AUC: 0.9648
+2026-06-11 21:43:48,301 - utils.metrics - INFO - san - ACC: 0.8858 | Real_ACC: 0.9817 | Fake_ACC: 0.7900 | AP: 0.9888 | AUC: 0.9906
+2026-06-11 21:45:07,868 - utils.metrics - INFO - seeingdark - ACC: 0.5556 | Real_ACC: 0.1111 | Fake_ACC: 1.0000 | AP: 0.8703 | AUC: 0.8749
+2026-06-11 21:45:07,877 - utils.metrics - INFO - Overall test set mean - ACC: 0.7210 | Real_ACC: 0.6908 | Fake_ACC: 0.7508 | AP: 0.9327 | AUC: 0.9434
+2026-06-11 21:45:07,877 - root - INFO - Evaluation completed. Subsets evaluated: 3
+=== OFFICIAL EVAL COMPLETE ===

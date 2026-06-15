@@ -123,14 +123,16 @@ The current trainer config uses AdamW through the AGID trainer:
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| Diffusion-source (SDv1.4-trained), AP -- HEADL | AP | map=95.53 | map=83.94 / acc=77.57 | below |
-| Diffusion-source (SDv1.4-trained), ACC | acc | acc=85.83 | map=83.94 / acc=77.57 | below |
-| GAN-source (ForenSynths/ProGAN-trained), AP | AP | map=93.14 | map=61.71 / acc=57.91 | below |
-| GAN-source (ForenSynths/ProGAN-trained), ACC | acc | acc=82.5 | — | missing |
+| Diffusion-source (SDv1.4-trained), AP -- HEADL | map=95.53 | *none released* | mAP=83.94 / acc=77.57 | below |
+| Diffusion-source (SDv1.4-trained), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
+| GAN-source (ForenSynths/ProGAN-trained), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |
+| GAN-source (ForenSynths/ProGAN-trained), ACC | acc=82.5 | *none released* | mAP=61.71 / acc=57.91 | below |
+
+**AGID_official** = authors' released weights run through the AGID class/eval (VIB-Net has no official weights released, so this is *none released* on every row) · **AGID_train** = AGID class trained from scratch by us (single best run) · **Status:** reproduced = AGID_train matches paper/official · official = AGID_official matches (AGID_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
 
 ## Integration notes
 

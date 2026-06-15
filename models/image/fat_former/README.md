@@ -128,13 +128,19 @@ It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `cen
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+Values are `mAP / acc`. **AGID_official** = the authors' released weights run through the AGID class / eval. **AGID_train** = the AGID class trained from scratch by us. For both FatFormer entries we did not train from scratch, so AGID_train is `—`.
+
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| GANs dataset — 8 GANs (4-class ProGAN supervis | acc and AP (mean ACCM / APM) | map=99.7 / acc=98.4 | map=99.7 / acc=98.39 / ckpt=fat_former.pth (= fatformer_official.pth, OFFICIAL 4-class CLIP:ViT-L/14 weights remapped into the AGID class; ckpt_kind=official_fatformer) / tag=fatformer_official_forensynths | reproduced |
-| GANs dataset — 8 GANs (2-class ProGAN supervis | acc and AP (mean ACCM / APM) | map=99.2 / acc=95.8 | — | missing |
-| Diffusion-model (DMs) dataset — 10 subsets (4- | acc and AP (mean ACCM / APM) | map=98.8 / acc=95.0 | map_ufd8=98.6 / acc_ufd8=93.72 / ckpt=fat_former.pth (official weights in AGID class) / tag=fatformer_official_ufd | below |
+| GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | — | official |
+| GANs — 8 GANs (2-class ProGAN) | 99.2 / 95.8 | — | — | missing |
+| Diffusion (DMs) — 10 subsets | 98.8 / 95.0 | 98.6 / 93.72 | — | official |
+| UniversalFakeDetect-8 | — | 98.60 / 93.7 | — | official |
+| DiffusionForensics-8 | — | 94.66 / 79.0 | — | official |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 

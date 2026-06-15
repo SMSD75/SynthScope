@@ -86,10 +86,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         sd = spec.remap(sd)
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
-    benign = {"clip_mean", "clip_std"}
+    benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
     real_missing = [
         k for k in missing
-        if not k.startswith("criterion") and k.split(".")[-1] not in benign
+        if not k.startswith("criterion") and not k.startswith("dwt_filter.")
+        and k.split(".")[-1] not in benign
     ]
     if spec.ckpt_kind.startswith("official"):
         # Official-weights loads are verified to be exact; flag any genuine mismatch loudly.

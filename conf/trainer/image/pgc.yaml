@@ -3,17 +3,17 @@ defaults:
   - _self_
 
 # PGC trains LoRA adapters + the residual stream + PGCM + classifier (DINO backbone frozen).
-# Paper: Adam, lr 5e-4? -> repo uses lr 5e-5, weight_decay 0.05, ~100 epochs. Epochs reduced
-# here for turnaround; raise for a full reproduction.
+# Official recipe (xiaoyu6868/PGC): AdamW, lr 5e-5, weight_decay 0.05, 100 epochs (--niter 100),
+# CosineAnnealingLR over all steps, label smoothing 0.1, effective batch 128.
 trainer_type: pgc
-epochs: 10
+epochs: 100
 lr: 5.0e-5
 weight_decay: 0.05
-label_smoothing: 0.0
+label_smoothing: 0.1
 val_interval: 1
 test_interval: 1
 save_interval: 1
-save: false
+save: true
 save_policy: max
 warmup:
   mode: on

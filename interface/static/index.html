@@ -17,9 +17,10 @@
     header h1 { margin: 0 0 4px; font-size: 26px; }
     header p { margin: 0; color: var(--muted); font-size: 14px; }
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 18px; }
+    .grid > * { min-width: 0; }   /* let grid cells shrink instead of forcing horizontal page scroll */
     @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
     .card { background: var(--panel); border: 1px solid var(--line);
-      border-radius: 14px; padding: 18px; }
+      border-radius: 14px; padding: 18px; min-width: 0; }
     .card h2 { margin: 0 0 12px; font-size: 15px; color: var(--muted);
       text-transform: uppercase; letter-spacing: .06em; }
     label { display: block; font-size: 13px; color: var(--muted); margin: 12px 0 6px; }
@@ -47,8 +48,13 @@
     .row { display: flex; justify-content: space-between; font-size: 13px;
       padding: 6px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
     .row b { color: var(--text); }
-    .spark { display: flex; gap: 2px; align-items: flex-end; height: 48px; margin-top: 8px; }
-    .spark i { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 2px; }
+    .frames { margin-top: 12px; }
+    .spark { position: relative; display: flex; gap: 2px; align-items: flex-end; height: 64px; margin-top: 8px;
+      padding: 4px 4px 0; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; }
+    .spark i { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 3px; }
+    .spark .thr50 { position: absolute; left: 6px; right: 6px; top: 50%; height: 0; border-top: 1px dashed #4a5572; pointer-events: none; }
+    .frame-stats { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 5px; }
+    .frame-stats b { color: var(--text); }
     .err { color: var(--fake); font-size: 13px; margin-top: 10px; white-space: pre-wrap; }
     .pill { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px;
       background: var(--panel2); border: 1px solid var(--line); color: var(--muted); }
@@ -102,6 +108,60 @@
     .thumb .pred.no { background: rgba(255, 93, 93, .9); color: #fff; }
     .thumb .play { position: absolute; inset: 0; display: flex; align-items: center;
       justify-content: center; font-size: 22px; color: rgba(255,255,255,.8); pointer-events: none; }
+    /* full per-benchmark repro table — collapsible, scrolls inside its own box (never pushes the layout) */
+    .repro-wrap { margin: 10px 0 4px; }
+    .repro-details { border: 1px solid var(--line); border-radius: 10px; background: var(--panel2); overflow: hidden; }
+    .repro-details > summary { cursor: pointer; list-style: none; padding: 9px 12px; font-size: 12px;
+      color: var(--accent); font-weight: 600; user-select: none; display: flex; align-items: center; gap: 7px; }
+    .repro-details > summary::-webkit-details-marker { display: none; }
+    .repro-details > summary::before { content: "▸"; font-size: 10px; transition: transform .15s; }
+    .repro-details[open] > summary::before { transform: rotate(90deg); }
+    .repro-scroll { max-height: 360px; overflow: auto; border-top: 1px solid var(--line); }
+    table.repro-full { width: 100%; min-width: 480px; border-collapse: collapse; font-size: 12px; }
+    table.repro-full thead th { position: sticky; top: 0; z-index: 1; text-align: left; background: var(--panel2);
+      border-bottom: 1px solid var(--line); padding: 7px 10px; color: var(--muted); white-space: nowrap; }
+    table.repro-full td { padding: 6px 10px; border-bottom: 1px solid #22293d; vertical-align: top; }
+    table.repro-full tbody tr:nth-child(even) { background: rgba(255,255,255,.02); }
+    table.repro-full td:first-child { min-width: 170px; }
+    .status-reproduced, td.match-reproduced { color: var(--real); font-weight: 600; }
+    .status-official { color: var(--accent); font-weight: 600; }
+    .status-below, td.match-below { color: #ffb74d; }
+    .status-missing, td.match-missing { color: var(--muted); }
+    .status-reference { color: var(--muted); font-style: italic; }
+    .repro-legend { color: var(--muted); font-size: 11px; margin: 8px 12px 10px; line-height: 1.55; }
+    /* leaderboard + top-generators */
+    .lead-head { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; justify-content: space-between; margin: 6px 0 14px; }
+    .lead-head .muted { flex: 1; min-width: 280px; }
+    .lead-head label { color: var(--muted); font-size: 13px; display: flex; gap: 6px; align-items: center; }
+    .lead-head select { width: auto; min-width: 220px; }
+    .lead-card { margin-bottom: 16px; }
+    .card.lead-card h2, .topgen .card h2 { display: flex; align-items: center; gap: 8px;
+      text-transform: none; letter-spacing: 0; font-size: 16px; color: var(--text); }
+    .lead-bn { color: var(--muted); font-size: 10px; margin-top: 2px; }
+    .lb-best { color: var(--accent); font-weight: 700; }
+    table.repro-full.lb-gen td { white-space: nowrap; }
+    table.repro-full.lb-gen td:nth-child(2) { white-space: normal; }
+    .lb-top td { background: rgba(110,168,255,.06); }
+    .topgen .card { margin-bottom: 16px; }
+    /* SOTA vs detectors */
+    .muted { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .sota .sota-controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin: 10px 0; }
+    .sota .sota-controls label { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+    .sota .sota-controls select { width: auto; min-width: 200px; }
+    .sota .promptline input { width: 320px; padding: 8px; border-radius: 8px; background: var(--panel2);
+      color: var(--text); border: 1px solid var(--line); }
+    .sota .upbtn { cursor: pointer; text-decoration: underline; margin-left: 10px; color: var(--accent); font-size: 13px; }
+    .sota .detpick { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0; color: var(--muted); font-size: 13px; }
+    .sota .detpick label { display: flex; gap: 4px; align-items: center; font-size: 13px; margin: 0; }
+    .sota .sota-images { display: flex; gap: 16px; margin: 14px 0; flex-wrap: wrap; }
+    .sota .sota-images figure { margin: 0; text-align: center; }
+    .sota .sota-images img { max-width: 320px; max-height: 320px; border: 1px solid var(--line); border-radius: 8px; display: block; }
+    .sota .sota-images figcaption { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .sota button { background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+      border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 13px; }
+    .sota button.primary { padding: 10px 18px; font-weight: 700; border: 0; border-radius: 10px;
+      background: var(--accent); color: #06122b; cursor: pointer; margin-top: 6px; }
+    .sota button.primary:disabled { opacity: .45; cursor: not-allowed; }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -166,13 +226,145 @@
 
     function ReproTable({ m }) {
       const rep = m && m.repro;
-      if (!rep) return null;
-      return html`<table class="repro"><tbody>
-        <tr><td>Benchmark</td><td>${rep.benchmark}</td></tr>
-        <tr><td>Paper</td><td>${rep.paper}</td></tr>
-        <tr><td>Reproduced</td><td class=${"match-" + (rep.match || "")}>${rep.ours}</td></tr>
-        ${rep.note && html`<tr><td colspan="2" class="rnote">${rep.note}</td></tr>`}
-      </tbody></table>`;
+      const full = m && m.repro_full;
+      if (!rep && !(full && full.length)) return null;
+      return html`<div class="repro-wrap">
+        ${rep && html`<table class="repro"><tbody>
+          <tr><td>Headline</td><td>${rep.benchmark}</td></tr>
+          <tr><td>Paper</td><td>${rep.paper}</td></tr>
+          <tr><td>Reproduced</td><td class=${"match-" + (rep.match || "")}>${rep.ours}</td></tr>
+        </tbody></table>`}
+        ${full && full.length > 0 && html`<details class="repro-details">
+          <summary>All ${full.length} reported benchmarks — paper vs AGID vs official</summary>
+          <div class="repro-scroll">
+            <table class="repro-full">
+              <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <tbody>
+                ${full.map((r, i) => html`<tr key=${i}>
+                  <td>${r.benchmark}</td>
+                  <td>${r.paper}</td>
+                  <td>${r.ours_agid || "—"}</td>
+                  <td>${r.ours_official || "—"}</td>
+                  <td class=${"status-" + (r.status || "")}>${r.status}</td>
+                </tr>`)}
+              </tbody>
+            </table>
+          </div>
+          <div class="repro-legend">
+            <b>reproduced</b> = AGID-trained checkpoint matches the paper ·
+            <b>official</b> = official weights loaded into the AGID class match (AGID-trained number shown where we trained from scratch) ·
+            <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
+          </div>
+        </details>`}
+      </div>`;
+    }
+
+    function b64ToFile(b64, name) {
+      const bin = atob(b64), arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return new File([arr], name, { type: "image/png" });
+    }
+
+    // SOTA generator vs detector comparison: pick/upload a real image -> a current SOTA generator makes a
+    // "conceptually similar" image -> the selected AGID detectors score it (best/promoted checkpoints).
+    function SotaView({ models }) {
+      const [gens, setGens] = useState([]);
+      const [gen, setGen] = useState("");
+      const [prompt, setPrompt] = useState("make another image conceptually similar to this");
+      const [realB64, setRealB64] = useState("");
+      const [realSrc, setRealSrc] = useState(null);
+      const [picked, setPicked] = useState({});
+      const [busy, setBusy] = useState(false);
+      const [res, setRes] = useState(null);
+      const [err, setErr] = useState("");
+      const imgDetectors = (models || []).filter(m => m.modality === "image" && m.available);
+
+      useEffect(() => {
+        fetch(API("/api/sota/generators")).then(r => r.json()).then(d => {
+          setGens(d.generators || []);
+          const a = (d.generators || []).find(g => g.available);
+          if (a) setGen(a.key);
+          if (d.default_prompt) setPrompt(d.default_prompt);
+        }).catch(e => setErr(String(e.message || e)));
+      }, []);
+
+      async function rollImage() {
+        setErr(""); setRes(null);
+        try {
+          const r = await fetch(API("/api/sota/real_image")); const d = await r.json();
+          if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
+          setRealB64(d.image_b64); setRealSrc(d.source);
+        } catch (e) { setErr(String(e.message || e)); }
+      }
+      function onUpload(f) {
+        if (!f) return;
+        const rd = new FileReader();
+        rd.onload = () => { setRealB64(rd.result.split(",")[1]); setRealSrc(["upload", f.name]); setRes(null); };
+        rd.readAsDataURL(f);
+      }
+      async function run() {
+        setErr(""); setBusy(true); setRes(null);
+        try {
+          const dets = Object.keys(picked).filter(k => picked[k]);
+          if (!realB64) throw new Error("Pick or upload a real image first.");
+          if (!gen) throw new Error("Select a generator.");
+          if (!dets.length) throw new Error("Select at least one detector.");
+          const fd = new FormData();
+          fd.append("file", b64ToFile(realB64, "real.png"));
+          fd.append("generator", gen); fd.append("detectors", dets.join(",")); fd.append("prompt", prompt);
+          const r = await fetch(API("/api/sota/compare"), { method: "POST", body: fd });
+          const d = await r.json();
+          if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
+          setRes(d);
+        } catch (e) { setErr(String(e.message || e)); } finally { setBusy(false); }
+      }
+
+      return html`
+        <div class="sota">
+          <p class="muted">Send a real image from our datasets to a current SOTA generator, then see whether
+            the AGID detectors catch the freshly-generated image. Generators need an API key
+            (greyed-out = key not set on the server). Detectors use our best/promoted checkpoints.</p>
+          <div class="sota-controls">
+            <div>
+              <button onClick=${rollImage}>🎲 Random real image</button>
+              <label class="upbtn">Upload<input type="file" accept="image/*" style=${{display:"none"}}
+                onChange=${e => onUpload(e.target.files[0])} /></label>
+            </div>
+            <label>Generator:
+              <select value=${gen} onChange=${e => setGen(e.target.value)}>
+                ${gens.map(g => html`<option key=${g.key} value=${g.key} disabled=${!g.available}>
+                  ${g.name}${g.available ? "" : " (no API key)"}</option>`)}
+              </select>
+            </label>
+            <label class="promptline">Prompt:
+              <input value=${prompt} onChange=${e => setPrompt(e.target.value)} />
+            </label>
+          </div>
+          <div class="detpick">Detectors:
+            ${imgDetectors.map(m => html`<label key=${m.key}><input type="checkbox" checked=${!!picked[m.key]}
+              onChange=${e => setPicked({ ...picked, [m.key]: e.target.checked })} /> ${m.name}</label>`)}
+          </div>
+          <button class="primary" disabled=${busy} onClick=${run}>${busy ? "Generating + scoring…" : "Generate & compare"}</button>
+          ${err && html`<div class="err">${err}</div>`}
+          <div class="sota-images">
+            ${realB64 && html`<figure><img src=${"data:image/png;base64," + realB64} />
+              <figcaption>Real ${realSrc ? "· " + realSrc.join("/") : ""}</figcaption></figure>`}
+            ${res && res.generated_b64 && html`<figure><img src=${"data:image/png;base64," + res.generated_b64} />
+              <figcaption>Generated · ${res.generator}${res.prompt ? html`<br/><span class="muted" style=${{fontSize:11}}>prompt: ${res.prompt}</span>` : ""}</figcaption></figure>`}
+          </div>
+          ${res && html`<table class="repro-full">
+            <thead><tr><th>Detector</th><th>P(fake) real</th><th>P(fake) generated</th><th>Caught?</th></tr></thead>
+            <tbody>
+              ${res.results.map((r, i) => html`<tr key=${i}>
+                <td>${r.name || r.detector}</td>
+                <td>${r.error ? "—" : r.real_fake_prob}</td>
+                <td>${r.error ? "—" : r.gen_fake_prob}</td>
+                <td class=${r.caught ? "status-reproduced" : "status-below"}>
+                  ${r.error ? r.error : (r.caught ? "✓ fake" : "✗ missed")}</td>
+              </tr>`)}
+            </tbody>
+          </table>`}
+        </div>`;
     }
 
     function ThresholdSlider({ threshold, setThreshold, children }) {
@@ -181,6 +373,89 @@
         <input type="range" min="0" max="1" step="0.01" value=${threshold}
           onInput=${e => setThreshold(parseFloat(e.target.value))} />
         ${children}
+      </div>`;
+    }
+
+    const REPRO_LEGEND = html`<div class="repro-legend">
+      <b>reproduced</b> = AGID-trained checkpoint matches the paper ·
+      <b>official</b> = official weights loaded into the AGID class match (AGID-trained shown alongside where trained from scratch) ·
+      <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.</div>`;
+
+    // Leaderboard: every method x benchmark (paper / AGID-trained / official-weights), grouped by benchmark.
+    function LeaderboardView() {
+      const [groups, setGroups] = useState([]);
+      const [sel, setSel] = useState("");
+      const [err, setErr] = useState("");
+      useEffect(() => {
+        fetch(API("/api/leaderboard")).then(r => r.json()).then(d => setGroups(d.groups || []))
+          .catch(e => setErr(String(e.message || e)));
+      }, []);
+      const shown = sel ? groups.filter(g => g.benchmark === sel) : groups;
+      return html`<div class="lead">
+        <div class="lead-head">
+          <p class="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>AGID-trained</b>
+            checkpoint, and <b>official weights</b> loaded into the AGID class. Grouped by benchmark so methods that
+            share one can be compared head-to-head (sorted best-first within each).</p>
+          <label>Benchmark:
+            <select value=${sel} onChange=${e => setSel(e.target.value)}>
+              <option value="">All benchmarks (${groups.length})</option>
+              ${groups.map(g => html`<option key=${g.benchmark} value=${g.benchmark}>${g.benchmark} (${g.n_methods})</option>`)}
+            </select>
+          </label>
+        </div>
+        ${err && html`<div class="err">${err}</div>`}
+        ${shown.map(g => html`<div key=${g.benchmark} class="card lead-card">
+          <h2>${g.benchmark} <span class="pill">${g.n_methods} method${g.n_methods > 1 ? "s" : ""}</span></h2>
+          <div class="repro-scroll">
+            <table class="repro-full">
+              <thead><tr><th>Method</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <tbody>
+                ${g.rows.map((r, i) => html`<tr key=${i}>
+                  <td><b>${r.method}</b><div class="lead-bn">${r.benchmark}</div></td>
+                  <td>${r.paper}</td>
+                  <td>${r.agid || "—"}</td>
+                  <td>${r.official || "—"}</td>
+                  <td class=${"status-" + (r.status || "")}>${r.status}</td>
+                </tr>`)}
+              </tbody>
+            </table>
+          </div>
+        </div>`)}
+        ${REPRO_LEGEND}
+      </div>`;
+    }
+
+    // Top Generators: how detectors hold up against today's SOTA generators (Ideogram, ...).
+    function TopGeneratorsView() {
+      const [bm, setBm] = useState([]);
+      const [err, setErr] = useState("");
+      useEffect(() => {
+        fetch(API("/api/generator_benchmarks")).then(r => r.json()).then(d => setBm(d.benchmarks || []))
+          .catch(e => setErr(String(e.message || e)));
+      }, []);
+      return html`<div class="topgen">
+        <p class="muted">How our detectors hold up against today's SOTA image generators. Each: a balanced
+          real-vs-generated set scored by every AGID detector (promoted checkpoints), ranked by AUROC.
+          None of the detectors were trained on these generators — this is cross-generator generalization.</p>
+        ${err && html`<div class="err">${err}</div>`}
+        ${!bm.length && !err && html`<div class="empty">No generator benchmarks yet.</div>`}
+        ${bm.map(b => html`<div key=${b.key} class="card">
+          <h2>vs ${b.generator} <span class="pill">${b.n_real}+${b.n_fake} imgs · ${b.settings}</span></h2>
+          <div class="meta" style=${{marginBottom: 8}}>${b.note}</div>
+          <div class="repro-scroll">
+            <table class="repro-full lb-gen">
+              <thead><tr><th>#</th><th>Detector</th><th>AUROC</th><th>AP</th><th>acc@.5</th><th>fake-detect %</th><th>real-FP %</th></tr></thead>
+              <tbody>
+                ${b.rows.map((r, i) => html`<tr key=${i} class=${i < 3 ? "lb-top" : ""}>
+                  <td>${i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1)}</td>
+                  <td><b>${r.name || r.detector}</b></td>
+                  <td class="lb-best">${r.auroc}</td>
+                  <td>${r.ap}</td><td>${r.acc}</td><td>${r.fake_detect_rate}</td><td>${r.real_false_pos}</td>
+                </tr>`)}
+              </tbody>
+            </table>
+          </div>
+        </div>`)}
       </div>`;
     }
 
@@ -212,9 +487,16 @@
           <div class="tabs">
             <button class=${"tab" + (tab==="detect"?" active":"")} onClick=${() => setTab("detect")}>Detect</button>
             <button class=${"tab" + (tab==="explore"?" active":"")} onClick=${() => setTab("explore")}>Data Explorer</button>
+            <button class=${"tab" + (tab==="sota"?" active":"")} onClick=${() => setTab("sota")}>SOTA vs Detectors</button>
+            <button class=${"tab" + (tab==="leaderboard"?" active":"")} onClick=${() => setTab("leaderboard")}>Leaderboard</button>
+            <button class=${"tab" + (tab==="topgen"?" active":"")} onClick=${() => setTab("topgen")}>Top Generators</button>
           </div>
           ${error && html`<div class="err">${error}</div>`}
-          ${tab === "detect" ? html`<${DetectView} ...${shared} />` : html`<${ExploreView} ...${shared} />`}
+          ${tab === "detect" ? html`<${DetectView} ...${shared} />`
+            : tab === "explore" ? html`<${ExploreView} ...${shared} />`
+            : tab === "sota" ? html`<${SotaView} models=${models} />`
+            : tab === "leaderboard" ? html`<${LeaderboardView} />`
+            : html`<${TopGeneratorsView} />`}
         </div>`;
     }
 
@@ -475,9 +757,18 @@
           ${r.media_type && html`<div class="row"><span>Media</span><b>${r.media_type}${r.num_frames ? " · " + r.num_frames + " frames" : ""}</b></div>`}
           ${r.elapsed_ms && html`<div class="row"><span>Inference</span><b>${r.elapsed_ms} ms</b></div>`}
         </div>
-        ${r.per_frame && html`<div>
-          <div class="meta">Per-frame P(fake) (${r.aggregation}):</div>
-          <div class="spark">${r.per_frame.map((v,i) => html`<i key=${i} title=${(v*100).toFixed(1)+"%"} style=${{height:(v*100)+"%"}}/>`)}</div>
+        ${r.per_frame && r.per_frame.length > 1 && html`<div class="frames">
+          <div class="meta">Per-frame P(fake) — ${r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
+          <div class="spark">
+            <span class="thr50"></span>
+            ${r.per_frame.map((v,i) => html`<i key=${i} title=${"frame " + (i+1) + ": " + (v*100).toFixed(1) + "%"}
+              style=${{height: Math.max(3, v*100) + "%", background: v >= 0.5 ? "var(--fake)" : "var(--accent)"}}/>`)}
+          </div>
+          <div class="frame-stats">
+            <span>min <b>${(Math.min(...r.per_frame)*100).toFixed(0)}%</b></span>
+            <span>mean <b>${(r.per_frame.reduce((a,b)=>a+b,0)/r.per_frame.length*100).toFixed(0)}%</b></span>
+            <span>max <b>${(Math.max(...r.per_frame)*100).toFixed(0)}%</b></span>
+          </div>
         </div>`}`;
     }
 

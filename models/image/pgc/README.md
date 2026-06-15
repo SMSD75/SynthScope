@@ -70,15 +70,19 @@ trains on the existing ProGAN/GenImage data.
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our reproduced numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Metric | Paper | Ours | Status |
+| Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| GenImage | AP | map=100.0 / acc=98.3 | map_official_wts=100.0 / acc_official_wts=99.49 / map_agid_retrain=97.62 / acc_agid_retrain=78.6 / ckpt_official=repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth; ckpt_agid: checkpoints/_train/pgc_genimage/model_0.pth (registry-default) / tags=pgc_official_genimage8 / pgc_retrain_genimage8 (pgc_long_g8) | reproduced |
-| UniversalFakeDetect (UFD) | AP | map=98.0 | map_official_wts=99.34 / acc_official_wts=94.16 / map_agid_retrain=99.01 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth / tags=pgc_official_ufd / pgc_retrain_ufd | reproduced |
-| ForenSynths (CNNDetection test) | AP | — | map_official_wts=96.25 / acc_official_wts=83.73 / map_agid_retrain=89.03 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth / tags=pgc_official_forensynths / pgc_retrain_forensynths | reproduced |
-| AIGIBench (AIGI) | AP | map=95.0 / acc=86.6 | map_official_wts=95.36 / acc_official_wts=88.33 / map_agid_retrain=86.88 / ckpt_official=repro/official_ckpts/pgc/PGC_train_progan_sdv1_4_ckpt.pth / tags=pgc_official_aigibench25 / pgc_retrain_aigibench | reproduced |
-| CommGen15 (commercial in-the-wild) | AP | acc=97.9 | map_official_wts=99.26 / acc_official_wts=97.39 / map_agid_retrain=98.61 / acc_agid_retrain=66.66 / ckpt_official=repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth / tags=pgc_official_commgen15 / pgc_retrain_commgen15 | reproduced |
+| GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 | mAP=97.62 / acc=78.6 | official |
+| UniversalFakeDetect (UFD) | map=98.0 | mAP=99.34 / acc=94.16 | mAP=99.01 | reproduced |
+| ForenSynths (CNNDetection test) | — | mAP=96.25 / acc=83.73 | mAP=94.57 / acc=83.41 | reference |
+| AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
+| CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
+
+> **ForenSynths caveat:** ForenSynths AGID_train mAP (94.57) is the 13-generator mean and is close to AGID_official because the 10 easy generators dominate; on the three hard generators (deepfake/san/seeingdark) AGID_train reaches only 75.87 mAUROC vs 94.35 for official weights. Running the authors' train.py verbatim reproduces the same plateau, so the released ProGAN checkpoint is not reproducible from the published recipe+data — see repro/investigate/pgc_gap_investigation.md.
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Differences from the paper / official code
 

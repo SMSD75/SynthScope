@@ -103,6 +103,21 @@ export async function sotaRealImage() {
   if (!r.ok) throw new Error(d.detail || `HTTP ${r.status}`);
   return d;
 }
+export async function fetchLeaderboard() {
+  const r = await fetch(`${BASE}/api/leaderboard`);
+  if (!r.ok) throw new Error(`leaderboard: HTTP ${r.status}`);
+  return r.json();
+}
+export async function fetchGeneratorBenchmarks() {
+  const r = await fetch(`${BASE}/api/generator_benchmarks`);
+  if (!r.ok) throw new Error(`generator benchmarks: HTTP ${r.status}`);
+  return r.json();
+}
+export async function fetchTrending() {
+  const r = await fetch(`${BASE}/api/trending`);
+  if (!r.ok) throw new Error(`trending: HTTP ${r.status}`);
+  return r.json();
+}
 export async function sotaCompare(file, generator, detectors, prompt) {
   const fd = new FormData();
   fd.append("file", file);

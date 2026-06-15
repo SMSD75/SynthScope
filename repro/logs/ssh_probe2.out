@@ -1,0 +1,11 @@
+ON: ivi-cn029
+--- name resolution + route ---
+10.4.1.23       ivi-cn023.localdomain ivi-cn023 ivi-cn023-netgbe0.localdomain ivi-cn023-netgbe0
+port 22 reachable
+--- ssh attempt (verbose, key auth) ---
+debug1: Connecting to ivi-cn023 [10.4.1.23] port 22.
+debug1: Connection established.
+debug1: Authenticating to ivi-cn023:22 as 'ssalehi'
+debug1: Authentications that can continue: publickey,gssapi-keyex,gssapi-with-mic,password
+debug1: Offering public key: /home/ssalehi/.ssh/id_rsa RSA SHA256:jRm0HvTSx223eIIkLJ3QoLR6txXxPcQfyUMOYXOIvII explicit
+debug1: Server accepts key: /home/ssalehi/.ssh/id_rsa RSA SHA256:jRm0HvTSx223eIIkLJ3QoLR6txXxPcQfyUMOYXOIvII explicit

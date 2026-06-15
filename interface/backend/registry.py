@@ -38,6 +38,16 @@ def tf_resize_crop(resize: int, crop: int, mean=None, std=None) -> T.Compose:
     return T.Compose(steps)
 
 
+def tf_crop(crop: int, mean=None, std=None) -> T.Compose:
+    """Center-crop ``crop`` with NO resize, ToTensor, optional Normalize. Official SAFE
+    preprocessing (scripts/eval.sh: --input_size 256 --transform_mode 'crop', no normalization) —
+    a resize would alter the high-frequency signal SAFE keys on."""
+    steps = [T.CenterCrop(crop), T.ToTensor()]
+    if mean is not None:
+        steps.append(_norm(mean, std))
+    return T.Compose(steps)
+
+
 def tf_square_resize(resize: int, crop: Optional[int], mean=None, std=None) -> T.Compose:
     """Square Resize((resize,resize)), optional center-crop, ToTensor, optional Normalize.
 
@@ -108,6 +118,16 @@ def remap_npr(sd: dict) -> dict:
     return out
 
 
+def remap_safe(sd: dict) -> dict:
+    """Official SAFE (Ouxiang-Li/SAFE) → AGIDSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
+    matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
+    ``head``. (The engine already unwraps the ``model`` wrapper before this.)"""
+    out = {}
+    for k, v in sd.items():
+        out[("head." + k[len("fc1."):]) if k.startswith("fc1.") else k] = v
+    return out
+
+
 @dataclass
 class ModelSpec:
     key: str                       # menu id / dispatch handle
@@ -127,6 +147,11 @@ class ModelSpec:
     window_center: bool = False         # center the sampling window (ReStraV) vs start (D3/STALL)
     resize_interp: str = "bilinear"     # frame resize interpolation ("bicubic" for ReStraV)
     notes: str = ""
+    # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
+    #   "official"      = authors' released weights (loaded into the AGID class)
+    #   "agid_trained"  = our from-scratch AGID checkpoint
+    #   "training_free" = no weights (frozen-feature / training-free detector)
+    weights: str = "agid_trained"
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
 
 
@@ -186,15 +211,18 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="safe", name="SAFE", paper="Li et al., KDD'25",
-    modality="image", predict_kind="ce", checkpoint="safe.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="safe.pth",
+    ckpt_kind="official_safe", remap=remap_safe, weights="official",
     overrides=["model@ModelConfig=image/safe"],
-    transform=tf_resize_crop(256, 256, None, None),
-    notes="High-frequency (DWT) artifact detector trained from scratch. Raw [0,1] input.",
+    transform=tf_crop(256),
+    notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Uses OFFICIAL SAFE weights via a "
+          "fc1->head remap + center-crop-256 no-resize/no-norm preprocessing (matching the official eval; "
+          "a resize was corrupting the high-freq signal -> all-fake). Much stronger than our from-scratch SAFE.",
 ))
 _add(ModelSpec(
     key="fat_former", name="FatFormer", paper="Liu et al., CVPR'24",
     modality="image", predict_kind="ce", checkpoint="fat_former.pth",
-    ckpt_kind="official_fatformer", remap=remap_fatformer,
+    ckpt_kind="official_fatformer", remap=remap_fatformer, weights="official",
     # The released checkpoint has FAA at blocks [7,15,23] => num_vit_adapter=3 (not the yaml's 8).
     overrides=["model@ModelConfig=image/fat_former", "ModelConfig.num_vit_adapter=3"],
     transform=tf_square_resize(256, 224, IMAGENET_MEAN, IMAGENET_STD),
@@ -203,7 +231,7 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="aide", name="AIDE", paper="Yan et al., ICLR'25",
     modality="image", predict_kind="ce", checkpoint="aide.pth",
-    ckpt_kind="official_aide", remap=remap_aide,
+    ckpt_kind="official_aide", remap=remap_aide, weights="official",
     # AGID-trained faithful AIDE: build the SAME frozen laion2b ConvNeXt-XXL used in training (the
     # checkpoint stores only trainable params); resnet built random then overwritten by the ckpt.
     overrides=["model@ModelConfig=image/aide", "ModelConfig.resnet_pretrained=false"],
@@ -214,6 +242,7 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="spai", name="SPAI", paper="Karageorgiou et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="agid",
+    weights="official",  # shipped spai.pth = official SPAI weights remapped into the AGID class (any-res SCA port)
     overrides=["model@ModelConfig=image/spai"],
     transform=tf_resize_crop(448, 448, None, None),
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention over a 2x2 grid of 224 patches "
@@ -236,14 +265,16 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="pgc", name="PGC", paper="Zhou et al., 2026",
     modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="agid",
+    weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
     overrides=["model@ModelConfig=image/pgc"],
     transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
-    notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration (residual computed in-model).",
+    notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration. Uses OFFICIAL released weights "
+          "(better than our from-scratch PGC on the ForenSynths hard generators; see repro/investigate/pgc_gap_investigation.md).",
 ))
 _add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
     modality="image", predict_kind="bce_npr", checkpoint="npr.pth",
-    ckpt_kind="official_npr", remap=remap_npr,
+    ckpt_kind="official_npr", remap=remap_npr, weights="official",
     overrides=["model@ModelConfig=image/npr"],
     transform=tf_square_resize(256, None, IMAGENET_MEAN, IMAGENET_STD),
     notes="Neighboring-pixel-residual ResNet. Official ProGAN weights.",
@@ -252,7 +283,7 @@ _add(ModelSpec(
 # --- Video detectors ---------------------------------------------------------
 _add(ModelSpec(
     key="d3", name="D3 (video)", paper="ICCV'25",
-    modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none",
+    modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",
     overrides=["model@ModelConfig=video/d3", "ModelConfig.backbone_name=clip",
                "ModelConfig.first_order=l2"],
     num_frames=16, fps=8.0, frame_size=224, video_norm=(CLIP_MEAN, CLIP_STD),
@@ -270,7 +301,7 @@ _add(ModelSpec(
 DINOV3_WEIGHTS = "/hddstore/ssalehi/AGID/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 _add(ModelSpec(
     key="stall", name="STALL (video)", paper="Ben Hayun et al., CVPR'26",
-    modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none",
+    modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",
     overrides=["model@ModelConfig=video/stall", f"ModelConfig.dino_weights={DINOV3_WEIGHTS}"],
     num_frames=16, fps=None, frame_size=224, video_norm=(IMAGENET_MEAN, IMAGENET_STD),
     notes="Training-free spatial+temporal likelihood vs real-video stats (DINOv3 ViT-L/16, VATEX calibration).",
@@ -282,53 +313,51 @@ _add(ModelSpec(
 # eval; official-weights rows are cross-checked against the paper, from-scratch/probe rows are our
 # reproductions. Honest caveats are kept in `note` (see README repro section + session findings).
 # ---------------------------------------------------------------------------
-REPRO: dict[str, dict] = {
-    "fat_former": {"benchmark": "ForenSynths-8", "paper": "98.4 acc / 99.7 mAP",
-                   "ours": "98.39 acc / 99.70 mAP", "match": "match",
-                   "note": "official ProGAN weights — reproduces the paper."},
-    "co_spy": {"benchmark": "Co-Spy-Bench (110 subsets)", "paper": "87.1 acc / 96.0 AP",
-               "ours": "official 83.88 acc / 86.65 mAP; AGID 56.6 / 72.81", "match": "partial",
-               "note": "coverage 66→110 (added Flickr30k/COCO proxy reals); 94.6 mAP on the 3 shipped-real sources (≈paper); AIGCDetect official 94.59. An 8-epoch from-scratch AGID retrain reproduced the same 72.7 mAP ceiling, confirming the gap is architectural (single backbone vs official SigLIP-384 + SD-VAE fusion), not the training recipe."},
-    "npr": {"benchmark": "ForenSynths-8 / GANGen", "paper": "92.5 acc / 96.1 mAP (FS); 96.6 (GANGen)",
-            "ours": "91.83 / 92.81 (FS-8); 94.81 / 96.49 (GANGen)",
-            "match": "match", "note": "official ProGAN weights. GANGen fixed via --native-res eval (resize injects NPR's own up-sampling artifact: 65→96 mAP)."},
-    "aide": {"benchmark": "GenImage (SD-v1.4 train)", "paper": "86.9 acc", "ours": "official 85.91 acc / 97.12 mAP; AGID-trained 91.75 mAP",
-             "match": "match", "note": "faithful ConvNeXt-XXL + 5-view DCT, sd14_train ckpt. ForenSynths 94.40, AIGCDetect 97.94 (paper 92.8). AGID-trained from scratch on GenImage reaches 91.75 mAP in-domain; the ProGAN retrain for ForenSynths diverged, so official 94.40 is the ForenSynths reference."},
-    "clip": {"benchmark": "ForenSynths", "paper": "~98 mAP", "ours": "97.2 mAP / 97.0 AUROC",
-             "match": "match", "note": "frozen CLIP ViT-L/14 probe (ProGAN-trained)."},
-    "cnn": {"benchmark": "ForenSynths", "paper": "~96–98 mAP", "ours": "96.8 mAP / 96.6 AUROC",
-            "match": "match", "note": "ResNet-50 fine-tune (ProGAN)."},
+# Full per-method benchmark table (ALL reported benchmarks: paper vs AGID-trained vs official-weights
+# + status), generated by build_repro_full.py from repro/benchmark_specs/ + repro/bench_results/.
+# Loaded FIRST so the headline cards below DERIVE from the same data and can never drift out of sync.
+import json as _json, pathlib as _pathlib
+try:
+    REPRO_FULL = _json.loads((_pathlib.Path(__file__).resolve().parent / "repro_full.json").read_text())
+except Exception:
+    REPRO_FULL = {}
+
+# AGID-only probe variants (no paper benchmark table of their own) — hand-kept headline cards.
+_PROBE_REPRO: dict[str, dict] = {
     "dinov2": {"benchmark": "ForenSynths", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "95.03 mAP / 94.86 AUROC",
                "match": "close", "note": "frozen DINOv2 ViT-L/14 probe."},
     "dinov3": {"benchmark": "ForenSynths-8", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "93.68 mAP / 92.92 AUROC",
                "match": "close", "note": "frozen DINOv3 ViT-L/16 probe (8 ForenSynths gens, n=400/class)."},
     "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (AGID variant)", "ours": "98.96 mAP / 98.77 AUROC",
                      "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8 gens, n=400/class)."},
-    "safe": {"benchmark": "ForenSynths", "paper": "— (no comparable number)", "ours": "94.13 mAP / 93.68 AUROC",
-             "match": "ours-only", "note": "trained from scratch on ProGAN (paper uses AIGIBench)."},
-    "spai": {"benchmark": "GenImage", "paper": "~91 AUC (any-res set)", "ours": "official 91.33 / AGID 88.80 mAP (retrained)",
-             "match": "gap-closed", "note": "GAP-CLOSING: ported the official any-resolution Spectral-Context-Attention into the AGID class + fixed a deleted-reals data bug (training had 0 reals -> all-fake 50.0 collapse) -> GenImage 80.75->88.80 mAP (promoted to spai.pth); residual ~2.5 mAP is re-impl divergence."},
-    "vib_net": {"benchmark": "GenImage SD-v1.4", "paper": "95.5 AP", "ours": "83.26 mAP (retrained)",
-                "match": "below", "note": "no official weights released. CLIP-backbone retrain = 83.26 mAP; a FLAVA-backbone retrain (the paper's headline backbone) did not converge (val loss stayed at chance), so the residual gap is architectural and documented, not closed."},
-    "pgc": {"benchmark": "GenImage", "paper": "98.3 acc / 100.0 AP", "ours": "78.6 acc / 97.62 mAP (retrained SD-v1.4)", "match": "gap-closed",
-            "note": "GAP-CLOSING: AGID retrain on the paper's SD-v1.4 source took GenImage mAP 69.68→97.62 (promoted to pgc.pth); CommGen15 73.5→98.6, UnivFD 97.3→99.0."},
-    "d3": {"benchmark": "GenVideo-Val", "paper": "98.5 mAP", "ours": "89.00 mAP / 93.87 AUROC", "match": "below",
-           "note": "training-free; full GenVideo-Val (10 gens) + EvalCrafter 91.2 mAP. CLIP-B/16 encoder vs paper XCLIP accounts for the ~7-9 mAP gap."},
-    "restrav": {"benchmark": "GenVideo-Val", "paper": "in-dist ~high-90s; unseen-gen 97.3 mAP / Sora 92.9",
-                "ours": "in-dist AUROC ~1.00; unseen-gen ~1.00; cross-dataset ~0.48–0.72 (unstable)",
-                "match": "partial", "note": "in-dist & paper-style unseen-generator reproduce; cross-DATASET (real-source shift) is unstable — deployed restrav_data/test ≈ AUROC 0.48 (chance)."},
-    "stall": {"benchmark": "GenVideo-Val", "paper": "~80 AUC", "ours": "82.38 mAP / 83.51 AUROC",
-              "match": "match", "note": "training-free; DINOv3 + calibration recomputed on GenVideo reals. VideoFeedback 83.1 mAP, ComGenVid 82.6 mAP (all ≈ paper)."},
 }
 
+# Each model's headline = its primary paper benchmark, derived from REPRO_FULL (single source of truth).
+_PRIMARY = {
+    "co_spy": "Co-Spy-Bench", "fat_former": "4-class", "npr": "Table 1", "aide": "GenImage",
+    "clip": "UniversalFakeDetect", "cnn": "ForenSynths", "safe": "GenImage", "spai": "GenImage",
+    "vib_net": "Diffusion-source (SDv1.4-trained), AP", "pgc": "GenImage", "d3": "GenVideo",
+    "restrav": "GenVidBench", "stall": "GenVideo",
+}
+_MATCH = {"reproduced": "match", "official": "match", "below": "below",
+          "reference": "partial", "missing": "pending"}
 
-# Full per-method benchmark table (ALL reported benchmarks: paper vs ours + status), generated by
-# build_repro_full.py from repro/benchmark_specs/ + repro/bench_results/. Shown per selected method in the UI.
-import json as _json, pathlib as _pathlib
-try:
-    REPRO_FULL = _json.loads((_pathlib.Path(__file__).resolve().parent / "repro_full.json").read_text())
-except Exception:
-    REPRO_FULL = {}
+
+def _headline(model: str):
+    rows = REPRO_FULL.get(model, [])
+    if not rows:
+        return None
+    sub = _PRIMARY.get(model, "")
+    row = next((r for r in rows if sub.lower() in r["benchmark"].lower()), rows[0])
+    return {"benchmark": row["benchmark"], "paper": row["paper"], "ours": row["ours"],
+            "match": _MATCH.get(row["status"], row["status"]), "note": row.get("note", "")}
+
+
+REPRO: dict[str, dict] = dict(_PROBE_REPRO)
+for _m in REPRO_FULL:
+    _h = _headline(_m)
+    if _h:
+        REPRO[_m] = _h
 
 
 def list_specs() -> list[ModelSpec]:
