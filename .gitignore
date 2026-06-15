@@ -23,3 +23,6 @@ dist/
 
 # Large shared HF/torch cache (node-local downloads)
 .cache_shared/
+
+# arXiv trending candidates (regenerated daily by fetch_arxiv_trending.py)
+repro/trending_arxiv_candidates.json
