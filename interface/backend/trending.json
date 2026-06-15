@@ -11,6 +11,30 @@
       "result": "ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)."
     },
     {
+      "title": "PROBE: Probing Generative Space for Generalizable AIGI Detection",
+      "authors": "", "venue": "arXiv", "year": "2026", "agid": "probe",
+      "github": "https://github.com/Amamiya-C/PROBE-AIGI-Detection",
+      "arxiv": "https://arxiv.org/abs/2605.24906",
+      "summary": "Boosts cross-generator generalization by augmenting training with images sampled from probed generative-space variations; the detector is a fine-tuned DINOv2 (sliding-patch) classifier. Released weights on ModelScope.",
+      "result": "PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (GenImage/Synthbuster/...). [AGID integration in progress.]"
+    },
+    {
+      "title": "DiCoME: Divide-and-Conquer Multi-View Evidential Learning for Deepfake Detection",
+      "authors": "", "venue": "arXiv", "year": "2026",
+      "github": "https://github.com/kxl0825/DiCoME",
+      "arxiv": "https://arxiv.org/abs/2606.01885",
+      "summary": "Disentangles semantic vs structural-artifact views and fuses them with evidential learning to counter the 'semantic masking effect'. Released checkpoint (HF).",
+      "result": "SOTA cross-dataset deepfake generalization (DeepfakeBench protocol). [face-deepfake domain; AGID lacks those datasets locally — integration pending data.]"
+    },
+    {
+      "title": "Images as Tables: In-Context AIGI Detection with TabPFN",
+      "authors": "", "venue": "arXiv", "year": "2026",
+      "github": "https://github.com/jpwalter30/Towards-Generalizable-Detection-of-AI-Generated-Images",
+      "arxiv": "https://arxiv.org/abs/2606.00872",
+      "summary": "Frozen DINOv3 CLS feature -> PCA(500) -> TabPFN in-context tabular classification; strong few-shot/low-data generalization with no task-specific training.",
+      "result": "Generalizable detection in the low-data regime (few labeled examples per new generator)."
+    },
+    {
       "title": "Co-Spy: Fusing Semantic and Artifact Cues for Synthetic Image Detection",
       "authors": "Cheng et al.", "venue": "CVPR", "year": "2025", "agid": "co_spy",
       "github": "https://github.com/Megum1/Co-Spy",
