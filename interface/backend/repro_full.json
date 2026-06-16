@@ -4,8 +4,8 @@
       "benchmark": "AIGCDetectBenchmark (B1, Setting-I, ProGAN-tra",
       "metric": "acc",
       "paper": "acc=92.77",
-      "ours": "AGID mAP=72.25 / acc=61.64 \u00b7 official mAP=97.94 / acc=91.89",
-      "ours_agid": "mAP=72.25 / acc=61.64",
+      "ours": "mAP=97.94 / acc=91.89 (official wts)",
+      "ours_agid": "",
       "ours_official": "mAP=97.94 / acc=91.89",
       "status": "official",
       "note": "AGID metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."
@@ -14,11 +14,11 @@
       "benchmark": "GenImage (B2, Setting-I, SDv1.4-trained)",
       "metric": "acc",
       "paper": "acc=86.88",
-      "ours": "AGID mAP=92.47 / acc=73.5 \u00b7 official mAP=97.12 / acc=85.91",
-      "ours_agid": "mAP=92.47 / acc=73.5",
+      "ours": "AGID mAP=96.42 / acc=77.87 \u00b7 official mAP=97.12 / acc=85.91",
+      "ours_agid": "mAP=96.42 / acc=77.87",
       "ours_official": "mAP=97.12 / acc=85.91",
       "status": "official",
-      "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88. tag=aide_official_genimage8 2026-06-05. AGID-class-from-scratch (registry) = 55.67 mAP/53.8 acc; AGID trained-in-repo on GenImage = 91.75 mAP/72.0 acc; faithful-fix r"
+      "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88 (tag aide_official_genimage8). FROM-SCRATCH reproduction (native-res 5-view, aide_native_v2/model_2): GenImage-8 96.42 mAP / 97.07 mAUROC / 77.9 acc (tag aide_retrain_"
     },
     {
       "benchmark": "Chameleon (B3, Setting-II, in-the-wild)",

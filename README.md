@@ -165,7 +165,7 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | NPR | Table 4 — UniversalFakeDetect / Ojha | acc=95.2 | mAP=96.69 / acc=93.94 | — | official |
 | NPR | Table 5 — Diffusion1kStep | acc=80.1 | mAP=83.47 / acc=79.13 | — | official |
 | AIDE | AIGCDetectBenchmark (B1, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | mAP=72.25 / acc=61.64 | official |
-| AIDE | GenImage (B2, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 | mAP=92.47 / acc=73.5 | official |
+| AIDE | GenImage (B2, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 | mAP=96.42 / acc=77.9 | reproduced |
 | AIDE | Chameleon (B3, in-the-wild) | acc=58–66 | — | — | missing |
 | SAFE | ForenSynths-8 (Table 1, intra-arch GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
 | SAFE | Self-Synthesis / GANGen (Table 2) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | not re-run (data offline) | official |

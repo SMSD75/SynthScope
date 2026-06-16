@@ -14,8 +14,10 @@ ROOT = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
 # These resolve the AGID-vs-official ambiguity in the spec our_number dicts and surface the number
 # that the spec only kept in prose. Each traces to a repro/bench_results/*.json (tag in spec note).
 VAL = {
-    ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}, "agid": {"map": 72.25, "acc": 61.64}},
-    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "agid": {"map": 92.47, "acc": 73.5}},
+    # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no AGID_train here.
+    ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
+    # AGID_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces official.
+    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "agid": {"map": 96.42, "acc": 77.87}},
     ("clip", "ForenSynths"):             {"agid": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
     ("clip", "UniversalFakeDetect"):     {"agid": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
     ("cnn", "ForenSynths"):              {"agid": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},

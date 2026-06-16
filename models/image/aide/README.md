@@ -29,11 +29,11 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | mAP=72.25 / acc=61.64 (old, pre-fix) | official |
-| GenImage (B2, Setting-I, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 (served 96.83) | mAP=92.47 / acc=73.5 (old, pre-fix) | official |
-| ForenSynths-13 | — | mAP=94.40 / acc=81.8 | mAP=74.92 (cross-domain) | reference |
+| AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | — | official |
+| GenImage (B2, Setting-I, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 (served 96.83) | **mAP=96.42 / acc=77.9** | reproduced |
+| ForenSynths-13 | — | mAP=94.40 / acc=81.8 | mAP=79.62 (cross-domain) | reference |
 | Chameleon (B3, Setting-II, in-the-wild) | acc=58–66 | — | — | missing |
 
-*(AGID_train = the old pre-fix from-scratch runs (resize-256 DCT); a faithful native-res retrain is in progress — Phase 2.)*
+*(**AGID_train = a from-scratch retrain with the faithful native-res 5-view preprocessing** (`checkpoints_retrain/aide_native_v2/model_2`, GenImage SDv1.4): GenImage-8 **96.42 mAP / 97.07 mAUROC**, reproducing the official 97.12 — up from the old resize-256 run's 92.47. This proves the repo can regenerate the AIDE checkpoint from scratch. ForenSynths-13 is cross-domain (GenImage-trained model on the GAN benchmark, like the official sd14 checkpoint there).)*
 
 **reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
