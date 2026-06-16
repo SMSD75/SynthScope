@@ -349,6 +349,16 @@ class AIDEFiveView:
                 image = torch.nn.functional.interpolate(
                     image.unsqueeze(0), size=(max(int(h * s), 32), max(int(w * s), 32)),
                     mode="bilinear", align_corners=False).squeeze(0)
+        # Floor the short side at the DCT window size: images smaller than 32px in any dimension
+        # can't be unfolded into 32x32 windows (some GenImage train images are e.g. 27x65). Only
+        # triggers on sub-window images, so normal (>=256) images are untouched.
+        win = self.dct.window_size
+        h, w = image.shape[-2], image.shape[-1]
+        if min(h, w) < win:
+            s = win / min(h, w)
+            image = torch.nn.functional.interpolate(
+                image.unsqueeze(0), size=(max(int(round(h * s)), win), max(int(round(w * s)), win)),
+                mode="bilinear", align_corners=False).squeeze(0)
         a, b, c, d = self.dct(image)
         return torch.stack([_transform_view(a), _transform_view(b), _transform_view(c),
                             _transform_view(d), _transform_view(image)], dim=0)
