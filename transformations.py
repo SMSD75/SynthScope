@@ -90,6 +90,11 @@ class AIGITransformations:
             return v2.RandomApply([v2.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=0.05)], p=0.2)
         elif transform_name == "random_mask_safe":
             return RandomMask(ratio=(0.0, 0.75), patch_size=16, p=0.5)
+        elif transform_name == "aide_five_view":
+            # AIDE native-resolution 5-view preprocessing: PIL -> [5,3,256,256] (DCT patch selection
+            # at native res, then resize the selected patches). Must be the LAST transform in the list.
+            from models.image.aide.official_arch import AIDEFiveView
+            return AIDEFiveView()
         elif transform_name == "normalize_dinov2":
             return v2.Normalize(
                 mean=[0.485, 0.456, 0.406],

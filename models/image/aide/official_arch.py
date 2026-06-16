@@ -312,15 +312,32 @@ _transform_view = transforms.Compose([transforms.Resize([256, 256]),
 
 
 class AIDEFiveView:
-    """Official AIDE TestDataset preprocessing: PIL -> ``[5,3,256,256]`` = the 4 DCT-selected
+    """Official AIDE TestDataset preprocessing -> ``[5,3,256,256]`` = the 4 DCT-selected
     native-resolution patches (each resized to 256) + the full image (tokens). Runs the DCT on the
-    NATIVE-size tensor (the key fidelity detail). Picklable + stateless aside from the DCT module."""
+    NATIVE-size image (the key fidelity detail). Accepts BOTH a PIL image (inference path:
+    bench_eval / engine) and a uint8/float ``[3,H,W]`` tensor (training path: dataset ``_decode_rgb``
+    + v2 transforms). Picklable + stateless aside from the DCT module."""
 
     def __init__(self):
         self.dct = DCT_base_Rec_Module()
 
-    def __call__(self, pil_img: Image.Image) -> torch.Tensor:
-        image = _transform_before(pil_img)  # [3, H, W] native, [0,1]
+    @staticmethod
+    def _to_float_chw(img) -> torch.Tensor:
+        if isinstance(img, torch.Tensor):
+            image = img
+            if image.ndim == 4:
+                image = image.squeeze(0)
+            if image.dtype == torch.uint8:
+                image = image.float() / 255.0
+            else:
+                image = image.float()
+                if float(image.max()) > 1.5:   # not yet scaled to [0,1]
+                    image = image / 255.0
+            return image
+        return _transform_before(img)  # PIL -> [3,H,W] float [0,1]
+
+    def __call__(self, img) -> torch.Tensor:
+        image = self._to_float_chw(img)
         a, b, c, d = self.dct(image)
         return torch.stack([_transform_view(a), _transform_view(b), _transform_view(c),
                             _transform_view(d), _transform_view(image)], dim=0)
