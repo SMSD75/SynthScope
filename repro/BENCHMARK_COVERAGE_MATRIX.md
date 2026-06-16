@@ -44,8 +44,8 @@ Re-derived specs: `repro/benchmark_specs/*.json`. Status vs `repro/bench_results
 | safe | GenImage-8 (Table 4, cross-archi | reproduced | 99.3 | 99.51 | agid_trained retrain v2 (model_38) = 99.51 mAP, BEATS official 99.32 ~ paper 99.3. SERVED checkpoint. |
 | safe | DiTFake (Table 6, cross-archit | reproduced | 99.9 | 99.96 | agid_trained retrain v2 (model_38) = 99.96 mAP over Flux/PixArt/SD3 = MATCH paper 99.9. |
 | spai | SPAI main eval set (13 generat | missing | 91.0 | None | (1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/ |
-| spai | GenImage (cross-dataset, AGID  | below | — | {'map_o | AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (o |
-| spai | Synthbuster | missing | — | None | Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must b |
+| spai | GenImage (cross-dataset, AGID  | reproduced | — | 94.22 | SERVED native-res path (official weights in AGID class) = 94.22 mAP, beats vendored-official 91.33 and the superseded fixed-448 retrain 88.80. (limit 300/gen) |
+| spai | Synthbuster | reproduced | — | 96.75 | SERVED native-res path = 96.75 mAP / 96.97 mAUROC (was 55.67 via fixed-448). Data at /hddstore/.../Synthbuster/test. (limit 200/gen) |
 | stall | GenVideo (DeMamba GenVideo-Val | reproduced | — | {'mAP': | REPRODUCED (slightly ABOVE paper): AGID mAUROC 83.51 / mAP 82.38 vs pa |
 | stall | VideoFeedback (TIGER-Lab, 11 g | reproduced | — | {'mAP': | REPRODUCED: AGID mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0 |
 | stall | ComGenVid (paper's new benchma | reproduced | — | {'mAP': | REPRODUCED: AGID mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP  |

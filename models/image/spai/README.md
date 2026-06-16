@@ -115,13 +115,15 @@ It uses the default dataset (`genimage`). **The transform lists end in `to_dtype
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
-|---|---|---|---|---|
-| SPAI main eval set (13 generators x 5 real sou | auroc=91.0 | — | — | missing |
-| GenImage (cross-dataset, AGID benchmark) | — | mAP=91.33 / AUROC=92.3 | mAP=88.80 / acc=82.81 | reference |
-| Synthbuster | — | — | — | missing |
+> **Served checkpoint:** the web app / `agid.load("spai")` now serves the **official SPAI weights remapped into the AGID class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `tf_native_cap(1024)`, `spai.pth → repro/ckpts/spai_official_agid.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
 
-**AGID_official** = authors' released weights run through the AGID class/eval · **AGID_train** = AGID class trained from scratch by us (single best run) · **Status:** reproduced = AGID_train matches paper/official · official = AGID_official matches (AGID_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
+| Benchmark | Paper | AGID_official (served, native-res) | AGID_train (retrain, superseded) | Status |
+|---|---|---|---|---|
+| SPAI main eval set (13 generators x 5 real sources) | auroc=91.0 | — | — | missing |
+| GenImage-8 (cross-dataset, AGID benchmark) | — | mAP=94.22 / AUROC=94.28 | mAP=88.80 / acc=82.81 | reference |
+| Synthbuster (9 gen) | — | mAP=96.75 / AUROC=96.97 | — | reference |
+
+The served native-res path **reproduces and beats** the vendored-official number (91.33 mAP on GenImage) and lifts Synthbuster from 55.67 (fixed-448) to 96.75 mAP. Traced to `repro/bench_results/spai_served_{genimage8,synthbuster}.json` (job 186246; limit 300/200 per class per generator). **AGID_official** = authors' released weights run through the AGID class · **AGID_train** = AGID class trained from scratch · reference = no comparable paper number · missing = not yet evaluated.
 
 ## Integration notes
 

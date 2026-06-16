@@ -42,7 +42,10 @@ VAL = {
     ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "agid": {"map": 89.03}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "agid": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "agid": {"map": 98.61, "acc": 66.66}},
-    ("spai", "GenImage"):                {"official": {"map": 91.33, "auroc": 92.3}, "agid": {"map": 88.8, "acc": 82.81}},
+    # SPAI now SERVES official weights remapped into the AGID class, scored at NATIVE resolution
+    # (the faithful any-res path). official = that served number; agid = the superseded from-scratch retrain.
+    ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "agid": {"map": 88.8, "acc": 82.81}},
+    ("spai", "Synthbuster"):             {"official": {"map": 96.75, "auroc": 96.97}},
     ("d3", "GenVideo"):                  {"agid": {"map": 89.0, "auroc": 93.87, "acc": 86.04}},
     ("d3", "EvalCrafter"):               {"agid": {"map": 91.19, "auroc": 95.41, "acc": 87.67}},
     ("restrav", "GenVidBench"):          {"agid": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},

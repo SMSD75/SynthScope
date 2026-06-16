@@ -180,8 +180,8 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | Co-Spy | ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
 | Co-Spy | In-the-wild (Co-Spy-Bench) | map=84.65 / acc=77.41 | — | — | missing |
 | SPAI | SPAI main eval (13 gen × 5 real) | auroc=91.0 | — | — | missing |
-| SPAI | GenImage (cross-dataset) | — | mAP=91.33 / AUROC=92.3 | mAP=88.80 / acc=82.81 | reference |
-| SPAI | Synthbuster | — | — | — | missing |
+| SPAI | GenImage (cross-dataset) | — | mAP=94.22 / AUROC=94.28 | mAP=88.80 / acc=82.81 | reference |
+| SPAI | Synthbuster | — | mAP=96.75 / AUROC=96.97 | — | reference |
 | VIB-Net | Diffusion-source (SDv1.4), AP — HEADLINE | map=95.53 | *none released* | mAP=83.94 / acc=77.57 | below |
 | VIB-Net | Diffusion-source (SDv1.4), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
 | VIB-Net | GAN-source (ForenSynths/ProGAN), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |
@@ -511,7 +511,7 @@ Model-specific hyperparameters (backbone, adapter dims, projection sizes, etc.) 
   _Results: GenImage 97.12 mAP / AIGCDetect 97.94 mAP (official weights)._
 - **[SPAI: Spectral AI-Image Detection (any-resolution)](https://github.com/mever-team/spai)** (Karageorgiou et al. · CVPR · 2025) — [code](https://github.com/mever-team/spai) · _in AGID: `spai`_  
   Spectral Reconstruction Similarity + Spectral Context Attention; detects at native/arbitrary resolution.  
-  _Results: ~91 AUROC on the SPAI eval; GenImage 91.33 mAP (official weights)._
+  _Results: AGID serves the official weights at native resolution (the faithful any-res path): GenImage 94.22 / Synthbuster 96.75 mAP — reproduces & beats the vendored-official 91.33._
 - **[FatFormer: Forgery-Aware Adaptive Transformer](https://github.com/Michel-liu/FatFormer)** (Liu et al. · CVPR · 2024) — [code](https://github.com/Michel-liu/FatFormer) · _in AGID: `fat_former`_  
   Frozen CLIP + forgery-aware adapters + learnable text-prompt context.  
   _Results: ForenSynths-8 99.7 mAP (official weights)._

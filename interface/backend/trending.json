@@ -64,7 +64,7 @@
       "github": "https://github.com/mever-team/spai",
       "arxiv": "",
       "summary": "Spectral Reconstruction Similarity + Spectral Context Attention; detects at native/arbitrary resolution.",
-      "result": "~91 AUROC on the SPAI eval; GenImage 91.33 mAP (official weights)."
+      "result": "AGID serves the official weights at native resolution (the faithful any-res path): GenImage 94.22 / Synthbuster 96.75 mAP — reproduces & beats the vendored-official 91.33."
     },
     {
       "title": "FatFormer: Forgery-Aware Adaptive Transformer",

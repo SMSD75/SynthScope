@@ -38,8 +38,8 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | Co-Spy | ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
 | Co-Spy | In-the-wild (Co-Spy-Bench) | map=84.65 / acc=77.41 | — | — | missing |
 | SPAI | SPAI main eval (13 gen × 5 real) | auroc=91.0 | — | — | missing |
-| SPAI | GenImage (cross-dataset) | — | mAP=91.33 / AUROC=92.3 | mAP=88.80 / acc=82.81 | reference |
-| SPAI | Synthbuster | — | — | — | missing |
+| SPAI | GenImage (cross-dataset) | — | mAP=94.22 / AUROC=94.28 | mAP=88.80 / acc=82.81 | reference |
+| SPAI | Synthbuster | — | mAP=96.75 / AUROC=96.97 | — | reference |
 | VIB-Net | Diffusion-source (SDv1.4), AP — HEADLINE | map=95.53 | *none released* | mAP=83.94 / acc=77.57 | below |
 | VIB-Net | Diffusion-source (SDv1.4), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
 | VIB-Net | GAN-source (ForenSynths/ProGAN), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |

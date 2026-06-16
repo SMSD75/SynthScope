@@ -424,21 +424,21 @@
       "benchmark": "GenImage (cross-dataset, AGID benchmark)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "AGID mAP=88.8 / acc=82.81 \u00b7 official mAP=91.33 / AUROC=92.3",
+      "ours": "AGID mAP=88.8 / acc=82.81 \u00b7 official mAP=94.22 / AUROC=94.28",
       "ours_agid": "mAP=88.8 / acc=82.81",
-      "ours_official": "mAP=91.33 / AUROC=92.3",
+      "ours_official": "mAP=94.22 / AUROC=94.28",
       "status": "reference",
-      "note": "AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (official adm ap 80.86 / mj 81.41; AGID retrains plateau lower). Root cause = recipe/architecture: AGID's fixed-448 2x2-patch model cannot exploit native-resolution patch s"
+      "note": "SERVED path: official SPAI weights remapped into the AGID class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exc"
     },
     {
       "benchmark": "Synthbuster",
       "metric": "AUROC",
       "paper": "\u2014",
-      "ours": "",
+      "ours": "mAP=96.75 / AUROC=96.97 (official wts)",
       "ours_agid": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must be fetched from Zenodo 10066460 and placed under spai_official/data per docs/data.md before the CSV-driven eval can run. AGID also lacks the any-resolution path to run it "
+      "ours_official": "mAP=96.75 / AUROC=96.97",
+      "status": "reference",
+      "note": "SERVED native-res path (official weights in AGID class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
     }
   ],
   "stall": [

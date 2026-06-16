@@ -190,6 +190,14 @@ class SPAI(nn.Module):
     def forward(self, x):
         if not self.use_sca:
             return self.classifier(self._patch_z(x)).squeeze(-1)                       # B
+        # Native-resolution images smaller than one patch cannot be unfolded (nor five-cropped):
+        # upscale the short side up to the patch size, preserving aspect, so >=1 full patch exists.
+        h, w = x.shape[-2], x.shape[-1]
+        if min(h, w) < self.patch_size:
+            s = self.patch_size / min(h, w)
+            x = F.interpolate(x, size=(max(self.patch_size, round(h * s)),
+                                       max(self.patch_size, round(w * s))),
+                              mode="bilinear", align_corners=False)
         patches = patchify_image(x, self.patch_size, self.patch_stride)                # B x L x C x p x p
         if patches.size(1) < self.minimum_patches:                                     # native-res small image
             from torchvision.transforms.functional import five_crop

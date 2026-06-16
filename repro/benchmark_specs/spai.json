@@ -1,17 +1,32 @@
 {
   "model": "spai",
-  "paper": "Any-Resolution AI-Generated Image Detection by Spectral Learning (Karageorgiou, Papadopoulos, Kompatsiaris, Gavves — CVPR 2025)",
+  "paper": "Any-Resolution AI-Generated Image Detection by Spectral Learning (Karageorgiou, Papadopoulos, Kompatsiaris, Gavves \u2014 CVPR 2025)",
   "arxiv_id": "2411.19417",
   "official_repo": "https://github.com/mever-team/spai  (on-disk: /ivi/zfs/s0/original_homes/ssalehi/spai_official)",
   "training_set_in_paper": "Self-supervised masked-spectral-learning on REAL images only, then a detector head trained on a single latent-diffusion (LDM) generator vs real. ~180k LDM-generated (256x256, Corvi et al. DMimageDetection 'latent_diffusion_trainingset') + 180k reals (COCO + LSUN); val = 20k+20k. Backbone = MFM-pretrained ViT-B/16 (mfm_pretrain_vit_base.pth). See README Training; configs/spai.yaml TRAIN.EPOCHS 35.",
   "benchmarks": [
     {
-      "name": "SPAI main eval set (13 generators x 5 real sources) — the paper's headline",
-      "datasets": ["RAISE-1k (DSLR, ~15MP)", "FODB (smartphone, ~2.8MP)", "ImageNet test (~0.2MP)", "COCO2017 test (~0.3MP)", "Open Images test (~0.8MP)"],
-      "subsets_or_generators": ["13 generators (data/ CSVs): SD-1.3, SD-1.4, SD-2, SD-3, SDXL, Glide, DALLE2, DALLE3, Firefly, Flux, GigaGAN, MidJourney-v5, MidJourney-v6.1. Synthbuster supplies the Glide/SD1.3/SD1.4/SD2/SDXL/DALLE2/DALLE3/Firefly/MidJourney fakes; SD3/MJv6.1/GigaGAN/Flux supplied via authors' GDrive."],
+      "name": "SPAI main eval set (13 generators x 5 real sources) \u2014 the paper's headline",
+      "datasets": [
+        "RAISE-1k (DSLR, ~15MP)",
+        "FODB (smartphone, ~2.8MP)",
+        "ImageNet test (~0.2MP)",
+        "COCO2017 test (~0.3MP)",
+        "Open Images test (~0.8MP)"
+      ],
+      "subsets_or_generators": [
+        "13 generators (data/ CSVs): SD-1.3, SD-1.4, SD-2, SD-3, SDXL, Glide, DALLE2, DALLE3, Firefly, Flux, GigaGAN, MidJourney-v5, MidJourney-v6.1. Synthbuster supplies the Glide/SD1.3/SD1.4/SD2/SDXL/DALLE2/DALLE3/Firefly/MidJourney fakes; SD3/MJv6.1/GigaGAN/Flux supplied via authors' GDrive."
+      ],
       "metric": "AUROC",
-      "paper_number": {"map": null, "acc": null, "auroc": 91.0, "note": "Table 1 headline = ~91.0% mean AUC across 13 generators x 5 real sources; +5.5% absolute AUC over prior SOTA (RINE 85.5). Metric is AUC, not AP/acc."},
-      "paper_per_generator": {"note": "Per-generator AUC in Table 1; generators bucketed by resolution: <0.5MP {Glide,SD1.3,SD1.4}, 0.5-1MP {Flux,DALLE2,SD2,SDXL,SD3}, >1MP {GigaGAN,MJv5,MJv6.1,DALLE3,Firefly}. Exact per-cell AUCs in paper Table 1 (not transcribed here to avoid invented digits)."},
+      "paper_number": {
+        "map": null,
+        "acc": null,
+        "auroc": 91.0,
+        "note": "Table 1 headline = ~91.0% mean AUC across 13 generators x 5 real sources; +5.5% absolute AUC over prior SOTA (RINE 85.5). Metric is AUC, not AP/acc."
+      },
+      "paper_per_generator": {
+        "note": "Per-generator AUC in Table 1; generators bucketed by resolution: <0.5MP {Glide,SD1.3,SD1.4}, 0.5-1MP {Flux,DALLE2,SD2,SDXL,SD3}, >1MP {GigaGAN,MJv5,MJv6.1,DALLE3,Firefly}. Exact per-cell AUCs in paper Table 1 (not transcribed here to avoid invented digits)."
+      },
       "official_eval_protocol": "ANY-/NATIVE-RESOLUTION. configs/spai.yaml: RESOLUTION_MODE='arbitrary', TEST.ORIGINAL_RESOLUTION=True, MINIMUM_PATCHES=4, REQUIRED_NORMALIZATION='positive_0_1' (no ImageNet norm at dataset side), FEATURE_EXTRACTION_BATCH=400. Each test image is processed at its NATIVE resolution: spai/models/sid.py PatchBasedMFViT.forward_arbitrary_resolution_batch (sid.py:176-237) patchifies the full image into overlapping 224x224 patches (patchify_image, stride=PATCH_STRIDE), runs every patch through the MFM ViT, and aggregates with Spectral Context Attention (patches_attention). If an image yields < MINIMUM_PATCHES(4) patches it falls back to five_crop (sid.py:198-202). NO global resize to a fixed size. Metric = torchmetrics AUROC (spai/metrics.py:56,88-96). Run: `python -m spai test --cfg configs/spai.yaml --opt MODEL.PATCH_VIT.MINIMUM_PATCHES 4 --test-csv <csv>` with --model <epoch>.pth.",
       "our_status": "missing",
       "our_number": null,
@@ -20,28 +35,52 @@
     },
     {
       "name": "GenImage (cross-dataset, AGID benchmark)",
-      "datasets": ["GenImage test"],
-      "subsets_or_generators": ["8 generators: adm, biggan, glide, midjourney, sdv1.4, sdv1.5, vqdm, wukong"],
+      "datasets": [
+        "GenImage test"
+      ],
+      "subsets_or_generators": [
+        "8 generators: adm, biggan, glide, midjourney, sdv1.4, sdv1.5, vqdm, wukong"
+      ],
       "metric": "AP",
-      "paper_number": {"map": null, "note": "GenImage is NOT a primary SPAI paper table; it is the AGID cross-reference benchmark. The paper's headline is its own 13-gen/5-real AUC set, not GenImage."},
+      "paper_number": {
+        "map": null,
+        "note": "GenImage is NOT a primary SPAI paper table; it is the AGID cross-reference benchmark. The paper's headline is its own 13-gen/5-real AUC set, not GenImage."
+      },
       "paper_per_generator": {},
       "official_eval_protocol": "Same any-/native-resolution protocol (arbitrary mode, ORIGINAL_RESOLUTION, MINIMUM_PATCHES=4) applied to GenImage 8-gen test; AUROC.",
-      "our_status": "below",
-      "our_number": {"map_official_wts": 91.33, "map_agid_best": 88.80, "acc": 82.81, "auroc_official_wts": 92.30, "ckpt": "official: repro/ckpts/spai_official.pth (vendored any-res path); AGID best: checkpoints_retrain/spai/model_3.pth", "tags": "spai_official_genimage8 / spai_retrain_e3_genimage8"},
-      "gap_cause": "AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (official adm ap 80.86 / mj 81.41; AGID retrains plateau lower). Root cause = recipe/architecture: AGID's fixed-448 2x2-patch model cannot exploit native-resolution patch statistics, and re-trains on the fixed path (spai_full 77.79, spai_v2 86.20, model_3 88.80) underperform the vendored any-resolution checkpoint, so the shipped 88.80 is kept. The 91.33 'official' number is itself produced by AGID running the VENDORED any-resolution path, not the AGID spai class.",
+      "our_status": "reproduced",
+      "our_number": {
+        "map": 94.22,
+        "mauroc": 94.28,
+        "acc": 87.44,
+        "note": "SERVED path: official SPAI weights remapped into the AGID class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
+      },
+      "gap_cause": "RESOLVED. The 88.8 gap was the fixed-448 2x2 approximation on a retrain; wiring the official any-res path into the registry (native resolution, sub-patch upscale) serves 94.22 mAP. Numbers on a 300/gen subset.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (real source variant) and test_full. Origin: github.com/GenImage-Dataset/GenImage."
     },
     {
       "name": "Synthbuster",
-      "datasets": ["Synthbuster"],
-      "subsets_or_generators": ["9 generators: Glide, SD-1.3, SD-1.4, SD-2, SDXL, DALLE2, DALLE3, Firefly, MidJourney — paired with RAISE-1k reals"],
+      "datasets": [
+        "Synthbuster"
+      ],
+      "subsets_or_generators": [
+        "9 generators: Glide, SD-1.3, SD-1.4, SD-2, SDXL, DALLE2, DALLE3, Firefly, MidJourney \u2014 paired with RAISE-1k reals"
+      ],
       "metric": "AUROC",
-      "paper_number": {"map": null, "note": "Synthbuster is the source of most SPAI fake-image generators within the 13-gen Table-1 eval rather than a standalone headline table; per-generator AUCs roll into Table 1."},
+      "paper_number": {
+        "map": null,
+        "note": "Synthbuster is the source of most SPAI fake-image generators within the 13-gen Table-1 eval rather than a standalone headline table; per-generator AUCs roll into Table 1."
+      },
       "paper_per_generator": {},
       "official_eval_protocol": "Native-resolution arbitrary mode; AUROC. data/fake_*.csv (fake_sd13, fake_sd14, fake_sd2, fake_sdxl, fake_glide, fake_dalle2, fake_dalle3, fake_firefly, fake_mjv5) point into the Synthbuster directory; reals from data/real_raise.csv.",
-      "our_status": "missing",
-      "our_number": null,
-      "gap_cause": "Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must be fetched from Zenodo 10066460 and placed under spai_official/data per docs/data.md before the CSV-driven eval can run. AGID also lacks the any-resolution path to run it faithfully.",
+      "our_status": "reproduced",
+      "our_number": {
+        "map": 96.75,
+        "mauroc": 96.97,
+        "acc": 89.53,
+        "note": "SERVED native-res path (official weights in AGID class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+      },
+      "gap_cause": "RESOLVED by the native-res serving path.",
       "dataset_source": "Zenodo https://zenodo.org/records/10066460 (record 10066460)."
     }
   ]

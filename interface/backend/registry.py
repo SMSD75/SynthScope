@@ -10,6 +10,7 @@ For each detector we record:
 
 Label convention (dataset.py:_get_label): index 0 = real, index 1 = fake.
 """
+import functools
 from dataclasses import dataclass, field
 from typing import Callable, Optional
 
@@ -43,6 +44,29 @@ def tf_crop(crop: int, mean=None, std=None) -> T.Compose:
     preprocessing (scripts/eval.sh: --input_size 256 --transform_mode 'crop', no normalization) —
     a resize would alter the high-frequency signal SAFE keys on."""
     steps = [T.CenterCrop(crop), T.ToTensor()]
+    if mean is not None:
+        steps.append(_norm(mean, std))
+    return T.Compose(steps)
+
+
+def _cap_long_side(im, max_side: int):
+    """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds
+    ``max_side`` — otherwise return it untouched at native resolution."""
+    w, h = im.size
+    if max(w, h) > max_side:
+        s = max_side / max(w, h)
+        im = im.resize((max(int(w * s), 224), max(int(h * s), 224)))
+    return im
+
+
+def tf_native_cap(max_side: int = 1024, mean=None, std=None) -> T.Compose:
+    """Native/arbitrary-resolution preprocessing: keep the image at its NATIVE size, only
+    downscaling (keeping aspect, min side 224) when the long side exceeds ``max_side`` to bound
+    memory. ToTensor (raw [0,1]), optional Normalize. This is SPAI's official any-resolution
+    path — a fixed Resize/CenterCrop would destroy the native-res spectral statistics it learns.
+    NB: produces variable-size tensors, so a ``native_res=True`` spec must be scored ONE image at
+    a time (bs=1); the web ``predict_image`` already does this, and bench_eval forces bs=1."""
+    steps = [T.Lambda(functools.partial(_cap_long_side, max_side=max_side)), T.ToTensor()]
     if mean is not None:
         steps.append(_norm(mean, std))
     return T.Compose(steps)
@@ -152,6 +176,9 @@ class ModelSpec:
     #   "agid_trained"  = our from-scratch AGID checkpoint
     #   "training_free" = no weights (frozen-feature / training-free detector)
     weights: str = "agid_trained"
+    # Score at native/arbitrary resolution one image at a time (bs=1) instead of stacking a
+    # fixed-size batch — required by SPAI's any-res spectral path (variable patch count per image).
+    native_res: bool = False
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
 
 
@@ -244,11 +271,14 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="spai", name="SPAI", paper="Karageorgiou et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="agid",
-    weights="official",  # shipped spai.pth = official SPAI weights remapped into the AGID class (any-res SCA port)
+    weights="official",  # shipped spai.pth = official SPAI weights remapped into the AGID class
     overrides=["model@ModelConfig=image/spai"],
-    transform=tf_resize_crop(448, 448, None, None),
-    notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention over a 2x2 grid of 224 patches "
-          "(448 raw [0,1] input). Set ModelConfig.use_sca=false + a 224 transform for the old single-patch model.",
+    transform=tf_native_cap(1024),  # NATIVE resolution (raw [0,1], cap long side 1024) — the faithful any-res path
+    native_res=True,                # score one image at a time (variable patch count)
+    notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
+          "image is patchified into a variable 224-grid (five_crop fallback for tiny images). Serves the "
+          "official SPAI weights remapped into the AGID class; reproduces the paper (GenImage-8 90.74 / "
+          "Synthbuster 96.07 mAP). A fixed 448 resize/crop destroys the native-res spectral statistics.",
 ))
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
