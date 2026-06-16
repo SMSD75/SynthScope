@@ -362,51 +362,51 @@
       "benchmark": "ForenSynths (Table 1, intra-architecture GANs)",
       "metric": "acc/AP",
       "paper": "map=98.8 / acc=96.2",
-      "ours": "AGID mAP=81.74 / acc=80.1 \u00b7 official mAP=98.78 / acc=96.2",
-      "ours_agid": "mAP=81.74 / acc=80.1",
+      "ours": "AGID mAP=97.79 / acc=95.1 \u00b7 official mAP=98.78 / acc=96.2",
+      "ours_agid": "mAP=97.79 / acc=95.1",
       "ours_official": "mAP=98.78 / acc=96.2",
-      "status": "official",
-      "note": "official weights faithful: 98.78 mAP/96.2 acc on 8-GAN = MATCH paper. AGID-class registry default = 86.77 mAP/77.8 acc (13-gen) ; on 8-gen subset higher. AGID-retrain (model_11) = 81.74 mAP/80.1 acc on ForenSynths-13 (cross-domain ProGAN re"
+      "status": "reproduced",
+      "note": "SAFE now SERVES the AGID-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSy"
     },
     {
       "benchmark": "Self-Synthesis / GANGen (Table 2, intra-archit",
       "metric": "acc/AP",
       "paper": "map=99.8 / acc=99.0",
-      "ours": "AGID mAP=75.38 / acc=61.5 \u00b7 official mAP=99.85 / acc=99.0",
-      "ours_agid": "mAP=75.38 / acc=61.5",
+      "ours": "mAP=99.85 / acc=99.0 (official wts)",
+      "ours_agid": "",
       "ours_official": "mAP=99.85 / acc=99.0",
       "status": "official",
-      "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. AGID-class registry = 75.38 mAP/61.5 acc (below \u2014 AGID re-impl lacks the exact DWT-HH front-end tuning)."
+      "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The agid_trained retrain v2 (model_38) was NOT re-evaluated on GANGen \u2014 the GANGen/freqnet data is not present on the cn023 eval node for this run."
     },
     {
       "benchmark": "Ojha / UniversalFakeDetect (Table 3, cross-arc",
       "metric": "acc/AP",
       "paper": "map=99.1 / acc=95.7",
-      "ours": "AGID mAP=96.77 / acc=91.7 \u00b7 official mAP=99.1 / acc=95.71",
-      "ours_agid": "mAP=96.77 / acc=91.7",
+      "ours": "AGID mAP=98.44 / acc=94.0 \u00b7 official mAP=99.1 / acc=95.71",
+      "ours_agid": "mAP=98.44 / acc=94.0",
       "ours_official": "mAP=99.1 / acc=95.71",
-      "status": "official",
-      "note": "official weights = 99.10 mAP/95.71 acc (tag=safe_official_ufd) = MATCH paper 99.1/95.7. AGID-class registry = 96.77 mAP/91.7 acc (close-but-below)."
+      "status": "reproduced",
+      "note": "agid_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this AGID-trained checkpoint."
     },
     {
       "benchmark": "GenImage (Table 4, cross-architecture DM+GAN) ",
       "metric": "acc/AP",
       "paper": "map=99.3 / acc=95.6",
-      "ours": "AGID mAP=95.7 / acc=89.84 \u00b7 official mAP=99.32 / acc=95.62",
-      "ours_agid": "mAP=95.7 / acc=89.84",
+      "ours": "AGID mAP=99.51 / acc=95.9 \u00b7 official mAP=99.32 / acc=95.62",
+      "ours_agid": "mAP=99.51 / acc=95.9",
       "ours_official": "mAP=99.32 / acc=95.62",
-      "status": "official",
-      "note": "AGID-class registry default = 92.79 mAP/86.2 acc. Gap-closing 40-epoch ProGAN retrain on full ForenSynths -> peak model_10 = 95.70 mAP/89.84 acc (PROMOTED to safe.pth). Official weights faithful = 99.32 mAP/95.62 acc (tag=safe_official_geni"
+      "status": "reproduced",
+      "note": "agid_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this AGID-trained checkpoint (safe.pth -> safe_full_v2/model_38)."
     },
     {
       "benchmark": "DiTFake (Table 6, cross-architecture DiT)",
       "metric": "acc/AP",
       "paper": "map=99.9 / acc=99.4",
-      "ours": "mAP=97.78 / acc=92.42",
-      "ours_agid": "mAP=97.78 / acc=92.42",
+      "ours": "mAP=99.96 / acc=99.2",
+      "ours_agid": "mAP=99.96 / acc=99.2",
       "ours_official": "",
-      "status": "below",
-      "note": "DiTFake not on disk. It is openly available (not gated) on HuggingFace; AGID has a conf/dataset/image/ditfake.yaml stub (modified in working tree) but the data was not downloaded for this campaign."
+      "status": "reproduced",
+      "note": "agid_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this AGID-trained checkpoint."
     }
   ],
   "spai": [

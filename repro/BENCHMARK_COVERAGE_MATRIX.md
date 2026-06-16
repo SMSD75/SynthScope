@@ -38,11 +38,11 @@ Re-derived specs: `repro/benchmark_specs/*.json`. Status vs `repro/bench_results
 | restrav | C) DeMamba one-to-many general | missing | — | None | Not run as the one-to-many DeMamba protocol in AGID. AGID DID run rest |
 | restrav | D) Veo3 zero-shot generalizati | missing | 83.2 | None | Not run in AGID. Veo3 videos are GATED — Google Veo3 is a closed model |
 | restrav | E) Physics-IQ 2AFC vs Gemini 1 | missing | — | None | Not run in AGID. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) |
-| safe | ForenSynths (Table 1, intra-ar | below | 98.8 | {'map': | Official-weights faithful number matches paper (98.78). The AGID-train |
-| safe | Self-Synthesis / GANGen (Table | reproduced | 99.8 | {'map': | Official faithful matches. AGID-class-from-scratch trails (75.38) beca |
-| safe | Ojha / UniversalFakeDetect (Ta | reproduced | 99.1 | {'map': | Official faithful matches. Minor AGID-class shortfall = from-scratch D |
-| safe | GenImage (Table 4, cross-archi | below | 99.3 | {'map': | AGID retrain (95.70) residual to official 99.32 / paper 99.3 is concen |
-| safe | DiTFake (Table 6, cross-archit | missing | 99.9 | None | DiTFake not on disk. It is openly available (not gated) on HuggingFace |
+| safe | ForenSynths-8 (Table 1, intra-ar | reproduced | 98.8 | 97.79 | agid_trained retrain v2 (model_38) = 97.79 mAP on the 8-GAN subset (official 98.78). deepfake AP 58.82@ep10 -> 86.74@ep38. |
+| safe | Self-Synthesis / GANGen (Table | reproduced | 99.8 | 99.85(off) | Official faithful matches (99.85). agid_trained retrain not re-run on GANGen (data offline on cn023). |
+| safe | Ojha / UniversalFakeDetect-8 (Ta | reproduced | 99.1 | 98.44 | agid_trained retrain v2 (model_38) = 98.44 mAP, reproduces paper 99.1 (official 99.10). |
+| safe | GenImage-8 (Table 4, cross-archi | reproduced | 99.3 | 99.51 | agid_trained retrain v2 (model_38) = 99.51 mAP, BEATS official 99.32 ~ paper 99.3. SERVED checkpoint. |
+| safe | DiTFake (Table 6, cross-archit | reproduced | 99.9 | 99.96 | agid_trained retrain v2 (model_38) = 99.96 mAP over Flux/PixArt/SD3 = MATCH paper 99.9. |
 | spai | SPAI main eval set (13 generat | missing | 91.0 | None | (1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/ |
 | spai | GenImage (cross-dataset, AGID  | below | — | {'map_o | AGID 88.80 vs official-vendored 91.33 = ~2.5 mAP, on adm/midjourney (o |
 | spai | Synthbuster | missing | — | None | Synthbuster archive not on disk (no /hddstore/.../Synthbuster). Must b |

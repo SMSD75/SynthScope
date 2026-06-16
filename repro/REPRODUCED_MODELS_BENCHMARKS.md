@@ -78,7 +78,7 @@ checkpoints that beat the shipped ones; numbers traced to `repro/bench_results/`
 | Model | Benchmark | AGID before | **AGID after** | Official | Note |
 |---|---|---:|---:|---:|---|
 | **Co-Spy** | Co-Spy-Bench-110 | 72.81 | **96.70** | 86.65 | full SD-v1.4 data; **beats official**, ≈ paper 96.0; PROMOTED |
-| **SAFE** | GenImage-8 | 92.88 | **95.70** | 99.32 | 40-ep ProGAN retrain (peak ep10); PROMOTED |
+| **SAFE** | GenImage-8 | 92.88 | **99.51** | 99.32 | full 40-ep retrain (best ep38); **beats official**; SERVED (agid_trained). Also ForenSynths-8 97.79 / UFD-8 98.44 / DiTFake 99.96 |
 | **AIDE** | GenImage-8 | 91.75 | **92.47** | 97.12 | preprocessing code-fix (adm 58.6→65); residual = native-res DCT |
 | SPAI | GenImage-8 | 88.80 | 88.80 | 91.33 | retrains underperform shipped → kept; recipe-bound (native arbitrary-res) |
 | PGC | GenImage-8 | 97.62 | 97.62 | 100.0 | near; longer-train no gain |

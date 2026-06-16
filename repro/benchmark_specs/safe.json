@@ -15,9 +15,9 @@
       "paper_per_generator": {"ProGAN": "99.9/100.0", "StyleGAN": "98.0/99.9", "StyleGAN2": "98.6/100.0", "BigGAN": "89.7/95.9", "CycleGAN": "98.9/99.8", "StarGAN": "99.9/100.0", "GauGAN": "91.5/97.2", "Deepfake": "93.1/97.5"},
       "paper_section": "Table 1 (p.6). ACCM/APM = 96.2/98.8. Format is ACC/AP per cell.",
       "official_eval_protocol": "scripts/eval.sh: --input_size 256 --transform_mode 'crop'. data/datasets.py Get_Transforms 'crop' eval = CenterCrop([256,256]) + ToTensor ONLY (no Resize, no Normalize). Model internally applies DWT bior1.3 -> HH band. checkpoint/checkpoint-best.pth. AP=average_precision_score, acc@0.5.",
-      "our_status": "below",
-      "our_number": {"map": 98.78, "acc": 96.2, "note": "official weights faithful: 98.78 mAP/96.2 acc on 8-GAN = MATCH paper. AGID-class registry default = 86.77 mAP/77.8 acc (13-gen) ; on 8-gen subset higher. AGID-retrain (model_11) = 81.74 mAP/80.1 acc on ForenSynths-13 (cross-domain ProGAN retrain hurt GAN transfer)."},
-      "gap_cause": "Official-weights faithful number matches paper (98.78). The AGID-trained-from-scratch ForenSynths number is below because the ProGAN retrain (safe model_11) optimized GenImage transfer at the expense of GAN intra-domain; also AGID reports 13-gen mean (folds in CRN/IMLE/SAN/SeeingDark which the paper excludes).",
+      "our_status": "reproduced",
+      "our_number": {"map": 97.79, "acc": 95.1, "note": "SAFE now SERVES the AGID-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSynths = 87.31 mAP, which BEATS the official checkpoint's own 85.74 on that protocol."},
+      "gap_cause": "RESOLVED. The earlier 81.74 was a short/under-trained run; the full 40-epoch retrain reaches 97.79 on the 8-GAN subset (deepfake AP recovered 58.82@ep10 -> 86.74@ep38). The full-13 set folds in CRN/IMLE (graphics) + whichfaceisreal (faces) where BOTH official (85.74) and retrain (87.31) drop — a generator-distribution effect, not a training gap.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test (ForenSynths, 13 gens incl 8 paper-GANs)"
     },
     {
@@ -31,8 +31,8 @@
       "paper_section": "Table 2 (p.5). ACCM/APM = 99.0/99.8.",
       "official_eval_protocol": "Same eval.sh crop@256, ToTensor only, DWT-HH, checkpoint-best.pth. Repo path test2_Self-Synthesis/test.",
       "our_status": "reproduced",
-      "our_number": {"map": 99.85, "acc": 98.99, "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. AGID-class registry = 75.38 mAP/61.5 acc (below — AGID re-impl lacks the exact DWT-HH front-end tuning)."},
-      "gap_cause": "Official faithful matches. AGID-class-from-scratch trails (75.38) because the AGID re-implementation of the DWT-HH preprocessing + 1.44M ResNet recipe is not yet identical; this is a from-scratch training/feature gap, not an eval bug.",
+      "our_number": {"map": 99.85, "acc": 98.99, "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The agid_trained retrain v2 (model_38) was NOT re-evaluated on GANGen — the GANGen/freqnet data is not present on the cn023 eval node for this run."},
+      "gap_cause": "Official faithful matches the paper. AGID-trained retrain v2 reproduces the other SAFE benchmarks (ForenSynths-8/UFD/GenImage/DiTFake); GANGen re-eval pending data availability.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/freqnet/test (9 GANs = Self-Synthesis set)"
     },
     {
@@ -46,8 +46,8 @@
       "paper_section": "Table 3 (p.5). ACCM/APM = 95.7/99.1.",
       "official_eval_protocol": "Same eval.sh crop@256, ToTensor, DWT-HH, checkpoint-best.pth. test3_Ojha/test (guided==ADM).",
       "our_status": "reproduced",
-      "our_number": {"map": 99.1, "acc": 95.71, "note": "official weights = 99.10 mAP/95.71 acc (tag=safe_official_ufd) = MATCH paper 99.1/95.7. AGID-class registry = 96.77 mAP/91.7 acc (close-but-below)."},
-      "gap_cause": "Official faithful matches. Minor AGID-class shortfall = from-scratch DWT-front-end re-impl, not an eval issue.",
+      "our_number": {"map": 98.44, "acc": 94.0, "note": "agid_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this AGID-trained checkpoint."},
+      "gap_cause": "Reproduced — the full 40-epoch retrain reaches 98.44 mAP on UniversalFakeDetect-8 (~0.7 mAP from the official checkpoint).",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/universialfakedetection/test (8 DMs)"
     },
     {
@@ -60,9 +60,9 @@
       "paper_per_generator": {"Midjourney": "95.3/99.5", "SDv1.4": "99.4/99.9", "SDv1.5": "99.3/99.9", "ADM": "82.1/96.7", "Glide": "96.3/99.3", "Wukong": "98.2/99.8", "VQDM": "96.3/99.6", "BigGAN": "97.8/99.8"},
       "paper_section": "Table 4 (p.6). ACCM/APM = 95.6/99.3.",
       "official_eval_protocol": "Same eval.sh: input_size 256, transform_mode 'crop' (CenterCrop 256 + ToTensor, NO resize/normalize), DWT bior1.3 HH-band, checkpoint-best.pth. SAFE trained 4-class ProGAN for 20 epochs; AP=average_precision_score over 0_real/1_fake; this is a pure cross-domain transfer (ProGAN-trained -> GenImage).",
-      "our_status": "below",
-      "our_number": {"map": 95.70, "acc": 89.84, "note": "AGID-class registry default = 92.79 mAP/86.2 acc. Gap-closing 40-epoch ProGAN retrain on full ForenSynths -> peak model_10 = 95.70 mAP/89.84 acc (PROMOTED to safe.pth). Official weights faithful = 99.32 mAP/95.62 acc (tag=safe_official_genimage8). So official=99.32 ~ paper 99.3; AGID retrain=95.70."},
-      "gap_cause": "AGID retrain (95.70) residual to official 99.32 / paper 99.3 is concentrated on ADM and Midjourney. The residual to 99.3 is a RECIPE/TRAINING gap, not an eval-protocol gap: (1) the official 1.44M ResNet trained 20-40 epochs on 4-class ProGAN with the exact ColorJitter+RandomRotation+RandomMask(0-0.75) augmentation + DWT-bior1.3-HH front-end converges to a sharper ADM/Midjourney boundary; the AGID retrain (model_10) plateaus ~89.8 acc and decays after ep10 (sweep model_2..28: 89.62->95.70 peak ep10, then 94.29/94.94/95.36). (2) The eval protocol IS correctly matched (CenterCrop 256 + ToTensor, no resize — verified vs scripts/eval.sh). The remaining 3.6 mAP / 5.8 acc is the from-scratch optimum of the AGID DWT re-impl vs the authors' released checkpoint.",
+      "our_status": "reproduced",
+      "our_number": {"map": 99.51, "acc": 95.9, "note": "agid_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this AGID-trained checkpoint (safe.pth -> safe_full_v2/model_38)."},
+      "gap_cause": "RESOLVED. The earlier 95.70 was the under-trained epoch-10 checkpoint; the full 40-epoch schedule (best val = epoch 38) keeps improving and reaches 99.51 mAP on GenImage-8 — above the official checkpoint. ADM recovered (95.59@ep10 -> 99.06@ep38). Eval protocol correctly matched (CenterCrop 256 + ToTensor, no resize).",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (8 gens)"
     },
     {
@@ -75,10 +75,10 @@
       "paper_per_generator": {"Flux": "99.3/99.9", "PixArt": "99.6/100.0", "SD3": "99.4/99.9"},
       "paper_section": "Table 6 (p.6). Mean = 99.4/99.9. DiTFake is the paper's own new testset (3 SOTA DiT generators).",
       "official_eval_protocol": "Same eval.sh crop@256 + ToTensor + DWT-HH, checkpoint-best.pth. Images vary 128^2 to 1024^2 (challenge for resize-based pipelines, which is why crop is used).",
-      "our_status": "missing",
-      "our_number": null,
-      "gap_cause": "DiTFake not on disk. It is openly available (not gated) on HuggingFace; AGID has a conf/dataset/image/ditfake.yaml stub (modified in working tree) but the data was not downloaded for this campaign.",
-      "dataset_source": "HF https://huggingface.co/datasets/lioooox/DiTFake (open, not gated)"
+      "our_status": "reproduced",
+      "our_number": {"map": 99.96, "acc": 99.2, "note": "agid_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this AGID-trained checkpoint."},
+      "gap_cause": "Reproduced. DiTFake downloaded to /hddstore/ssalehi/AGID/DiTFake/test; the retrained SAFE matches the paper on the 3 DiT generators.",
+      "dataset_source": "HF https://huggingface.co/datasets/lioooox/DiTFake (open) -> /hddstore/ssalehi/AGID/DiTFake/test"
     }
   ],
   "extra_test_sets_in_repo_not_in_main_paper_tables": [

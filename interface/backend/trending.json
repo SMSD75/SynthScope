@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-15",
+  "updated": "2026-06-16",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -16,7 +16,7 @@
       "github": "https://github.com/Amamiya-C/PROBE-AIGI-Detection",
       "arxiv": "https://arxiv.org/abs/2605.24906",
       "summary": "Boosts cross-generator generalization by augmenting training with images sampled from probed generative-space variations; the detector is a fine-tuned DINOv2 (sliding-patch) classifier. Released weights on ModelScope.",
-      "result": "PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (GenImage/Synthbuster/...). [AGID integration in progress.]"
+      "result": "PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (paper). AGID reproduces the official weights: GenImage 98.54 / Synthbuster 99.27 / UFD 95.95 mAP (mAUROC 96-99). [Integration on branch trending/probe, under review.]"
     },
     {
       "title": "DiCoME: Divide-and-Conquer Multi-View Evidential Learning for Deepfake Detection",
@@ -48,7 +48,7 @@
       "github": "https://github.com/Ouxiang-Li/SAFE",
       "arxiv": "",
       "summary": "Lightweight DWT high-frequency artifact detector with a carefully designed augmentation recipe.",
-      "result": "ForenSynths 98.78 mAP / GenImage 99.32 mAP (official weights)."
+      "result": "AGID-trained reproduction (served): ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP — beats the official checkpoint on GenImage."
     },
     {
       "title": "AIDE: ConvNeXt Semantic + Low-Level DCT/SRM Cues",

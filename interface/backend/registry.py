@@ -212,12 +212,14 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="safe", name="SAFE", paper="Li et al., KDD'25",
     modality="image", predict_kind="ce", checkpoint="safe.pth",
-    ckpt_kind="official_safe", remap=remap_safe, weights="official",
+    ckpt_kind="agid", remap=None, weights="agid_trained",
     overrides=["model@ModelConfig=image/safe"],
     transform=tf_crop(256),
-    notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Uses OFFICIAL SAFE weights via a "
-          "fc1->head remap + center-crop-256 no-resize/no-norm preprocessing (matching the official eval; "
-          "a resize was corrupting the high-freq signal -> all-fake). Much stronger than our from-scratch SAFE.",
+    notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Serves the AGID-TRAINED checkpoint "
+          "(full 40-epoch SAFE crop recipe, safe_full_v2/model_38), which reproduces the paper "
+          "(ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP) and beats the official "
+          "checkpoint on GenImage and full-13 ForenSynths. Center-crop-256, no resize/no norm (a resize "
+          "corrupts the high-freq signal -> all-fake).",
 ))
 _add(ModelSpec(
     key="fat_former", name="FatFormer", paper="Liu et al., CVPR'24",

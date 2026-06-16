@@ -167,11 +167,13 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | AIDE | AIGCDetectBenchmark (B1, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | mAP=72.25 / acc=61.64 | official |
 | AIDE | GenImage (B2, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 | mAP=92.47 / acc=73.5 | official |
 | AIDE | Chameleon (B3, in-the-wild) | acc=58–66 | — | — | missing |
-| SAFE | ForenSynths (Table 1, intra-arch GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=81.74 / acc=80.1 | official |
-| SAFE | Self-Synthesis / GANGen (Table 2) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | mAP=75.38 / acc=61.5 | official |
-| SAFE | Ojha / UniversalFakeDetect (Table 3) | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=96.77 / acc=91.7 | official |
-| SAFE | GenImage (Table 4, DM+GAN) | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=95.70 / acc=88.7 | official |
-| SAFE | DiTFake (Table 6, DiT) | map=99.9 / acc=99.4 | — | mAP=97.78 / acc=92.42 | below |
+| SAFE | ForenSynths-8 (Table 1, intra-arch GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
+| SAFE | Self-Synthesis / GANGen (Table 2) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | not re-run (data offline) | official |
+| SAFE | Ojha / UniversalFakeDetect-8 (Table 3) | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=98.44 / acc=94.0 | reproduced |
+| SAFE | GenImage-8 (Table 4, DM+GAN) | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=99.51 / acc=95.9 | reproduced |
+| SAFE | DiTFake (Table 6, DiT) | map=99.9 / acc=99.4 | — | mAP=99.96 / acc=99.2 | reproduced |
+| SAFE | DiffusionForensics-8 | — | — | mAP=99.34 / acc=91.3 | reproduced |
+| SAFE | ForenSynths-13 (full, incl. CRN/IMLE/face) | — | mAP=85.74 / acc=84.9 | mAP=87.31 / acc=83.9 | retrain ≥ official |
 | Co-Spy | Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.60 / acc=89.9 | reproduced |
 | Co-Spy | AIGCDetectionBenchmark | map=95.21 / acc=90.58 | mAP=94.59 / acc=89.25 | mAP=86.18 / acc=73.0 | official |
 | Co-Spy | GenImage | — | mAP=92.41 | mAP=90.59 / acc=75.91 | reference |
@@ -483,7 +485,7 @@ Model-specific hyperparameters (backbone, adapter dims, projection sizes, etc.) 
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-15.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-16.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -491,7 +493,7 @@ Model-specific hyperparameters (backbone, adapter dims, projection sizes, etc.) 
   _Results: ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)._
 - **[PROBE: Probing Generative Space for Generalizable AIGI Detection](https://github.com/Amamiya-C/PROBE-AIGI-Detection)** (arXiv · 2026) — [code](https://github.com/Amamiya-C/PROBE-AIGI-Detection) · _in AGID: `probe`_  
   Boosts cross-generator generalization by augmenting training with images sampled from probed generative-space variations; the detector is a fine-tuned DINOv2 (sliding-patch) classifier. Released weights on ModelScope.  
-  _Results: PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (GenImage/Synthbuster/...). [AGID integration in progress.]_
+  _Results: PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (paper). AGID reproduces the official weights: GenImage 98.54 / Synthbuster 99.27 / UFD 95.95 mAP (mAUROC 96-99). [Integration on branch trending/probe, under review.]_
 - **[DiCoME: Divide-and-Conquer Multi-View Evidential Learning for Deepfake Detection](https://github.com/kxl0825/DiCoME)** (arXiv · 2026) — [code](https://github.com/kxl0825/DiCoME)  
   Disentangles semantic vs structural-artifact views and fuses them with evidential learning to counter the 'semantic masking effect'. Released checkpoint (HF).  
   _Results: SOTA cross-dataset deepfake generalization (DeepfakeBench protocol). [face-deepfake domain; AGID lacks those datasets locally — integration pending data.]_
@@ -503,7 +505,7 @@ Model-specific hyperparameters (backbone, adapter dims, projection sizes, etc.) 
   _Results: Co-Spy-Bench ~96 mAP; AGID retrain reaches 96.6 (beats released weights on that bench)._
 - **[SAFE: High-Frequency Artifact Detector with Targeted Augmentation](https://github.com/Ouxiang-Li/SAFE)** (Ouxiang Li et al. · KDD · 2025) — [code](https://github.com/Ouxiang-Li/SAFE) · _in AGID: `safe`_  
   Lightweight DWT high-frequency artifact detector with a carefully designed augmentation recipe.  
-  _Results: ForenSynths 98.78 mAP / GenImage 99.32 mAP (official weights)._
+  _Results: AGID-trained reproduction (served): ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP — beats the official checkpoint on GenImage._
 - **[AIDE: ConvNeXt Semantic + Low-Level DCT/SRM Cues](https://arxiv.org/abs/2406.19435)** (Yan et al. · ICLR · 2025) — [arXiv](https://arxiv.org/abs/2406.19435) · _in AGID: `aide`_  
   Fuses ConvNeXt semantic features with low-level DCT/SRM frequency cues; native-resolution preprocessing.  
   _Results: GenImage 97.12 mAP / AIGCDetect 97.94 mAP (official weights)._

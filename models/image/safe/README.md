@@ -126,6 +126,8 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 `AGID_train` = **retrained SAFE v2** (the full 40-epoch SAFE crop recipe, checkpoint `checkpoints_retrain/safe_full_v2/model_38.pth`; best-val epoch). This supersedes the earlier under-trained / resize-era column (ForenSynths 81.74). Traced to `repro/bench_results/safe_v2_*.json` (jobs 186232 / 186235).
 
+> **Served checkpoint:** the web app / `agid.load("safe")` now serves this **AGID-trained** checkpoint (registry `weights="agid_trained"`, `ckpt_kind="agid"`, `safe.pth → safe_full_v2/model_38`), since the retrain reproduces the paper and beats the official checkpoint on GenImage and full-13 ForenSynths. The official SAFE weights remain available under `repro/official_ckpts/safe/checkpoint-best.pth`.
+
 | Benchmark | Paper | AGID_official | AGID_train (retrain v2) | Status |
 |---|---|---|---|---|
 | ForenSynths-8 (Table 1, intra-architecture GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
