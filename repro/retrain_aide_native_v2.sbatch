@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=aide_nat --partition=cees --account=ceesusers --nodelist=ivi-cn029
-#SBATCH --time=2-00:00:00 --cpus-per-task=24 --mem=140G --gres=gpu:4
+#SBATCH --time=2-00:00:00 --cpus-per-task=24 --mem=200G --gres=gpu:4
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aide_native_%j.log
 # AIDE Phase 2: from-scratch retrain with the FAITHFUL native-resolution 5-view preprocessing
 # (the genuine arch; DCT patch selection at native res via the aide_five_view transform, NOT a
@@ -20,9 +20,9 @@ $CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerat
   --num_processes 4 --main_process_port 29673 \
   main.py trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage \
   DatasetConfig.root_dir=$DATA/GenImage \
-  DatasetConfig.train_transform_list="[random_horizontal_flip,aide_five_view]" \
-  DatasetConfig.eval_transform_list="[aide_five_view]" \
-  DatasetConfig.train_batch_size=8 DatasetConfig.val_batch_size=16 DatasetConfig.test_batch_size=16 DatasetConfig.num_workers=10 \
+  DatasetConfig.train_transform_list="[random_horizontal_flip,aide_five_view_train]" \
+  DatasetConfig.eval_transform_list="[aide_five_view_train]" \
+  DatasetConfig.train_batch_size=8 DatasetConfig.val_batch_size=16 DatasetConfig.test_batch_size=16 DatasetConfig.num_workers=5 \
   ++TrainerConfig.epochs=10 ++TrainerConfig.save=true ++TrainerConfig.save_policy=min ++TrainerConfig.save_interval=1 ++TrainerConfig.save_path=$SAVE \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] logger.mode=offline logger.name=aide_native_v2 \
   2>&1 | grep --line-buffered -vE "libpng (error|warning)"

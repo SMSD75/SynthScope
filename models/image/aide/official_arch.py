@@ -318,8 +318,12 @@ class AIDEFiveView:
     bench_eval / engine) and a uint8/float ``[3,H,W]`` tensor (training path: dataset ``_decode_rgb``
     + v2 transforms). Picklable + stateless aside from the DCT module."""
 
-    def __init__(self):
+    def __init__(self, max_side=None):
+        # max_side: if set, downscale the long side to this (keeping aspect, min 32) BEFORE the DCT.
+        # Leave None for inference (full native fidelity); set it for TRAINING to bound the DCT
+        # unfold memory on large reals (40 dataloader workers x huge ImageNet images OOMs the host).
         self.dct = DCT_base_Rec_Module()
+        self.max_side = max_side
 
     @staticmethod
     def _to_float_chw(img) -> torch.Tensor:
@@ -338,6 +342,13 @@ class AIDEFiveView:
 
     def __call__(self, img) -> torch.Tensor:
         image = self._to_float_chw(img)
+        if self.max_side is not None:
+            h, w = image.shape[-2], image.shape[-1]
+            if max(h, w) > self.max_side:
+                s = self.max_side / max(h, w)
+                image = torch.nn.functional.interpolate(
+                    image.unsqueeze(0), size=(max(int(h * s), 32), max(int(w * s), 32)),
+                    mode="bilinear", align_corners=False).squeeze(0)
         a, b, c, d = self.dct(image)
         return torch.stack([_transform_view(a), _transform_view(b), _transform_view(c),
                             _transform_view(d), _transform_view(image)], dim=0)
