@@ -49,6 +49,12 @@ def tf_crop(crop: int, mean=None, std=None) -> T.Compose:
     return T.Compose(steps)
 
 
+# AIDE's official native-resolution 5-view preprocessing (DCT patch selection on the native-size
+# image). Importing this is light (no open_clip at module level); the heavy net is built lazily.
+from models.image.aide.official_arch import AIDEFiveView  # noqa: E402
+aide_five_view = AIDEFiveView()
+
+
 def _cap_long_side(im, max_side: int):
     """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds
     ``max_side`` — otherwise return it untouched at native resolution."""
@@ -103,24 +109,11 @@ def remap_fatformer(sd: dict) -> dict:
 
 
 def remap_aide(sd: dict) -> dict:
-    out = {}
-    for k, v in sd.items():
-        if k.startswith("model_min.fc.") or k.startswith("model_max.fc."):
-            continue  # AGID uses fc=Identity
-        if k.startswith("hpf.hpf."):
-            nk = "hpf.conv." + k[len("hpf.hpf."):]
-        elif k.startswith("openclip_convnext_xxl."):
-            nk = "convnext." + k[len("openclip_convnext_xxl."):]
-        elif k.startswith("convnext_proj.0."):
-            nk = "semantic_proj." + k[len("convnext_proj.0."):]
-        elif k.startswith("fc.fc1."):
-            nk = "head.0." + k[len("fc.fc1."):]
-        elif k.startswith("fc.fc2."):
-            nk = "head.2." + k[len("fc.fc2."):]
-        else:
-            nk = k
-        out[nk] = v
-    return out
+    """Official AIDE checkpoint -> AGIDAIDEModel. The AGID class now wraps the GENUINE arch as
+    ``self.net`` (key-for-key identical to the official ``AIDE_Model``), so we just strip any
+    DataParallel ``module.`` prefix and add the ``net.`` prefix; every official key loads strict."""
+    return {("net." + (k[len("module."):] if k.startswith("module.") else k)): v
+            for k, v in sd.items()}
 
 
 def remap_npr(sd: dict) -> dict:
@@ -261,12 +254,13 @@ _add(ModelSpec(
     key="aide", name="AIDE", paper="Yan et al., ICLR'25",
     modality="image", predict_kind="ce", checkpoint="aide.pth",
     ckpt_kind="official_aide", remap=remap_aide, weights="official",
-    # AGID-trained faithful AIDE: build the SAME frozen laion2b ConvNeXt-XXL used in training (the
-    # checkpoint stores only trainable params); resnet built random then overwritten by the ckpt.
-    overrides=["model@ModelConfig=image/aide", "ModelConfig.resnet_pretrained=false"],
-    transform=tf_square_resize(256, None, None, None),
-    notes="ConvNeXt semantic + DCT/SRM low-level cues. Raw [0,1] 256 in; model applies CLIP norm "
-          "(semantic) + ImageNet norm (SRM patch branch) internally, per official AIDE preprocessing.",
+    # Genuine 5-view AIDE arch; the official checkpoint supplies the ConvNeXt trunk (build it random
+    # via convnext_pretrained=null to skip the 4.8GB download, then load the ckpt strict).
+    overrides=["model@ModelConfig=image/aide", "ModelConfig.convnext_pretrained=null"],
+    transform=aide_five_view,  # NATIVE-res DCT 5-view stack [5,3,256,256] (official preprocessing)
+    notes="ConvNeXt-XXL semantic + DCT/SRM low-level cues. The DCT patch selector runs at NATIVE "
+          "resolution in preprocessing (resizing to 256 before the DCT costs ~12 mAP on the same "
+          "weights); only the 4 selected 32x32 patches + the full image are resized to 256.",
 ))
 _add(ModelSpec(
     key="spai", name="SPAI", paper="Karageorgiou et al., CVPR'25",
