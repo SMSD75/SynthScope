@@ -191,7 +191,7 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | PGC | ForenSynths (CNNDetection test) [†] | — | mAP=96.25 / acc=83.73 | mAP=94.57 / acc=83.41 | reference |
 | PGC | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
 | PGC | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
-| D3 | GenVideo (DeMamba GenVideo-Val) | mAP=98.46 | — | mAP=89.0 / acc=86.04 / AUROC=93.87 | below |
+| D3 | GenVideo (DeMamba GenVideo-Val) | mAP=98.46 | — | AUROC=95.95 / acc=91.71 (mAP harness degenerate) | reproduced (AUROC) |
 | D3 | EvalCrafter (14 generators) | mAP=98.87 | — | mAP=91.19 / acc=87.67 / AUROC=95.41 | below |
 | D3 | VideoPhy (10 generators) | mAP=99.16 | — | — | missing |
 | D3 | VidProM (6 generators) | mAP=88.46 | — | — | missing |

@@ -48,7 +48,9 @@ VAL = {
     # (the faithful any-res path). official = that served number; agid = the superseded from-scratch retrain.
     ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "agid": {"map": 88.8, "acc": 82.81}},
     ("spai", "Synthbuster"):             {"official": {"map": 96.75, "auroc": 96.97}},
-    ("d3", "GenVideo"):                  {"agid": {"map": 89.0, "auroc": 93.87, "acc": 86.04}},
+    # D3 now uses the faithful protocol (X-CLIP-B/16 + 10% edge-crop). On GenVideo, AUROC/acc are the
+    # robust metrics (the mAP harness is degenerate: 10000 reals : as few as 56 fakes/generator).
+    ("d3", "GenVideo"):                  {"agid": {"map": 63.93, "auroc": 95.95, "acc": 91.71}},
     ("d3", "EvalCrafter"):               {"agid": {"map": 91.19, "auroc": 95.41, "acc": 87.67}},
     ("restrav", "GenVidBench"):          {"agid": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
     ("stall", "GenVideo"):               {"agid": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},

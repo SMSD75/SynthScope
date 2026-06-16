@@ -163,6 +163,7 @@ class ModelSpec:
     video_norm: Optional[tuple] = None  # (mean, std) applied to the decoded [0,1] clip
     window_center: bool = False         # center the sampling window (ReStraV) vs start (D3/STALL)
     resize_interp: str = "bilinear"     # frame resize interpolation ("bicubic" for ReStraV)
+    edge_crop: float = 0.0              # center edge-crop fraction per frame before resize (D3: 0.1)
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
     #   "official"      = authors' released weights (loaded into the AGID class)
@@ -310,10 +311,11 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="d3", name="D3 (video)", paper="ICCV'25",
     modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",
-    overrides=["model@ModelConfig=video/d3", "ModelConfig.backbone_name=clip",
+    overrides=["model@ModelConfig=video/d3", "ModelConfig.backbone_name=xclip",
                "ModelConfig.first_order=l2"],
-    num_frames=16, fps=8.0, frame_size=224, video_norm=(CLIP_MEAN, CLIP_STD),
-    notes="Training-free: frozen CLIP per-frame features; 2nd-order trajectory std is the score.",
+    num_frames=16, fps=8.0, frame_size=224, video_norm=(CLIP_MEAN, CLIP_STD), edge_crop=0.1,
+    notes="Training-free: frozen X-CLIP-B/16 per-frame features; 2nd-order trajectory std is the score. "
+          "Official preprocessing: 10% center edge-crop per frame before resize.",
 ))
 _add(ModelSpec(
     key="restrav", name="ReStraV (video)", paper="2025",

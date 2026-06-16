@@ -122,11 +122,11 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, Table 1)",
       "metric": "AP",
       "paper": "mAP=98.46",
-      "ours": "mAP=89.0 / acc=86.04 / AUROC=93.87",
-      "ours_agid": "mAP=89.0 / acc=86.04 / AUROC=93.87",
+      "ours": "mAP=63.93 / acc=91.71 / AUROC=95.95",
+      "ours_agid": "mAP=63.93 / acc=91.71 / AUROC=95.95",
       "ours_official": "",
       "status": "below",
-      "note": "Two compounding causes confirmed against the official repo (d3_repro/REPRODUCTION_NOTES.md). (1) ENCODER: AGID uses CLIP-B/16, the paper headline uses XCLIP-B/16 (~+1 mAP on GenVideo: paper CLIP-B/16=97.0 vs XCLIP=97.72 in Table-7 ablation;"
+      "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 AGID's GenVideo pool pairs 10000 sh"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only",

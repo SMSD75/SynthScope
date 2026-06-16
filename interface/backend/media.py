@@ -101,11 +101,13 @@ def video_clip_tensor(
     window_seconds: float = 2.0,
     window_center: bool = False,
     interp: str = "bilinear",
+    edge_crop: float = 0.0,
 ) -> torch.Tensor:
     """Decode a clip for a *video* detector: [T, 3, frame_size, frame_size] float in [0, 1].
 
     Delegates to the repo's ``sample_video_frames`` so inference sampling matches each detector's
-    training decode (e.g. ReStraV uses ``window_center=True, interp="bicubic"`` per the official repo).
+    training decode (e.g. ReStraV uses ``window_center=True, interp="bicubic"`` per the official repo;
+    D3 uses ``edge_crop=0.1`` to trim borders per the official D3 preprocessing).
     """
     return sample_video_frames(
         path,
@@ -115,4 +117,5 @@ def video_clip_tensor(
         size=frame_size,
         window_center=window_center,
         interp=interp,
+        edge_crop=edge_crop,
     )

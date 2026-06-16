@@ -229,6 +229,7 @@ class Engine:
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
             window_center=spec.window_center, interp=spec.resize_interp,
+            edge_crop=getattr(spec, "edge_crop", 0.0),
         )
         mean, std = spec.video_norm
         norm = torch.tensor(mean).view(1, 3, 1, 1)

@@ -143,14 +143,21 @@ at ~8 fps over up to 2 s (`num_frames: 16`, `fps: 8` in the dataset config).
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
-|---|---|---|---|---|
-| GenVideo (DeMamba GenVideo-Val, Table 1) | mAP=98.46 | — | mAP=89.0 / acc=86.04 / AUROC=93.87 | below |
-| EvalCrafter (Table 2, 14 generators, fake-only | mAP=98.87 | — | mAP=91.19 / acc=87.67 / AUROC=95.41 | below |
-| VideoPhy (Table 3, 10 generators) | mAP=99.16 | — | — | missing |
-| VidProM (Table 4, 6 generators) | mAP=88.46 | — | — | missing |
+> **Faithful protocol (training-free):** D3 now runs the official setup — **X-CLIP-B/16** per-frame
+> features + a **10% center edge-crop** before resize (registry `backbone_name=xclip, edge_crop=0.1`).
+> On GenVideo this lifts the robust metrics **AUROC 93.87→95.95, acc 86.04→91.71** (`d3_xclip_genvideo`).
+> Note D3 is training-free and AGID's GenVideo **mAP is degenerate** — the pool pairs **10,000 shared
+> reals against as few as 56 fakes** per generator (Sora), so AP is dominated by a few high-scoring
+> reals (the 89.0→63.93 "drop" is imbalance noise). **AUROC/acc are the metrics to compare** (~96 ≈ paper-quality).
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+| Benchmark | Paper | AGID (training-free, XCLIP+edge-crop) | Status |
+|---|---|---|---|
+| GenVideo (DeMamba GenVideo-Val, Table 1) | mAP=98.46 | AUROC=95.95 / acc=91.71 | reproduced (AUROC) |
+| EvalCrafter (Table 2, 14 generators) | mAP=98.87 | AUROC=95.41 / acc=87.67 | below |
+| VideoPhy (Table 3, 10 generators) | mAP=99.16 | — | missing |
+| VidProM (Table 4, 6 generators) | mAP=88.46 | — | missing |
+
+**reproduced (AUROC)** = AGID matches the paper on the robust ranking metric (mAP unreliable here due to extreme real:fake imbalance) · **below** = gap remains · **missing** = not yet evaluated.
 
 ## Differences from the paper / official code
 

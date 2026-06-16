@@ -67,6 +67,7 @@ def sample_video_frames(
     size: int = 224,
     window_center: bool = False,
     interp: str = "bilinear",
+    edge_crop: float = 0.0,
 ) -> torch.Tensor:
     """Decode a clip of exactly ``num_frames`` frames and return ``[T, 3, size, size]`` float in ``[0, 1]``.
 
@@ -106,6 +107,14 @@ def sample_video_frames(
     # vary in resolution (or are partly corrupt); fall back to per-frame decode+resize, and
     # finally to a black clip, so one bad video never crashes the whole DataLoader worker.
     def _resize(t):  # t: [T,3,H,W] float
+        if edge_crop and edge_crop > 0.0:
+            # Crop the central (1 - 2*edge_crop) region off each frame BEFORE resizing — the official
+            # D3 preprocessing trims borders/letterboxing that otherwise dominate the frozen-feature
+            # trajectory. Default 0.0 leaves D3-without-crop / ReStraV / STALL untouched.
+            h, w = t.shape[-2], t.shape[-1]
+            ch, cw = int(round(h * edge_crop)), int(round(w * edge_crop))
+            if h - 2 * ch >= 8 and w - 2 * cw >= 8:
+                t = t[..., ch:h - ch, cw:w - cw]
         if t.shape[-2:] != (size, size):
             # Default ("bilinear") preserves the original no-antialias behavior (D3/STALL unchanged);
             # "bicubic" enables antialiasing to match the official ReStraV resize.

@@ -1,0 +1,87 @@
+{
+  "tag": "d3_xclip_genvideo",
+  "model": "d3",
+  "ckpt": "registry-default",
+  "benchmark": "video:genvideo",
+  "data_root": "/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val",
+  "n_generators": 10,
+  "means": {
+    "acc": 91.71,
+    "map": 63.93,
+    "mauroc": 95.95
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 85.11,
+      "auroc": 99.01,
+      "real_acc": 93.15,
+      "fake_acc": 99.79,
+      "acc": 96.47
+    },
+    "Gen2": {
+      "ap": 84.26,
+      "auroc": 99.03,
+      "real_acc": 93.15,
+      "fake_acc": 99.71,
+      "acc": 96.43
+    },
+    "HotShot": {
+      "ap": 13.33,
+      "auroc": 73.03,
+      "real_acc": 93.15,
+      "fake_acc": 19.71,
+      "acc": 56.43
+    },
+    "Lavie": {
+      "ap": 80.82,
+      "auroc": 98.36,
+      "real_acc": 93.15,
+      "fake_acc": 97.36,
+      "acc": 95.25
+    },
+    "ModelScope": {
+      "ap": 64.16,
+      "auroc": 97.74,
+      "real_acc": 93.15,
+      "fake_acc": 95.14,
+      "acc": 94.15
+    },
+    "MoonValley": {
+      "ap": 71.78,
+      "auroc": 98.96,
+      "real_acc": 93.15,
+      "fake_acc": 99.52,
+      "acc": 96.34
+    },
+    "MorphStudio": {
+      "ap": 68.21,
+      "auroc": 98.58,
+      "real_acc": 93.15,
+      "fake_acc": 99.29,
+      "acc": 96.22
+    },
+    "Show_1": {
+      "ap": 70.56,
+      "auroc": 98.75,
+      "real_acc": 93.15,
+      "fake_acc": 99.57,
+      "acc": 96.36
+    },
+    "Sora": {
+      "ap": 18.31,
+      "auroc": 98.75,
+      "real_acc": 93.15,
+      "fake_acc": 98.21,
+      "acc": 95.68
+    },
+    "WildScrape": {
+      "ap": 82.75,
+      "auroc": 97.26,
+      "real_acc": 93.15,
+      "fake_acc": 94.37,
+      "acc": 93.76
+    }
+  },
+  "date": "2026-06-16T23:50:19",
+  "agid_version": "video"
+}
