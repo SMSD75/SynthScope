@@ -1,0 +1,38 @@
+{
+  "tag": "safe_v2_ditfake",
+  "model": "safe",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/AGID/DiTFake/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 99.24,
+    "map": 99.96,
+    "mauroc": 99.94
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.9,
+      "fake_acc": 99.7,
+      "acc": 99.8
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.35,
+      "acc": 99.67
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.9,
+      "auroc": 99.83,
+      "real_acc": 99.85,
+      "fake_acc": 96.65,
+      "acc": 98.25
+    }
+  },
+  "date": "2026-06-16T07:07:45",
+  "agid_version": "0.1.0"
+}

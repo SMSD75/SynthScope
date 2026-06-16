@@ -14,7 +14,7 @@
 | NPR | ForenSynths-8 / GANGen | 96.1 / 96.6 | 94.22 / 96.49 | — | ✅ official match |
 | CLIP/UnivFD | ForenSynths | — | 93.14 | 92.99 | ✅ match |
 | CNNDetection | ForenSynths | 90.8 | 91.15 | 91.05 | ✅ match |
-| SAFE | GenImage | 99.3 | 99.32 | 95.70 | ✅ strong |
+| SAFE | GenImage | 99.3 | 99.32 | 99.51 | ✅ retrain reproduces |
 | AIDE | GenImage (SD-v1.4) | 86.9 acc | 97.12 | 92.47 | ✅ match |
 | SPAI | GenImage | ~91 AUC | 91.33 | 88.80 | ✅ near (any-res port) |
 | PGC | GenImage | 100 AP | 100.0 | 97.62 | ✅ near |
@@ -58,13 +58,16 @@
 | AIGCDetect-17 | 95.2 AP | 94.59 (89.3) | 86.18 (73.0) |
 
 ### SAFE
-| Benchmark | Paper | AGID_official | AGID_train |
+`AGID_train` = retrained SAFE v2 (full 40-epoch crop recipe, `safe_full_v2/model_38`); supersedes the earlier resize-era column.
+| Benchmark | Paper | AGID_official | AGID_train (retrain v2) |
 |---|---:|---:|---:|
-| GenImage-8 | 99.3 / 95.6 | 99.32 (95.6) | **95.70 (88.7)** |
-| ForenSynths | 98.8 / 96.2 | 98.78 (96.2) | 81.74 (80.1) |
-| UniversalFakeDetect-8 | 99.1 / 95.7 | 99.10 (95.7) | 96.77 (91.7) |
-| FreqNet/GANGen-9 | 99.8 / 99.0 | 99.85 (99.0) | 75.38 (61.5) |
-| DiffusionForensics-8 | — | — | 97.44 (92.0) |
+| GenImage-8 | 99.3 / 95.6 | 99.32 (95.6) | **99.51 (95.9)** |
+| ForenSynths-8 | 98.8 / 96.2 | 98.78 (96.2) | **97.79 (95.1)** |
+| UniversalFakeDetect-8 | 99.1 / 95.7 | 99.10 (95.7) | **98.44 (94.0)** |
+| DiTFake | 99.9 / 99.4 | — | **99.96 (99.2)** |
+| DiffusionForensics-8 | — | — | **99.34 (91.3)** |
+| FreqNet/GANGen-9 | 99.8 / 99.0 | 99.85 (99.0) | not re-run (data offline) |
+| ForenSynths-13 (full, incl. CRN/IMLE/face) | — | 85.74 (84.9) | 87.31 (83.9) |
 
 ### FatFormer (official weights only)
 | Benchmark | Paper | AGID_official |
@@ -108,7 +111,7 @@
 ## Key findings
 1. **Architecture is faithful where we can check it.** Loading official weights into the AGID class reproduces the paper for CLIP, CNN, FatFormer, NPR, **PGC**, SAFE, Co-Spy. AIDE/SPAI needed a preprocessing/any-resolution port to make official weights load correctly (now done).
 2. **PGC hard-generator gap is on the authors' side.** The AGID class reproduces the released PGC checkpoint exactly; but training from scratch — *with our code and with the authors' `train.py` run verbatim* — does not regenerate the hard-generator numbers (deepfake/san/seeingdark stay ~71–81 AUROC vs ~94). The released checkpoint is not reproducible from the published recipe+data. (`repro/investigate/pgc_gap_investigation.md`)
-3. **Gaps closed by correcting training data/preprocessing:** SPAI (any-res port, 80.75→88.80), Co-Spy (right GenImage SD-v1.4 source, →96.60 beats official), SAFE (→95.70), AIDE (→92.47).
+3. **Gaps closed by correcting training data/preprocessing:** SPAI (any-res port, 80.75→88.80), Co-Spy (right GenImage SD-v1.4 source, →96.60 beats official), **SAFE (crop-only eval + full 40-epoch retrain → reproduces the paper: ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96)**, AIDE (→92.47). The original SAFE "gap" was an eval-transform bug — a `Resize` destroyed the high-frequency signal SAFE keys on; crop-only preprocessing makes both the official weights and our retrain reproduce.
 4. **VIB-Net** has no released weights; its CLIP-backbone re-impl holds at 83.26 mAP on diffusion but collapses cross-GAN (61.71) — a recipe gap, not closeable without the authors' weights.
 5. **Faithful reporting** — every number traces to a logged run; AGID_train shows the single best from-scratch checkpoint (older/weaker runs discarded, not stacked).
 

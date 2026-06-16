@@ -1,0 +1,59 @@
+NODE=ivi-cn023 CK=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth Tue Jun 16 06:50:29 CEST 2026
+CUDA OK
+===== safe_v2_forensynths (forensynths) =====
+=== bench_eval safe_v2_forensynths | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | forensynths | 13 generators | device=cuda ===
+    biggan: acc=91.15 AP=96.42 AUROC=97.18 (real_acc=94.9 fake_acc=87.4)
+    crn: acc=50.01 AP=48.79 AUROC=57.32 (real_acc=0.02 fake_acc=100.0)
+    cyclegan: acc=98.6 AP=99.82 AUROC=99.85 (real_acc=98.94 fake_acc=98.26)
+    deepfake: acc=77.37 AP=86.74 AUROC=86.37 (real_acc=90.76 fake_acc=63.97)
+    gaugan: acc=94.39 AP=99.37 AUROC=99.48 (real_acc=88.96 fake_acc=99.82)
+    imle: acc=50.01 AP=45.9 AUROC=51.71 (real_acc=0.02 fake_acc=100.0)
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+    san: acc=97.49 AP=99.11 AUROC=99.38 (real_acc=96.35 fake_acc=98.63)
+    seeingdark: acc=80.83 AP=94.51 AUROC=96.89 (real_acc=62.78 fake_acc=98.89)
+    stargan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+    stylegan: acc=99.62 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.25)
+    stylegan2: acc=99.72 AP=100.0 AUROC=100.0 (real_acc=99.97 fake_acc=99.47)
+    whichfaceisreal: acc=51.95 AP=64.4 AUROC=60.82 (real_acc=98.1 fake_acc=5.8)
+=== RESULT safe_v2_forensynths: mAP=87.31 mAUROC=88.38 acc=83.93 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_forensynths.json ===
+===== safe_v2_ufd (ufd) =====
+=== bench_eval safe_v2_ufd | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | ufd | 8 generators | device=cuda ===
+    dalle: acc=97.3 AP=99.65 AUROC=99.61 (real_acc=96.5 fake_acc=98.1)
+    glide_100_10: acc=92.75 AP=97.09 AUROC=95.73 (real_acc=96.5 fake_acc=89.0)
+    glide_100_27: acc=89.95 AP=95.77 AUROC=94.01 (real_acc=96.5 fake_acc=83.4)
+    glide_50_27: acc=93.05 AP=97.23 AUROC=95.94 (real_acc=96.5 fake_acc=89.6)
+    guided: acc=84.65 AP=97.91 AUROC=97.16 (real_acc=99.7 fake_acc=69.6)
+    ldm_100: acc=98.15 AP=99.95 AUROC=99.94 (real_acc=96.5 fake_acc=99.8)
+    ldm_200: acc=98.2 AP=99.98 AUROC=99.98 (real_acc=96.5 fake_acc=99.9)
+    ldm_200_cfg: acc=98.1 AP=99.94 AUROC=99.94 (real_acc=96.5 fake_acc=99.7)
+=== RESULT safe_v2_ufd: mAP=98.44 mAUROC=97.79 acc=94.02 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_ufd.json ===
+===== safe_v2_genimage8 (pergen) =====
+=== bench_eval safe_v2_genimage8 | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | pergen | 8 generators | device=cuda ===
+    adm: acc=89.17 AP=99.06 AUROC=99.08 (real_acc=99.8 fake_acc=78.53)
+    biggan: acc=97.23 AP=99.71 AUROC=99.52 (real_acc=99.73 fake_acc=94.73)
+    glide: acc=91.2 AP=98.16 AUROC=96.87 (real_acc=100.0 fake_acc=82.4)
+    midjourney: acc=96.3 AP=99.85 AUROC=99.82 (real_acc=99.8 fake_acc=92.8)
+    sdv1.4: acc=99.49 AP=99.96 AUROC=99.96 (real_acc=99.73 fake_acc=99.25)
+    sdv1.5: acc=99.63 AP=99.82 AUROC=99.93 (real_acc=99.6 fake_acc=99.67)
+    vqdm: acc=94.97 AP=99.58 AUROC=99.4 (real_acc=99.87 fake_acc=90.07)
+    wukong: acc=99.53 AP=99.96 AUROC=99.92 (real_acc=99.73 fake_acc=99.33)
+=== RESULT safe_v2_genimage8: mAP=99.51 mAUROC=99.31 acc=95.94 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_genimage8.json ===
+[skip] safe_v2_gangen: no data /hddstore/ssalehi/AGID/GANGen-Detection
+===== safe_v2_difforensics (pergen) =====
+=== bench_eval safe_v2_difforensics | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | pergen | 8 generators | device=cuda ===
+    adm: acc=79.0 AP=98.07 AUROC=97.1 (real_acc=99.9 fake_acc=58.1)
+    ddpm: acc=87.58 AP=99.33 AUROC=99.16 (real_acc=99.9 fake_acc=75.26)
+    iddpm: acc=75.05 AP=97.87 AUROC=96.86 (real_acc=99.9 fake_acc=50.2)
+    ldm: acc=99.95 AP=100.0 AUROC=100.0 (real_acc=99.9 fake_acc=100.0)
+    pndm: acc=92.75 AP=99.55 AUROC=99.36 (real_acc=99.9 fake_acc=85.6)
+    sdv1: acc=99.3 AP=99.99 AUROC=99.99 (real_acc=99.9 fake_acc=98.7)
+    sdv2: acc=96.8 AP=99.94 AUROC=99.93 (real_acc=99.9 fake_acc=93.7)
+    vqdiffusion: acc=99.95 AP=100.0 AUROC=100.0 (real_acc=99.9 fake_acc=100.0)
+=== RESULT safe_v2_difforensics: mAP=99.34 mAUROC=99.05 acc=91.3 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_difforensics.json ===
+===== safe_v2_ditfake (pergen) =====
+=== bench_eval safe_v2_ditfake | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | pergen | 3 generators | device=cuda ===
+    FLUX.1-schnell: acc=99.8 AP=99.99 AUROC=99.99 (real_acc=99.9 fake_acc=99.7)
+    PixArt-Sigma-XL-2-1024-MS: acc=99.67 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.35)
+    stable-diffusion-3-medium-diffusers: acc=98.25 AP=99.9 AUROC=99.83 (real_acc=99.85 fake_acc=96.65)
+=== RESULT safe_v2_ditfake: mAP=99.96 mAUROC=99.94 acc=99.24 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_ditfake.json ===
+=== SAFE v2 ALL-BENCH EVAL COMPLETE Tue Jun 16 07:07:46 CEST 2026 ===

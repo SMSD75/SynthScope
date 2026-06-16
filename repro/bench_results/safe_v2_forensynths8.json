@@ -1,0 +1,73 @@
+{
+  "tag": "safe_v2_forensynths8",
+  "model": "safe",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 95.11,
+    "map": 97.79,
+    "mauroc": 97.86
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 96.42,
+      "auroc": 97.18,
+      "real_acc": 94.9,
+      "fake_acc": 87.4,
+      "acc": 91.15
+    },
+    "cyclegan": {
+      "ap": 99.82,
+      "auroc": 99.85,
+      "real_acc": 98.94,
+      "fake_acc": 98.26,
+      "acc": 98.6
+    },
+    "deepfake": {
+      "ap": 86.74,
+      "auroc": 86.37,
+      "real_acc": 90.76,
+      "fake_acc": 63.97,
+      "acc": 77.37
+    },
+    "gaugan": {
+      "ap": 99.37,
+      "auroc": 99.48,
+      "real_acc": 88.96,
+      "fake_acc": 99.82,
+      "acc": 94.39
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stylegan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.25,
+      "acc": 99.62
+    },
+    "stylegan2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.97,
+      "fake_acc": 99.47,
+      "acc": 99.72
+    }
+  },
+  "date": "2026-06-16T07:14:12",
+  "agid_version": "0.1.0"
+}

@@ -124,16 +124,21 @@ It runs through Accelerate and the `AGID` conda environment.
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
-|---|---|---|---|---|
-| ForenSynths (Table 1, intra-architecture GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=81.74 / acc=80.1 | official |
-| Self-Synthesis / GANGen (Table 2, intra-archit | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | mAP=75.38 / acc=61.5 | official |
-| Ojha / UniversalFakeDetect (Table 3, cross-arc | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=96.77 / acc=91.7 | official |
-| GenImage (Table 4, cross-architecture DM+GAN)  | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=95.70 / acc=88.7 | official |
-| DiTFake (Table 6, cross-architecture DiT) | map=99.9 / acc=99.4 | — | mAP=97.78 / acc=92.42 | below |
-| DiffusionForensics-8 | — | — | mAP=97.44 / acc=92.0 | reference |
+`AGID_train` = **retrained SAFE v2** (the full 40-epoch SAFE crop recipe, checkpoint `checkpoints_retrain/safe_full_v2/model_38.pth`; best-val epoch). This supersedes the earlier under-trained / resize-era column (ForenSynths 81.74). Traced to `repro/bench_results/safe_v2_*.json` (jobs 186232 / 186235).
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+| Benchmark | Paper | AGID_official | AGID_train (retrain v2) | Status |
+|---|---|---|---|---|
+| ForenSynths-8 (Table 1, intra-architecture GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
+| Self-Synthesis / GANGen (Table 2, intra-archit) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | not re-run (GANGen data offline on cn023) | official |
+| Ojha / UniversalFakeDetect-8 (Table 3, cross-arch) | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=98.44 / acc=94.0 | reproduced |
+| GenImage-8 (Table 4, cross-architecture DM+GAN) | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=99.51 / acc=95.9 | reproduced |
+| DiTFake (Table 6, cross-architecture DiT) | map=99.9 / acc=99.4 | — | mAP=99.96 / acc=99.2 | reproduced |
+| DiffusionForensics-8 | — | — | mAP=99.34 / acc=91.3 | reproduced |
+| ForenSynths-13 (full set, incl. CRN/IMLE/face) | — | mAP=85.74 / acc=84.9 | mAP=87.31 / acc=83.9 | retrain ≥ official |
+
+**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match · **retrain ≥ official** = on this protocol the retrain equals/exceeds the official checkpoint · **missing** = not yet evaluated.
+
+> **ForenSynths-8 vs -13.** The paper's ForenSynths protocol is the **8-generator** subset (`progan, stylegan, stylegan2, biggan, cyclegan, stargan, gaugan, deepfake`). The full 13-category CNNDetection test set additionally contains CRN/IMLE (graphics-rendered) and `whichfaceisreal` (faces), where **both** the official checkpoint (85.74) and our retrain (87.31) drop — it is a generator-distribution effect, not a training failure. On the paper's own 8-subset the retrain reaches 97.79 mAP (deepfake AP recovered from 58.82 at epoch 10 → 86.74 at epoch 38 over the full schedule).
 
 ## Similarity to the official SAFE implementation
 

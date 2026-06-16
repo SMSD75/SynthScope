@@ -25,11 +25,13 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | AIDE | AIGCDetectBenchmark (B1, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | mAP=72.25 / acc=61.64 | official |
 | AIDE | GenImage (B2, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 | mAP=92.47 / acc=73.5 | official |
 | AIDE | Chameleon (B3, in-the-wild) | acc=58–66 | — | — | missing |
-| SAFE | ForenSynths (Table 1, intra-arch GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=81.74 / acc=80.1 | official |
-| SAFE | Self-Synthesis / GANGen (Table 2) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | mAP=75.38 / acc=61.5 | official |
-| SAFE | Ojha / UniversalFakeDetect (Table 3) | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=96.77 / acc=91.7 | official |
-| SAFE | GenImage (Table 4, DM+GAN) | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=95.70 / acc=88.7 | official |
-| SAFE | DiTFake (Table 6, DiT) | map=99.9 / acc=99.4 | — | mAP=97.78 / acc=92.42 | below |
+| SAFE | ForenSynths-8 (Table 1, intra-arch GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
+| SAFE | Self-Synthesis / GANGen (Table 2) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | not re-run (data offline) | official |
+| SAFE | Ojha / UniversalFakeDetect-8 (Table 3) | map=99.1 / acc=95.7 | mAP=99.1 / acc=95.71 | mAP=98.44 / acc=94.0 | reproduced |
+| SAFE | GenImage-8 (Table 4, DM+GAN) | map=99.3 / acc=95.6 | mAP=99.32 / acc=95.62 | mAP=99.51 / acc=95.9 | reproduced |
+| SAFE | DiTFake (Table 6, DiT) | map=99.9 / acc=99.4 | — | mAP=99.96 / acc=99.2 | reproduced |
+| SAFE | DiffusionForensics-8 | — | — | mAP=99.34 / acc=91.3 | reproduced |
+| SAFE | ForenSynths-13 (full, incl. CRN/IMLE/face) | — | mAP=85.74 / acc=84.9 | mAP=87.31 / acc=83.9 | retrain ≥ official |
 | Co-Spy | Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.60 / acc=89.9 | reproduced |
 | Co-Spy | AIGCDetectionBenchmark | map=95.21 / acc=90.58 | mAP=94.59 / acc=89.25 | mAP=86.18 / acc=73.0 | official |
 | Co-Spy | GenImage | — | mAP=92.41 | mAP=90.59 / acc=75.91 | reference |

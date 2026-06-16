@@ -1,0 +1,13 @@
+NODE=ivi-cn023 CK=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth Tue Jun 16 07:10:30 CEST 2026
+CUDA OK
+=== bench_eval safe_v2_forensynths8 | model=safe ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth | forensynths | 8 generators | device=cuda ===
+    biggan: acc=91.15 AP=96.42 AUROC=97.18 (real_acc=94.9 fake_acc=87.4)
+    cyclegan: acc=98.6 AP=99.82 AUROC=99.85 (real_acc=98.94 fake_acc=98.26)
+    deepfake: acc=77.37 AP=86.74 AUROC=86.37 (real_acc=90.76 fake_acc=63.97)
+    gaugan: acc=94.39 AP=99.37 AUROC=99.48 (real_acc=88.96 fake_acc=99.82)
+    progan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+    stargan: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+    stylegan: acc=99.62 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.25)
+    stylegan2: acc=99.72 AP=100.0 AUROC=100.0 (real_acc=99.97 fake_acc=99.47)
+=== RESULT safe_v2_forensynths8: mAP=97.79 mAUROC=97.86 acc=95.11 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/safe_v2_forensynths8.json ===
+=== SAFE v2 FS8 EVAL COMPLETE Tue Jun 16 07:14:13 CEST 2026 ===
