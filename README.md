@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-16.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-17.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -213,7 +213,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 ### Video detectors
 - **[D3: Disentangled Detail Dynamics (training-free)](https://github.com/Zig-HS/D3)** (Zheng et al. · ICCV · 2025) — [code](https://github.com/Zig-HS/D3) · _in AGID: `d3`_  
   Training-free: 2nd-order std of frozen per-frame features as the score.  
-  _Results: GenVideo-Val ~98 mAP (paper); AGID 89.0 mAP._
+  _Results: GenVideo-Val ~98 mAP (paper). AGID faithful protocol (X-CLIP-B/16 + 10% edge-crop): AUROC 95.95 / acc 91.7 (the paper's mAP isn't comparable on AGID's 10000:56 real:fake pool — AUROC is the robust metric)._
 - **[ReStraV: Representation-Trajectory Geometry](https://github.com/ChristianInterno/ReStraV)** (Internò et al. · 2025) — [code](https://github.com/ChristianInterno/ReStraV) · _in AGID: `restrav`_  
   Frozen DINOv2 trajectory-geometry features + a standardized MLP head.  
   _Results: GenVidBench Main ~93; AGID 92.7 mAP._
