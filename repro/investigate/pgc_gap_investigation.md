@@ -223,3 +223,16 @@ monotonically through the first epoch (mean AP 86.6 -> 94.4) then **erodes over 
 55-91): the model overfits ProGAN. The earlier "NOT reproducible" verdict is **RETRACTED** -- it was an
 artifact of never evaluating inside the first epoch, not a flaw in the public release. (Peak checkpoints were
 not retained -- /ivi quota -- regenerate via repro/pgc_400step_finegrain.sbatch; served PGC uses official weights.)
+
+### Cross-checks (2026-06-19)
+- **Erosion within epoch 0 confirmed:** recovered step ckpts show mean AP peak ~94.4 at step 900-1100, then
+  decay step1200 93 / step1500 92 / step1700 92 — continuing into the ep10+ collapse (55-91). Full early-peak
+  -> overfit curve, all inside/just past the first epoch, exactly the authors' DINOv2-overfitting effect.
+- **AGID bench_eval cross-check (registry PGC transform, full ForenSynths-13), step900:** mAP 92.43 / mAUROC
+  92.9. Easy gens + deepfake reproduce (progan AP 99.37, cyclegan 99.54, gaugan 99.51, deepfake AUROC 94.36),
+  but **san (AUROC 73.29) and seeingdark (72.46) are understated vs the official evaluator's 99.25 / 91.13 on
+  the SAME checkpoint** — both threshold-free AUROC, so it's an AGID PGC EVAL-TRANSFORM divergence
+  (tf_resize_crop 256->224 + ImageNet) on those two special generators (super-res / low-light), NOT a model
+  gap. The faithful reproduction number is the official evaluator's hard-3 mean AUROC 94.56 (~ official 94.35).
+  Matching the official PGC eval transform would close the bench_eval san/seeingdark gap too (same family as
+  the SAFE/AIDE/SPAI eval-transform fixes); the served PGC uses official weights regardless.
