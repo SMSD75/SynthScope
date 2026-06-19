@@ -223,8 +223,15 @@ class AGIDPGCModel(nn.Module):
 
     # ── residual (paper Eq. 1) ───────────────────────────────────────────────
     def _quantization_residual(self, x01: torch.Tensor) -> torch.Tensor:
-        """x01: [B,3,H,W] in [0,1] -> residual [B,3,H,W] in [-1,1], then /0.5 normalize."""
-        xp = (x01 * 255.0).permute(0, 2, 3, 1)                  # [B,H,W,3]
+        """x01: [B,3,H,W] in [0,1] -> residual [B,3,H,W] in [-1,1], then /0.5 normalize.
+
+        ``round(x01*255)`` snaps back to the integer pixel grid the image came from. Inputs
+        originate as uint8 (PIL -> ToTensor -> /255), but the engine ImageNet-normalizes the RGB
+        and ``forward`` de-normalizes it here — a lossy float round-trip that, for dark/low-residual
+        images (e.g. ForenSynths seeingdark), flips ~6% of quantization-residual signs and corrupts
+        the residual map. Snapping makes the residual BIT-EXACT to the official PGC pipeline (which
+        builds it from the raw [0,1] tensor); verified zero diff in repro/_residual_path_diff.py."""
+        xp = torch.round(x01 * 255.0).permute(0, 2, 3, 1)       # [B,H,W,3] on the uint8 grid
         x_yuv = torch.matmul(xp, self.M_yuv.T.to(xp.dtype))
         x_rec = torch.matmul(torch.round(x_yuv), self.M_yuv_inv.T.to(xp.dtype))
         res = torch.clamp((xp - x_rec).permute(0, 3, 1, 2), -1.0, 1.0)

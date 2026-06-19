@@ -76,11 +76,13 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 |---|---|---|---|---|
 | GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 | mAP=97.62 / acc=78.6 | official |
 | UniversalFakeDetect (UFD) | map=98.0 | mAP=99.34 / acc=94.16 | mAP=99.01 | reproduced |
-| ForenSynths (CNNDetection test) | — | mAP=96.25 / acc=83.73 | mAP=94.57 / acc=83.41 | reference |
+| ForenSynths-8 (CNNDetection test) | mAP=96.25 | mAP=96.39 / acc=76.29 | mAP=96.05 / acc=71.12 | reproduced |
 | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
 | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
 
 > **ForenSynths hard generators — reproduced via early-stopping (resolved 2026-06-19).** The released ProGAN checkpoint is trained for only **~400 steps (< 1 epoch)** — confirmed by the authors on our issue. DINOv2's strong priors overfit ProGAN within a few epochs (loss → floor), which keeps easy generators high but **erodes hard-generator transfer**; our earlier epoch-level checkpoints (ep10+) all overshot the peak. Re-running the official `train.py` verbatim with fine-grained eval shows the hard-3 (deepfake/san/seeingdark) **mean AUROC climb to 94.56 at step ~900 ≈ official 94.35**, then decay with longer training. So PGC **does** reproduce from the published recipe+data with early-stopping inside the first epoch. (Served PGC uses the official weights.) See `repro/investigate/pgc_gap_investigation.md`.
+
+> **Eval transform — `PadCenterCrop(224)`, no resize (verified 2026-06-19).** PGC's YCbCr residual is resolution-sensitive, so the eval transform is center-crop-224 with **no resize** (= the official `PadCenterCrop`; byte-identical to the genuine repo's). The earlier `Resize→CenterCrop` registry transform wiped the forensic signal on super-res/low-light generators (san 73.3, seeingdark 72.5 — same eval-transform family as the SAFE/AIDE/SPAI fixes). With the fix, AGID `bench_eval` reproduces ForenSynths-8 (96.39 mAP official / 96.05 from-scratch vs paper 96.25) and san recovers to 98.65 AUROC. One generator, **seeingdark**, stays ~10 pt below the genuine repo (77.9 vs 87.49) on identical images/weights with now-bit-exact preprocessing — isolated to the model forward, not the transform; it is not part of the reported ForenSynths-8.
 
 **reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
@@ -88,6 +90,6 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Difference | Reason |
 |---|---|
-| Residual built in-model (not in the dataset transform) | Keeps the AGID dataset/transform pipeline standard (3-channel in). Same residual math (BT.601 quantization, Eq. 1). |
+| Residual built in-model (not in the dataset transform) | Keeps the AGID dataset/transform pipeline standard (3-channel in). Same residual math (BT.601 quantization, Eq. 1) — `_quantization_residual` snaps `round(x01*255)` to the uint8 grid so the residual is **bit-exact** to the official 6-channel transform despite the in-model ImageNet de-normalization (verified zero-diff, `repro/_residual_path_diff.py`). |
 | DINOv2-Large loaded via HF name | No local-checkpoint requirement; LoRA targets use the HF DINOv2 module names. |
 | Reduced training schedule for the bundled checkpoint | The shipped checkpoint is trained for turnaround on a ProGAN subset; raise epochs / use GenImage for a full reproduction. |

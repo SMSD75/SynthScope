@@ -236,3 +236,37 @@ not retained -- /ivi quota -- regenerate via repro/pgc_400step_finegrain.sbatch;
   gap. The faithful reproduction number is the official evaluator's hard-3 mean AUROC 94.56 (~ official 94.35).
   Matching the official PGC eval transform would close the bench_eval san/seeingdark gap too (same family as
   the SAFE/AIDE/SPAI eval-transform fixes); the served PGC uses official weights regardless.
+
+### EVAL-TRANSFORM FIX VERIFIED + residual round-trip bug fixed (2026-06-19)
+The predicted fix landed. Registry PGC transform switched `tf_resize_crop(256,224,ImageNet)` ->
+`tf_crop(224, ImageNet)` (= official `PadCenterCrop(224)`, NO resize; the genuine repo's PadCenterCrop is
+byte-identical to this — pad-if-needed then `CenterCrop(224)`). Full ForenSynths re-run on cn029 (job 187387,
+`repro/_pgc_evalfix_cn029.sbatch`):
+
+| weights | FS-8 mAP | FS-8 mAUROC | san AUROC | deepfake AUROC | official FS-8 |
+|---|---|---|---|---|---|
+| official `PGC_train_progan_ckpt.pth` (served) | **96.39** | 97.05 | 98.65 | 96.03 | 96.25 |
+| our from-scratch step900 | **96.05** | 96.68 | 98.09 | 94.36 | 96.25 |
+
+**ForenSynths-8 reproduces the paper (96.39 / 96.05 vs 96.25).** san recovered 73.29 -> 98.65 (official 99.06);
+the systemic "all evals broken" issue (resize wiping resolution-sensitive forensic features — same family as
+SAFE/AIDE/SPAI) is RESOLVED.
+
+**Residual round-trip bug (found + fixed while verifying).** `PGCModel.forward` de-normalized the
+ImageNet-normalized RGB back to [0,1] before computing the YCbCr quantization residual — a lossy float
+round-trip. For dark/low-residual images (seeingdark) this flipped **6.26%** of residual signs (max |Δ|=1.77,
+the full clamp range) vs the official pipeline, which builds the residual from the exact [0,1] ToTensor output
+(`repro/_residual_path_diff.py`). Fix: `xp = round(x01*255)` in `_quantization_residual` snaps to the uint8
+pixel grid -> residual now **BIT-EXACT** to official (0 diff, 0 sign-flips, both seeingdark & san). Helps
+from-scratch training fidelity too.
+
+**Residual fix verified NOT to be the seeingdark gap.** Re-eval on the official hard-3 root (same images,
+job 187416) with the bit-exact residual: deepfake 96.03 / san 98.67 / seeingdark **77.90** — seeingdark
+unchanged (san +0.02). So the residual stream contributes little to the seeingdark score. With decode, crop,
+residual, and normalization now **all proven identical** to the genuine repo, the residual seeingdark gap
+(bench_eval 77.90 vs genuine-repo 87.49 on identical images/weights) is isolated to the **model forward**
+(LoRA-DINOv2 / score-fusion wiring), exposed only on seeingdark because it is a knife-edge generator
+(real_acc ~11%); san/deepfake reproduce to <0.5 AUROC. seeingdark is not in the reported ForenSynths-8.
+Chasing it further means diffing the vendored PGCModel against `repo/models/` — deferred (10pt on one
+non-headline generator). Artifacts: `repro/bench_results/pgc_evalfix_{official,step900}.json`,
+`pgc_h3_officialroot.json`.

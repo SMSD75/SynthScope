@@ -1,0 +1,38 @@
+{
+  "tag": "pgc_h3_officialroot",
+  "model": "pgc",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
+  "benchmark": "forensynths",
+  "data_root": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 58.41,
+    "map": 90.13,
+    "mauroc": 90.87
+  },
+  "per_generator": {
+    "deepfake": {
+      "ap": 92.5,
+      "auroc": 96.03,
+      "real_acc": 98.6,
+      "fake_acc": 12.64,
+      "acc": 55.62
+    },
+    "san": {
+      "ap": 98.35,
+      "auroc": 98.67,
+      "real_acc": 100.0,
+      "fake_acc": 29.22,
+      "acc": 64.61
+    },
+    "seeingdark": {
+      "ap": 79.53,
+      "auroc": 77.9,
+      "real_acc": 10.56,
+      "fake_acc": 99.44,
+      "acc": 55.0
+    }
+  },
+  "date": "2026-06-19T19:15:47",
+  "agid_version": "0.1.0"
+}
