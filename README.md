@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-18.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-19.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -220,6 +220,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 - **[STALL: Spatio-Temporal whitened Log-Likelihoods (training-free)](https://github.com/OmerBenHayun/STALL)** (Ben Hayun et al. · CVPR · 2026) — [code](https://github.com/OmerBenHayun/STALL) · _in AGID: `stall`_  
   Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.  
   _Results: GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5._
+- **[CUPID: Reconstructing UV Texture Maps for Interpretable Person-of-Interest Deepfake Detection](https://github.com/polimi-ispl/CUPID)** (Polimi-ISPL (Pianese et al.) · arXiv · 2026) — [code](https://github.com/polimi-ispl/CUPID)  
+  Person-of-Interest (POI) video deepfake detector: UV texture maps from 3D face reconstruction + a Masked Autoencoder. Trains on real video only (no deepfakes, and no specific POI needed); at test time matches query-video embeddings against pristine reference videos, and yields interpretable per-region residual maps. Robust to post-processing.  
+  _Results: Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol — integration pending data.]_
 
 ### Benchmarks & curated lists
 - [GenImage: million-scale real-vs-fake benchmark](https://github.com/GenImage-Dataset/GenImage) — ImageNet-1k reals + ~equal synthetic from diverse generators.

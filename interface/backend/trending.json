@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-18",
+  "updated": "2026-06-19",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -153,6 +153,16 @@
       "arxiv": "",
       "summary": "Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.",
       "result": "GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5."
+    },
+    {
+      "title": "CUPID: Reconstructing UV Texture Maps for Interpretable Person-of-Interest Deepfake Detection",
+      "authors": "Polimi-ISPL (Pianese et al.)",
+      "venue": "arXiv",
+      "year": "2026",
+      "github": "https://github.com/polimi-ispl/CUPID",
+      "arxiv": "https://arxiv.org/abs/2606.20302",
+      "summary": "Person-of-Interest (POI) video deepfake detector: UV texture maps from 3D face reconstruction + a Masked Autoencoder. Trains on real video only (no deepfakes, and no specific POI needed); at test time matches query-video embeddings against pristine reference videos, and yields interpretable per-region residual maps. Robust to post-processing.",
+      "result": "Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol \u2014 integration pending data.]"
     }
   ],
   "landscape": [
