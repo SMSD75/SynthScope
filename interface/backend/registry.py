@@ -275,6 +275,7 @@ _add(ModelSpec(
     overrides=["model@ModelConfig=image/spai"],
     transform=tf_native_cap(1024),  # NATIVE resolution (raw [0,1], cap long side 1024) — the faithful any-res path
     native_res=True,                # score one image at a time (variable patch count)
+    interpret="spai_patch",   # per-patch spectral fake-evidence over the native 224-grid
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
           "image is patchified into a variable 224-grid (five_crop fallback for tiny images). Serves the "
           "official SPAI weights remapped into the AGID class; reproduces the paper (GenImage-8 90.74 / "

@@ -207,6 +207,38 @@ class SPAI(nn.Module):
         z = self.attn_norm(self.sca(z))                                                # B x z
         return self.classifier(z).squeeze(-1)                                          # B
 
+    @torch.no_grad()
+    def patch_fake_map(self, x):
+        """Per-patch fake-evidence map ``[nH,nW]`` for interpretability (heatmap only, not scoring).
+
+        Runs the model's *own* classifier on each 224 window's spectral descriptor (attn-normalized
+        for consistency with the SCA path) — i.e. which spatial regions look synthetic. Uses a dense
+        overlapping grid (stride = patch/2) so a clean heatmap exists for any image (the model's own
+        decision uses the stride-224 grid / five-crop; this is purely a denser visualization). Falls
+        back to the stride-224 grid if the dense one exceeds ~64 windows; None if even that is too big."""
+        if not self.use_sca:
+            return None
+        h, w = x.shape[-2], x.shape[-1]
+        if min(h, w) < self.patch_size:                       # upscale tiny images like forward()
+            s = self.patch_size / min(h, w)
+            x = F.interpolate(x, size=(max(self.patch_size, round(h * s)),
+                                       max(self.patch_size, round(w * s))),
+                              mode="bilinear", align_corners=False)
+        H, W = x.shape[-2], x.shape[-1]
+        for stride in (max(1, self.patch_size // 2), self.patch_size):
+            nH = (H - self.patch_size) // stride + 1
+            nW = (W - self.patch_size) // stride + 1
+            if nH * nW <= 64:
+                break
+        else:
+            return None
+        patches = patchify_image(x, self.patch_size, stride)             # B x L x C x p x p
+        if patches.size(1) != nH * nW:
+            return None
+        scores = [self.classifier(self.attn_norm(self._patch_z(patches[:, i]))).squeeze(-1)
+                  for i in range(patches.size(1))]
+        return torch.stack(scores, dim=1)[0].reshape(nH, nW)            # [nH, nW]
+
     def compute_loss(self, batch):
         images, labels, _ = batch
         logits = self.forward(images)

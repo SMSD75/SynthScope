@@ -249,6 +249,10 @@ class Engine:
                 if pil is None:
                     return None
                 sal = spec.transform.dct_energy_map(pil)       # [nH,Wn]
+            elif kind == "spai_patch":     # SPAI: per-patch spectral fake-evidence over the 224-grid
+                sal = model.patch_fake_map(x)                  # [nH,nW] or None (five-crop/large grid)
+                if sal is None:
+                    return None
             else:
                 return None
             return _saliency_to_png_b64(sal)
