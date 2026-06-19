@@ -226,11 +226,12 @@ class Engine:
 
     # -- public API ---------------------------------------------------------
     @torch.no_grad()
-    def _interpret_map(self, model, spec: ModelSpec, x: torch.Tensor):
+    def _interpret_map(self, model, spec: ModelSpec, x: torch.Tensor, pil=None):
         """Return a base64 heatmap PNG of the detector's artifact map, or None.
 
         Best-effort + isolated: any failure returns None and never affects the prediction.
-        ``x`` is the already-transformed [1,3,H,W] input.
+        ``x`` is the already-transformed [1,3,H,W] input; ``pil`` is the native image (some maps,
+        e.g. AIDE's native-res DCT energy, are computed from the original resolution).
         """
         kind = getattr(spec, "interpret", "") or ""
         if not kind:
@@ -244,6 +245,10 @@ class Engine:
                 sal = res.abs().mean(dim=1)[0]                  # [H,W]
             elif kind == "pgc_peak":       # PGC: peak-guided residual fake-evidence map
                 sal = model.peak_residual_map(x)               # [Hr,Wr]
+            elif kind == "aide_dct":       # AIDE: native-res DCT per-window energy (patch selection)
+                if pil is None:
+                    return None
+                sal = spec.transform.dct_energy_map(pil)       # [nH,Wn]
             else:
                 return None
             return _saliency_to_png_b64(sal)
@@ -256,7 +261,7 @@ class Engine:
         t0 = time.time()
         p = float(self._fake_prob(model, spec, x).item())
         res = self._result(spec, p, time.time() - t0)
-        amap = self._interpret_map(model, spec, x)
+        amap = self._interpret_map(model, spec, x, pil)
         if amap is not None:
             res["interpret_map"] = amap
             res["interpret_kind"] = spec.interpret

@@ -139,6 +139,31 @@ class DCT_base_Rec_Module(nn.Module):
         return (self.fold0(x_minmin), self.fold0(x_maxmax),
                 self.fold0(x_minmin1), self.fold0(x_maxmax1))
 
+    @torch.no_grad()
+    def energy_map(self, x):
+        """Per-window frequency 'grade' energy as a ``[nH,nW]`` map (interpretability only).
+
+        This is exactly the per-window score ``forward`` sorts to pick the max/min-energy patches —
+        i.e. *where* AIDE looks. Recomputed here (not returned by ``forward``, which stays verbatim)."""
+        window_size = self.window_size
+        stride = self.unfold.stride
+        stride = stride[0] if isinstance(stride, (tuple, list)) else stride
+        C, H, W = x.shape
+        x_unfold = self.unfold(x.unsqueeze(0)).squeeze(0)
+        _, L = x_unfold.shape
+        x_unfold = x_unfold.transpose(0, 1).reshape(L, C, window_size, window_size)
+        x_dct = self._DCT_patch @ x_unfold @ self._DCT_patch_T
+        grade = torch.zeros(L, device=x.device)
+        w, k = 1, 2
+        for i in range(self.grade_N):
+            _x = torch.log(torch.abs(x_dct) + 1)
+            _x = self.grade_filters[i](_x)
+            grade += w * torch.sum(_x, dim=[1, 2, 3])
+            w *= k
+        nH = (H - window_size) // stride + 1
+        nW = (W - window_size) // stride + 1
+        return grade.reshape(nH, nW)
+
 
 # --------------------------------------------------------------------------- network
 class HPF(nn.Module):
@@ -340,7 +365,8 @@ class AIDEFiveView:
             return image
         return _transform_before(img)  # PIL -> [3,H,W] float [0,1]
 
-    def __call__(self, img) -> torch.Tensor:
+    def _prep_native(self, img) -> torch.Tensor:
+        """Native-res float CHW image after the optional max_side cap + sub-window short-side floor."""
         image = self._to_float_chw(img)
         if self.max_side is not None:
             h, w = image.shape[-2], image.shape[-1]
@@ -359,6 +385,15 @@ class AIDEFiveView:
             image = torch.nn.functional.interpolate(
                 image.unsqueeze(0), size=(max(int(round(h * s)), win), max(int(round(w * s)), win)),
                 mode="bilinear", align_corners=False).squeeze(0)
+        return image
+
+    def __call__(self, img) -> torch.Tensor:
+        image = self._prep_native(img)
         a, b, c, d = self.dct(image)
         return torch.stack([_transform_view(a), _transform_view(b), _transform_view(c),
                             _transform_view(d), _transform_view(image)], dim=0)
+
+    @torch.no_grad()
+    def dct_energy_map(self, img) -> torch.Tensor:
+        """``[nH,nW]`` per-window DCT energy map (which regions AIDE selects patches from)."""
+        return self.dct.energy_map(self._prep_native(img))

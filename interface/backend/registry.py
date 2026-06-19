@@ -263,6 +263,7 @@ _add(ModelSpec(
     # via convnext_pretrained=null to skip the 4.8GB download, then load the ckpt strict).
     overrides=["model@ModelConfig=image/aide", "ModelConfig.convnext_pretrained=null"],
     transform=aide_five_view,  # NATIVE-res DCT 5-view stack [5,3,256,256] (official preprocessing)
+    interpret="aide_dct",   # native-res per-window DCT energy = the patch-selection saliency
     notes="ConvNeXt-XXL semantic + DCT/SRM low-level cues. The DCT patch selector runs at NATIVE "
           "resolution in preprocessing (resizing to 256 before the DCT costs ~12 mAP on the same "
           "weights); only the 4 selected 32x32 patches + the full image are resized to 256.",
