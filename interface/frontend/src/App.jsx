@@ -631,6 +631,12 @@ function Result({ r, threshold, gt }) {
           </div>
         </div>
       )}
+      {r.interpret_map && (
+        <div className="interp">
+          <div className="meta">Interpretability — {({safe_hf: "DWT high-frequency band (SAFE)", npr_residual: "neighboring-pixel residual (NPR)"})[r.interpret_kind] || "artifact map"} · warmer = stronger artifact signal</div>
+          <img className="interp-map" src={r.interpret_map} alt="artifact map" />
+        </div>
+      )}
     </div>
   );
 }

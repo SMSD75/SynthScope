@@ -288,3 +288,8 @@ a { color: var(--accent); }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); background-clip: padding-box; }
+
+/* ---- interpretability map -------------------------------------------------*/
+.interp { margin-top: 16px; }
+.interp-map { display: block; margin-top: 8px; width: 100%; max-width: 300px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong); box-shadow: var(--shadow); }

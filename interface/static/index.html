@@ -295,6 +295,11 @@ a { color: var(--accent); }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); background-clip: padding-box; }
+
+/* ---- interpretability map -------------------------------------------------*/
+.interp { margin-top: 16px; }
+.interp-map { display: block; margin-top: 8px; width: 100%; max-width: 300px; border-radius: var(--radius-sm);
+  border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -902,6 +907,10 @@ a { color: var(--accent); }
             <span>mean <b>${(r.per_frame.reduce((a,b)=>a+b,0)/r.per_frame.length*100).toFixed(0)}%</b></span>
             <span>max <b>${(Math.max(...r.per_frame)*100).toFixed(0)}%</b></span>
           </div>
+        </div>`}
+        ${r.interpret_map && html`<div class="interp">
+          <div class="meta">Interpretability — ${({safe_hf:"DWT high-frequency band (SAFE)", npr_residual:"neighboring-pixel residual (NPR)"})[r.interpret_kind] || "artifact map"} · warmer = stronger artifact signal</div>
+          <img class="interp-map" src=${r.interpret_map} alt="artifact map"/>
         </div>`}`;
     }
 

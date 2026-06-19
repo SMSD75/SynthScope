@@ -4,16 +4,38 @@ Models are built lazily on first use (backbones are large and slow to download/i
 and kept in a small LRU so a shared GPU is not exhausted. All forward passes happen under
 ``torch.no_grad()`` with the model in fp32/eval mode.
 """
+import base64
+import io
 import threading
 import time
 from collections import OrderedDict
 
+import numpy as np
 import torch
 from PIL import Image
 
 from . import config
 from .registry import ModelSpec, get_spec
 from . import media
+
+
+def _saliency_to_png_b64(sal: torch.Tensor, out_size: int = 288) -> str:
+    """Render a 2-D saliency tensor as a base64 'jet' heatmap PNG (no matplotlib).
+
+    Robust-normalizes by the 1st/99th percentile so a few hot pixels don't wash it out.
+    """
+    s = sal.detach().float().cpu().numpy()
+    lo, hi = np.percentile(s, 1.0), np.percentile(s, 99.0)
+    s = np.clip((s - lo) / (hi - lo + 1e-8), 0.0, 1.0)
+    # jet colormap
+    r = np.clip(1.5 - np.abs(4 * s - 3), 0, 1)
+    g = np.clip(1.5 - np.abs(4 * s - 2), 0, 1)
+    b = np.clip(1.5 - np.abs(4 * s - 1), 0, 1)
+    rgb = (np.stack([r, g, b], axis=-1) * 255).astype(np.uint8)
+    img = Image.fromarray(rgb, "RGB").resize((out_size, out_size), Image.BILINEAR)
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
 
 
 # ---------------------------------------------------------------------------
@@ -203,12 +225,40 @@ class Engine:
         return out.softmax(dim=1)[:, 1]
 
     # -- public API ---------------------------------------------------------
+    @torch.no_grad()
+    def _interpret_map(self, model, spec: ModelSpec, x: torch.Tensor):
+        """Return a base64 heatmap PNG of the detector's artifact map, or None.
+
+        Best-effort + isolated: any failure returns None and never affects the prediction.
+        ``x`` is the already-transformed [1,3,H,W] input.
+        """
+        kind = getattr(spec, "interpret", "") or ""
+        if not kind:
+            return None
+        try:
+            if kind == "safe_hf":          # SAFE: DWT HH high-frequency band magnitude
+                hh = model._preprocess_high_frequency(x)        # [1,3,H,W]
+                sal = hh.abs().mean(dim=1)[0]                   # [H,W]
+            elif kind == "npr_residual":   # NPR: neighboring-pixel residual magnitude
+                res = model.NPR_transform(x)                    # [1,3,H,W]
+                sal = res.abs().mean(dim=1)[0]                  # [H,W]
+            else:
+                return None
+            return _saliency_to_png_b64(sal)
+        except Exception:  # noqa: BLE001 — interpretability is optional, never break predict
+            return None
+
     def predict_image(self, spec: ModelSpec, pil: Image.Image) -> dict:
         model = self._get_model(spec)
         x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
         p = float(self._fake_prob(model, spec, x).item())
-        return self._result(spec, p, time.time() - t0)
+        res = self._result(spec, p, time.time() - t0)
+        amap = self._interpret_map(model, spec, x)
+        if amap is not None:
+            res["interpret_map"] = amap
+            res["interpret_kind"] = spec.interpret
+        return res
 
     def predict_video_frames(self, spec: ModelSpec, frames: list[Image.Image]) -> dict:
         """Run an *image* detector on sampled video frames and aggregate (mean P(fake))."""

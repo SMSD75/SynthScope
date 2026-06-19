@@ -173,6 +173,9 @@ class ModelSpec:
     # Score at native/arbitrary resolution one image at a time (bs=1) instead of stacking a
     # fixed-size batch — required by SPAI's any-res spectral path (variable patch count per image).
     native_res: bool = False
+    # Interpretability map the detector can expose in the web UI (engine._interpret_map dispatches on it):
+    #   "" = none (black-box) · "safe_hf" = DWT HH-band artifact map · "npr_residual" = pixel-residual map.
+    interpret: str = ""
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
 
 
@@ -236,6 +239,7 @@ _add(ModelSpec(
     ckpt_kind="agid", remap=None, weights="agid_trained",
     overrides=["model@ModelConfig=image/safe"],
     transform=tf_crop(256),
+    interpret="safe_hf",   # DWT HH-band high-frequency artifact map
     notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Serves the AGID-TRAINED checkpoint "
           "(full 40-epoch SAFE crop recipe, safe_full_v2/model_38), which reproduces the paper "
           "(ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP) and beats the official "
@@ -294,9 +298,11 @@ _add(ModelSpec(
     modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="agid",
     weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
     overrides=["model@ModelConfig=image/pgc"],
-    transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
-    notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration. Uses OFFICIAL released weights "
-          "(better than our from-scratch PGC on the ForenSynths hard generators; see repro/investigate/pgc_gap_investigation.md).",
+    transform=tf_crop(224, IMAGENET_MEAN, IMAGENET_STD),  # official PGC eval = PadCenterCrop(224), NO resize
+    notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration. Uses OFFICIAL released weights. "
+          "Eval is center-crop-224 NO resize (official PadCenterCrop): the YCbCr residual is resolution-"
+          "sensitive, and a Resize wipes it on super-res/low-light generators (san/seeingdark). "
+          "See repro/investigate/pgc_gap_investigation.md.",
 ))
 _add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
@@ -304,6 +310,7 @@ _add(ModelSpec(
     ckpt_kind="official_npr", remap=remap_npr, weights="official",
     overrides=["model@ModelConfig=image/npr"],
     transform=tf_square_resize(256, None, IMAGENET_MEAN, IMAGENET_STD),
+    interpret="npr_residual",   # neighboring-pixel residual map (up-sampling artifacts)
     notes="Neighboring-pixel-residual ResNet. Official ProGAN weights.",
 ))
 
