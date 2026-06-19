@@ -193,3 +193,33 @@ the public recipe+data as documented** — it must involve undocumented training
 different (internal/earlier) training configuration. The residual AGID-side reimpl gap is secondary and the
 smaller of the two. The control keeps running to ~ep29 (walltime) to pile on confirmation points, but the
 conclusion is settled; nothing in the public PGC release reproduces the released hard-generator numbers.
+
+## RESOLVED 2026-06-19 — THE ABOVE VERDICT WAS WRONG. Authors replied; reproduced at <1 epoch.
+The PGC authors answered our GitHub issue: **no extra data or tricks** — the released ProGAN checkpoint was
+trained for only **~400 steps (< 1 epoch)**. DINOv2's strong priors mean a few epochs *overfit* ProGAN
+artifacts (loss -> floor), keeping easy generators high but **destroying hard-generator transfer**; they said
+to evaluate checkpoints saved around ~400 steps.
+
+**Our whole investigation overshot the peak.** Every checkpoint we scored was epoch-level: the
+annealing/const-LR runs at ep10/25/50/75/100 (>= ~7000 micro-steps) and even the verbatim train.py control
+evaluated only **every 2 epochs** (earliest = ep2 = 45,006 micro-steps). With 22,503 micro-batches/epoch,
+~400 steps is **0.018 of an epoch** -- we never once looked inside the first epoch.
+
+**Re-ran the OFFICIAL train.py VERBATIM with a fine cadence** (--eval_every_steps 100, --niter 100 so the
+LR-at-step matches theirs), identical 720k 20-class ProGAN data (cn029, job 187220,
+repro/pgc_400step_finegrain.sbatch). Their own evaluator on the hard-3 (deepfake/san/seeingdark), per-step:
+
+| step | deepfake AUC | san AUC | seeingdark AUC | hard-3 mean AUC | mean AP |
+|---|--:|--:|--:|--:|--:|
+| 300 | 96.04 | 99.02 | 85.79 | 93.6 | 92.05 |
+| 500 | 95.48 | 98.77 | 88.30 | 94.2 | 92.76 |
+| 700 | 91.58 | 98.76 | 90.09 | 93.5 | 93.24 |
+| **900** | **93.29** | **99.25** | **91.13** | **94.56** | **94.43** |
+| official ckpt | 96.48 | 99.06 | 87.51 | **94.35** | -- |
+
+**hard-3 mean AUROC 94.56 at step 900 ~= official 94.35** -- the released numbers ARE reproducible from the
+published recipe+data, *with early-stopping at < 1 epoch*, exactly as the authors said. Transfer climbs
+monotonically through the first epoch (mean AP 86.6 -> 94.4) then **erodes over epochs** (our ep10+ data:
+55-91): the model overfits ProGAN. The earlier "NOT reproducible" verdict is **RETRACTED** -- it was an
+artifact of never evaluating inside the first epoch, not a flaw in the public release. (Peak checkpoints were
+not retained -- /ivi quota -- regenerate via repro/pgc_400step_finegrain.sbatch; served PGC uses official weights.)
