@@ -299,6 +299,7 @@ _add(ModelSpec(
     weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
     overrides=["model@ModelConfig=image/pgc"],
     transform=tf_crop(224, IMAGENET_MEAN, IMAGENET_STD),  # official PGC eval = PadCenterCrop(224), NO resize
+    interpret="pgc_peak",   # peak-guided residual fake-evidence map (per-location score)
     notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration. Uses OFFICIAL released weights. "
           "Eval is center-crop-224 NO resize (official PadCenterCrop): the YCbCr residual is resolution-"
           "sensitive, and a Resize wipes it on super-res/low-light generators (san/seeingdark). "

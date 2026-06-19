@@ -242,6 +242,8 @@ class Engine:
             elif kind == "npr_residual":   # NPR: neighboring-pixel residual magnitude
                 res = model.NPR_transform(x)                    # [1,3,H,W]
                 sal = res.abs().mean(dim=1)[0]                  # [H,W]
+            elif kind == "pgc_peak":       # PGC: peak-guided residual fake-evidence map
+                sal = model.peak_residual_map(x)               # [Hr,Wr]
             else:
                 return None
             return _saliency_to_png_b64(sal)

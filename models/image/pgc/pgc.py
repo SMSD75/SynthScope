@@ -253,6 +253,19 @@ class AGIDPGCModel(nn.Module):
         z_global = self.classifier(f_global)                                  # [B,1]
         return (z_global + z_local).squeeze(-1)                               # [B]
 
+    @torch.no_grad()
+    def peak_residual_map(self, images: torch.Tensor) -> torch.Tensor:
+        """Per-location residual fake-evidence map ``[Hr,Wr]`` for the first sample.
+
+        Surfaces the peak-guided calibration's spatial score (``residual_score_head`` over the
+        residual-stream feature map) — i.e. *where* PGC finds synthetic-artifact evidence before
+        the smooth-max ('peak') aggregation. Interpretability only; not used in scoring."""
+        x01 = (images * self.imagenet_std + self.imagenet_mean).clamp(0.0, 1.0)
+        residual = self._quantization_residual(x01)
+        f_res_map = self.residual_stream(residual)                  # [B,C,Hr,Wr]
+        s_res = self.pgcm.residual_score_head(f_res_map)            # [B,1,Hr,Wr]
+        return s_res[0, 0]                                          # [Hr,Wr]
+
     def compute_loss(self, batch):
         images, labels, _folder_ids = batch
         logits = self.forward(images)                                         # [B]
