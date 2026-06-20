@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-19.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-20.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -187,7 +187,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
   _Results: SOTA cross-dataset deepfake generalization (DeepfakeBench protocol). [face-deepfake domain; AGID lacks those datasets locally — integration pending data.]_
 - **[Images as Tables: In-Context AIGI Detection with TabPFN](https://github.com/jpwalter30/Towards-Generalizable-Detection-of-AI-Generated-Images)** (arXiv · 2026) — [code](https://github.com/jpwalter30/Towards-Generalizable-Detection-of-AI-Generated-Images)  
   Frozen DINOv3 CLS feature -> PCA(500) -> TabPFN in-context tabular classification; strong few-shot/low-data generalization with no task-specific training.  
-  _Results: Generalizable detection in the low-data regime (few labeled examples per new generator)._
+  _Results: Generalizable detection in the low-data regime (few labeled examples per new generator). [integration pending: in-context TabPFN paradigm — a clean AGID forward->logit needs the released fitted TabPFN+PCA+labeled-support-set checkpoint baked in (GDrive), plus an external version-sensitive tabpfn dependency; a different paradigm from the trained-detector template, and the headline is a low-data/few-shot niche (multi-multi acc 0.8765 / AUROC 0.9501 @625 samples) rather than full-data SOTA. Verified repo 2026-06-20: weights on GDrive, frozen DINOv3->PCA(500)->TabPFN.]_
 - **[Co-Spy: Fusing Semantic and Artifact Cues for Synthetic Image Detection](https://github.com/Megum1/Co-Spy)** (Cheng et al. · CVPR · 2025) — [code](https://github.com/Megum1/Co-Spy) · _in AGID: `co_spy`_  
   Adaptive fusion of a SigLIP semantic stream and an SD-VAE artifact-residual stream.  
   _Results: Co-Spy-Bench ~96 mAP; AGID retrain reaches 96.6 (beats released weights on that bench)._
@@ -222,7 +222,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
   _Results: GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5._
 - **[CUPID: Reconstructing UV Texture Maps for Interpretable Person-of-Interest Deepfake Detection](https://github.com/polimi-ispl/CUPID)** (Polimi-ISPL (Pianese et al.) · arXiv · 2026) — [code](https://github.com/polimi-ispl/CUPID)  
   Person-of-Interest (POI) video deepfake detector: UV texture maps from 3D face reconstruction + a Masked Autoencoder. Trains on real video only (no deepfakes, and no specific POI needed); at test time matches query-video embeddings against pristine reference videos, and yields interpretable per-region residual maps. Robust to post-processing.  
-  _Results: Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol — integration pending data.]_
+  _Results: Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol — integration pending data. NOTE 2026-06-20: the promised repo github.com/polimi-ispl/CUPID is still 404 (code not yet released), so it does not yet meet RULE 1's public-repo bar — retained as a trending pre-print; prune if the repo stays unavailable.]_
 
 ### Benchmarks & curated lists
 - [GenImage: million-scale real-vs-fake benchmark](https://github.com/GenImage-Dataset/GenImage) — ImageNet-1k reals + ~equal synthetic from diverse generators.
