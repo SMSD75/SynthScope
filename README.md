@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-20.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-06-21.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -220,9 +220,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 - **[STALL: Spatio-Temporal whitened Log-Likelihoods (training-free)](https://github.com/OmerBenHayun/STALL)** (Ben Hayun et al. · CVPR · 2026) — [code](https://github.com/OmerBenHayun/STALL) · _in AGID: `stall`_  
   Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.  
   _Results: GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5._
-- **[CUPID: Reconstructing UV Texture Maps for Interpretable Person-of-Interest Deepfake Detection](https://github.com/polimi-ispl/CUPID)** (Polimi-ISPL (Pianese et al.) · arXiv · 2026) — [code](https://github.com/polimi-ispl/CUPID)  
-  Person-of-Interest (POI) video deepfake detector: UV texture maps from 3D face reconstruction + a Masked Autoencoder. Trains on real video only (no deepfakes, and no specific POI needed); at test time matches query-video embeddings against pristine reference videos, and yields interpretable per-region residual maps. Robust to post-processing.  
-  _Results: Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol — integration pending data. NOTE 2026-06-20: the promised repo github.com/polimi-ispl/CUPID is still 404 (code not yet released), so it does not yet meet RULE 1's public-repo bar — retained as a trending pre-print; prune if the repo stays unavailable.]_
+- **[ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection](https://github.com/hwang-cs-ime/ATSS)** (Wang et al. (hwang-cs-ime) · arXiv · 2026) — [code](https://github.com/hwang-cs-ime/ATSS)  
+  Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.  
+  _Results: Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video — and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. AGID feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]_
 
 ### Benchmarks & curated lists
 - [GenImage: million-scale real-vs-fake benchmark](https://github.com/GenImage-Dataset/GenImage) — ImageNet-1k reals + ~equal synthetic from diverse generators.

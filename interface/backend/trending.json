@@ -1,5 +1,5 @@
 {
-  "updated": "2026-06-20",
+  "updated": "2026-06-21",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -155,14 +155,14 @@
       "result": "GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5."
     },
     {
-      "title": "CUPID: Reconstructing UV Texture Maps for Interpretable Person-of-Interest Deepfake Detection",
-      "authors": "Polimi-ISPL (Pianese et al.)",
+      "title": "ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection",
+      "authors": "Wang et al. (hwang-cs-ime)",
       "venue": "arXiv",
       "year": "2026",
-      "github": "https://github.com/polimi-ispl/CUPID",
-      "arxiv": "https://arxiv.org/abs/2606.20302",
-      "summary": "Person-of-Interest (POI) video deepfake detector: UV texture maps from 3D face reconstruction + a Masked Autoencoder. Trains on real video only (no deepfakes, and no specific POI needed); at test time matches query-video embeddings against pristine reference videos, and yields interpretable per-region residual maps. Robust to post-processing.",
-      "result": "Strong POI face-deepfake detection on four deepfake datasets, with interpretability and deepfake-free training. [face/identity deepfake domain + per-POI reference-video protocol; AGID lacks those datasets/protocol \u2014 integration pending data. NOTE 2026-06-20: the promised repo github.com/polimi-ispl/CUPID is still 404 (code not yet released), so it does not yet meet RULE 1's public-repo bar \u2014 retained as a trending pre-print; prune if the repo stays unavailable.]"
+      "github": "https://github.com/hwang-cs-ime/ATSS",
+      "arxiv": "https://arxiv.org/abs/2604.04029",
+      "summary": "Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.",
+      "result": "Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video — and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. AGID feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]"
     }
   ],
   "landscape": [
