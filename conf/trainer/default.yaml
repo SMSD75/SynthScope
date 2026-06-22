@@ -7,6 +7,10 @@ save: false
 save_policy: max
 save_path: /nvmestore/ssalehi/AGID/models
 seed: 42
+# Step-level eval + best-checkpoint selection (default off => per-epoch behavior unchanged).
+eval_every_n_steps: 0      # >0: run a capped val pass every N optimizer steps
+eval_max_batches: 0        # cap val batches per step-eval (0 = full val)
+save_monitor: loss         # loss (min) | AUC | AP | ... (mean over folders, max) for model_best.pth
 warmup:
  mode: off
  warmup_ratio: 0.05
