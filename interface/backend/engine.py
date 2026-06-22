@@ -19,23 +19,54 @@ from .registry import ModelSpec, get_spec
 from . import media
 
 
-def _saliency_to_png_b64(sal: torch.Tensor, out_size: int = 288) -> str:
-    """Render a 2-D saliency tensor as a base64 'jet' heatmap PNG (no matplotlib).
+def _png_b64(img: Image.Image) -> str:
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def _saliency_rgb(sal: torch.Tensor):
+    """2-D saliency -> (jet RGB uint8 HxWx3, normalized intensity HxW in [0,1]).
 
     Robust-normalizes by the 1st/99th percentile so a few hot pixels don't wash it out.
     """
     s = sal.detach().float().cpu().numpy()
     lo, hi = np.percentile(s, 1.0), np.percentile(s, 99.0)
     s = np.clip((s - lo) / (hi - lo + 1e-8), 0.0, 1.0)
-    # jet colormap
-    r = np.clip(1.5 - np.abs(4 * s - 3), 0, 1)
+    r = np.clip(1.5 - np.abs(4 * s - 3), 0, 1)   # jet colormap
     g = np.clip(1.5 - np.abs(4 * s - 2), 0, 1)
     b = np.clip(1.5 - np.abs(4 * s - 1), 0, 1)
-    rgb = (np.stack([r, g, b], axis=-1) * 255).astype(np.uint8)
-    img = Image.fromarray(rgb, "RGB").resize((out_size, out_size), Image.BILINEAR)
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+    return (np.stack([r, g, b], axis=-1) * 255).astype(np.uint8), s
+
+
+def _saliency_to_png_b64(sal: torch.Tensor, out_size: int = 288) -> str:
+    """Render a saliency tensor as a base64 'jet' heatmap PNG."""
+    rgb, _ = _saliency_rgb(sal)
+    return _png_b64(Image.fromarray(rgb, "RGB").resize((out_size, out_size), Image.BILINEAR))
+
+
+def _overlay_to_png_b64(sal: torch.Tensor, base: Image.Image, out_size: int = 288,
+                        alpha: float = 0.6) -> str:
+    """Blend the jet heatmap over the base image; per-pixel opacity = saliency intensity so cool
+    regions show the image and hot regions show the artifact heat."""
+    rgb, s = _saliency_rgb(sal)
+    heat = Image.fromarray(rgb, "RGB").resize((out_size, out_size), Image.BILINEAR)
+    base = base.convert("RGB").resize((out_size, out_size), Image.BILINEAR)
+    mask = Image.fromarray((np.clip(s, 0, 1) * alpha * 255).astype(np.uint8), "L").resize(
+        (out_size, out_size), Image.BILINEAR)
+    return _png_b64(Image.composite(heat, base, mask))
+
+
+def _geometric_base(spec, pil: Image.Image) -> Image.Image:
+    """The model's input region in RGB (apply only the Resize/CenterCrop steps of the eval
+    transform, skipping ToTensor/Normalize) so the overlay aligns with the saliency. Custom
+    transforms (AIDE/SPAI native-res) fall back to the native image."""
+    import torchvision.transforms as T
+    base = pil.convert("RGB")
+    for t in getattr(spec.transform, "transforms", []) or []:
+        if isinstance(t, (T.Resize, T.CenterCrop)):
+            base = t(base)
+    return base
 
 
 # ---------------------------------------------------------------------------
@@ -227,7 +258,8 @@ class Engine:
     # -- public API ---------------------------------------------------------
     @torch.no_grad()
     def _interpret_map(self, model, spec: ModelSpec, x: torch.Tensor, pil=None):
-        """Return a base64 heatmap PNG of the detector's artifact map, or None.
+        """Return ``{"map": heatmap_b64, "overlay": overlay_b64}`` for the detector's artifact map,
+        or None. ``map`` is the bare jet heatmap; ``overlay`` blends it on the model-input image.
 
         Best-effort + isolated: any failure returns None and never affects the prediction.
         ``x`` is the already-transformed [1,3,H,W] input; ``pil`` is the native image (some maps,
@@ -255,7 +287,11 @@ class Engine:
                     return None
             else:
                 return None
-            return _saliency_to_png_b64(sal)
+            base = _geometric_base(spec, pil) if pil is not None else None
+            out = {"map": _saliency_to_png_b64(sal)}
+            if base is not None:
+                out["overlay"] = _overlay_to_png_b64(sal, base)
+            return out
         except Exception:  # noqa: BLE001 — interpretability is optional, never break predict
             return None
 
@@ -267,7 +303,9 @@ class Engine:
         res = self._result(spec, p, time.time() - t0)
         amap = self._interpret_map(model, spec, x, pil)
         if amap is not None:
-            res["interpret_map"] = amap
+            res["interpret_map"] = amap["map"]
+            if amap.get("overlay"):
+                res["interpret_overlay"] = amap["overlay"]
             res["interpret_kind"] = spec.interpret
         return res
 

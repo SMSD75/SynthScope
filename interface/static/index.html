@@ -298,7 +298,10 @@ a { color: var(--accent); }
 
 /* ---- interpretability map -------------------------------------------------*/
 .interp { margin-top: 16px; }
-.interp-map { display: block; margin-top: 8px; width: 100%; max-width: 300px; border-radius: var(--radius-sm);
+.interp-row { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.interp-cell { margin: 0; }
+.interp-cell figcaption { font-size: 11px; color: #8b93a7; margin-top: 4px; text-align: center; }
+.interp-map { display: block; width: 100%; max-width: 240px; border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
@@ -910,7 +913,10 @@ a { color: var(--accent); }
         </div>`}
         ${r.interpret_map && html`<div class="interp">
           <div class="meta">Interpretability — ${({safe_hf:"DWT high-frequency band (SAFE)", npr_residual:"neighboring-pixel residual (NPR)", pgc_peak:"peak-guided residual fake-evidence (PGC)", aide_dct:"native-res DCT patch-energy (AIDE)", spai_patch:"per-patch spectral fake-evidence (SPAI)"})[r.interpret_kind] || "artifact map"} · warmer = stronger artifact signal</div>
-          <img class="interp-map" src=${r.interpret_map} alt="artifact map"/>
+          <div class="interp-row">
+            ${r.interpret_overlay && html`<figure class="interp-cell"><img class="interp-map" src=${r.interpret_overlay} alt="overlay on image"/><figcaption>overlay on image</figcaption></figure>`}
+            <figure class="interp-cell"><img class="interp-map" src=${r.interpret_map} alt="heatmap"/><figcaption>heatmap</figcaption></figure>
+          </div>
         </div>`}`;
     }
 

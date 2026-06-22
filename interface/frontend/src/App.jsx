@@ -634,7 +634,12 @@ function Result({ r, threshold, gt }) {
       {r.interpret_map && (
         <div className="interp">
           <div className="meta">Interpretability — {({safe_hf: "DWT high-frequency band (SAFE)", npr_residual: "neighboring-pixel residual (NPR)", pgc_peak: "peak-guided residual fake-evidence (PGC)", aide_dct: "native-res DCT patch-energy (AIDE)", spai_patch: "per-patch spectral fake-evidence (SPAI)"})[r.interpret_kind] || "artifact map"} · warmer = stronger artifact signal</div>
-          <img className="interp-map" src={r.interpret_map} alt="artifact map" />
+          <div className="interp-row">
+            {r.interpret_overlay && (
+              <figure className="interp-cell"><img className="interp-map" src={r.interpret_overlay} alt="overlay on image" /><figcaption>overlay on image</figcaption></figure>
+            )}
+            <figure className="interp-cell"><img className="interp-map" src={r.interpret_map} alt="heatmap" /><figcaption>heatmap</figcaption></figure>
+          </div>
         </div>
       )}
     </div>

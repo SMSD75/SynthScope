@@ -291,5 +291,8 @@ a { color: var(--accent); }
 
 /* ---- interpretability map -------------------------------------------------*/
 .interp { margin-top: 16px; }
-.interp-map { display: block; margin-top: 8px; width: 100%; max-width: 300px; border-radius: var(--radius-sm);
+.interp-row { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.interp-cell { margin: 0; }
+.interp-cell figcaption { font-size: 11px; color: #8b93a7; margin-top: 4px; text-align: center; }
+.interp-map { display: block; width: 100%; max-width: 240px; border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
