@@ -58,6 +58,12 @@ class AGIDModelTrainer:
         self.global_step = 0
         self.best_val_loss = float("inf")
         self.best_test_loss = float("inf")
+        # Step-level eval + best-checkpoint selection (opt-in; default off => unchanged behavior).
+        # A linear probe on frozen features can peak early within an epoch, so per-epoch eval is
+        # too coarse. When TrainerConfig.eval_every_n_steps>0, evaluate a (capped) val pass every
+        # N optimizer steps and save model_best.pth whenever the monitored metric improves.
+        self._save_monitor = str(config.TrainerConfig.get("save_monitor", "loss"))
+        self.best_monitor = float("inf") if self._save_monitor == "loss" else float("-inf")
         self.logger = build_logger(config, self.accelerator)
         if self.accelerator.is_main_process:    
             self.print_trainable_parameters()
@@ -154,6 +160,7 @@ class AGIDModelTrainer:
                 self.scheduler.step()
             if self.accelerator.sync_gradients:
                 self.global_step += 1
+                self._maybe_step_eval()
             loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
             total_loss += loss_sum.item()
         if self.use_metrics:
@@ -203,6 +210,67 @@ class AGIDModelTrainer:
             total_metrics_dict = {}
         return total_loss / len(self.test_loader), total_metrics_dict
 
+
+    @staticmethod
+    def _mean_metric(metrics_dict, prefix):
+        vals = [v for k, v in metrics_dict.items() if k == prefix or k.startswith(prefix + "_")]
+        return sum(vals) / len(vals) if vals else float("nan")
+
+    def _eval_subset(self, max_batches):
+        """A (capped) val pass for step-level monitoring. Returns (mean_loss, metrics_dict)."""
+        self.model.eval()
+        self.val_metrics._reset_metrics_dict()
+        total_loss, n = 0.0, 0
+        with torch.no_grad():
+            for i, batch in enumerate(self.val_loader):
+                if max_batches and i >= max_batches:
+                    break
+                loss_dict = self.model.compute_loss(batch)
+                loss, outputs = loss_dict["loss"], loss_dict["outputs"]
+                labels, folder_ids = batch[1], batch[2]
+                if self.use_metrics:
+                    og, lg, fg = self.accelerator.gather_for_metrics(
+                        (outputs.detach(), labels.detach(), folder_ids.detach()))
+                    self.val_metrics(og, lg, fg)
+                total_loss += self.accelerator.gather(loss.detach().unsqueeze(0)).mean().item()
+                n += 1
+        md = {m: self.val_metrics.metrics_dict[m].compute().item() for m in self.val_metrics.metrics_dict} if self.use_metrics else {}
+        self.val_metrics._reset_metrics_dict()
+        self.model.train()
+        return total_loss / max(n, 1), md
+
+    def _save_best(self):
+        """Save the trainable params only (model_best.pth) — for frozen-backbone probes the
+        backbone is rebuilt deterministically at load time, so head-only keeps the file tiny."""
+        self.accelerator.wait_for_everyone()
+        unwrapped = self.accelerator.unwrap_model(self.model)
+        if self.accelerator.is_main_process:
+            save_path = self.config.TrainerConfig.save_path
+            os.makedirs(save_path, exist_ok=True)
+            trainable = {n for n, p in unwrapped.named_parameters() if p.requires_grad}
+            sd = unwrapped.state_dict()
+            head_sd = {k: v for k, v in sd.items() if k in trainable} or sd
+            self.accelerator.save(head_sd, f"{save_path}/model_best.pth")
+
+    def _maybe_step_eval(self):
+        n = int(self.config.TrainerConfig.get("eval_every_n_steps", 0) or 0)
+        if n <= 0 or self.global_step == 0 or self.global_step % n != 0:
+            return
+        max_batches = int(self.config.TrainerConfig.get("eval_max_batches", 0) or 0)
+        val_loss, md = self._eval_subset(max_batches)
+        if self._save_monitor == "loss":
+            current, improved = val_loss, (val_loss < self.best_monitor)
+        else:
+            current = self._mean_metric(md, self._save_monitor)
+            improved = current > self.best_monitor
+        self.accelerator.print(
+            f"[step {self.global_step}] val_loss={val_loss:.4f} {self._save_monitor}={current:.4f} "
+            f"best={self.best_monitor:.4f}{' (NEW BEST -> model_best.pth)' if improved else ''}")
+        self.logger.log_metrics(
+            {"val_step/loss": val_loss, **{f"val_step/{k}": v for k, v in md.items()}}, self.global_step)
+        if improved:
+            self.best_monitor = current
+            self._save_best()
 
     def _save_model(self, epoch, save_path):
         self.accelerator.wait_for_everyone()
