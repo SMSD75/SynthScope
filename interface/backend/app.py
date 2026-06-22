@@ -136,11 +136,16 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
 import base64 as _b64, glob as _glob, random as _random
 from . import generators as _gens
 
-_REAL_POOLS = [
+from .datasets import _root_candidates  # node-portable scratch-mount remap (/hddstore<->/ssdstore<->...)
+
+# Base patterns point at cn023 /hddstore; expand each onto the other scratch mounts so the
+# real-image pool resolves wherever the data was staged (cees /ssdstore, etc.).
+_REAL_POOL_PATTERNS = [
     "/hddstore/ssalehi/AGID/GenImage/test/real",
     "/hddstore/ssalehi/AGID/CNNDetection/test/*/0_real",
     "/hddstore/ssalehi/AGID/GenImage_full/test_full/*/0_real",
 ]
+_REAL_POOLS = [c for p in _REAL_POOL_PATTERNS for c in _root_candidates(p)]
 
 
 @app.get("/api/sota/generators")
