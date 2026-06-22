@@ -130,11 +130,29 @@ MODEL_TRAIN_DATASET: dict[str, dict] = {
 }
 
 
+# Node-local scratch differs per node (cn023 -> /hddstore, cees -> /ssdstore, cn030/31 -> /nvmestore).
+# Try each configured root, then the same tail remapped onto the other scratch mounts, so the explorer
+# works wherever the data was staged. Override the prefix set with AGID_DATA_PREFIXES (colon-separated).
+_SCRATCH_PREFIXES = tuple(p for p in (
+    os.environ.get("AGID_DATA_PREFIXES") or "/hddstore:/ssdstore:/nvmestore").split(":") if p)
+
+
+def _root_candidates(r: str) -> list[str]:
+    cands = [r]
+    for src in _SCRATCH_PREFIXES:
+        if r.startswith(src + "/"):
+            tail = r[len(src):]
+            cands += [pre + tail for pre in _SCRATCH_PREFIXES if pre != src]
+            break
+    return cands
+
+
 def _resolve_root(d: DatasetDef) -> Path | None:
     for r in d.roots:
-        p = Path(r)
-        if p.is_dir():
-            return p
+        for c in _root_candidates(r):
+            p = Path(c)
+            if p.is_dir():
+                return p
     return None
 
 
