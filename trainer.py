@@ -211,32 +211,38 @@ class AGIDModelTrainer:
         return total_loss / len(self.test_loader), total_metrics_dict
 
 
-    @staticmethod
-    def _mean_metric(metrics_dict, prefix):
-        vals = [v for k, v in metrics_dict.items() if k == prefix or k.startswith(prefix + "_")]
-        return sum(vals) / len(vals) if vals else float("nan")
-
     def _eval_subset(self, max_batches):
-        """A (capped) val pass for step-level monitoring. Returns (mean_loss, metrics_dict)."""
+        """A representative val pass for step-level monitoring. Returns (mean_loss, {AUC, AP}).
+
+        The val loader is folder-ordered and unshuffled, so taking the *first* N batches would
+        sample one class. Instead we STRIDE across the whole val set (every k-th batch) so the
+        pooled subset covers both classes, then compute a single GLOBAL AUROC/AP over the pooled
+        fake-scores (robust, unlike fragile per-folder means on a small subset)."""
+        import numpy as np
         self.model.eval()
-        self.val_metrics._reset_metrics_dict()
+        total_batches = len(self.val_loader)
+        stride = max(1, total_batches // max_batches) if (max_batches and max_batches < total_batches) else 1
+        scores_all, labels_all = [], []
         total_loss, n = 0.0, 0
         with torch.no_grad():
             for i, batch in enumerate(self.val_loader):
-                if max_batches and i >= max_batches:
-                    break
+                if stride > 1 and (i % stride):
+                    continue
                 loss_dict = self.model.compute_loss(batch)
                 loss, outputs = loss_dict["loss"], loss_dict["outputs"]
-                labels, folder_ids = batch[1], batch[2]
-                if self.use_metrics:
-                    og, lg, fg = self.accelerator.gather_for_metrics(
-                        (outputs.detach(), labels.detach(), folder_ids.detach()))
-                    self.val_metrics(og, lg, fg)
+                fake = torch.softmax(outputs.float(), dim=1)[:, 1]
+                og, lg = self.accelerator.gather_for_metrics((fake.detach(), batch[1].detach()))
+                scores_all.append(og.float().cpu()); labels_all.append(lg.cpu())
                 total_loss += self.accelerator.gather(loss.detach().unsqueeze(0)).mean().item()
                 n += 1
-        md = {m: self.val_metrics.metrics_dict[m].compute().item() for m in self.val_metrics.metrics_dict} if self.use_metrics else {}
-        self.val_metrics._reset_metrics_dict()
+                if max_batches and n >= max_batches:
+                    break
         self.model.train()
+        s = torch.cat(scores_all).numpy(); l = torch.cat(labels_all).numpy()
+        md = {"AUC": float("nan"), "AP": float("nan")}
+        if len(np.unique(l)) == 2:
+            from sklearn.metrics import roc_auc_score, average_precision_score
+            md = {"AUC": float(roc_auc_score(l, s)), "AP": float(average_precision_score(l, s))}
         return total_loss / max(n, 1), md
 
     def _save_best(self):
@@ -261,8 +267,8 @@ class AGIDModelTrainer:
         if self._save_monitor == "loss":
             current, improved = val_loss, (val_loss < self.best_monitor)
         else:
-            current = self._mean_metric(md, self._save_monitor)
-            improved = current > self.best_monitor
+            current = md.get(self._save_monitor, float("nan"))
+            improved = (current == current) and (current > self.best_monitor)  # NaN-safe
         self.accelerator.print(
             f"[step {self.global_step}] val_loss={val_loss:.4f} {self._save_monitor}={current:.4f} "
             f"best={self.best_monitor:.4f}{' (NEW BEST -> model_best.pth)' if improved else ''}")
