@@ -1,0 +1,21 @@
+defaults:
+  - /model/default
+  - _self_
+
+# Diffusion-feature linear probe (UnivFD analogue with a Stable-Diffusion backbone).
+# Frozen SD features + Linear(C,2) head; predict_kind=ce. Input is raw [0,1] (the model maps
+# to [-1,1] internally) — DO NOT add a normalize_* transform.
+model_type: diffusion_probe
+backbone_name: SD:CompVis/stable-diffusion-v1-4   # informational; real id is sd_id
+freeze_backbone: true
+use_adapter: false
+
+backbone: unet            # 'unet' (DIFT-style, default) | 'vae' (cheap latent baseline)
+sd_id: CompVis/stable-diffusion-v1-4
+image_size: 224           # UnivFD crop size (VAE /8 -> 28x28 latent)
+timestep: 50
+up_ft_index: 1
+pool: mean
+eval_fixed_noise: true
+noise_seed: 0
+vae_pool_grid: 8

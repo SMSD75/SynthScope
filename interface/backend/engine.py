@@ -99,6 +99,9 @@ def _build_model(cfg):
     if model_type == "pgc":
         from models.image.pgc.pgc import AGIDPGCModel
         return AGIDPGCModel(cfg)
+    if model_type == "diffusion_probe":
+        from models.image.diffusion_probe.diffusion_probe import AGIDDiffusionProbeModel
+        return AGIDDiffusionProbeModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import AGIDSTALLModel
         return AGIDSTALLModel(cfg)

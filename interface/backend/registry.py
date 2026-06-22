@@ -200,6 +200,15 @@ _add(ModelSpec(
     notes="Frozen CLIP ViT-L/14 features + linear real/fake head (trained on ProGAN).",
 ))
 _add(ModelSpec(
+    key="diffusion_probe", name="Diffusion-feature probe", paper="AGID (DIFT-style)",
+    modality="image", predict_kind="ce", checkpoint="diffusion_probe.pth", ckpt_kind="agid",
+    overrides=["model@ModelConfig=image/diffusion_probe"],
+    transform=tf_resize_crop(256, 224, None, None),  # raw [0,1]; model maps to [-1,1] internally
+    weights="agid_trained",
+    notes="Frozen Stable-Diffusion UNet feature (DIFT, t=50, up_blocks[1]) + linear head — "
+          "the diffusion-model analogue of the CLIP/DINOv2 UnivFD probe.",
+))
+_add(ModelSpec(
     key="cnn", name="CNNDetection (ResNet-50)", paper="Wang et al., CVPR'20",
     modality="image", predict_kind="ce", checkpoint="cnn.pth", ckpt_kind="agid",
     overrides=["ModelConfig.model_type=cnn", "ModelConfig.freeze_backbone=false"],
