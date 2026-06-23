@@ -19,3 +19,4 @@ pool: mean
 eval_fixed_noise: true
 noise_seed: 0
 vae_pool_grid: 8
+n_noise: 1               # DIFT noise-ensemble: average features over N noise draws

@@ -66,6 +66,7 @@ class AGIDDiffusionProbeModel(nn.Module):
         self.vae_pool_grid = int(mc.get("vae_pool_grid", 8))
         self.eval_fixed_noise = bool(mc.get("eval_fixed_noise", True))
         self.noise_seed = int(mc.get("noise_seed", 0))
+        self.n_noise = max(1, int(mc.get("n_noise", 1)))  # DIFT noise-ensemble: avg features over N draws
 
         # ---- frozen VAE (both backbones need it) ----
         self.vae = AutoencoderKL.from_pretrained(self.sd_id, subfolder="vae")
@@ -140,9 +141,9 @@ class AGIDDiffusionProbeModel(nn.Module):
         latent = self.vae.encode(x).latent_dist.mean * self.scaling_factor
         return latent
 
-    def _sample_noise(self, latent: torch.Tensor) -> torch.Tensor:
+    def _sample_noise(self, latent: torch.Tensor, offset: int = 0) -> torch.Tensor:
         if (not self.training) and self.eval_fixed_noise:
-            gen = torch.Generator(device=latent.device).manual_seed(self.noise_seed)
+            gen = torch.Generator(device=latent.device).manual_seed(self.noise_seed + offset)
             return torch.randn(latent.shape, generator=gen, device=latent.device, dtype=latent.dtype)
         return torch.randn_like(latent)
 
@@ -154,16 +155,17 @@ class AGIDDiffusionProbeModel(nn.Module):
             pooled = F.adaptive_avg_pool2d(latent, (self.vae_pool_grid, self.vae_pool_grid))
             return pooled.flatten(1)  # [B, latent_channels * grid^2]
 
-        # ---- DIFT-style UNet features ----
+        # ---- DIFT-style UNet features (optionally averaged over n_noise noise draws) ----
         bsz = latent.shape[0]
-        noise = self._sample_noise(latent)
         t = torch.full((bsz,), self.timestep, device=latent.device, dtype=torch.long)
-        noisy = self.scheduler.add_noise(latent, noise, t)
         context = self.empty_context.to(latent.dtype).expand(bsz, -1, -1)
-        self._feat_buffer.clear()
-        self.unet(noisy, t, encoder_hidden_states=context)
-        feat = self._feat_buffer["up"]  # [B, C, h, w]
-        return _spatial_pool(feat, self.pool)
+        feats = []
+        for j in range(self.n_noise):
+            noisy = self.scheduler.add_noise(latent, self._sample_noise(latent, offset=j), t)
+            self._feat_buffer.clear()
+            self.unet(noisy, t, encoder_hidden_states=context)
+            feats.append(_spatial_pool(self._feat_buffer["up"], self.pool))  # [B, C(,2C)]
+        return feats[0] if self.n_noise == 1 else torch.stack(feats, 0).mean(0)
 
     # ----------------------------------------------------------------- AGID API
     def forward(self, images: torch.Tensor) -> torch.Tensor:
