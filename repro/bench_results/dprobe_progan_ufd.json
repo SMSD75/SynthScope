@@ -1,0 +1,73 @@
+{
+  "tag": "dprobe_progan_ufd",
+  "model": "diffusion_probe",
+  "ckpt": "/ssdstore/ssalehi/AGID/checkpoints_agid_dev/diffprobe_progan/model_best.pth",
+  "benchmark": "ufd",
+  "data_root": "/ssdstore/ssalehi/AGID/universialfakedetection/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 60.97,
+    "map": 74.77,
+    "mauroc": 75.93
+  },
+  "per_generator": {
+    "dalle": {
+      "ap": 75.5,
+      "auroc": 75.13,
+      "real_acc": 93.9,
+      "fake_acc": 28.5,
+      "acc": 61.2
+    },
+    "glide_100_10": {
+      "ap": 77.09,
+      "auroc": 77.71,
+      "real_acc": 93.9,
+      "fake_acc": 29.7,
+      "acc": 61.8
+    },
+    "glide_100_27": {
+      "ap": 77.39,
+      "auroc": 78.04,
+      "real_acc": 93.9,
+      "fake_acc": 31.2,
+      "acc": 62.55
+    },
+    "glide_50_27": {
+      "ap": 79.37,
+      "auroc": 80.2,
+      "real_acc": 93.9,
+      "fake_acc": 33.4,
+      "acc": 63.65
+    },
+    "guided": {
+      "ap": 74.56,
+      "auroc": 76.09,
+      "real_acc": 90.9,
+      "fake_acc": 36.1,
+      "acc": 63.5
+    },
+    "ldm_100": {
+      "ap": 77.97,
+      "auroc": 79.8,
+      "real_acc": 93.9,
+      "fake_acc": 30.1,
+      "acc": 62.0
+    },
+    "ldm_200": {
+      "ap": 76.41,
+      "auroc": 77.97,
+      "real_acc": 93.9,
+      "fake_acc": 27.7,
+      "acc": 60.8
+    },
+    "ldm_200_cfg": {
+      "ap": 59.87,
+      "auroc": 62.53,
+      "real_acc": 93.9,
+      "fake_acc": 10.6,
+      "acc": 52.25
+    }
+  },
+  "date": "2026-06-23T01:06:59",
+  "agid_version": "0.1.0"
+}
