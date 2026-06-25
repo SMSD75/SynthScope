@@ -72,7 +72,7 @@ releases are held back unless you opt in and confirm the upstream license permit
 
 ## Implemented detectors
 
-Select a detector with `model@ModelConfig=<name>` (image) or `model@ModelConfig=video/<name>`. Most
+Select a detector with `model@ModelConfig=image/<name>` (image) or `model@ModelConfig=video/<name>`. Most
 methods freeze a large pretrained backbone and train a lightweight head/adapter; see each model's
 `README.md` under [models/](models/) for details.
 
@@ -158,11 +158,11 @@ Compose three Hydra config groups and override any field with dot-paths:
 
 ```bash
 accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
-  trainer@TrainerConfig=aide model@ModelConfig=aide dataset@DatasetConfig=genimage \
+  trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage \
   DatasetConfig.train_batch_size=16 logger.name=aide
 ```
 
-Or use a method's ready-made recipe in [experiments/](experiments/) (e.g. `bash experiments/aide.sh`).
+Or use a method's ready-made recipe in [experiments/](experiments/) (e.g. `bash experiments/image/aide.sh`).
 Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and restructure into a
 common `real/`/`fake/` layout; transforms are named pipelines in [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.

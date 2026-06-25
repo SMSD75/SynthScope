@@ -61,16 +61,17 @@ def _load_dotenv() -> None:
 
 _load_dotenv()
 
-# Central checkpoint directory. Defaults to a node-local location next to the datasets;
-# override with AGID_CKPT_DIR when running elsewhere.
+# Central checkpoint directory. Defaults to the portable ``~/.cache/agid`` home (matching the
+# ``agid`` package + README); cluster jobs override with AGID_CKPT_DIR for node-local scratch.
+_AGID_HOME = Path(os.environ.get("AGID_HOME", Path.home() / ".cache" / "agid")).expanduser()
 CHECKPOINTS_DIR = Path(
-    os.environ.get("AGID_CKPT_DIR", "/hddstore/ssalehi/AGID/checkpoints")
+    os.environ.get("AGID_CKPT_DIR", str(_AGID_HOME / "checkpoints"))
 ).expanduser()
 
 # Where to cache downloaded pretrained backbones (CLIP/DINOv2/SigLIP/ConvNeXt/...). On cn023
 # the /nvmestore caches referenced by the experiment scripts are not present, so default to a
 # node-local cache. Only set if the caller has not already configured these.
-_DEFAULT_CACHE = Path(os.environ.get("AGID_CACHE_DIR", "/hddstore/ssalehi/AGID/.cache"))
+_DEFAULT_CACHE = Path(os.environ.get("AGID_CACHE_DIR", str(_AGID_HOME / "cache"))).expanduser()
 os.environ.setdefault("HF_HOME", str(_DEFAULT_CACHE / "huggingface"))
 os.environ.setdefault("TORCH_HOME", str(_DEFAULT_CACHE / "torch"))
 os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
