@@ -1,7 +1,17 @@
 {
-  "updated": "2026-06-28",
+  "updated": "2026-07-02",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
+    {
+      "title": "Fleet: Few Shots Lead Effective AI-generated Image Detection",
+      "authors": "ICTMCG",
+      "venue": "arXiv",
+      "year": "2026",
+      "github": "https://github.com/ICTMCG/Fleet",
+      "arxiv": "https://arxiv.org/abs/2606.31082",
+      "summary": "A dynamic few-shot adaptation paradigm: instead of a static feature space, 'constrained routing correction' redirects novel AI samples away from non-AI-dominated routes in decoupled subspaces, so the detector keeps adapting to rapidly-evolving/commercial generators from a handful of labeled examples. Introduces the Treasure benchmark (64 generators, 360k images, 20 closed-source commercial engines).",
+      "result": "On a modern generator (Doubao Seedream 4.0), 20.4% -> 73.1% with only 10-shot adaptation, where static SOTA collapses. [RULE 1 pending: the promised repo github.com/ICTMCG/Fleet is 404 as of 2026-07-02 (code 'available' in the abstract but not yet public). Retained as a strong trending pre-print; prune if the repo stays unavailable. Part B pending regardless: few-shot/test-time-adaptation paradigm (needs a labeled support set at inference) does not fit AGID's forward->logit trained-detector template — same class as the TabPFN entry.]"
+    },
     {
       "title": "PGC: Peak-Guided Calibration for AI-Generated Image Detection",
       "authors": "Zhou et al.",
