@@ -173,12 +173,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-02.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-03.*
 
 ### Image detectors
 - **[Fleet: Few Shots Lead Effective AI-generated Image Detection](https://github.com/ICTMCG/Fleet)** (ICTMCG · arXiv · 2026) — [code](https://github.com/ICTMCG/Fleet)  
   A dynamic few-shot adaptation paradigm: instead of a static feature space, 'constrained routing correction' redirects novel AI samples away from non-AI-dominated routes in decoupled subspaces, so the detector keeps adapting to rapidly-evolving/commercial generators from a handful of labeled examples. Introduces the Treasure benchmark (64 generators, 360k images, 20 closed-source commercial engines).  
-  _Results: On a modern generator (Doubao Seedream 4.0), 20.4% -> 73.1% with only 10-shot adaptation, where static SOTA collapses. [RULE 1 pending: the promised repo github.com/ICTMCG/Fleet is 404 as of 2026-07-02 (code 'available' in the abstract but not yet public). Retained as a strong trending pre-print; prune if the repo stays unavailable. Part B pending regardless: few-shot/test-time-adaptation paradigm (needs a labeled support set at inference) does not fit AGID's forward->logit trained-detector template — same class as the TabPFN entry.]_
+  _Results: On a modern generator (Doubao Seedream 4.0), 20.4% -> 73.1% with only 10-shot adaptation, where static SOTA collapses. [RULE 1 pending: the promised repo github.com/ICTMCG/Fleet is STILL 404 as of 2026-07-03 (day 2; code 'available' in the abstract but not yet public). Retained one more grace day as a strong trending pre-print; PRUNE tomorrow if still unavailable. Part B pending regardless: few-shot/test-time-adaptation paradigm (needs a labeled support set at inference) does not fit AGID's forward->logit trained-detector template — same class as the TabPFN entry.]_
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
   LoRA-tuned DINOv2 RGB stream + a YCbCr-quantization-residual CNN, fused by a peak-guided (log-sum-exp) calibration. Strong cross-generator transfer.  
   _Results: ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)._
