@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-06.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-07.*
 
 ### Image detectors
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
@@ -223,6 +223,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 - **[ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection](https://github.com/hwang-cs-ime/ATSS)** (Wang et al. (hwang-cs-ime) · arXiv · 2026) — [code](https://github.com/hwang-cs-ime/ATSS)  
   Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.  
   _Results: Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video — and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. AGID feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]_
+- **[G2VD: Generalizable AI-Generated Video Detection via Counterfactual Intervention and Causal Disentanglement](https://github.com/dumeng98/G2VD)** (Du et al. (dumeng98) · arXiv · 2026) — [code](https://github.com/dumeng98/G2VD)  
+  Counterfactual-intervention + causal-disentanglement detector: a training-time CFIPipeline synthesizes controlled counterfactual samples (VAEs + frequency/pixel alignment), and a causal-disentanglement classifier with two domain-anchored branches and an HSIC independence constraint isolates the generalizable artifact signal from domain-specific content.  
+  _Results: GenVidBench cross-domain: >90% accuracy / AUC ~0.95 using only 10% of the training data (paper). Repo live 2026-07-07. [integration assessment pending: verifying whether inference is a single forward pass on a raw clip with released weights (CFIPipeline is a training-time augmentation, so the deployed model may be just backbone+classifier) vs. needing the counterfactual pipeline at test time.]_
 
 ### Benchmarks & curated lists
 - [GenImage: million-scale real-vs-fake benchmark](https://github.com/GenImage-Dataset/GenImage) — ImageNet-1k reals + ~equal synthetic from diverse generators.
