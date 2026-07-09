@@ -173,12 +173,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-08.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-07-09.*
 
 ### Image detectors
 - **[RNSIDNet: Generalized Synthetic Image Detection with Enhanced RGB-Noise Representation Learning](https://github.com/multimediaFor/RNSIDNet)** (multimediaFor · arXiv · 2026) — [code](https://github.com/multimediaFor/RNSIDNet)  
   Dual-branch detector: an attention-refined CLIP RGB stream that dynamically modulates a Bayar-convolution high-frequency noise stream via a FiLM module, trained with Hard Sample-aware Contrastive Learning (HSCL). Semantic + low-level artifact fusion in the same family as Co-Spy/AIDE.  
-  _Results: Claims SOTA generalization/robustness/efficiency across 8 benchmarks (paper; no per-benchmark numbers in the abstract). [RULE 1 pending: the promised repo github.com/multimediaFor/RNSIDNet is 404 as of 2026-07-08 ('code and dataset will be publicly available', not yet up). Retained as a strong trending pre-print; PRUNE per the ~3-day policy if the repo stays unavailable.]_
+  _Results: Claims SOTA generalization/robustness/efficiency across 8 benchmarks (paper; no per-benchmark numbers in the abstract). [RULE 1 pending: the promised repo github.com/multimediaFor/RNSIDNet is STILL 404 as of 2026-07-09 (day 2; 'code and dataset will be publicly available', not yet up). One grace day left; PRUNE tomorrow if still unavailable.]_
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
   LoRA-tuned DINOv2 RGB stream + a YCbCr-quantization-residual CNN, fused by a peak-guided (log-sum-exp) calibration. Strong cross-generator transfer.  
   _Results: ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)._
