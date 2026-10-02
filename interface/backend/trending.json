@@ -10,7 +10,8 @@
       "github": "https://github.com/manic-cui/CuRe",
       "arxiv": "https://arxiv.org/abs/2609.14316",
       "summary": "Reframes backbone adaptation as regressing real-generated MIXING RATIOS instead of binary classification (finer supervision), with a compact source-response subspace that suppresses nuisance variation/shortcut cues. Frozen Perception-Encoder (PE-Core L/14-336) backbone + LoRA + subspace + linear head; the 25 MB adapter ships in the repo and infer.py scores a single image.",
-      "result": "89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Part B: integration in progress on branch trending/cure (2026-10-02).]"
+      "result": "89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Integrated on branch trending/cure, under review (not merged to main): AGID's class is identical to the official model (395/395 state-dict tensors, logit diff 4.8e-6, 0 verdict flips). AGID-protocol results with the official adapter: UFD-8 93.9 / ForenSynths-13 82.0 / GenImage-8 85.2 balanced acc (SD-v1.4, its training set, 99.7). The paper's table is NOT yet confirmed: only 3 of its 10 benchmarks exist in AGID, its UnivFD aggregation is unspecified, AIGIBench is queued and AIGCDetect's data is only on cn023.]",
+      "agid": "cure"
     },
     {
       "title": "PGC: Peak-Guided Calibration for AI-Generated Image Detection",
