@@ -108,10 +108,10 @@ Fidelity: AGID's class == the official model (395/395 state-dict tensors identic
 | UFD-8 (diffusion half of UnivFD) | 93.94 | 99.19 | UnivFD 82.0 | not comparable — paper's aggregation unspecified |
 | ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
 | GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
-| AIGIBench (25 gens) | queued (job 245848) | | 92.8 | cees6000 queue |
+| AIGIBench (all 25 gens, `--limit 1500`) | **85.95** | 90.72 | 92.8 | below paper (−6.8); 5 face-swap gens avg 57.2, other 20 avg 93.13 (post-hoc subset, paper's subset unknown) |
 | AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
 
-**Verdict: faithful port, paper table NOT yet confirmed** (3 of its 10 benchmarks exist here). Details: `models/image/cure/README.md`.
+**Verdict: faithful port (identical to the official model), paper table NOT confirmed**: AIGIBench lands 6.8 pts below the paper on all 25 generators (face-swap sets drag it down), UnivFD's aggregation is unspecified, AIGCDetect not run, 7 of 10 benchmarks unavailable. Details: `models/image/cure/README.md`.
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | AGID_train |

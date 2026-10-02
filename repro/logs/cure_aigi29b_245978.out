@@ -1,0 +1,83 @@
+NODE=ivi-cn029 GPU=0 Sat Oct  3 00:59:42 CEST 2026 | code=4668e63 Add CuRe detector (official 25MB adapter on PE-Core L/14): faithful port, benchmark confirmation partial
+cure registered from /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_wt/interface/backend/registry.py
+=== extract all zips (parallel x6) Sat Oct  3 00:59:54 CEST 2026 ===
+ok E4S.zip
+ok BLIP.zip
+ok FaceSwap.zip
+ok GLIDE.zip
+ok BlendFace.zip
+ok InSwap.zip
+ok CommunityAI.zip
+ok FLUX1-dev.zip
+ok IP-Adapter.zip
+ok DALLE-3.zip
+ok ProGAN.zip
+ok R3GAN.zip
+ok Imagen3.zip
+ok Infinite-ID.zip
+ok SimSwap.zip
+ok Midjourney.zip
+ok InstantID.zip
+ok SD3.zip
+ok PhotoMaker.zip
+ok SDXL.zip
+ok WFIR.zip
+ok StyleGAN3.zip
+ok StyleGAN-XL.zip
+ok StyleSwim.zip
+ok SocialRF.zip
+=== per-generator file counts ===
+  BLIP           real=4500   fake=4500  
+  BlendFace      real=4500   fake=4500  
+  CommunityAI    real=6000   fake=6000  
+  DALLE-3        real=4002   fake=4000  
+  E4S            real=4500   fake=4500  
+  FLUX1-dev      real=4500   fake=4500  
+  FaceSwap       real=4500   fake=4400  
+  GLIDE          real=4500   fake=4500  
+  IP_Adapter     real=4500   fake=4500  
+  Imagen3        real=4500   fake=4500  
+  InSwap         real=4500   fake=4400  
+  Infinite_ID    real=4500   fake=4500  
+  InstantID      real=4500   fake=4500  
+  Midjourney     real=3000   fake=3000  
+  PhotoMaker     real=4500   fake=4500  
+  ProGAN         real=4000   fake=4000  
+  R3GAN          real=4500   fake=4500  
+  SD3            real=4500   fake=4500  
+  SDXL           real=4500   fake=4500  
+  SimSwap        real=4500   fake=4500  
+  SocialRF       real=3000   fake=3000  
+  StyleGAN-XL    real=4500   fake=4500  
+  StyleGAN3      real=4500   fake=4500  
+  StyleSwim      real=4500   fake=4500  
+  WFIR           real=1000   fake=1000  
+=== evaluate Sat Oct  3 01:03:02 CEST 2026 ===
+=== bench_eval cure_repro_aigibench | model=cure ckpt=registry-default | pergen | 25 generators | device=cuda ===
+    BLIP: acc=98.53 AP=99.93 AUROC=99.94 (real_acc=97.07 fake_acc=100.0)
+    BlendFace: acc=45.93 AP=42.5 AUROC=41.12 (real_acc=88.73 fake_acc=3.13)
+    CommunityAI: acc=94.6 AP=98.31 AUROC=98.42 (real_acc=93.33 fake_acc=95.87)
+    DALLE-3: acc=97.57 AP=98.85 AUROC=99.3 (real_acc=95.4 fake_acc=99.73)
+    E4S: acc=77.4 AP=84.78 AUROC=90.68 (real_acc=89.33 fake_acc=65.47)
+    FLUX1-dev: acc=94.9 AP=98.08 AUROC=98.16 (real_acc=96.13 fake_acc=93.67)
+    FaceSwap: acc=52.2 AP=67.39 AUROC=69.2 (real_acc=96.67 fake_acc=7.73)
+    GLIDE: acc=85.6 AP=93.78 AUROC=95.22 (real_acc=95.67 fake_acc=75.53)
+    IP_Adapter: acc=77.03 AP=89.34 AUROC=89.65 (real_acc=95.8 fake_acc=58.27)
+    Imagen3: acc=82.3 AP=92.4 AUROC=93.01 (real_acc=95.2 fake_acc=69.4)
+    InSwap: acc=53.63 AP=61.26 AUROC=62.19 (real_acc=95.07 fake_acc=12.2)
+    Infinite_ID: acc=96.63 AP=97.49 AUROC=98.42 (real_acc=93.33 fake_acc=99.93)
+    InstantID: acc=97.83 AP=99.74 AUROC=99.78 (real_acc=95.73 fake_acc=99.93)
+    Midjourney: acc=88.2 AP=92.73 AUROC=94.27 (real_acc=87.47 fake_acc=88.93)
+    PhotoMaker: acc=89.57 AP=95.66 AUROC=95.23 (real_acc=94.47 fake_acc=84.67)
+    ProGAN: acc=95.97 AP=99.84 AUROC=99.85 (real_acc=99.33 fake_acc=92.6)
+    R3GAN: acc=96.9 AP=99.12 AUROC=99.27 (real_acc=95.47 fake_acc=98.33)
+    SD3: acc=97.0 AP=99.39 AUROC=99.56 (real_acc=94.27 fake_acc=99.73)
+    SDXL: acc=97.13 AP=99.61 AUROC=99.73 (real_acc=94.27 fake_acc=100.0)
+    SimSwap: acc=56.97 AP=69.44 AUROC=70.65 (real_acc=95.67 fake_acc=18.27)
+    SocialRF: acc=93.5 AP=97.1 AUROC=97.7 (real_acc=89.73 fake_acc=97.27)
+    StyleGAN-XL: acc=97.53 AP=99.42 AUROC=99.61 (real_acc=95.13 fake_acc=99.93)
+    StyleGAN3: acc=91.0 AP=94.71 AUROC=96.72 (real_acc=94.0 fake_acc=88.0)
+    StyleSwim: acc=97.13 AP=98.7 AUROC=99.15 (real_acc=94.87 fake_acc=99.4)
+    WFIR: acc=93.6 AP=98.54 AUROC=98.83 (real_acc=87.3 fake_acc=99.9)
+=== RESULT cure_repro_aigibench: mAP=90.72 mAUROC=91.43 acc=85.95 over 25 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_wt/repro/bench_results/cure_repro_aigibench.json ===
+=== CURE AIGIBENCH RESUME DONE Sat Oct  3 01:44:29 CEST 2026 ===

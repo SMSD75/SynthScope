@@ -50,7 +50,8 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | ForenSynths-13 (GAN half) | 13 | **81.95** | 94.05 | 95.02 | UnivFD 82.0 | **not comparable** |
 | ForenSynths-8 ∪ UFD-8 (16-gen "UnivFD-style") | 16 | 89.27 | – | – | UnivFD 82.0 | aggregation differs from the paper |
 | GenImage-8 (`--limit 1500`/class; CuRe's *training* set) | 8 | 85.18 | 97.30 | 97.00 | not in the paper's ten | sanity (in-distribution) |
-| AIGIBench (25 gens, `--limit 1500`/class) | 25 | *queued* | | | 92.8 | job 245848 (cn031 queue) — see note |
+| AIGIBench (all 25 test generators, `--limit 1500`/class) | 25 | **85.95** | 90.72 | 91.43 | 92.8 | **below the paper** (−6.8); see below |
+| AIGIBench without the 5 face-swap generators (post-hoc subset) | 20 | 93.13 | 97.14 | 97.59 | 92.8 | observation only — the paper's subset/aggregation is unknown |
 | AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
 | EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | – | *not in AGID* | | | see above | datasets not available here |
 
@@ -60,8 +61,14 @@ behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, 
 ADM/BigGAN/VQDM fake-recall 22–65 %, AUROC 87–99). **However, the paper's headline benchmark numbers are
 NOT yet reproduced:** only 3 of its 10 benchmarks exist in AGID, the paper's UnivFD aggregation is not
 specified (AGID's UFD-8 and ForenSynths-13 splits give 93.9 and 82.0, the 16-generator union 89.3, versus the
-paper's 82.0), and the AIGIBench/AIGCDetect runs could not complete (queue / data location). Treat the
-numbers above as AGID-protocol measurements, not confirmation of the paper's table.
+paper's 82.0), AIGIBench (all 25 test generators, 75k images at `--limit 1500`/class) gives **85.95**, i.e. 6.8 pts
+below the paper's 92.8; the gap is almost entirely the five face-swap generators (BlendFace 45.9,
+FaceSwap 52.2, InSwap 53.6, SimSwap 57.0, E4S 77.4 — real-acc ~90–97 but fake-recall 3–66 %), while the other 20
+generators average 93.13 (AP 97.1, AUROC 97.6). That subset was chosen *after* seeing the gap, and the
+paper's AIGIBench subset/aggregation is not specified here (AIGIBench's own README lists 23 fake subsets,
+AGID's test split has 25), so 93.13 is an observation, not a confirmation. AIGCDetect could not be run (its
+data lives only on cn023, whose GPUs/CPUs were fully booked). Treat the numbers above as AGID-protocol
+measurements, not confirmation of the paper's table.
 
 Per-generator tables (balanced acc / AP / AUROC / real-acc / fake-acc), from `repro/bench_results/cure_repro_*.json`:
 
