@@ -11,6 +11,7 @@ from models.image.spai.spai import SPAI
 from models.image.vib_net.vib_net import AGIDVIBNetModel
 from models.image.npr.npr import NPR
 from models.image.pgc.pgc import AGIDPGCModel
+from models.image.cure.cure import AGIDCuReModel
 from models.video.d3.d3 import AGIDD3Model
 from models.video.restrav.restrav import AGIDReStraVModel
 from models.video.stall.stall import AGIDSTALLModel
@@ -83,6 +84,8 @@ class AGIDModelTrainer:
             return NPR(config)
         if model_type == "pgc":
             return AGIDPGCModel(config)
+        if model_type == "cure":
+            return AGIDCuReModel(config)
         if model_type == "d3":
             return AGIDD3Model(config)
         if model_type == "restrav":

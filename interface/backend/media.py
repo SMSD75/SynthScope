@@ -17,6 +17,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Faithful repo decoders.
 from dataset import sample_video_frames  # noqa: E402
+from models.image.cure.preprocess import SRC_FORMAT_KEY  # noqa: E402
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
 VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v"}
@@ -39,7 +40,11 @@ def media_kind(filename: str, content_type: str | None = None) -> str:
 
 def decode_image(data: bytes) -> Image.Image:
     """Decode raw bytes into an RGB PIL image."""
-    return Image.open(io.BytesIO(data)).convert("RGB")
+    source = Image.open(io.BytesIO(data))
+    source_format = source.format
+    image = source.convert("RGB")
+    image.info[SRC_FORMAT_KEY] = source_format  # lets format-aware transforms (CuRe) see PNG vs JPEG
+    return image
 
 
 def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:

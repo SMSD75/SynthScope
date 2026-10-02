@@ -99,6 +99,9 @@ def _build_model(cfg):
     if model_type == "pgc":
         from models.image.pgc.pgc import AGIDPGCModel
         return AGIDPGCModel(cfg)
+    if model_type == "cure":
+        from models.image.cure.cure import AGIDCuReModel
+        return AGIDCuReModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import AGIDSTALLModel
         return AGIDSTALLModel(cfg)

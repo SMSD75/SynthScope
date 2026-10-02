@@ -100,6 +100,19 @@ SPAI now SERVES official weights remapped into the AGID class at NATIVE resoluti
 | GenImage-8 (diffusion) | 95.5 AP | 83.94 (77.6) |
 | ForenSynths-13 (GAN) | 93.1 AP | 61.71 (57.9) |
 
+### CuRe (official adapter; branch `trending/cure`, under review)
+Fidelity: AGID's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
+
+| Benchmark (AGID protocol) | acc (mean per-gen balanced) | mAP | Paper | Note |
+|---|---:|---:|---|---|
+| UFD-8 (diffusion half of UnivFD) | 93.94 | 99.19 | UnivFD 82.0 | not comparable — paper's aggregation unspecified |
+| ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
+| GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
+| AIGIBench (25 gens) | queued (job 245848) | | 92.8 | cees6000 queue |
+| AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
+
+**Verdict: faithful port, paper table NOT yet confirmed** (3 of its 10 benchmarks exist here). Details: `models/image/cure/README.md`.
+
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | AGID_train |
 |---|---:|---:|
