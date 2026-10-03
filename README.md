@@ -128,7 +128,7 @@ generators) live in [`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 |
 | SPAI | GenImage | ~91 AUROC | 94.22 |
 | PGC | GenImage | 100 | 100 (official) |
-| CuRe | AIGIBench (20 subsets, balanced acc) | 92.8 acc | 93.13 acc (official) |
+| CuRe | AIGIBench (20 subsets, balanced acc) | 92.8 acc | 92.85 acc (official) |
 | VIB-Net | GenImage SD-v1.4 | 95.5 | 83.94 (no official weights released) |
 | D3 (video) | GenVideo-Val | ~98 | 95.95 AUROC |
 | ReStraV (video) | GenVidBench | 93.0 | 92.7 |
@@ -180,7 +180,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 ### Image detectors
 - **[CuRe: Learning Continuous Source Responses for Generalizable AI-Generated Image Detection](https://github.com/manic-cui/CuRe)** (manic-cui · arXiv · 2026) — [code](https://github.com/manic-cui/CuRe) · _in AGID: `cure`_  
   Reframes backbone adaptation as regressing real-generated MIXING RATIOS instead of binary classification (finer supervision), with a compact source-response subspace that suppresses nuisance variation/shortcut cues. Frozen Perception-Encoder (PE-Core L/14-336) backbone + LoRA + subspace + linear head; the 25 MB adapter ships in the repo and infer.py scores a single image.  
-  _Results: 89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Integrated in AGID as `cure` (merged to main 2026-10-03): AGID's class is identical to the official model (395/395 state-dict tensors, logit diff 4.8e-6, 0 verdict flips). AGID-protocol results with the official adapter: UFD-8 93.9 / ForenSynths-13 82.0 / GenImage-8 85.2 balanced acc (SD-v1.4, its training set, 99.7). AIGIBench REPRODUCED: on the paper's own 20 full-image-synthesis subsets the port scores 93.13 balanced acc / 97.59 AUROC vs the paper's 92.8 / 97.5 (per-subset mean abs diff 0.76; the paper excludes the 5 face-swap subsets, which is why all 25 gives 85.95). Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, not run), and 7 of the paper's 10 benchmarks (not in AGID).]_
+  _Results: 89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Integrated in AGID as `cure` (merged to main 2026-10-03): AGID's class is identical to the official model (395/395 state-dict tensors, logit diff 4.8e-6, 0 verdict flips). AGID-protocol results with the official adapter: UFD-8 93.9 / ForenSynths-13 82.0 / GenImage-8 85.2 balanced acc (SD-v1.4, its training set, 99.7). AIGIBench REPRODUCED: on the paper's own 20 full-image-synthesis subsets (full test data) the port scores 92.85 balanced acc / 97.48 AUROC vs the paper's 92.8 / 97.5, every subset within 0.10 pt (per-subset mean abs diff 0.03; the paper excludes the 5 face-swap subsets, which is why all 25 gives 85.95). Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, not run), and 7 of the paper's 10 benchmarks (not in AGID).]_
 - **[PGC: Peak-Guided Calibration for AI-Generated Image Detection](https://github.com/xiaoyu6868/PGC)** (Zhou et al. · 2026) — [code](https://github.com/xiaoyu6868/PGC) · _in AGID: `pgc`_  
   LoRA-tuned DINOv2 RGB stream + a YCbCr-quantization-residual CNN, fused by a peak-guided (log-sum-exp) calibration. Strong cross-generator transfer.  
   _Results: ForenSynths 96.25 mAP / GenImage 100 mAP (official weights)._

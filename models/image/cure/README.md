@@ -45,7 +45,7 @@ Summary in the repo's **Paper / AGID_official / AGID_train** schema (`acc` = mea
 
 | Benchmark | Paper | AGID_official | AGID_train | Status |
 |---|---|---|---|---|
-| AIGIBench (paper's 20 full-image-synthesis subsets) | acc=92.8 / AUC=97.5 | mAP=97.14 / acc=93.13 / AUROC=97.59 | — | **official** (reproduced) |
+| AIGIBench (paper's 20 full-image-synthesis subsets, full test data) | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 | — | **reproduced** (every subset within 0.10 pt) |
 | UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
 | ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | — | reference |
 | GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | — | reference |
@@ -64,7 +64,8 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | ForenSynths-13 (GAN half) | 13 | **81.95** | 94.05 | 95.02 | UnivFD 82.0 | **not comparable** |
 | ForenSynths-8 ∪ UFD-8 (16-gen "UnivFD-style") | 16 | 89.27 | – | – | UnivFD 82.0 | aggregation differs from the paper |
 | GenImage-8 (`--limit 1500`/class; CuRe's *training* set) | 8 | 85.18 | 97.30 | 97.00 | not in the paper's ten | sanity (in-distribution) |
-| **AIGIBench — the paper's 20 full-image-synthesis subsets** (`--limit 1500`/class) | 20 | **93.13** | 97.14 | 97.59 | **92.8** (AUC 97.5) | **reproduced** (mean diff +0.3; per-subset mean abs diff 0.76) |
+| **AIGIBench — the paper's 20 full-image-synthesis subsets, FULL test data** (168,002 images) | 20 | **92.85** | 97.00 | 97.48 | **92.8** (AUC 97.5) | **reproduced** (mean abs diff 0.03; max 0.10) |
+| same 20 subsets, `--limit 1500`/class (earlier run) | 20 | 93.13 | 97.14 | 97.59 | 92.8 | within 2.1 pt per subset; the cap caused the residual |
 | AIGIBench, all 25 test generators (adds 5 face-swap subsets the paper excludes) | 25 | 85.95 | 90.72 | 91.43 | – | not the paper's protocol |
 | AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
 | EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | – | *not in AGID* | | | see above | datasets not available here |
@@ -77,13 +78,14 @@ ADM/BigGAN/VQDM fake-recall 22–65 %, AUROC 87–99).
 **AIGIBench is reproduced.** The paper evaluates "the 20 subsets corresponding to full-image synthesis" and
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,
 StyleGAN‑XL, StyleSwim, WFIR, DALL·E 3, FLUX.1‑dev, GLIDE, Imagen 3, Midjourney, SD3, SDXL, BLIP‑Diffusion,
-Infinite‑ID, InstantID, IP‑Adapter, PhotoMaker, CommunityAI, SocialRF. On exactly those 20 (first 1,500
-images per class), AGID's port of the official adapter gives **93.13 balanced accuracy / 97.59 AUROC vs the
-paper's 92.8 / 97.5**; per-subset differences average +0.29 (mean |diff| 0.76, max 2.13; 16/20 within 1 pt,
-largest: IP‑Adapter +2.1, FLUX.1 +2.1, StyleGAN3 −1.6). The five face-swap/editing subsets in AGID's 25-generator
+Infinite‑ID, InstantID, IP‑Adapter, PhotoMaker, CommunityAI, SocialRF. On exactly those 20 with the **full test data**
+(168,002 images), AGID's port of the official adapter gives **92.85 balanced accuracy / 97.48 AUROC vs the
+paper's 92.8 / 97.5**, and **every one of the 20 subsets is within 0.10 pt of the paper's Table 2** (mean |diff|
+0.03, largest WFIR +0.10; ProGAN, StyleGAN3, StyleGAN‑XL, SD3 match to the printed digit). An earlier run on the
+first 1,500 images per class gave 93.13 / 97.59 (per-subset mean |diff| 0.76, max 2.13), so the cap, not the port,
+caused the residual. The five face-swap/editing subsets in AGID's 25-generator
 test split (BlendFace, FaceSwap, InSwap, SimSwap, E4S; mean 57.2) are excluded by the paper — including them is
-what produced my first, misleading 85.95. Residual differences plausibly come from the 1,500-image cap and
-the paper's shared "curated" real set vs AIGIBench's per-generator reals. (Paper values were read from the arXiv
+what produced my first, misleading 85.95. (Paper values were read from the arXiv
 HTML Table 2 via a text extraction, not from the PDF.)
 
 **Still NOT confirmed:** only 3 of the paper's 10 benchmarks exist in AGID. UnivFD: the paper's aggregation is not

@@ -49,7 +49,7 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | PGC | ForenSynths (CNNDetection test) [†] | — | mAP=96.25 / acc=83.73 | mAP=94.57 / acc=83.41 | reference |
 | PGC | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
 | PGC | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
-| CuRe | AIGIBench — paper's 20 full-image-synthesis subsets | acc=92.8 / AUC=97.5 | mAP=97.14 / acc=93.13 / AUROC=97.59 (`--limit 1500`/class) | — (training recipe not released) | official |
+| CuRe | AIGIBench — paper's 20 full-image-synthesis subsets | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 (full test data; every subset within 0.10 pt) | — (training recipe not released) | reproduced |
 | CuRe | UniversalFakeDetect (UFD-8, diffusion half) | acc=82.0 (UnivFD; aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
 | CuRe | ForenSynths (CNNDetection test, 13) | (GAN half of UnivFD 82.0) | mAP=94.05 / acc=81.95 | — | reference |
 | CuRe | GenImage-8 (its own SD-v1.4 training set; sdv1.4 99.73) | — | mAP=97.30 / acc=85.18 (`--limit 1500`/class) | — | reference |

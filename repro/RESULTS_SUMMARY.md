@@ -108,10 +108,10 @@ Fidelity: AGID's class == the official model (395/395 state-dict tensors identic
 | UFD-8 (diffusion half of UnivFD) | 93.94 | 99.19 | UnivFD 82.0 | not comparable — paper's aggregation unspecified |
 | ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
 | GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
-| AIGIBench, paper's 20 full-image-synthesis subsets (`--limit 1500`) | **93.13** | 97.14 | **92.8** | **reproduced**: AUROC 97.59 vs 97.5; per-subset mean abs diff 0.76 (max 2.13). Adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
+| AIGIBench, paper's 20 full-image-synthesis subsets (full test data, 168k images) | **92.85** | 97.00 | **92.8** | **reproduced**: AUROC 97.48 vs 97.5; every subset within 0.10 pt (mean abs diff 0.03). The earlier `--limit 1500` run gave 93.13 (the cap caused its 0.3 residual); adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
 | AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
 
-**Verdict: faithful port (identical to the official model) and AIGIBench reproduced (93.13 vs 92.8 on the paper's 20 subsets).** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 7 of the paper's 10 benchmarks (not available here).
+**Verdict: faithful port (identical to the official model) and AIGIBench reproduced (92.85 vs 92.8 on the paper's 20 subsets, every subset within 0.10 pt).** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 7 of the paper's 10 benchmarks (not available here).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | AGID_train |
