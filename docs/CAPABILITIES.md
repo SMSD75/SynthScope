@@ -10,7 +10,7 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ---
 
-## 1. What's already integrated (16 detectors)
+## 1. What's already integrated (17 detectors)
 
 `agid.list_models()` / `from agid.api import list_specs`. Each is an `AGID<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
@@ -28,6 +28,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `spai` | image | bce | agid* | spai_patch | Spectral, any-resolution (MFM ViT-B/16) |
 | `co_spy` | image | bce | agid* | – | Semantic + artifact fusion (SigLIP + SD-VAE) |
 | `pgc` | image | bce | official | pgc_peak | LoRA-DINOv2 + YCbCr residual, peak-guided |
+| `cure` | image | ce | official | – | Frozen PE-Core L/14 + Q/V LoRA + source-response subspace (mixing-ratio regression) |
 | `vib_net` | image | vib | agid | – | Variational information bottleneck (FLAVA) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `restrav` | video | video | agid | – | Representation-trajectory geometry (DINOv2) |

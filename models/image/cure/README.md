@@ -39,7 +39,21 @@ and base, on an A5000: all **395 state-dict tensors identical**, all 100 adapter
 (`unexpected=0`), **max |logit diff| 4.8e-6**, **max |P(fake) diff| 5.4e-7, 0 verdict flips** over 60
 images (official preprocessing vs AGID preprocessing, each end to end). Log: `repro/logs/cure_verify_245812.out`.
 
-## Results (official weights through AGID; balanced accuracy at 0.5 unless noted)
+## Results
+
+Summary in the repo's **Paper / AGID_official / AGID_train** schema (`acc` = mean per-generator balanced accuracy at 0.5):
+
+| Benchmark | Paper | AGID_official | AGID_train | Status |
+|---|---|---|---|---|
+| AIGIBench (paper's 20 full-image-synthesis subsets) | acc=92.8 / AUC=97.5 | mAP=97.14 / acc=93.13 / AUROC=97.59 | — | **official** (reproduced) |
+| UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
+| ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | — | reference |
+| GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | — | reference |
+| AIGCDetectBenchmark | acc=89.3 | — | — | missing |
+| EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | 98.1, 92.7, 95.8, 90.9, 81.5, 79.7, 93.8 | — | — | missing |
+
+`AGID_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
+(official weights through AGID; balanced accuracy at 0.5 unless noted).
 
 Paper: **89.7 avg over ten benchmarks** — AIGCDetect 89.3 · AIGIBench 92.8 · UnivFD 82.0 · EvalGEN 98.1 ·
 SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealChain 79.7 · Chameleon 93.8.
