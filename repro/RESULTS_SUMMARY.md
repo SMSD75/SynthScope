@@ -100,6 +100,19 @@ SPAI now SERVES official weights remapped into the AGID class at NATIVE resoluti
 | GenImage-8 (diffusion) | 95.5 AP | 83.94 (77.6) |
 | ForenSynths-13 (GAN) | 93.1 AP | 61.71 (57.9) |
 
+### CuRe (official adapter; branch `trending/cure`, under review)
+Fidelity: AGID's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
+
+| Benchmark (AGID protocol) | acc (mean per-gen balanced) | mAP | Paper | Note |
+|---|---:|---:|---|---|
+| UFD-8 (diffusion half of UnivFD) | 93.94 | 99.19 | UnivFD 82.0 | not comparable — paper's aggregation unspecified |
+| ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
+| GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
+| AIGIBench, paper's 20 full-image-synthesis subsets (`--limit 1500`) | **93.13** | 97.14 | **92.8** | **reproduced**: AUROC 97.59 vs 97.5; per-subset mean abs diff 0.76 (max 2.13). Adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
+| AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
+
+**Verdict: faithful port (identical to the official model) and AIGIBench reproduced (93.13 vs 92.8 on the paper's 20 subsets).** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 7 of the paper's 10 benchmarks (not available here).
+
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | AGID_train |
 |---|---:|---:|

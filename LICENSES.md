@@ -30,6 +30,7 @@ third-party components, and every **pretrained checkpoint / backbone** AGID load
 | `vib_net` | VIB-Net (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
 | `safe` | SAFE (KDD'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
 | `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `cure` | CuRe (arXiv 2609.14316) | manic-cui/CuRe | Apache-2.0 (repo `LICENSE`) | **official** 25 MB adapter (`cure_adapter.pt`, loads as `cure.pth`) | Apache-2.0 (shipped in the repo; verify before redistributing) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (AGID) | this repo | Apache-2.0 | — (AGID-trained) | n/a |
@@ -48,6 +49,7 @@ third-party components, and every **pretrained checkpoint / backbone** AGID load
 | SigLIP | `co_spy` | Apache-2.0 (verify) |
 | MFM ViT-B/16 | `spai` | ⚠ verify |
 | Stable Diffusion VAE | `co_spy` | CreativeML Open RAIL-M (verify) |
+| Perception Encoder Core L/14-336 (`facebook/PE-Core-L14-336`) | `cure` | Apache-2.0 (Meta); `official_arch.py` vendors the CuRe/Meta backbone code — see its header |
 
 ## Datasets
 

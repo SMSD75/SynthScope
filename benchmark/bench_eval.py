@@ -30,6 +30,7 @@ import torch
 from PIL import Image, ImageFile
 
 import agid
+from models.image.cure.preprocess import SRC_FORMAT_KEY
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -135,6 +136,16 @@ def native_res_transform(tf):
 
 
 @torch.no_grad()
+def _open_rgb(path: Path) -> Image.Image:
+    """Open ``path`` as RGB, recording the source file format in ``img.info`` so format-aware eval
+    transforms (CuRe's PNG->JPEG96 step) see what the official loader sees."""
+    source = Image.open(path)
+    source_format = source.format
+    image = source.convert("RGB")
+    image.info[SRC_FORMAT_KEY] = source_format
+    return image
+
+
 def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> torch.Tensor:
     device = det._engine.device
     tf = transform if transform is not None else spec.transform
@@ -147,7 +158,7 @@ def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> torch
         batch = []
         for p in paths[i:i + bs]:
             try:
-                batch.append(tf(Image.open(p).convert("RGB")))
+                batch.append(tf(_open_rgb(p)))
             except Exception as e:  # noqa: BLE001
                 print(f"    bad image {p}: {e}")
         if not batch:

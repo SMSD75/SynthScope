@@ -54,6 +54,9 @@ def tf_crop(crop: int, mean=None, std=None) -> T.Compose:
 from models.image.aide.official_arch import AIDEFiveView  # noqa: E402
 aide_five_view = AIDEFiveView()
 
+# CuRe's official eval preprocessing (PNG->JPEG96, 390 crop, 336 resize, JPEG70, mean/std 0.5), in cv2/PIL.
+from models.image.cure.preprocess import CuReTransform  # noqa: E402
+
 
 def _cap_long_side(im, max_side: int):
     """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds
@@ -306,6 +309,17 @@ _add(ModelSpec(
           "Eval is center-crop-224 NO resize (official PadCenterCrop): the YCbCr residual is resolution-"
           "sensitive, and a Resize wipes it on super-res/low-light generators (san/seeingdark). "
           "See repro/investigate/pgc_gap_investigation.md.",
+))
+_add(ModelSpec(
+    key="cure", name="CuRe", paper="arXiv 2609.14316 (manic-cui/CuRe)",
+    modality="image", predict_kind="ce", checkpoint="cure.pth", ckpt_kind="agid",
+    weights="official",  # cure.pth = the official 25MB cure_adapter.pt unchanged; frozen PE-Core base fetched from HF
+    overrides=["model@ModelConfig=image/cure"],
+    transform=CuReTransform(),  # official: PNG->JPEG96, SmallestMaxSize(390)+CenterCrop+Resize(336), JPEG70, mean=std=0.5
+    notes="Frozen Perception-Encoder Core L/14 @336 + Q/V LoRA + source-response subspace + linear head, "
+          "trained by regressing real-generated mixing ratios on GenImage SD-v1.4. Uses the OFFICIAL released "
+          "adapter. Eval preprocessing is part of the method (PNG sources get a JPEG q96 round-trip and every "
+          "image a JPEG q70 pass), so use the registered transform — see models/image/cure/README.md.",
 ))
 _add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
