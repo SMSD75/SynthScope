@@ -173,7 +173,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-02.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-03.*
 
 ### Image detectors
 - **[CuRe: Learning Continuous Source Responses for Generalizable AI-Generated Image Detection](https://github.com/manic-cui/CuRe)** (manic-cui · arXiv · 2026) — [code](https://github.com/manic-cui/CuRe) · _in AGID: `cure`_  
@@ -218,6 +218,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 - **[RAID: Towards Robust AI-Generated Image Detection with Bit-Reversed Images](https://github.com/renxi-seu/RAID)** (renxi-seu · arXiv · 2026) — [code](https://github.com/renxi-seu/RAID)  
   Detects via bit-planes: a bit-reversed image, gradient-based patch selection and a small convolutional classifier, with a theoretical analysis; ~100x faster than counterparts.  
   _Results: Claims to outperform existing methods on 40+ benchmarks across cross-generator, cross-dataset and zero-shot settings (paper; README gives no numbers). [integration pending (assessed 2026-10-02): the SD-v1.4-trained weights are only shared via Baidu Cloud (not fetchable programmatically), and the README leaves the architecture and patch-score aggregation unspecified; revisit if a direct weight link appears.]_
+- **[Fleet: Few Shots Lead Effective AI-generated Image Detection](https://github.com/ICTMCG/Fleet)** (ICTMCG · arXiv · 2026) — [code](https://github.com/ICTMCG/Fleet)  
+  Dynamic few-shot adaptation: 'constrained routing correction' redirects novel AI samples away from non-AI-dominated routes in decoupled subspaces (DINOv3 backbone), so the detector adapts to rapidly-evolving/commercial generators from a handful of labeled examples. Introduces the Treasure benchmark (64 generators, 360k images, 20 closed-source commercial engines).  
+  _Results: On a modern generator (Doubao Seedream 4.0), 20.4% -> 73.1% with only 10-shot adaptation, where static SOTA collapses (paper). Repo now live with code (re-listed 2026-10-03; it had been pruned 2026-07-04 while an empty placeholder). [integration pending (assessed 2026-10-03): not a single-checkpoint detector — the Hugging Face repo wangjiaan/Fleet holds NINE per-target-generator few-shot adapted models (ADM, FLUX.2, GPT4O, HunyuanImage-3.0, NextStep, Qwen-Image, StarGAN, wan2.5, ...; 1.3 GB each), the generic stage-1 base is only on Baidu Pan, inference requires few-shot support data per target generator, and the Treasure benchmark is gated. No clean forward->logit that represents the method; revisit if a generic checkpoint appears on HF.]_
 
 ### Video detectors
 - **[D3: Disentangled Detail Dynamics (training-free)](https://github.com/Zig-HS/D3)** (Zheng et al. · ICCV · 2025) — [code](https://github.com/Zig-HS/D3) · _in AGID: `d3`_  

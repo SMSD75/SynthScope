@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-02",
+  "updated": "2026-10-03",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -150,6 +150,16 @@
       "arxiv": "https://arxiv.org/abs/2607.28974",
       "summary": "Detects via bit-planes: a bit-reversed image, gradient-based patch selection and a small convolutional classifier, with a theoretical analysis; ~100x faster than counterparts.",
       "result": "Claims to outperform existing methods on 40+ benchmarks across cross-generator, cross-dataset and zero-shot settings (paper; README gives no numbers). [integration pending (assessed 2026-10-02): the SD-v1.4-trained weights are only shared via Baidu Cloud (not fetchable programmatically), and the README leaves the architecture and patch-score aggregation unspecified; revisit if a direct weight link appears.]"
+    },
+    {
+      "title": "Fleet: Few Shots Lead Effective AI-generated Image Detection",
+      "authors": "ICTMCG",
+      "venue": "arXiv",
+      "year": "2026",
+      "github": "https://github.com/ICTMCG/Fleet",
+      "arxiv": "https://arxiv.org/abs/2606.31082",
+      "summary": "Dynamic few-shot adaptation: 'constrained routing correction' redirects novel AI samples away from non-AI-dominated routes in decoupled subspaces (DINOv3 backbone), so the detector adapts to rapidly-evolving/commercial generators from a handful of labeled examples. Introduces the Treasure benchmark (64 generators, 360k images, 20 closed-source commercial engines).",
+      "result": "On a modern generator (Doubao Seedream 4.0), 20.4% -> 73.1% with only 10-shot adaptation, where static SOTA collapses (paper). Repo now live with code (re-listed 2026-10-03; it had been pruned 2026-07-04 while an empty placeholder). [integration pending (assessed 2026-10-03): not a single-checkpoint detector \u2014 the Hugging Face repo wangjiaan/Fleet holds NINE per-target-generator few-shot adapted models (ADM, FLUX.2, GPT4O, HunyuanImage-3.0, NextStep, Qwen-Image, StarGAN, wan2.5, ...; 1.3 GB each), the generic stage-1 base is only on Baidu Pan, inference requires few-shot support data per target generator, and the Treasure benchmark is gated. No clean forward->logit that represents the method; revisit if a generic checkpoint appears on HF.]"
     }
   ],
   "video": [
