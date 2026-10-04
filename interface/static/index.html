@@ -505,6 +505,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
       const [elapsed, setElapsed] = useState(0);
       const [err, setErr] = useState("");
       const asked = useRef(new Set());                  // detector keys already requested for the current pair
+      const pairId = useRef(0);                         // bumped whenever the pair changes; late responses are dropped
       const imgDetectors = (models || []).filter(m => m.modality === "image");
 
       useEffect(() => {
@@ -536,7 +537,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
         const todo = Object.keys(picked).filter(k => picked[k] && !asked.current.has(k));
         if (!todo.length) return;
         todo.forEach(k => asked.current.add(k));
-        const pair = genB64;
+        const myPair = pairId.current;
         (async () => {
           setScoreBusy(true); setErr("");
           try {
@@ -546,14 +547,14 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
             const r = await fetch(API("/api/sota/score"), { method: "POST", body: fd });
             const d = await r.json();
             if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
-            if (pair !== genB64) return;                // a newer image replaced this pair while scoring
+            if (myPair !== pairId.current) return;      // the image changed while scoring: these scores are stale
             setScores(s => { const n = { ...s }; d.results.forEach(x => { n[x.detector] = x; }); return n; });
-          } catch (e) { todo.forEach(k => asked.current.delete(k)); setErr(String(e.message || e)); }
+          } catch (e) { if (myPair === pairId.current) { todo.forEach(k => asked.current.delete(k)); setErr(String(e.message || e)); } }
           finally { setScoreBusy(false); }
         })();
       }, [picked, genB64, realB64]);
 
-      function resetPair() { setGenB64(""); setGenInfo(null); setScores({}); asked.current = new Set(); }
+      function resetPair() { pairId.current += 1; setGenB64(""); setGenInfo(null); setScores({}); asked.current = new Set(); }
 
       async function rollImage() {
         setErr(""); resetPair();

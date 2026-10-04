@@ -11,6 +11,7 @@ standalone page in ``static/index.html`` (works without Node).
 import asyncio
 import json
 import tempfile
+import threading
 from pathlib import Path
 
 from fastapi import Body, FastAPI, File, Form, HTTPException, Query, UploadFile
@@ -173,6 +174,9 @@ def sota_real_image():
     return {"image_b64": _b64.b64encode(buf.getvalue()).decode(), "source": path.split("/")[-3:]}
 
 
+_GPU_LOCK = threading.Lock()   # detector scoring and heavy local generation never overlap on the GPU
+
+
 async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
     """Run one generator on the real image -> (effective prompt, generated PNG bytes); HTTP errors on failure."""
     if not real_bytes:
@@ -180,10 +184,16 @@ async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
     # text-to-image generators get a caption-derived prompt (see generators.effective_prompt)
     prompt = _gens.effective_prompt(generator, real_bytes, prompt)
     try:
-        if generator in _gens.GENERATORS and _gens.GENERATORS[generator].heavy:
-            get_engine().release_gpu()               # free the detectors' GPU memory for the local generator
         # off the event loop: a local generation takes 1-4 minutes and must not freeze the whole UI
-        return prompt, await asyncio.to_thread(_gens.generate, generator, real_bytes, prompt)
+        heavy = generator in _gens.GENERATORS and _gens.GENERATORS[generator].heavy
+
+        def run() -> bytes:
+            if not heavy:
+                return _gens.generate(generator, real_bytes, prompt)
+            with _GPU_LOCK:                          # waits for any in-flight scoring to finish first
+                get_engine().release_gpu()
+                return _gens.generate(generator, real_bytes, prompt)
+        return prompt, await asyncio.to_thread(run)
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:                       # missing API key
@@ -192,23 +202,28 @@ async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
         raise HTTPException(status_code=502, detail=f"generator failed: {type(e).__name__}: {e}")
 
 
+def _score_one(engine, key: str, real_img, gen_img) -> dict:
+    try:
+        spec = get_spec(key)
+        if spec.modality != "image" or not engine.is_available(spec):
+            return {"detector": key, "error": "unavailable / not an image detector"}
+        rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
+        return {"detector": key, "name": spec.name,
+                "real_fake_prob": round(rr["fake_probability"], 4),
+                "gen_fake_prob": round(gr["fake_probability"], 4),
+                "gen_verdict": gr.get("verdict"), "caught": gr["fake_probability"] >= 0.5}
+    except Exception as e:
+        return {"detector": key, "error": f"{type(e).__name__}: {e}"}
+
+
 def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dict]:
     """Score the real and the generated image with each listed detector (no generation involved)."""
     real_img, gen_img = media.decode_image(real_bytes), media.decode_image(gen_bytes)
     engine = get_engine()
     results = []
     for key in [d.strip() for d in detectors.split(",") if d.strip()]:
-        try:
-            spec = get_spec(key)
-            if spec.modality != "image" or not engine.is_available(spec):
-                results.append({"detector": key, "error": "unavailable / not an image detector"}); continue
-            rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
-            results.append({"detector": key, "name": spec.name,
-                            "real_fake_prob": round(rr["fake_probability"], 4),
-                            "gen_fake_prob": round(gr["fake_probability"], 4),
-                            "gen_verdict": gr.get("verdict"), "caught": gr["fake_probability"] >= 0.5})
-        except Exception as e:
-            results.append({"detector": key, "error": f"{type(e).__name__}: {e}"})
+        with _GPU_LOCK:                              # one detector at a time: concurrent requests queue, not race
+            results.append(_score_one(engine, key, real_img, gen_img))
     return results
 
 
