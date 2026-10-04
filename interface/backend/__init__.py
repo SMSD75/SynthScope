@@ -1,1 +1,1 @@
-"""AGID web-interface backend package."""
+"""SynthScope web-interface backend package."""

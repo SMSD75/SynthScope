@@ -1,5 +1,5 @@
 #!/bin/bash
-# Launch the AGID interface backend (FastAPI + uvicorn) from the AGID conda env.
+# Launch the SynthScope interface backend (FastAPI + uvicorn) from the AGID conda env.
 #
 #   bash interface/run_backend.sh                 # serve on 0.0.0.0:8000
 #   AGID_PORT=9000 bash interface/run_backend.sh   # custom port
@@ -18,6 +18,6 @@ CONDA="${CONDA_EXE:-/home/ssalehi/miniconda3/bin/conda}"
 # Caches default to a node-local location (see backend/config.py). Override as needed:
 # export AGID_CKPT_DIR=/path/to/checkpoints
 
-echo "Serving AGID interface on http://${HOST}:${PORT}  (Ctrl-C to stop)"
+echo "Serving SynthScope interface on http://${HOST}:${PORT}  (Ctrl-C to stop)"
 exec "$CONDA" run --no-capture-output -n AGID \
   uvicorn interface.backend.app:app --host "$HOST" --port "$PORT" "$@"

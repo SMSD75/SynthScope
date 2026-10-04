@@ -1,4 +1,4 @@
-"""Runtime configuration and path wiring for the AGID web interface.
+"""Runtime configuration and path wiring for the SynthScope web interface.
 
 The interface imports the AGID repo (models, dataset decoders, Hydra config composition)
 directly, so we add the repo root to ``sys.path`` and pin a few cache locations that make
