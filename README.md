@@ -5,23 +5,23 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**Check whether an image or video is AI-generated, and see how well 17 published detectors hold up against today's generators.**
-Try it in the browser, call it from Python, or reproduce the papers' results.
+🔎 **Check whether an image or video is AI-generated, and see how well 17 published detectors hold up against today's generators.**
+Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊.
 
 <p align="center">
-  <a href="#web-demo"><b>Web demo</b></a> ·
-  <a href="#install">Install</a> ·
-  <a href="#python-and-command-line">Python &amp; CLI</a> ·
-  <a href="#detectors">Detectors</a> ·
-  <a href="#benchmarks">Benchmarks</a> ·
-  <a href="#train-your-own">Train</a> ·
-  <a href="#-whats-trending">Trending</a> ·
-  <a href="#contributing-and-license">Contributing</a>
+  <a href="#-web-demo"><b>🌐 Web demo</b></a> ·
+  <a href="#-install">📦 Install</a> ·
+  <a href="#-python-and-command-line">🐍 Python &amp; CLI</a> ·
+  <a href="#-detectors">🔍 Detectors</a> ·
+  <a href="#-benchmarks">📊 Benchmarks</a> ·
+  <a href="#-train-your-own">🏋️ Train</a> ·
+  <a href="#-whats-trending">📈 Trending</a> ·
+  <a href="#-contributing-and-license">🤝 Contributing</a>
 </p>
 
 ---
 
-## Web demo
+## 🌐 Web demo
 
 A browser app for trying the detectors without writing code. The detectors always run on your own machine.
 
@@ -37,7 +37,7 @@ A browser app for trying the detectors without writing code. The detectors alway
 sent to that provider) and with open-weight models that run locally on a 24 GB GPU and keep your image on your machine
 (FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1, Ideogram 4.0).
 
-**Run it**
+**🚀 Run it**
 
 ```bash
 pip install -r interface/requirements.txt
@@ -51,7 +51,7 @@ Prefer something lighter? Open the [Colab quickstart](notebooks/synthscope_quick
 
 ---
 
-## Install
+## 📦 Install
 
 ```bash
 git clone https://github.com/SMSD75/SynthScope.git
@@ -64,7 +64,7 @@ Install the [PyTorch](https://pytorch.org) build that matches your CUDA. A coupl
 (`clip`, `fat_former`) also need OpenAI CLIP: `pip install git+https://github.com/openai/CLIP.git`.
 See [LICENSES.md](LICENSES.md) for per-method/weight licenses.
 
-## Python and command line
+## 🐍 Python and command line
 
 Run any detector on an image or video and get the probability it is AI-generated:
 
@@ -92,7 +92,7 @@ Checkpoints resolve from `$SYNTHSCOPE_CKPT_DIR` (default `~/.cache/synthscope/ch
 `synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
 (D3, STALL) need none.
 
-### Model zoo (Hugging Face Hub)
+### 🤗 Model zoo (Hugging Face Hub)
 
 When a detector's weights aren't present locally, `synthscope.load(...)` **auto-downloads** them from a Hub
 model-zoo repo (set `SYNTHSCOPE_HUB_REPO`, or pass `synthscope.load(..., repo="user/synthscope-checkpoints")`):
@@ -107,11 +107,13 @@ releases are held back unless you opt in and confirm the upstream license permit
 
 ---
 
-## Detectors
+## 🔍 Detectors
 
 Select a detector with `model@ModelConfig=image/<name>` (image) or `model@ModelConfig=video/<name>`. Most
 methods freeze a large pretrained backbone and train a lightweight head/adapter; see each model's
 `README.md` under [models/](models/) for details.
+
+### 🖼️ Image detectors
 
 | `model_type` | Method | Idea |
 | --- | --- | --- |
@@ -128,13 +130,19 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `cure` | **CuRe** (manic-cui, 2026) | Frozen Perception-Encoder Core L/14 + Q/V LoRA + source-response subspace, trained by regressing real↔generated mixing ratios on SD‑v1.4 only (official adapter). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
-**Video:** `d3` — **D3** (Zheng, ICCV'25), training-free X-CLIP trajectory dynamics · `restrav` —
-**ReStraV** (Internò, 2025), DINOv2 trajectory geometry + MLP · `stall` — **STALL** (Ben Hayun,
-CVPR'26), training-free spatio-temporal whitened log-likelihoods.
+### 🎬 Video detectors
+
+| `model_type` | Method | Idea |
+| --- | --- | --- |
+| `d3` | **D3** (Zheng, ICCV'25) | Training-free: second-order dynamics of frozen X-CLIP frame features (disentangled detail dynamics). |
+| `restrav` | **ReStraV** (Internò, 2025) | Geometry of the frame-embedding trajectory in a frozen DINOv2 space, scored by a small MLP. |
+| `stall` | **STALL** (Ben Hayun, CVPR'26) | Training-free: spatio-temporal whitened log-likelihoods under real-video statistics (DINOv3). |
+
+Image detectors can also score a video: they run frame by frame and average the result.
 
 ---
 
-## Benchmarks
+## 📊 Benchmarks
 
 SynthScope ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
 fixed test sets, per-generator metrics, one evaluation pipeline. See the ranked
@@ -173,7 +181,7 @@ generators) live in [`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK
 
 ---
 
-## Train your own
+## 🏋️ Train your own
 
 Compose three Hydra config groups and override any field with dot-paths:
 
@@ -199,7 +207,7 @@ A curated, daily-refreshed list of recent image & video AIGC-detection papers wi
 
 ---
 
-## Contributing and license
+## 🤝 Contributing and license
 
 Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how to add a
 detector, and submit benchmark results through a pull request. SynthScope is released under the [Apache 2.0 license](LICENSE);
