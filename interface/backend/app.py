@@ -173,11 +173,8 @@ def sota_real_image():
     return {"image_b64": _b64.b64encode(buf.getvalue()).decode(), "source": path.split("/")[-3:]}
 
 
-@app.post("/api/sota/compare")
-async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
-                       detectors: str = Form(...), prompt: str = Form(_gens.DEFAULT_PROMPT)):
-    """real image + SOTA generator + detector list -> generated image + each detector's score on real & generated."""
-    real_bytes = await file.read()
+async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
+    """Run one generator on the real image -> (effective prompt, generated PNG bytes); HTTP errors on failure."""
     if not real_bytes:
         raise HTTPException(status_code=400, detail="Empty image.")
     # text-to-image generators get a caption-derived prompt (see generators.effective_prompt)
@@ -186,7 +183,7 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
         if generator in _gens.GENERATORS and _gens.GENERATORS[generator].heavy:
             get_engine().release_gpu()               # free the detectors' GPU memory for the local generator
         # off the event loop: a local generation takes 1-4 minutes and must not freeze the whole UI
-        gen_bytes = await asyncio.to_thread(_gens.generate, generator, real_bytes, prompt)
+        return prompt, await asyncio.to_thread(_gens.generate, generator, real_bytes, prompt)
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:                       # missing API key
@@ -194,6 +191,9 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"generator failed: {type(e).__name__}: {e}")
 
+
+def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dict]:
+    """Score the real and the generated image with each listed detector (no generation involved)."""
     real_img, gen_img = media.decode_image(real_bytes), media.decode_image(gen_bytes)
     engine = get_engine()
     results = []
@@ -209,8 +209,35 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
                             "gen_verdict": gr.get("verdict"), "caught": gr["fake_probability"] >= 0.5})
         except Exception as e:
             results.append({"detector": key, "error": f"{type(e).__name__}: {e}"})
-    return {"generator": generator, "prompt": prompt,
-            "generated_b64": _b64.b64encode(gen_bytes).decode(), "results": results}
+    return results
+
+
+@app.post("/api/sota/generate")
+async def sota_generate(file: UploadFile = File(...), generator: str = Form(...),
+                        prompt: str = Form(_gens.DEFAULT_PROMPT)):
+    """real image + generator -> the generated image only. Scoring is a separate call (/api/sota/score), so
+    trying another detector never regenerates."""
+    prompt, gen_bytes = await _sota_generate(await file.read(), generator, prompt)
+    return {"generator": generator, "prompt": prompt, "generated_b64": _b64.b64encode(gen_bytes).decode()}
+
+
+@app.post("/api/sota/score")
+async def sota_score(real: UploadFile = File(...), generated: UploadFile = File(...), detectors: str = Form(...)):
+    """Score an existing real/generated pair with the listed detectors (fast: no generation)."""
+    real_bytes, gen_bytes = await real.read(), await generated.read()
+    if not real_bytes or not gen_bytes:
+        raise HTTPException(status_code=400, detail="Empty image.")
+    return {"results": await asyncio.to_thread(_sota_score, real_bytes, gen_bytes, detectors)}
+
+
+@app.post("/api/sota/compare")
+async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
+                       detectors: str = Form(...), prompt: str = Form(_gens.DEFAULT_PROMPT)):
+    """Generate + score in one call (kept for API clients; the web UI uses generate then score)."""
+    real_bytes = await file.read()
+    prompt, gen_bytes = await _sota_generate(real_bytes, generator, prompt)
+    return {"generator": generator, "prompt": prompt, "generated_b64": _b64.b64encode(gen_bytes).decode(),
+            "results": await asyncio.to_thread(_sota_score, real_bytes, gen_bytes, detectors)}
 
 
 # --- Leaderboard: all methods x benchmarks (paper vs AGID-trained vs official), by benchmark ------

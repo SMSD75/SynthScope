@@ -1,4 +1,4 @@
-"""Isolated runner for heavy OPEN-WEIGHT image generators (FLUX.2 [klein], Qwen-Image-2.1).
+"""Isolated runner for heavy OPEN-WEIGHT image generators (FLUX.2 [klein] 4B/9B, FLUX.1 Kontext [dev], Qwen-Image-2.1).
 
 ``generators.py`` launches this file as a SUBPROCESS, one image per call, so that
   * these models can use a newer ``diffusers`` than the shared AGID env (set ``$AGID_GEN_PYTHONPATH`` to a
@@ -8,7 +8,7 @@
     python interface/backend/local_gen.py --model qwen_image_2_1 --image in.png --prompt "..." --out out.png
 
 Both models are image-CONDITIONED (they edit the source photo into a new image), run in bf16 on a 24 GB GPU
-(FLUX.2 [klein]: ``enable_model_cpu_offload``; Qwen-Image-2.1: staged load, see ``load_pipeline_staged``), and need
+(FLUX models: ``enable_model_cpu_offload``; Qwen-Image-2.1: staged load, see ``load_pipeline_staged``), and need
 no paid API key. Licenses: FLUX.2 [klein] 4B is
 Apache-2.0; Qwen-Image-2.1 is under the Qwen Research License (research use).
 """
@@ -31,6 +31,11 @@ MODELS = {
                        {"num_inference_steps": 4, "guidance_scale": 1.0}),
     "qwen_image_2_1": ("Qwen/Qwen-Image-2.1", "QwenImage21Pipeline",
                        {"num_inference_steps": 40}),
+    # license-gated (accept the terms on the Hub with the account behind $HF_TOKEN); non-commercial licenses
+    "flux2_klein_9b": ("black-forest-labs/FLUX.2-klein-9B", "Flux2KleinPipeline",
+                       {"num_inference_steps": 4, "guidance_scale": 1.0}),
+    "flux1_kontext_dev": ("black-forest-labs/FLUX.1-Kontext-dev", "FluxKontextPipeline",
+                          {"num_inference_steps": 28, "guidance_scale": 2.5}),
 }
 DEVICE = torch.device("cuda")
 DEBUG = bool(os.environ.get("LOCAL_GEN_DEBUG"))
@@ -131,7 +136,7 @@ def main() -> int:
 
     src = fit(Image.open(args.image).convert("RGB"))
     call = dict(kw)
-    if args.model.startswith("flux2"):
+    if args.model.startswith("flux"):
         call.update(height=src.height, width=src.width)
     if args.model.startswith("qwen"):
         call["output_resolution"] = args.res

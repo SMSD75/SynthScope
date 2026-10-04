@@ -216,6 +216,16 @@ GENERATORS = {
                   "Black Forest Labs' distilled FLUX.2 [klein] 4B (Apache-2.0), edits the source photo into a "
                   "new image locally on the GPU (4 steps); no API key.", local=True, avail=_local_gen_available,
                   heavy=True),
+        Generator("flux2_klein_9b", "FLUX.2 [klein] 9B (open-weight, local)", "AGID_GEN_PYTHONPATH", True,
+                  _local_subprocess("flux2_klein_9b"),
+                  "Black Forest Labs' distilled FLUX.2 [klein] 9B (FLUX non-commercial license; gated - accept the "
+                  "terms on the Hub), edits the source photo locally on the GPU (4 steps); no API key.", local=True,
+                  avail=_local_gen_available, heavy=True),
+        Generator("flux1_kontext", "FLUX.1 Kontext [dev] (open-weight, local)", "AGID_GEN_PYTHONPATH", True,
+                  _local_subprocess("flux1_kontext_dev"),
+                  "Black Forest Labs' 12B in-context image editor (FLUX non-commercial license; gated - accept the "
+                  "terms on the Hub), edits the source photo locally on the GPU (28 steps); no API key.", local=True,
+                  avail=_local_gen_available, heavy=True),
         Generator("qwen_image_2_1", "Qwen-Image-2.1 (open-weight, local)", "AGID_GEN_PYTHONPATH", True,
                   _local_subprocess("qwen_image_2_1"),
                   "Alibaba Qwen-Image-2.1 (7B unified generation + editing; Qwen Research License - research use "

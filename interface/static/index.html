@@ -257,15 +257,60 @@ table.repro-full.lb-gen td:nth-child(2) { white-space: normal; }
 .topgen .card { margin-bottom: 18px; }
 
 /* ---- SOTA generator vs detector comparison --------------------------------*/
-.sota .sota-controls { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin: 10px 0; }
-.sota .sota-controls label { display: flex; gap: 6px; align-items: center; }
-.sota .promptline input { width: 320px; }
-.sota .upbtn { cursor: pointer; text-decoration: underline; color: var(--accent); }
-.sota .detpick { display: flex; gap: 14px; flex-wrap: wrap; margin: 8px 0; }
-.sota .detpick label { display: flex; gap: 4px; align-items: center; font-size: 13px; }
-.sota .sota-images { display: flex; gap: 16px; margin: 14px 0; flex-wrap: wrap; }
-.sota .sota-images figure { margin: 0; }
-.sota .sota-images img { max-width: 320px; max-height: 320px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+.sota .sota-intro { margin: 18px 0 4px; max-width: 760px; line-height: 1.5; }
+.sota-layout { display: grid; grid-template-columns: 340px 1fr; gap: 22px; margin-top: 14px; align-items: start; }
+@media (max-width: 900px) { .sota-layout { grid-template-columns: 1fr; } }
+.sota-right { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.sota .step { display: flex; align-items: center; gap: 9px; margin: 20px 0 9px; font-size: 14px; }
+.sota .step:first-of-type { margin-top: 2px; }
+.sota .stepno { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-grad); color: #06122b;
+  font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; }
+.sota .srcbox { height: 190px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: rgba(0,0,0,.28);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.sota .srcbox img { max-width: 100%; max-height: 100%; display: block; }
+.sota .srcempty { color: var(--muted2); font-size: 13px; }
+.sota .row2 { display: flex; gap: 10px; margin-top: 10px; }
+.sota .row2 .sm { flex: 1; text-align: center; margin: 0; font-size: 13px; padding: 10px 12px; }
+.sota label.ghost { background: var(--panel2); color: var(--text); border: 1px solid var(--line-strong); box-shadow: none;
+  cursor: pointer; border-radius: var(--radius-sm); font-weight: 600; }
+.sota textarea { width: 100%; resize: vertical; padding: 11px 12px; border-radius: var(--radius-sm); background: var(--panel2);
+  color: var(--text); border: 1px solid var(--line-strong); font: inherit; font-size: 14px; outline: none; }
+.sota textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,140,255,.22); }
+.sota .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sota .pair figure { margin: 0; min-width: 0; }
+.sota .imgbox { height: 300px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: rgba(0,0,0,.28);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--muted2); font-size: 13px; text-align: center; padding: 8px; }
+.sota .imgbox img { max-width: 100%; max-height: 100%; display: block; }
+.sota figcaption { text-align: center; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.sota h2 .muted { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: 8px; }
+.sota .detbar { display: flex; gap: 8px; margin: -4px 0 6px; }
+.sota .chipbtn { background: transparent; border: 1px solid var(--line-strong); color: var(--muted); border-radius: 999px;
+  padding: 3px 12px; font-size: 12px; cursor: pointer; }
+.sota .chipbtn:hover { color: var(--text); border-color: var(--accent); }
+.sota .detgroup { margin-top: 14px; }
+.sota .detlabel { font-size: 11px; color: var(--muted2); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 7px; }
+.sota .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.sota .chip { background: var(--panel2); color: var(--muted); border: 1px solid var(--line-strong); border-radius: 999px;
+  padding: 6px 14px; font-size: 13px; cursor: pointer; transition: all .12s; }
+.sota .chip:hover:not(:disabled) { color: var(--text); border-color: var(--accent); }
+.sota .chip.on { background: rgba(124,140,255,.20); color: var(--text); border-color: var(--accent); font-weight: 600; }
+.sota .chip:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+.sota .results { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
+.sota .sumline { font-size: 14px; margin-bottom: 10px; min-height: 20px; }
+.sota .resrow { display: grid; grid-template-columns: 150px 1fr 150px 84px; gap: 12px; align-items: center; padding: 8px 0;
+  border-bottom: 1px solid var(--line); font-size: 13px; }
+@media (max-width: 700px) { .sota .resrow { grid-template-columns: 1fr 1fr; } }
+.sota .rname { font-weight: 600; }
+.sota .rbar { position: relative; height: 9px; background: rgba(255,255,255,.07); border-radius: 5px; overflow: visible; }
+.sota .rfill { height: 100%; border-radius: 5px; background: var(--real); }
+.sota .resrow.hit .rfill { background: var(--fake); }
+.sota .rthr { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); opacity: .7; }
+.sota .rnum { font-variant-numeric: tabular-nums; }
+.sota .rnum .muted { font-size: 11px; margin-left: 6px; }
+.sota .rbadge { text-align: right; font-weight: 700; }
+.sota .resrow.hit .rbadge { color: var(--fake); }
+.sota .resrow.miss .rbadge { color: var(--real); }
+.sota .rerr { grid-column: 2 / -1; color: var(--fake); font-size: 12px; }
 
 /* ---- weight-source badge --------------------------------------------------*/
 .wtag { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 8px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; vertical-align: middle; }
@@ -406,19 +451,33 @@ a { color: var(--accent); }
       return new File([arr], name, { type: "image/png" });
     }
 
-    // SOTA generator vs detector comparison: pick/upload a real image -> a current SOTA generator makes a
-    // "conceptually similar" image -> the selected AGID detectors score it (best/promoted checkpoints).
+    // Detector families for the picker (keys not listed fall into "Other").
+    const DET_GROUPS = [
+      ["Low-level artifact detectors", ["npr", "safe", "aide", "spai", "pgc", "cnn"]],
+      ["Semantic / foundation-model detectors", ["clip", "dinov2", "dinov3", "adapted_dino", "cure", "co_spy", "fat_former", "vib_net"]],
+    ];
+    const DET_DEFAULT = ["safe", "npr", "clip", "cure"];
+
+    function pct(p) { return (100 * p).toFixed(1) + "%"; }
+
+    // SOTA generator vs detector: pick/upload a real image -> a generator makes a new image ONCE -> any number of
+    // detectors score the pair. Ticking another detector only scores it (no regeneration).
     function SotaView({ models }) {
       const [gens, setGens] = useState([]);
       const [gen, setGen] = useState("");
       const [prompt, setPrompt] = useState("make another image conceptually similar to this");
       const [realB64, setRealB64] = useState("");
       const [realSrc, setRealSrc] = useState(null);
-      const [picked, setPicked] = useState({});
-      const [busy, setBusy] = useState(false);
-      const [res, setRes] = useState(null);
+      const [genB64, setGenB64] = useState("");
+      const [genInfo, setGenInfo] = useState(null);
+      const [picked, setPicked] = useState(null);       // {key: bool}; null until the model list arrives
+      const [scores, setScores] = useState({});         // key -> result for the CURRENT real/generated pair
+      const [genBusy, setGenBusy] = useState(false);
+      const [scoreBusy, setScoreBusy] = useState(false);
+      const [elapsed, setElapsed] = useState(0);
       const [err, setErr] = useState("");
-      const imgDetectors = (models || []).filter(m => m.modality === "image" && m.available);
+      const asked = useRef(new Set());                  // detector keys already requested for the current pair
+      const imgDetectors = (models || []).filter(m => m.modality === "image");
 
       useEffect(() => {
         fetch(API("/api/sota/generators")).then(r => r.json()).then(d => {
@@ -429,8 +488,47 @@ a { color: var(--accent); }
         }).catch(e => setErr(String(e.message || e)));
       }, []);
 
+      useEffect(() => {
+        if (picked !== null || !imgDetectors.length) return;
+        const init = {};
+        DET_DEFAULT.forEach(k => { if (imgDetectors.some(m => m.key === k && m.available)) init[k] = true; });
+        setPicked(init);
+      }, [models]);
+
+      useEffect(() => {
+        if (!genBusy) return;
+        setElapsed(0);
+        const t = setInterval(() => setElapsed(e => e + 1), 1000);
+        return () => clearInterval(t);
+      }, [genBusy]);
+
+      // Score every ticked detector that has not been scored for this pair yet (no generation involved).
+      useEffect(() => {
+        if (!realB64 || !genB64 || !picked) return;
+        const todo = Object.keys(picked).filter(k => picked[k] && !asked.current.has(k));
+        if (!todo.length) return;
+        todo.forEach(k => asked.current.add(k));
+        const pair = genB64;
+        (async () => {
+          setScoreBusy(true); setErr("");
+          try {
+            const fd = new FormData();
+            fd.append("real", b64ToFile(realB64, "real.png")); fd.append("generated", b64ToFile(genB64, "gen.png"));
+            fd.append("detectors", todo.join(","));
+            const r = await fetch(API("/api/sota/score"), { method: "POST", body: fd });
+            const d = await r.json();
+            if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
+            if (pair !== genB64) return;                // a newer image replaced this pair while scoring
+            setScores(s => { const n = { ...s }; d.results.forEach(x => { n[x.detector] = x; }); return n; });
+          } catch (e) { todo.forEach(k => asked.current.delete(k)); setErr(String(e.message || e)); }
+          finally { setScoreBusy(false); }
+        })();
+      }, [picked, genB64, realB64]);
+
+      function resetPair() { setGenB64(""); setGenInfo(null); setScores({}); asked.current = new Set(); }
+
       async function rollImage() {
-        setErr(""); setRes(null);
+        setErr(""); resetPair();
         try {
           const r = await fetch(API("/api/sota/real_image")); const d = await r.json();
           if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
@@ -440,71 +538,120 @@ a { color: var(--accent); }
       function onUpload(f) {
         if (!f) return;
         const rd = new FileReader();
-        rd.onload = () => { setRealB64(rd.result.split(",")[1]); setRealSrc(["upload", f.name]); setRes(null); };
+        rd.onload = () => { resetPair(); setRealB64(rd.result.split(",")[1]); setRealSrc(["upload", f.name]); };
         rd.readAsDataURL(f);
       }
-      async function run() {
-        setErr(""); setBusy(true); setRes(null);
+      async function generate() {
+        setErr(""); resetPair(); setGenBusy(true);
         try {
-          const dets = Object.keys(picked).filter(k => picked[k]);
           if (!realB64) throw new Error("Pick or upload a real image first.");
           if (!gen) throw new Error("Select a generator.");
-          if (!dets.length) throw new Error("Select at least one detector.");
           const fd = new FormData();
-          fd.append("file", b64ToFile(realB64, "real.png"));
-          fd.append("generator", gen); fd.append("detectors", dets.join(",")); fd.append("prompt", prompt);
-          const r = await fetch(API("/api/sota/compare"), { method: "POST", body: fd });
+          fd.append("file", b64ToFile(realB64, "real.png")); fd.append("generator", gen); fd.append("prompt", prompt);
+          const r = await fetch(API("/api/sota/generate"), { method: "POST", body: fd });
           const d = await r.json();
           if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
-          setRes(d);
-        } catch (e) { setErr(String(e.message || e)); } finally { setBusy(false); }
+          setGenInfo({ generator: d.generator, prompt: d.prompt });
+          setGenB64(d.generated_b64);
+        } catch (e) { setErr(String(e.message || e)); } finally { setGenBusy(false); }
       }
+      function setMany(keys, on) {
+        const n = { ...(picked || {}) };
+        keys.forEach(k => { n[k] = on; });
+        setPicked(n);
+      }
+
+      const curGen = gens.find(g => g.key === gen);
+      const listed = new Set(DET_GROUPS.flatMap(g => g[1]));
+      const groups = [...DET_GROUPS.map(([label, keys]) => [label, imgDetectors.filter(m => keys.includes(m.key))]),
+                      ["Other", imgDetectors.filter(m => !listed.has(m.key))]].filter(g => g[1].length);
+      const availKeys = imgDetectors.filter(m => m.available).map(m => m.key);
+      const rows = Object.keys(picked || {}).filter(k => picked[k] && scores[k]).map(k => scores[k]);
+      const waiting = Object.keys(picked || {}).filter(k => picked[k] && !scores[k]).length;
+      const caught = rows.filter(r => r.caught).length;
+      const mins = Math.floor(elapsed / 60), secs = String(elapsed % 60).padStart(2, "0");
 
       return html`
         <div class="sota">
-          <p class="muted">Send a real image from our datasets to a current SOTA generator, then see whether
-            the AGID detectors catch the freshly-generated image. Generators need an API key
-            (greyed-out = key not set on the server). Detectors use our best/promoted checkpoints.</p>
-          <div class="sota-controls">
-            <div>
-              <button onClick=${rollImage}>🎲 Random real image</button>
-              <label class="upbtn">Upload<input type="file" accept="image/*" style=${{display:"none"}}
-                onChange=${e => onUpload(e.target.files[0])} /></label>
-            </div>
-            <label>Generator:
+          <p class="muted sota-intro">Take a real photo, let a current generator make a new image from it, then check which
+            detectors flag the result. Generate once, then add or remove detectors freely - they score the same image.</p>
+          <div class="sota-layout">
+            <div class="card sota-create">
+              <h2>Create</h2>
+              <div class="step"><span class="stepno">1</span><b>Source image</b></div>
+              <div class="srcbox">
+                ${realB64 ? html`<img src=${"data:image/png;base64," + realB64} />`
+                          : html`<div class="srcempty">No image yet</div>`}
+              </div>
+              <div class="row2">
+                <button class="sm" onClick=${rollImage}>🎲 Random real image</button>
+                <label class="sm ghost">Upload…<input type="file" accept="image/*" style=${{display:"none"}}
+                  onChange=${e => onUpload(e.target.files[0])} /></label>
+              </div>
+              ${realSrc && html`<div class="meta">${realSrc[0] === "upload" ? "uploaded: " + realSrc[1] : realSrc.join(" / ")}</div>`}
+
+              <div class="step"><span class="stepno">2</span><b>Generator</b></div>
               <select value=${gen} onChange=${e => setGen(e.target.value)}>
                 ${gens.map(g => html`<option key=${g.key} value=${g.key} disabled=${!g.available}>
-                  ${g.name}${g.available ? "" : " (no API key)"}</option>`)}
+                  ${g.name}${g.available ? "" : " (unavailable)"}</option>`)}
               </select>
-            </label>
-            <label class="promptline">Prompt:
-              <input value=${prompt} onChange=${e => setPrompt(e.target.value)} />
-            </label>
+              ${curGen && html`<div class="meta">${curGen.note}</div>`}
+
+              <div class="step"><span class="stepno">3</span><b>Prompt</b></div>
+              <textarea rows="3" value=${prompt} onInput=${e => setPrompt(e.target.value)}></textarea>
+              <button class="go" disabled=${genBusy || !realB64 || !gen} onClick=${generate}>
+                ${genBusy ? `Generating… ${mins}:${secs}` : (genB64 ? "↻ Regenerate" : "Generate")}</button>
+              ${genBusy && html`<div class="meta">Local open-weight models take 1–4 min (first run also downloads weights).</div>`}
+              ${err && html`<div class="err">${err}</div>`}
+            </div>
+
+            <div class="sota-right">
+              <div class="card">
+                <h2>Result</h2>
+                <div class="pair">
+                  <figure>
+                    <div class="imgbox">${realB64 ? html`<img src=${"data:image/png;base64," + realB64} />` : html`<span>Real</span>`}</div>
+                    <figcaption>Real</figcaption>
+                  </figure>
+                  <figure>
+                    <div class="imgbox">${genB64 ? html`<img src=${"data:image/png;base64," + genB64} />`
+                      : html`<span>${genBusy ? "Generating…" : "Generated image appears here"}</span>`}</div>
+                    <figcaption>${genInfo ? "Generated · " + (curGen ? curGen.name : genInfo.generator) : "Generated"}</figcaption>
+                  </figure>
+                </div>
+                ${genInfo && genInfo.prompt && html`<div class="meta">prompt used: ${genInfo.prompt}</div>`}
+              </div>
+
+              <div class="card">
+                <h2>Detectors <span class="muted">${Object.values(picked || {}).filter(Boolean).length} selected</span></h2>
+                <div class="detbar">
+                  <button class="chipbtn" onClick=${() => setMany(availKeys, true)}>Select all</button>
+                  <button class="chipbtn" onClick=${() => setMany(availKeys, false)}>Clear</button>
+                </div>
+                ${groups.map(([label, ms]) => html`<div class="detgroup" key=${label}>
+                  <div class="detlabel">${label}</div>
+                  <div class="chips">
+                    ${ms.map(m => html`<button key=${m.key} disabled=${!m.available}
+                      title=${m.available ? m.paper : "checkpoint not available on this server"}
+                      class=${"chip" + (picked && picked[m.key] ? " on" : "")}
+                      onClick=${() => setPicked({ ...(picked || {}), [m.key]: !(picked && picked[m.key]) })}>${m.name}</button>`)}
+                  </div>
+                </div>`)}
+
+                ${(rows.length > 0 || waiting > 0) && html`<div class="results">
+                  <div class="sumline">${genB64 ? html`<b>${caught}</b> of <b>${rows.length}</b> detectors flag the generated image as fake${(scoreBusy || waiting) ? " · scoring…" : ""}` : ""}</div>
+                  ${rows.map(r => html`<div class=${"resrow " + (r.error ? "err2" : (r.caught ? "hit" : "miss"))} key=${r.detector}>
+                    <div class="rname">${r.name || r.detector}</div>
+                    ${r.error ? html`<div class="rerr">${r.error}</div>` : html`
+                      <div class="rbar"><div class="rfill" style=${{width: pct(r.gen_fake_prob)}}></div><div class="rthr"></div></div>
+                      <div class="rnum">${pct(r.gen_fake_prob)}<span class="muted"> real ${pct(r.real_fake_prob)}</span></div>
+                      <div class="rbadge">${r.caught ? "✓ caught" : "✗ missed"}</div>`}
+                  </div>`)}
+                </div>`}
+                ${!genB64 && html`<div class="meta">Scores appear here after you generate an image.</div>`}
+              </div>
+            </div>
           </div>
-          <div class="detpick">Detectors:
-            ${imgDetectors.map(m => html`<label key=${m.key}><input type="checkbox" checked=${!!picked[m.key]}
-              onChange=${e => setPicked({ ...picked, [m.key]: e.target.checked })} /> ${m.name}</label>`)}
-          </div>
-          <button class="primary" disabled=${busy} onClick=${run}>${busy ? "Generating + scoring…" : "Generate & compare"}</button>
-          ${err && html`<div class="err">${err}</div>`}
-          <div class="sota-images">
-            ${realB64 && html`<figure><img src=${"data:image/png;base64," + realB64} />
-              <figcaption>Real ${realSrc ? "· " + realSrc.join("/") : ""}</figcaption></figure>`}
-            ${res && res.generated_b64 && html`<figure><img src=${"data:image/png;base64," + res.generated_b64} />
-              <figcaption>Generated · ${res.generator}${res.prompt ? html`<br/><span class="muted" style=${{fontSize:11}}>prompt: ${res.prompt}</span>` : ""}</figcaption></figure>`}
-          </div>
-          ${res && html`<table class="repro-full">
-            <thead><tr><th>Detector</th><th>P(fake) real</th><th>P(fake) generated</th><th>Caught?</th></tr></thead>
-            <tbody>
-              ${res.results.map((r, i) => html`<tr key=${i}>
-                <td>${r.name || r.detector}</td>
-                <td>${r.error ? "—" : r.real_fake_prob}</td>
-                <td>${r.error ? "—" : r.gen_fake_prob}</td>
-                <td class=${r.caught ? "status-reproduced" : "status-below"}>
-                  ${r.error ? r.error : (r.caught ? "✓ fake" : "✗ missed")}</td>
-              </tr>`)}
-            </tbody>
-          </table>`}
         </div>`;
     }
 

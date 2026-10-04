@@ -1,11 +1,11 @@
 #!/bin/bash
 # Test the isolated local generators (FLUX.2 klein 4B, Qwen-Image-2.1) on one A5000 with a RAM-lean request.
 #SBATCH --job-name=gen_test --partition=cees --account=ceesusers --nodelist=ivi-cn029
-#SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=6 --mem=28G --time=02:00:00
+#SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=6 --mem=44G --time=02:00:00
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/gen_test_%j.out
 set -u
 G=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared
-W=$G/gen_wt
+W=${W:-$G/gen_wt}
 CONDA=/home/ssalehi/miniconda3/bin/conda
 set -a; . /ivi/zfs/s0/original_homes/ssalehi/AGID/.env 2>/dev/null; set +a      # HF_TOKEN
 SCR=/ssdstore; [ -w $SCR ] || SCR=/tmp
