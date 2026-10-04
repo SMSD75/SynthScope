@@ -258,7 +258,8 @@ async def sota_generate(file: UploadFile = File(...), generator: str = Form(...)
     prompt, gen_bytes = await _sota_generate(real_bytes, generator, prompt, mode)
     sim = _layout_similarity(real_bytes, gen_bytes)
     return {"generator": generator, "mode": mode, "prompt": prompt, "similarity": round(sim, 3),
-            "near_copy": sim >= 0.8, "generated_b64": _b64.b64encode(gen_bytes).decode()}
+            "near_copy": sim >= 0.8, "real_size": list(media.decode_image(real_bytes).size),
+            "gen_size": list(media.decode_image(gen_bytes).size), "generated_b64": _b64.b64encode(gen_bytes).decode()}
 
 
 @app.post("/api/sota/score")

@@ -650,7 +650,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
           const r = await fetch(API("/api/sota/generate"), { method: "POST", body: fd });
           const d = await r.json();
           if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
-          setGenInfo({ generator: d.generator, prompt: d.prompt, mode: d.mode, similarity: d.similarity, near_copy: d.near_copy });
+          setGenInfo({ generator: d.generator, prompt: d.prompt, mode: d.mode, similarity: d.similarity, near_copy: d.near_copy, real_size: d.real_size, gen_size: d.gen_size });
           setGenB64(d.generated_b64);
         } catch (e) { setErr(String(e.message || e)); } finally { setGenBusy(false); }
       }
@@ -734,6 +734,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
                   Layout similarity to your photo: <b>${genInfo.similarity.toFixed(2)}</b> ·
                   ${genInfo.near_copy ? "very close: this looks like an edit of your photo, so the detectors are scoring an edited real photo rather than a new image."
                                       : "different enough to count as a newly generated image."}</div>`}
+                ${genInfo && genInfo.gen_size && html`<div class="meta">Sizes: your photo ${genInfo.real_size[0]}×${genInfo.real_size[1]}, generated ${genInfo.gen_size[0]}×${genInfo.gen_size[1]}. Each detector scores each image at its own size, after the detector's own preprocessing.</div>`}
                 ${genInfo && genInfo.prompt && html`<div class="meta">prompt used: ${genInfo.prompt}</div>`}
               </div>
 
