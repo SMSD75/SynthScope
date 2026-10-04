@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 17 published detectors hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 14 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -63,7 +63,7 @@ dropdown, so you only need the ones you want to use.
 | **GPT Image** (`gpt-image-1`) | `OPENAI_API_KEY` ([get a key](https://platform.openai.com/api-keys)) | re-create, edit |
 | **Grok** (`grok-2-image`) | `XAI_API_KEY` ([get a key](https://console.x.ai)) | re-create |
 | **FLUX.1** (via fal.ai) | `FAL_KEY` ([get a key](https://fal.ai/dashboard/keys)) | re-create, edit |
-| **Open-weight, runs locally** (no API key): Ideogram 4.0, FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1 | a 24 GB GPU, plus `HF_TOKEN` once to download gated weights; setup in [interface/README.md](interface/README.md) | re-create, edit (Kontext: edit only) |
+| **Open-weight, runs locally** (no API key): Ideogram 4.0, FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1 | a 24 GB GPU, plus `HF_TOKEN` once to download gated weights; setup in [interface/README.md](interface/README.md) | re-create, edit (Kontext: edit only; Ideogram: re-create only) |
 
 Hosted generators send your source photo or its description to that provider. The local models keep everything on your machine.
 Missing your favorite generator? Adding one takes a small function and one registry entry in
@@ -72,14 +72,18 @@ Missing your favorite generator? Adding one takes a small function and one regis
 **🚀 Run it**
 
 ```bash
-pip install -r interface/requirements.txt
-python interface/scripts/collect_checkpoints.py   # assemble the checkpoint folder
+pip install -e ".[web]"                            # or: pip install -r interface/requirements.txt
+export SYNTHSCOPE_CKPT_DIR=/path/to/checkpoints    # one <detector key>.pth per detector (see below)
 bash interface/run_backend.sh                      # serves http://localhost:8000
 ```
 
-Setup details, the cluster launch recipe and the local-generator setup are in [interface/README.md](interface/README.md).
-Prefer something lighter? Open the [Colab quickstart](notebooks/synthscope_quickstart.ipynb) or run the
-[Gradio demo](demo/) (`pip install -e ".[demo]" && python demo/app.py`).
+Each detector needs its weights as `<key>.pth` in `SYNTHSCOPE_CKPT_DIR` (for example `cure.pth`, `npr.pth`); every model's
+`README.md` under [models/](models/) says where the authors publish theirs. Detectors without weights are greyed out on the page,
+and the training-free ones (D3, STALL) need none. Setup details and the local-generator setup are in
+[interface/README.md](interface/README.md).
+Prefer something lighter? The [Colab quickstart](notebooks/synthscope_quickstart.ipynb) installs SynthScope, downloads the
+official CuRe weights and checks an image of yours in a few cells. There is also a small [Gradio demo](demo/)
+(`pip install -e ".[demo]" && python demo/app.py`).
 
 ---
 
@@ -120,14 +124,15 @@ synthscope detect photo.png --model fat_former   # human-readable verdict
 synthscope detect clip.mp4  --model d3 --json    # machine-readable
 ```
 
-Checkpoints resolve from `$SYNTHSCOPE_CKPT_DIR` (default `~/.cache/synthscope/checkpoints`); pass
+Weights are read from `$SYNTHSCOPE_CKPT_DIR/<key>.pth` (default `~/.cache/synthscope/checkpoints`); pass
 `synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
 (D3, STALL) need none.
 
 ### 🤗 Model zoo (Hugging Face Hub)
 
-When a detector's weights aren't present locally, `synthscope.load(...)` **auto-downloads** them from a Hub
-model-zoo repo (set `SYNTHSCOPE_HUB_REPO`, or pass `synthscope.load(..., repo="user/synthscope-checkpoints")`):
+`synthscope.load(...)` can fetch missing weights from a Hugging Face model-zoo repo (`SYNTHSCOPE_HUB_REPO`, or
+`synthscope.load(..., repo="user/synthscope-checkpoints")`). **The public SynthScope zoo is not published yet**, so for now put the
+weights in `SYNTHSCOPE_CKPT_DIR` yourself (each model's README links the official download), or host your own zoo:
 
 ```bash
 synthscope pull --model clip                                 # fetch one checkpoint
@@ -193,10 +198,13 @@ and its built-in loader **downloads it, unpacks it safely and restructures it in
 *Browse datasets* tab.
 
 ```bash
-python benchmark/download_dataset.py --list                              # all supported datasets and where they come from
-python benchmark/download_dataset.py commgen15 --root /data/CommGen15    # download + lay out, nothing else to do
-python benchmark/bench_eval.py --model npr --benchmark pergen --data /data/CommGen15/test --tag npr_commgen15
+python benchmark/download_dataset.py --list                                          # all supported datasets and where they come from
+python benchmark/bench_eval.py --model npr --dataset commgen15 --root /data/CommGen15   # download if missing, then evaluate
+python benchmark/download_dataset.py commgen15 --root /data/CommGen15                  # or only download + lay out
 ```
+
+`bench_eval.py --dataset` does it all in one step: it downloads the dataset if it isn't on disk, finds the folder to evaluate and
+the right grouping profile on its own, and prints per-generator results. Run it again and it reuses what is already there.
 
 Training does the same on its own: a dataset config with `prefetch: true` fetches its data the first time you use it
 (`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
@@ -219,12 +227,13 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
 | `genvideo`, `vidprom`, `videophy`, `physics_iq` | video benchmarks | official sites | Place by hand in the same layout |
 
-The **Leaderboard** tab covers 30+ benchmark groups across these datasets; the standardized, versioned submission table
-([LEADERBOARD.md](LEADERBOARD.md)) currently defines 3 tracks and grows as protocols are fixed.
+The **Leaderboard** tab covers 30+ benchmark groups across these datasets.
 
-SynthScope ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
-fixed test sets, per-generator metrics, one evaluation pipeline. See the ranked
-**[LEADERBOARD.md](LEADERBOARD.md)** and the protocol in **[benchmark/](benchmark/)**.
+### 🏁 Standardized leaderboard
+
+[LEADERBOARD.md](LEADERBOARD.md) is a smaller, **versioned** table with a fixed protocol per track (fixed test set, per-generator
+metrics, one evaluation pipeline), so anyone can submit a comparable number. It currently has 3 tracks (ForenSynths, GenImage
+SD-v1.4, GenVideo-Val) and grows as protocols are fixed; the protocol is in [benchmark/](benchmark/).
 
 ```bash
 python benchmark/evaluate.py --model fat_former --track forensynths --data <root> \
@@ -235,27 +244,29 @@ python benchmark/leaderboard.py        # refresh the table
 Submit your own result via PR — one JSON under [benchmark/submissions/](benchmark/submissions/); CI
 validates it against the [schema](benchmark/schema.json).
 
-**Every detector is verified against its paper** — headline numbers below (mAP unless noted; "official"
-= authors' weights run through SynthScope). Full per-benchmark tables (paper / official / SynthScope-trained, all
-generators) live in [`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK.md) and each model's
-`README.md`.
+### ✅ Does each detector match its paper?
 
-| Detector | Headline benchmark | Paper | SynthScope |
-| --- | --- | ---: | ---: |
-| CLIP / UnivFD | UniversalFakeDetect | 95.0 | 96.44 |
-| CNNDetection | ForenSynths | 90.8 | 94.42 |
-| FatFormer | ForenSynths-8 | 99.7 | 99.70 (official) |
-| NPR | GANGen-Detection | 96.6 | 96.49 (official) |
-| AIDE | GenImage | 97.1 | 96.42 |
-| SAFE | GenImage-8 | 99.3 | 99.51 |
-| Co-Spy | Co-Spy-Bench | 96.0 | 96.60 |
-| SPAI | GenImage | ~91 AUROC | 94.22 |
-| PGC | GenImage | 100 | 100 (official) |
-| CuRe | AIGIBench (20 subsets, balanced acc) | 92.8 acc | 92.85 acc (official) |
-| VIB-Net | GenImage SD-v1.4 | 95.5 | 83.94 (no official weights released) |
-| D3 (video) | GenVideo-Val | ~98 | 95.95 AUROC |
-| ReStraV (video) | GenVidBench | 93.0 | 92.7 |
-| STALL (video) | GenVideo-Val | ~80 AUC | 83.5 AUROC |
+Each published detector is checked against its own paper, through the same SynthScope pipeline. One headline benchmark per
+detector is below; the Leaderboard tab and each model's `README.md` list every benchmark, and
+[`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK.md) has the per-generator tables. *Official* means the authors'
+released weights run through SynthScope; otherwise the number is from our own retrained checkpoint. Numbers are mAP unless noted.
+
+| Detector | Headline benchmark | Paper | SynthScope | Status |
+| --- | --- | ---: | ---: | --- |
+| CLIP / UnivFD | UniversalFakeDetect | 95.0 | 96.44 | ✅ reproduced |
+| CNNDetection | ForenSynths | 90.8 | 94.42 | ✅ reproduced |
+| FatFormer | ForenSynths-8 | 99.7 | 99.70 (official) | ✅ official weights match |
+| NPR | GANGen-Detection | 96.6 | 96.49 (official) | ✅ official weights match |
+| AIDE | GenImage | 86.9 acc | 85.9 acc (official) | ✅ official weights match |
+| SAFE | GenImage-8 | 99.3 | 99.51 | ✅ reproduced |
+| Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
+| PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
+| CuRe | AIGIBench (20 subsets) | 92.8 acc | 92.85 acc (official) | ✅ official weights match |
+| STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
+| ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
+| D3 (video) | GenVideo-Val | 98.5 | 95.95 AUROC | ⚠️ mAP not comparable: our test pool is far more imbalanced |
+| SPAI | GenImage | not reported | 94.22 (official) | ⚠️ the paper's own test set is not in SynthScope yet |
+| VIB-Net | GenImage SD-v1.4 | 95.5 | 83.94 | ❌ below the paper (no official weights to compare) |
 
 ---
 
@@ -270,8 +281,8 @@ accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py
 ```
 
 Or use a method's ready-made recipe in [experiments/](experiments/) (e.g. `bash experiments/image/aide.sh`).
-Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and restructure into a
-common `real/`/`fake/` layout; transforms are named pipelines in [transformations.py](transformations.py).
+Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and restructure into the
+common `<generator>/{0_real,1_fake}` layout; transforms are named pipelines in [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) to add a detector.
 

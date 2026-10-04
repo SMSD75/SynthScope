@@ -42,6 +42,9 @@ class NPR(nn.Module):
     
 
     def NPR_transform(self, x: torch.Tensor) -> torch.Tensor:
+        # The residual compares each pixel with its 2x2 block, so odd sizes are cropped by one row/column (as in the
+        # official code's commented-out lines). The registered 256x256 input is never odd; native-resolution scoring can be.
+        x = x[:, :, : x.shape[2] - x.shape[2] % 2, : x.shape[3] - x.shape[3] % 2]
         x_down = F.interpolate(
             x,
             scale_factor=0.5,

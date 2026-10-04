@@ -1,0 +1,290 @@
+{
+  "commgen": {
+    "akool": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          416,
+          640
+        ],
+        "mean_jpeg_quant_step": 6.5
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 1.06,
+          "mean_p_real": 0.36,
+          "mean_p_fake": 0.0
+        },
+        "native resolution (no resize)": {
+          "auroc": 36.81,
+          "mean_p_real": 0.026,
+          "mean_p_fake": 0.0
+        },
+        "center-crop 256, no resize": {
+          "auroc": 29.62,
+          "mean_p_real": 0.118,
+          "mean_p_fake": 0.0
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 1.12,
+          "mean_p_real": 0.373,
+          "mean_p_fake": 0.0
+        }
+      }
+    },
+    "kling": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          500,
+          640
+        ],
+        "mean_jpeg_quant_step": 7.82
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 11.94,
+          "mean_p_real": 0.487,
+          "mean_p_fake": 0.007
+        },
+        "native resolution (no resize)": {
+          "auroc": 84.44,
+          "mean_p_real": 0.026,
+          "mean_p_fake": 0.0
+        },
+        "center-crop 256, no resize": {
+          "auroc": 70.78,
+          "mean_p_real": 0.078,
+          "mean_p_fake": 0.034
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 13.66,
+          "mean_p_real": 0.375,
+          "mean_p_fake": 0.029
+        }
+      }
+    },
+    "flux": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          500,
+          640
+        ],
+        "mean_jpeg_quant_step": 5.98
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 24.25,
+          "mean_p_real": 0.501,
+          "mean_p_fake": 0.148
+        },
+        "native resolution (no resize)": {
+          "auroc": 61.09,
+          "mean_p_real": 0.0,
+          "mean_p_fake": 0.025
+        },
+        "center-crop 256, no resize": {
+          "auroc": 48.44,
+          "mean_p_real": 0.045,
+          "mean_p_fake": 0.026
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 31.66,
+          "mean_p_real": 0.395,
+          "mean_p_fake": 0.166
+        }
+      }
+    },
+    "midjourney": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          500,
+          640
+        ],
+        "mean_jpeg_quant_step": 7.13
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 48.28,
+          "mean_p_real": 0.343,
+          "mean_p_fake": 0.293
+        },
+        "native resolution (no resize)": {
+          "auroc": 82.0,
+          "mean_p_real": 0.0,
+          "mean_p_fake": 0.065
+        },
+        "center-crop 256, no resize": {
+          "auroc": 72.97,
+          "mean_p_real": 0.041,
+          "mean_p_fake": 0.056
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 52.72,
+          "mean_p_real": 0.282,
+          "mean_p_fake": 0.32
+        }
+      }
+    },
+    "sora": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          500,
+          640
+        ],
+        "mean_jpeg_quant_step": 6.67
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 60.88,
+          "mean_p_real": 0.468,
+          "mean_p_fake": 0.646
+        },
+        "native resolution (no resize)": {
+          "auroc": 96.06,
+          "mean_p_real": 0.011,
+          "mean_p_fake": 0.765
+        },
+        "center-crop 256, no resize": {
+          "auroc": 93.5,
+          "mean_p_real": 0.05,
+          "mean_p_fake": 0.768
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 63.19,
+          "mean_p_real": 0.41,
+          "mean_p_fake": 0.652
+        }
+      }
+    },
+    "nano_banana": {
+      "real": {
+        "formats": {
+          "JPEG": 40
+        },
+        "long_side_median": 640,
+        "long_side_min_max": [
+          500,
+          640
+        ],
+        "mean_jpeg_quant_step": 5.98
+      },
+      "fake": {
+        "formats": {
+          "PNG": 40
+        },
+        "long_side_median": 320,
+        "long_side_min_max": [
+          320,
+          320
+        ],
+        "mean_jpeg_quant_step": null
+      },
+      "auroc": {
+        "paper-faithful: square resize 256": {
+          "auroc": 23.47,
+          "mean_p_real": 0.527,
+          "mean_p_fake": 0.084
+        },
+        "native resolution (no resize)": {
+          "auroc": 74.06,
+          "mean_p_real": 0.026,
+          "mean_p_fake": 0.004
+        },
+        "center-crop 256, no resize": {
+          "auroc": 65.06,
+          "mean_p_real": 0.051,
+          "mean_p_fake": 0.001
+        },
+        "shorter side 256 + crop 224": {
+          "auroc": 26.06,
+          "mean_p_real": 0.489,
+          "mean_p_fake": 0.115
+        }
+      }
+    }
+  },
+  "controls": {
+    "forensynths/progan": 100.0,
+    "forensynths/stylegan2": 99.94,
+    "forensynths/cyclegan": 99.39,
+    "forensynths/biggan": 90.51,
+    "forensynths/gaugan": 90.75,
+    "flux_klein_jpeg_None": 91.69,
+    "flux_klein_jpeg_95": 74.9,
+    "flux_klein_jpeg_75": 92.74
+  }
+}

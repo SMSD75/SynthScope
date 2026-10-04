@@ -131,14 +131,15 @@ class Detector:
         return f"Detector(key={self.spec.key!r}, modality={self.spec.modality!r}, device={self.device!r})"
 
     # -- prediction ---------------------------------------------------------
-    def predict(self, source: PathOrImage, *, num_frames: int | None = None) -> dict:
+    def predict(self, source: PathOrImage, *, num_frames: int | None = None, return_input_image: bool = False) -> dict:
         """Score ``source`` and return a result dict.
 
         ``source`` may be a file path, raw ``bytes``, or a PIL ``Image``. Result keys include
         ``fake_probability``, ``real_probability``, ``verdict`` (``"fake"``/``"real"``),
         ``confidence``, and ``elapsed_ms``. For an image detector run on a video, the result
         also carries ``per_frame`` probabilities (mean-aggregated); ``num_frames`` overrides
-        how many frames are sampled.
+        how many frames are sampled. ``input_size``/``orig_size``/``input_note`` describe what the detector saw;
+        pass ``return_input_image=True`` to also get that image as a PNG data URL (the web page shows it).
         """
         self._ensure_weights()
         kind, pil, path = self._classify(source)
@@ -148,7 +149,10 @@ class Detector:
                 raise ValueError(
                     f"'{self.spec.key}' is a video-only detector and cannot score a still image."
                 )
-            return self._engine.predict_image(self.spec, pil)
+            result = self._engine.predict_image(self.spec, pil)
+            if not return_input_image:
+                result.pop("input_image", None)      # a large base64 string; only the web page needs it
+            return result
 
         # kind == "video"
         if self.spec.modality == "video":

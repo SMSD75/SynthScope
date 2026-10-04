@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from config_utils import compose_config
+from datasets_util import dataset_config, download_dataset
 
 SOURCE_KEYS = ("source_url", "hf_repo_id", "zenodo_record", "repo_id", "modelscope_id", "setting")
 
@@ -45,20 +45,15 @@ def main() -> None:
     if args.list or not args.name:
         print("\n".join(describe(p) for p in available()))
         return
-    overrides = [f"dataset@DatasetConfig={args.modality}/{args.name}"]
-    if args.root:
-        overrides.append(f"DatasetConfig.root_dir={args.root}")
-    cfg = compose_config(overrides)
-    dc = cfg.DatasetConfig
+    dc = dataset_config(args.name, args.modality, args.root).DatasetConfig
     print(f"dataset {dc.name}: root_dir={dc.root_dir}  prefetch={dc.get('prefetch')}")
     for k in SOURCE_KEYS:
         if k in dc:
             print(f"  {k}: {dc[k]}")
     if args.dry_run:
         return
-    from dataset import AIGIDatasetModule
-    AIGIDatasetModule(cfg)           # constructing the datasets runs the loader (prefetch: true downloads + restructures)
-    print(f"done: {dc.root_dir}")
+    path = download_dataset(args.name, args.modality, args.root)
+    print(f"done: {path}")
 
 
 if __name__ == "__main__":

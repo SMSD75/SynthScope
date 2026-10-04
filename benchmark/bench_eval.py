@@ -8,6 +8,9 @@ computes per-generator + mean acc@0.5 / AP / AUROC, writes a JSON, and APPENDS a
     python benchmark/bench_eval.py --model clip --benchmark forensynths \
         --data /hddstore/ssalehi/SynthScope/CNNDetection/test --tag clip_synthscope_forensynths
 
+    # one step: download the dataset if needed (its built-in loader arranges it), pick the profile, evaluate
+    python benchmark/bench_eval.py --model npr --dataset commgen15 --root /data/CommGen15
+
 Benchmark profiles encode each dataset's correct generator grouping + real-pairing:
   forensynths  CNNDetection/test    per top-level generator; reals+fakes collected recursively
                                     (handles progan/<class>/{0_real,1_fake} nesting)
@@ -31,6 +34,7 @@ from PIL import Image, ImageFile
 
 import synthscope
 from models.image.cure.preprocess import SRC_FORMAT_KEY
+from datasets_util import ensure_dataset, find_eval_root
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -185,9 +189,14 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor) -> dict | None:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-m", "--model", required=True, help="SynthScope detector key (see `synthscope list`)")
-    ap.add_argument("--benchmark", required=True,
-                    choices=["forensynths", "ufd", "pergen", "pool"])
-    ap.add_argument("--data", required=True, help="benchmark root")
+    ap.add_argument("--benchmark", choices=["forensynths", "ufd", "pergen", "pool"],
+                    help="how the folders are grouped (chosen automatically with --dataset)")
+    ap.add_argument("--data", help="benchmark root (not needed with --dataset)")
+    ap.add_argument("--dataset", help="a supported dataset (see `python benchmark/download_dataset.py --list`): downloads it "
+                    "if missing, finds the folder to evaluate and the right --benchmark profile")
+    ap.add_argument("--root", help="with --dataset: where the dataset lives / should be downloaded (default: root_dir in its yaml)")
+    ap.add_argument("--no-download", action="store_true", help="with --dataset: fail instead of downloading missing data")
+    ap.add_argument("--dry-run", action="store_true", help="with --dataset: only show the resolved folder and profile")
     ap.add_argument("--reals", default=None, help="shared real dir (pergen/forensynths fallback)")
     ap.add_argument("--ckpt", default=None, help="checkpoint override (official vs SynthScope weights)")
     ap.add_argument("--select", default=None, help="comma list: only these generators")
@@ -197,9 +206,23 @@ def main(argv=None) -> int:
                     help="score at native resolution (strip up-scaling Resize/CenterCrop); "
                          "for artifact-based methods like NPR on low-res GAN sets (freqnet)")
     ap.add_argument("--device", default=None)
-    ap.add_argument("--tag", required=True, help="run tag (used for the output filename + log)")
+    ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
+
+    if args.dataset:
+        root = ensure_dataset(args.dataset, "image", args.root, download=not args.no_download and not args.dry_run)
+        eval_root, profile = find_eval_root(args.dataset, root)
+        args.data = args.data or str(eval_root)
+        args.benchmark = args.benchmark or profile
+        args.tag = args.tag or f"{args.model}_{args.dataset}"
+        print(f"[dataset] {args.dataset}: evaluating {args.data} with the '{args.benchmark}' profile", flush=True)
+        if args.dry_run:
+            return 0
+    if not (args.benchmark and args.data):
+        ap.error("give --dataset NAME, or both --benchmark and --data")
+    if not args.tag:
+        ap.error("--tag is required without --dataset")
 
     load_kw = {}
     if args.ckpt:

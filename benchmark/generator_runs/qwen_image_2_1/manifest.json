@@ -1,0 +1,611 @@
+{
+  "label": "Qwen-Image-2.1",
+  "generator": "qwen_image_2_1",
+  "n": 100,
+  "res": 1024,
+  "settings": "1024px \u00b7 text-to-image from a caption",
+  "created": "2026-10-04",
+  "reuse_from": "benchmark/generator_runs/reference/manifest.json",
+  "pairs": [
+    {
+      "idx": 0,
+      "caption": "sheep is white",
+      "prompt": "sheep is white, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/003443_ILSVRC2012_val_00028605.JPEG"
+    },
+    {
+      "idx": 1,
+      "caption": "a bird sitting on a branch in a tree",
+      "prompt": "a bird sitting on a branch in a tree, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/000582_ILSVRC2012_val_00004554.JPEG"
+    },
+    {
+      "idx": 2,
+      "caption": "a green grasshopper on a leaf",
+      "prompt": "a green grasshopper on a leaf, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/002258_ILSVRC2012_val_00018535.JPEG"
+    },
+    {
+      "idx": 3,
+      "caption": "the bell is black",
+      "prompt": "the bell is black, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00028778.JPEG"
+    },
+    {
+      "idx": 4,
+      "caption": "a car driving down a city street in the middle of the day",
+      "prompt": "a car driving down a city street in the middle of the day, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/crn/0_real/00103410.png"
+    },
+    {
+      "idx": 5,
+      "caption": "a dog is standing in the grass",
+      "prompt": "a dog is standing in the grass, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/003845_ILSVRC2012_val_00031963.JPEG"
+    },
+    {
+      "idx": 6,
+      "caption": "a small kitten walking across a rocky beach",
+      "prompt": "a small kitten walking across a rocky beach, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/000784_ILSVRC2012_val_00006407.JPEG"
+    },
+    {
+      "idx": 7,
+      "caption": "a mountain covered in snow",
+      "prompt": "a mountain covered in snow, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/000414_ILSVRC2012_val_00003305.JPEG"
+    },
+    {
+      "idx": 8,
+      "caption": "a sailer sailing in the ocean near a lighthouse",
+      "prompt": "a sailer sailing in the ocean near a lighthouse, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00040977.JPEG"
+    },
+    {
+      "idx": 9,
+      "caption": "a bowl of masoor",
+      "prompt": "a bowl of masoor, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/001588_ILSVRC2012_val_00009675.JPEG"
+    },
+    {
+      "idx": 10,
+      "caption": "a green bird house",
+      "prompt": "a green bird house, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/003296_ILSVRC2012_val_00026872.JPEG"
+    },
+    {
+      "idx": 11,
+      "caption": "a body of water",
+      "prompt": "a body of water, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/001100_ILSVRC2012_val_00008791.JPEG"
+    },
+    {
+      "idx": 12,
+      "caption": "a dog in a pool",
+      "prompt": "a dog in a pool, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/003956_ILSVRC2012_val_00024961.JPEG"
+    },
+    {
+      "idx": 13,
+      "caption": "two tools, one with a wren and the other with a wren",
+      "prompt": "two tools, one with a wren and the other with a wren, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/002410_ILSVRC2012_val_00020055.JPEG"
+    },
+    {
+      "idx": 14,
+      "caption": "a black leather folder with a red trim",
+      "prompt": "a black leather folder with a red trim, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/biggan/0_real/446--n02840245_7225.png"
+    },
+    {
+      "idx": 15,
+      "caption": "a small bird sitting on a wooden surface",
+      "prompt": "a small bird sitting on a wooden surface, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/000105_ILSVRC2012_val_00000837.JPEG"
+    },
+    {
+      "idx": 16,
+      "caption": "mouse mouse on mouse mouse mouse",
+      "prompt": "mouse mouse on mouse mouse mouse, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/000058_ILSVRC2012_val_00000430.JPEG"
+    },
+    {
+      "idx": 17,
+      "caption": "a small metal object on a wooden table",
+      "prompt": "a small metal object on a wooden table, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/003751_ILSVRC2012_val_00030855.JPEG"
+    },
+    {
+      "idx": 18,
+      "caption": "an hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour",
+      "prompt": "an hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour hour, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/002367_ILSVRC2012_val_00019475.JPEG"
+    },
+    {
+      "idx": 19,
+      "caption": "a white rabbit in a cage",
+      "prompt": "a white rabbit in a cage, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/001872_ILSVRC2012_val_00015301.JPEG"
+    },
+    {
+      "idx": 20,
+      "caption": "a grass bug on a green leaf",
+      "prompt": "a grass bug on a green leaf, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00032265.JPEG"
+    },
+    {
+      "idx": 21,
+      "caption": "a field of grass",
+      "prompt": "a field of grass, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/001114_ILSVRC2012_val_00009176.JPEG"
+    },
+    {
+      "idx": 22,
+      "caption": "a black padlock with a key",
+      "prompt": "a black padlock with a key, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/biggan/0_real/695--n03874599_4507.png"
+    },
+    {
+      "idx": 23,
+      "caption": "a group of balls",
+      "prompt": "a group of balls, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/002837_ILSVRC2012_val_00024198.JPEG"
+    },
+    {
+      "idx": 24,
+      "caption": "three dogs standing on a hill",
+      "prompt": "three dogs standing on a hill, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00022571.JPEG"
+    },
+    {
+      "idx": 25,
+      "caption": "a dog standing in a field",
+      "prompt": "a dog standing in a field, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/004562_ILSVRC2012_val_00038455.JPEG"
+    },
+    {
+      "idx": 26,
+      "caption": "a pink toilet",
+      "prompt": "a pink toilet, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/005007_ILSVRC2012_val_00042247.JPEG"
+    },
+    {
+      "idx": 27,
+      "caption": "the sky is cloudy",
+      "prompt": "the sky is cloudy, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/003771_ILSVRC2012_val_00031161.JPEG"
+    },
+    {
+      "idx": 28,
+      "caption": "a bird is standing on the ground",
+      "prompt": "a bird is standing on the ground, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/004662_ILSVRC2012_val_00039216.JPEG"
+    },
+    {
+      "idx": 29,
+      "caption": "a leopard sitting on a tree branch",
+      "prompt": "a leopard sitting on a tree branch, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/006884_ILSVRC2012_val_00043117.JPEG"
+    },
+    {
+      "idx": 30,
+      "caption": "an old barn with a broken roof",
+      "prompt": "an old barn with a broken roof, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/004995_ILSVRC2012_val_00041650.JPEG"
+    },
+    {
+      "idx": 31,
+      "caption": "a slug crawling on a concrete surface",
+      "prompt": "a slug crawling on a concrete surface, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/000580_ILSVRC2012_val_00004691.JPEG"
+    },
+    {
+      "idx": 32,
+      "caption": "the three bottles of the serums are shown in the image",
+      "prompt": "the three bottles of the serums are shown in the image, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/biggan/0_real/631--n03690938_23212.png"
+    },
+    {
+      "idx": 33,
+      "caption": "a bear cub",
+      "prompt": "a bear cub, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/005149_ILSVRC2012_val_00043353.JPEG"
+    },
+    {
+      "idx": 34,
+      "caption": "a street with a yellow line painted on the road",
+      "prompt": "a street with a yellow line painted on the road, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/crn/0_real/00102007.png"
+    },
+    {
+      "idx": 35,
+      "caption": "a lion fish swimming in the water",
+      "prompt": "a lion fish swimming in the water, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/000092_ILSVRC2012_val_00000699.JPEG"
+    },
+    {
+      "idx": 36,
+      "caption": "a plastic container with food",
+      "prompt": "a plastic container with food, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/gaugan/0_real/000000113589.png"
+    },
+    {
+      "idx": 37,
+      "caption": "a car is driving down a street in a city",
+      "prompt": "a car is driving down a street in a city, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/crn/0_real/00103003.png"
+    },
+    {
+      "idx": 38,
+      "caption": "a wooden desk",
+      "prompt": "a wooden desk, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/004470_ILSVRC2012_val_00037573.JPEG"
+    },
+    {
+      "idx": 39,
+      "caption": "a bird standing in the water",
+      "prompt": "a bird standing in the water, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/001503_ILSVRC2012_val_00012618.JPEG"
+    },
+    {
+      "idx": 40,
+      "caption": "two parking meters",
+      "prompt": "two parking meters, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/000019_ILSVRC2012_val_00000201.JPEG"
+    },
+    {
+      "idx": 41,
+      "caption": "a butterfly on a yellow flower",
+      "prompt": "a butterfly on a yellow flower, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00006608.JPEG"
+    },
+    {
+      "idx": 42,
+      "caption": "a green snake on a rock",
+      "prompt": "a green snake on a rock, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/000933_ILSVRC2012_val_00007877.JPEG"
+    },
+    {
+      "idx": 43,
+      "caption": "a green snake in a tree",
+      "prompt": "a green snake in a tree, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00042162.JPEG"
+    },
+    {
+      "idx": 44,
+      "caption": "purple and gold beaded bracelet",
+      "prompt": "purple and gold beaded bracelet, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/002068_ILSVRC2012_val_00017972.JPEG"
+    },
+    {
+      "idx": 45,
+      "caption": "a dog standing in the shade",
+      "prompt": "a dog standing in the shade, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/005084_ILSVRC2012_val_00042318.JPEG"
+    },
+    {
+      "idx": 46,
+      "caption": "a cliff with a cliff face",
+      "prompt": "a cliff with a cliff face, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00031528.JPEG"
+    },
+    {
+      "idx": 47,
+      "caption": "a dog laying in the grass",
+      "prompt": "a dog laying in the grass, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/004359_ILSVRC2012_val_00027268.JPEG"
+    },
+    {
+      "idx": 48,
+      "caption": "a small dog sitting on a bench",
+      "prompt": "a small dog sitting on a bench, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/005226_ILSVRC2012_val_00043233.JPEG"
+    },
+    {
+      "idx": 49,
+      "caption": "a dog standing on a hill",
+      "prompt": "a dog standing on a hill, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/001612_ILSVRC2012_val_00013323.JPEG"
+    },
+    {
+      "idx": 50,
+      "caption": "a white plate with food on it",
+      "prompt": "a white plate with food on it, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/001277_ILSVRC2012_val_00010872.JPEG"
+    },
+    {
+      "idx": 51,
+      "caption": "a wooden chair",
+      "prompt": "a wooden chair, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/001537_ILSVRC2012_val_00012771.JPEG"
+    },
+    {
+      "idx": 52,
+      "caption": "a large church with a stained glass window",
+      "prompt": "a large church with a stained glass window, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/003670_ILSVRC2012_val_00030337.JPEG"
+    },
+    {
+      "idx": 53,
+      "caption": "a dog running in the grass",
+      "prompt": "a dog running in the grass, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/004349_ILSVRC2012_val_00035935.JPEG"
+    },
+    {
+      "idx": 54,
+      "caption": "a hand holding a hot dog with lete and lete",
+      "prompt": "a hand holding a hot dog with lete and lete, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/gaugan/0_real/000000118367.png"
+    },
+    {
+      "idx": 55,
+      "caption": "a large satellite dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish",
+      "prompt": "a large satellite dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish dish, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/004018_ILSVRC2012_val_00033065.JPEG"
+    },
+    {
+      "idx": 56,
+      "caption": "a brown dog with a long tongue",
+      "prompt": "a brown dog with a long tongue, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/002541_ILSVRC2012_val_00021171.JPEG"
+    },
+    {
+      "idx": 57,
+      "caption": "a wooden bench",
+      "prompt": "a wooden bench, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/002922_ILSVRC2012_val_00024245.JPEG"
+    },
+    {
+      "idx": 58,
+      "caption": "a white dog toy",
+      "prompt": "a white dog toy, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/001637_ILSVRC2012_val_00013696.JPEG"
+    },
+    {
+      "idx": 59,
+      "caption": "a lake with trees and water in the background",
+      "prompt": "a lake with trees and water in the background, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/003749_ILSVRC2012_val_00031159.JPEG"
+    },
+    {
+      "idx": 60,
+      "caption": "a crab crawling on the ground",
+      "prompt": "a crab crawling on the ground, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/002813_ILSVRC2012_val_00023550.JPEG"
+    },
+    {
+      "idx": 61,
+      "caption": "a city street with a lot of buildings",
+      "prompt": "a city street with a lot of buildings, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/imle/0_real/00103670.png"
+    },
+    {
+      "idx": 62,
+      "caption": "old wooden barrels stock photo, old wooden barrels by andy",
+      "prompt": "old wooden barrels stock photo, old wooden barrels by andy, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/000703_ILSVRC2012_val_00005570.JPEG"
+    },
+    {
+      "idx": 63,
+      "caption": "a green beetle with red and green stripes",
+      "prompt": "a green beetle with red and green stripes, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/006233_ILSVRC2012_val_00039157.JPEG"
+    },
+    {
+      "idx": 64,
+      "caption": "a plate of food",
+      "prompt": "a plate of food, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/002016_ILSVRC2012_val_00016730.JPEG"
+    },
+    {
+      "idx": 65,
+      "caption": "a fish in a tank",
+      "prompt": "a fish in a tank, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/001971_ILSVRC2012_val_00016470.JPEG"
+    },
+    {
+      "idx": 66,
+      "caption": "a street with a lot of luggage and palm trees",
+      "prompt": "a street with a lot of luggage and palm trees, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/crn/0_real/00105512.png"
+    },
+    {
+      "idx": 67,
+      "caption": "a tree in the middle of a city",
+      "prompt": "a tree in the middle of a city, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/imle/0_real/00100948.png"
+    },
+    {
+      "idx": 68,
+      "caption": "a kitchen with a large white island and a large window",
+      "prompt": "a kitchen with a large white island and a large window, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/gaugan/0_real/000000458768.png"
+    },
+    {
+      "idx": 69,
+      "caption": "a small brown and black dog standing on a white surface",
+      "prompt": "a small brown and black dog standing on a white surface, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/003964_ILSVRC2012_val_00033278.JPEG"
+    },
+    {
+      "idx": 70,
+      "caption": "a train on the tracks",
+      "prompt": "a train on the tracks, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/005265_ILSVRC2012_val_00043551.JPEG"
+    },
+    {
+      "idx": 71,
+      "caption": "a large circular window",
+      "prompt": "a large circular window, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/003867_ILSVRC2012_val_00032479.JPEG"
+    },
+    {
+      "idx": 72,
+      "caption": "a machine in a factory",
+      "prompt": "a machine in a factory, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/004837_ILSVRC2012_val_00039836.JPEG"
+    },
+    {
+      "idx": 73,
+      "caption": "a red boat docked in a harbor",
+      "prompt": "a red boat docked in a harbor, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/001452_ILSVRC2012_val_00012691.JPEG"
+    },
+    {
+      "idx": 74,
+      "caption": "a bird perched on a branch",
+      "prompt": "a bird perched on a branch, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv5/0_real/004217_ILSVRC2012_val_00026362.JPEG"
+    },
+    {
+      "idx": 75,
+      "caption": "a large gray elephant",
+      "prompt": "a large gray elephant, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/001980_ILSVRC2012_val_00016437.JPEG"
+    },
+    {
+      "idx": 76,
+      "caption": "a street with a star painted on the sidewalk",
+      "prompt": "a street with a star painted on the sidewalk, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/imle/0_real/00101546.png"
+    },
+    {
+      "idx": 77,
+      "caption": "a fish in a tank with a fish inside",
+      "prompt": "a fish in a tank with a fish inside, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/003951_ILSVRC2012_val_00033320.JPEG"
+    },
+    {
+      "idx": 78,
+      "caption": "a pot of soup",
+      "prompt": "a pot of soup, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/002526_ILSVRC2012_val_00021615.JPEG"
+    },
+    {
+      "idx": 79,
+      "caption": "a bunch of bubbles",
+      "prompt": "a bunch of bubbles, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/005966_ILSVRC2012_val_00049716.JPEG"
+    },
+    {
+      "idx": 80,
+      "caption": "a vase on display",
+      "prompt": "a vase on display, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/005439_ILSVRC2012_val_00045714.JPEG"
+    },
+    {
+      "idx": 81,
+      "caption": "a toilet with a toilet seat and a toilet roll",
+      "prompt": "a toilet with a toilet seat and a toilet roll, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/003325_ILSVRC2012_val_00028223.JPEG"
+    },
+    {
+      "idx": 82,
+      "caption": "a piece of food",
+      "prompt": "a piece of food, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/001630_ILSVRC2012_val_00013254.JPEG"
+    },
+    {
+      "idx": 83,
+      "caption": "a car is parked in a street with a bus in the background",
+      "prompt": "a car is parked in a street with a bus in the background, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/crn/0_real/00104005.png"
+    },
+    {
+      "idx": 84,
+      "caption": "a white car driving down a street next to a building",
+      "prompt": "a white car driving down a street next to a building, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/CNNDetection/test/imle/0_real/00105681.png"
+    },
+    {
+      "idx": 85,
+      "caption": "a small canal in venice, italy",
+      "prompt": "a small canal in venice, italy, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/sdv4/0_real/004284_ILSVRC2012_val_00035514.JPEG"
+    },
+    {
+      "idx": 86,
+      "caption": "a black velvet jacket",
+      "prompt": "a black velvet jacket, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/003062_ILSVRC2012_val_00025342.JPEG"
+    },
+    {
+      "idx": 87,
+      "caption": "a bear is sitting in a tree branch",
+      "prompt": "a bear is sitting in a tree branch, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/004938_ILSVRC2012_val_00041120.JPEG"
+    },
+    {
+      "idx": 88,
+      "caption": "a goat standing in the woods",
+      "prompt": "a goat standing in the woods, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/000197_ILSVRC2012_val_00001705.JPEG"
+    },
+    {
+      "idx": 89,
+      "caption": "a military vehicle",
+      "prompt": "a military vehicle, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/004633_ILSVRC2012_val_00039017.JPEG"
+    },
+    {
+      "idx": 90,
+      "caption": "a cup with a bunch of pencils in it",
+      "prompt": "a cup with a bunch of pencils in it, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/002918_ILSVRC2012_val_00024434.JPEG"
+    },
+    {
+      "idx": 91,
+      "caption": "a jaguar in the water",
+      "prompt": "a jaguar in the water, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/002525_ILSVRC2012_val_00021064.JPEG"
+    },
+    {
+      "idx": 92,
+      "caption": "a flower made out of felt and felt",
+      "prompt": "a flower made out of felt and felt, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/adm/0_real/003858_ILSVRC2012_val_00031978.JPEG"
+    },
+    {
+      "idx": 93,
+      "caption": "a dog with a pink shirt on",
+      "prompt": "a dog with a pink shirt on, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/001164_ILSVRC2012_val_00009888.JPEG"
+    },
+    {
+      "idx": 94,
+      "caption": "a close up of a bug on a rock",
+      "prompt": "a close up of a bug on a rock, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/midjourney/0_real/004231_ILSVRC2012_val_00035409.JPEG"
+    },
+    {
+      "idx": 95,
+      "caption": "a close up of a bird with a yellow eye",
+      "prompt": "a close up of a bird with a yellow eye, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/000274_ILSVRC2012_val_00002228.JPEG"
+    },
+    {
+      "idx": 96,
+      "caption": "a hyen walking down a dirt road",
+      "prompt": "a hyen walking down a dirt road, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/biggan/0_real/002696_ILSVRC2012_val_00023004.JPEG"
+    },
+    {
+      "idx": 97,
+      "caption": "a col of pictures of food including vegetables and vegetables",
+      "prompt": "a col of pictures of food including vegetables and vegetables, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/005131_ILSVRC2012_val_00042927.JPEG"
+    },
+    {
+      "idx": 98,
+      "caption": "a brown barn",
+      "prompt": "a brown barn, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage/test/real/ILSVRC2012_val_00014180.JPEG"
+    },
+    {
+      "idx": 99,
+      "caption": "a small black and white dog sitting on the ground",
+      "prompt": "a small black and white dog sitting on the ground, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/glide/0_real/004154_ILSVRC2012_val_00034951.JPEG"
+    }
+  ]
+}

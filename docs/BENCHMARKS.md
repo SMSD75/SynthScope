@@ -51,10 +51,16 @@ glue code is needed. We check this end to end: downloading CommGen15 (about 26,0
 about two minutes, produced `test/<generator>/{0_real,1_fake}` for 15 generators, and `bench_eval.py` scored it straight away.
 
 ```bash
-python benchmark/download_dataset.py --list                                  # every dataset and where it comes from
-python benchmark/download_dataset.py commgen15 --root /data/CommGen15        # download + lay out
-python benchmark/bench_eval.py --model npr --benchmark pergen --data /data/CommGen15/test --tag npr_commgen15
+python benchmark/download_dataset.py --list                                       # every dataset and where it comes from
+python benchmark/bench_eval.py --model npr --dataset commgen15 --root /data/CommGen15   # download if missing, then evaluate
+python benchmark/download_dataset.py commgen15 --root /data/CommGen15             # only download + lay out
 ```
+
+`bench_eval.py --dataset NAME` is the one-step version: it downloads the dataset when no images are under `--root` (or the
+`root_dir` in the dataset's yaml), finds the folder to evaluate (`<root>/test`, `<root>/test_full` or the root itself), picks the
+grouping profile from the layout (UnivFD and ForenSynths have their own), and runs the evaluation. `--no-download` makes it fail
+instead of fetching, and `--dry-run` only shows what it resolved. An incomplete download is not detected: delete the folder to
+fetch it again.
 
 Training works the same way: a dataset config with `prefetch: true` fetches its data the first time it is used, into
 `DatasetConfig.root_dir`. Downloads can be large (CommGen15 about 10 GB on the Hub, DiTFake about 22 GB, AIGIBench about
@@ -86,11 +92,12 @@ local disk.
 ## 3. Reproduce a paper's numbers
 
 ```bash
-python benchmark/bench_eval.py --model clip --benchmark forensynths \
-    --data /data/CNNDetection/test --tag clip_forensynths
+python benchmark/bench_eval.py --model clip --dataset cnndetection --root /data/CNNDetection   # download if needed + evaluate
+# the explicit form, for data you arranged yourself:
+python benchmark/bench_eval.py --model clip --benchmark forensynths --data /data/CNNDetection/test --tag clip_forensynths
 ```
 
-`--benchmark` selects how the folders are grouped:
+With `--dataset` the grouping below is chosen for you; with `--data` you pick `--benchmark` yourself:
 
 | `--benchmark` | Layout it expects | Typical dataset |
 | --- | --- | --- |
@@ -175,15 +182,18 @@ format-sensitive detectors; treat small differences with care.
 
 ## 5. Time and hardware
 
-Measured on one RTX A5000 (24 GB) with 100 real + 100 generated images:
+Measured on one RTX A5000 (24 GB) with 100 real + 100 generated images at 1024 px:
 
 | Step | Time |
 | --- | --- |
-| FLUX.2 [klein] 4B, generate 100 images | about 1 hour |
-| FLUX.2 [klein] 9B, generate 100 images | see the generator benchmarks page notes |
-| Qwen-Image-2.1, generate 100 images | see the generator benchmarks page notes |
-| Score all image detectors on 200 images | about 10 minutes |
+| FLUX.2 [klein] 4B, generate 100 images | about 15 minutes |
+| FLUX.2 [klein] 9B, generate 100 images | about 40 minutes |
+| Qwen-Image-2.1, generate 100 images | about 70 minutes |
+| Score all image detectors on the 200 images | 5 to 10 minutes |
+| Download a dataset | minutes for CommGen15 (4 GB took about 2 minutes), hours for the largest (AIGIBench is about 220 GB) |
 | A paper benchmark (`bench_eval.py`) | minutes for small sets, hours for GenImage-size sets (use `--limit` to try it) |
+
+Generation times are for a GPU that is not shared with other jobs on the same host; they grow when the node is busy.
 
 Host RAM matters for the local generators: give a job 48-64 GB (the larger models are held in host RAM and streamed to
 the GPU). Models are downloaded once into the Hugging Face cache (tens of GB each), so point

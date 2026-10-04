@@ -1,0 +1,145 @@
+[
+  {
+    "detector": "vib_net",
+    "name": "VIB-Net",
+    "auroc": 99.76,
+    "ap": 99.76,
+    "acc": 91.5,
+    "fake_detect_rate": 100.0,
+    "real_false_pos": 17.0,
+    "mean_p_fake_on_fakes": 0.9685,
+    "mean_p_fake_on_reals": 0.2256
+  },
+  {
+    "detector": "co_spy",
+    "name": "CO-SPY",
+    "auroc": 99.34,
+    "ap": 99.3,
+    "acc": 98.0,
+    "fake_detect_rate": 99.0,
+    "real_false_pos": 3.0,
+    "mean_p_fake_on_fakes": 0.8509,
+    "mean_p_fake_on_reals": 0.116
+  },
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 97.35,
+    "ap": 96.45,
+    "acc": 53.5,
+    "fake_detect_rate": 7.0,
+    "real_false_pos": 0.0,
+    "mean_p_fake_on_fakes": 0.4389,
+    "mean_p_fake_on_reals": 0.2672
+  },
+  {
+    "detector": "cure",
+    "name": "CuRe",
+    "auroc": 96.2,
+    "ap": 97.04,
+    "acc": 88.5,
+    "fake_detect_rate": 77.0,
+    "real_false_pos": 0.0,
+    "mean_p_fake_on_fakes": 0.7393,
+    "mean_p_fake_on_reals": 0.0129
+  },
+  {
+    "detector": "aide",
+    "name": "AIDE",
+    "auroc": 93.73,
+    "ap": 88.94,
+    "acc": 81.0,
+    "fake_detect_rate": 69.0,
+    "real_false_pos": 7.0,
+    "mean_p_fake_on_fakes": 0.6246,
+    "mean_p_fake_on_reals": 0.1102
+  },
+  {
+    "detector": "safe",
+    "name": "SAFE",
+    "auroc": 92.32,
+    "ap": 84.09,
+    "acc": 88.5,
+    "fake_detect_rate": 87.0,
+    "real_false_pos": 10.0,
+    "mean_p_fake_on_fakes": 0.7988,
+    "mean_p_fake_on_reals": 0.1425
+  },
+  {
+    "detector": "npr",
+    "name": "NPR",
+    "auroc": 88.61,
+    "ap": 81.74,
+    "acc": 78.5,
+    "fake_detect_rate": 100.0,
+    "real_false_pos": 43.0,
+    "mean_p_fake_on_fakes": 0.9986,
+    "mean_p_fake_on_reals": 0.4365
+  },
+  {
+    "detector": "spai",
+    "name": "SPAI",
+    "auroc": 66.54,
+    "ap": 63.78,
+    "acc": 56.0,
+    "fake_detect_rate": 20.0,
+    "real_false_pos": 8.0,
+    "mean_p_fake_on_fakes": 0.2118,
+    "mean_p_fake_on_reals": 0.0778
+  },
+  {
+    "detector": "fat_former",
+    "name": "FatFormer",
+    "auroc": 45.86,
+    "ap": 46.65,
+    "acc": 50.5,
+    "fake_detect_rate": 5.0,
+    "real_false_pos": 4.0,
+    "mean_p_fake_on_fakes": 0.0477,
+    "mean_p_fake_on_reals": 0.0412
+  },
+  {
+    "detector": "adapted_dino",
+    "name": "Adapter-tuned DINOv2",
+    "auroc": 44.13,
+    "ap": 46.55,
+    "acc": 50.0,
+    "fake_detect_rate": 0.0,
+    "real_false_pos": 0.0,
+    "mean_p_fake_on_fakes": 0.0,
+    "mean_p_fake_on_reals": 0.0
+  },
+  {
+    "detector": "cnn",
+    "name": "CNNDetection (ResNet-50)",
+    "auroc": 40.86,
+    "ap": 46.29,
+    "acc": 50.0,
+    "fake_detect_rate": 1.0,
+    "real_false_pos": 1.0,
+    "mean_p_fake_on_fakes": 0.0116,
+    "mean_p_fake_on_reals": 0.0083
+  },
+  {
+    "detector": "dinov2",
+    "name": "DINOv2 probe",
+    "auroc": 35.29,
+    "ap": 41.64,
+    "acc": 46.0,
+    "fake_detect_rate": 5.0,
+    "real_false_pos": 13.0,
+    "mean_p_fake_on_fakes": 0.1056,
+    "mean_p_fake_on_reals": 0.1751
+  },
+  {
+    "detector": "clip",
+    "name": "UnivFD / CLIP",
+    "auroc": 26.07,
+    "ap": 36.57,
+    "acc": 47.0,
+    "fake_detect_rate": 1.0,
+    "real_false_pos": 7.0,
+    "mean_p_fake_on_fakes": 0.0715,
+    "mean_p_fake_on_reals": 0.1656
+  }
+]

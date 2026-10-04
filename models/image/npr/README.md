@@ -156,3 +156,11 @@ The official detector uses a compact ResNet-style classifier, making the main co
 ## Summary
 
 NPR is a compact detector built around local neighboring-pixel residuals caused by generator up-sampling operations. In SynthScope, `NPR` implements the nearest-neighbor NPR transform, the official scaling, and a lightweight ResNet-style binary classifier adapted to the shared model API. It is best understood as a method-aligned SynthScope implementation of Tan et al.'s CVPR 2024 NPR detector, not a byte-for-byte copy of the official repository.
+
+## Known limitation: resizing and image format
+
+NPR reads local resampling traces, so it is sensitive to how images were resized and compressed. On CommGen15, where every
+real image is a 500-640 px JPEG and every fake a 320 px PNG, the paper's square resize to 256 inverts its scores (mean AUROC
+about 23); scoring at native resolution (`bench_eval.py --native-res --bs 1`) recovers most of the signal (AUROC 37-96 per
+generator). We verified that SynthScope's NPR matches the official network, preprocessing and weights exactly, and still scores
+AUROC 100 on ProGAN; details in [`repro/investigate/npr_commgen15.md`](../../../repro/investigate/npr_commgen15.md).
