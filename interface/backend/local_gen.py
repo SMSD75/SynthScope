@@ -14,6 +14,7 @@ Apache-2.0; Qwen-Image-2.1 is under the Qwen Research License (research use).
 """
 import argparse
 import gc
+import json
 import os
 import sys
 
@@ -127,6 +128,62 @@ def load_pipeline_group_offload(repo: str, cls_name: str, token):
     return pipe
 
 
+def run_batch_qwen(repo: str, cls_name: str, token, items: list, kw: dict, res: int) -> None:
+    """Text-to-image for MANY prompts with one model load (Qwen-Image-2.1 on a 24 GB GPU): encode every prompt first
+    with the text encoder on the GPU, drop it, load the transformer once, then denoise each prompt in turn
+    (the transformer is parked on the CPU during each VAE decode, as in ``load_pipeline_staged``)."""
+    pipeline_cls = getattr(diffusers, cls_name)
+    text_encoder = transformers.Qwen3VLForConditionalGeneration.from_pretrained(
+        repo, subfolder="text_encoder", torch_dtype=torch.bfloat16, device_map="cuda", token=token)
+    pipe = pipeline_cls.from_pretrained(repo, text_encoder=text_encoder, transformer=None,
+                                        torch_dtype=torch.bfloat16, token=token)
+    pipe.vae.to(DEVICE)
+    pipeline_cls._execution_device = property(lambda self: DEVICE)
+    embeds = []
+    for it in items:
+        emb, mask, _ = pipe.encode_prompt(prompt=it["prompt"], device=DEVICE)
+        embeds.append((emb.cpu(), None if mask is None else mask.cpu()))
+    pipe.text_encoder = None
+    del text_encoder
+    gc.collect(); torch.cuda.empty_cache()
+    pipe.register_modules(transformer=diffusers.QwenImage21Transformer2DModel.from_pretrained(
+        repo, subfolder="transformer", torch_dtype=torch.bfloat16, device_map="cuda", token=token))
+    vae_decode = pipe.vae.decode
+
+    def decode_after_freeing_transformer(*args, **kwargs):
+        pipe.transformer.to("cpu"); gc.collect(); torch.cuda.empty_cache()
+        return vae_decode(*args, **kwargs)
+
+    pipe.vae.decode = decode_after_freeing_transformer
+    for it, (emb, mask) in zip(items, embeds):
+        pipe.transformer.to(DEVICE)
+        out = pipe(prompt_embeds=emb.to(DEVICE), prompt_embeds_mask=None if mask is None else mask.to(DEVICE),
+                   generator=torch.Generator("cpu").manual_seed(it.get("seed", 0)), output_resolution=res, **kw).images[0]
+        out.convert("RGB").save(it["out"], format="PNG")
+        print(f"saved {it['out']} {out.size}", flush=True)
+
+
+def run_batch(model: str, items: list, res: int) -> None:
+    """Text-only generation for a list of {prompt, out, seed, size?} items with one model load. Existing outputs are
+    skipped, so an interrupted batch can simply be re-run."""
+    repo, cls_name, kw = MODELS[model]
+    token = os.environ.get("HF_TOKEN")
+    todo = [it for it in items if not os.path.exists(it["out"])]
+    print(f"{len(items) - len(todo)} already done, {len(todo)} to generate with {model}", flush=True)
+    if not todo:
+        return
+    if model == "qwen_image_2_1":
+        run_batch_qwen(repo, cls_name, token, todo, kw, res)
+        return
+    pipe = load_pipeline_cpu_offload(repo, cls_name, token)
+    for it in todo:
+        w, h = (int(v) for v in (it.get("size") or "1024x1024").split("x"))
+        out = pipe(prompt=it["prompt"], generator=torch.Generator("cpu").manual_seed(it.get("seed", 0)),
+                   height=h, width=w, **kw).images[0]
+        out.convert("RGB").save(it["out"], format="PNG")
+        print(f"saved {it['out']} {out.size}", flush=True)
+
+
 LOADERS = {"qwen_image_2_1": load_pipeline_staged, "flux1_kontext_dev": load_pipeline_group_offload}
 
 
@@ -134,13 +191,19 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, choices=sorted(MODELS))
     ap.add_argument("--image", help="source photo (not needed with --text-only)")
-    ap.add_argument("--prompt", required=True)
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--prompt")
+    ap.add_argument("--out")
+    ap.add_argument("--batch", help="JSON list of {prompt, out, seed, size}: text-to-image for all of them with one model load")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--text-only", action="store_true", help="create the image from the prompt alone (no source photo)")
     ap.add_argument("--size", help="WxH of the output in --text-only mode (default 1024x1024)")
     ap.add_argument("--res", type=int, default=1024, help="output resolution (Qwen-Image-2.1 output_resolution)")
     args = ap.parse_args()
+    if args.batch:
+        run_batch(args.model, json.load(open(args.batch)), args.res)
+        return 0
+    if not args.prompt or not args.out:
+        ap.error("--prompt and --out are required (or use --batch)")
     if not args.text_only and not args.image:
         ap.error("--image is required unless --text-only is given")
 

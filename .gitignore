@@ -26,3 +26,7 @@ dist/
 
 # arXiv trending candidates (regenerated daily by fetch_arxiv_trending.py)
 repro/trending_arxiv_candidates.json
+
+# generator benchmark runs: keep manifest/results/RESULTS.md, not the (large) image sets
+benchmark/generator_runs/*/real/
+benchmark/generator_runs/*/fake/

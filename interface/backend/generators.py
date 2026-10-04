@@ -218,12 +218,31 @@ def _local_size(size) -> Optional[str]:
     return f"{max(256, int(w * k) // 16 * 16)}x{max(256, int(h * k) // 16 * 16)}"
 
 
+def _local_env() -> dict:
+    env = dict(os.environ)
+    env["PYTHONPATH"] = os.pathsep.join(p for p in (os.environ["SYNTHSCOPE_GEN_PYTHONPATH"], env.get("PYTHONPATH", "")) if p)
+    if os.environ.get("SYNTHSCOPE_GEN_HF_HOME"):
+        env["HF_HOME"] = os.environ["SYNTHSCOPE_GEN_HF_HOME"]
+    return env
+
+
+def local_batch(model_key: str, items: list[dict], timeout: int = 6 * 3600) -> None:
+    """Generate many text-to-image items ({prompt, out, seed, size}) with ONE model load (used by the generator
+    benchmark). Outputs that already exist are skipped, so an interrupted run can be repeated."""
+    import json
+    with _LOCAL_LOCK, tempfile.TemporaryDirectory() as tmp:
+        spec = Path(tmp) / "batch.json"
+        spec.write_text(json.dumps(items))
+        r = subprocess.run([sys.executable, str(_LOCAL_GEN), "--model", model_key, "--batch", str(spec)],
+                           env=_local_env(), capture_output=True, text=True, timeout=timeout)
+        if r.returncode != 0:
+            tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
+            raise RuntimeError(f"{model_key} batch failed (exit {r.returncode}): " + " | ".join(tail))
+
+
 def _local_subprocess(model_key: str) -> Callable[..., bytes]:
     def call(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
-        env = dict(os.environ)
-        env["PYTHONPATH"] = os.pathsep.join(p for p in (os.environ["SYNTHSCOPE_GEN_PYTHONPATH"], env.get("PYTHONPATH", "")) if p)
-        if os.environ.get("SYNTHSCOPE_GEN_HF_HOME"):
-            env["HF_HOME"] = os.environ["SYNTHSCOPE_GEN_HF_HOME"]
+        env = _local_env()
         with _LOCAL_LOCK, tempfile.TemporaryDirectory() as tmp:
             src, dst = Path(tmp) / "in.png", Path(tmp) / "out.png"
             cmd = [sys.executable, str(_LOCAL_GEN), "--model", model_key, "--prompt", prompt, "--out", str(dst)]
@@ -239,6 +258,7 @@ def _local_subprocess(model_key: str) -> Callable[..., bytes]:
                 tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
                 raise RuntimeError(f"{model_key} failed (exit {r.returncode}): " + " | ".join(tail))
             return dst.read_bytes()
+    call.model_key = model_key          # lets the benchmark find the local model behind a generator
     return call
 
 
