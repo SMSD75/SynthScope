@@ -3,10 +3,10 @@
 # Per-benchmark retry with a CUDA pre-check so a transient spell just delays, never drops a result.
 # All data (incl 440G CoSpyBench) + Co-Spy backbones are on cn023 /hddstore.
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 LOG=repro/eval_logs/reeval_cospy_cn023.log; exec >>"$LOG" 2>&1
 echo "=== reeval cospy start $(date) ==="
-CONDA=/home/ssalehi/miniconda3/bin/conda; D=/hddstore/ssalehi/AGID; GPU=4
+CONDA=/home/ssalehi/miniconda3/bin/conda; D=/hddstore/ssalehi/SynthScope; GPU=4
 export SYNTHSCOPE_CKPT_DIR=$D/checkpoints HF_HOME=$D/.cache/huggingface TORCH_HOME=$D/.cache/torch \
        SYNTHSCOPE_MFM_CKPT=$D/mfm/mfm_pretrain_vit_base.pth OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 CK=$(ls -1v $D/checkpoints/_train/cospy_retrain/model_*.pth 2>/dev/null | tail -1)

@@ -1,0 +1,12 @@
+NODE=ivi-cn029 GPU=0 Fri Oct  2 18:15:47 CEST 2026
+=== bench_eval cure_repro_ufd | model=cure ckpt=registry-default | ufd | 8 generators | device=cuda ===
+    dalle: acc=97.45 AP=99.73 AUROC=99.66 (real_acc=99.6 fake_acc=95.3)
+    glide_100_10: acc=95.25 AP=99.3 AUROC=99.1 (real_acc=99.6 fake_acc=90.9)
+    glide_100_27: acc=93.2 AP=99.17 AUROC=99.01 (real_acc=99.6 fake_acc=86.8)
+    glide_50_27: acc=92.65 AP=98.93 AUROC=98.62 (real_acc=99.6 fake_acc=85.7)
+    guided: acc=79.25 AP=96.68 AUROC=95.8 (real_acc=99.9 fake_acc=58.6)
+    ldm_100: acc=97.55 AP=99.89 AUROC=99.89 (real_acc=99.6 fake_acc=95.5)
+    ldm_200: acc=97.95 AP=99.91 AUROC=99.92 (real_acc=99.6 fake_acc=96.3)
+    ldm_200_cfg: acc=98.2 AP=99.88 AUROC=99.86 (real_acc=99.6 fake_acc=96.8)
+=== RESULT cure_repro_ufd: mAP=99.19 mAUROC=98.98 acc=93.94 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/cure_repro_ufd.json ===
+=== CURE UFD DONE Fri Oct  2 18:20:09 CEST 2026 ===

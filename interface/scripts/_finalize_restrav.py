@@ -8,7 +8,7 @@ if not lines:
 last = lines[-1]
 ap = re.search(r"AP=([\d.]+)", last).group(1)
 auc = re.search(r"AUC=([\d.]+)", last).group(1)
-res = Path("/hddstore/ssalehi/AGID/checkpoints/_train/restrav_exact_RESULT.txt")
+res = Path("/hddstore/ssalehi/SynthScope/checkpoints/_train/restrav_exact_RESULT.txt")
 res.write_text(f"deployed ReStraV (exact official recipe) cross-generator on full GenVideo-Val:\n  AP {ap} / AUROC {auc}\n  ({last})\n")
 readme = Path("README.md")
 t = readme.read_text()

@@ -72,7 +72,7 @@ from torchvision import transforms
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # SynthScope repo (only for the verified-identical SRM kernel list) + caches.
-REPO = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
+REPO = "/ivi/zfs/s0/original_homes/ssalehi/SynthScope"
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
 os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/.cache/torch")
@@ -84,10 +84,10 @@ from models.image.aide.srm_kernels import all_normalized_hpf_list  # noqa: E402
 # ---------------------------------------------------------------------------
 # Paths / constants (mirror benchmark/bench_eval.py)
 # ---------------------------------------------------------------------------
-REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro")
+REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro")
 RESULTS_LOG = REPRO_DIR / "MASTER_RESULTS.jsonl"
 BENCH_RESULTS_DIR = REPRO_DIR / "bench_results"
-DEFAULT_CKPT = Path("/hddstore/ssalehi/AGID/repro/official_ckpts/aide/"
+DEFAULT_CKPT = Path("/hddstore/ssalehi/SynthScope/repro/official_ckpts/aide/"
                     "AIDE_checkpoints/progan_train.pth")
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}

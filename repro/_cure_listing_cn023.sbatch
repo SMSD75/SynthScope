@@ -3,11 +3,11 @@
 # (pam_slurm_adopt only allows ssh to a node where we hold an active job).
 #SBATCH --job-name=cure_lists --partition=quva --account=quvausers --nodelist=ivi-cn023
 #SBATCH --gres=gpu:0 --cpus-per-task=1 --mem=3G --time=00:30:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_lists_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_lists_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 echo "NODE=$(hostname) $(date)"
 /home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope python repro/_cure_make_lists.py 800 300 2>&1 | grep -avE "Warning|warn|nvml|raw_cnt"
-touch /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref/lists/READY
+touch /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_ref/lists/READY
 echo "LISTS READY $(date); holding node for rsync pulls"
 sleep 1500

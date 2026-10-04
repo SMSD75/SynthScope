@@ -6,7 +6,7 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageFile
 from torchvision import transforms
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 from repro.official_evals.aide_official_eval import (
     DCT_base_Rec_Module, build_model, discover, metrics, transform_train)
 ImageFile.LOAD_TRUNCATED_IMAGES = True

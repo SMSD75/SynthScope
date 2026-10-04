@@ -19,7 +19,7 @@ from backend import config            # noqa: E402  (sets paths)
 from backend.registry import list_specs  # noqa: E402
 
 # Known source locations of the official weights on this node.
-REPRO_CKPTS = Path("/hddstore/ssalehi/AGID/repro/ckpts")
+REPRO_CKPTS = Path("/hddstore/ssalehi/SynthScope/repro/ckpts")
 OFFICIAL_SOURCES = {
     "fat_former.pth": REPRO_CKPTS / "fatformer_official.pth",
     "aide.pth": REPRO_CKPTS / "aide_progan_train.pth",

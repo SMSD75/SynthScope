@@ -3,8 +3,8 @@ remapped official weights. Per-image (bs=1) native-res forward -> the class's an
 patches + five_crop fallback). Reports per-generator AUROC (SPAI's headline metric) + AP. Reuses
 bench_eval's discover()/metrics() so numbers are comparable."""
 import os, sys, json, argparse, datetime
-os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth")
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 import torch
 from pathlib import Path
 from PIL import Image, ImageFile
@@ -16,7 +16,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--data", required=True)
-ap.add_argument("--ckpt", default="/hddstore/ssalehi/AGID/repro/ckpts/spai_official_synthscope.pth")
+ap.add_argument("--ckpt", default="/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official_synthscope.pth")
 ap.add_argument("--benchmark", default="pergen")
 ap.add_argument("--limit", type=int, default=1000)
 ap.add_argument("--max_side", type=int, default=1024, help="cap long side to bound memory (official caps too)")
@@ -62,6 +62,6 @@ means = {"acc": mean(agg["acc"]), "map": mean(agg["ap"]), "mauroc": mean(agg["au
 res = {"tag": args.tag, "model": "spai-anyres", "ckpt": args.ckpt, "benchmark": args.benchmark,
        "data_root": args.data, "n_generators": len(per_gen), "means": means, "per_generator": per_gen,
        "date": datetime.datetime.now().isoformat(timespec="seconds"), "synthscope_version": "spai-anyres-official"}
-out = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results") / f"{args.tag}.json"
+out = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/bench_results") / f"{args.tag}.json"
 out.write_text(json.dumps(res, indent=2) + "\n")
 print(f"=== RESULT {args.tag}: mAUROC={means['mauroc']} mAP={means['map']} acc={means['acc']} over {len(per_gen)} gens ===", flush=True)

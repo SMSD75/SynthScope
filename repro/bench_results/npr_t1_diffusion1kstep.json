@@ -1,9 +1,9 @@
 {
   "tag": "npr_t1_diffusion1kstep",
   "model": "npr",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/NPR_table1.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/ckpts/NPR_table1.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/Diffusion1kStep/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/Diffusion1kStep/test",
   "n_generators": 5,
   "means": {
     "acc": 80.12,

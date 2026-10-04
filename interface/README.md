@@ -111,7 +111,7 @@ are auto-discovered from disk (`backend/datasets.py`), so only those present on 
 
 ## Checkpoints
 
-Central directory (env `SYNTHSCOPE_CKPT_DIR`, default `/hddstore/ssalehi/AGID/checkpoints`). The menu
+Central directory (env `SYNTHSCOPE_CKPT_DIR`, default `/hddstore/ssalehi/SynthScope/checkpoints`). The menu
 shows a model as available only when its checkpoint file is present (D3 is training-free and always
 available). See `MANIFEST.md` there for status.
 
@@ -123,8 +123,8 @@ available). See `MANIFEST.md` there for status.
 
 | Var | Default | Meaning |
 | --- | --- | --- |
-| `SYNTHSCOPE_CKPT_DIR` | `/hddstore/ssalehi/AGID/checkpoints` | central checkpoint directory |
-| `SYNTHSCOPE_CACHE_DIR` | `/hddstore/ssalehi/AGID/.cache` | HF/torch backbone cache |
+| `SYNTHSCOPE_CKPT_DIR` | `/hddstore/ssalehi/SynthScope/checkpoints` | central checkpoint directory |
+| `SYNTHSCOPE_CACHE_DIR` | `/hddstore/ssalehi/SynthScope/.cache` | HF/torch backbone cache |
 | `SYNTHSCOPE_MAX_RESIDENT_MODELS` | `2` | models kept in GPU memory (LRU) |
 | `SYNTHSCOPE_VIDEO_IMAGE_FRAMES` | `16` | frames sampled when an image detector runs on a video |
 | `SYNTHSCOPE_MAX_UPLOAD_MB` | `200` | upload size limit |

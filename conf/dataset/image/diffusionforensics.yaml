@@ -1,7 +1,7 @@
 name: diffusionforensics
 # DiffusionForensics / DIRE diffusion test set (8 subsets: adm, ddpm, iddpm, ldm, pndm, sdv1,
 # sdv2, vqdiffusion). Used by NPR (Table 3) and FatFormer's diffusion table.
-root_dir: /hddstore/ssalehi/AGID/DiffusionForensics
+root_dir: /hddstore/ssalehi/SynthScope/DiffusionForensics
 test_batch_size: 512
 num_workers: 8
 persistent_workers: true

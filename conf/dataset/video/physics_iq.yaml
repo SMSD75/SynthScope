@@ -1,7 +1,7 @@
 name: physics_iq
 # Physics-IQ benchmark (Motamed et al. 2025), used by ReStraV. Matched real/generated
 # pairs. Lay out videos as <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
-root_dir: /hddstore/ssalehi/AGID/PhysicsIQ
+root_dir: /hddstore/ssalehi/SynthScope/PhysicsIQ
 # google-deepmind/physics-IQ-benchmark hosts the data; set this to enable the download
 # stub once the desired split layout is known. null = manual placement.
 hf_repo_id: null

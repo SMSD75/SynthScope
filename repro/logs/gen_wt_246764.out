@@ -1,0 +1,11 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 11:30:08 CEST 2026 | code=4eab30e Web UI: local open-weight generators FLUX.2 [klein] 4B and Qwen-Image-2.1 (isolated subprocess)
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/AGID/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1452375]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:33982 - "GET /api/sota/generators HTTP/1.1" 200 OK
+[2026-10-04T11:30:40.176] error: *** JOB 246764 ON ivi-cn029 CANCELLED AT 2026-10-04T11:30:40 DUE to SIGNAL Terminated ***

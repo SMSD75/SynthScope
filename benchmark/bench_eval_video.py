@@ -6,7 +6,7 @@ per-generator + mean acc@0.5 / AP / AUROC, and writes the SAME JSON schema as be
 (repro/bench_results/<tag>.json + append repro/MASTER_RESULTS.jsonl) so the aggregator ingests it.
 
     python benchmark/bench_eval_video.py --model d3 --benchmark genvideo \
-        --data /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val --limit 150 --tag d3_genvideo
+        --data /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val --limit 150 --tag d3_genvideo
 
 Benchmark layouts:
   genvideo   <data>/Fake/<gen>/*.mp4 + <data>/Real/*.mp4 (shared real pool)   [GenVideo-Val]

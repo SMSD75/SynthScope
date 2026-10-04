@@ -1,9 +1,9 @@
 {
   "tag": "pgc_official_forensynths",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 83.73,

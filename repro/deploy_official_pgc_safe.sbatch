@@ -10,13 +10,13 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=40G
 #SBATCH --time=03:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/deploy_official_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/deploy_official_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-CKDIR=/hddstore/ssalehi/AGID/checkpoints
-SHARED=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
-TEST=/hddstore/ssalehi/AGID/CNNDetection/test
+CKDIR=/hddstore/ssalehi/SynthScope/checkpoints
+SHARED=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval
+TEST=/hddstore/ssalehi/SynthScope/CNNDetection/test
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 
 # --- CUDA precheck (cn023 old kernel flakily fails CUDA init) ---
@@ -32,9 +32,9 @@ done
 PGC_OFF="$SHARED/PGC_train_progan_ckpt.pth"
 [ -f "$PGC_OFF" ] || { echo "PGC official ckpt missing: $PGC_OFF"; exit 1; }
 SAFE_OFF=""
-for c in /hddstore/ssalehi/AGID/repro/official_ckpts/safe/checkpoint-best.pth \
-         /hddstore/ssalehi/AGID/official_ckpts/safe/checkpoint-best.pth \
-         /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_ckpts/safe/checkpoint-best.pth; do
+for c in /hddstore/ssalehi/SynthScope/repro/official_ckpts/safe/checkpoint-best.pth \
+         /hddstore/ssalehi/SynthScope/official_ckpts/safe/checkpoint-best.pth \
+         /ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/official_ckpts/safe/checkpoint-best.pth; do
   [ -f "$c" ] && SAFE_OFF="$c" && break
 done
 echo "[ckpt] PGC_OFF=$PGC_OFF"

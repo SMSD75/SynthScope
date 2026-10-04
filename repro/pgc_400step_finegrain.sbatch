@@ -7,17 +7,17 @@
 # cn029 (cees): ProGAN train data is local on /ssdstore (no 72G staging).
 #SBATCH --job-name=pgc_400 --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --gres=gpu:1 --cpus-per-task=12 --mem=64G --time=08:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_400step_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_400step_%j.out
 set -u
-SynthScope=/ivi/zfs/s0/original_homes/ssalehi/AGID
-SHARED=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
+SynthScope=/ivi/zfs/s0/original_homes/ssalehi/SynthScope
+SHARED=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval
 DEST=$AGID/checkpoints_retrain/pgc_400step; mkdir -p "$DEST"
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 
-DATA=/ssdstore/ssalehi/AGID/CNNDetection
+DATA=/ssdstore/ssalehi/SynthScope/CNNDetection
 [ -d "$DATA/train" ] || { echo "ProGAN train NOT on cn029 /ssdstore ($DATA/train) — re-stage needed"; exit 1; }
 echo "[data] train classes=$(ls $DATA/train | wc -l)"
 SCR=/ssdstore/ssalehi/pgc_400_${SLURM_JOB_ID}; mkdir -p "$SCR"

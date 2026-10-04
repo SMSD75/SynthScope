@@ -1,0 +1,12 @@
+NODE=ivi-cn023 (CPU-only) PORT=8021 Mon Jun 22 12:54:21 CEST 2026
+torch 2.11.0+cu126 cuda False
+[webui] serving on http://ivi-cn023:8021  (CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints, device=cpu)
+[webui] tunnel:  ssh -N -L 8021:ivi-cn023:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [931218]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:42264 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:42266 - "GET /api/models HTTP/1.1" 200 OK
+slurmstepd-ivi-cn023: error: *** JOB 188131 ON ivi-cn023 CANCELLED AT 2026-06-22T13:24:17 ***

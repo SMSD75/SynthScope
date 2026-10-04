@@ -33,8 +33,8 @@ def synthscope_residual(x01, snap=False):
 
 CROP = T.Compose([T.CenterCrop(224), T.ToTensor()])
 samples = {
-    "seeingdark-real": "/ssdstore/ssalehi/AGID/CNNDetection/test/seeingdark/0_real/10003_00_100_gt.png",
-    "san-real":        "/ssdstore/ssalehi/AGID/CNNDetection/test/san/0_real",
+    "seeingdark-real": "/ssdstore/ssalehi/SynthScope/CNNDetection/test/seeingdark/0_real/10003_00_100_gt.png",
+    "san-real":        "/ssdstore/ssalehi/SynthScope/CNNDetection/test/san/0_real",
 }
 import glob
 for tag, p in samples.items():

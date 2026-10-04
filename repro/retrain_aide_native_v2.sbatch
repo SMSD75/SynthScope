@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=aide_nat --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=2-00:00:00 --cpus-per-task=24 --mem=200G --gres=gpu:4
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aide_native_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_aide_native_%j.log
 # AIDE Phase 2: from-scratch retrain with the FAITHFUL native-resolution 5-view preprocessing
 # (the genuine arch; DCT patch selection at native res via the aide_five_view transform, NOT a
 # resize-256-before-DCT). Proves the repo can regenerate the AIDE checkpoint. 4-GPU on GenImage
 # SD-v1.4 (already staged on cn029 /ssdstore). convnext-xxl trunk is frozen (laion2b soup).
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_native_v2; mkdir -p "$SAVE"
 export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/huggingface   # shared convnext (4.8G) cache
 export TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

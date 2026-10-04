@@ -2,7 +2,7 @@
   "model": "pgc",
   "paper": "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection (Zhou, Fei, Yu, Xie, Cheng, Xia — ICML 2026 / arXiv 2026)",
   "arxiv_id": "2605.21207",
-  "official_repo": "https://github.com/xiaoyuzhou68/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/AGID/PGC_official",
+  "official_repo": "https://github.com/xiaoyuzhou68/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
   "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (4-class CNNDet/UniversalFakeDetect train) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
   "benchmarks": [
     {
@@ -16,7 +16,7 @@
       "our_status": "reproduced",
       "our_number": {"map_official_wts": 100.0, "acc_official_wts": 99.49, "map_synthscope_retrain": 97.62, "acc_synthscope_retrain": 78.60, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth; ckpt_synthscope: checkpoints/_train/pgc_genimage/model_0.pth (registry-default)", "tags": "pgc_official_genimage8 / pgc_retrain_genimage8 (pgc_long_g8)"},
       "gap_cause": "Official-weights-in-SynthScope reproduces exactly (mAP 100.0). SynthScope from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the SynthScope LoRA-DINOv2 retrain is less calibrated than the released checkpoint; longer training gave no gain (recipe-bound, residual cross-generator). Counts as reproduced on the AP headline.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (and test_full). Origin: github.com/GenImage-Dataset/GenImage."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (and test_full). Origin: github.com/GenImage-Dataset/GenImage."
     },
     {
       "name": "UniversalFakeDetect (UFD)",
@@ -29,7 +29,7 @@
       "our_status": "reproduced",
       "our_number": {"map_official_wts": 99.34, "acc_official_wts": 94.16, "map_synthscope_retrain": 99.01, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth", "tags": "pgc_official_ufd / pgc_retrain_ufd"},
       "gap_cause": "Reproduced (official-wts 99.34, SynthScope retrain 99.01) >= paper 98.0; no gap.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/universialfakedetection/test. Origin: github.com/WisconsinAIVision/UniversalFakeDetect."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/universialfakedetection/test. Origin: github.com/WisconsinAIVision/UniversalFakeDetect."
     },
     {
       "name": "ForenSynths (CNNDetection test)",
@@ -42,7 +42,7 @@
       "our_status": "reproduced",
       "our_number": {"map_official_wts": 96.25, "acc_official_wts": 83.73, "map_synthscope_retrain": 89.03, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth", "tags": "pgc_official_forensynths / pgc_retrain_forensynths"},
       "gap_cause": "Official-weights-in-SynthScope reproduces (96.25 mAP). SynthScope retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test. Origin: github.com/PeterWang512/CNNDetection."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test. Origin: github.com/PeterWang512/CNNDetection."
     },
     {
       "name": "AIGIBench (AIGI)",
@@ -55,7 +55,7 @@
       "our_status": "reproduced",
       "our_number": {"map_official_wts": 95.36, "acc_official_wts": 88.33, "map_synthscope_retrain": 86.88, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_sdv1_4_ckpt.pth", "tags": "pgc_official_aigibench25 / pgc_retrain_aigibench"},
       "gap_cause": "Official-weights-in-SynthScope reproduces (95.36 vs paper 95.0). SynthScope retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/AIGIBench/test (25 generator dirs). Origin: github.com/HorizonTEL/AIGIBench."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/AIGIBench/test (25 generator dirs). Origin: github.com/HorizonTEL/AIGIBench."
     },
     {
       "name": "CommGen15 (commercial in-the-wild)",
@@ -68,7 +68,7 @@
       "our_status": "reproduced",
       "our_number": {"map_official_wts": 99.26, "acc_official_wts": 97.39, "map_synthscope_retrain": 98.61, "acc_synthscope_retrain": 66.66, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth", "tags": "pgc_official_commgen15 / pgc_retrain_commgen15"},
       "gap_cause": "Official-weights-in-SynthScope reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. SynthScope retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-guided calibration is what the paper headline relies on.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/CommGen15/test. Origin: ModelScope datasets/xiaoyuzhou68/CommGen15 and HF datasets/xiaoyuzhou68/CommGen15 (officially released by the paper)."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CommGen15/test. Origin: ModelScope datasets/xiaoyuzhou68/CommGen15 and HF datasets/xiaoyuzhou68/CommGen15 (officially released by the paper)."
     }
   ]
 }

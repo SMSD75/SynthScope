@@ -1,0 +1,17 @@
+NODE=ivi-cn029 GPU=0 Sun Oct  4 11:17:40 CEST 2026
+CUDA NVIDIA RTX A5000 | diffusers 0.41.0.dev0
+================ qwen_image_2_1 11:17:45 ================
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/diffusers/models/autoencoders/autoencoder_kl_qwenimage21.py", line 213, in forward
+    normalized = F.normalize(x.float() if needs_fp32_normalize else x, dim=(1 if self.channel_first else -1)).to(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/functional.py", line 5708, in normalize
+    return input / denom
+           ~~~~~~^~~~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 584.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 36.00 MiB is free. Including non-PyTorch memory, this process has 23.50 GiB memory in use. Of the allocated memory 21.73 GiB is allocated by PyTorch, and 1.51 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+ERROR conda.cli.main_run:execute(125): `conda run python /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_wt/interface/backend/local_gen.py --model qwen_image_2_1 --image /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png --prompt make another image conceptually similar to this --out /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/qwen_image_2_1.png` failed. (See above for error)
+1 MiB
+=== GEN TEST DONE Sun Oct  4 11:18:57 CEST 2026 ===

@@ -33,9 +33,9 @@ from backend import media                        # noqa: E402
 from backend.engine import _build_model          # noqa: E402
 
 DEV = "cuda" if torch.cuda.is_available() else "cpu"
-TRAIN_ROOT = "/hddstore/ssalehi/AGID/restrav_data/train/genvideo"
-OUT_DIR = Path("/hddstore/ssalehi/AGID/checkpoints/_train/restrav_fixed")
-DEPLOY_LINK = Path("/hddstore/ssalehi/AGID/checkpoints/restrav.pth")
+TRAIN_ROOT = "/hddstore/ssalehi/SynthScope/restrav_data/train/genvideo"
+OUT_DIR = Path("/hddstore/ssalehi/SynthScope/checkpoints/_train/restrav_fixed")
+DEPLOY_LINK = Path("/hddstore/ssalehi/SynthScope/checkpoints/restrav.pth")
 
 
 def build_model(spec):

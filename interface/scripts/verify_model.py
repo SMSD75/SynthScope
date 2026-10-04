@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from backend.engine import get_engine     # noqa: E402
 from backend.registry import get_spec     # noqa: E402
 
-TEST_ROOT = "/hddstore/ssalehi/AGID/CNNDetection/test"
+TEST_ROOT = "/hddstore/ssalehi/SynthScope/CNNDetection/test"
 
 
 def list_split(gen, sub):

@@ -1,7 +1,7 @@
 name: vidprom
 # VidProM benchmark (Wang & Yang 2024). Shared by D3 and ReStraV. Lay out videos as
 # <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
-root_dir: /hddstore/ssalehi/AGID/VidProM
+root_dir: /hddstore/ssalehi/SynthScope/VidProM
 # WenhaoWang/VidProM on the Hugging Face Hub hosts the prompts/videos; set this to enable
 # the download stub once the desired split layout is known. null = manual placement.
 hf_repo_id: null

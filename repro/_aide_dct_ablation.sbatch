@@ -7,12 +7,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=02:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/aide_ablat_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/aide_ablat_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
 export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi/.cache/torch PYTHONUNBUFFERED=1
-H=/hddstore/ssalehi/AGID
+H=/hddstore/ssalehi/SynthScope
 GCK=$H/repro/official_ckpts/aide/AIDE_checkpoints/GenImage_train.pth
 [ -f "$GCK" ] || GCK=$H/repro/official_ckpts/aide/AIDE_checkpoints/sd14_train.pth
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES ckpt=$GCK $(date)"

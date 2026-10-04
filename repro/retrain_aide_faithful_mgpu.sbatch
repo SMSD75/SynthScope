@@ -1,15 +1,15 @@
 #!/bin/bash
 #SBATCH --job-name=aide_faith --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-00:00:00 --cpus-per-task=24 --mem=120G --gres=gpu:4
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aide_faithful_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_aide_faithful_%j.log
 # AIDE retrain with the FIXED faithful preprocessing (raw [0,1] 256 in; model applies CLIP norm to the
 # semantic ConvNeXt-XXL branch and ImageNet norm to the SRM/HPF patch branch, DCT in pixel space) — the
 # divergence that capped adm/vqdm at chance. 4-GPU DeepSpeed ZeRO-2 on GenImage SD-v1.4 (staged on cn029).
 # After: eval on cn023 GPUs 4&7 (aide bench_eval / aide_official_eval) vs official 97.12 — target adm 58->~94.
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_faithful; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_faithful; mkdir -p "$SAVE"
 export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/huggingface   # shared so convnext (4.8G) caches once
 export TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

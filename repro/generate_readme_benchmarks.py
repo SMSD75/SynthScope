@@ -1,7 +1,7 @@
 """Insert the full per-benchmark results (paper vs ours + status) into each model README,
 and build the aggregated all-models table for the main README. Source: interface/backend/repro_full.json."""
 import json, re, pathlib
-ROOT = pathlib.Path("/ivi/zfs/s0/original_homes/ssalehi/AGID")
+ROOT = pathlib.Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 full = json.loads((ROOT / "interface/backend/repro_full.json").read_text())
 
 # model key -> (README path, display name)

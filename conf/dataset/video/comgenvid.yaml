@@ -2,7 +2,7 @@ name: comgenvid
 # ComGenVid (STALL's new benchmark) — Sora + VEO3 fakes vs MSVD real. Used by STALL.
 # Lay out as <root>/test/<generator>/{0_real,1_fake}/*.mp4. The HF repo OmerXYZ/comgenvid also
 # ships precomputed embeddings for STALL's official embedding-based eval.
-root_dir: /hddstore/ssalehi/AGID/ComGenVid
+root_dir: /hddstore/ssalehi/SynthScope/ComGenVid
 hf_repo_id: OmerXYZ/comgenvid
 num_frames: 16
 fps: 8

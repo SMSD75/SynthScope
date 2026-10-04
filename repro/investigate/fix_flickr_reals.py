@@ -13,8 +13,8 @@ from huggingface_hub import hf_hub_download
 from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-POOL = "/hddstore/ssalehi/AGID/CoSpyBench/test/_real_pool/flickr"
-SUBSETS = glob.glob("/hddstore/ssalehi/AGID/CoSpyBench/test/flickr*/0_real")
+POOL = "/hddstore/ssalehi/SynthScope/CoSpyBench/test/_real_pool/flickr"
+SUBSETS = glob.glob("/hddstore/ssalehi/SynthScope/CoSpyBench/test/flickr*/0_real")
 THRESH = 1024  # bytes; clean flickr jpegs are >>100KB, corrupt stubs are 212B
 
 # 1. gather corrupt files, group by inode (hardlinks share one inode → fix once)
@@ -34,7 +34,7 @@ print(f"corrupt files={total_corrupt}  unique inodes to fix={len(inodes)}", flus
 
 # 2. download one clean Flickr30k parquet shard and re-encode images
 shard = hf_hub_download("lmms-lab/flickr30k", "data/test-00000-of-00009.parquet",
-                        repo_type="dataset", local_dir="/hddstore/ssalehi/AGID/CoSpyBench/_flickr30k_dl")
+                        repo_type="dataset", local_dir="/hddstore/ssalehi/SynthScope/CoSpyBench/_flickr30k_dl")
 import pyarrow.parquet as pq
 col = pq.read_table(shard, columns=["image"]).column("image").to_pylist()
 print(f"flickr30k images in shard: {len(col)}", flush=True)

@@ -2,7 +2,7 @@
   "model": "clip",
   "paper": "Towards Universal Fake Image Detectors that Generalize Across Generative Models (UnivFD / UniversalFakeDetect). Ojha, Li, Lee — CVPR 2023.",
   "arxiv_id": "2302.10174",
-  "official_repo": "https://github.com/WisconsinAIVision/UniversalFakeDetect  (on-disk: /hddstore/ssalehi/AGID/official_repos/UniversalFakeDetect)",
+  "official_repo": "https://github.com/WisconsinAIVision/UniversalFakeDetect  (on-disk: /hddstore/ssalehi/SynthScope/official_repos/UniversalFakeDetect)",
   "training_set_in_paper": "ProGAN real-vs-fake from Wang et al. CNNDetection (the 20-class 'wang2020' set): 20 LSUN object categories, 360k real + 360k ProGAN fake = 720k images (18k fake/category). CLIP:ViT-L/14 backbone FROZEN; only a linear fc is trained (--fix_backbone). README L74-94; train cmd L92. The NN variant uses no trained head (k-NN in frozen CLIP feature space).",
   "benchmarks": [
     {
@@ -16,7 +16,7 @@
       "our_status": "reproduced",
       "our_number": {"map_fs8": 97.22, "acc_fs8": 88.28, "map_fs13": 92.99, "official_fs8": 96.95, "official_fs13": 93.14, "ckpt": "clip.pth (SynthScope-trained linear head, ckpt_kind=synthscope)", "tags": "clip_synthscope_forensynths / clip_official_forensynths", "note": "SynthScope ForenSynths-8 mAP 97.22 (official-weights-in-SynthScope 96.95); ForenSynths-13 92.99 (official 93.14). SynthScope-trained head matches the official fc_weights.pth."},
       "gap_cause": "n/a — reproduced. SynthScope 92.99 (FS-13) ≈ official 93.14 ≈ paper AP_LC 19-model total 93.38. SynthScope transform tf_resize_crop(256,224,CLIP_MEAN,CLIP_STD) (registry.py:150) adds a Resize(256) the official lacks (CenterCrop(224) only); the tiny FS-13 difference (92.99 vs 93.14) is consistent with that resize plus the SynthScope-trained vs official head, well within match tolerance.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test (all 13 dirs incl. the 11 paper subsets). Origin: ForenSynths test ~19GB, gdrive 1z_fD3UKgWQyOTZIBbYSaQ-hz4AzUrLC1."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test (all 13 dirs incl. the 11 paper subsets). Origin: ForenSynths test ~19GB, gdrive 1z_fD3UKgWQyOTZIBbYSaQ-hz4AzUrLC1."
     },
     {
       "name": "UniversalFakeDetect diffusion/autoregressive test (the other 8 of the 19 models)",
@@ -29,7 +29,7 @@
       "our_status": "reproduced",
       "our_number": {"map": 96.44, "acc": 87.23, "official": 95.66, "ckpt": "clip.pth (SynthScope-trained head)", "tags": "clip_synthscope_ufd / clip_official_ufd", "note": "SynthScope UFD-8 mAP 96.44, official-weights 95.66, both ≈ paper LC diffusion AP ~95."},
       "gap_cause": "n/a — reproduced (SynthScope 96.44 ≥ official 95.66 ≈ paper ~95). Evaluated on the public 1k/domain release, not the paper's 10k sampling, so a small drift from the exact paper cells is expected.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/universialfakedetection/test (1k-release: 8 fake subsets + imagenet/laion reals). Full: gdrive 1FXlGIRh_Ud3cScMgSVDbEWmPDmjcrm1t (only 1k/domain is publicly released)."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/universialfakedetection/test (1k-release: 8 fake subsets + imagenet/laion reals). Full: gdrive 1FXlGIRh_Ud3cScMgSVDbEWmPDmjcrm1t (only 1k/domain is publicly released)."
     }
   ],
   "summary": "UnivFD reports per-generator AP (Table 2) + acc (Table 3) over 19 models split into a ForenSynths GAN/low-level group (11) and a diffusion/AR group (8), for LC and NN variants — i.e. 2 benchmark groups (no single headline mAP cell). We reproduce BOTH: ForenSynths SynthScope 92.99 (FS-13) / 97.22 (FS-8) ≈ official 93.14/96.95 ≈ paper AP_LC total 93.38; diffusion SynthScope 96.44 ≈ official 95.66 ≈ paper LC ~95. Nothing missing or below. CLIP is reproduced via an SynthScope-trained linear head (ckpt_kind=synthscope) that matches the official fc_weights.pth. Caveat: diffusion eval uses the public 1k/domain release vs the paper's 10k sampling. Note: SynthScope's eval transform adds a Resize(256) before CenterCrop(224) that the official CenterCrop-only protocol omits — negligible effect at match level."

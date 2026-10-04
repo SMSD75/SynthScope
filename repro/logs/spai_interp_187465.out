@@ -1,0 +1,8 @@
+NODE=ivi-cn023 Fri Jun 19 22:33:14 CEST 2026  spai.pth -> /hddstore/ssalehi/AGID/repro/ckpts/spai_official_agid.pth
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+spai fake: verdict=fake P(fake)=0.631 interpret_kind=spai_patch
+   OK: valid PNG (288, 288) RGB, 12469 bytes -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/interp_smoketest_out/spai_fake.png
+spai real: verdict=real P(fake)=0.000 interpret_kind=spai_patch
+   OK: valid PNG (288, 288) RGB, 964 bytes -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/interp_smoketest_out/spai_real.png
+ALL OK
+=== SPAI INTERP TEST DONE Fri Jun 19 22:33:43 CEST 2026 ===

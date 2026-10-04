@@ -1,9 +1,9 @@
 {
   "tag": "spai_official_anyres_synthbuster",
   "model": "spai-anyres",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/spai_official_synthscope.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official_synthscope.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/Synthbuster/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/Synthbuster/test",
   "n_generators": 9,
   "means": {
     "acc": 90.3,

@@ -2,7 +2,7 @@
   "model": "fat_former",
   "paper": "Forgery-aware Adaptive Transformer for Generalizable Synthetic Image Detection (FatFormer). Liu, Tan, Tan, Wei, Wang, Zhao — CVPR 2024.",
   "arxiv_id": "2312.16649",
-  "official_repo": "https://github.com/Michel-liu/FatFormer  (on-disk: /hddstore/ssalehi/AGID/official_repos/FatFormer)",
+  "official_repo": "https://github.com/Michel-liu/FatFormer  (on-disk: /hddstore/ssalehi/SynthScope/official_repos/FatFormer)",
   "training_set_in_paper": "ProGAN from CNNDetection/Wang et al., two settings: 2-class (chair,horse) and 4-class (car,cat,chair,horse). Released checkpoint + headline numbers use the 4-class setting. Backbone = CLIP:ViT-L/14 with a forgery-aware adapter + language-guided alignment. README L57-59,27. Eval cmd uses --num_vit_adapter 3 --num_context_embedding 8 (README L122-134).",
   "benchmarks": [
     {
@@ -16,7 +16,7 @@
       "our_status": "reproduced",
       "our_number": {"map": 99.7, "acc": 98.39, "ckpt": "fat_former.pth (= fatformer_official.pth, OFFICIAL 4-class CLIP:ViT-L/14 weights remapped into the SynthScope class; ckpt_kind=official_fatformer)", "tag": "fatformer_official_forensynths", "note": "SynthScope class + official weights = 99.70 mAP / 98.39 acc — EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."},
       "gap_cause": "n/a — exact match. The SynthScope 'number IS the official number': synthscope.load('fat_former') key-remaps the official 492M-param checkpoint and runs it through SynthScope's inference path.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test (all 8 subsets present). Official ckpt on-disk /hddstore/ssalehi/AGID/repro/ckpts/fatformer_official.pth (~1.97GB), gdrive 1Q_Kgq4ygDf8XEHgAf-SgDN6Ru_IOTLkj."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test (all 8 subsets present). Official ckpt on-disk /hddstore/ssalehi/SynthScope/repro/ckpts/fatformer_official.pth (~1.97GB), gdrive 1Q_Kgq4ygDf8XEHgAf-SgDN6Ru_IOTLkj."
     },
     {
       "name": "GANs dataset — 8 GANs (2-class ProGAN supervision)",
@@ -42,7 +42,7 @@
       "our_status": "below",
       "our_number": {"map_ufd8": 98.6, "acc_ufd8": 93.72, "ckpt": "fat_former.pth (official weights in SynthScope class)", "tag": "fatformer_official_ufd", "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."},
       "gap_cause": "PARTIAL coverage, not a model gap. (1) The SynthScope fatformer_official_ufd run covers only the 8 UniversalFakeDetect DM subsets, not the paper's full 10 (missing PNDM + VQ-Diffusion, which are sourced from DIRE/DiffusionForensics, not UFD). Including them (both near-100 AP in the paper) would raise the mean toward 98.8. (2) SynthScope's guided/ADM AP is the weak cell (91.92, vs paper Guided AP 92.0 — actually matches), so the underlying detector is faithful; the only true gap is the missing 2 subsets in our eval set. Note: SynthScope also has fatformer_official_diffusionforensics (94.66 mAP) but that is the DiffusionForensics adm/ddpm/.. benchmark, which FatFormer does NOT report — out of scope.",
-      "dataset_source": "PARTIAL on-disk: 8 UFD subsets at /hddstore/ssalehi/AGID/universialfakedetection/test. MISSING for faithful 10-subset: PNDM + VQ-Diffusion from DIRE/DiffusionForensics (github.com/ZhendongWang6/DIRE) or the FatFormer authors' DM mirror (Baidu 1zoubPr5n_mGI27En9uyL8Q pwd=a6sw / OneDrive)."
+      "dataset_source": "PARTIAL on-disk: 8 UFD subsets at /hddstore/ssalehi/SynthScope/universialfakedetection/test. MISSING for faithful 10-subset: PNDM + VQ-Diffusion from DIRE/DiffusionForensics (github.com/ZhendongWang6/DIRE) or the FatFormer authors' DM mirror (Baidu 1zoubPr5n_mGI27En9uyL8Q pwd=a6sw / OneDrive)."
     }
   ],
   "summary": "FatFormer reports its headline numbers in 2 main tables (GANs 8-subset, DMs 10-subset) plus ablation Tables 3/4 (no new data). We reproduce the HEADLINE GANs table EXACTLY: SynthScope class + official 4-class weights = 99.70 mAP / 98.39 acc = paper 99.7/98.4. The DMs table is BELOW only because our eval covers 8/10 subsets (UniversalFakeDetect set, 98.60 mAP) and omits PNDM+VQ-Diffusion (from DIRE) — a dataset-coverage gap, not a model gap; the per-subset numbers match the paper. The 2-class GANs row is MISSING (only the 4-class checkpoint is released; needs a 2-class retrain). FatFormer is reproduced via official weights remapped into the SynthScope class (ckpt_kind=official_fatformer); the SynthScope number IS the official number. Data caveat: load with num_vit_adapter=3 (README eval cmd), not the SynthScope config default of 8."

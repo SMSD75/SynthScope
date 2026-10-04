@@ -1,9 +1,9 @@
 {
   "tag": "safe_v2_ditfake",
   "model": "safe",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe_full_v2/model_38.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/DiTFake/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/DiTFake/test",
   "n_generators": 3,
   "means": {
     "acc": 99.24,

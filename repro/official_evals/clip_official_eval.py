@@ -51,10 +51,10 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 # Paths / constants (mirror benchmark/bench_eval.py)
 # ---------------------------------------------------------------------------
 # Outputs live on the ivi share; the official ckpts live on node-local hddstore.
-REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro")
+REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro")
 RESULTS_LOG = REPRO_DIR / "MASTER_RESULTS.jsonl"
 BENCH_RESULTS_DIR = REPRO_DIR / "bench_results"
-DEFAULT_CKPT = Path("/hddstore/ssalehi/AGID/repro/official_ckpts/clip/fc_weights.pth")
+DEFAULT_CKPT = Path("/hddstore/ssalehi/SynthScope/repro/official_ckpts/clip/fc_weights.pth")
 
 # OpenAI CLIP normalization (validate.py MEAN["clip"], STD["clip"]).
 CLIP_MEAN = (0.48145466, 0.4578275, 0.40821073)

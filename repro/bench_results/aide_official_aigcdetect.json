@@ -1,9 +1,9 @@
 {
   "tag": "aide_official_aigcdetect",
   "model": "aide",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/AIGCDetectBenchmark/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/AIGCDetectBenchmark/test",
   "n_generators": 17,
   "means": {
     "acc": 91.89,

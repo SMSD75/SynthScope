@@ -1,0 +1,11 @@
+NODE=ivi-cn029 Fri Jun 19 18:54:38 CEST 2026
+CUDA OK
+=== bench_eval pgc_h3_officialroot | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth | forensynths | 3 generators | device=cuda ===
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=55.6 AP=92.48 AUROC=96.03 (real_acc=98.6 fake_acc=12.6)
+  san: 219 real + 219 fake ...
+    san: acc=64.61 AP=98.34 AUROC=98.65 (real_acc=100.0 fake_acc=29.22)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=55.56 AP=79.62 AUROC=77.9 (real_acc=11.67 fake_acc=99.44)
+=== RESULT pgc_h3_officialroot: mAP=90.15 mAUROC=90.86 acc=58.59 over 3 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_h3_officialroot.json ===
+=== PGC HARD3 ON OFFICIAL ROOT DONE Fri Jun 19 19:05:06 CEST 2026 ===

@@ -1,6 +1,6 @@
 # SynthScope Dataset Integrity Audit
 
-- **Node:** ivi-cn023 (all data node-local under `/hddstore/ssalehi/AGID/`)
+- **Node:** ivi-cn023 (all data node-local under `/hddstore/ssalehi/SynthScope/`)
 - **Date:** 2026-06-07
 - **Disk:** `/hddstore` 14T total, 9.2T used, 4.9T avail (66%) — no space pressure.
 - **Method:** recursive image counts (follow symlinks), `find -L <dir> -type l` for broken symlinks, PIL open+`.load()` with `LOAD_TRUNCATED_IMAGES=True` on ~20 random images/dataset. Counts are real, not estimated.

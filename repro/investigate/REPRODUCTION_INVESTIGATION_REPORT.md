@@ -126,7 +126,7 @@ Disk: `/hddstore` on cn023 holds all datasets, 9.2T/14T used, 4.9T free. Full pe
 
 ## Part 2 — Architecture fidelity vs the official repos
 
-Official repos cloned to `/hddstore/ssalehi/AGID/official_repos/{Co-Spy,AIDE,VIBAIGCDetect,NPR,
+Official repos cloned to `/hddstore/ssalehi/SynthScope/official_repos/{Co-Spy,AIDE,VIBAIGCDetect,NPR,
 UniversalFakeDetect,CNNDetection,FatFormer,SAFE}` (+ existing `spai_official`). Full diffs in
 `ARCH_AUDIT_GAPMODELS.md`. The prior campaign had concluded Co-Spy and VIB-Net were "architectural
 ceilings" — **that was wrong.**

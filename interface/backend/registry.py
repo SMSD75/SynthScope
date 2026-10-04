@@ -97,7 +97,7 @@ def tf_square_resize(resize: int, crop: Optional[int], mean=None, std=None) -> T
 
 # ---------------------------------------------------------------------------
 # Official-weights -> SynthScope state_dict remaps (copied verbatim from the verified repro
-# eval scripts in /hddstore/ssalehi/AGID/repro/{fatformer,aide,npr}_eval.py).
+# eval scripts in /hddstore/ssalehi/SynthScope/repro/{fatformer,aide,npr}_eval.py).
 # ---------------------------------------------------------------------------
 def remap_fatformer(sd: dict) -> dict:
     drop_pref = ("image_encoder.",)
@@ -350,7 +350,7 @@ _add(ModelSpec(
     notes="Frozen DINOv2 ViT-S/14 trajectory-geometry + standardized MLP. Raw [0,1], center window + BICUBIC (official ReStraV).",
 ))
 # DINOv3 ViT-L/16 gated weights (downloaded locally). STALL is training-free but needs them.
-DINOV3_WEIGHTS = "/hddstore/ssalehi/AGID/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
+DINOV3_WEIGHTS = "/hddstore/ssalehi/SynthScope/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 _add(ModelSpec(
     key="stall", name="STALL (video)", paper="Ben Hayun et al., CVPR'26",
     modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",

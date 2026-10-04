@@ -56,7 +56,7 @@
         "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
       },
       "gap_cause": "RESOLVED. The 88.8 gap was the fixed-448 2x2 approximation on a retrain; wiring the official any-res path into the registry (native resolution, sub-patch upscale) serves 94.22 mAP. Numbers on a 300/gen subset.",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (real source variant) and test_full. Origin: github.com/GenImage-Dataset/GenImage."
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (real source variant) and test_full. Origin: github.com/GenImage-Dataset/GenImage."
     },
     {
       "name": "Synthbuster",

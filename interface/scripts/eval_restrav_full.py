@@ -17,7 +17,7 @@ from backend.engine import get_engine     # noqa: E402
 from backend.registry import get_spec     # noqa: E402
 from backend import media                 # noqa: E402
 
-ROOT = Path("/hddstore/ssalehi/AGID/restrav_data_fulltest/test/genvideo")
+ROOT = Path("/hddstore/ssalehi/SynthScope/restrav_data_fulltest/test/genvideo")
 
 
 def ap_auc(y, p):

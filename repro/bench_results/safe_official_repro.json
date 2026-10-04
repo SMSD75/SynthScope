@@ -1,9 +1,9 @@
 {
   "tag": "safe_official_repro",
   "model": "safe",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_ckpts_shared/safe_checkpoint-best.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/official_ckpts_shared/safe_checkpoint-best.pth",
   "benchmark": "forensynths",
-  "data_root": "/ssdstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 84.86,

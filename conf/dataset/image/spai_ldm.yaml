@@ -1,7 +1,7 @@
 # 'name' must be a key in dataset.py SynthScopeModuleDict; the staged data uses the
 # CNNDetection gen/{0_real,1_fake} ImageFolder layout, so reuse that module.
 name: cnndetection
-root_dir: /hddstore/ssalehi/AGID/spai_train/staged
+root_dir: /hddstore/ssalehi/SynthScope/spai_train/staged
 train_batch_size: 32
 val_batch_size: 64
 test_batch_size: 64

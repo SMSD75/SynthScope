@@ -61,7 +61,7 @@
         "note": "SynthScope metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."
       },
       "gap_cause": "none for official-weights faithful eval. SynthScope-class trained-from-scratch (registry default) only reached 72.25 mAP / 61.64 acc on AIGCDetect because of the native-res DCT divergence (see GenImage entry).",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test (17 gens present incl sd_xl)"
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/AIGCDetectBenchmark/test (17 gens present incl sd_xl)"
     },
     {
       "name": "GenImage (B2, Setting-I, SDv1.4-trained)",
@@ -103,7 +103,7 @@
         "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88 (tag aide_official_genimage8). FROM-SCRATCH reproduction (native-res 5-view, aide_native_v2/model_2): GenImage-8 96.42 mAP / 97.07 mAUROC / 77.9 acc (tag aide_retrain_native_g8) = reproduces official 97.12. The old resize-256 retrains (91.75 / 92.47) were capped by the resize-before-DCT bug."
       },
       "gap_cause": "RESOLVED. The native-res DCT (the patch selector must run at native resolution; resize-256-before-DCT costs ~12 mAP on the same weights, ablation) is now wired into BOTH serving and training. A from-scratch retrain reproduces (96.42 ~ official 97.12).",
-      "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (8 gens present)"
+      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (8 gens present)"
     },
     {
       "name": "Chameleon (B3, Setting-II, in-the-wild)",

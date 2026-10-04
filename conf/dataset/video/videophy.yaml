@@ -1,7 +1,7 @@
 name: videophy
 # VideoPhy benchmark (Bansal et al. 2024), used by D3. Lay out videos as
 # <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
-root_dir: /hddstore/ssalehi/AGID/VideoPhy
+root_dir: /hddstore/ssalehi/SynthScope/VideoPhy
 # Set to a Hugging Face dataset repo to enable the download stub; null = manual placement.
 hf_repo_id: null
 num_frames: 16

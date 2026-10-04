@@ -13,8 +13,8 @@ from backend.engine import get_engine          # noqa: E402
 from backend.registry import get_spec          # noqa: E402
 from backend import media                       # noqa: E402
 
-GVB = "/hddstore/ssalehi/AGID/GenVidBench/test"
-EVC = "/hddstore/ssalehi/AGID/EvalCrafter/test"
+GVB = "/hddstore/ssalehi/SynthScope/GenVidBench/test"
+EVC = "/hddstore/ssalehi/SynthScope/EvalCrafter/test"
 GROUPS = {
     "GVB real (vript+hd_vg)": sorted(glob.glob(f"{GVB}/0_real/*/*.mp4")),
     "GVB fake (8 gens)":      sorted(glob.glob(f"{GVB}/1_fake/*/*.mp4")),

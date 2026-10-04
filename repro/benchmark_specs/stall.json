@@ -20,7 +20,7 @@
       "our_number": {"mAP": 82.38, "mAUROC": 83.51, "acc": 56.88},
       "our_per_generator_auroc": {"Crafter": 90.79, "Gen2": 92.13, "HotShot": 77.70, "Lavie": 88.71, "ModelScope": 76.68, "MoonValley": 89.24, "MorphStudio": 85.95, "Show_1": 81.57, "Sora": 82.68, "WildScrape": 69.64},
       "gap_cause": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and SynthScope decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported per-gen AUC range 0.72-0.85.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val (14 GB; ModelScope cccnju/Gen-Video). Reals = MSR-VTT."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val (14 GB; ModelScope cccnju/Gen-Video). Reals = MSR-VTT."
     },
     {
       "name": "VideoFeedback (TIGER-Lab, 11 generators + DiDeMo + Panda70M)",
@@ -34,7 +34,7 @@
       "our_number": {"mAP": 83.07, "mAUROC": 85.10, "acc": 62.12},
       "our_per_generator_auroc": {"AnimateDiff": 86.90, "Fast-SVD": 92.88, "Hotshot-XL": 81.23, "LVDM": 88.83, "LaVie-base": 82.58, "ModelScope": 83.70, "Pika": 84.02, "SoRA-Clip": 80.18, "Text2Video-Zero": 84.08, "VideoCrafter2": 93.44, "ZeroScope-576w": 78.27},
       "gap_cause": "REPRODUCED: SynthScope mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). SynthScope uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter much. Per-gen AUROC 78-93 sits inside the paper's reported 0.78-0.93 range.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/VideoFeedback/test (812 MB; HF TIGER-Lab/VideoFeedback). Reals DiDeMo+Panda70M."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/VideoFeedback/test (812 MB; HF TIGER-Lab/VideoFeedback). Reals DiDeMo+Panda70M."
     },
     {
       "name": "ComGenVid (paper's new benchmark — Sora + VEO3 vs MSVD)",
@@ -50,7 +50,7 @@
       "our_per_generator_auroc": {"Sora": 82.38, "VEO3": 85.61},
       "our_per_generator_ap": {"Sora": 80.87, "VEO3": 84.30},
       "gap_cause": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in ComGenVid on-disk).",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/ComGenVid (12 GB; HF OmerXYZ/comgenvid — ships both mp4s under real/MSVD + test/, AND precomputed embeddings.parquet). Sora+VEO3 fakes, MSVD real. NOT gated."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/ComGenVid (12 GB; HF OmerXYZ/comgenvid — ships both mp4s under real/MSVD + test/, AND precomputed embeddings.parquet). Sora+VEO3 fakes, MSVD real. NOT gated."
     }
   ],
   "summary": {
@@ -58,6 +58,6 @@
     "n_reproduced_in_synthscope": 3,
     "n_below": 0,
     "n_missing": 0,
-    "key_finding": "ALL THREE STALL benchmarks (GenVideo, VideoFeedback, ComGenVid) are REPRODUCED in SynthScope using the paper's DINOv3 ViT-L/16 encoder, within ~0-3 points of paper and matching/slightly exceeding it (GenVideo 83.5 vs 80, VideoFeedback 85.1 vs 83, ComGenVid 84.0 vs 85). The SynthScope scoring math is verified BIT-EXACT against the official STALL._scores_from_embs. DINOv3 ViT-L/16 weights are GATED (Meta dinov3-downloads) but already downloaded locally (/hddstore/ssalehi/AGID/dinov3_checkpoints per memory). ComGenVid (incl. the gated-model VEO3 split) is fully on-disk and not gated. STALL is the cleanest of the three video repros."
+    "key_finding": "ALL THREE STALL benchmarks (GenVideo, VideoFeedback, ComGenVid) are REPRODUCED in SynthScope using the paper's DINOv3 ViT-L/16 encoder, within ~0-3 points of paper and matching/slightly exceeding it (GenVideo 83.5 vs 80, VideoFeedback 85.1 vs 83, ComGenVid 84.0 vs 85). The SynthScope scoring math is verified BIT-EXACT against the official STALL._scores_from_embs. DINOv3 ViT-L/16 weights are GATED (Meta dinov3-downloads) but already downloaded locally (/hddstore/ssalehi/SynthScope/dinov3_checkpoints per memory). ComGenVid (incl. the gated-model VEO3 split) is fully on-disk and not gated. STALL is the cleanest of the three video repros."
   }
 }

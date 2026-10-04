@@ -6,12 +6,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=04:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_official_eval_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_official_eval_%j.out
 # Control experiment: OFFICIAL PGC code + OFFICIAL ProGAN checkpoint on OUR copies of the three
 # verdict generators (deepfake/san/seeingdark). Expected if data+eval are equivalent: ~96.5/99.1/87.5
 # AUROC — matching what the same weights produce through the SynthScope harness.
 set -u
-S=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
+S=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 until [ -f $S/READY ]; do sleep 20; done

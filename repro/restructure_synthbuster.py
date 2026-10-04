@@ -1,7 +1,7 @@
 import os, glob, random
-SB = "/hddstore/ssalehi/AGID/Synthbuster/extracted/synthbuster"
-DEST = "/hddstore/ssalehi/AGID/Synthbuster/test"
-reals = sorted(glob.glob("/hddstore/ssalehi/AGID/GenImage/test/real/*"))[:1000]
+SB = "/hddstore/ssalehi/SynthScope/Synthbuster/extracted/synthbuster"
+DEST = "/hddstore/ssalehi/SynthScope/Synthbuster/test"
+reals = sorted(glob.glob("/hddstore/ssalehi/SynthScope/GenImage/test/real/*"))[:1000]
 random.seed(0)
 gens = [d for d in sorted(os.listdir(SB)) if os.path.isdir(os.path.join(SB, d))]
 print("generators:", gens, flush=True)

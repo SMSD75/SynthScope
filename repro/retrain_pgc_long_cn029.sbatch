@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=pgc_long --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-00:00:00 --cpus-per-task=10 --mem=40G --gres=gpu:1
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_pgc_long_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_pgc_long_%j.log
 # PGC longer-train on GenImage SD-v1.4 (staged on cn029 /ssdstore). The promoted pgc.pth was only 1 epoch
 # (97.62; OOD gap on adm/vqdm). Paper uses ~100 epochs; train 25 here, keep best-AP. dinov2-large backbone.
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_genimage_long; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_genimage_long; mkdir -p "$SAVE"
 export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/huggingface
 export TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

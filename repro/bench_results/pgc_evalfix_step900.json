@@ -1,9 +1,9 @@
 {
   "tag": "pgc_evalfix_step900",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_400step/step900_acc66_ap94.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_400step/step900_acc66_ap94.pth",
   "benchmark": "forensynths",
-  "data_root": "/ssdstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 66.0,

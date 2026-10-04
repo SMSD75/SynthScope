@@ -1,9 +1,9 @@
 {
   "tag": "aide_genimage_genimage8",
   "model": "aide",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_genimage/model_4.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_genimage/model_4.pth",
   "benchmark": "pergen",
-  "data_root": "/ssdstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 72.02,

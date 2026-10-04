@@ -26,7 +26,7 @@ from backend.engine import get_engine       # noqa: E402
 from backend.registry import get_spec, CLIP_MEAN, CLIP_STD  # noqa: E402
 from backend import media                   # noqa: E402
 
-GENVIDEO = Path("/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val")
+GENVIDEO = Path("/hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val")
 
 
 def collect(n):

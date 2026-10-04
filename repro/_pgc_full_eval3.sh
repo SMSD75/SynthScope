@@ -1,8 +1,8 @@
 #!/bin/bash
 # Full-data PGC eval with CUDA pre-check (cn023 flakily fails CUDA init -> silent CPU fallback).
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-CKPT=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_full/model.pth
+CKPT=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_progan_full/model.pth
 ok=0
 for i in 1 2 3 4 5; do
   if CUDA_VISIBLE_DEVICES=4 $CONDA run --no-capture-output -n SynthScope python -c \
@@ -13,9 +13,9 @@ for i in 1 2 3 4 5; do
 done
 [ "$ok" = "1" ] || { echo "CUDA NEVER CAME UP — aborting eval"; exit 1; }
 CUDA_VISIBLE_DEVICES=4 PYTHONUNBUFFERED=1 $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
-  --model pgc --benchmark forensynths --data /hddstore/ssalehi/AGID/CNNDetection/test \
+  --model pgc --benchmark forensynths --data /hddstore/ssalehi/SynthScope/CNNDetection/test \
   --ckpt "$CKPT" --tag pgc_full_progan_forensynths
 CUDA_VISIBLE_DEVICES=4 PYTHONUNBUFFERED=1 $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
-  --model pgc --benchmark ufd --data /hddstore/ssalehi/AGID/universialfakedetection/test \
+  --model pgc --benchmark ufd --data /hddstore/ssalehi/SynthScope/universialfakedetection/test \
   --ckpt "$CKPT" --tag pgc_full_progan_ufd
 echo "FULL EVAL COMPLETE"

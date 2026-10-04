@@ -9,7 +9,7 @@ preprocessing) over all 2N images and rank by AUROC / AP / accuracy@0.5.
 Run with CUDA_VISIBLE_DEVICES=7. Outputs under repro/ideogram_bench/.
 """
 import os, sys, io, glob, json, random, time
-sys.path.insert(0, os.path.abspath("/ivi/zfs/s0/original_homes/ssalehi/AGID"))
+sys.path.insert(0, os.path.abspath("/ivi/zfs/s0/original_homes/ssalehi/SynthScope"))
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "7")
 
 from interface.backend import config, generators as G
@@ -20,15 +20,15 @@ N = int(os.environ.get("IDEO_N", "100"))
 STEPS = int(os.environ.get("IDEO_STEPS", "28"))
 RES = int(os.environ.get("IDEO_RES", "512"))
 LABEL = os.environ.get("IDEO_LABEL", f"Ideogram 4.0 ({RES}px)")
-OUT = os.environ.get("IDEO_OUT", "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench")
+OUT = os.environ.get("IDEO_OUT", "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/ideogram_bench")
 # Optional: reuse the prompts + real images from a prior run (isolates a single variable, e.g. resolution).
 REUSE_FROM = os.environ.get("IDEO_REUSE_FROM", "")
 REAL_DIR, FAKE_DIR = os.path.join(OUT, "real"), os.path.join(OUT, "fake")
 for d in (REAL_DIR, FAKE_DIR):
     os.makedirs(d, exist_ok=True)
-REAL_POOLS = ["/hddstore/ssalehi/AGID/GenImage/test/real/*",
-              "/hddstore/ssalehi/AGID/CNNDetection/test/*/0_real/*",
-              "/hddstore/ssalehi/AGID/GenImage_full/test_full/*/0_real/*"]
+REAL_POOLS = ["/hddstore/ssalehi/SynthScope/GenImage/test/real/*",
+              "/hddstore/ssalehi/SynthScope/CNNDetection/test/*/0_real/*",
+              "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/*/0_real/*"]
 
 
 def log(*a):

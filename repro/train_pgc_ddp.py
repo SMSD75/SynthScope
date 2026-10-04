@@ -7,7 +7,7 @@ Same corrected recipe as train_pgc_fast.py (MLP-only LoRA, label smoothing 0.1),
 Launch: accelerate launch --num_processes N repro/train_pgc_ddp.py
 """
 import os, sys, glob, time, random
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
@@ -19,11 +19,11 @@ from accelerate import Accelerator
 from config_utils import compose_config
 from models.image.pgc.pgc import SynthScopePGCModel
 
-DATA_ROOT = os.environ.get("PGC_DATA_ROOT", "/hddstore/ssalehi/AGID/CNNDetection/train")
+DATA_ROOT = os.environ.get("PGC_DATA_ROOT", "/hddstore/ssalehi/SynthScope/CNNDetection/train")
 N = int(os.environ.get("PGC_N", "400000"))
 EPOCHS = int(os.environ.get("PGC_EPOCHS", "30"))
 BS = int(os.environ.get("PGC_BS", "64"))            # per-GPU; 64 fits a 24GB card for DINOv2-large bf16
-OUT = os.environ.get("PGC_OUT", "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_ddp/model.pth")
+OUT = os.environ.get("PGC_OUT", "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_ddp/model.pth")
 SMOOTH = float(os.environ.get("PGC_SMOOTH", "0.1"))
 # The official PGC train.py passes T_max = niter*len(micro_batches) but steps the scheduler once per
 # OPTIMIZER step (every accumulation_steps=4 micro-batches), so its cosine traverses only 1/4 and the

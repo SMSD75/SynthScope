@@ -1,9 +1,9 @@
 {
   "tag": "pgc_retrain_forensynths",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/pgc_genimage/model_0.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/pgc_genimage/model_0.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 70.15,

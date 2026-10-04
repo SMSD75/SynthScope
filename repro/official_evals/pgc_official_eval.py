@@ -7,7 +7,7 @@ re-implementation (run via ``benchmark/bench_eval.py --model pgc``).
 
 It is deliberately SELF-CONTAINED: it does not import the ``synthscope`` package nor the
 ``PGC_official`` repo. The architecture/transform below are transcribed from
-``/hddstore/ssalehi/AGID/PGC_official`` (= github.com/xiaoyu6868/PGC):
+``/hddstore/ssalehi/SynthScope/PGC_official`` (= github.com/xiaoyu6868/PGC):
   - models/pgc.py, models/encoder/{rgb_stream,residual_stream,residual_extractor}.py
   - models/pgcm/peak_calibration.py, models/lora/lora.py
   - data/transforms.py (create_eval_transforms: PadCenterCrop -> ToTensor ->
@@ -24,9 +24,9 @@ local HF cache (export TORCH_HOME / HF_HOME first); no ``pretrained_root`` neede
 CLI::
 
     python repro/official_evals/pgc_official_eval.py \
-        --benchmark forensynths --data /hddstore/ssalehi/AGID/CNNDetection/test \
+        --benchmark forensynths --data /hddstore/ssalehi/SynthScope/CNNDetection/test \
         --select progan --limit 20 --bs 16 --device cpu \
-        --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth \
+        --ckpt /hddstore/ssalehi/SynthScope/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth \
         --tag _probe_pgc_off_v
 
 Which official ckpt goes with which benchmark (per the PGC paper / official README):
@@ -66,7 +66,7 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"
 REAL_DIRNAMES = ("0_real", "real", "reals")
 FAKE_DIRNAMES = ("1_fake", "fake", "fakes", "ai")
 SHARED_REAL_DIRS = {"imagenet", "laion", "_real_pool", "real", "0_real", "reals"}
-RESULTS_LOG = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/MASTER_RESULTS.jsonl")
+RESULTS_LOG = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/MASTER_RESULTS.jsonl")
 # Ojha UniversalFakeDetect real pairing (verified against the official dataset_paths.py).
 UFD_REAL = {"guided": "imagenet"}  # everything else -> laion
 UFD_DEFAULT_REAL = "laion"

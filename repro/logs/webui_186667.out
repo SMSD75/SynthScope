@@ -1,0 +1,10 @@
+NODE=ivi-cn023 GPU=0 PORT=8022 Tue Jun 16 23:54:23 CEST 2026
+CUDA OK
+[webui] serving on http://ivi-cn023:8022  (CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints)
+[webui] access from your machine:  ssh -N -L 8021:ivi-cn023:8021 <you>@<login-host>   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8022  (Ctrl-C to stop)
+INFO:     Started server process [536547]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8022 (Press CTRL+C to quit)
+slurmstepd-ivi-cn023: error: *** JOB 186667 ON ivi-cn023 CANCELLED AT 2026-06-18T23:54:22 DUE TO TIME LIMIT ***

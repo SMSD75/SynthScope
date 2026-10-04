@@ -1,0 +1,27 @@
+NODE=ivi-cn023 GPU=0 ckpt=/hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/GenImage_train.pth Tue Jun 16 09:06:13 CEST 2026
+CUDA OK
+##### GenImage-8, official GenImage weights — NATIVE-res DCT (official preprocessing) #####
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+  adm: AP=100.0 AUROC=100.0 acc=100.0
+  biggan: AP=100.0 AUROC=100.0 acc=100.0
+  glide: AP=100.0 AUROC=100.0 acc=100.0
+  midjourney: AP=99.98 AUROC=99.98 acc=99.0
+  sdv1.4: AP=100.0 AUROC=100.0 acc=99.5
+  sdv1.5: AP=98.75 AUROC=99.54 acc=99.75
+  vqdm: AP=100.0 AUROC=100.0 acc=99.75
+  wukong: AP=99.99 AUROC=99.99 acc=99.25
+=== AIDE DCT-ABLATION mode=native: mAP=99.84 mAUROC=99.94 acc=99.66 over 8 gens ===
+##### GenImage-8, official GenImage weights — RESIZE-256 before DCT (mimics AGID class) #####
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+  adm: AP=97.05 AUROC=96.98 acc=81.0
+  biggan: AP=72.58 AUROC=66.54 acc=65.0
+  glide: AP=99.65 AUROC=99.61 acc=80.5
+  midjourney: AP=84.15 AUROC=86.44 acc=77.0
+  sdv1.4: AP=81.47 AUROC=83.76 acc=74.0
+  sdv1.5: AP=83.93 AUROC=83.5 acc=74.75
+  vqdm: AP=95.66 AUROC=96.46 acc=78.5
+  wukong: AP=85.11 AUROC=86.18 acc=77.5
+=== AIDE DCT-ABLATION mode=resize256: mAP=87.45 mAUROC=87.43 acc=76.03 over 8 gens ===
+=== AIDE DCT ABLATION COMPLETE Tue Jun 16 09:13:45 CEST 2026 ===

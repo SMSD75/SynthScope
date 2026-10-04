@@ -6,7 +6,7 @@ official-weights numbers sit side by side with the SynthScope re-implementation 
 ``repro/bench_results`` / ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 The vendored architecture + loading + P(fake) are COPIED from the verified vendored eval
-``/hddstore/ssalehi/AGID/repro/cospy_eval.py`` (kept faithful). TWO official variants are
+``/hddstore/ssalehi/SynthScope/repro/cospy_eval.py`` (kept faithful). TWO official variants are
 supported and AUTO-DETECTED from the semantic fc weight's in-features (768 -> progan/CLIP,
 1152 -> sd-v1_4/SigLIP), matching detectors/{progan,sd-v1_4}/* in github Megum1/Co-Spy:
 
@@ -41,8 +41,8 @@ CLI::
     --bs N --device cuda|cpu --ckpt <triplet DIR> --tag TAG
 
 Triplet dirs on disk:
-  - ProGAN (CNNDet-trained): /hddstore/ssalehi/AGID/repro/ckpts/progan/        -> forensynths / ufd
-  - SD-v1_4 (DRCT-trained):  /hddstore/ssalehi/AGID/repro/official_ckpts/co_spy/sd-v1_4/
+  - ProGAN (CNNDet-trained): /hddstore/ssalehi/SynthScope/repro/ckpts/progan/        -> forensynths / ufd
+  - SD-v1_4 (DRCT-trained):  /hddstore/ssalehi/SynthScope/repro/official_ckpts/co_spy/sd-v1_4/
                                                                                 -> CoSpyBench / GenImage
 """
 from __future__ import annotations
@@ -71,10 +71,10 @@ os.environ.setdefault("HF_HOME", "/hddstore/ssalehi/.cache/huggingface")
 # ---------------------------------------------------------------------------
 # Paths / constants (mirror benchmark/bench_eval.py)
 # ---------------------------------------------------------------------------
-REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro")
+REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro")
 RESULTS_LOG = REPRO_DIR / "MASTER_RESULTS.jsonl"
 BENCH_RESULTS_DIR = REPRO_DIR / "bench_results"
-DEFAULT_CKPT = Path("/hddstore/ssalehi/AGID/repro/ckpts/progan")  # triplet directory
+DEFAULT_CKPT = Path("/hddstore/ssalehi/SynthScope/repro/ckpts/progan")  # triplet directory
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
 REAL_DIRNAMES = ("0_real", "real", "reals")

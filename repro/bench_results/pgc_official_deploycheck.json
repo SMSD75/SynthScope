@@ -1,9 +1,9 @@
 {
   "tag": "pgc_official_deploycheck",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 71.74,

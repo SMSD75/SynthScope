@@ -1,0 +1,37 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Mon Jun 22 15:20:39 CEST 2026
+ckpts: 15 | dataset roots checked under /hddstore->/ssdstore mirror
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [610300]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:51744 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38138 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38126 - "POST /api/sota/compare HTTP/1.1" 502 Bad Gateway
+Loading weights:   0%|          | 0/473 [00:00<?, ?it/s]Loading weights: 100%|██████████| 473/473 [00:00<00:00, 37975.30it/s]
+[1mBlipForConditionalGeneration LOAD REPORT[0m from: Salesforce/blip-image-captioning-base
+Key                                       | Status     |  | 
+------------------------------------------+------------+--+-
+text_decoder.bert.embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+INFO:     10.4.0.1:38126 - "POST /api/sota/compare HTTP/1.1" 409 Conflict
+INFO:     10.4.0.1:43128 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43128 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43128 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43138 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43128 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43128 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43138 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43128 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43138 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43138 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+slurmstepd-ivi-cn029: error: *** JOB 188228 ON ivi-cn029 CANCELLED AT 2026-06-23T15:20:45 DUE TO TIME LIMIT ***

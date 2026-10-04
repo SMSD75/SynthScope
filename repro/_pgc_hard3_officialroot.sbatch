@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=pgc_h3root --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --gres=gpu:1 --cpus-per-task=6 --mem=32G --time=00:40:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_h3root_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_h3root_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf PYTHONUNBUFFERED=1
-ROOT=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test   # official's OWN hard-3 test root
-OFFICIAL=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth
+export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/.cache_shared/hf PYTHONUNBUFFERED=1
+ROOT=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/test   # official's OWN hard-3 test root
+OFFICIAL=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/PGC_train_progan_ckpt.pth
 echo "NODE=$(hostname) $(date)"
 ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }

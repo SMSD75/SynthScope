@@ -1,0 +1,68 @@
+NODE=ivi-cn029 GPU=0 Sat Oct  3 00:18:52 CEST 2026
+/dev/mapper/vg2-lv_nvmestore   14T   11T  3.1T  79% /ssdstore
+=== 1/3 download missing test zips (resumable) ===
+downloading 12 zips
+Fetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 12 files:   8%|▊         | 1/12 [01:54<21:01, 114.70s/it]Fetching 12 files:  58%|█████▊    | 7/12 [01:58<01:02, 12.54s/it] Fetching 12 files:  75%|███████▌  | 9/12 [02:11<00:32, 10.72s/it]Fetching 12 files:  83%|████████▎ | 10/12 [02:21<00:21, 10.62s/it]Fetching 12 files:  92%|█████████▏| 11/12 [02:37<00:11, 11.69s/it]Fetching 12 files: 100%|██████████| 12/12 [02:37<00:00, 13.12s/it]
+download done
+=== 2/3 extract all zips (parallel x6) Sat Oct  3 00:21:33 CEST 2026 ===
+extracted BLIP.zip
+extracted E4S.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED DALLE-3.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED BlendFace.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED CommunityAI.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED FLUX1-dev.zip
+extracted FaceSwap.zip
+extracted GLIDE.zip
+extracted InSwap.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED IP-Adapter.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED Imagen3.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED Infinite-ID.zip
+extracted ProGAN.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED InstantID.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED Midjourney.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED PhotoMaker.zip
+extracted R3GAN.zip
+extracted SimSwap.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED SD3.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED SDXL.zip
+extracted WFIR.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED SocialRF.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED StyleGAN-XL.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED StyleSwim.zip
+error: invalid zip file with overlapped components (possible zip bomb)
+ To unzip the file anyway, rerun the command with UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE environmnent variable
+UNZIP FAILED StyleGAN3.zip
+generator dirs: 25
+=== 3/3 evaluate Sat Oct  3 00:23:49 CEST 2026 ===
+=== CURE AIGIBENCH CN029 DONE Sat Oct  3 00:24:02 CEST 2026 ===

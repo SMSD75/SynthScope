@@ -1,9 +1,9 @@
 {
   "tag": "aide_retrain_native_g8",
   "model": "aide-retrain",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_2.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_native_v2/model_2.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 77.87,

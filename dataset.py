@@ -2357,7 +2357,7 @@ class SynthbusterDataset(_TestOnlyImageDataset):
         staging = _extract_archives_into(dl, root_dir / "_staging")
         inner = next((p for p in staging.rglob("synthbuster") if p.is_dir()), staging)
         # proxy reals: a clean real-photo pool (GenImage nature by default)
-        pool = real_pool or "/hddstore/ssalehi/AGID/GenImage/test/real"
+        pool = real_pool or "/hddstore/ssalehi/SynthScope/GenImage/test/real"
         reals = sorted(p for p in Path(pool).glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
         for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
             fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]

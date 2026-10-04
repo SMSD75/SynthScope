@@ -1,9 +1,9 @@
 {
   "tag": "pgc_full_progan_ufd",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_full/model.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_progan_full/model.pth",
   "benchmark": "ufd",
-  "data_root": "/hddstore/ssalehi/AGID/universialfakedetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 8,
   "means": {
     "acc": 79.95,

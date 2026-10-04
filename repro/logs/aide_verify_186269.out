@@ -1,0 +1,19 @@
+NODE=ivi-cn023 GPU=0 aide.pth -> /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/sd14_train.pth Tue Jun 16 09:23:30 CEST 2026
+CUDA OK
+===== load-check (registry path, strict official load) =====
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+LOAD STATUS: loaded 1025 tensors from aide.pth (missing=0, unexpected=0)
+FAKE -> fake p_fake=0.9027
+REAL -> real p_fake=0.0567
+===== bench_eval --model aide GenImage-8 (limit 300) =====
+=== bench_eval aide_served_genimage8 | model=aide ckpt=registry-default | pergen | 8 generators | device=cuda ===
+    adm: acc=69.83 AP=89.98 AUROC=84.77 (real_acc=100.0 fake_acc=39.67)
+    biggan: acc=63.83 AP=91.27 AUROC=87.95 (real_acc=100.0 fake_acc=27.67)
+    glide: acc=91.0 AP=99.52 AUROC=99.28 (real_acc=100.0 fake_acc=82.0)
+    midjourney: acc=84.0 AP=98.54 AUROC=98.11 (real_acc=100.0 fake_acc=68.0)
+    sdv1.4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+    sdv1.5: acc=99.83 AP=100.0 AUROC=100.0 (real_acc=99.67 fake_acc=100.0)
+    vqdm: acc=76.83 AP=95.34 AUROC=93.41 (real_acc=99.67 fake_acc=54.0)
+    wukong: acc=98.5 AP=99.98 AUROC=99.98 (real_acc=100.0 fake_acc=97.0)
+=== RESULT aide_served_genimage8: mAP=96.83 mAUROC=95.44 acc=85.48 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/aide_served_genimage8.json ===
+=== AIDE SERVED VERIFY COMPLETE Tue Jun 16 09:30:13 CEST 2026 ===

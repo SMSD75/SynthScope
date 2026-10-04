@@ -6,7 +6,7 @@ side by side with the SynthScope re-implementation in the same ``repro/bench_res
 ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 Model build + preprocessing + P(fake) are COPIED from the verified vendored eval
-``/hddstore/ssalehi/AGID/repro/spai_eval.py`` (kept faithful):
+``/hddstore/ssalehi/SynthScope/repro/spai_eval.py`` (kept faithful):
   - ``build_mf_vit(cfg)`` from the ckpt's stored config; the released ``spai_official.pth``
     loads with 0 missing / 0 unexpected keys (verified).
   - Fixed-resolution variant: resize shorter side -> 448, center-crop 448x448, raw [0,1];
@@ -22,8 +22,8 @@ CLI::
     --benchmark {forensynths,ufd,pergen,pool} --data <root> [--reals] [--select] [--limit]
     --bs N --device cuda|cpu --ckpt <spai_official.pth> --tag TAG
 
-Default ckpt: /hddstore/ssalehi/AGID/repro/ckpts/spai_official.pth (any-res, LDM-trained).
-For GenImage_full: --benchmark forensynths --data /hddstore/ssalehi/AGID/GenImage_full/test.
+Default ckpt: /hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth (any-res, LDM-trained).
+For GenImage_full: --benchmark forensynths --data /hddstore/ssalehi/SynthScope/GenImage_full/test.
 SPAI on CPU is slow; use --limit 6 for the validation probe.
 """
 from __future__ import annotations
@@ -42,7 +42,7 @@ from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # Vendored official SPAI package + caches.
-SPAI_VENDOR = "/hddstore/ssalehi/AGID/repro/spai_vendor"
+SPAI_VENDOR = "/hddstore/ssalehi/SynthScope/repro/spai_vendor"
 if SPAI_VENDOR not in sys.path:
     sys.path.insert(0, SPAI_VENDOR)
 os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/.cache/torch")
@@ -53,10 +53,10 @@ from spai.models.sid import build_mf_vit  # noqa: E402
 # ---------------------------------------------------------------------------
 # Paths / constants (mirror benchmark/bench_eval.py)
 # ---------------------------------------------------------------------------
-REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro")
+REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro")
 RESULTS_LOG = REPRO_DIR / "MASTER_RESULTS.jsonl"
 BENCH_RESULTS_DIR = REPRO_DIR / "bench_results"
-DEFAULT_CKPT = Path("/hddstore/ssalehi/AGID/repro/ckpts/spai_official.pth")
+DEFAULT_CKPT = Path("/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth")
 # resize shorter side -> 448, center-crop 448 => fixed 2x2 grid of 224 patches.
 PATCH_GRID_SIZE = 448
 

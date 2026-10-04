@@ -45,7 +45,7 @@
       "our_number": {"acc": 86.87, "mAP": 92.70, "mAUROC": 95.90},
       "our_per_generator_ap": {"cogvideo": 99.79, "mora": 89.76, "ms": 99.62, "musev": 96.24, "pika": 91.90, "svd": 97.98, "t2vz": 66.78, "vc2": 99.55},
       "gap_cause": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the paper's quality. The one weak generator is t2vz (AP 66.78, fake_acc 2.0) — the same Text2Video-Zero failure mode D3 reports.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/GenVidBench/test (362 GB; HF bitmind/GenVidBench, per-source rar/7z, needs unrar). reals = Vript + HD-VG-130M; 8 generators -> 1_fake."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/GenVidBench/test (362 GB; HF bitmind/GenVidBench, per-source rar/7z, needs unrar). reals = Vript + HD-VG-130M; 8 generators -> 1_fake."
     },
     {
       "name": "C) DeMamba one-to-many generalization (Table 5)",
@@ -57,7 +57,7 @@
       "our_status": "missing",
       "our_number": null,
       "gap_cause": "Not run as the one-to-many DeMamba protocol in SynthScope. SynthScope DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 — this is NOT a paper protocol (it shifts the real-video source too) and is documented in the restrav README as a stress test, not a repro target. The proper one-train-generator protocol was not reproduced.",
-      "dataset_source": "on-disk reals/fakes available via /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val, but the per-train-generator splits were not constructed."
+      "dataset_source": "on-disk reals/fakes available via /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val, but the per-train-generator splits were not constructed."
     },
     {
       "name": "D) Veo3 zero-shot generalization (Sec 7-D)",
@@ -69,7 +69,7 @@
       "our_status": "missing",
       "our_number": null,
       "gap_cause": "Not run in SynthScope. Veo3 videos are GATED — Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collected independently, so a Veo3 evaluation is possible via that data even though ReStraV's own 200-clip set is not released.",
-      "dataset_source": "gated — ReStraV authors' Veo3 200-clip set not released. Alternative VEO3 clips available on-disk via ComGenVid (/hddstore/ssalehi/AGID/ComGenVid, STALL's set)."
+      "dataset_source": "gated — ReStraV authors' Veo3 200-clip set not released. Alternative VEO3 clips available on-disk via ComGenVid (/hddstore/ssalehi/SynthScope/ComGenVid, STALL's set)."
     },
     {
       "name": "E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E, Fig 7)",

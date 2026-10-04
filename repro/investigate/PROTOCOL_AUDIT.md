@@ -1,8 +1,8 @@
 # Protocol & Official-Weights Fidelity Audit — SynthScope detector reproductions
 
 Date: 2026-06-07. Auditor: headless agent on ivi-cn023 (CPU/analysis only, no GPU).
-Repo: `/ivi/zfs/s0/original_homes/ssalehi/AGID`.
-Official repos cloned to: `/hddstore/ssalehi/AGID/official_repos/{NPR,UniversalFakeDetect,CNNDetection,FatFormer,SAFE,AIDE,Co-Spy}`.
+Repo: `/ivi/zfs/s0/original_homes/ssalehi/SynthScope`.
+Official repos cloned to: `/hddstore/ssalehi/SynthScope/official_repos/{NPR,UniversalFakeDetect,CNNDetection,FatFormer,SAFE,AIDE,Co-Spy}`.
 
 Our harness `benchmark/bench_eval.py` computes per-generator AP/AUROC/acc then means them.
 The ForenSynths "13-gen" run uses ALL 13 CNNDetection generators
@@ -26,7 +26,7 @@ All ForenSynths-8 / -13 means below were recomputed from the per-generator entri
 
 ## 1. NPR — `chuangchuangtan/NPR-DeepfakeDetection`
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/NPR`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/NPR`.
 
 ### Official TEST protocol (the critical question: resize vs native-res?)
 Read `official_repos/NPR/test.py:24-49` — the per-benchmark config dict:
@@ -74,7 +74,7 @@ FS-8 acc is essentially a match (91.83 vs 92.5). FS-8 AP is ~3.3 short, concentr
 
 ## 2. CLIP / UnivFD — `WisconsinAIVision/UniversalFakeDetect` (Ojha et al., CVPR'23)
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/UniversalFakeDetect`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/UniversalFakeDetect`.
 
 ### Official TEST protocol
 Entry point `test.sh` → `validate.py`. The eval transform (`validate.py:197-202`):
@@ -106,7 +106,7 @@ Ojha/UniFD on ForenSynths-8 (from the UniFD/Ojha rows reproduced in both the Fat
 
 ## 3. CNNDetection — `PeterWang512/CNNDetection` (Wang et al., CVPR'20)
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/CNNDetection`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/CNNDetection`.
 
 ### Checkpoint used
 `cnn_official_forensynths.json` → `ckpt: .../official_ckpts/cnn/blur_jpg_prob0.5.pth` → the **Blur+JPEG(0.5)** model.
@@ -133,7 +133,7 @@ ProGAN 100.0/100.0 · StyleGAN 98.51/98.5 · BigGAN 88.24/88.2 · CycleGAN 96.83
 
 ## 4. FatFormer — `Michel-liu/FatFormer` (CVPR'24)
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/FatFormer`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/FatFormer`.
 
 - **Adapter count:** `main.py:31` → `--num_vit_adapter` default = **8** (not 3). SynthScope `conf/model/image/fat_former.yaml:7` = `num_vit_adapter: 8`. ✅ correct. (24 visual layers / 8 = adapter every 3rd block; the "3" in the prompt is the block *stride*, not the adapter count.)
 - **Paper ForenSynths-8 AP** (README "Ours" row, AP = 2nd number per `Acc / AP` pair): ProGAN 100.0, StyleGAN 99.8, StyleGAN2 100.0, BigGAN 100.0, CycleGAN 100.0, StarGAN 100.0, GauGAN 100.0, Deepfake 98.0 → **mean 99.72**.
@@ -145,7 +145,7 @@ ProGAN 100.0/100.0 · StyleGAN 98.51/98.5 · BigGAN 88.24/88.2 · CycleGAN 96.83
 
 ## 5. SAFE — `Ouxiang-Li/SAFE`
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/SAFE`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/SAFE`.
 
 ### Official protocol
 `scripts/*.sh` (eval): `--input_size 256 --transform_mode 'crop' --model SAFE --resume checkpoint-best.pth --eval True`.
@@ -164,7 +164,7 @@ The model internally does a DWT (Haar) on the [0,1] tensor and upsamples sub-ban
 
 ## 6. Co-Spy (official weights) — `Megum1/Co-Spy`
 
-**Official repo:** `/hddstore/ssalehi/AGID/official_repos/Co-Spy`.
+**Official repo:** `/hddstore/ssalehi/SynthScope/official_repos/Co-Spy`.
 **Our run:** `cospy_official_cospybench.json` (`ckpt: official_ckpts/co_spy/sd-v1_4`, DRCT/SD-v1.4-trained triplet), 110 subsets, mAP **86.65**.
 
 ### Official benchmark structure
@@ -213,6 +213,6 @@ The 5 "extra" generators that the 13-gen mean adds (crn, imle, san, seeingdark/s
 
 ## Recommended re-runs / fixes
 1. **Reporting fix (no compute):** report NPR, CLIP, CNN on **ForenSynths-8** alongside FS-13, using the recomputed FS-8 means above. NPR especially must be reported on FS-8 (92.81 mAP / 91.83 acc) — its FS-13 number (79.45) is protocol-mismatched, not a failure.
-2. **Co-Spy flickr re-download:** re-fetch/replace the corrupt flickr real images in `/hddstore/ssalehi/AGID/CoSpyBench/test/flickr__*/0_real/` (50% are truncated). Re-running official Co-Spy after that should lift the full-110 mAP from 86.65 to ~95–96 (matching the paper). No model/code change needed.
+2. **Co-Spy flickr re-download:** re-fetch/replace the corrupt flickr real images in `/hddstore/ssalehi/SynthScope/CoSpyBench/test/flickr__*/0_real/` (50% are truncated). Re-running official Co-Spy after that should lift the full-110 mAP from 86.65 to ~95–96 (matching the paper). No model/code change needed.
 3. **RESULTS_SUMMARY correction:** change the CNNDetection "paper ~96–98" entry to the verified **91.16 (Blur+JPEG0.5, AP@224)** — we reproduce it exactly (91.15). Also clarify the NPR note: native-res is the *GANGen* recipe; ForenSynths uses square-256 resize (already what the harness does).
 4. **No re-run needed for NPR native-res on ForenSynths** — the harness already matches the official square-256 recipe; native-res would *diverge* from the official ForenSynths protocol.

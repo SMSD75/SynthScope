@@ -1,9 +1,9 @@
 {
   "tag": "safe_retrain_genimage8",
   "model": "safe",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe/model_11.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe/model_11.pth",
   "benchmark": "pergen",
-  "data_root": "/ssdstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 88.66,

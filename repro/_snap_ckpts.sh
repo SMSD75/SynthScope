@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 LOG=repro/logs/pgc_8gpu_184771.out
 CK=checkpoints_retrain/pgc_8gpu/model.pth
 for E in 10 25 50; do

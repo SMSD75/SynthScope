@@ -1,9 +1,9 @@
 {
   "tag": "pgc_official_commgen15",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/CommGen15/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CommGen15/test",
   "n_generators": 15,
   "means": {
     "acc": 97.39,

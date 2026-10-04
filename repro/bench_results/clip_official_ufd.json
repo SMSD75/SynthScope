@@ -1,9 +1,9 @@
 {
   "tag": "clip_official_ufd",
   "model": "clip",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/clip/fc_weights.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/clip/fc_weights.pth",
   "benchmark": "ufd",
-  "data_root": "/hddstore/ssalehi/AGID/universialfakedetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 8,
   "means": {
     "acc": 82.15,

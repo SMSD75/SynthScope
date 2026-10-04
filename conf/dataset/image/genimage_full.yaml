@@ -1,7 +1,7 @@
 name: genimage_full
 # Full 8-generator GenImage cross-generator test set (Midjourney, SD-v1.4/1.5, ADM, GLIDE,
 # Wukong, VQDM, BigGAN). The single-pool SD-v1.4 slice is the separate `genimage` dataset.
-root_dir: /hddstore/ssalehi/AGID/GenImage_full
+root_dir: /hddstore/ssalehi/SynthScope/GenImage_full
 hf_repo_id: jzousz/GenImage
 test_batch_size: 512
 num_workers: 8

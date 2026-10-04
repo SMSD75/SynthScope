@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=aideP_rt --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-12:00:00 --cpus-per-task=24 --mem=60G --gres=gpu:3
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aideP_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_aideP_%j.log
 # AIDE ProGAN gap-closer, 3-GPU DeepSpeed. Replaces the slow single-GPU cn023 run (was ep0 after 5h).
 # CNNDetection train is on cn029 /ssdstore. epochs=3 (enough to close the ForenSynths gap by the deadline).
 # Saves to checkpoints_retrain/aide_progan.
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_progan; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_progan; mkdir -p "$SAVE"
 export HF_HOME=$DATA/.cache/huggingface TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$HF_HOME" "$TORCH_HOME" "$TRITON_CACHE_DIR"

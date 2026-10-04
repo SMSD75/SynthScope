@@ -1,0 +1,26 @@
+NODE=ivi-cn023 GPU=0 Tue Jun 16 08:29:43 CEST 2026  spai.pth -> /hddstore/ssalehi/AGID/repro/ckpts/spai_official_agid.pth
+CUDA OK
+===== spai_served_synthbuster =====
+=== bench_eval spai_served_synthbuster | model=spai ckpt=registry-default | pergen | 9 generators | device=cuda ===
+    dalle2: acc=87.75 AP=95.12 AUROC=95.57 (real_acc=91.0 fake_acc=84.5)
+    dalle3: acc=83.75 AP=93.8 AUROC=94.97 (real_acc=91.0 fake_acc=76.5)
+    firefly: acc=90.25 AP=96.58 AUROC=97.12 (real_acc=91.0 fake_acc=89.5)
+    glide: acc=82.0 AP=93.23 AUROC=93.21 (real_acc=91.0 fake_acc=73.0)
+    midjourney-v5: acc=91.5 AP=97.74 AUROC=97.85 (real_acc=91.0 fake_acc=92.0)
+    stable-diffusion-1-3: acc=95.5 AP=99.94 AUROC=99.93 (real_acc=91.0 fake_acc=100.0)
+    stable-diffusion-1-4: acc=95.5 AP=99.96 AUROC=99.96 (real_acc=91.0 fake_acc=100.0)
+    stable-diffusion-2: acc=89.25 AP=96.99 AUROC=96.7 (real_acc=91.0 fake_acc=87.5)
+    stable-diffusion-xl: acc=90.25 AP=97.43 AUROC=97.39 (real_acc=91.0 fake_acc=89.5)
+=== RESULT spai_served_synthbuster: mAP=96.75 mAUROC=96.97 acc=89.53 over 9 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/spai_served_synthbuster.json ===
+===== spai_served_genimage8 =====
+=== bench_eval spai_served_genimage8 | model=spai ckpt=registry-default | pergen | 8 generators | device=cuda ===
+    adm: acc=67.33 AP=80.94 AUROC=80.87 (real_acc=92.67 fake_acc=42.0)
+    biggan: acc=75.17 AP=86.6 AUROC=85.61 (real_acc=92.67 fake_acc=57.67)
+    glide: acc=88.5 AP=95.52 AUROC=95.86 (real_acc=90.67 fake_acc=86.33)
+    midjourney: acc=90.0 AP=96.08 AUROC=96.88 (real_acc=92.0 fake_acc=88.0)
+    sdv1.4: acc=95.67 AP=99.22 AUROC=99.57 (real_acc=91.33 fake_acc=100.0)
+    sdv1.5: acc=96.5 AP=99.28 AUROC=99.63 (real_acc=93.0 fake_acc=100.0)
+    vqdm: acc=90.17 AP=96.84 AUROC=96.37 (real_acc=93.33 fake_acc=87.0)
+    wukong: acc=96.17 AP=99.27 AUROC=99.45 (real_acc=93.33 fake_acc=99.0)
+=== RESULT spai_served_genimage8: mAP=94.22 mAUROC=94.28 acc=87.44 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/spai_served_genimage8.json ===
+=== SPAI SERVED VERIFY COMPLETE Tue Jun 16 08:51:39 CEST 2026 ===

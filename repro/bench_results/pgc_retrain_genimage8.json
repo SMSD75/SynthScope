@@ -1,9 +1,9 @@
 {
   "tag": "pgc_retrain_genimage8",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/pgc_genimage/model_0.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/pgc_genimage/model_0.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 78.6,

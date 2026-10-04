@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=cospy_full --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-00:00:00 --cpus-per-task=24 --mem=120G --gres=gpu:4
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_cospy_full_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_cospy_full_%j.log
 # Co-Spy retrain on the FULL GenImage SD-v1.4 (162k, vs the 12k subset that already hit CoSpyBench 95.88)
 # to push GenImage-8 88.85 -> ~92. 4-GPU DeepSpeed ZeRO-2, raw-384 (model normalizes internally).
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/cospy_full; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/cospy_full; mkdir -p "$SAVE"
 export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/huggingface
 export TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True

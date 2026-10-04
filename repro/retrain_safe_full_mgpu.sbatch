@@ -1,14 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=safe_full --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-00:00:00 --cpus-per-task=24 --mem=120G --gres=gpu:4
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_safe_full_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_safe_full_%j.log
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; SC=/ssdstore/ssalehi/.cache; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full; mkdir -p "$SAVE" "$SC"/{huggingface,torch,triton}
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; SC=/ssdstore/ssalehi/.cache; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe_full; mkdir -p "$SAVE" "$SC"/{huggingface,torch,triton}
 export HF_HOME=$SC/huggingface TORCH_HOME=$SC/torch TRITON_CACHE_DIR=$SC/triton OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 RS=(rsync -aL -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no")
-[ -d "$DATA/CNNDetection/train" ] || { echo "[stage] CNNDetection ~72G"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/AGID/CNNDetection "$DATA/" 2>&1 | tail -1; }
+[ -d "$DATA/CNNDetection/train" ] || { echo "[stage] CNNDetection ~72G"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/SynthScope/CNNDetection "$DATA/" 2>&1 | tail -1; }
 echo "node=$(hostname) data=$DATA/CNNDetection $(date)"
 $CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 4 --main_process_port 29673 \
   main.py trainer@TrainerConfig=image/safe ModelConfig.model_type=safe ModelConfig.freeze_backbone=false \

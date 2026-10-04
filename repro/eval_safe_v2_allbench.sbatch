@@ -11,12 +11,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=06:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/safe_v2_allbench_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/safe_v2_allbench_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-H=/hddstore/ssalehi/AGID
-SV=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2
+H=/hddstore/ssalehi/SynthScope
+SV=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe_full_v2
 CK="${CK:-}"
 # pick highest-epoch checkpoint if not overridden
 [ -z "$CK" ] && CK=$(ls -1 "$SV"/model_*.pth 2>/dev/null | sed 's/.*model_\([0-9]*\)\.pth/\1 &/' | sort -n | tail -1 | awk '{print $2}')

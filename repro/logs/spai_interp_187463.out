@@ -1,0 +1,9 @@
+NODE=ivi-cn023 Fri Jun 19 22:31:43 CEST 2026  spai.pth -> /hddstore/ssalehi/AGID/repro/ckpts/spai_official_agid.pth
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+spai fake: verdict=fake P(fake)=0.631 interpret_kind=spai_patch
+   OK: valid PNG (288, 288) RGB, 10439 bytes -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/interp_smoketest_out/spai_fake.png
+spai real: verdict=real P(fake)=0.000 interpret_kind=None
+   interpret_map=None (FAIL: five-crop fallback or grid too large?)
+SOME FAILED
+ERROR conda.cli.main_run:execute(125): `conda run python repro/_interp_spai_test.py` failed. (See above for error)
+=== SPAI INTERP TEST DONE Fri Jun 19 22:32:10 CEST 2026 ===

@@ -1,9 +1,9 @@
 {
   "tag": "safe_official_ufd",
   "model": "safe",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/safe/checkpoint-best.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/safe/checkpoint-best.pth",
   "benchmark": "ufd",
-  "data_root": "/hddstore/ssalehi/AGID/universialfakedetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 8,
   "means": {
     "acc": 95.71,

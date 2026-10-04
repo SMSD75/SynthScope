@@ -1,9 +1,9 @@
 {
   "tag": "safe_official_forensynths",
   "model": "safe",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/safe/checkpoint-best.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/safe/checkpoint-best.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 8,
   "means": {
     "acc": 96.2,

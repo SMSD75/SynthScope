@@ -3,12 +3,12 @@
 # to satisfy the full-data requirement and check whether the cap biased any number.
 # cn023 GPU 4 (legal). Sequential. Tags *_fullgenimage8.
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/SynthScope/checkpoints
 export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi/.cache/torch
-export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
+export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth
 export CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=4
-DATA=/hddstore/ssalehi/AGID/GenImage_full/test_full
+DATA=/hddstore/ssalehi/SynthScope/GenImage_full/test_full
 RUN(){ echo "### $1 $(date +%H:%M:%S)"; conda run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
   --benchmark pergen --data "$DATA" "${@:2}" 2>&1 | grep -vE "libpng|Warning|warn" | tail -14; }
 

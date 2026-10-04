@@ -51,7 +51,7 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"
 REAL_DIRNAMES = ("0_real", "real", "reals")
 FAKE_DIRNAMES = ("1_fake", "fake", "fakes", "ai")
 SHARED_REAL_DIRS = {"imagenet", "laion", "_real_pool", "real", "0_real", "reals"}
-RESULTS_LOG = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/MASTER_RESULTS.jsonl")
+RESULTS_LOG = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/MASTER_RESULTS.jsonl")
 # Ojha UniversalFakeDetect real pairing (verified against the official dataset_paths.py).
 UFD_REAL = {"guided": "imagenet"}  # everything else -> laion
 UFD_DEFAULT_REAL = "laion"

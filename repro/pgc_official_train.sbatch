@@ -15,10 +15,10 @@
 #SBATCH --cpus-per-task=10
 #SBATCH --mem=48G
 #SBATCH --time=6-23:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_official_train_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_official_train_%j.out
 set -u
-SynthScope=/ivi/zfs/s0/original_homes/ssalehi/AGID
-SHARED=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
+SynthScope=/ivi/zfs/s0/original_homes/ssalehi/SynthScope
+SHARED=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval
 DEST=$AGID/checkpoints_retrain/pgc_official_script        # shared-FS archive of milestone ckpts
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
@@ -51,7 +51,7 @@ if [ ! -d "$SCR/data/train" ]; then
   echo "[data] tar-streaming 72G train from cn029  $(date)"
   mkdir -p "$SCR/data"; T0=$(date +%s)
   ssh -o BatchMode=yes -o StrictHostKeyChecking=no ivi-cn029 \
-    'tar -C /ssdstore/ssalehi/AGID/CNNDetection -cf - train' | tar -C "$SCR/data" -xf - \
+    'tar -C /ssdstore/ssalehi/SynthScope/CNNDetection -cf - train' | tar -C "$SCR/data" -xf - \
     || { echo "STREAM FAILED"; exit 1; }
   echo "[data] staged in $((($(date +%s)-T0)/60)) min"
 fi

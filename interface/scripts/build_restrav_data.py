@@ -24,9 +24,9 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 
-EXTRACTED = Path("/hddstore/ssalehi/AGID/d3_repro/extracted")
-GENVIDEO_VAL = Path("/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val")
-OUT = Path(os.environ.get("SYNTHSCOPE_RESTRAV_DIR", "/hddstore/ssalehi/AGID/restrav_data"))
+EXTRACTED = Path("/hddstore/ssalehi/SynthScope/d3_repro/extracted")
+GENVIDEO_VAL = Path("/hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val")
+OUT = Path(os.environ.get("SYNTHSCOPE_RESTRAV_DIR", "/hddstore/ssalehi/SynthScope/restrav_data"))
 FULLTEST = Path(str(OUT) + "_fulltest")
 
 N_TRAIN_PER_CLASS = int(os.environ.get("RESTRAV_N_TRAIN", "8000"))

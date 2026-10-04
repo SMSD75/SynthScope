@@ -1,0 +1,12 @@
+NODE=ivi-cn029 GPU=0 Fri Oct  2 19:00:43 CEST 2026
+=== bench_eval cure_repro_genimage8 | model=cure ckpt=registry-default | pergen | 8 generators | device=cuda ===
+    adm: acc=60.63 AP=87.81 AUROC=86.77 (real_acc=99.53 fake_acc=21.73)
+    biggan: acc=67.8 AP=97.85 AUROC=98.37 (real_acc=99.67 fake_acc=35.93)
+    glide: acc=85.33 AP=97.82 AUROC=97.21 (real_acc=99.87 fake_acc=70.8)
+    midjourney: acc=85.83 AP=96.33 AUROC=95.01 (real_acc=99.67 fake_acc=72.0)
+    sdv1.4: acc=99.73 AP=99.99 AUROC=99.99 (real_acc=99.6 fake_acc=99.87)
+    sdv1.5: acc=99.8 AP=100.0 AUROC=100.0 (real_acc=99.6 fake_acc=100.0)
+    vqdm: acc=82.43 AP=98.61 AUROC=98.67 (real_acc=99.67 fake_acc=65.2)
+    wukong: acc=99.87 AP=100.0 AUROC=100.0 (real_acc=99.8 fake_acc=99.93)
+=== RESULT cure_repro_genimage8: mAP=97.3 mAUROC=97.0 acc=85.18 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/cure_repro_genimage8.json ===
+=== CURE GENIMAGE8 DONE Fri Oct  2 19:09:21 CEST 2026 ===

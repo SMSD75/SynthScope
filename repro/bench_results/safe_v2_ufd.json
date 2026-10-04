@@ -1,9 +1,9 @@
 {
   "tag": "safe_v2_ufd",
   "model": "safe",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe_full_v2/model_38.pth",
   "benchmark": "ufd",
-  "data_root": "/hddstore/ssalehi/AGID/universialfakedetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 8,
   "means": {
     "acc": 94.02,

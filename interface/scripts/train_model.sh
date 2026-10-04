@@ -22,8 +22,8 @@ EPOCHS_OVERRIDE="${4:-}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 CONDA="${CONDA_EXE:-/home/ssalehi/miniconda3/bin/conda}"
-CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
-CACHE="${SYNTHSCOPE_CACHE_DIR:-/hddstore/ssalehi/AGID/.cache}"
+CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/SynthScope/checkpoints}"
+CACHE="${SYNTHSCOPE_CACHE_DIR:-/hddstore/ssalehi/SynthScope/.cache}"
 SAVE_DIR="$CKPT_DIR/_train/$MODEL"
 mkdir -p "$SAVE_DIR"
 
@@ -34,7 +34,7 @@ export OMP_NUM_THREADS=1
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export DINO_V3_REPO_DIR="${DINO_V3_REPO_DIR:-/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3}"
-export DINO_V3_WEIGHTS_DIR="${DINO_V3_WEIGHTS_DIR:-/hddstore/ssalehi/AGID/dinov3_checkpoints}"
+export DINO_V3_WEIGHTS_DIR="${DINO_V3_WEIGHTS_DIR:-/hddstore/ssalehi/SynthScope/dinov3_checkpoints}"
 export CUDA_VISIBLE_DEVICES="$GPUS"
 NPROC=$(awk -F',' '{print NF}' <<< "$GPUS")
 
@@ -118,7 +118,7 @@ case "$MODEL" in
     EPOCHS=${EPOCHS_OVERRIDE:-10} ;;
   restrav)
     OV=(trainer@TrainerConfig=video/restrav model@ModelConfig=video/restrav
-        dataset@DatasetConfig=video/genvideo DatasetConfig.root_dir=/hddstore/ssalehi/AGID/restrav_data
+        dataset@DatasetConfig=video/genvideo DatasetConfig.root_dir=/hddstore/ssalehi/SynthScope/restrav_data
         DatasetConfig.num_frames=24 DatasetConfig.num_workers=8
         DatasetConfig.train_batch_size=16 DatasetConfig.val_batch_size=16 DatasetConfig.test_batch_size=16
         ++TrainerConfig.test_interval=5 ++TrainerConfig.weight_decay=0.0 ++TrainerConfig.warmup.mode=off

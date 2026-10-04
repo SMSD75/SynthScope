@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 export CUDA_VISIBLE_DEVICES=4
-export HF_HOME=/hddstore/ssalehi/AGID/.cache/huggingface
-export TORCH_HOME=/hddstore/ssalehi/AGID/.cache/torch
+export HF_HOME=/hddstore/ssalehi/SynthScope/.cache/huggingface
+export TORCH_HOME=/hddstore/ssalehi/SynthScope/.cache/torch
 export OMP_NUM_THREADS=4
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 /home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch \
   --config_file accelerate_config.yaml --num_processes 1 main.py \
   trainer@TrainerConfig=image/pgc \

@@ -1,9 +1,9 @@
 {
   "tag": "pgc_official_ufd",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
   "benchmark": "ufd",
-  "data_root": "/hddstore/ssalehi/AGID/universialfakedetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 8,
   "means": {
     "acc": 94.16,

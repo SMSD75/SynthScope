@@ -1,0 +1,217 @@
+NODE=ivi-cn029 GPU=0 Fri Jun 19 10:40:00 CEST 2026
+CUDA OK
+[data] train classes=20
+[data] ufd real=360059 fake=360060
+[repo] 0f3e97d Release PGC models and CommGen15 dataset on Hugging Face
+2026-06-19 10:40:32,203 - root - INFO - Logging to file: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan.log
+2026-06-19 10:40:32,203 - root - INFO - 
+----------------- Options ---------------
+       accumulation_steps: 4                             
+               batch_size: 32                            
+          checkpoints_dir: /ssdstore/ssalehi/pgc_400_187220/ckpts	[default: checkpoints]
+                 cropSize: 224                           
+                  devices: 0                             	[default: 3]
+     dino_pretrained_root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino	[default: None]
+             dino_variant: dinov2-large                  
+          eval_batch_size: 32                            
+         eval_every_steps: 100                           	[default: 200]
+         eval_num_threads: 8                             
+           fake_image_dir: ['/ssdstore/ssalehi/pgc_400_187220/ufd/1_fake']	[default: None]
+                  isTrain: True                          
+          label_smoothing: 0.1                           
+               lora_alpha: 1.0                           
+             lora_dropout: 0.1                           
+                lora_rank: 8                             
+                       lr: 5e-05                         
+            max_grad_norm: 1.0                           
+                     name: pgc_train_progan              	[default: pgc_train]
+                    niter: 100                           
+              num_threads: 8                             
+                    optim: adam                          
+           real_image_dir: ['/ssdstore/ssalehi/pgc_400_187220/ufd/0_real']	[default: None]
+                     seed: 42                            
+                  tau_res: 0.5                           
+                  tau_rgb: 0.5                           
+                test_root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test	[default: None]
+             weight_decay: 0.05                          
+----------------- End -------------------
+2026-06-19 10:40:32,203 - root - INFO - ==== Training configuration ====
+2026-06-19 10:40:32,203 - root - INFO - Name: pgc_train_progan
+2026-06-19 10:40:32,203 - root - INFO - Checkpoints dir: /ssdstore/ssalehi/pgc_400_187220/ckpts
+2026-06-19 10:40:32,203 - root - INFO - Devices: [0]
+2026-06-19 10:40:32,204 - root - INFO - Batch size: 32
+2026-06-19 10:40:32,204 - root - INFO - Learning rate: 0.000050
+2026-06-19 10:40:32,204 - root - INFO - Optimizer: adam
+2026-06-19 10:40:32,204 - root - INFO - Weight decay: 0.0500
+2026-06-19 10:40:32,204 - root - INFO - Label smoothing: 0.10
+2026-06-19 10:40:32,204 - root - INFO - Number of epochs: 100
+2026-06-19 10:40:32,204 - root - INFO - Crop size: 224
+2026-06-19 10:40:32,204 - root - INFO - DINO variant: dinov2-large
+2026-06-19 10:40:32,204 - root - INFO - LoRA rank: 8
+2026-06-19 10:40:32,204 - root - INFO - LoRA alpha: 1.00
+2026-06-19 10:40:32,204 - root - INFO - LoRA dropout: 0.10
+2026-06-19 10:40:32,204 - root - INFO - Real image dirs (1):
+2026-06-19 10:40:32,204 - root - INFO -   [0] /ssdstore/ssalehi/pgc_400_187220/ufd/0_real
+2026-06-19 10:40:32,204 - root - INFO - Fake image dirs (1):
+2026-06-19 10:40:32,204 - root - INFO -   [0] /ssdstore/ssalehi/pgc_400_187220/ufd/1_fake
+2026-06-19 10:40:32,204 - root - INFO - Test root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test
+2026-06-19 10:40:32,204 - root - INFO - DINO pretrained root: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino
+2026-06-19 10:40:32,204 - root - INFO - PGCM tau (RGB): 0.5000
+2026-06-19 10:40:32,204 - root - INFO - PGCM tau (Residual): 0.5000
+2026-06-19 10:40:32,204 - root - INFO - Accumulation steps: 4
+2026-06-19 10:40:32,204 - root - INFO - Max grad norm: 1.0000
+2026-06-19 10:40:32,204 - root - INFO - Seed: 42
+2026-06-19 10:40:32,205 - models.encoder.rgb_stream - INFO - [DINO] Using local checkpoint at: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino/dinov2-large
+2026-06-19 10:40:32,205 - models.encoder.rgb_stream - INFO - [DINO] Loading backbone 'dinov2-large' from: /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/pretrained_dino/dinov2-large
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   6%|▌         | 27/439 [00:00<00:01, 255.38it/s]Loading weights:  12%|█▏        | 53/439 [00:01<00:11, 32.54it/s] Loading weights:  15%|█▍        | 65/439 [00:01<00:12, 30.20it/s]Loading weights:  21%|██        | 92/439 [00:02<00:08, 39.28it/s]Loading weights:  23%|██▎       | 99/439 [00:02<00:11, 30.90it/s]Loading weights:  28%|██▊       | 121/439 [00:03<00:08, 36.48it/s]Loading weights:  30%|██▉       | 131/439 [00:03<00:07, 41.93it/s]Loading weights:  31%|███▏      | 138/439 [00:03<00:08, 34.65it/s]Loading weights:  36%|███▌      | 157/439 [00:03<00:05, 51.37it/s]Loading weights:  39%|███▉      | 173/439 [00:03<00:04, 62.58it/s]Loading weights:  42%|████▏     | 185/439 [00:04<00:05, 46.44it/s]Loading weights:  44%|████▍     | 193/439 [00:04<00:06, 36.00it/s]Loading weights:  49%|████▊     | 213/439 [00:04<00:04, 53.39it/s]Loading weights:  54%|█████▍    | 238/439 [00:05<00:02, 79.64it/s]Loading weights:  57%|█████▋    | 252/439 [00:05<00:03, 57.48it/s]Loading weights:  60%|█████▉    | 263/439 [00:05<00:02, 63.90it/s]Loading weights:  62%|██████▏   | 274/439 [00:05<00:02, 57.00it/s]Loading weights:  66%|██████▋   | 291/439 [00:06<00:02, 72.28it/s]Loading weights:  69%|██████▉   | 302/439 [00:06<00:02, 52.55it/s]Loading weights:  72%|███████▏  | 316/439 [00:06<00:02, 44.08it/s]Loading weights:  74%|███████▎  | 323/439 [00:07<00:03, 35.33it/s]Loading weights:  79%|███████▉  | 348/439 [00:07<00:01, 58.62it/s]Loading weights:  83%|████████▎ | 366/439 [00:07<00:01, 52.92it/s]Loading weights:  88%|████████▊ | 385/439 [00:07<00:00, 65.41it/s]Loading weights:  90%|████████▉ | 395/439 [00:08<00:00, 47.48it/s]Loading weights:  92%|█████████▏| 403/439 [00:08<00:00, 49.80it/s]Loading weights:  95%|█████████▍| 417/439 [00:08<00:00, 55.47it/s]Loading weights:  97%|█████████▋| 425/439 [00:08<00:00, 54.95it/s]Loading weights: 100%|██████████| 439/439 [00:08<00:00, 49.85it/s]
+2026-06-19 10:40:41,939 - models.pgc - INFO - [PGCNetwork] Injecting LoRA (rank=8, alpha=1.000, dropout=0.100, targets=['attn.qkv', 'attn.proj', 'mlp.fc1', 'mlp.fc2']) into RGB backbone.
+2026-06-19 10:41:02,039 - engine.trainer - INFO - [PGCTrainer] Total params: 306,708,996 | Trainable: 2,340,356 (0.76%)
+2026-06-19 10:41:02,040 - engine.trainer - INFO - [PGCTrainer] BCEWithLogitsLoss + label smoothing (eps=0.100), grad_clip=1.00, accumulation=4
+2026-06-19 10:41:02,040 - data.train_dataset - INFO - Scanning real images from: /ssdstore/ssalehi/pgc_400_187220/ufd/0_real
+2026-06-19 10:41:02,439 - data.train_dataset - INFO - Loaded 360059 real images from /ssdstore/ssalehi/pgc_400_187220/ufd/0_real
+Loading primary real (/ssdstore/ssalehi/pgc_400_187220/ufd/0_real):   0%|          | 0/360059 [00:00<?, ?it/s]Loading primary real (/ssdstore/ssalehi/pgc_400_187220/ufd/0_real):  71%|███████▏  | 256933/360059 [00:00<00:00, 2561911.14it/s]Loading primary real (/ssdstore/ssalehi/pgc_400_187220/ufd/0_real): 100%|██████████| 360059/360059 [00:00<00:00, 2789846.47it/s]
+2026-06-19 10:41:02,569 - data.train_dataset - INFO - Scanning fake images from: /ssdstore/ssalehi/pgc_400_187220/ufd/1_fake
+2026-06-19 10:41:02,963 - data.train_dataset - INFO - Loaded 360060 fake images from /ssdstore/ssalehi/pgc_400_187220/ufd/1_fake
+Loading primary fake (/ssdstore/ssalehi/pgc_400_187220/ufd/1_fake):   0%|          | 0/360060 [00:00<?, ?it/s]Loading primary fake (/ssdstore/ssalehi/pgc_400_187220/ufd/1_fake):  74%|███████▍  | 266449/360060 [00:00<00:00, 2664352.79it/s]Loading primary fake (/ssdstore/ssalehi/pgc_400_187220/ufd/1_fake): 100%|██████████| 360060/360060 [00:00<00:00, 2785865.73it/s]
+2026-06-19 10:41:03,093 - data.train_dataset - INFO - Total samples loaded from primary: 720119 (real + fake across 1 real dir(s) and 1 fake dir(s))
+2026-06-19 10:41:03,103 - data.train_dataset - INFO - Loaded 720119 samples from primary dataset
+2026-06-19 10:41:03,725 - data.train_dataset - INFO - ============================================================
+2026-06-19 10:41:03,725 - data.train_dataset - INFO - DATASET CLASS DISTRIBUTION:
+2026-06-19 10:41:03,725 - data.train_dataset - INFO -   Total samples: 720119
+2026-06-19 10:41:03,725 - data.train_dataset - INFO -   Real (label=0): 360059 (50.00%)
+2026-06-19 10:41:03,725 - data.train_dataset - INFO -   Fake (label=1): 360060 (50.00%)
+2026-06-19 10:41:03,726 - data.train_dataset - INFO -   Real/Fake ratio: 1.000
+2026-06-19 10:41:03,726 - data.train_dataset - INFO - ============================================================
+2026-06-19 10:41:03,726 - data.train_dataset - INFO - Mean and std stats are from: dino
+2026-06-19 10:41:03,730 - data.dataloader - INFO - Dataset size: 720119
+2026-06-19 10:41:03,730 - data.transforms - INFO - [Eval] Using deterministic PadCenterCrop to 224 x 224
+2026-06-19 10:41:03,842 - data.eval_dataset - INFO - Subset 'san': 219 real images (0_real), 219 fake images (1_fake)
+2026-06-19 10:41:04,548 - data.eval_dataset - INFO - Subset 'deepfake': 2707 real images (0_real), 2698 fake images (1_fake)
+2026-06-19 10:41:04,623 - data.eval_dataset - INFO - Subset 'seeingdark': 180 real images (0_real), 180 fake images (1_fake)
+2026-06-19 10:41:04,625 - data.eval_dataset - INFO - Loaded 6203 images from 3 UniversalFakeDetect subsets
+2026-06-19 10:41:04,625 - engine.trainer - INFO - [PGCTrainer] Scheduler ready: CosineAnnealingLR(T_max=2250300, eta_min=5.00e-07)
+2026-06-19 10:41:04,625 - root - INFO - Total training steps: 2250300 (epochs=100, batches/epoch=22503)
+2026-06-19 10:42:52,978 - root - INFO - Step: 100 | Loss: 0.6162 | Avg Time/Step: 1.0784s
+2026-06-19 10:42:52,978 - root - INFO - ================================================================================
+2026-06-19 10:42:52,978 - root - INFO - Evaluating model at step 100
+2026-06-19 10:42:52,978 - root - INFO - ================================================================================
+2026-06-19 10:42:52,980 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 10:44:21,350 - utils.metrics - INFO - deepfake - ACC: 0.5036 | Real_ACC: 0.0089 | Fake_ACC: 1.0000 | AP: 0.8326 | AUC: 0.8708
+2026-06-19 10:44:37,713 - utils.metrics - INFO - san - ACC: 0.6849 | Real_ACC: 0.3699 | Fake_ACC: 1.0000 | AP: 0.9078 | AUC: 0.9326
+2026-06-19 10:46:10,905 - utils.metrics - INFO - seeingdark - ACC: 0.5000 | Real_ACC: 0.0000 | Fake_ACC: 1.0000 | AP: 0.8568 | AUC: 0.8444
+2026-06-19 10:46:10,911 - utils.metrics - INFO -   Universal mean - ACC: 0.5628 | Real_ACC: 0.1262 | Fake_ACC: 1.0000 | AP: 0.8658 | AUC: 0.8826
+2026-06-19 10:46:10,911 - root - INFO - Overall mean ACC: 0.5628 | Overall mean AP: 0.8658
+2026-06-19 10:46:10,911 - root - INFO - New best model (mean AP=0.8658); saving best.pth
+2026-06-19 10:46:11,832 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 10:46:11,833 - root - INFO - Saving evaluation checkpoint: step100_acc56_ap87.pth (step=100, mean ACC=0.5628, mean AP=0.8658)
+2026-06-19 10:46:12,728 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step100_acc56_ap87.pth
+2026-06-19 10:47:59,498 - root - INFO - Step: 200 | Loss: 0.5669 | Avg Time/Step: 2.0718s
+2026-06-19 10:47:59,499 - root - INFO - ================================================================================
+2026-06-19 10:47:59,499 - root - INFO - Evaluating model at step 200
+2026-06-19 10:47:59,499 - root - INFO - ================================================================================
+2026-06-19 10:47:59,500 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 10:49:26,933 - utils.metrics - INFO - deepfake - ACC: 0.6947 | Real_ACC: 0.3945 | Fake_ACC: 0.9959 | AP: 0.8857 | AUC: 0.9332
+2026-06-19 10:49:34,554 - utils.metrics - INFO - san - ACC: 0.9269 | Real_ACC: 0.8630 | Fake_ACC: 0.9909 | AP: 0.9703 | AUC: 0.9772
+2026-06-19 10:50:13,501 - utils.metrics - INFO - seeingdark - ACC: 0.5000 | Real_ACC: 0.0000 | Fake_ACC: 1.0000 | AP: 0.8580 | AUC: 0.8487
+2026-06-19 10:50:13,507 - utils.metrics - INFO -   Universal mean - ACC: 0.7072 | Real_ACC: 0.4192 | Fake_ACC: 0.9956 | AP: 0.9047 | AUC: 0.9197
+2026-06-19 10:50:13,507 - root - INFO - Overall mean ACC: 0.7072 | Overall mean AP: 0.9047
+2026-06-19 10:50:13,507 - root - INFO - New best model (mean AP=0.9047); saving best.pth
+2026-06-19 10:50:15,096 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 10:50:15,096 - root - INFO - Saving evaluation checkpoint: step200_acc71_ap90.pth (step=200, mean ACC=0.7072, mean AP=0.9047)
+2026-06-19 10:50:16,030 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step200_acc71_ap90.pth
+2026-06-19 10:52:03,411 - root - INFO - Step: 300 | Loss: 0.5053 | Avg Time/Step: 2.1942s
+2026-06-19 10:52:03,411 - root - INFO - ================================================================================
+2026-06-19 10:52:03,411 - root - INFO - Evaluating model at step 300
+2026-06-19 10:52:03,411 - root - INFO - ================================================================================
+2026-06-19 10:52:03,412 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 10:53:30,792 - utils.metrics - INFO - deepfake - ACC: 0.8979 | Real_ACC: 0.9483 | Fake_ACC: 0.8473 | AP: 0.9224 | AUC: 0.9604
+2026-06-19 10:53:38,360 - utils.metrics - INFO - san - ACC: 0.9589 | Real_ACC: 0.9543 | Fake_ACC: 0.9635 | AP: 0.9886 | AUC: 0.9902
+2026-06-19 10:54:17,637 - utils.metrics - INFO - seeingdark - ACC: 0.5083 | Real_ACC: 0.0167 | Fake_ACC: 1.0000 | AP: 0.8504 | AUC: 0.8579
+2026-06-19 10:54:17,642 - utils.metrics - INFO -   Universal mean - ACC: 0.7884 | Real_ACC: 0.6398 | Fake_ACC: 0.9369 | AP: 0.9205 | AUC: 0.9362
+2026-06-19 10:54:17,642 - root - INFO - Overall mean ACC: 0.7884 | Overall mean AP: 0.9205
+2026-06-19 10:54:17,643 - root - INFO - New best model (mean AP=0.9205); saving best.pth
+2026-06-19 10:54:19,430 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 10:54:19,470 - root - INFO - Saving evaluation checkpoint: step300_acc79_ap92.pth (step=300, mean ACC=0.7884, mean AP=0.9205)
+2026-06-19 10:54:20,629 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step300_acc79_ap92.pth
+2026-06-19 10:56:08,059 - root - INFO - Step: 400 | Loss: 0.3797 | Avg Time/Step: 2.2573s
+2026-06-19 10:56:08,059 - root - INFO - ================================================================================
+2026-06-19 10:56:08,059 - root - INFO - Evaluating model at step 400
+2026-06-19 10:56:08,059 - root - INFO - ================================================================================
+2026-06-19 10:56:08,061 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 10:57:35,419 - utils.metrics - INFO - deepfake - ACC: 0.7086 | Real_ACC: 0.9801 | Fake_ACC: 0.4362 | AP: 0.9329 | AUC: 0.9636
+2026-06-19 10:57:43,088 - utils.metrics - INFO - san - ACC: 0.9087 | Real_ACC: 0.9817 | Fake_ACC: 0.8356 | AP: 0.9883 | AUC: 0.9895
+2026-06-19 10:58:20,777 - utils.metrics - INFO - seeingdark - ACC: 0.5528 | Real_ACC: 0.1056 | Fake_ACC: 1.0000 | AP: 0.8421 | AUC: 0.8623
+2026-06-19 10:58:20,783 - utils.metrics - INFO -   Universal mean - ACC: 0.7234 | Real_ACC: 0.6891 | Fake_ACC: 0.7573 | AP: 0.9211 | AUC: 0.9385
+2026-06-19 10:58:20,783 - root - INFO - Overall mean ACC: 0.7234 | Overall mean AP: 0.9211
+2026-06-19 10:58:20,783 - root - INFO - New best model (mean AP=0.9211); saving best.pth
+2026-06-19 10:58:22,711 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 10:58:22,763 - root - INFO - Saving evaluation checkpoint: step400_acc72_ap92.pth (step=400, mean ACC=0.7234, mean AP=0.9211)
+2026-06-19 10:58:23,927 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step400_acc72_ap92.pth
+2026-06-19 11:00:11,291 - root - INFO - Step: 500 | Loss: 0.2783 | Avg Time/Step: 2.2923s
+2026-06-19 11:00:11,292 - root - INFO - ================================================================================
+2026-06-19 11:00:11,292 - root - INFO - Evaluating model at step 500
+2026-06-19 11:00:11,292 - root - INFO - ================================================================================
+2026-06-19 11:00:11,293 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 11:01:38,544 - utils.metrics - INFO - deepfake - ACC: 0.5641 | Real_ACC: 0.9897 | Fake_ACC: 0.1371 | AP: 0.9285 | AUC: 0.9548
+2026-06-19 11:01:46,209 - utils.metrics - INFO - san - ACC: 0.8174 | Real_ACC: 0.9954 | Fake_ACC: 0.6393 | AP: 0.9865 | AUC: 0.9877
+2026-06-19 11:02:27,397 - utils.metrics - INFO - seeingdark - ACC: 0.7389 | Real_ACC: 0.5278 | Fake_ACC: 0.9500 | AP: 0.8679 | AUC: 0.8830
+2026-06-19 11:02:27,403 - utils.metrics - INFO -   Universal mean - ACC: 0.7068 | Real_ACC: 0.8376 | Fake_ACC: 0.5755 | AP: 0.9276 | AUC: 0.9418
+2026-06-19 11:02:27,403 - root - INFO - Overall mean ACC: 0.7068 | Overall mean AP: 0.9276
+2026-06-19 11:02:27,403 - root - INFO - New best model (mean AP=0.9276); saving best.pth
+2026-06-19 11:02:29,279 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 11:02:29,280 - root - INFO - Saving evaluation checkpoint: step500_acc71_ap93.pth (step=500, mean ACC=0.7068, mean AP=0.9276)
+2026-06-19 11:02:30,210 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step500_acc71_ap93.pth
+2026-06-19 11:04:17,498 - root - INFO - Step: 600 | Loss: 0.2279 | Avg Time/Step: 2.3206s
+2026-06-19 11:04:17,499 - root - INFO - ================================================================================
+2026-06-19 11:04:17,499 - root - INFO - Evaluating model at step 600
+2026-06-19 11:04:17,499 - root - INFO - ================================================================================
+2026-06-19 11:04:17,501 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 11:05:44,826 - utils.metrics - INFO - deepfake - ACC: 0.5347 | Real_ACC: 0.9974 | Fake_ACC: 0.0704 | AP: 0.9311 | AUC: 0.9421
+2026-06-19 11:05:52,728 - utils.metrics - INFO - san - ACC: 0.8082 | Real_ACC: 0.9954 | Fake_ACC: 0.6210 | AP: 0.9885 | AUC: 0.9893
+2026-06-19 11:06:35,884 - utils.metrics - INFO - seeingdark - ACC: 0.8250 | Real_ACC: 0.8889 | Fake_ACC: 0.7611 | AP: 0.8836 | AUC: 0.8940
+2026-06-19 11:06:35,895 - utils.metrics - INFO -   Universal mean - ACC: 0.7226 | Real_ACC: 0.9606 | Fake_ACC: 0.4842 | AP: 0.9344 | AUC: 0.9418
+2026-06-19 11:06:35,895 - root - INFO - Overall mean ACC: 0.7226 | Overall mean AP: 0.9344
+2026-06-19 11:06:35,895 - root - INFO - New best model (mean AP=0.9344); saving best.pth
+2026-06-19 11:06:38,559 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 11:06:38,561 - root - INFO - Saving evaluation checkpoint: step600_acc72_ap93.pth (step=600, mean ACC=0.7226, mean AP=0.9344)
+2026-06-19 11:06:40,553 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step600_acc72_ap93.pth
+2026-06-19 11:08:27,966 - root - INFO - Step: 700 | Loss: 0.2223 | Avg Time/Step: 2.3469s
+2026-06-19 11:08:27,967 - root - INFO - ================================================================================
+2026-06-19 11:08:27,967 - root - INFO - Evaluating model at step 700
+2026-06-19 11:08:27,967 - root - INFO - ================================================================================
+2026-06-19 11:08:27,968 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 11:09:55,310 - utils.metrics - INFO - deepfake - ACC: 0.5143 | Real_ACC: 1.0000 | Fake_ACC: 0.0271 | AP: 0.9157 | AUC: 0.9158
+2026-06-19 11:10:03,151 - utils.metrics - INFO - san - ACC: 0.7397 | Real_ACC: 1.0000 | Fake_ACC: 0.4795 | AP: 0.9871 | AUC: 0.9876
+2026-06-19 11:10:43,942 - utils.metrics - INFO - seeingdark - ACC: 0.6667 | Real_ACC: 0.9667 | Fake_ACC: 0.3667 | AP: 0.8945 | AUC: 0.9009
+2026-06-19 11:10:43,948 - utils.metrics - INFO -   Universal mean - ACC: 0.6402 | Real_ACC: 0.9889 | Fake_ACC: 0.2911 | AP: 0.9324 | AUC: 0.9347
+2026-06-19 11:10:43,948 - root - INFO - Overall mean ACC: 0.6402 | Overall mean AP: 0.9324
+2026-06-19 11:10:43,948 - root - INFO - Saving evaluation checkpoint: step700_acc64_ap93.pth (step=700, mean ACC=0.6402, mean AP=0.9324)
+2026-06-19 11:10:45,186 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step700_acc64_ap93.pth
+2026-06-19 11:12:32,523 - root - INFO - Step: 800 | Loss: 0.2022 | Avg Time/Step: 2.3592s
+2026-06-19 11:12:32,524 - root - INFO - ================================================================================
+2026-06-19 11:12:32,524 - root - INFO - Evaluating model at step 800
+2026-06-19 11:12:32,524 - root - INFO - ================================================================================
+2026-06-19 11:12:32,525 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 11:13:59,923 - utils.metrics - INFO - deepfake - ACC: 0.5203 | Real_ACC: 1.0000 | Fake_ACC: 0.0389 | AP: 0.9196 | AUC: 0.9138
+2026-06-19 11:14:07,598 - utils.metrics - INFO - san - ACC: 0.7397 | Real_ACC: 1.0000 | Fake_ACC: 0.4795 | AP: 0.9891 | AUC: 0.9896
+2026-06-19 11:14:48,566 - utils.metrics - INFO - seeingdark - ACC: 0.6889 | Real_ACC: 0.9667 | Fake_ACC: 0.4111 | AP: 0.9073 | AUC: 0.9134
+2026-06-19 11:14:48,572 - utils.metrics - INFO -   Universal mean - ACC: 0.6496 | Real_ACC: 0.9889 | Fake_ACC: 0.3098 | AP: 0.9387 | AUC: 0.9389
+2026-06-19 11:14:48,572 - root - INFO - Overall mean ACC: 0.6496 | Overall mean AP: 0.9387
+2026-06-19 11:14:48,572 - root - INFO - New best model (mean AP=0.9387); saving best.pth
+2026-06-19 11:14:50,483 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 11:14:50,536 - root - INFO - Saving evaluation checkpoint: step800_acc65_ap94.pth (step=800, mean ACC=0.6496, mean AP=0.9387)
+2026-06-19 11:14:51,723 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step800_acc65_ap94.pth
+2026-06-19 11:16:39,072 - root - INFO - Step: 900 | Loss: 0.2078 | Avg Time/Step: 2.3710s
+2026-06-19 11:16:39,072 - root - INFO - ================================================================================
+2026-06-19 11:16:39,072 - root - INFO - Evaluating model at step 900
+2026-06-19 11:16:39,072 - root - INFO - ================================================================================
+2026-06-19 11:16:39,074 - root - INFO - >>> Evaluating on Universal dataset
+2026-06-19 11:18:06,443 - utils.metrics - INFO - deepfake - ACC: 0.5302 | Real_ACC: 1.0000 | Fake_ACC: 0.0589 | AP: 0.9376 | AUC: 0.9329
+2026-06-19 11:18:14,040 - utils.metrics - INFO - san - ACC: 0.7580 | Real_ACC: 1.0000 | Fake_ACC: 0.5160 | AP: 0.9917 | AUC: 0.9925
+2026-06-19 11:18:53,140 - utils.metrics - INFO - seeingdark - ACC: 0.7028 | Real_ACC: 0.9667 | Fake_ACC: 0.4389 | AP: 0.9037 | AUC: 0.9113
+2026-06-19 11:18:53,145 - utils.metrics - INFO -   Universal mean - ACC: 0.6637 | Real_ACC: 0.9889 | Fake_ACC: 0.3379 | AP: 0.9443 | AUC: 0.9456
+2026-06-19 11:18:53,146 - root - INFO - Overall mean ACC: 0.6637 | Overall mean AP: 0.9443
+2026-06-19 11:18:53,146 - root - INFO - New best model (mean AP=0.9443); saving best.pth
+2026-06-19 11:18:54,974 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/best.pth
+2026-06-19 11:18:55,026 - root - INFO - Saving evaluation checkpoint: step900_acc66_ap94.pth (step=900, mean ACC=0.6637, mean AP=0.9443)
+2026-06-19 11:18:56,222 - engine.trainer - INFO - [PGCTrainer] Saved checkpoint to: /ssdstore/ssalehi/pgc_400_187220/ckpts/pgc_train_progan/step900_acc66_ap94.pth

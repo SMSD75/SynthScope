@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from PIL import Image
 import synthscope
 
-OFFICIAL = "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth"
+OFFICIAL = "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/PGC_train_progan_ckpt.pth"
 OUT = os.path.join(os.path.dirname(__file__), "interp_smoketest_out")
 os.makedirs(OUT, exist_ok=True)
 FAKE = os.path.join(os.path.dirname(__file__), "ideogram_bench", "fake", "000.png")

@@ -7,7 +7,7 @@ import argparse, datetime, json, sys
 from pathlib import Path
 import torch
 from PIL import Image, ImageFile
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 from config_utils import compose_config
 from interface.backend.engine import _build_model
 from models.image.aide.official_arch import AIDEFiveView
@@ -66,6 +66,6 @@ means = {"acc": mean(agg["acc"]), "map": mean(agg["ap"]), "mauroc": mean(agg["au
 res = {"tag": args.tag, "model": "aide-retrain", "ckpt": args.ckpt, "benchmark": args.benchmark,
        "data_root": args.data, "n_generators": len(per_gen), "means": means, "per_generator": per_gen,
        "date": datetime.datetime.now().isoformat(timespec="seconds")}
-out = Path("/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results") / f"{args.tag}.json"
+out = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/bench_results") / f"{args.tag}.json"
 out.write_text(json.dumps(res, indent=2) + "\n")
 print(f"=== RESULT {args.tag}: mAP={means['map']} mAUROC={means['mauroc']} acc={means['acc']} over {len(per_gen)} gens ===", flush=True)

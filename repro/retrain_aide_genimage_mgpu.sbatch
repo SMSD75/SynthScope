@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --job-name=aideG_rt --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-12:00:00 --cpus-per-task=24 --mem=90G --gres=gpu:3
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aideG_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/retrain_aideG_%j.log
 # AIDE GenImage gap-closer, 3-GPU DeepSpeed (per-GPU bs16 -> eff 48). Closes AIDE's GenImage table
 # (SynthScope 55 OOD -> official ~95). Saves to checkpoints_retrain/aide_genimage (distinct from ProGAN run).
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
-SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_genimage; mkdir -p "$SAVE"
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
+SAVE=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/aide_genimage; mkdir -p "$SAVE"
 export HF_HOME=$DATA/.cache/huggingface TORCH_HOME=$DATA/.cache/torch TRITON_CACHE_DIR=$DATA/.cache/triton
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$HF_HOME" "$TORCH_HOME" "$TRITON_CACHE_DIR"

@@ -1,12 +1,12 @@
 """Remap the OFFICIAL SPAI checkpoint into the SynthScope SPAI class and save an SynthScope-loadable copy.
 Official key namespace (PatchBasedMFViT) -> SynthScope SPAI class names."""
 import os, torch, sys
-os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth")
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 from omegaconf import OmegaConf
 from models.image.spai.spai import SPAI
 
-off = torch.load("/hddstore/ssalehi/AGID/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
+off = torch.load("/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
 if isinstance(off, dict) and "model" in off:
     off = off["model"]
 
@@ -53,7 +53,7 @@ print("unexpected sample:", msg.unexpected_keys[:8])
 # Only acceptable misses are the regenerated `mask` buffer and any pure-backbone aux buffers.
 nonbb_missing = [k for k in msg.missing_keys if not k.startswith("backbone.")]
 if nonbb_missing == ["mask"] or nonbb_missing == []:
-    torch.save(new, "/hddstore/ssalehi/AGID/repro/ckpts/spai_official_synthscope.pth")
+    torch.save(new, "/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official_synthscope.pth")
     print("SAVED spai_official_synthscope.pth — clean load into SynthScope class")
 else:
     print("MISMATCH — refine remap; not saving")

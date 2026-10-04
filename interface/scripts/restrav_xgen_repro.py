@@ -23,8 +23,8 @@ To settle the normalization question, every video's features are computed TWICE 
 Label convention (official): REAL=1, FAKE=0. AUROC is positive-class-invariant; AP is fake-positive.
 """
 import os, sys, glob, re, random, time
-os.environ.setdefault("HF_HOME", "/hddstore/ssalehi/AGID/.cache/huggingface")
-os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/AGID/.cache/torch")
+os.environ.setdefault("HF_HOME", "/hddstore/ssalehi/SynthScope/.cache/huggingface")
+os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/SynthScope/.cache/torch")
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 import torchvision.transforms.functional as TF
 from torchvision.transforms import InterpolationMode
@@ -32,9 +32,9 @@ import decord
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-GV = "/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val"
-EXTRACTED = "/hddstore/ssalehi/AGID/d3_repro/extracted"
-CACHE = "/hddstore/ssalehi/AGID/restrav_xgen_cache"
+GV = "/hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val"
+EXTRACTED = "/hddstore/ssalehi/SynthScope/d3_repro/extracted"
+CACHE = "/hddstore/ssalehi/SynthScope/restrav_xgen_cache"
 os.makedirs(CACHE, exist_ok=True)
 DEV = "cuda"
 T, WIN = 24, 2.0

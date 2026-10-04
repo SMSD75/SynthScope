@@ -7,7 +7,7 @@ from models.image.adapted_dino.adapted_dino import Adapter
 # DINOv3 local repo + gated weights dir (env-overridable). The weights were downloaded to
 # /hddstore on cn023 (the original /nvmestore path is not mounted here).
 _DINOV3_REPO = os.environ.get("DINO_V3_REPO_DIR", "/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/")
-_DINOV3_WEIGHTS_DIR = os.environ.get("DINO_V3_WEIGHTS_DIR", "/hddstore/ssalehi/AGID/dinov3_checkpoints")
+_DINOV3_WEIGHTS_DIR = os.environ.get("DINO_V3_WEIGHTS_DIR", "/hddstore/ssalehi/SynthScope/dinov3_checkpoints")
 
 
 class SynthScopeDINOModel(nn.Module):

@@ -1,9 +1,9 @@
 {
   "tag": "pgc_8gpu_ep25",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu/model_ep25.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_8gpu/model_ep25.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 80.1,

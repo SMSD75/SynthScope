@@ -3,12 +3,12 @@
 # bench_eval with the OFFICIAL adapter on UFD (full), AIGCDetect + AIGIBench (capped per class).
 #SBATCH --job-name=cure_repro --partition=cees --account=ceesusers
 #SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=8 --mem=24G --time=04:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_repro_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_repro_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-REF=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref
-SRC=ivi-cn023:/hddstore/ssalehi/AGID
+REF=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_ref
+SRC=ivi-cn023:/hddstore/ssalehi/SynthScope
 SCR=/ssdstore; [ -w $SCR ] || SCR=/tmp
 D=$SCR/$USER/cure_data; mkdir -p $D $SCR/$USER/cure_hf $SCR/$USER/cure_ckpt
 export HF_HOME=$SCR/$USER/cure_hf PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$SCR/$USER/cure_ckpt

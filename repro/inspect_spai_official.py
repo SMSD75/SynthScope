@@ -1,5 +1,5 @@
 import torch, collections
-sd = torch.load("/hddstore/ssalehi/AGID/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
+sd = torch.load("/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
 if isinstance(sd, dict) and "model" in sd:
     sd = sd["model"]
 ks = list(sd.keys())

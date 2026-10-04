@@ -11,13 +11,13 @@
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32G
 #SBATCH --time=40:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_constlr_hard3_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_constlr_hard3_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-TEST=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test   # deepfake/san/seeingdark (shared FS)
-CKDIR=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr
-export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf
+TEST=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/test   # deepfake/san/seeingdark (shared FS)
+CKDIR=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_8gpu_constlr
+export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/.cache_shared/hf
 export PYTHONUNBUFFERED=1
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 echo "hard-3 test gens: $(ls $TEST 2>/dev/null | tr '\n' ' ')"

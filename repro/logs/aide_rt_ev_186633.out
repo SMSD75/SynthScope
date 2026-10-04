@@ -1,0 +1,32 @@
+NODE=ivi-cn023 ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_2.pth Tue Jun 16 21:34:37 CEST 2026
+CUDA OK
+##### GenImage-8 (in-domain SDv1.4 setting) #####
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+loaded /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_2.pth: 1025 keys, missing(real)=0 unexpected=0
+  adm: acc=51.0 AP=78.7 AUROC=82.74
+  biggan: acc=58.83 AP=98.6 AUROC=98.94
+  glide: acc=85.83 AP=99.89 AUROC=99.89
+  midjourney: acc=74.83 AP=99.54 AUROC=99.53
+  sdv1.4: acc=100.0 AP=100.0 AUROC=100.0
+  sdv1.5: acc=99.83 AP=100.0 AUROC=100.0
+  vqdm: acc=53.17 AP=94.61 AUROC=95.47
+  wukong: acc=99.5 AP=99.99 AUROC=99.99
+=== RESULT aide_retrain_native_g8: mAP=96.42 mAUROC=97.07 acc=77.87 over 8 gens ===
+##### ForenSynths-13 (cross-domain GAN, reference) #####
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+loaded /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_2.pth: 1025 keys, missing(real)=0 unexpected=0
+  biggan: acc=53.0 AP=91.31 AUROC=92.81
+  crn: acc=42.83 AP=31.46 AUROC=6.62
+  cyclegan: acc=59.5 AP=99.54 AUROC=99.55
+  deepfake: acc=66.33 AP=71.84 AUROC=71.18
+  gaugan: acc=51.83 AP=80.45 AUROC=87.54
+  imle: acc=44.83 AP=37.17 AUROC=24.02
+  progan: acc=67.67 AP=91.19 AUROC=91.88
+  san: acc=60.5 AP=72.65 AUROC=73.68
+  seeingdark: acc=68.61 AP=86.21 AUROC=84.09
+  stargan: acc=58.17 AP=98.0 AUROC=98.04
+  stylegan: acc=50.0 AP=94.97 AUROC=95.47
+  stylegan2: acc=70.33 AP=95.09 AUROC=96.87
+  whichfaceisreal: acc=73.17 AP=85.15 AUROC=87.69
+=== RESULT aide_retrain_native_fs: mAP=79.62 mAUROC=77.65 acc=58.98 over 13 gens ===
+=== AIDE RETRAIN EVAL COMPLETE Tue Jun 16 22:13:50 CEST 2026 ===

@@ -1,21 +1,21 @@
 #!/bin/bash
 #SBATCH --job-name=rt_eval --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --time=1-00:00:00 --cpus-per-task=8 --mem=44G --gres=gpu:1
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/eval_rt_%x_%j.log
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/eval_logs/eval_rt_%x_%j.log
 # Eval a gap-closing retrained checkpoint on cn029 (free GPUs; GenImage_full + CNNDetection already on its
 # /ssdstore). Self-stages UFD (small) and, for co_spy, CoSpyBench if present. MODEL via --export.
 # Picks the latest checkpoints_retrain/<model>/model_*.pth (on shared /ivi). Appends to MASTER_RESULTS.jsonl.
-set -uo pipefail; cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+set -uo pipefail; cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 : "${MODEL:?pass MODEL=vib_net|aide|co_spy|spai}"
-DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
+DATA=/ssdstore/ssalehi/SynthScope; CONDA=/home/ssalehi/miniconda3/bin/conda
 export SYNTHSCOPE_CKPT_DIR=$DATA/checkpoints SYNTHSCOPE_MFM_CKPT=$DATA/mfm/mfm_pretrain_vit_base.pth \
        HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/huggingface \
        TORCH_HOME=/ivi/zfs/s0/original_homes/ssalehi/.cache/torch OMP_NUM_THREADS=4 \
        PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$SYNTHSCOPE_CKPT_DIR"
 RS=(rsync -aL -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no")
-[ -d "$DATA/universialfakedetection" ] || { echo "[stage] ufd"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/AGID/universialfakedetection "$DATA/" 2>&1|tail -1; }
-CKDIR=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/$MODEL
+[ -d "$DATA/universialfakedetection" ] || { echo "[stage] ufd"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/SynthScope/universialfakedetection "$DATA/" 2>&1|tail -1; }
+CKDIR=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/$MODEL
 CK=$(ls -1v "$CKDIR"/model_*.pth 2>/dev/null | tail -1)
 [ -z "$CK" ] && { echo "no checkpoint in $CKDIR"; exit 1; }
 BS=64; case "$MODEL" in spai) BS=8 ;; aide) BS=32 ;; esac

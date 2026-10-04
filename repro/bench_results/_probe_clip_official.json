@@ -1,9 +1,9 @@
 {
   "tag": "_probe_clip_official",
   "model": "clip",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/clip/fc_weights.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/clip/fc_weights.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 1,
   "means": {
     "acc": 42.5,

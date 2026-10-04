@@ -13,7 +13,7 @@ from backend.engine import get_engine          # noqa: E402
 from backend.registry import get_spec          # noqa: E402
 from backend import media                       # noqa: E402
 
-ROOT = "/hddstore/ssalehi/AGID/restrav_data"
+ROOT = "/hddstore/ssalehi/SynthScope/restrav_data"
 N = 200  # per class per split
 
 

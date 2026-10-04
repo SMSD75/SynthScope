@@ -1,7 +1,7 @@
 name: evalcrafter
 # EvalCrafter benchmark (Liu et al. 2024), used by D3. Lay out videos as
 # <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
-root_dir: /hddstore/ssalehi/AGID/EvalCrafter
+root_dir: /hddstore/ssalehi/SynthScope/EvalCrafter
 # EvalCrafterDataset downloads the per-generator *.tar.gz from this repo and extracts each into
 # <root>/test/1_fake/<generator>/ (all clips are AI-generated — no reals).
 hf_repo_id: RaphaelLiu/EvalCrafter_T2V_Dataset

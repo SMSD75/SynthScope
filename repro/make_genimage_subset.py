@@ -1,6 +1,6 @@
 import os, glob, random
-src = "/hddstore/ssalehi/AGID/GenImage"
-dst = "/hddstore/ssalehi/AGID/GenImage_sub"
+src = "/hddstore/ssalehi/SynthScope/GenImage"
+dst = "/hddstore/ssalehi/SynthScope/GenImage_sub"
 random.seed(0)
 for split, n in [("train", 12000), ("test", 2000)]:
     for cls in ["real", "fake"]:

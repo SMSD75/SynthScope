@@ -1,0 +1,13 @@
+NODE=ivi-cn029 GPU=0 Sun Oct  4 11:11:03 CEST 2026
+CUDA NVIDIA RTX A5000 | diffusers 0.41.0.dev0
+================ flux2_klein_4b 11:11:08 ================
+  deprecate("torch_dtype", "1.0.0", _TORCH_DTYPE_DEPRECATION_MESSAGE)
+saved /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/flux2_klein_4b.png (368, 496) via Flux2KleinPipeline (black-forest-labs/FLUX.2-klein-4B)
+1 MiB
+================ qwen_image_2_1 11:12:00 ================
+  deprecate("torch_dtype", "1.0.0", _TORCH_DTYPE_DEPRECATION_MESSAGE)
+/tmp/tmp0rd9xy03: line 3: 1444817 Killed                  python /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_wt/interface/backend/local_gen.py --model qwen_image_2_1 --image /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png --prompt 'make another image conceptually similar to this' --out /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/qwen_image_2_1.png
+ERROR conda.cli.main_run:execute(125): `conda run python /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_wt/interface/backend/local_gen.py --model qwen_image_2_1 --image /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png --prompt make another image conceptually similar to this --out /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/qwen_image_2_1.png` failed. (See above for error)
+1 MiB
+=== GEN TEST DONE Sun Oct  4 11:14:56 CEST 2026 ===
+[2026-10-04T11:14:56.179] error: Detected 1 oom_kill event in StepId=246740.batch. Some of the step tasks have been OOM Killed.

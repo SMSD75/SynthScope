@@ -10,16 +10,16 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=01:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/safe_v2_fs8_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/safe_v2_fs8_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-CK=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth
-H=/hddstore/ssalehi/AGID
+CK=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/safe_full_v2/model_38.pth
+H=/hddstore/ssalehi/SynthScope
 echo "NODE=$(hostname) CK=$CK $(date)"
 ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
-full=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/safe_v2_fs8_${SLURM_JOB_ID}.full.log
+full=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/safe_v2_fs8_${SLURM_JOB_ID}.full.log
 $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model safe --ckpt "$CK" \
   --benchmark forensynths --data "$H/CNNDetection/test" \
   --select biggan,cyclegan,deepfake,gaugan,progan,stargan,stylegan,stylegan2 \

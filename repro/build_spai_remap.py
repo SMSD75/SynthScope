@@ -1,9 +1,9 @@
 import os, torch
-os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth")
+os.environ.setdefault("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth")
 from omegaconf import OmegaConf
-import sys; sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+import sys; sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 
-off = torch.load("/hddstore/ssalehi/AGID/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
+off = torch.load("/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth", map_location="cpu", weights_only=False)
 if isinstance(off, dict) and "model" in off:
     off = off["model"]
 # official non-vit keys (the projectors/context/SCV live under mfvit.* but not mfvit.vit.*)

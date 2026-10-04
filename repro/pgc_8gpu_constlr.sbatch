@@ -11,9 +11,9 @@
 #SBATCH --cpus-per-task=48
 #SBATCH --mem=180G
 #SBATCH --time=36:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_constlr_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/pgc_constlr_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname)  GPUS=$CUDA_VISIBLE_DEVICES  $(date)"
 
@@ -23,19 +23,19 @@ $CONDA run --no-capture-output -n SynthScope python -c \
 # data: MUST reuse pre-staged node-local copy on cn029 (cn023 is down -> no ssh-stream fallback)
 DATA=""
 for d in /ssdstore /nvmestore /scratch /local; do
-  [ -d "$d/ssalehi/AGID/CNNDetection/train" ] && DATA="$d/ssalehi/AGID/CNNDetection" && break
+  [ -d "$d/ssalehi/SynthScope/CNNDetection/train" ] && DATA="$d/ssalehi/SynthScope/CNNDetection" && break
 done
 [ -n "$DATA" ] || { echo "[data] no pre-staged CNNDetection on this node -- ABORT"; exit 1; }
 echo "[data] REUSING $DATA ($(du -sh $DATA/train 2>/dev/null | cut -f1) train)"
 
-OUTDIR=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr
+OUTDIR=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_8gpu_constlr
 mkdir -p "$OUTDIR"
 export PGC_DATA_ROOT="$DATA/train"
 export PGC_N=400000 PGC_EPOCHS=100 PGC_BS=16
 export PGC_TMAX_MULT=4          # replicate official near-constant ~5e-5 LR
 export PGC_MILESTONES=10,25,50,75,100
 export PGC_OUT="$OUTDIR/model.pth"
-export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf
+export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/.cache_shared/hf
 export PYTHONUNBUFFERED=1
 NG=$(echo $CUDA_VISIBLE_DEVICES | tr ',' '\n' | wc -l)
 echo "[train] DDP on $NG GPUs (ProGAN, const-LR / official-matched schedule)"

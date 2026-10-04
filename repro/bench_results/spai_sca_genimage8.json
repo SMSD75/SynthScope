@@ -1,9 +1,9 @@
 {
   "tag": "spai_sca_genimage8",
   "model": "spai",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/spai_sca/model_4.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/spai_sca/model_4.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 50.0,

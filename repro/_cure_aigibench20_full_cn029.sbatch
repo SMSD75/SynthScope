@@ -3,12 +3,12 @@
 # (no --limit). Official adapter through the SynthScope port; runs from the trending/cure worktree.
 #SBATCH --job-name=cure_aigi20 --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=8 --mem=24G --time=05:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_aigi20_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_aigi20_%j.out
 set -u
-W=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_wt
+W=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_wt
 cd $W
 CONDA=/home/ssalehi/miniconda3/bin/conda
-S=/ssdstore/ssalehi/AGID
+S=/ssdstore/ssalehi/SynthScope
 export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt PYTHONPATH=$W
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date) | code=$(git log --oneline -1)"
 SEL=ProGAN,R3GAN,StyleGAN3,StyleGAN-XL,StyleSwim,WFIR,DALLE-3,FLUX1-dev,GLIDE,Imagen3,Midjourney,SD3,SDXL,BLIP,Infinite_ID,InstantID,IP_Adapter,PhotoMaker,CommunityAI,SocialRF

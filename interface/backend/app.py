@@ -143,9 +143,9 @@ from .datasets import _root_candidates  # node-portable scratch-mount remap (/hd
 # Base patterns point at cn023 /hddstore; expand each onto the other scratch mounts so the
 # real-image pool resolves wherever the data was staged (cees /ssdstore, etc.).
 _REAL_POOL_PATTERNS = [
-    "/hddstore/ssalehi/AGID/GenImage/test/real",
-    "/hddstore/ssalehi/AGID/CNNDetection/test/*/0_real",
-    "/hddstore/ssalehi/AGID/GenImage_full/test_full/*/0_real",
+    "/hddstore/ssalehi/SynthScope/GenImage/test/real",
+    "/hddstore/ssalehi/SynthScope/CNNDetection/test/*/0_real",
+    "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/*/0_real",
 ]
 _REAL_POOLS = [c for p in _REAL_POOL_PATTERNS for c in _root_candidates(p)]
 

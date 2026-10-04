@@ -1,9 +1,9 @@
 {
   "tag": "aide_official_nativeres_g8",
   "model": "aide",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/sd14_train.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/aide/AIDE_checkpoints/sd14_train.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test_full",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full",
   "n_generators": 8,
   "means": {
     "acc": 85.89,

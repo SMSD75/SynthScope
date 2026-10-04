@@ -8,7 +8,7 @@ repro/bench_results/ (see the per-row tags in the spec notes). Run with --audit 
 """
 import json, glob, os, sys
 
-ROOT = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
+ROOT = "/ivi/zfs/s0/original_homes/ssalehi/SynthScope"
 
 # (model, benchmark-name-substring) -> verified {synthscope:{...}, official:{...}} numbers.
 # These resolve the SynthScope-vs-official ambiguity in the spec our_number dicts and surface the number

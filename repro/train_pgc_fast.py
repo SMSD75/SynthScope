@@ -7,7 +7,7 @@ state_dict that the SynthScope engine / bench_eval load directly. Prints per-epo
 env: IDEO unused. Knobs: PGC_REGIME(progan|sdv14), PGC_N(per class), PGC_EPOCHS, PGC_OUT, CUDA_VISIBLE_DEVICES.
 """
 import os, sys, glob, time, random
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import v2
@@ -20,7 +20,7 @@ from models.image.pgc.pgc import SynthScopePGCModel
 REGIME = os.environ.get("PGC_REGIME", "progan")
 N = int(os.environ.get("PGC_N", "12000"))
 EPOCHS = int(os.environ.get("PGC_EPOCHS", "25"))
-OUT = os.environ.get("PGC_OUT", "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_fast/model.pth")
+OUT = os.environ.get("PGC_OUT", "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_progan_fast/model.pth")
 BS = int(os.environ.get("PGC_BS", "128"))
 IMNET_MEAN, IMNET_STD = (0.485, 0.456, 0.406), (0.229, 0.224, 0.225)
 EXT = (".png", ".jpg", ".jpeg", ".webp", ".bmp", ".JPEG")
@@ -32,11 +32,11 @@ def log(*a):
 
 def collect(regime):
     if regime == "progan":
-        root = "/hddstore/ssalehi/AGID/CNNDetection/train"
+        root = "/hddstore/ssalehi/SynthScope/CNNDetection/train"
         reals = [f for f in glob.glob(root + "/**/0_real/*", recursive=True) if f.endswith(EXT)]
         fakes = [f for f in glob.glob(root + "/**/1_fake/*", recursive=True) if f.endswith(EXT)]
     elif regime == "sdv14":
-        root = "/hddstore/ssalehi/AGID/GenImage/train"
+        root = "/hddstore/ssalehi/SynthScope/GenImage/train"
         reals = [f for f in glob.glob(root + "/real/*") if f.endswith(EXT)]
         fakes = [f for f in glob.glob(root + "/fake/*") if f.endswith(EXT)]
     else:

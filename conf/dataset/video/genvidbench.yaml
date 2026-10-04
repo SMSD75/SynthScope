@@ -1,7 +1,7 @@
 name: genvidbench
 # GenVidBench benchmark (Ni et al. 2025), used by ReStraV. Lay out videos as
 # <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
-root_dir: /hddstore/ssalehi/AGID/GenVidBench
+root_dir: /hddstore/ssalehi/SynthScope/GenVidBench
 # GenVidBenchDataset downloads the per-source rar/7z archives from this repo and extracts reals
 # (Vript, HD-VG-130M) -> test/0_real/ and the 8 generators -> test/1_fake/ (needs the `unrar` binary).
 hf_repo_id: bitmind/GenVidBench

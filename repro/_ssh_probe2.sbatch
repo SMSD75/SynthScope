@@ -6,7 +6,7 @@
 #SBATCH --mem=4G
 #SBATCH --time=00:04:00
 #SBATCH --exclude=ivi-cn020
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/ssh_probe2.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/ssh_probe2.out
 echo "ON: $(hostname)"
 echo "--- name resolution + route ---"
 getent hosts ivi-cn023 || echo "DNS FAIL"

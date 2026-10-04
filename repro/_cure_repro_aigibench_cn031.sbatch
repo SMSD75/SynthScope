@@ -3,12 +3,12 @@
 # --limit 1500 = first 1500 images per class per generator (25 generators, ~4500/class available).
 #SBATCH --job-name=cure_aigi --partition=cees6000 --account=ceesusers --nodelist=ivi-cn031
 #SBATCH --gres=gpu:rtx_6000:1 --cpus-per-task=8 --mem=24G --time=03:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_aigi_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_aigi_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-REF=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref
-S=/nvmestore/ssalehi/AGID
+REF=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_ref
+S=/nvmestore/ssalehi/SynthScope
 mkdir -p $S/cure_ckpt $S/.cache_hf_cure
 export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt
 cp $REF/CuRe/weights/cure_adapter.pt $SYNTHSCOPE_CKPT_DIR/cure.pth      # OFFICIAL adapter, unchanged

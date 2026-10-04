@@ -114,7 +114,7 @@ synthscope.list_models(); synthscope.available_models()   # registered / weights
 ```
 CLI: `synthscope list`, `synthscope detect <file> --model <k>`, `synthscope pull <k>` (fetch weights from the HF model
 zoo), `synthscope push` (maintainer). Weights resolve under **`$SYNTHSCOPE_CKPT_DIR`** (default
-`/hddstore/ssalehi/AGID/checkpoints`; override per node) or are auto-downloaded.
+`/hddstore/ssalehi/SynthScope/checkpoints`; override per node) or are auto-downloaded.
 
 ---
 
@@ -152,7 +152,7 @@ weights (`*.pth`), `.env`, or caches.
 ## 9. Cluster cheat-sheet (IvI SLURM)
 
 - **cn023** (`quva`/`quvausers`, A6000) holds all detector checkpoints + most datasets on node-local
-  **`/hddstore`**; GPUs are often booked for days. `SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints`.
+  **`/hddstore`**; GPUs are often booked for days. `SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/SynthScope/checkpoints`.
 - **cees** (`ceesusers`: cn029 etc., a5000, free) and **cees6000** (cn030/31, rtx6000) use node-local
   `/ssdstore` / `/nvmestore`. To run there, stage checkpoints/data from cn023 (`rsync -aL`, dereference
   the symlinks) — note `pam_slurm_adopt` only allows ssh to a node where you hold an active job.

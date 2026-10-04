@@ -1,9 +1,9 @@
 {
   "tag": "_probe_cnn_official",
   "model": "cnn",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/official_ckpts/cnn/blur_jpg_prob0.5.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/repro/official_ckpts/cnn/blur_jpg_prob0.5.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 1,
   "means": {
     "acc": 57.5,

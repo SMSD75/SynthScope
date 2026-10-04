@@ -1,8 +1,8 @@
 #!/bin/bash
-RELAY=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/relay
+RELAY=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/relay
 until [ -f $RELAY/USE_RELAY ]; do [ -f $RELAY/SSH_OK ] && exit 0; sleep 10; done
 i=0
-tar -C /hddstore/ssalehi/AGID/CNNDetection -cf - train test | while :; do
+tar -C /hddstore/ssalehi/SynthScope/CNNDetection -cf - train test | while :; do
   while [ $(ls $RELAY/*.chunk 2>/dev/null | wc -l) -ge 2 ]; do sleep 5; done
   p=$RELAY/chunk_$(printf %05d $i).part
   dd of="$p" bs=4M count=3072 iflag=fullblock 2>/dev/null

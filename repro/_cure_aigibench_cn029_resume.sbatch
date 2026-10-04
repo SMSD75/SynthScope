@@ -5,12 +5,12 @@
 # branches in the shared checkout cannot change what the job executes.
 #SBATCH --job-name=cure_aigi29b --partition=cees --account=ceesusers --nodelist=ivi-cn029
 #SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=8 --mem=24G --time=05:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_aigi29b_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_aigi29b_%j.out
 set -u
-W=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_wt
+W=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_wt
 cd $W
 CONDA=/home/ssalehi/miniconda3/bin/conda
-S=/ssdstore/ssalehi/AGID; R=$S/AIGIBench/test
+S=/ssdstore/ssalehi/SynthScope; R=$S/AIGIBench/test
 export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt PYTHONPATH=$W
 export UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date) | code=$(git -C $W log --oneline -1)"

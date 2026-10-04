@@ -1,6 +1,6 @@
 #!/bin/bash
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-HS=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/sdv14_handshake
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+HS=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/sdv14_handshake
 A5=184795; C31=184776
 while :; do
   # handshake: a node requested data -> push GenImage to it
@@ -10,7 +10,7 @@ while :; do
     echo "[arbiter] pushing GenImage to $N ($IP)"
     D=""; for d in /ssdstore /nvmestore /scratch /local; do
       ssh -o BatchMode=yes -o StrictHostKeyChecking=no "$IP" "[ -w $d ]" 2>/dev/null && D="$d" && break; done
-    tar -C /hddstore/ssalehi/AGID/GenImage -cf - train |       ssh -o BatchMode=yes -o StrictHostKeyChecking=no "$IP" "mkdir -p $D/ssalehi/AGID/GenImage && tar -C $D/ssalehi/AGID/GenImage -xf -"       && { touch "$HS/DATA_READY"; echo "[arbiter] push done"; } || echo "[arbiter] push FAILED"
+    tar -C /hddstore/ssalehi/SynthScope/GenImage -cf - train |       ssh -o BatchMode=yes -o StrictHostKeyChecking=no "$IP" "mkdir -p $D/ssalehi/SynthScope/GenImage && tar -C $D/ssalehi/SynthScope/GenImage -xf -"       && { touch "$HS/DATA_READY"; echo "[arbiter] push done"; } || echo "[arbiter] push FAILED"
     rm -f "$HS/PUSHING"
   fi
   # arbitration: cancel the loser when one SDv14 job starts training

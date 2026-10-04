@@ -63,7 +63,7 @@
         "WildScrape": 95.49
       },
       "gap_cause": "Closed on the robust metrics: the two levers were the X-CLIP-B/16 encoder (was CLIP) and the 10% edge-crop preprocessing (was a direct resize). The residual paper-mAP gap is a benchmark-harness artifact (extreme real:fake imbalance), not a model gap.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val (14 GB; downloaded from ModelScope cccnju/Gen-Video GenVideo-Val.zip). The real source is MSR-VTT.",
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val (14 GB; downloaded from ModelScope cccnju/Gen-Video GenVideo-Val.zip). The real source is MSR-VTT.",
       "xclip_weights_downloadable": "YES \u2014 microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights."
     },
     {
@@ -116,7 +116,7 @@
         "acc": 87.67
       },
       "gap_cause": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 92.9-95.1. Recoverable with XCLIP + edge-crop + 1 s HotShot window.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/AGID/EvalCrafter/test/1_fake (19 GB; HF RaphaelLiu/EvalCrafter_T2V_Dataset). Fake-only; reals borrowed from GenVideo-Val."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/EvalCrafter/test/1_fake (19 GB; HF RaphaelLiu/EvalCrafter_T2V_Dataset). Fake-only; reals borrowed from GenVideo-Val."
     },
     {
       "name": "VideoPhy (Table 3, 10 generators)",

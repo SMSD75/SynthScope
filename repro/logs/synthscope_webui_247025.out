@@ -1,0 +1,12 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 16:49:49 CEST 2026 | code=27a07ba Rename remaining AGID names to SynthScope: env vars, class names, schemas, conda env, docs
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/AGID/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving SynthScope interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1493358]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:36434 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36438 - "GET / HTTP/1.1" 200 OK
+[2026-10-04T16:53:37.718] error: *** JOB 247025 ON ivi-cn029 CANCELLED AT 2026-10-04T16:53:37 DUE to SIGNAL Terminated ***

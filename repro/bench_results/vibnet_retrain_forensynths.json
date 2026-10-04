@@ -1,9 +1,9 @@
 {
   "tag": "vibnet_retrain_forensynths",
   "model": "vib_net",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/vibnet_genimage/model_4.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/vibnet_genimage/model_4.pth",
   "benchmark": "forensynths",
-  "data_root": "/hddstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 57.91,

@@ -10,11 +10,11 @@ Usage: python fetch_full_eval.py <which>   where which in {genimage, aigcdetect,
 import sys, shutil
 from pathlib import Path
 
-sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/AGID")
+sys.path.insert(0, "/ivi/zfs/s0/original_homes/ssalehi/SynthScope")
 from dataset import _extract_archives_into, _restructure_image_pergen  # noqa: E402
 
 
-def fetch_genimage(base="/hddstore/ssalehi/AGID/GenImage_full"):
+def fetch_genimage(base="/hddstore/ssalehi/SynthScope/GenImage_full"):
     from huggingface_hub import hf_hub_download
     base = Path(base)
     dl = base / "_dl_full"; dl.mkdir(parents=True, exist_ok=True)
@@ -36,7 +36,7 @@ def fetch_genimage(base="/hddstore/ssalehi/AGID/GenImage_full"):
             print(f"  {g.name}: real={r} fake={f}", flush=True)
 
 
-def fetch_aigcdetect(base="/hddstore/ssalehi/AGID/AIGCDetectBenchmark"):
+def fetch_aigcdetect(base="/hddstore/ssalehi/SynthScope/AIGCDetectBenchmark"):
     base = Path(base)
     dl = base / "_dl_full"; dl.mkdir(parents=True, exist_ok=True)
     url = ("https://modelscope.cn/api/v1/datasets/aemilia/AIGCDetectionBenchmark/"

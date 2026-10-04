@@ -1,0 +1,36 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 11:30:44 CEST 2026 | code=4eab30e Web UI: local open-weight generators FLUX.2 [klein] 4B and Qwen-Image-2.1 (isolated subprocess)
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/AGID/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1452975]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:58612 - "GET /api/sota/generators HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights:   8%|▊         | 36/439 [00:00<00:01, 271.43it/s]Loading weights:  15%|█▍        | 64/439 [00:01<00:08, 44.02it/s] Loading weights:  18%|█▊        | 77/439 [00:01<00:08, 42.11it/s]Loading weights:  20%|█▉        | 86/439 [00:01<00:09, 37.50it/s]Loading weights:  21%|██        | 93/439 [00:02<00:11, 31.24it/s]Loading weights:  23%|██▎       | 102/439 [00:02<00:09, 34.00it/s]Loading weights:  26%|██▌       | 112/439 [00:02<00:10, 30.04it/s]Loading weights:  26%|██▋       | 116/439 [00:03<00:15, 21.14it/s]Loading weights:  27%|██▋       | 119/439 [00:03<00:15, 20.36it/s]Loading weights:  29%|██▉       | 129/439 [00:04<00:16, 18.77it/s]Loading weights:  31%|███       | 134/439 [00:04<00:14, 20.54it/s]Loading weights:  31%|███▏      | 138/439 [00:04<00:14, 21.42it/s]Loading weights:  35%|███▍      | 152/439 [00:04<00:08, 33.23it/s]Loading weights:  38%|███▊      | 167/439 [00:05<00:07, 36.23it/s]Loading weights:  42%|████▏     | 183/439 [00:05<00:05, 51.03it/s]Loading weights:  43%|████▎     | 190/439 [00:05<00:05, 47.09it/s]Loading weights:  45%|████▍     | 196/439 [00:05<00:08, 29.92it/s]Loading weights:  46%|████▌     | 201/439 [00:06<00:07, 32.33it/s]Loading weights:  49%|████▊     | 214/439 [00:06<00:04, 46.22it/s]Loading weights:  50%|█████     | 221/439 [00:06<00:07, 30.63it/s]Loading weights:  52%|█████▏    | 227/439 [00:06<00:06, 31.54it/s]Loading weights:  53%|█████▎    | 232/439 [00:06<00:06, 31.46it/s]Loading weights:  56%|█████▌    | 245/439 [00:07<00:05, 36.95it/s]Loading weights:  59%|█████▉    | 258/439 [00:07<00:03, 46.74it/s]Loading weights:  60%|██████    | 264/439 [00:07<00:05, 30.60it/s]Loading weights:  62%|██████▏   | 270/439 [00:08<00:05, 28.58it/s]Loading weights:  62%|██████▏   | 274/439 [00:08<00:07, 22.58it/s]Loading weights:  67%|██████▋   | 294/439 [00:08<00:03, 40.50it/s]Loading weights:  68%|██████▊   | 300/439 [00:08<00:03, 39.96it/s]Loading weights:  69%|██████▉   | 305/439 [00:08<00:03, 40.31it/s]Loading weights:  71%|███████   | 310/439 [00:09<00:03, 36.01it/s]Loading weights:  72%|███████▏  | 315/439 [00:09<00:03, 37.66it/s]Loading weights:  75%|███████▍  | 329/439 [00:09<00:01, 55.55it/s]Loading weights:  77%|███████▋  | 339/439 [00:09<00:02, 37.54it/s]Loading weights:  88%|████████▊ | 388/439 [00:09<00:00, 93.27it/s]Loading weights:  95%|█████████▍| 415/439 [00:10<00:00, 120.98it/s]Loading weights: 100%|██████████| 439/439 [00:10<00:00, 43.16it/s] 
+INFO:     10.4.0.1:35108 - "POST /api/sota/compare HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 8243.46it/s]
+INFO:     10.4.0.1:35692 - "POST /api/sota/compare HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54736 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54748 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54736 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54758 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54736 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54736 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54748 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54758 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54766 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54766 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54766 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:54766 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39868 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58438 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+INFO:     10.4.0.1:58438 - "POST /api/sota/compare HTTP/1.1" 200 OK
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+[2026-10-04T11:52:11.781] error: *** JOB 246765 ON ivi-cn029 CANCELLED AT 2026-10-04T11:52:11 DUE to SIGNAL Terminated ***

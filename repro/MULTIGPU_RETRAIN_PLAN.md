@@ -59,7 +59,7 @@ Two fixes, either makes the rest ~10× faster:
   `accelerate_config.yaml`, `--num_processes 4 --gres=gpu:4` (the prior AIDE 3-GPU runs used this pattern:
   `repro/retrain_aide_genimage_mgpu.sbatch`).
 - **Data staging:** GenImage/dmid_real already on cn029. SAFE needs ProGAN → rsync
-  `ivi-cn023:/hddstore/ssalehi/AGID/CNNDetection` to the node's scratch (~72G). Evals that need
+  `ivi-cn023:/hddstore/ssalehi/SynthScope/CNNDetection` to the node's scratch (~72G). Evals that need
   CoSpyBench/AIGCDetect (440G+) stay on **cn023 GPUs 4&7** (data is node-local there).
 
 ## Per-model recipe

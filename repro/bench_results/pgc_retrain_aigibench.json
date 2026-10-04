@@ -1,9 +1,9 @@
 {
   "tag": "pgc_retrain_aigibench",
   "model": "pgc",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/pgc_genimage/model_0.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/pgc_genimage/model_0.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/AIGIBench/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/AIGIBench/test",
   "n_generators": 25,
   "means": {
     "acc": 75.15,

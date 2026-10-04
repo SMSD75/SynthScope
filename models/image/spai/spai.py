@@ -16,7 +16,7 @@ IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 # Path to the MFM-pretrained ViT-B/16 backbone weights. Override per-node (e.g. on a non-cn023 node
 # with a local copy) via the SYNTHSCOPE_MFM_CKPT env var.
-MFM_CKPT = os.environ.get("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth")
+MFM_CKPT = os.environ.get("SYNTHSCOPE_MFM_CKPT", "/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth")
 
 
 def _init(m):

@@ -14,7 +14,7 @@ set +e
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 CONDA="${CONDA_EXE:-/home/ssalehi/miniconda3/bin/conda}"
-CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
+CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/SynthScope/checkpoints}"
 ORCH_LOG="$CKPT_DIR/_train/orchestrator.log"
 mkdir -p "$CKPT_DIR/_train"
 TRAIN=interface/scripts/train_model.sh

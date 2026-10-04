@@ -9,16 +9,16 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=02:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/safe_repro_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/safe_repro_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-CKPT=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_ckpts_shared/safe_checkpoint-best.pth
+CKPT=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/official_ckpts_shared/safe_checkpoint-best.pth
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 # locate ForenSynths test data (node-local on cn029)
 DATA=""
 for d in /ssdstore /nvmestore /scratch /local; do
-  [ -d "$d/ssalehi/AGID/CNNDetection/test" ] && DATA="$d/ssalehi/AGID/CNNDetection/test" && break
+  [ -d "$d/ssalehi/SynthScope/CNNDetection/test" ] && DATA="$d/ssalehi/SynthScope/CNNDetection/test" && break
 done
 [ -n "$DATA" ] || { echo "NO ForenSynths test on this node (checked /ssdstore etc.) -- redirect to cn023"; exit 3; }
 echo "[data] $DATA ($(ls $DATA | wc -l) generators)"

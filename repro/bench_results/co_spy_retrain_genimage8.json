@@ -1,9 +1,9 @@
 {
   "tag": "co_spy_retrain_genimage8",
   "model": "co_spy",
-  "ckpt": "/hddstore/ssalehi/AGID/checkpoints/_train/cospy_retrain/model_5.pth",
+  "ckpt": "/hddstore/ssalehi/SynthScope/checkpoints/_train/cospy_retrain/model_5.pth",
   "benchmark": "pergen",
-  "data_root": "/hddstore/ssalehi/AGID/GenImage_full/test",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test",
   "n_generators": 8,
   "means": {
     "acc": 61.08,

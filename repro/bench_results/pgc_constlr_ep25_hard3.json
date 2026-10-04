@@ -1,9 +1,9 @@
 {
   "tag": "pgc_constlr_ep25_hard3",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/checkpoints_retrain/pgc_8gpu_constlr/model_ep25.pth",
   "benchmark": "forensynths",
-  "data_root": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/test",
+  "data_root": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/test",
   "n_generators": 3,
   "means": {
     "acc": 50.21,

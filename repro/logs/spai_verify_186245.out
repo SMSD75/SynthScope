@@ -1,0 +1,59 @@
+NODE=ivi-cn023 GPU=0 Tue Jun 16 08:27:08 CEST 2026  spai.pth -> /hddstore/ssalehi/AGID/repro/ckpts/spai_official_agid.pth
+CUDA OK
+===== spai_served_synthbuster =====
+=== bench_eval spai_served_synthbuster | model=spai ckpt=registry-default | pergen | 9 generators | device=cuda ===
+[FAIL rc=1]
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/benchmark/bench_eval.py", line 156, in score
+    probs.append(det._engine._fake_prob(model, spec, x).detach().float().cpu())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/engine.py", line 169, in _fake_prob
+    return torch.sigmoid(model(x).reshape(x.shape[0]))
+                         ^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/models/image/spai/spai.py", line 193, in forward
+    patches = patchify_image(x, self.patch_size, self.patch_stride)                # B x L x C x p x p
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/models/image/spai/spai.py", line 70, in patchify_image
+    img = img.unfold(2, patch, stride).unfold(3, patch, stride)      # B x C x nH x nW x patch x patch
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: maximum size for tensor at dimension 2 is 172 but size is 224
+ERROR conda.cli.main_run:execute(125): `conda run python benchmark/bench_eval.py --model spai --benchmark pergen --data /hddstore/ssalehi/AGID/Synthbuster/test --limit 200 --device cuda --tag spai_served_synthbuster` failed. (See above for error)
+===== spai_served_genimage8 =====
+=== bench_eval spai_served_genimage8 | model=spai ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[FAIL rc=1]
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/benchmark/bench_eval.py", line 156, in score
+    probs.append(det._engine._fake_prob(model, spec, x).detach().float().cpu())
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/engine.py", line 169, in _fake_prob
+    return torch.sigmoid(model(x).reshape(x.shape[0]))
+                         ^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/models/image/spai/spai.py", line 193, in forward
+    patches = patchify_image(x, self.patch_size, self.patch_stride)                # B x L x C x p x p
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/models/image/spai/spai.py", line 70, in patchify_image
+    img = img.unfold(2, patch, stride).unfold(3, patch, stride)      # B x C x nH x nW x patch x patch
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: maximum size for tensor at dimension 2 is 156 but size is 224
+ERROR conda.cli.main_run:execute(125): `conda run python benchmark/bench_eval.py --model spai --benchmark pergen --data /hddstore/ssalehi/AGID/GenImage_full/test --limit 300 --device cuda --tag spai_served_genimage8` failed. (See above for error)
+=== SPAI SERVED VERIFY COMPLETE Tue Jun 16 08:27:44 CEST 2026 ===

@@ -8,7 +8,7 @@ Method: read the SynthScope class, clone + read the official repo, diff backbone
 head / resolution / normalization / key preprocessing / loss. Also cross-checked
 against the vendored "official" evals in `repro/official_evals/`.
 
-Official repos cloned to `/hddstore/ssalehi/AGID/official_repos/`:
+Official repos cloned to `/hddstore/ssalehi/SynthScope/official_repos/`:
 - Co-Spy  → `Megum1/Co-Spy`
 - AIDE    → `shilinyan99/AIDE`
 - VIB-Net → `oceanzhf/VIBAIGCDetect`

@@ -10,12 +10,12 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
 #SBATCH --time=2-00:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/webui_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/webui_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
-export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf
+export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/SynthScope/checkpoints
+export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/.cache_shared/hf
 export SYNTHSCOPE_PORT=${SYNTHSCOPE_PORT:-8021} SYNTHSCOPE_HOST=0.0.0.0
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES PORT=$SYNTHSCOPE_PORT $(date)"
 

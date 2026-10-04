@@ -1,0 +1,43 @@
+NODE=ivi-cn023 GPU=0 Tue Jun 16 23:19:28 CEST 2026
+CUDA OK
+===== d3_xclip_genvideo (genvideo) =====
+=== bench_eval_video d3_xclip_genvideo | d3 | genvideo | 10 gens | device=cuda ===
+    Crafter: acc=96.47 AP=85.11 AUROC=99.01
+    Gen2: acc=96.43 AP=84.26 AUROC=99.03
+    HotShot: acc=56.43 AP=13.33 AUROC=73.03
+    Lavie: acc=95.25 AP=80.82 AUROC=98.36
+    ModelScope: acc=94.15 AP=64.16 AUROC=97.74
+    MoonValley: acc=96.34 AP=71.78 AUROC=98.96
+    MorphStudio: acc=96.22 AP=68.21 AUROC=98.58
+    Show_1: acc=96.36 AP=70.56 AUROC=98.75
+    Sora: acc=95.68 AP=18.31 AUROC=98.75
+    WildScrape: acc=93.76 AP=82.75 AUROC=97.26
+=== RESULT d3_xclip_genvideo: mAP=63.93 mAUROC=95.95 acc=91.71 over 10 gens -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/d3_xclip_genvideo.json ===
+===== d3_xclip_evalcrafter (fakeonly) =====
+[FAIL rc=1]
+text_model.embeddings.position_embedding.weight              | UNEXPECTED |  | 
+mit.encoder.layers.0.mlp.fc2.bias                            | UNEXPECTED |  | 
+prompts_generator.decoder.{0, 1}.cross_attn.v_proj.weight    | UNEXPECTED |  | 
+mit.encoder.layers.0.layer_norm1.bias                        | UNEXPECTED |  | 
+prompts_generator.decoder.{0, 1}.norm3.weight                | UNEXPECTED |  | 
+mit.position_embedding                                       | UNEXPECTED |  | 
+mit.encoder.layers.0.self_attn.out_proj.bias                 | UNEXPECTED |  | 
+text_projection.weight                                       | UNEXPECTED |  | 
+mit.encoder.layers.0.self_attn.out_proj.weight               | UNEXPECTED |  | 
+prompts_generator.layernorm.bias                             | UNEXPECTED |  | 
+text_model.embeddings.token_embedding.weight                 | UNEXPECTED |  | 
+prompts_visual_projection                                    | UNEXPECTED |  | 
+mit.encoder.layers.0.layer_norm1.weight                      | UNEXPECTED |  | 
+prompts_visual_layernorm.bias                                | UNEXPECTED |  | 
+text_model.final_layer_norm.bias                             | UNEXPECTED |  | 
+mit.encoder.layers.0.self_attn.k_proj.bias                   | UNEXPECTED |  | 
+prompts_generator.layernorm.weight                           | UNEXPECTED |  | 
+text_model.final_layer_norm.weight                           | UNEXPECTED |  | 
+mit.encoder.layers.0.self_attn.q_proj.weight                 | UNEXPECTED |  | 
+prompts_visual_layernorm.weight                              | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+No generators with real+fake videos under /hddstore/ssalehi/AGID/EvalCrafter/test/1_fake (fakeonly)
+ERROR conda.cli.main_run:execute(125): `conda run python benchmark/bench_eval_video.py --model d3 --benchmark fakeonly --data /hddstore/ssalehi/AGID/EvalCrafter/test/1_fake --tag d3_xclip_evalcrafter` failed. (See above for error)
+=== D3 XCLIP EVAL COMPLETE Tue Jun 16 23:50:31 CEST 2026 ===

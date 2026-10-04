@@ -1,9 +1,9 @@
 {
   "tag": "pgc_evalfix_official",
   "model": "pgc",
-  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
   "benchmark": "forensynths",
-  "data_root": "/ssdstore/ssalehi/AGID/CNNDetection/test",
+  "data_root": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
   "n_generators": 13,
   "means": {
     "acc": 70.6,

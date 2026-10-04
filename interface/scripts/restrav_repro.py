@@ -15,8 +15,8 @@ Runs TWO protocols:
   CROSS-GENERATOR : train on d3_repro/extracted generators, test on disjoint GenVideo-Val generators
 """
 import os, sys, glob, re, random
-os.environ.setdefault("HF_HOME", "/hddstore/ssalehi/AGID/.cache/huggingface")
-os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/AGID/.cache/torch")
+os.environ.setdefault("HF_HOME", "/hddstore/ssalehi/SynthScope/.cache/huggingface")
+os.environ.setdefault("TORCH_HOME", "/hddstore/ssalehi/SynthScope/.cache/torch")
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 import torchvision.transforms.functional as TF
 from torchvision.transforms import InterpolationMode
@@ -24,8 +24,8 @@ import decord
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score, average_precision_score
 
-EXTRACTED = "/hddstore/ssalehi/AGID/d3_repro/extracted"
-GV = "/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val"
+EXTRACTED = "/hddstore/ssalehi/SynthScope/d3_repro/extracted"
+GV = "/hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val"
 DEV = "cuda"
 N = int(os.environ.get("RESTRAV_REPRO_N", "500"))   # per class, per pool
 T, WIN = 24, 2.0

@@ -1,0 +1,31 @@
+NODE=ivi-cn029 GPU=0 Sun Oct  4 11:09:59 CEST 2026
+CUDA NVIDIA RTX A5000 | diffusers 0.41.0.dev0
+================ flux2_klein_4b 11:10:04 ================
+           ^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 1285, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 2016, in _download_to_tmp_and_move
+    xet_get(
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 556, in xet_get
+    raise ValueError(
+ValueError: To use optimized download using Xet storage, you need to install the hf_xet package. Try `pip install "huggingface_hub[hf_xet]"` or `pip install hf_xet`.
+ERROR conda.cli.main_run:execute(125): `conda run python /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_wt/interface/backend/local_gen.py --model flux2_klein_4b --image /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png --prompt make another image conceptually similar to this --out /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/flux2_klein_4b.png` failed. (See above for error)
+1 MiB
+================ qwen_image_2_1 11:10:25 ================
+           ^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 1047, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 1285, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 2016, in _download_to_tmp_and_move
+    xet_get(
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_env/diffusers_main/huggingface_hub/file_download.py", line 556, in xet_get
+    raise ValueError(
+ValueError: To use optimized download using Xet storage, you need to install the hf_xet package. Try `pip install "huggingface_hub[hf_xet]"` or `pip install hf_xet`.
+ERROR conda.cli.main_run:execute(125): `conda run python /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_wt/interface/backend/local_gen.py --model qwen_image_2_1 --image /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png --prompt make another image conceptually similar to this --out /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/gen_test_out/qwen_image_2_1.png` failed. (See above for error)
+1 MiB
+=== GEN TEST DONE Sun Oct  4 11:10:38 CEST 2026 ===

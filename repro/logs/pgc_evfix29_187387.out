@@ -1,0 +1,38 @@
+NODE=ivi-cn029 Fri Jun 19 17:48:55 CEST 2026
+total 8
+drwxr-xr-x 15 ssalehi domain users 4096 May 28 10:56 .
+drwxr-xr-x  5 ssalehi domain users   58 May 28 11:09 ..
+CUDA OK
+===== pgc_evalfix_official =====
+=== bench_eval pgc_evalfix_official | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth | forensynths | 13 generators | device=cuda ===
+    biggan: acc=82.82 AP=97.36 AUROC=97.34 (real_acc=98.8 fake_acc=66.85)
+    crn: acc=59.5 AP=95.61 AUROC=96.29 (real_acc=99.76 fake_acc=19.23)
+    cyclegan: acc=91.52 AP=99.68 AUROC=99.74 (real_acc=99.7 fake_acc=83.35)
+    deepfake: acc=55.6 AP=92.48 AUROC=96.03 (real_acc=98.6 fake_acc=12.6)
+    gaugan: acc=93.12 AP=99.46 AUROC=99.45 (real_acc=99.66 fake_acc=86.58)
+    imle: acc=77.84 AP=98.79 AUROC=98.95 (real_acc=99.76 fake_acc=55.92)
+    progan: acc=93.28 AP=99.13 AUROC=98.99 (real_acc=99.15 fake_acc=87.4)
+    san: acc=64.61 AP=98.34 AUROC=98.65 (real_acc=100.0 fake_acc=29.22)
+    seeingdark: acc=55.56 AP=79.62 AUROC=77.9 (real_acc=11.67 fake_acc=99.44)
+    stargan: acc=80.04 AP=97.44 AUROC=97.7 (real_acc=98.7 fake_acc=61.38)
+    stylegan: acc=57.85 AP=93.47 AUROC=94.6 (real_acc=99.8 fake_acc=15.89)
+    stylegan2: acc=56.08 AP=92.11 AUROC=92.53 (real_acc=99.81 fake_acc=12.36)
+    whichfaceisreal: acc=50.0 AP=75.92 AUROC=78.54 (real_acc=100.0 fake_acc=0.0)
+=== RESULT pgc_evalfix_official: mAP=93.8 mAUROC=94.36 acc=70.6 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_evalfix_official.json ===
+===== pgc_evalfix_step900 =====
+=== bench_eval pgc_evalfix_step900 | model=pgc ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_400step/step900_acc66_ap94.pth | forensynths | 13 generators | device=cuda ===
+    biggan: acc=72.05 AP=97.45 AUROC=97.43 (real_acc=99.85 fake_acc=44.25)
+    crn: acc=53.73 AP=95.53 AUROC=96.21 (real_acc=99.87 fake_acc=7.58)
+    cyclegan: acc=85.69 AP=99.54 AUROC=99.61 (real_acc=99.85 fake_acc=71.54)
+    deepfake: acc=53.36 AP=90.89 AUROC=94.36 (real_acc=98.85 fake_acc=7.86)
+    gaugan: acc=85.34 AP=99.51 AUROC=99.52 (real_acc=99.9 fake_acc=70.78)
+    imle: acc=64.84 AP=98.93 AUROC=99.17 (real_acc=99.87 fake_acc=29.8)
+    progan: acc=89.87 AP=99.37 AUROC=99.28 (real_acc=99.77 fake_acc=79.97)
+    san: acc=58.22 AP=97.82 AUROC=98.09 (real_acc=100.0 fake_acc=16.44)
+    seeingdark: acc=62.22 AP=79.42 AUROC=78.06 (real_acc=29.44 fake_acc=95.0)
+    stargan: acc=71.89 AP=96.91 AUROC=97.29 (real_acc=99.45 fake_acc=44.32)
+    stylegan: acc=56.72 AP=92.27 AUROC=92.7 (real_acc=99.9 fake_acc=13.54)
+    stylegan2: acc=54.05 AP=92.5 AUROC=93.23 (real_acc=99.89 fake_acc=8.21)
+    whichfaceisreal: acc=50.0 AP=77.45 AUROC=80.6 (real_acc=100.0 fake_acc=0.0)
+=== RESULT pgc_evalfix_step900: mAP=93.66 mAUROC=94.27 acc=66.0 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/pgc_evalfix_step900.json ===
+=== PGC EVAL-FIX FORENSYNTHS (cn029) DONE Fri Jun 19 19:01:03 CEST 2026 ===

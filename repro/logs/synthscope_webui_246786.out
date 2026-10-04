@@ -1,0 +1,177 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 11:52:15 CEST 2026 | code=374c06e Rename the project and Python package to SynthScope (agid kept as a deprecated alias)
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/AGID/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving AGID interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1456335]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:37702 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37712 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46106 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39234 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39234 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39238 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39252 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39252 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:39252 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46118 - "POST /api/sota/generate HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33130 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59602 - "GET /api/sota/generators HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 17346.53it/s]
+INFO:     10.4.0.1:59618 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:35946 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:35948 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:35946 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:35950 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40118 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40130 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40158 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40152 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40142 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40118 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40158 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40130 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40118 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40142 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40152 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40158 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40142 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40118 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40130 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40152 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40110 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40158 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40118 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40130 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:40142 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49710 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49710 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55638 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55632 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59626 - "POST /api/sota/generate HTTP/1.1" 409 Conflict
+INFO:     10.4.0.1:57992 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37720 - "POST /api/sota/generate HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 7977.11it/s]
+INFO:     10.4.0.1:60356 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55344 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55344 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:55346 - "GET /static/vendor/react.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:55358 - "GET /static/vendor/htm.umd.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:55358 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55358 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:33778 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59550 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59552 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59580 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59564 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59550 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59566 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59580 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59552 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59564 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59550 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59566 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59552 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59580 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59564 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59550 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59566 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59580 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59552 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59564 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33778 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36776 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:55958 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:45332 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43248 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43248 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/473 [00:00<?, ?it/s]Loading weights: 100%|██████████| 473/473 [00:00<00:00, 24017.94it/s]
+[1mBlipForConditionalGeneration LOAD REPORT[0m from: Salesforce/blip-image-captioning-base
+Key                                       | Status     |  | 
+------------------------------------------+------------+--+-
+text_decoder.bert.embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+INFO:     10.4.0.1:43728 - "POST /api/sota/generate HTTP/1.1" 409 Conflict
+INFO:     10.4.0.1:40544 - "POST /api/sota/generate HTTP/1.1" 200 OK
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+INFO:     10.4.0.1:40544 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60224 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60234 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60224 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60856 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60864 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/huggingface_hub/utils/_validators.py:205: UserWarning: The `local_dir_use_symlinks` argument is deprecated and ignored in `hf_hub_download`. Downloading to a local directory does not use symlinks anymore.
+  warnings.warn(
+INFO:     10.4.0.1:53184 - "GET /api/leaderboard HTTP/1.1" 200 OK
+Downloading: "https://download.pytorch.org/models/resnet50-11ad3fa6.pth" to /home/ssalehi/.cache/agid/cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth
+  0%|          | 0.00/97.8M [00:00<?, ?B/s] 28%|██▊       | 27.5M/97.8M [00:00<00:00, 288MB/s] 57%|█████▋    | 55.6M/97.8M [00:00<00:00, 292MB/s] 86%|████████▌ | 83.9M/97.8M [00:00<00:00, 293MB/s]100%|██████████| 97.8M/97.8M [00:00<00:00, 292MB/s]
+INFO:     10.4.0.1:58776 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58776 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58776 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58776 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58776 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:58776 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+Downloading: "file:///hddstore/ssalehi/AGID/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth" to /home/ssalehi/.cache/agid/cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth
+INFO:     10.4.0.1:45126 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:45126 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:45126 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:45126 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36846 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:34670 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36424 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:45124 - "POST /api/sota/score HTTP/1.1" 200 OK
+[2026-10-04T16:49:44.022] error: *** JOB 246786 ON ivi-cn029 CANCELLED AT 2026-10-04T16:49:44 DUE to SIGNAL Terminated ***

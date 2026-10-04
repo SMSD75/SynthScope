@@ -4,13 +4,13 @@
 # paper-relevant benchmark, so SynthScope-vs-official gap-closing is tracked as training progresses.
 # Results -> repro/bench_results/<tag>.json (+ MASTER_RESULTS.jsonl). Log: repro/eval_logs/gap_autopilot.log
 set -uo pipefail
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
+export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/SynthScope/checkpoints
 export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi/.cache/torch
-export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
+export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/SynthScope/mfm/mfm_pretrain_vit_base.pth
 export CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=4
-FULLG=/hddstore/ssalehi/AGID/GenImage_full/test_full
-COSPYB=/hddstore/ssalehi/AGID/CoSpyBench/test
+FULLG=/hddstore/ssalehi/SynthScope/GenImage_full/test_full
+COSPYB=/hddstore/ssalehi/SynthScope/CoSpyBench/test
 EV(){ conda run --no-capture-output -n SynthScope python benchmark/bench_eval.py "$@" 2>&1 | grep -vE "libpng|UserWarning|warnings.warn" | tail -4; }
 
 echo "[autopilot] waiting for full-genimage GPU4 batch to finish $(date)"
@@ -25,7 +25,7 @@ declare -A SEEN
 for round in $(seq 1 18); do
   echo "===== autopilot round $round $(date) ====="
   # Co-Spy (SD-v1.4 retrain) -> GenImage-8 full
-  c=$(ls -t /hddstore/ssalehi/AGID/checkpoints/_train/cospy_genimage/model_*.pth 2>/dev/null | head -1)
+  c=$(ls -t /hddstore/ssalehi/SynthScope/checkpoints/_train/cospy_genimage/model_*.pth 2>/dev/null | head -1)
   if [ -n "${c:-}" ] && [ "${SEEN[cospy]:-}" != "$c" ]; then
     SEEN[cospy]=$c; echo "[eval] cospy $c"
     EV --model co_spy --ckpt "$c" --benchmark pergen --data "$FULLG" --tag cospy_gi_rt_fullg8
@@ -45,7 +45,7 @@ for round in $(seq 1 18); do
   # when cospy training is DONE, run the headline CoSpyBench eval once
   if grep -q "COSPY GENIMAGE RETRAIN DONE" repro/eval_logs/cospy_genimage.log 2>/dev/null \
      && [ "${SEEN[cospyb]:-}" != "done" ]; then
-    cf=$(ls -t /hddstore/ssalehi/AGID/checkpoints/_train/cospy_genimage/model_*.pth 2>/dev/null | head -1)
+    cf=$(ls -t /hddstore/ssalehi/SynthScope/checkpoints/_train/cospy_genimage/model_*.pth 2>/dev/null | head -1)
     if [ -n "${cf:-}" ]; then SEEN[cospyb]=done; echo "[eval] cospy CoSpyBench $cf"
       EV --model co_spy --ckpt "$cf" --benchmark pergen --data "$COSPYB" --tag cospy_gi_rt_cospybench; fi
   fi

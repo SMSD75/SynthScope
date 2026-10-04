@@ -2,11 +2,11 @@
 # CuRe integration: smoke test + exact-equivalence verification vs the OFFICIAL model (any free cees node).
 #SBATCH --job-name=cure_verify --partition=cees --account=ceesusers
 #SBATCH --gres=gpu:rtx_a5000:1 --cpus-per-task=6 --mem=24G --time=00:40:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/cure_verify_%j.out
+#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/cure_verify_%j.out
 set -u
-cd /ivi/zfs/s0/original_homes/ssalehi/AGID
+cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
 CONDA=/home/ssalehi/miniconda3/bin/conda
-REF=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref
+REF=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/cure_ref
 SCR=/ssdstore; [ -w $SCR ] || SCR=/tmp; mkdir -p $SCR/$USER/cure_hf && export HF_HOME=$SCR/$USER/cure_hf PYTHONUNBUFFERED=1   # node-local: keep 2.7GB off the /ivi quota
 export PYTHONPATH=$REF/albu:$REF/CuRe
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"

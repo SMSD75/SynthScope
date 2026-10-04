@@ -6,7 +6,7 @@ computes per-generator + mean acc@0.5 / AP / AUROC, writes a JSON, and APPENDS a
 ``repro/MASTER_RESULTS.jsonl`` so every reported number traces to this run + its job log.
 
     python benchmark/bench_eval.py --model clip --benchmark forensynths \
-        --data /hddstore/ssalehi/AGID/CNNDetection/test --tag clip_synthscope_forensynths
+        --data /hddstore/ssalehi/SynthScope/CNNDetection/test --tag clip_synthscope_forensynths
 
 Benchmark profiles encode each dataset's correct generator grouping + real-pairing:
   forensynths  CNNDetection/test    per top-level generator; reals+fakes collected recursively

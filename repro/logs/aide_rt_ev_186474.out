@@ -1,0 +1,14 @@
+NODE=ivi-cn023 ckpt=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_0.pth Tue Jun 16 15:00:23 CEST 2026
+CUDA OK
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+loaded /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_0.pth: 1025 keys, missing(real)=0 unexpected=0
+  adm: acc=50.5 AP=65.97 AUROC=70.31
+  biggan: acc=61.67 AP=97.58 AUROC=97.86
+  glide: acc=87.33 AP=99.74 AUROC=99.76
+  midjourney: acc=72.67 AP=99.06 AUROC=99.04
+  sdv1.4: acc=100.0 AP=100.0 AUROC=100.0
+  sdv1.5: acc=99.83 AP=100.0 AUROC=100.0
+  vqdm: acc=54.17 AP=91.21 AUROC=93.69
+  wukong: acc=97.83 AP=99.98 AUROC=99.98
+=== RESULT aide_retrain_native_g8: mAP=94.19 mAUROC=95.08 acc=78.0 over 8 gens ===
+=== AIDE RETRAIN EVAL COMPLETE Tue Jun 16 15:07:35 CEST 2026 ===

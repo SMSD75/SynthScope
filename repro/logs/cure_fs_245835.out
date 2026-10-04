@@ -1,0 +1,17 @@
+NODE=ivi-cn029 GPU=0 Fri Oct  2 18:20:33 CEST 2026
+=== bench_eval cure_repro_forensynths | model=cure ckpt=registry-default | forensynths | 13 generators | device=cuda ===
+    biggan: acc=93.5 AP=99.64 AUROC=99.66 (real_acc=99.55 fake_acc=87.45)
+    crn: acc=72.34 AP=78.76 AUROC=84.69 (real_acc=85.65 fake_acc=59.03)
+    cyclegan: acc=70.36 AP=97.04 AUROC=98.64 (real_acc=98.94 fake_acc=41.79)
+    deepfake: acc=64.46 AP=95.12 AUROC=96.74 (real_acc=99.19 fake_acc=29.73)
+    gaugan: acc=94.21 AP=99.59 AUROC=99.76 (real_acc=99.64 fake_acc=88.78)
+    imle: acc=74.62 AP=80.93 AUROC=85.97 (real_acc=85.65 fake_acc=63.59)
+    progan: acc=95.2 AP=99.81 AUROC=99.84 (real_acc=99.45 fake_acc=90.95)
+    san: acc=75.11 AP=89.85 AUROC=87.35 (real_acc=99.09 fake_acc=51.14)
+    seeingdark: acc=72.78 AP=91.06 AUROC=88.78 (real_acc=100.0 fake_acc=45.56)
+    stargan: acc=92.9 AP=95.62 AUROC=98.33 (real_acc=97.65 fake_acc=88.14)
+    stylegan: acc=87.15 AP=98.87 AUROC=98.86 (real_acc=99.5 fake_acc=74.8)
+    stylegan2: acc=79.11 AP=97.78 AUROC=97.85 (real_acc=99.27 fake_acc=58.94)
+    whichfaceisreal: acc=93.6 AP=98.54 AUROC=98.83 (real_acc=87.3 fake_acc=99.9)
+=== RESULT cure_repro_forensynths: mAP=94.05 mAUROC=95.02 acc=81.95 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/cure_repro_forensynths.json ===
+=== CURE FORENSYNTHS DONE Fri Oct  2 18:52:24 CEST 2026 ===
