@@ -7,8 +7,8 @@
     "acc": 92.0,
     "fake_detect_rate": 100.0,
     "real_false_pos": 16.0,
-    "mean_p_fake_on_fakes": 0.9743,
-    "mean_p_fake_on_reals": 0.2312
+    "mean_p_fake_on_fakes": 0.9752,
+    "mean_p_fake_on_reals": 0.2301
   },
   {
     "detector": "co_spy",
@@ -86,6 +86,17 @@
     "real_false_pos": 8.0,
     "mean_p_fake_on_fakes": 0.368,
     "mean_p_fake_on_reals": 0.0778
+  },
+  {
+    "detector": "dinov3",
+    "name": "DINOv3 probe",
+    "auroc": 51.06,
+    "ap": 49.11,
+    "acc": 47.5,
+    "fake_detect_rate": 8.0,
+    "real_false_pos": 13.0,
+    "mean_p_fake_on_fakes": 0.2746,
+    "mean_p_fake_on_reals": 0.2792
   },
   {
     "detector": "fat_former",

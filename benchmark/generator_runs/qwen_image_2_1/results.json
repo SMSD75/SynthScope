@@ -24,13 +24,13 @@
   {
     "detector": "vib_net",
     "name": "VIB-Net",
-    "auroc": 98.32,
-    "ap": 98.49,
-    "acc": 90.5,
+    "auroc": 98.35,
+    "ap": 98.51,
+    "acc": 91.5,
     "fake_detect_rate": 98.0,
-    "real_false_pos": 17.0,
-    "mean_p_fake_on_fakes": 0.9183,
-    "mean_p_fake_on_reals": 0.2294
+    "real_false_pos": 15.0,
+    "mean_p_fake_on_fakes": 0.9181,
+    "mean_p_fake_on_reals": 0.2277
   },
   {
     "detector": "spai",
@@ -97,6 +97,17 @@
     "real_false_pos": 4.0,
     "mean_p_fake_on_fakes": 0.3841,
     "mean_p_fake_on_reals": 0.0412
+  },
+  {
+    "detector": "dinov3",
+    "name": "DINOv3 probe",
+    "auroc": 53.2,
+    "ap": 51.63,
+    "acc": 49.5,
+    "fake_detect_rate": 12.0,
+    "real_false_pos": 13.0,
+    "mean_p_fake_on_fakes": 0.2902,
+    "mean_p_fake_on_reals": 0.2792
   },
   {
     "detector": "cnn",
