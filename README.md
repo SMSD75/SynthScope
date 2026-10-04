@@ -7,9 +7,6 @@
 
 SynthScope is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
 
-> **Renamed:** SynthScope was previously called *AGID*. `import agid` and the `agid` command still work as deprecated aliases,
-> and old `AGID_*` environment variables and `AGID` conda-env launch scripts keep working.
-
 Every detector is a binary classifier (`real` vs `fake`), and results are reported **per generator**, the standard way to measure generalization to unseen generative models. **17 detectors** are included (14 image, 3 video), each verified against its paper.
 
 ---
