@@ -133,13 +133,16 @@ LOADERS = {"qwen_image_2_1": load_pipeline_staged, "flux1_kontext_dev": load_pip
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, choices=sorted(MODELS))
-    ap.add_argument("--image", required=True)
+    ap.add_argument("--image", help="source photo (not needed with --text-only)")
     ap.add_argument("--prompt", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--text-only", action="store_true", help="debug: ignore the source image (pure text-to-image)")
+    ap.add_argument("--text-only", action="store_true", help="create the image from the prompt alone (no source photo)")
+    ap.add_argument("--size", help="WxH of the output in --text-only mode (default 1024x1024)")
     ap.add_argument("--res", type=int, default=1024, help="output resolution (Qwen-Image-2.1 output_resolution)")
     args = ap.parse_args()
+    if not args.text_only and not args.image:
+        ap.error("--image is required unless --text-only is given")
 
     repo, cls_name, kw = MODELS[args.model]
     if not hasattr(diffusers, cls_name):
@@ -148,13 +151,17 @@ def main() -> int:
         return 3
     pipe = LOADERS.get(args.model, load_pipeline_cpu_offload)(repo, cls_name, os.environ.get("HF_TOKEN"))
 
-    src = fit(Image.open(args.image).convert("RGB"))
+    src = None if args.text_only else fit(Image.open(args.image).convert("RGB"))
     call = dict(kw)
     if args.model.startswith("flux"):
-        call.update(height=src.height, width=src.width)
+        if src is not None:
+            call.update(height=src.height, width=src.width)
+        else:
+            w, h = (int(v) for v in (args.size or "1024x1024").split("x"))
+            call.update(height=h, width=w)
     if args.model.startswith("qwen"):
         call["output_resolution"] = args.res
-    cond = {} if args.text_only else {"image": src}
+    cond = {} if src is None else {"image": src}
     out = pipe(prompt=args.prompt, generator=torch.Generator("cpu").manual_seed(args.seed), **cond, **call).images[0]
     out.convert("RGB").save(args.out, format="PNG")
     print(f"saved {args.out} {out.size} via {cls_name} ({repo})", flush=True)

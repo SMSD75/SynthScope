@@ -178,11 +178,11 @@ def sota_real_image():
 _GPU_LOCK = threading.Lock()   # detector scoring and heavy local generation never overlap on the GPU
 
 
-async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
+async def _sota_generate(real_bytes: bytes, generator: str, prompt: str, mode: str = "recreate"):
     """Run one generator on the real image -> (effective prompt, generated PNG bytes); HTTP errors on failure."""
     if not real_bytes:
         raise HTTPException(status_code=400, detail="Empty image.")
-    # text-to-image generators get a caption-derived prompt (see generators.effective_prompt)
+    # text-to-image generators left on the old default prompt get a caption-derived one (generators.effective_prompt)
     prompt = _gens.effective_prompt(generator, real_bytes, prompt)
     try:
         # off the event loop: a local generation takes 1-4 minutes and must not freeze the whole UI
@@ -190,10 +190,10 @@ async def _sota_generate(real_bytes: bytes, generator: str, prompt: str):
 
         def run() -> bytes:
             if not heavy:
-                return _gens.generate(generator, real_bytes, prompt)
+                return _gens.generate(generator, real_bytes, prompt, mode)
             with _GPU_LOCK:                          # waits for any in-flight scoring to finish first
                 get_engine().release_gpu()
-                return _gens.generate(generator, real_bytes, prompt)
+                return _gens.generate(generator, real_bytes, prompt, mode)
         return prompt, await asyncio.to_thread(run)
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
@@ -228,13 +228,37 @@ def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dic
     return results
 
 
+def _layout_similarity(a_bytes: bytes, b_bytes: bytes) -> float:
+    """Correlation of the two images' 64x64 grayscale layouts, -1..1. About 0.9+ means the generated image is an edit
+    of the source (same composition); low values mean a genuinely new image."""
+    import numpy as np
+    def thumb(b: bytes):
+        im = media.decode_image(b).convert("L").resize((64, 64))
+        return np.asarray(im, dtype="float64") - np.asarray(im, dtype="float64").mean()
+    a, b = thumb(a_bytes), thumb(b_bytes)
+    return float((a * b).sum() / (((a * a).sum() * (b * b).sum()) ** 0.5 + 1e-8))
+
+
+@app.post("/api/sota/describe")
+async def sota_describe(file: UploadFile = File(...)):
+    """Caption the source photo and return a text-to-image prompt for it (the user can edit it before generating)."""
+    data = await file.read()
+    if not data:
+        raise HTTPException(status_code=400, detail="Empty image.")
+    return await asyncio.to_thread(_gens.describe_prompt, data)
+
+
 @app.post("/api/sota/generate")
 async def sota_generate(file: UploadFile = File(...), generator: str = Form(...),
-                        prompt: str = Form(_gens.DEFAULT_PROMPT)):
+                        prompt: str = Form(_gens.DEFAULT_PROMPT), mode: str = Form("recreate")):
     """real image + generator -> the generated image only. Scoring is a separate call (/api/sota/score), so
-    trying another detector never regenerates."""
-    prompt, gen_bytes = await _sota_generate(await file.read(), generator, prompt)
-    return {"generator": generator, "prompt": prompt, "generated_b64": _b64.b64encode(gen_bytes).decode()}
+    trying another detector never regenerates. mode "recreate" builds a new image from the prompt alone,
+    "edit" edits the source photo."""
+    real_bytes = await file.read()
+    prompt, gen_bytes = await _sota_generate(real_bytes, generator, prompt, mode)
+    sim = _layout_similarity(real_bytes, gen_bytes)
+    return {"generator": generator, "mode": mode, "prompt": prompt, "similarity": round(sim, 3),
+            "near_copy": sim >= 0.8, "generated_b64": _b64.b64encode(gen_bytes).decode()}
 
 
 @app.post("/api/sota/score")
@@ -251,7 +275,7 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
                        detectors: str = Form(...), prompt: str = Form(_gens.DEFAULT_PROMPT)):
     """Generate + score in one call (kept for API clients; the web UI uses generate then score)."""
     real_bytes = await file.read()
-    prompt, gen_bytes = await _sota_generate(real_bytes, generator, prompt)
+    prompt, gen_bytes = await _sota_generate(real_bytes, generator, prompt, "edit")
     return {"generator": generator, "prompt": prompt, "generated_b64": _b64.b64encode(gen_bytes).decode(),
             "results": await asyncio.to_thread(_sota_score, real_bytes, gen_bytes, detectors)}
 

@@ -1,7 +1,10 @@
 """SOTA image-generation backends for the live detector-comparison demo.
 
-Each generator takes a source image + a prompt ("make another image conceptually similar to this")
-and returns PNG bytes of a freshly generated image, which is then scored by the SynthScope detectors so a
+Each generator takes a source image + a prompt and returns PNG bytes of a freshly generated image. Two modes:
+  * "recreate" (default): a captioner describes the source photo and the generator creates a NEW image from that
+    description alone (image_png=None), so every pixel is synthesized. This is how detection benchmarks build fakes.
+  * "edit": the generator edits the source photo itself (image-conditioned). The result keeps the original's layout.
+The result is then scored by the SynthScope detectors, which is then scored by the SynthScope detectors so a
 user can see how today's detectors hold up against today's generators. API keys come from env vars;
 if a key is absent the generator is reported unavailable (the UI greys it out).
 """
@@ -24,11 +27,18 @@ class Generator:
     name: str
     env_key: str          # API-key env var (hosted generators); HF token for the gated download (local)
     uses_image: bool      # True = image-conditioned (edit); False = text-to-image only
-    call: Callable[[bytes, str], bytes]
+    call: Callable[..., bytes]      # call(image_png | None, prompt, size=None); image_png=None = text-only
     note: str = ""
     local: bool = False   # True = open-weight, runs locally (no paid API key)
     avail: Optional[Callable[[], bool]] = None   # custom availability check (overrides the defaults)
     heavy: bool = False   # True = needs (most of) the GPU: the web engine releases its detectors first
+    edit_only: bool = False   # True = an editing model that cannot create an image from text alone
+
+    @property
+    def modes(self) -> list[str]:
+        if not self.uses_image:
+            return ["recreate"]
+        return ["edit"] if self.edit_only else ["recreate", "edit"]
 
     def available(self) -> bool:
         if self.avail is not None:
@@ -74,6 +84,15 @@ def _caption(image_png: bytes) -> Optional[str]:
         return None
 
 
+STYLE_SUFFIX = ", photorealistic photograph, natural lighting, high detail"
+
+
+def describe_prompt(image_png: bytes) -> dict:
+    """Caption the source photo and turn it into a text-to-image prompt (shown to the user, who can edit it)."""
+    cap = _caption(image_png)
+    return {"caption": cap or "", "prompt": (cap + STYLE_SUFFIX) if cap else "a photorealistic natural scene, high detail"}
+
+
 def effective_prompt(gen_key: str, image_png: bytes, prompt: str) -> str:
     """The prompt actually sent to the generator. For text-to-image generators left on the default
     edit instruction, derive a scene description from the source image (caption) instead."""
@@ -85,14 +104,14 @@ def effective_prompt(gen_key: str, image_png: bytes, prompt: str) -> str:
 
 
 # --- Google Gemini 2.5 Flash Image ("Nano Banana") — image-conditioned ---------------------------
-def _gemini(image_png: bytes, prompt: str) -> bytes:
+def _gemini(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
     key = os.environ["GEMINI_API_KEY"]
     url = ("https://generativelanguage.googleapis.com/v1beta/models/"
            "gemini-2.5-flash-image:generateContent?key=" + key)
-    body = {"contents": [{"parts": [
-        {"text": prompt},
-        {"inline_data": {"mime_type": "image/png", "data": base64.b64encode(image_png).decode()}},
-    ]}]}
+    parts = [{"text": prompt}]
+    if image_png is not None:
+        parts.append({"inline_data": {"mime_type": "image/png", "data": base64.b64encode(image_png).decode()}})
+    body = {"contents": [{"parts": parts}]}
     r = requests.post(url, json=body, timeout=120); r.raise_for_status()
     for part in r.json()["candidates"][0]["content"]["parts"]:
         if "inline_data" in part or "inlineData" in part:
@@ -102,8 +121,14 @@ def _gemini(image_png: bytes, prompt: str) -> bytes:
 
 
 # --- OpenAI gpt-image-1 — image edit --------------------------------------------------------------
-def _openai(image_png: bytes, prompt: str) -> bytes:
+def _openai(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
     key = os.environ["OPENAI_API_KEY"]
+    if image_png is None:                                   # text-only: plain image generation
+        r = requests.post("https://api.openai.com/v1/images/generations",
+                          headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                          json={"model": "gpt-image-1", "prompt": prompt, "size": "1024x1024"}, timeout=180)
+        r.raise_for_status()
+        return base64.b64decode(r.json()["data"][0]["b64_json"])
     r = requests.post("https://api.openai.com/v1/images/edits",
                       headers={"Authorization": f"Bearer {key}"},
                       data={"model": "gpt-image-1", "prompt": prompt, "size": "1024x1024"},
@@ -113,7 +138,7 @@ def _openai(image_png: bytes, prompt: str) -> bytes:
 
 
 # --- xAI Grok (grok-2-image) — text-to-image (no image input; uses the prompt) --------------------
-def _grok(image_png: bytes, prompt: str) -> bytes:
+def _grok(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
     key = os.environ["XAI_API_KEY"]
     r = requests.post("https://api.x.ai/v1/images/generations",
                       headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
@@ -124,8 +149,14 @@ def _grok(image_png: bytes, prompt: str) -> bytes:
 
 
 # --- Black Forest Labs FLUX.1.1 (via fal.ai) — image-to-image -------------------------------------
-def _flux(image_png: bytes, prompt: str) -> bytes:
+def _flux(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
     key = os.environ["FAL_KEY"]
+    if image_png is None:                                   # text-only: FLUX.1 [dev] text-to-image
+        r = requests.post("https://fal.run/fal-ai/flux/dev",
+                          headers={"Authorization": f"Key {key}", "Content-Type": "application/json"},
+                          json={"prompt": prompt, "image_size": "square_hd"}, timeout=180)
+        r.raise_for_status()
+        return requests.get(r.json()["images"][0]["url"], timeout=120).content
     # fal.ai accepts a data-URI image_url for image-to-image
     data_uri = "data:image/png;base64," + base64.b64encode(image_png).decode()
     r = requests.post("https://fal.run/fal-ai/flux/dev/image-to-image",
@@ -145,7 +176,7 @@ def _flux(image_png: bytes, prompt: str) -> bytes:
 _IDEOGRAM_PIPE = None
 
 
-def _ideogram_local(image_png: bytes, prompt: str) -> bytes:
+def _ideogram_local(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
     global _IDEOGRAM_PIPE
     if _IDEOGRAM_PIPE is None:
         import torch
@@ -178,19 +209,32 @@ def _local_gen_available() -> bool:
     return bool(extra) and Path(extra).is_dir() and has_gpu
 
 
-def _local_subprocess(model_key: str) -> Callable[[bytes, str], bytes]:
-    def call(image_png: bytes, prompt: str) -> bytes:
+def _local_size(size) -> Optional[str]:
+    """'WxH' for the child: the source's aspect ratio at about one megapixel, sides in multiples of 16."""
+    if not size:
+        return None
+    w, h = size
+    k = (1024 * 1024 / (w * h)) ** 0.5
+    return f"{max(256, int(w * k) // 16 * 16)}x{max(256, int(h * k) // 16 * 16)}"
+
+
+def _local_subprocess(model_key: str) -> Callable[..., bytes]:
+    def call(image_png: Optional[bytes], prompt: str, size=None) -> bytes:
         env = dict(os.environ)
         env["PYTHONPATH"] = os.pathsep.join(p for p in (os.environ["SYNTHSCOPE_GEN_PYTHONPATH"], env.get("PYTHONPATH", "")) if p)
         if os.environ.get("SYNTHSCOPE_GEN_HF_HOME"):
             env["HF_HOME"] = os.environ["SYNTHSCOPE_GEN_HF_HOME"]
         with _LOCAL_LOCK, tempfile.TemporaryDirectory() as tmp:
             src, dst = Path(tmp) / "in.png", Path(tmp) / "out.png"
-            src.write_bytes(image_png)
-            r = subprocess.run(
-                [sys.executable, str(_LOCAL_GEN), "--model", model_key, "--image", str(src),
-                 "--prompt", prompt, "--out", str(dst)],
-                env=env, capture_output=True, text=True, timeout=3600)
+            cmd = [sys.executable, str(_LOCAL_GEN), "--model", model_key, "--prompt", prompt, "--out", str(dst)]
+            if image_png is None:
+                cmd.append("--text-only")
+                if _local_size(size):
+                    cmd += ["--size", _local_size(size)]
+            else:
+                src.write_bytes(image_png)
+                cmd += ["--image", str(src)]
+            r = subprocess.run(cmd, env=env, capture_output=True, text=True, timeout=3600)
             if r.returncode != 0 or not dst.exists():
                 tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
                 raise RuntimeError(f"{model_key} failed (exit {r.returncode}): " + " | ".join(tail))
@@ -225,8 +269,9 @@ GENERATORS = {
         Generator("flux1_kontext", "FLUX.1 Kontext [dev] (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("flux1_kontext_dev"),
                   "Black Forest Labs' 12B in-context image editor (FLUX non-commercial license; gated - accept the "
-                  "terms on the Hub), edits the source photo locally on the GPU (28 steps); no API key.", local=True,
-                  avail=_local_gen_available, heavy=True),
+                  "terms on the Hub), edits the source photo locally on the GPU (28 steps); no API key. "
+                  "Edit-only: it cannot create an image from text.", local=True,
+                  avail=_local_gen_available, heavy=True, edit_only=True),
         Generator("qwen_image_2_1", "Qwen-Image-2.1 (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("qwen_image_2_1"),
                   "Alibaba Qwen-Image-2.1 (7B unified generation + editing; Qwen Research License - research use "
@@ -237,7 +282,7 @@ GENERATORS = {
 
 
 def list_generators() -> list[dict]:
-    return [{"key": g.key, "name": g.name, "uses_image": g.uses_image,
+    return [{"key": g.key, "name": g.name, "uses_image": g.uses_image, "modes": g.modes,
              "available": g.available(), "env_key": g.env_key, "note": g.note}
             for g in GENERATORS.values()]
 
@@ -260,16 +305,22 @@ def _looks_blocked(img: Image.Image) -> bool:
         return False
 
 
-def generate(gen_key: str, image_png: bytes, prompt: str = DEFAULT_PROMPT) -> bytes:
+def generate(gen_key: str, image_png: bytes, prompt: str = DEFAULT_PROMPT, mode: str = "recreate") -> bytes:
+    """mode "recreate": generate a new image from the text prompt alone; "edit": edit ``image_png`` itself."""
     if gen_key not in GENERATORS:
         raise KeyError(f"unknown generator '{gen_key}'")
     g = GENERATORS[gen_key]
     if not g.available():
         raise RuntimeError(f"{g.name} unavailable: set {g.env_key}")
+    if mode not in ("recreate", "edit"):
+        raise RuntimeError(f"unknown mode '{mode}'")
+    if mode not in g.modes:
+        raise RuntimeError(f"{g.name} does not support the '{mode}' mode (it supports: {', '.join(g.modes)}).")
     if not g.uses_image and _PERSON_RE.search(prompt or ""):
         raise RuntimeError(f"{g.name} blocks photorealistic people, and this image reads as a photo of a "
                            f"person (“{prompt[:70]}”). {_STEER}")
-    out = g.call(image_png, prompt)
+    size = Image.open(io.BytesIO(image_png)).size
+    out = g.call(image_png if mode == "edit" else None, prompt, size)
     # normalize to PNG, cap size
     img = Image.open(io.BytesIO(out)).convert("RGB")
     if _looks_blocked(img):

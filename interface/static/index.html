@@ -399,6 +399,18 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 .seenbox { min-height: 200px; width: 100%; }
 .seenbox img { max-width: 100%; max-height: 300px; image-rendering: auto; }
 .seen-cap { text-align: center; line-height: 1.55; margin-top: 8px; }
+
+/* ---- generator modes + similarity -----------------------------------------------------------------------------*/
+.sota .modes { display: flex; gap: 8px; flex-wrap: wrap; }
+.sota .modebtn { flex: 1 1 140px; background: var(--panel2); color: var(--muted); border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm); padding: 9px 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.sota .modebtn.on { background: rgba(124,140,255,.20); color: var(--text); border-color: var(--accent); }
+.sota .modebtn:disabled { opacity: .35; cursor: not-allowed; }
+.sota .lab2 { margin: 12px 0 6px; }
+.sota .presets { margin-top: 8px; }
+.sota .sim { margin-top: 12px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.5; border: 1px solid var(--line-strong); }
+.sota .sim.warn { border-color: #ffcf6e; background: rgba(255,207,110,.08); color: #ffe0a0; }
+.sota .sim.ok { border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.07); }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -515,6 +527,13 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
     ];
     const DET_DEFAULT = ["safe", "npr", "clip", "cure"];
 
+    // Edit-mode starting points: the generator edits the photo itself, so the instruction must ask for a big change.
+    const EDIT_PRESETS = [
+      ["Different place and light", "Keep the same kind of subject but place it in a completely different location, with different lighting and time of day, as a new photograph"],
+      ["New camera angle", "Re-photograph this scene from a very different camera angle and distance"],
+      ["Reimagine it", "Reimagine this as a completely new photograph with a different composition; keep only the type of subject"],
+    ];
+
     function pct(p) { return (100 * p).toFixed(1) + "%"; }
 
     // SOTA generator vs detector: pick/upload a real image -> a generator makes a new image ONCE -> any number of
@@ -522,7 +541,10 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
     function SotaView({ models }) {
       const [gens, setGens] = useState([]);
       const [gen, setGen] = useState("");
-      const [prompt, setPrompt] = useState("make another image conceptually similar to this");
+      const [prompt, setPrompt] = useState("");
+      const [mode, setMode] = useState("recreate");        // "recreate" = new image from a description, "edit" = edit the photo
+      const [touched, setTouched] = useState(false);      // the user edited the prompt, so do not overwrite it
+      const [describing, setDescribing] = useState(false);
       const [realB64, setRealB64] = useState("");
       const [realSrc, setRealSrc] = useState(null);
       const [genB64, setGenB64] = useState("");
@@ -542,9 +564,28 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
           setGens(d.generators || []);
           const a = (d.generators || []).find(g => g.available);
           if (a) setGen(a.key);
-          if (d.default_prompt) setPrompt(d.default_prompt);
         }).catch(e => setErr(String(e.message || e)));
       }, []);
+
+      // Fill the prompt: a caption of the photo (re-create) or a preset edit instruction (edit), unless the user typed.
+      useEffect(() => {
+        if (touched) { setDescribing(false); return; }
+        if (mode === "edit") { setDescribing(false); setPrompt(EDIT_PRESETS[2][1]); return; }
+        if (!realB64) { setDescribing(false); setPrompt(""); return; }
+        let live = true;
+        setDescribing(true);
+        const fd = new FormData(); fd.append("file", b64ToFile(realB64, "real.png"));
+        fetch(API("/api/sota/describe"), { method: "POST", body: fd }).then(r => r.json())
+          .then(d => { if (live && d.prompt) setPrompt(d.prompt); })
+          .catch(() => {}).finally(() => { if (live) setDescribing(false); });
+        return () => { live = false; };
+      }, [realB64, mode, touched]);
+
+      // A generator that supports only one mode forces that mode.
+      useEffect(() => {
+        const g = gens.find(x => x.key === gen);
+        if (g && g.modes && !g.modes.includes(mode)) { setMode(g.modes[0]); setTouched(false); }
+      }, [gen, gens]);
 
       useEffect(() => {
         if (picked !== null || !imgDetectors.length) return;
@@ -586,7 +627,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
       function resetPair() { pairId.current += 1; setGenB64(""); setGenInfo(null); setScores({}); asked.current = new Set(); }
 
       async function rollImage() {
-        setErr(""); resetPair();
+        setErr(""); resetPair(); setTouched(false);
         try {
           const r = await fetch(API("/api/sota/real_image")); const d = await r.json();
           if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
@@ -596,7 +637,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
       function onUpload(f) {
         if (!f) return;
         const rd = new FileReader();
-        rd.onload = () => { resetPair(); setRealB64(rd.result.split(",")[1]); setRealSrc(["upload", f.name]); };
+        rd.onload = () => { resetPair(); setTouched(false); setRealB64(rd.result.split(",")[1]); setRealSrc(["upload", f.name]); };
         rd.readAsDataURL(f);
       }
       async function generate() {
@@ -605,11 +646,11 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
           if (!realB64) throw new Error("Pick or upload a real image first.");
           if (!gen) throw new Error("Select a generator.");
           const fd = new FormData();
-          fd.append("file", b64ToFile(realB64, "real.png")); fd.append("generator", gen); fd.append("prompt", prompt);
+          fd.append("file", b64ToFile(realB64, "real.png")); fd.append("generator", gen); fd.append("prompt", prompt); fd.append("mode", mode);
           const r = await fetch(API("/api/sota/generate"), { method: "POST", body: fd });
           const d = await r.json();
           if (!r.ok) throw new Error(d.detail || ("HTTP " + r.status));
-          setGenInfo({ generator: d.generator, prompt: d.prompt });
+          setGenInfo({ generator: d.generator, prompt: d.prompt, mode: d.mode, similarity: d.similarity, near_copy: d.near_copy });
           setGenB64(d.generated_b64);
         } catch (e) { setErr(String(e.message || e)); } finally { setGenBusy(false); }
       }
@@ -655,9 +696,21 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
               </select>
               ${curGen && html`<div class="meta">${curGen.note}</div>`}
 
-              <div class="step"><span class="stepno">3</span><b>Prompt</b></div>
-              <textarea rows="3" value=${prompt} onInput=${e => setPrompt(e.target.value)}></textarea>
-              <button class="go" disabled=${genBusy || !realB64 || !gen} onClick=${generate}>
+              <div class="step"><span class="stepno">3</span><b>How to create it</b></div>
+              <div class="modes">
+                <button class=${"modebtn" + (mode === "recreate" ? " on" : "")} disabled=${!curGen || !curGen.modes.includes("recreate")}
+                  onClick=${() => { setMode("recreate"); setTouched(false); }}>Re-create from description</button>
+                <button class=${"modebtn" + (mode === "edit" ? " on" : "")} disabled=${!curGen || !curGen.modes.includes("edit")}
+                  onClick=${() => { setMode("edit"); setTouched(false); }}>Edit this photo</button>
+              </div>
+              <div class="meta">${mode === "recreate"
+                ? "The photo is described in words and the generator makes a brand-new image from that description alone, so every pixel is synthesized."
+                : "The generator edits your photo itself, so the result keeps its layout and much of its content. Detectors then score an edited real photo."}</div>
+              <label class="lab2">${mode === "recreate" ? (describing ? "Description (writing it…)" : "Description (edit it if you like)") : "Edit instruction"}</label>
+              <textarea rows="4" value=${prompt} onInput=${e => { setPrompt(e.target.value); setTouched(true); }}></textarea>
+              ${mode === "edit" && html`<div class="chips presets">${EDIT_PRESETS.map(([label, text]) => html`<button key=${label} class="chip"
+                onClick=${() => { setPrompt(text); setTouched(true); }}>${label}</button>`)}</div>`}
+              <button class="go" disabled=${genBusy || describing || !realB64 || !gen || !prompt.trim()} onClick=${generate}>
                 ${genBusy ? `Generating… ${mins}:${secs}` : (genB64 ? "↻ Regenerate" : "Generate")}</button>
               ${genBusy && html`<div class="meta">Local open-weight models take 1–4 min (first run also downloads weights).</div>`}
               ${err && html`<div class="err">${err}</div>`}
@@ -677,6 +730,10 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
                     <figcaption>${genInfo ? "Generated · " + (curGen ? curGen.name : genInfo.generator) : "Generated"}</figcaption>
                   </figure>
                 </div>
+                ${genInfo && genInfo.similarity != null && html`<div class=${"sim " + (genInfo.near_copy ? "warn" : "ok")}>
+                  Layout similarity to your photo: <b>${genInfo.similarity.toFixed(2)}</b> ·
+                  ${genInfo.near_copy ? "very close: this looks like an edit of your photo, so the detectors are scoring an edited real photo rather than a new image."
+                                      : "different enough to count as a newly generated image."}</div>`}
                 ${genInfo && genInfo.prompt && html`<div class="meta">prompt used: ${genInfo.prompt}</div>`}
               </div>
 
