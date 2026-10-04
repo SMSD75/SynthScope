@@ -161,7 +161,7 @@ def main(argv=None) -> int:
         "modality": "image",
         "model_type": args.model,
         "paper": spec.paper,
-        "url": "https://github.com/SMSD75/AGID",
+        "url": "https://github.com/SMSD75/SynthScope",
         "evaluation": args.eval_type or _infer_eval_type(args.model),
         "metrics": {
             "acc": mean(means["balanced_acc"]),

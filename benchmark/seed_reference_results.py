@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 SUB = Path(__file__).resolve().parent / "submissions"
-REPO = "https://github.com/SMSD75/AGID"
+REPO = "https://github.com/SMSD75/SynthScope"
 SOURCE = "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md"
 DATE = "2026-06-02"
 

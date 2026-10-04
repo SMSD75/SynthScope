@@ -13,7 +13,7 @@ license: apache-2.0
 # SynthScope demo (Gradio / Hugging Face Spaces)
 
 Upload an image or video, pick a detector, and get the probability it is AI-generated. Built on
-the [`synthscope`](https://github.com/SMSD75/AGID) Python API (`synthscope.load(key).predict(file)`).
+the [`synthscope`](https://github.com/SMSD75/SynthScope) Python API (`synthscope.load(key).predict(file)`).
 
 ## Run locally
 

@@ -1,0 +1,17 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 17:13:15 CEST 2026 | code=9fb1e1c Detect/Browse: show what each detector actually sees (its preprocessed input) with a plain-language caption; clearer, centered heatmaps with legend
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/SynthScope/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving SynthScope interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1498509]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:36486 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37720 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37720 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37728 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37742 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:37728 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:34278 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53548 - "POST /api/predict HTTP/1.1" 200 OK

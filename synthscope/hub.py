@@ -102,7 +102,7 @@ def _manifest_text(uploaded_keys: list[str], repo_id: str) -> str:
         "tags:", "- ai-generated-image-detection", "- synthetic-image-detection",
         "- deepfake-detection", "---", "",
         "# SynthScope model zoo", "",
-        "Checkpoints for [SynthScope](https://github.com/SMSD75/AGID) detectors. Load them with:", "",
+        "Checkpoints for [SynthScope](https://github.com/SMSD75/SynthScope) detectors. Load them with:", "",
         "```python", "import synthscope", f'# export SYNTHSCOPE_HUB_REPO="{repo_id}" (or pass repo=...)',
         'synthscope.load("clip").predict("image.png")  # auto-downloads from this repo', "```", "",
         "## Contents", "",

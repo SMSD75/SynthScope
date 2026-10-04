@@ -7,7 +7,7 @@ AI-generated image & video detection. The most valuable contributions are **new 
 ## Getting set up
 
 ```bash
-git clone https://github.com/SMSD75/AGID.git
+git clone https://github.com/SMSD75/SynthScope.git
 cd SynthScope
 pip install -e ".[dev]"          # editable install + contributor tooling
 # PyTorch: install the build matching your CUDA from https://pytorch.org if needed.

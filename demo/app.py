@@ -54,7 +54,7 @@ def build_demo():
             "# SynthScope — AI-generated image & video detection\n"
             "Upload an **image or video** and pick a detector to estimate the probability that it "
             "is **AI-generated**. Each detector is a re-implementation benchmarked in "
-            "[SynthScope](https://github.com/SMSD75/AGID)."
+            "[SynthScope](https://github.com/SMSD75/SynthScope)."
         )
         with gr.Row():
             with gr.Column():

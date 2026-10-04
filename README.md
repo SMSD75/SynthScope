@@ -2,13 +2,13 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
-[![CI](https://github.com/SMSD75/AGID/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/AGID/actions/workflows/ci.yml)
+[![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 SynthScope is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
 
 > **Renamed:** SynthScope was previously called *AGID*. `import agid` and the `agid` command still work as deprecated aliases,
-> and old `AGID_*` environment variables and `AGID` conda-env launch scripts keep working. The GitHub URL below still uses the old name until the repo is renamed.
+> and old `AGID_*` environment variables and `AGID` conda-env launch scripts keep working.
 
 Every detector is a binary classifier (`real` vs `fake`), and results are reported **per generator**, the standard way to measure generalization to unseen generative models. **17 detectors** are included (14 image, 3 video), each verified against its paper.
 
@@ -17,7 +17,7 @@ Every detector is a binary classifier (`real` vs `fake`), and results are report
 ## Install
 
 ```bash
-git clone https://github.com/SMSD75/AGID.git
+git clone https://github.com/SMSD75/SynthScope.git
 cd SynthScope
 pip install -e .                 # editable install
 # extras:  ".[web]" web demo · ".[train]" wandb + dataset download · ".[dev]" contributor tooling
