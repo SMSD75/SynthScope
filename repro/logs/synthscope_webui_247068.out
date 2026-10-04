@@ -31,3 +31,92 @@ INFO:     10.4.0.1:47474 - "GET /api/sota/generators HTTP/1.1" 200 OK
 INFO:     10.4.0.1:47462 - "POST /api/sota/describe HTTP/1.1" 200 OK
 INFO:     10.4.0.1:47462 - "POST /api/sota/generate HTTP/1.1" 200 OK
 INFO:     10.4.0.1:47462 - "POST /api/sota/score HTTP/1.1" 200 OK
+/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/timm/models/layers/__init__.py:49: FutureWarning: Importing from timm.models.layers is deprecated, please import via timm.layers
+  warnings.warn(f"Importing from {__name__} is deprecated, please import via timm.layers", FutureWarning)
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+INFO:     10.4.0.1:51760 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51766 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51766 - "GET /static/vendor/htm.umd.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:51778 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:51788 - "GET /static/vendor/react.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:51790 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51788 - "GET /api/models HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/439 [00:00<?, ?it/s]Loading weights: 100%|██████████| 439/439 [00:00<00:00, 10336.95it/s]
+INFO:     10.4.0.1:51806 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51788 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51788 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60572 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60572 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60584 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60596 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:60584 - "GET /api/models HTTP/1.1" 200 OK
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+INFO:     10.4.0.1:60584 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59042 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59042 - "POST /api/sota/describe HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59042 - "POST /api/sota/generate HTTP/1.1" 502 Bad Gateway
+INFO:     10.4.0.1:33408 - "GET / HTTP/1.1" 200 OK
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 421, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/responses.py", line 366, in __call__
+    await self._handle_simple(send, send_header_only, send_pathsend)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/responses.py", line 397, in _handle_simple
+    await send({"type": "http.response.body", "body": chunk, "more_body": more_body})
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 543, in send
+    raise RuntimeError("Response content longer than Content-Length")
+RuntimeError: Response content longer than Content-Length
+INFO:     10.4.0.1:33410 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33418 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:33428 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51664 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51668 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51668 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51690 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51680 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51680 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51680 - "POST /api/predict HTTP/1.1" 200 OK
+[2026-10-04T19:35:35.303] error: *** JOB 247068 ON ivi-cn029 CANCELLED AT 2026-10-04T19:35:35 DUE to SIGNAL Terminated ***

@@ -181,3 +181,13 @@ second-order features; and the standard deviation of those second-order features
 score. Real videos are volatile (high std), AI-generated videos are flat (low std). The score is
 mapped to two-class outputs so SynthScope's AP/AUROC metrics rank fakes by low std. There is nothing to
 train — a single no-op parameter only keeps the optimizer happy.
+
+## Probability calibration (`d3_calibration.json`)
+
+D3 is training-free and outputs a raw score: the volatility of second-order frame-feature differences (real videos
+average about 9.2, generated ones about 2.1 on GenVideo-Val). Turning that score into P(fake) needs a threshold and a
+scale, which ship with the model in `d3_calibration.json` (fitted by `interface/scripts/calibrate_d3.py` on 200 real +
+200 fake GenVideo-Val clips; balanced accuracy 87.8%). Without it every video would get P(fake) of about 0.01, i.e. be
+called "real"; AP/AUROC are unaffected because they depend only on the ranking. A `d3_calibration.json` in
+`$SYNTHSCOPE_CKPT_DIR` overrides the shipped one.
+

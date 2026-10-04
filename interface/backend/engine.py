@@ -247,7 +247,10 @@ class Engine:
         """Load (and cache) the D3 score->probability calibration if present."""
         if not hasattr(self, "_d3_cal"):
             import json
+            # A file in the checkpoint folder overrides the one shipped with the model (fitted on GenVideo-Val).
             p = config.CHECKPOINTS_DIR / "d3_calibration.json"
+            if not p.exists():
+                p = config.REPO_ROOT / "models" / "video" / "d3" / "d3_calibration.json"
             self._d3_cal = json.loads(p.read_text()) if p.exists() else None
         return self._d3_cal
 
