@@ -19,6 +19,12 @@ from the submission files in [`submissions/`](submissions/) — see [LEADERBOARD
 | `genimage-sdv1.4` | image | GenImage SD-v1.4 real/fake | in-distribution diffusion | **AUROC** |
 | `genvideo-val` | video | GenVideo validation split | mixed | **AP** |
 
+**These three tracks are only the start.** The repo supports 13 image and 8 video benchmark datasets (see the table in the
+[README](../README.md#-benchmarks)), and the web page's Leaderboard tab already compares detectors on 30+ benchmark groups.
+A dataset becomes a standardized track once its protocol (test set, grouping, metric) is fixed, so results stay comparable;
+adding one means a schema entry, an `evaluate.py` track and verified submissions, described in
+[`docs/BENCHMARKS.md`](../docs/BENCHMARKS.md). The datasets themselves download and organize themselves.
+
 Metrics are reported in **%**. `mAP` = mean Average Precision over generators; `AUROC`/`AP` use the
 detector's native fake-probability; `Acc` = mean balanced accuracy (mean of real- and fake-accuracy)
 over generators at threshold 0.5.

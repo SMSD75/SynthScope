@@ -6,7 +6,7 @@
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🔎 **Check whether an image or video is AI-generated, and see how well 17 published detectors hold up against today's generators.**
-Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊.
+Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
   <a href="#-web-demo"><b>🌐 Web demo</b></a> ·
@@ -184,6 +184,43 @@ Image detectors can also score a video: they run frame by frame and average the 
 | **Paper reproduction** | Does our port match the published numbers? | `benchmark/bench_eval.py` | Leaderboard tab |
 | **Generator benchmark** | How do detectors do against a given image generator (FLUX, Qwen, ...)? | `benchmark/generator_bench.py` | Generator benchmarks tab |
 | **Standardized submissions** | A versioned, comparable table anyone can submit to | `benchmark/evaluate.py` | [LEADERBOARD.md](LEADERBOARD.md) |
+
+### 📥 Datasets download and organize themselves
+
+You don't hunt for benchmark data or rearrange folders. Every supported dataset has a config that records its official source,
+and its built-in loader **downloads it, unpacks it safely and restructures it into one common layout**
+(`<generator>/{0_real,1_fake}/…`) that every tool in SynthScope reads: the evaluators, the training loop and the web page's
+*Browse datasets* tab.
+
+```bash
+python benchmark/download_dataset.py --list                              # all supported datasets and where they come from
+python benchmark/download_dataset.py commgen15 --root /data/CommGen15    # download + lay out, nothing else to do
+python benchmark/bench_eval.py --model npr --benchmark pergen --data /data/CommGen15/test --tag npr_commgen15
+```
+
+Training does the same on its own: a dataset config with `prefetch: true` fetches its data the first time you use it
+(`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
+first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-paper-benchmarks).
+
+**Supported benchmark datasets** — 13 image and 8 video. *Auto* means the loader downloads and arranges it.
+
+| Dataset (`config name`) | What it is | Source | Download |
+| --- | --- | --- | --- |
+| `cnndetection` | ForenSynths: ProGAN training set, GAN test sets | Google Drive | Auto |
+| `universialfakedetection` | UnivFD test sets (LDM, Glide, DALL·E, guided) | Google Drive | Auto |
+| `genimage`, `genimage_full` | GenImage: SD-v1.4 training set, 8 generators | Hugging Face | Auto |
+| `aigibench` | AIGIBench | Hugging Face | Auto |
+| `aigcdetect` | AIGCDetectBenchmark, 16 generators | ModelScope | Auto |
+| `cospy` | Co-Spy-Bench | Hugging Face | Auto |
+| `synthbuster` | Synthbuster | Zenodo | Auto |
+| `ditfake`, `commgen15` | DiTFake, CommGen15 (commercial generators) | Hugging Face | Auto |
+| `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
+| `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
+| `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
+| `genvideo`, `vidprom`, `videophy`, `physics_iq` | video benchmarks | official sites | Place by hand in the same layout |
+
+The **Leaderboard** tab covers 30+ benchmark groups across these datasets; the standardized, versioned submission table
+([LEADERBOARD.md](LEADERBOARD.md)) currently defines 3 tracks and grows as protocols are fixed.
 
 SynthScope ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
 fixed test sets, per-generator metrics, one evaluation pipeline. See the ranked

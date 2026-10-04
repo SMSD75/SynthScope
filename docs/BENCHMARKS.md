@@ -34,15 +34,36 @@ export SYNTHSCOPE_CKPT_DIR=/path/to/checkpoints     # where <key>.pth files live
 
 ---
 
-## 2. Datasets for the paper benchmarks
+## 2. Datasets: they download and organize themselves
 
-Every dataset has a config in [`conf/dataset/`](../conf/dataset/) that records where the data comes from. List them:
+You do not have to find benchmark data or rearrange folders. Each supported dataset has a config in
+[`conf/dataset/`](../conf/dataset/) that records its official source, and the dataset's loader **downloads it, unpacks it safely
+(zip/tar extraction guards against path tricks) and restructures it into the one layout every SynthScope tool reads**:
 
-```bash
-python benchmark/download_dataset.py --list
+```
+<root>/
+  <generator_a>/0_real/*.png     <generator_a>/1_fake/*.png
+  <generator_b>/0_real/*.png     <generator_b>/1_fake/*.png
 ```
 
-| Dataset (config name) | What it is | Source |
+The evaluators, the training loop and the web page's *Browse datasets* tab all rely on that layout, which is why no per-dataset
+glue code is needed. We check this end to end: downloading CommGen15 (about 26,000 images, 4 GB) with the command below took
+about two minutes, produced `test/<generator>/{0_real,1_fake}` for 15 generators, and `bench_eval.py` scored it straight away.
+
+```bash
+python benchmark/download_dataset.py --list                                  # every dataset and where it comes from
+python benchmark/download_dataset.py commgen15 --root /data/CommGen15        # download + lay out
+python benchmark/bench_eval.py --model npr --benchmark pergen --data /data/CommGen15/test --tag npr_commgen15
+```
+
+Training works the same way: a dataset config with `prefetch: true` fetches its data the first time it is used, into
+`DatasetConfig.root_dir`. Downloads can be large (CommGen15 about 10 GB on the Hub, DiTFake about 22 GB, AIGIBench about
+220 GB), so check your disk first. Re-running skips data that is already in place.
+
+Datasets with an **Auto** download below are fetched by the loader. A few video sets (GenVideo, VidProM, VideoPhy, Physics-IQ)
+have no automatic source: get them from their official sites and place them in the same layout.
+
+| Dataset (config name) | What it is | Source (download) |
 | --- | --- | --- |
 | `cnndetection` | ForenSynths: ProGAN training set and the GAN test sets | Google Drive (`source_url` in the yaml) |
 | `universialfakedetection` | UnivFD test sets (LDM, Glide, DALL-E, guided) | Google Drive |
@@ -55,24 +76,10 @@ python benchmark/download_dataset.py --list
 | `diffusionforensics`, `diffusion1kstep`, `freqnetdetection` | DiffusionForensics, Diffusion-1kStep, FreqNet sets | see the yamls |
 | Video: `genvideo`, `genvidbench`, `evalcrafter`, `videofeedback`, `vidprom`, `comgenvid`, `physics_iq`, `videophy` | the video benchmarks | Hugging Face where a repo is set; otherwise place the files by hand |
 
-**Download one with its built-in loader:**
-
-```bash
-python benchmark/download_dataset.py genimage --root /data/GenImage          # download + lay out
-python benchmark/download_dataset.py synthbuster --root /data/Synthbuster --dry-run   # only show the source
-```
-
-Hosts sometimes rate-limit (Google Drive) or ask you to accept terms first. If a download fails, fetch the data by hand
-from the source above and unpack it so it matches this layout, which is what the evaluators read:
-
-```
-<root>/
-  <generator_a>/0_real/*.png     <generator_a>/1_fake/*.png
-  <generator_b>/0_real/*.png     <generator_b>/1_fake/*.png
-```
-
-(`real/`+`fake/`, `nature/`+`ai/` and shared real folders are also understood; see the docstring of
-[`bench_eval.py`](../benchmark/bench_eval.py).) Datasets are large, so keep them on fast local disk.
+**If a download fails.** Hosts sometimes rate-limit (Google Drive) or ask you to accept terms first. Fetch the data by hand from the
+source in the table and unpack it so it matches the layout above (`real/`+`fake/` and `nature/`+`ai/` folders are also
+understood; see the docstring of [`bench_eval.py`](../benchmark/bench_eval.py)). Datasets are large, so keep them on fast
+local disk.
 
 ---
 
