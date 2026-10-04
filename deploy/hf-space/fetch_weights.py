@@ -27,6 +27,9 @@ def main() -> None:
     from synthscope import hub
     token = os.environ.get("HF_TOKEN") or None
     ckpt_dir = Path(os.environ.get("SYNTHSCOPE_CKPT_DIR", "~/ckpts")).expanduser()
+    # D3 is training-free (no .pth) but turns its raw score into a probability with a small calibration file
+    if not (ckpt_dir / "d3_calibration.json").exists():
+        hub._maybe_download_aux("d3", repo, token)
     for key in keys:
         if (ckpt_dir / f"{key}.pth").exists():
             continue
