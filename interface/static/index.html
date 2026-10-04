@@ -936,9 +936,11 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const [threshold, setThreshold] = useState(0.5);
       const [error, setError] = useState("");
       const [hasData, setHasData] = useState(true);       // hide "Browse datasets" when no dataset is installed (e.g. a public Space)
+      const [hasGen, setHasGen] = useState(true);         // hide "Test a generator" when no generator can run here
 
       useEffect(() => {
         fetch(API("/api/datasets")).then(r => r.json()).then(d => setHasData((d.datasets || []).length > 0)).catch(() => {});
+        fetch(API("/api/sota/generators")).then(r => r.json()).then(d => setHasGen((d.generators || []).some(g => g.available))).catch(() => {});
         fetch(API("/api/models")).then(r => r.json()).then(d => {
           setModels(d.models || []);
           setDevice(d.device || "");
@@ -958,7 +960,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             ${device && html`<span class="pill" title="Where the detectors run">${device}</span>`}
           </header>
           <div class="tabs">
-            ${TABS.filter(([k]) => k !== "explore" || hasData).map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
+            ${TABS.filter(([k]) => (k !== "explore" || hasData) && (k !== "sota" || hasGen)).map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
           </div>
           ${error && html`<div class="err">${error}</div>`}
           ${tab === "detect" ? html`<${DetectView} ...${shared} />`
