@@ -141,8 +141,9 @@ def run_batch_qwen(repo: str, cls_name: str, token, items: list, kw: dict, res: 
     pipeline_cls._execution_device = property(lambda self: DEVICE)
     embeds = []
     for it in items:
-        emb, mask, _ = pipe.encode_prompt(prompt=it["prompt"], device=DEVICE)
-        embeds.append((emb.cpu(), None if mask is None else mask.cpu()))
+        with torch.no_grad():       # without this the saved embeddings keep the autograd graph, and with it the 16 GB encoder
+            emb, mask, _ = pipe.encode_prompt(prompt=it["prompt"], device=DEVICE)
+        embeds.append((emb.detach().cpu(), None if mask is None else mask.detach().cpu()))
     pipe.text_encoder = None
     del text_encoder
     gc.collect(); torch.cuda.empty_cache()
