@@ -153,7 +153,7 @@ _REAL_POOLS = [c for p in _REAL_POOL_PATTERNS for c in _root_candidates(p)]
 
 @app.get("/api/sota/generators")
 def sota_generators():
-    return {"generators": _gens.list_generators(), "default_prompt": _gens.DEFAULT_PROMPT}
+    return {"generators": _gens.list_generators(), "default_prompt": _gens.DEFAULT_PROMPT, "device": config.device()}
 
 
 @app.get("/api/sota/real_image")

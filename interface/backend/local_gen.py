@@ -38,7 +38,7 @@ MODELS = {
     "flux1_kontext_dev": ("black-forest-labs/FLUX.1-Kontext-dev", "FluxKontextPipeline",
                           {"num_inference_steps": 28, "guidance_scale": 2.5}),
 }
-DEVICE = torch.device("cuda")
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DEBUG = bool(os.environ.get("LOCAL_GEN_DEBUG"))
 
 
@@ -58,9 +58,11 @@ def fit(img: Image.Image) -> Image.Image:
 
 
 def load_pipeline_cpu_offload(repo: str, cls_name: str, token):
-    """Standard path: whole pipeline in host RAM, modules streamed to the GPU on demand (FLUX.2 [klein])."""
+    """Standard path: whole pipeline in host RAM, modules streamed to the GPU on demand (FLUX.2 [klein]).
+    Without a GPU the pipeline simply runs on the CPU in bfloat16 (slow: minutes per image)."""
     pipe = getattr(diffusers, cls_name).from_pretrained(repo, torch_dtype=torch.bfloat16, token=token)
-    pipe.enable_model_cpu_offload()
+    if DEVICE.type == "cuda":
+        pipe.enable_model_cpu_offload()
     return pipe
 
 

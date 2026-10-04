@@ -33,6 +33,7 @@ class Generator:
     avail: Optional[Callable[[], bool]] = None   # custom availability check (overrides the defaults)
     heavy: bool = False   # True = needs (most of) the GPU: the web engine releases its detectors first
     edit_only: bool = False   # True = an editing model that cannot create an image from text alone
+    cpu_ok: bool = False      # local model that still runs (slowly) without a GPU; other local models need one
 
     @property
     def modes(self) -> list[str]:
@@ -40,7 +41,13 @@ class Generator:
             return ["recreate"]
         return ["edit"] if self.edit_only else ["recreate", "edit"]
 
+    def needs_gpu(self) -> bool:
+        """True when this local model cannot run here because the server has no GPU."""
+        return self.local and not self.cpu_ok and not _has_gpu()
+
     def available(self) -> bool:
+        if self.needs_gpu():
+            return False
         if self.avail is not None:
             return self.avail()
         if self.local:                       # local = available if the inference pipeline is importable
@@ -50,6 +57,14 @@ class Generator:
             except Exception:
                 return False
         return bool(os.environ.get(self.env_key))
+
+
+def _has_gpu() -> bool:
+    try:
+        import torch
+        return torch.cuda.is_available()
+    except Exception:
+        return False
 
 
 def _png_bytes(img: Image.Image) -> bytes:
@@ -200,13 +215,9 @@ _LOCAL_LOCK = threading.Lock()      # one heavy local generation at a time
 
 
 def _local_gen_available() -> bool:
+    """The isolated generator environment is configured (the GPU requirement is checked per model)."""
     extra = os.environ.get("SYNTHSCOPE_GEN_PYTHONPATH", "")
-    try:
-        import torch
-        has_gpu = torch.cuda.is_available()
-    except Exception:
-        has_gpu = False
-    return bool(extra) and Path(extra).is_dir() and has_gpu
+    return bool(extra) and Path(extra).is_dir()
 
 
 def _local_size(size) -> Optional[str]:
@@ -279,8 +290,8 @@ GENERATORS = {
         Generator("flux2_klein", "FLUX.2 [klein] 4B (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("flux2_klein_4b"),
                   "Black Forest Labs' distilled FLUX.2 [klein] 4B (Apache-2.0), edits the source photo into a "
-                  "new image locally on the GPU (4 steps); no API key.", local=True, avail=_local_gen_available,
-                  heavy=True),
+                  "new image locally (4 steps); no API key. Runs on a GPU, or slowly on a CPU.", local=True,
+                  avail=_local_gen_available, heavy=True, cpu_ok=True),
         Generator("flux2_klein_9b", "FLUX.2 [klein] 9B (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("flux2_klein_9b"),
                   "Black Forest Labs' distilled FLUX.2 [klein] 9B (FLUX non-commercial license; gated - accept the "
@@ -303,7 +314,8 @@ GENERATORS = {
 
 def list_generators() -> list[dict]:
     return [{"key": g.key, "name": g.name, "uses_image": g.uses_image, "modes": g.modes,
-             "available": g.available(), "env_key": g.env_key, "note": g.note}
+             "available": g.available(), "needs_gpu": g.needs_gpu(), "local": g.local,
+             "env_key": g.env_key, "note": g.note}
             for g in GENERATORS.values()]
 
 

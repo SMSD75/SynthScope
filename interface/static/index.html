@@ -423,6 +423,9 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 .topgen h2 .muted { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: 8px; }
 pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: var(--radius-sm);
   font-size: 12px; overflow-x: auto; color: var(--text); }
+
+.sota .cpuwarn { margin-top: 10px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 12.5px; line-height: 1.5;
+  border: 1px solid #ffcf6e; background: rgba(255,207,110,.08); color: #ffe0a0; }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -546,12 +549,15 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       ["Reimagine it", "Reimagine this as a completely new photograph with a different composition; keep only the type of subject"],
     ];
 
+    const CPU_GEN_MINUTES = "several minutes";   // measured on 8 vCPU / 32 GB; see docs/BENCHMARKS.md
+
     function pct(p) { return (100 * p).toFixed(1) + "%"; }
 
     // SOTA generator vs detector: pick/upload a real image -> a generator makes a new image ONCE -> any number of
     // detectors score the pair. Ticking another detector only scores it (no regeneration).
     function SotaView({ models }) {
       const [gens, setGens] = useState([]);
+      const [genDevice, setGenDevice] = useState("");
       const [gen, setGen] = useState("");
       const [prompt, setPrompt] = useState("");
       const [mode, setMode] = useState("recreate");        // "recreate" = new image from a description, "edit" = edit the photo
@@ -574,6 +580,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       useEffect(() => {
         fetch(API("/api/sota/generators")).then(r => r.json()).then(d => {
           setGens(d.generators || []);
+          setGenDevice(d.device || "");
           const a = (d.generators || []).find(g => g.available);
           if (a) setGen(a.key);
         }).catch(e => setErr(String(e.message || e)));
@@ -704,9 +711,13 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
               <div class="step"><span class="stepno">2</span><b>Generator</b></div>
               <select value=${gen} onChange=${e => setGen(e.target.value)}>
                 ${gens.map(g => html`<option key=${g.key} value=${g.key} disabled=${!g.available}>
-                  ${g.name}${g.available ? "" : " (unavailable)"}</option>`)}
+                  ${g.name}${g.available ? (genDevice === "cpu" && g.local ? " (slow on this CPU server)" : "")
+                                         : g.needs_gpu ? " (needs a GPU)" : g.local ? " (not set up here)" : " (needs an API key)"}</option>`)}
               </select>
               ${curGen && html`<div class="meta">${curGen.note}</div>`}
+              ${genDevice === "cpu" && curGen && curGen.local && curGen.available && html`<div class="cpuwarn">
+                ⏳ This server has no GPU, so this model runs on the CPU: expect ${CPU_GEN_MINUTES} per image.
+                The larger local models need a GPU, and hosted generators need an API key.</div>`}
 
               <div class="step"><span class="stepno">3</span><b>How to create it</b></div>
               <div class="modes">
@@ -924,8 +935,10 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const [tab, setTab] = useState("detect");
       const [threshold, setThreshold] = useState(0.5);
       const [error, setError] = useState("");
+      const [hasData, setHasData] = useState(true);       // hide "Browse datasets" when no dataset is installed (e.g. a public Space)
 
       useEffect(() => {
+        fetch(API("/api/datasets")).then(r => r.json()).then(d => setHasData((d.datasets || []).length > 0)).catch(() => {});
         fetch(API("/api/models")).then(r => r.json()).then(d => {
           setModels(d.models || []);
           setDevice(d.device || "");
@@ -945,7 +958,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             ${device && html`<span class="pill" title="Where the detectors run">${device}</span>`}
           </header>
           <div class="tabs">
-            ${TABS.map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
+            ${TABS.filter(([k]) => k !== "explore" || hasData).map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
           </div>
           ${error && html`<div class="err">${error}</div>`}
           ${tab === "detect" ? html`<${DetectView} ...${shared} />`

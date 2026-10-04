@@ -140,6 +140,9 @@ _SCRATCH_PREFIXES = tuple(p for p in (
 
 def _root_candidates(r: str) -> list[str]:
     cands = [r]
+    # SYNTHSCOPE_DATA_DIR: one folder holding datasets by their usual folder name (e.g. <dir>/CommGen15), as on a Space
+    if os.environ.get("SYNTHSCOPE_DATA_DIR"):
+        cands.insert(0, str(Path(os.environ["SYNTHSCOPE_DATA_DIR"]).expanduser() / Path(r).name))
     for src in _SCRATCH_PREFIXES:
         if r.startswith(src + "/"):
             tail = r[len(src):]

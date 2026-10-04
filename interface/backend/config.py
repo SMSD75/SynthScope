@@ -93,3 +93,9 @@ def device() -> str:
     import torch
 
     return "cuda" if torch.cuda.is_available() else "cpu"
+
+
+# xFormers has no CPU kernels: the DINOv2 hub code would fail on a CPU-only machine where xFormers is installed.
+# Its own switch makes it fall back to standard attention.
+if device() == "cpu":
+    os.environ.setdefault("XFORMERS_DISABLED", "1")
