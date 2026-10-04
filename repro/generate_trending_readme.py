@@ -64,7 +64,7 @@ def render_full(data: dict) -> str:
         out.append("")
     out.append("---")
     out.append("*Auto-generated from `interface/backend/trending.json` by `repro/generate_trending_readme.py` "
-               "(also shown in the web UI's What's Trending tab) — edit the JSON, not this file.*")
+               "— edit the JSON, not this file.*")
     return "\n".join(out) + "\n"
 
 
@@ -78,7 +78,7 @@ def render_teaser(data: dict) -> str:
         "",
         f"A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: "
         f"**{n_img} image · {n_vid} video** tracked ({n_in} already integrated in SynthScope), last updated "
-        f"**{data.get('updated','')}**. → **[TRENDING.md](TRENDING.md)** (also in the web UI's *What's Trending* tab).",
+        f"**{data.get('updated','')}**. → **[TRENDING.md](TRENDING.md)**.",
         END])
 
 

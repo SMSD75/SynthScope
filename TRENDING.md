@@ -81,4 +81,4 @@ Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked
 - [Awesome-Comprehensive-Deepfake-Detection (curated list)](https://github.com/qiqitao77/Awesome-Comprehensive-Deepfake-Detection) — Broad survey-style index of deepfake-detection research and repos.
 
 ---
-*Auto-generated from `interface/backend/trending.json` by `repro/generate_trending_readme.py` (also shown in the web UI's What's Trending tab) — edit the JSON, not this file.*
+*Auto-generated from `interface/backend/trending.json` by `repro/generate_trending_readme.py` — edit the JSON, not this file.*

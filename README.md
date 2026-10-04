@@ -5,9 +5,49 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-SynthScope is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
+**Check whether an image or video is AI-generated, and see how well 17 published detectors hold up against today's generators.**
+Try it in the browser, call it from Python, or reproduce the papers' results.
 
-Every detector is a binary classifier (`real` vs `fake`), and results are reported **per generator**, the standard way to measure generalization to unseen generative models. **17 detectors** are included (14 image, 3 video), each verified against its paper.
+<p align="center">
+  <a href="#web-demo"><b>Web demo</b></a> ·
+  <a href="#install">Install</a> ·
+  <a href="#python-and-command-line">Python &amp; CLI</a> ·
+  <a href="#detectors">Detectors</a> ·
+  <a href="#benchmarks">Benchmarks</a> ·
+  <a href="#train-your-own">Train</a> ·
+  <a href="#-whats-trending">Trending</a> ·
+  <a href="#contributing-and-license">Contributing</a>
+</p>
+
+---
+
+## Web demo
+
+A browser app for trying the detectors without writing code. The detectors always run on your own machine.
+
+| Tab | What you do there |
+| --- | --- |
+| **Detect** | Upload an image or video, pick a detector, and get a verdict with a probability. The page shows the image *as the detector sees it* (after that detector's own preprocessing, with a short explanation) and, for some detectors, a heatmap of where it looked. |
+| **Test a generator** | Take a real photo, let a current image generator create a new image from it, and see which detectors catch it. Generate once, then add or remove detectors freely: they all score the same image. |
+| **Browse datasets** | Click through samples of the benchmark datasets and see a detector's score on each. Score a whole batch and tune the decision threshold. |
+| **Leaderboard** | Every method on every benchmark it reports: the paper's number, our own retrained checkpoint, and the authors' official weights. |
+| **Generator benchmarks** | How each detector does against specific modern generators, ranked by AUROC. |
+
+*Test a generator* works with hosted models (Nano Banana, GPT Image, Grok, FLUX.1: set the API key in `.env`; the source photo is
+sent to that provider) and with open-weight models that run locally on a 24 GB GPU and keep your image on your machine
+(FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1, Ideogram 4.0).
+
+**Run it**
+
+```bash
+pip install -r interface/requirements.txt
+python interface/scripts/collect_checkpoints.py   # assemble the checkpoint folder
+bash interface/run_backend.sh                      # serves http://localhost:8000
+```
+
+Setup details, the cluster launch recipe and the local-generator setup are in [interface/README.md](interface/README.md).
+Prefer something lighter? Open the [Colab quickstart](notebooks/synthscope_quickstart.ipynb) or run the
+[Gradio demo](demo/) (`pip install -e ".[demo]" && python demo/app.py`).
 
 ---
 
@@ -24,10 +64,7 @@ Install the [PyTorch](https://pytorch.org) build that matches your CUDA. A coupl
 (`clip`, `fat_former`) also need OpenAI CLIP: `pip install git+https://github.com/openai/CLIP.git`.
 See [LICENSES.md](LICENSES.md) for per-method/weight licenses.
 
-## Quick start
-
-> **Try it without installing:** open the [Colab quickstart](notebooks/synthscope_quickstart.ipynb) or launch
-> the [Gradio demo](demo/) (`pip install -e ".[demo]" && python demo/app.py`).
+## Python and command line
 
 Run any detector on an image or video and get the probability it is AI-generated:
 
@@ -70,7 +107,7 @@ releases are held back unless you opt in and confirm the upstream license permit
 
 ---
 
-## Implemented detectors
+## Detectors
 
 Select a detector with `model@ModelConfig=image/<name>` (image) or `model@ModelConfig=video/<name>`. Most
 methods freeze a large pretrained backbone and train a lightweight head/adapter; see each model's
@@ -136,26 +173,6 @@ generators) live in [`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK
 
 ---
 
-## Web demo
-
-A self-contained web app to run any detector on an uploaded image/video lives in
-[`interface/`](interface/) — a FastAPI backend (model registry + lazy inference engine) and a React UI:
-
-```bash
-pip install -r interface/requirements.txt
-python interface/scripts/collect_checkpoints.py   # assemble the checkpoint folder
-bash interface/run_backend.sh                      # serves http://<host>:8000
-```
-
-It exposes every detector with its exact preprocessing, runs image detectors frame-by-frame on videos
-and video detectors through their native clip pipeline, shows which weights back each model
-(official / SynthScope-trained / training-free), and includes a benchmark view, the **What's Trending** feed ([TRENDING.md](TRENDING.md)), and a *SOTA vs
-detectors* demo that generates images with hosted models (Nano Banana, GPT Image, Grok, FLUX.1) or **local open-weight
-ones (FLUX.2 [klein] 4B, Qwen-Image-2.1, Ideogram 4.0)** and scores them with every detector. See
-[interface/README.md](interface/README.md).
-
----
-
 ## Train your own
 
 Compose three Hydra config groups and override any field with dot-paths:
@@ -177,5 +194,14 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending
 
-A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: **15 image · 6 video** tracked (13 already integrated in SynthScope), last updated **2026-10-04**. → **[TRENDING.md](TRENDING.md)** (also in the web UI's *What's Trending* tab).
+A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: **15 image · 6 video** tracked (13 already integrated in SynthScope), last updated **2026-10-04**. → **[TRENDING.md](TRENDING.md)**.
 <!-- TRENDING:END -->
+
+---
+
+## Contributing and license
+
+Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how to add a
+detector, and submit benchmark results through a pull request. SynthScope is released under the [Apache 2.0 license](LICENSE);
+the third-party detectors, weights and datasets it loads keep their own licenses ([LICENSES.md](LICENSES.md)). To cite it, use
+[CITATION.cff](CITATION.cff).
