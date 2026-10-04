@@ -49,9 +49,22 @@ A browser app for trying the detectors without writing code. The detectors alway
 
 </details>
 
-*Test a generator* works with hosted models (Nano Banana, GPT Image, Grok, FLUX.1: set the API key in `.env`; the source photo is
-sent to that provider) and with open-weight models that run locally on a 24 GB GPU and keep your image on your machine
-(FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1, Ideogram 4.0).
+### 🔌 Connect your own generators
+
+*Test a generator* can talk to the image generators you have access to. Copy `.env.example` to `.env`, fill in the keys you have, and
+restart the page. A generator without a key is greyed out, so everything is optional.
+
+| Generator | How to connect | Modes |
+| --- | --- | --- |
+| **Nano Banana** (Gemini 2.5 Flash Image) | `GEMINI_API_KEY` ([get a key](https://aistudio.google.com/apikey)) | re-create, edit |
+| **GPT Image** (`gpt-image-1`) | `OPENAI_API_KEY` ([get a key](https://platform.openai.com/api-keys)) | re-create, edit |
+| **Grok** (`grok-2-image`) | `XAI_API_KEY` ([get a key](https://console.x.ai)) | re-create |
+| **FLUX.1** (via fal.ai) | `FAL_KEY` ([get a key](https://fal.ai/dashboard/keys)) | re-create, edit |
+| **Open-weight, runs locally** (no API key): Ideogram 4.0, FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1 | a 24 GB GPU, plus `HF_TOKEN` once to download gated weights; setup in [interface/README.md](interface/README.md) | re-create, edit (Kontext: edit only) |
+
+Hosted generators send your source photo or its description to that provider. The local models keep everything on your machine.
+Missing your favorite generator? Adding one takes a small function and one registry entry in
+[`interface/backend/generators.py`](interface/backend/generators.py).
 
 **🚀 Run it**
 
