@@ -731,7 +731,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
                   </figure>
                 </div>
                 ${genInfo && genInfo.similarity != null && html`<div class=${"sim " + (genInfo.near_copy ? "warn" : "ok")}>
-                  Layout similarity to your photo: <b>${genInfo.similarity.toFixed(2)}</b> ·
+                  Layout similarity to your photo: <b>${genInfo.similarity.toFixed(2)}</b>${" · "}
                   ${genInfo.near_copy ? "very close: this looks like an edit of your photo, so the detectors are scoring an edited real photo rather than a new image."
                                       : "different enough to count as a newly generated image."}</div>`}
                 ${genInfo && genInfo.gen_size && html`<div class="meta">Sizes: your photo ${genInfo.real_size[0]}×${genInfo.real_size[1]}, generated ${genInfo.gen_size[0]}×${genInfo.gen_size[1]}. Each detector scores each image at its own size, after the detector's own preprocessing.</div>`}
