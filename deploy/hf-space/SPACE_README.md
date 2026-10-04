@@ -17,5 +17,6 @@ they hold up against today's image generators. This Space runs on CPU: a detecto
 
 Code, benchmarks and documentation: **https://github.com/SMSD75/SynthScope**
 
-Each detector keeps the license of its authors; the weights served here are limited to detectors whose licenses allow a free,
-non-commercial public demo. See the repository's `LICENSES.md`.
+Each detector and its weights keep the license chosen by their authors (see the repository's `LICENSES.md`); this demo is
+free and non-commercial. If you are an author and would like your method removed or credited differently, please open an
+issue on GitHub.

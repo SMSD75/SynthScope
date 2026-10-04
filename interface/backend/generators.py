@@ -33,7 +33,6 @@ class Generator:
     avail: Optional[Callable[[], bool]] = None   # custom availability check (overrides the defaults)
     heavy: bool = False   # True = needs (most of) the GPU: the web engine releases its detectors first
     edit_only: bool = False   # True = an editing model that cannot create an image from text alone
-    cpu_ok: bool = False      # local model that still runs (slowly) without a GPU; other local models need one
 
     @property
     def modes(self) -> list[str]:
@@ -42,8 +41,9 @@ class Generator:
         return ["edit"] if self.edit_only else ["recreate", "edit"]
 
     def needs_gpu(self) -> bool:
-        """True when this local model cannot run here because the server has no GPU."""
-        return self.local and not self.cpu_ok and not _has_gpu()
+        """True when this local model cannot run here because the server has no GPU (on a CPU, even the smallest one,
+        FLUX.2 [klein] 4B, takes over 30 minutes per image)."""
+        return self.local and not _has_gpu()
 
     def available(self) -> bool:
         if self.needs_gpu():
@@ -290,8 +290,8 @@ GENERATORS = {
         Generator("flux2_klein", "FLUX.2 [klein] 4B (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("flux2_klein_4b"),
                   "Black Forest Labs' distilled FLUX.2 [klein] 4B (Apache-2.0), edits the source photo into a "
-                  "new image locally (4 steps); no API key. Runs on a GPU, or slowly on a CPU.", local=True,
-                  avail=_local_gen_available, heavy=True, cpu_ok=True),
+                  "new image locally on the GPU (4 steps); no API key.", local=True,
+                  avail=_local_gen_available, heavy=True),
         Generator("flux2_klein_9b", "FLUX.2 [klein] 9B (open-weight, local)", "SYNTHSCOPE_GEN_PYTHONPATH", True,
                   _local_subprocess("flux2_klein_9b"),
                   "Black Forest Labs' distilled FLUX.2 [klein] 9B (FLUX non-commercial license; gated - accept the "

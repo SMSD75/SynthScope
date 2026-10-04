@@ -424,8 +424,6 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: var(--radius-sm);
   font-size: 12px; overflow-x: auto; color: var(--text); }
 
-.sota .cpuwarn { margin-top: 10px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 12.5px; line-height: 1.5;
-  border: 1px solid #ffcf6e; background: rgba(255,207,110,.08); color: #ffe0a0; }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -548,8 +546,6 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       ["New camera angle", "Re-photograph this scene from a very different camera angle and distance"],
       ["Reimagine it", "Reimagine this as a completely new photograph with a different composition; keep only the type of subject"],
     ];
-
-    const CPU_GEN_MINUTES = "30 minutes or more";   // FLUX.2 [klein] 4B, 8 CPU cores: one 512 px image took over 30 min
 
     function pct(p) { return (100 * p).toFixed(1) + "%"; }
 
@@ -711,13 +707,10 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
               <div class="step"><span class="stepno">2</span><b>Generator</b></div>
               <select value=${gen} onChange=${e => setGen(e.target.value)}>
                 ${gens.map(g => html`<option key=${g.key} value=${g.key} disabled=${!g.available}>
-                  ${g.name}${g.available ? (genDevice === "cpu" && g.local ? " (slow on this CPU server)" : "")
+                  ${g.name}${g.available ? ""
                                          : g.needs_gpu ? " (needs a GPU)" : g.local ? " (not set up here)" : " (needs an API key)"}</option>`)}
               </select>
               ${curGen && html`<div class="meta">${curGen.note}</div>`}
-              ${genDevice === "cpu" && curGen && curGen.local && curGen.available && html`<div class="cpuwarn">
-                ⏳ This server has no GPU, so this model runs on the CPU: expect ${CPU_GEN_MINUTES} per image.
-                The larger local models need a GPU, and hosted generators need an API key.</div>`}
 
               <div class="step"><span class="stepno">3</span><b>How to create it</b></div>
               <div class="modes">

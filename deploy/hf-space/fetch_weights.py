@@ -13,8 +13,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-# Detectors whose upstream licenses allow a free public demo (see deploy/hf-space/README.md, "Licenses").
-DEFAULT = ["clip", "cnn", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "vib_net", "dinov2", "adapted_dino",
+# Detectors whose upstream licenses allow a free public demo. NPR's repository has no license: we asked the authors
+# (2026-10-04) and drop it if they decline.
+DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "vib_net", "dinov2", "adapted_dino",
            "restrav"]
 
 
