@@ -4,7 +4,7 @@ export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi
 export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True CUDA_VISIBLE_DEVICES=7
 SAVE=/hddstore/ssalehi/AGID/checkpoints/_train/cospy_genimage_sub; mkdir -p "$SAVE"
 echo "=== cospy SUBSET retrain start $(date) ==="
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29655 \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29655 \
   main.py trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy dataset@DatasetConfig=image/genimage \
   DatasetConfig.root_dir=/hddstore/ssalehi/AGID/GenImage_sub \
   DatasetConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]" \

@@ -24,7 +24,7 @@ echo "hard-3 test gens: $(ls $TEST 2>/dev/null | tr '\n' ' ')"
 
 ok=0
 for i in 1 2 3 4 5; do
-  $CONDA run --no-capture-output -n AGID python -c \
+  $CONDA run --no-capture-output -n SynthScope python -c \
     "import torch; assert torch.cuda.is_available(); (torch.randn(4,4,device='cuda')@torch.randn(4,4,device='cuda')).sum().item(); print('CUDA OK')" && { ok=1; break; }
   echo "CUDA init failed ($i)"; sleep 5
 done
@@ -36,7 +36,7 @@ for ep in 10 25 50 75 100; do
   until [ -f "$ck" ]; do sleep 120; done
   sleep 25   # let the snapshot finish flushing to shared FS
   echo "[eval] ep$ep hard-3  $(date)"
-  $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py \
+  $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
     --model pgc --benchmark forensynths --data "$TEST" --bs 32 \
     --ckpt "$ck" --tag pgc_constlr_ep${ep}_hard3 2>&1 | tail -25
 done

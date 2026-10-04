@@ -6,7 +6,7 @@ Deployable as a Hugging Face Space (see demo/README.md) or locally:
     python demo/app.py
 
 On a Space (or any machine without local weights), detectors auto-download from the model zoo;
-set the ``AGID_HUB_REPO`` env var to your checkpoints repo.
+set the ``SYNTHSCOPE_HUB_REPO`` env var to your checkpoints repo.
 """
 from __future__ import annotations
 

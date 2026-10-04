@@ -6,7 +6,7 @@
   "training_set_in_paper": "NONE \u2014 D3 is training-free (inference only). Baselines (re-implemented for comparison) were trained on real videos from Youku-mPLUG + Pika fakes, following DeMamba (paper Sec 4.1).",
   "encoder_in_paper": "XCLIP-B/16 (X-CLIP ViT-B/16, Ni et al. ECCV'22, paper ref [34]) as the frozen per-frame visual encoder; first-order = L2 distance. CLIP-B/16 is the ablation runner-up (~97 on GenVideo, Table 7).",
   "paper_protocol": "Extract up to a 2 s segment, sample frames at 8 fps, JPEG; crop 10% of the longer edge then resize to 224x224. Score = std of 2nd-order central-difference of inter-frame L2 distances (Eq.8). Metric reported: AP (real-class); AUROC in supplementary. Hardware RTX 4090. (paper Sec 4.1 'Implementation Details')",
-  "agid_encoder": "CLIP ViT-B/16 (openai/clip-vit-base-patch16, per-frame pooler_output). XCLIP intentionally removed from the AGID port (HF XCLIPVisionModel does cross-frame message-token attention, violating D3's per-frame premise). See models/video/d3/README.md.",
+  "synthscope_encoder": "CLIP ViT-B/16 (openai/clip-vit-base-patch16, per-frame pooler_output). XCLIP intentionally removed from the SynthScope port (HF XCLIPVisionModel does cross-frame message-token attention, violating D3's per-frame premise). See models/video/d3/README.md.",
   "benchmarks": [
     {
       "name": "GenVideo (DeMamba GenVideo-Val, Table 1)",
@@ -48,7 +48,7 @@
         "auroc": 95.95,
         "acc": 91.71,
         "map": 63.93,
-        "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 AGID's GenVideo pool pairs 10000 shared reals against as few as 56 fakes/generator (Sora), so AP is dominated by a handful of high-scoring reals (89.0->63.93 is imbalance noise, not a model regression). AUROC/acc are the comparison; AUROC ~96 ~ paper-quality."
+        "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 SynthScope's GenVideo pool pairs 10000 shared reals against as few as 56 fakes/generator (Sora), so AP is dominated by a handful of high-scoring reals (89.0->63.93 is imbalance noise, not a model regression). AUROC/acc are the comparison; AUROC ~96 ~ paper-quality."
       },
       "our_per_generator_ap": {
         "Crafter": 94.26,
@@ -108,7 +108,7 @@
         "ZeroScope": 98.83
       },
       "paper_per_generator_note": "D3 (XCLIP-B/16) AP from paper Table 2. CLIP-B/16 EvalCrafter mAP = 97.63 (L2) in Table-7 ablation.",
-      "official_eval_protocol": "Same XCLIP-B/16 protocol as GenVideo. EvalCrafter is fake-only; AP is scored by pairing each generator's fakes against a shared real pool (AGID reuses the GenVideo-Val MSR-VTT reals; real_acc=81.33 across all rows).",
+      "official_eval_protocol": "Same XCLIP-B/16 protocol as GenVideo. EvalCrafter is fake-only; AP is scored by pairing each generator's fakes against a shared real pool (SynthScope reuses the GenVideo-Val MSR-VTT reals; real_acc=81.33 across all rows).",
       "our_status": "below",
       "our_number": {
         "mAP": 91.19,
@@ -154,7 +154,7 @@
       "official_eval_protocol": "Same XCLIP-B/16 protocol. VideoPhy = Bansal et al. arXiv:2406.03520.",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not evaluated in AGID \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the AGID encoder.",
+      "gap_cause": "Not evaluated in SynthScope \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the SynthScope encoder.",
       "dataset_source": "github/HF: VideoPhy (Bansal et al., arXiv:2406.03520; github.com/Hritikbansal/videophy). Needs download."
     },
     {
@@ -186,15 +186,15 @@
       "official_eval_protocol": "Same XCLIP-B/16 protocol. VidProM = Wang & Yang, NeurIPS'24.",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not evaluated in AGID \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)",
+      "gap_cause": "Not evaluated in SynthScope \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)",
       "dataset_source": "HF: VidProM (Wang & Yang, openreview pYNl76onJL; huggingface VidProM). Needs download."
     }
   ],
   "summary": {
     "n_benchmarks_reported": 4,
-    "n_reproduced_in_agid": 0,
+    "n_reproduced_in_synthscope": 0,
     "n_below": 2,
     "n_missing": 2,
-    "key_finding": "D3 GenVideo 89.0 (AGID) vs 98.46 (paper) gap is CONFIRMED to be (a) CLIP-B/16 vs the paper's XCLIP-B/16 encoder and (b) missing 10%-edge-crop + per-duration (1 s) frame sampling, NOT a method bug. X-CLIP-B/16 weights ARE downloadable (microsoft/xclip-base-patch16, not gated), so the gap is closable. A standalone CLIP-B/16 run with full official preprocessing already reaches 95.6 AP_real (d3_repro). VideoPhy and VidProM are reported in the paper but not yet run in AGID (datasets not downloaded)."
+    "key_finding": "D3 GenVideo 89.0 (SynthScope) vs 98.46 (paper) gap is CONFIRMED to be (a) CLIP-B/16 vs the paper's XCLIP-B/16 encoder and (b) missing 10%-edge-crop + per-duration (1 s) frame sampling, NOT a method bug. X-CLIP-B/16 weights ARE downloadable (microsoft/xclip-base-patch16, not gated), so the gap is closable. A standalone CLIP-B/16 run with full official preprocessing already reaches 95.6 AP_real (d3_repro). VideoPhy and VidProM are reported in the paper but not yet run in SynthScope (datasets not downloaded)."
   }
 }

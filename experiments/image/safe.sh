@@ -5,7 +5,7 @@ export TORCH_HOME=/nvmestore/ssalehi/.cache/torch
 export CUDA_VISIBLE_DEVICES=1,2
 export OMP_NUM_THREADS=1
 
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
     trainer@TrainerConfig=image/safe \
     dataset@DatasetConfig=image/aigibench \
     ModelConfig.model_type=safe \
@@ -24,4 +24,4 @@ export OMP_NUM_THREADS=1
     TrainerConfig.warmup.lr_scheduler=cosine \
     logger.name=safe \
     logger.mode=online \
-    logger.tags=[AGID,SAFE,aigibench]
+    logger.tags=[SynthScope,SAFE,aigibench]

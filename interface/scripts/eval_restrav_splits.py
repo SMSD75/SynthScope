@@ -37,7 +37,7 @@ def main():
         reals = sorted(glob.glob(f"{ROOT}/{split}/genvideo/0_real/*.mp4"))
         fakes = sorted(glob.glob(f"{ROOT}/{split}/genvideo/1_fake/*.mp4"))
         random.Random(0).shuffle(reals); random.Random(1).shuffle(fakes)
-        items = [(p, 0) for p in reals[:N]] + [(p, 1) for p in fakes[:N]]   # AGID: real=0, fake=1
+        items = [(p, 0) for p in reals[:N]] + [(p, 1) for p in fakes[:N]]   # SynthScope: real=0, fake=1
         probs, labels = [], []
         for p, y in items:
             try:

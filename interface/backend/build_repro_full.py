@@ -1,5 +1,5 @@
 """Build interface/backend/repro_full.json: per-method list of ALL reported benchmarks with
-SEPARATE columns for the AGID-trained checkpoint and the official-weights-in-AGID-class number.
+SEPARATE columns for the SynthScope-trained checkpoint and the official-weights-in-SynthScope-class number.
 
 Source of truth = the verified specs in repro/benchmark_specs/*.json. Numbers that the specs only
 record in prose notes (the AGID/official split is structured inconsistently across methods) are
@@ -10,21 +10,21 @@ import json, glob, os, sys
 
 ROOT = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
 
-# (model, benchmark-name-substring) -> verified {agid:{...}, official:{...}} numbers.
-# These resolve the AGID-vs-official ambiguity in the spec our_number dicts and surface the number
+# (model, benchmark-name-substring) -> verified {synthscope:{...}, official:{...}} numbers.
+# These resolve the SynthScope-vs-official ambiguity in the spec our_number dicts and surface the number
 # that the spec only kept in prose. Each traces to a repro/bench_results/*.json (tag in spec note).
 VAL = {
-    # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no AGID_train here.
+    # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no SynthScope_train here.
     ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
-    # AGID_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces official.
-    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "agid": {"map": 96.42, "acc": 77.87}},
-    ("clip", "ForenSynths"):             {"agid": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
-    ("clip", "UniversalFakeDetect"):     {"agid": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
-    ("cnn", "ForenSynths"):              {"agid": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},
-    ("co_spy", "Co-Spy-Bench"):          {"agid": {"map": 96.6, "acc": 89.9}, "official": {"map": 86.65, "acc": 83.88}},
-    ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "agid": {"map": 84.91}},
-    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "agid": {"map": 90.59, "acc": 75.91}},
-    ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "agid": {"map": 96.17}},
+    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces official.
+    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 96.42, "acc": 77.87}},
+    ("clip", "ForenSynths"):             {"synthscope": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
+    ("clip", "UniversalFakeDetect"):     {"synthscope": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
+    ("cnn", "ForenSynths"):              {"synthscope": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},
+    ("co_spy", "Co-Spy-Bench"):          {"synthscope": {"map": 96.6, "acc": 89.9}, "official": {"map": 86.65, "acc": 83.88}},
+    ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "synthscope": {"map": 84.91}},
+    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 75.91}},
+    ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "synthscope": {"map": 96.17}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},
@@ -32,34 +32,34 @@ VAL = {
     ("npr", "Table 3"):                  {"official": {"map": 99.4, "acc": 95.03}},
     ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}},
     ("npr", "Table 5"):                  {"official": {"map": 83.47, "acc": 79.13}},
-    # SAFE now SERVES the AGID-trained checkpoint (retrain v2 / model_38), which reproduces the paper.
-    ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "agid": {"map": 97.79, "acc": 95.1}},
+    # SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / model_38), which reproduces the paper.
+    ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "synthscope": {"map": 97.79, "acc": 95.1}},
     ("safe", "GANGen"):                  {"official": {"map": 99.85, "acc": 99.0}},
-    ("safe", "UniversalFakeDetect"):     {"official": {"map": 99.1, "acc": 95.71}, "agid": {"map": 98.44, "acc": 94.0}},
-    ("safe", "GenImage"):                {"official": {"map": 99.32, "acc": 95.62}, "agid": {"map": 99.51, "acc": 95.9}},
-    ("safe", "DiTFake"):                 {"agid": {"map": 99.96, "acc": 99.2}},
-    ("safe", "DiffusionForensics"):      {"agid": {"map": 99.34, "acc": 91.3}},
-    ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "agid": {"map": 97.62, "acc": 78.6}},
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "agid": {"map": 99.01}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "agid": {"map": 89.03}},
-    ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "agid": {"map": 86.88}},
-    ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "agid": {"map": 98.61, "acc": 66.66}},
-    # SPAI now SERVES official weights remapped into the AGID class, scored at NATIVE resolution
-    # (the faithful any-res path). official = that served number; agid = the superseded from-scratch retrain.
-    ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "agid": {"map": 88.8, "acc": 82.81}},
+    ("safe", "UniversalFakeDetect"):     {"official": {"map": 99.1, "acc": 95.71}, "synthscope": {"map": 98.44, "acc": 94.0}},
+    ("safe", "GenImage"):                {"official": {"map": 99.32, "acc": 95.62}, "synthscope": {"map": 99.51, "acc": 95.9}},
+    ("safe", "DiTFake"):                 {"synthscope": {"map": 99.96, "acc": 99.2}},
+    ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
+    ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "synthscope": {"map": 99.01}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 89.03}},
+    ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
+    ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
+    # SPAI now SERVES official weights remapped into the SynthScope class, scored at NATIVE resolution
+    # (the faithful any-res path). official = that served number; synthscope = the superseded from-scratch retrain.
+    ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "synthscope": {"map": 88.8, "acc": 82.81}},
     ("spai", "Synthbuster"):             {"official": {"map": 96.75, "auroc": 96.97}},
     # D3 now uses the faithful protocol (X-CLIP-B/16 + 10% edge-crop). On GenVideo, AUROC/acc are the
     # robust metrics (the mAP harness is degenerate: 10000 reals : as few as 56 fakes/generator).
-    ("d3", "GenVideo"):                  {"agid": {"map": 63.93, "auroc": 95.95, "acc": 91.71}},
-    ("d3", "EvalCrafter"):               {"agid": {"map": 91.19, "auroc": 95.41, "acc": 87.67}},
-    ("restrav", "GenVidBench"):          {"agid": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
-    ("stall", "GenVideo"):               {"agid": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
-    ("stall", "VideoFeedback"):          {"agid": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
-    ("stall", "ComGenVid"):              {"agid": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
-    ("vib_net", "Diffusion-source (SDv1.4-trained), AP"):  {"agid": {"map": 83.94, "acc": 77.57}},
-    ("vib_net", "Diffusion-source (SDv1.4-trained), ACC"): {"agid": {"map": 83.94, "acc": 77.57}},
-    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), AP"):  {"agid": {"map": 61.71, "acc": 57.91}},
-    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), ACC"): {"agid": {"map": 61.71, "acc": 57.91}},
+    ("d3", "GenVideo"):                  {"synthscope": {"map": 63.93, "auroc": 95.95, "acc": 91.71}},
+    ("d3", "EvalCrafter"):               {"synthscope": {"map": 91.19, "auroc": 95.41, "acc": 87.67}},
+    ("restrav", "GenVidBench"):          {"synthscope": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
+    ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
+    ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
+    ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
+    ("vib_net", "Diffusion-source (SDv1.4-trained), AP"):  {"synthscope": {"map": 83.94, "acc": 77.57}},
+    ("vib_net", "Diffusion-source (SDv1.4-trained), ACC"): {"synthscope": {"map": 83.94, "acc": 77.57}},
+    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), AP"):  {"synthscope": {"map": 61.71, "acc": 57.91}},
+    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), ACC"): {"synthscope": {"map": 61.71, "acc": 57.91}},
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
 
@@ -117,17 +117,17 @@ def fmt_ours(d):
     return " / ".join(f"{LAB[k]}={d[k]}" for k in ("map", "acc", "auroc") if k in d)
 
 
-def combined(agid, official):
-    a, o = fmt_ours(agid), fmt_ours(official)
+def combined(synthscope, official):
+    a, o = fmt_ours(synthscope), fmt_ours(official)
     if a and o:
-        return f"AGID {a} · official {o}"
+        return f"SynthScope {a} · official {o}"
     if o:
         return f"{o} (official wts)"
     return a
 
 
 def match_val(model, name):
-    """Return (agid, official, matched_substr) for the best VAL hit. A prefix match wins over a
+    """Return (synthscope, official, matched_substr) for the best VAL hit. A prefix match wins over a
     mid-string match (so 'In-the-wild (Co-Spy-Bench ...)' matches the In-the-wild entry, not Co-Spy-Bench)."""
     best = None  # (is_prefix, len, sub, v)
     nl = name.lower()
@@ -138,27 +138,27 @@ def match_val(model, name):
                 best = cand
     if not best:
         return {}, {}, None
-    return best[3].get("agid", {}), best[3].get("official", {}), best[2]
+    return best[3].get("synthscope", {}), best[3].get("official", {}), best[2]
 
 
-def status_for(name, paper, agid, official, spec_status):
-    """reproduced = AGID-trained matches paper; official = official-weights-in-AGID matches paper
-    (AGID-trained number shown alongside where attempted); below = neither; reference = paper gives
+def status_for(name, paper, synthscope, official, spec_status):
+    """reproduced = SynthScope-trained matches paper; official = official-weights-in-SynthScope matches paper
+    (SynthScope-trained number shown alongside where attempted); below = neither; reference = paper gives
     no number for this cross-dataset; missing = not evaluated. Falls back to the spec's label only
     when the paper metric keys are not numerically comparable (e.g. ReStraV's nested per-split dicts)."""
     if not has_paper_number(paper):
-        return "reference" if (agid or official) else "missing"
-    if not (agid or official):
+        return "reference" if (synthscope or official) else "missing"
+    if not (synthscope or official):
         return "missing"
     pm = paper_metrics(paper)
     if not pm:                                   # paper has numbers but not in comparable keys
         return spec_status or "below"
-    agid_ok, off_ok = cmp_ok(agid, pm), cmp_ok(official, pm)
-    if agid_ok:
+    synthscope_ok, off_ok = cmp_ok(synthscope, pm), cmp_ok(official, pm)
+    if synthscope_ok:
         return "reproduced"
     if off_ok:
         return "official"
-    if agid_ok is None and off_ok is None:       # neither comparable -> trust the spec
+    if synthscope_ok is None and off_ok is None:       # neither comparable -> trust the spec
         return spec_status or "below"
     return "below"
 
@@ -173,8 +173,8 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         name = b.get("name", "") or ""
         paper = b.get("paper_number")
         spec_status = b.get("our_status", "")
-        agid, official, sub = match_val(model, name)
-        status = status_for(name, paper, agid, official, spec_status)
+        synthscope, official, sub = match_val(model, name)
+        status = status_for(name, paper, synthscope, official, spec_status)
         on = b.get("our_number")
         note = ""
         if isinstance(on, dict) and on.get("note"):
@@ -185,14 +185,14 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
             "benchmark": name[:46],
             "metric": b.get("metric", ""),
             "paper": fmt_paper(paper),
-            "ours": combined(agid, official),
-            "ours_agid": fmt_ours(agid),
+            "ours": combined(synthscope, official),
+            "ours_synthscope": fmt_ours(synthscope),
             "ours_official": fmt_ours(official),
             "status": status,
             "note": note[:240],
         })
         audit.append((model, name[:38], fmt_paper(paper)[:22],
-                      (fmt_ours(agid) or "-")[:22], (fmt_ours(official) or "-")[:22],
+                      (fmt_ours(synthscope) or "-")[:22], (fmt_ours(official) or "-")[:22],
                       f"{spec_status}->{status}"))
     out[model] = rows
 
@@ -205,7 +205,7 @@ for v in out.values():
 print(f"wrote repro_full.json: {len(out)} methods, {n} rows  status={counts}")
 
 if "--audit" in sys.argv:
-    print(f"\n{'model':10} {'benchmark':38} {'paper':22} {'AGID':22} {'official':22} status")
+    print(f"\n{'model':10} {'benchmark':38} {'paper':22} {'SynthScope':22} {'official':22} status")
     print("-" * 140)
     for r in audit:
         print(f"{r[0]:10} {r[1]:38} {r[2]:22} {r[3]:22} {r[4]:22} {r[5]}")

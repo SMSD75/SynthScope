@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 import torch.nn.functional as f
 
 
-class AGIDVIBNetModel(nn.Module):
+class SynthScopeVIBNetModel(nn.Module):
     """VIB-Net (Zhang et al., CVPR'25): a Variational Information Bottleneck head on a frozen
     vision backbone.
 

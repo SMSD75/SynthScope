@@ -17,7 +17,7 @@ RS=(rsync -aL -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no")
 [ -d "$DATA/GenImage/train/real" ] || { echo "[stage] GenImage (~91G)"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/AGID/GenImage "$DATA/" 2>&1 | tail -1; }
 echo "ssdstore" > /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/DATA_READY_cn029
 echo "node=$(hostname) data=$DATA/GenImage real=$(ls $DATA/GenImage/train/real 2>/dev/null|wc -l) $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29642 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29642 \
   main.py trainer@TrainerConfig=image/vib_net model@ModelConfig=image/vib_net dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]" \
   DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_clip]" \

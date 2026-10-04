@@ -1,5 +1,5 @@
-"""Isolate the AIDE AGID_train gap: run the GENUINE official AIDE model + weights, but ablate the
-DCT-input resolution. native-res (official) vs resize-256-before-DCT (what the AGID class does).
+"""Isolate the AIDE SynthScope_train gap: run the GENUINE official AIDE model + weights, but ablate the
+DCT-input resolution. native-res (official) vs resize-256-before-DCT (what the SynthScope class does).
 If resize-256 tanks the official weights, the gap is the preprocessing (native-res DCT), not training."""
 import argparse, sys
 from pathlib import Path
@@ -23,7 +23,7 @@ args = ap.parse_args()
 device = torch.device("cuda")
 model = build_model(Path(args.ckpt), device)
 dct = DCT_base_Rec_Module()
-# native: ToTensor only (official). resize256: Resize([256,256]) BEFORE DCT (mimics AGID aide.py:221).
+# native: ToTensor only (official). resize256: Resize([256,256]) BEFORE DCT (mimics SynthScope aide.py:221).
 if args.mode == "native":
     before = transforms.Compose([transforms.ToTensor()])
 else:

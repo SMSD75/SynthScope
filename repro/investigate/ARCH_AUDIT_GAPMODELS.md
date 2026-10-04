@@ -1,10 +1,10 @@
 # Architecture + Preprocessing Fidelity Audit — Gap Models
 
-Audit of the four AGID detectors whose trained checkpoints score below the
+Audit of the four SynthScope detectors whose trained checkpoints score below the
 official weights/paper, to determine for each whether the gap is **architectural**
 (needs a code change) or **closeable by retraining** (data/recipe).
 
-Method: read the AGID class, clone + read the official repo, diff backbone /
+Method: read the SynthScope class, clone + read the official repo, diff backbone /
 head / resolution / normalization / key preprocessing / loss. Also cross-checked
 against the vendored "official" evals in `repro/official_evals/`.
 
@@ -18,7 +18,7 @@ Official repos cloned to `/hddstore/ssalehi/AGID/official_repos/`:
 
 ## 1. SPAI
 
-| Aspect | Official (`spai/models/sid.py` `PatchBasedMFViT`, `configs/spai.yaml`) | AGID (`models/image/spai/spai.py`) | Match? |
+| Aspect | Official (`spai/models/sid.py` `PatchBasedMFViT`, `configs/spai.yaml`) | SynthScope (`models/image/spai/spai.py`) | Match? |
 |---|---|---|---|
 | Backbone | MFM-pretrained ViT-B/16, embed 768, depth 12, heads 12, APE, mean-pool, intermediate layers `[0..11]` (N=12) (`configs/spai.yaml:10-24`) | Same VIT, `intermediate_layers=tuple(range(12))` (N=12), MFM ckpt (`spai.py:156-168`) | YES |
 | Normalization | ImageNet, applied **inside** model on [0,1] input (`sid.py:441-443,469-471`) | ImageNet inside model on [0,1] (`spai.py:14-15,153,172`) | YES |
@@ -36,7 +36,7 @@ Official repos cloned to `/hddstore/ssalehi/AGID/official_repos/`:
 classifier all match the published config exactly. The one real divergence is
 **input resolution / patch count**:
 
-- AGID's `spai.yaml` *intends* a 448 input → 2×2 grid (L=4), and the SCA only
+- SynthScope's `spai.yaml` *intends* a 448 input → 2×2 grid (L=4), and the SCA only
   does useful cross-patch aggregation when L>1. But `experiments/image/spai.sh`
   feeds a **224 center-crop** (`spai.sh:15-16`), so `patchify_image` yields
   **L=1** and the SCA degenerates to a no-op single-patch aggregator.
@@ -66,10 +66,10 @@ native-resolution arbitrary-res eval path with the `MINIMUM_PATCHES=4` /
 
 Official has two variants under `detectors/`: `progan` (CLIP-L 768 + NPR-residual
 artifact) and `sd-v1_4` (SigLIP-384 + SD-VAE-residual artifact). The default /
-benchmark variant is `sd-v1_4` (`main.py:81 default="sd-v1_4"`). AGID implements
+benchmark variant is `sd-v1_4` (`main.py:81 default="sd-v1_4"`). SynthScope implements
 the **sd-v1_4** variant.
 
-| Aspect | Official `sd-v1_4` (`detectors/sd-v1_4/*.py`) | AGID (`models/image/co_spy/co_spy.py`) | Match? |
+| Aspect | Official `sd-v1_4` (`detectors/sd-v1_4/*.py`) | SynthScope (`models/image/co_spy/co_spy.py`) | Match? |
 |---|---|---|---|
 | Semantic backbone | open_clip `ViT-SO400M-14-SigLIP-384` / `webli`, frozen, 1152-d; mean/std=0.5; res 384 (`semantic.py:13-15,28-33`) | same model/pretrained, 1152-d (auto), `SEMANTIC_MEAN/STD=0.5`, res 384 (`co_spy.py:150-167`) | YES |
 | Artifact preprocessing | SD-v1.4 VAE: `x - vae_recon(x)`, scale `/7*100` (`artifact.py:181-194`) | `(x - vae_dec(vae_enc.mean)) * 100/7` (`co_spy.py:245-251`, scale=100/7=14.2857) | YES |
@@ -78,14 +78,14 @@ the **sd-v1_4** variant.
 | Head | `Linear(sem_dim+art_dim, 1)` = `Linear(1152+512,1)` (`end2end.py:25`) | `fc = Linear(sem_dim+art_dim, 1)` (`co_spy.py:192`) | YES (score-via-feature-fusion) |
 | Feature interpolation | `Beta(α,α)` mix on a `ratio` of the batch w/ soft labels (`train.py:106-123,150-163`) | `_mix_semantic_features` Beta(0.2,0.2), prob 0.5 (`co_spy.py:253-285`) | YES |
 | Loss | BCEWithLogits (with optional label smoothing) | `_LabelSmoothingBCEWithLogits` (`co_spy.py:133-144,203`) | YES |
-| Art-branch resolution | semantic 384; artifact `Resize(224, antialias=False)` then Normalize(0) of the 384 tensor (`end2end.py:32-35`) | `_resize_if_needed(x,224)` for artifact, 384 for semantic (`co_spy.py:177,239,246`) | ~YES (AGID uses `antialias` default True via F.interpolate bilinear, minor) |
+| Art-branch resolution | semantic 384; artifact `Resize(224, antialias=False)` then Normalize(0) of the 384 tensor (`end2end.py:32-35`) | `_resize_if_needed(x,224)` for artifact, 384 for semantic (`co_spy.py:177,239,246`) | ~YES (SynthScope uses `antialias` default True via F.interpolate bilinear, minor) |
 
 **This is the correct two-branch, two-frozen-encoder architecture**, not a
 single-backbone simplification. Backbone (SigLIP-384), artifact branch
 (SD-VAE residual, not NPR), and the score/coefficient-fusion head all match the
 official `sd-v1_4` detector and the vendored eval
 (`repro/official_evals/cospy_official_eval.py:22-29`). Only nit: the official art
-branch resizes 384→224 with `antialias=False`; AGID's `F.interpolate(...,
+branch resizes 384→224 with `antialias=False`; SynthScope's `F.interpolate(...,
 mode="bilinear")` applies antialiasing — a tiny preprocessing detail that shifts
 the VAE-residual statistics slightly and is closeable by passing `antialias=False`.
 
@@ -97,33 +97,33 @@ the trivial `antialias=False` nit on the 384→224 artifact resize
 
 ## 3. AIDE
 
-| Aspect | Official (`models/AIDE.py`, `data/dct.py`, `data/datasets.py`) | AGID (`models/image/aide/aide.py`) | Match? |
+| Aspect | Official (`models/AIDE.py`, `data/dct.py`, `data/datasets.py`) | SynthScope (`models/image/aide/aide.py`) | Match? |
 |---|---|---|---|
 | Semantic backbone | OpenCLIP `convnext_xxlarge` (`laion2b_…_soup`) trunk, frozen, global_pool/flatten→Identity (`AIDE.py:230-247`) | same convnext_xxlarge trunk, frozen (`aide.py:159-172`) | YES |
 | Semantic proj | avgpool → `Linear(3072,256)` (`AIDE.py:241-244`) | avgpool → `Linear(3072,256)` (`aide.py:175-176`) | YES |
 | SRM HPF | 30 fixed SRM kernels `Conv2d(3→30,5×5)`, frozen (`AIDE.py:9-34`, `srm_filter_kernel.py`) | `_HPF` identical 30-kernel `Conv2d(3→30)` (`aide.py:39-58`); SRM list verified bit-identical | YES |
-| Patch ResNets | two custom `ResNet(Bottleneck,[3,4,6,3])`, conv1 `Conv2d(30→64)`, fc removed → 2048-d; `model_min`,`model_max` (`AIDE.py:119-186,212-213`) | `model_min`,`model_max` = torchvision resnet50 w/ conv1 `Conv2d(30→64)`, fc=Identity (`aide.py:125-157`) | ~YES (arch equiv; AGID uses torchvision ResNet-50 + ImageNet-V2 init vs official custom ResNet) |
+| Patch ResNets | two custom `ResNet(Bottleneck,[3,4,6,3])`, conv1 `Conv2d(30→64)`, fc removed → 2048-d; `model_min`,`model_max` (`AIDE.py:119-186,212-213`) | `model_min`,`model_max` = torchvision resnet50 w/ conv1 `Conv2d(30→64)`, fc=Identity (`aide.py:125-157`) | ~YES (arch equiv; SynthScope uses torchvision ResNet-50 + ImageNet-V2 init vs official custom ResNet) |
 | Head | `Mlp(2048+256, 1024, 2)` (`AIDE.py:228`) | `Lin(2048+256,1024)-GELU-Lin(1024,2)` (`aide.py:178-184`) | YES |
 | Loss | (Soft/LabelSmoothing) CrossEntropy (`main_finetune.py:252,304-308`) | CrossEntropyLoss + label_smoothing (`aide.py:186-188`) | YES |
 | **DCT patch selection** | `DCT_base_Rec_Module`: unfold 32×32 s16 → DCT → **level-filter band → IDCT reconstruct** (`level_x_unfold`) → grade by `2^k`·log\|DCT\| → top-2/bottom-2 → **fold0 keeps 32×32 patches** (`dct.py:82-144`) | `_DCTPatchSelector` **skips the level-filter DCT/IDCT round-trip**, picks raw pixel patches from `nn.Unfold` directly (explicit, `aide.py:64-69,98-122`) | **NO (simplified)** |
 | **Input pipeline** | `ToTensor()` only — **native resolution**, no resize before DCT; then each of 4 patches + full image `x_0` → `Resize([256,256])` + **ImageNet** normalize → `[5,3,256,256]` (`datasets.py:34-51,122-139`) | dataset feeds a single **224×224 CLIP-normalized** tensor (`aide.sh:15-16`); model undoes CLIP→pixel, **resizes to 256**, runs DCT on the 256 image, upsamples 32×32 patches→256 (`aide.py:208-220,222-225`) | **NO** |
 | Semantic input res | `x_0` = 256×256 ImageNet-norm, remapped ImageNet→CLIP **inside** model → convnext sees 256 → `[B,3072,8,8]` (`AIDE.py:266-279`) | convnext fed the **224 CLIP-norm** image directly (`aide.py:199-204`) → 7×7, no remap needed | **NO (224 vs 256)** |
 
-The AGID class **does** implement the genuine 5-view (4 DCT patches + semantic)
+The SynthScope class **does** implement the genuine 5-view (4 DCT patches + semantic)
 ConvNeXt-XXL + dual-ResNet + 30-kernel-SRM AIDE — it is **not** a CLIP
 simplification. But there are three faithful-preprocessing divergences vs the
 official and the vendored eval (`repro/official_evals/aide_official_eval.py:20-26`,
 which keeps `ToTensor`-only → DCT-on-native → `Resize(256)+ImageNet`):
 
-1. **Native-resolution loss**: AGID feeds a fixed 224 crop upstream, so all
+1. **Native-resolution loss**: SynthScope feeds a fixed 224 crop upstream, so all
    native-resolution frequency cues are destroyed *before* the DCT selector
    (`aide.sh:15-16`). Official runs DCT on the native-size image.
 2. **Skipped DCT/IDCT level-filter reconstruction** (`aide.py:64-69`). With the
    default all-pass level filter (`level_fliter=[0]`, band `0..2*window`) the IDCT
    is near-identity, so this is *numerically close* but not bit-exact, and the
-   patch *grading* differs because AGID grades a 256-resized image whereas
+   patch *grading* differs because SynthScope grades a 256-resized image whereas
    official grades the native image.
-3. **Normalization + semantic res**: AGID uses 224 CLIP-normalized (convnext
+3. **Normalization + semantic res**: SynthScope uses 224 CLIP-normalized (convnext
    7×7); official uses 256 ImageNet-normalized remapped to CLIP (convnext 8×8).
 
 None of these requires a different *architecture* — the modules are all present
@@ -151,12 +151,12 @@ CLIP-based** — there is **no FLAVA anywhere** in `oceanzhf/VIBAIGCDetect`
 The paper's Fig. 5 backbone ablation may show FLAVA, but the *released code +
 weights* use CLIP ViT-L/14.
 
-| Aspect | Official (`models/clip_models.py` `CLIPModel`) | AGID (`models/image/vib_net/vib_net.py`) | Match? |
+| Aspect | Official (`models/clip_models.py` `CLIPModel`) | SynthScope (`models/image/vib_net/vib_net.py`) | Match? |
 |---|---|---|---|
 | Backbone | OpenAI CLIP `ViT-L/14`, frozen, 768-d (`clip_models.py:11-19`; `base_options.py:32`) | `CLIP:ViT-L/14` default, frozen, 768-d (`vib_net.py:64-67`; `conf/model/image/vib_net.yaml`) | YES (CLIP path) |
 | Normalization | CLIP (eval `RealFakeDataset` Normalize CLIP) | CLIP (`vib_net.sh:16-17` `normalize_clip`) | YES |
 | Input | 224 (loadSize 256 → crop 224, `base_options.py:56-57`) | 224 (`resize_short_256,center_crop_224`) | YES |
-| **Feature pre-norm** | dropout 0.5 on **raw** CLIP features, **no BatchNorm/LayerNorm** (`clip_models.py:33`) | **`BatchNorm1d(feat_dim)` then dropout** (`vib_net.py:46-47,77,104`) | **NO (AGID adds BN)** |
+| **Feature pre-norm** | dropout 0.5 on **raw** CLIP features, **no BatchNorm/LayerNorm** (`clip_models.py:33`) | **`BatchNorm1d(feat_dim)` then dropout** (`vib_net.py:46-47,77,104`) | **NO (SynthScope adds BN)** |
 | VIB head | `fc_1:768→1024 · ReLU · fc_2:1024→1024 · ReLU · fc_3:1024→512` (`clip_models.py:21-38`) | `fc_1:768→1024 · ReLU · fc_2:1024→1024 · ReLU · fc_3:1024→512` (`vib_net.py:48-51`) | YES |
 | Latent | k=256: `mu=stats[:,:256]` (`clip_models.py:22,39`) | `latent_dim=256` (`vib_net.py:36,112`) | YES |
 | std parameterization | `std = softplus(stats[:,256:] - 5)`, **no floor** (`clip_models.py:40`) | `softplus(… - std_shift(=5)).clamp(min=1e-4)` (`vib_net.py:116`) | ~YES (+1e-4 floor) |
@@ -164,24 +164,24 @@ weights* use CLIP ViT-L/14.
 | Decode | `Linear(256, 1)` (`clip_models.py:24,43`) | `Linear(256, 1)` (`vib_net.py:52,119`) | YES |
 | Loss | inference-only repo; head returns `(mu,std),logit` → VIB = BCE + β·KL(N(μ,σ²)‖N(0,I)) (paper) | `BCE + vib_beta(1e-3)·KL` to N(0,I) (`vib_net.py:53-54,79-83,122-132`) | YES (matches the standard VIB objective; β not in official code) |
 
-**For the CLIP backbone, AGID's VIB head is essentially identical** (same
+**For the CLIP backbone, SynthScope's VIB head is essentially identical** (same
 fc_1/2/3 dims, k=256, softplus-5 std, reparam, decode, KL-to-N(0,I)), and the
-AGID CLIP checkpoint reportedly works (GenImage mAP 83.26). The **two AGID
+SynthScope CLIP checkpoint reportedly works (GenImage mAP 83.26). The **two SynthScope
 additions** are:
 
 1. **`BatchNorm1d(feat_dim)` on the frozen feature** before the head
    (`vib_net.py:46`) — **not in the official**, which applies dropout to raw CLIP
-   features. For CLIP this is a benign extra normalization; for FLAVA the AGID
+   features. For CLIP this is a benign extra normalization; for FLAVA the SynthScope
    comment says it was *required* to stop a head-only probe from collapsing.
 2. **`clamp(min=1e-4)` on std** (`vib_net.py:116`) — a NaN guard absent from the
    official; harmless.
 
-On the **FLAVA non-convergence**: this is **not an AGID head bug**. The VIB head
+On the **FLAVA non-convergence**: this is **not an SynthScope head bug**. The VIB head
 is mathematically the standard, correct VIB (KL term, reparameterization, decode
 all match the official CLIP model). The instability is a genuine consequence of
 training a high-capacity VIB head on a **frozen FLAVA** encoder whose pooled
 [CLS] output is tanh-squashed to a small, per-dimension-uneven scale — exactly
-why AGID had to insert the BatchNorm. Critically, **FLAVA is not the official
+why SynthScope had to insert the BatchNorm. Critically, **FLAVA is not the official
 backbone at all** — the released VIB-Net is CLIP ViT-L/14 — so chasing FLAVA is
 chasing a configuration the official authors never shipped. The gap to the
 paper/official is therefore best closed on the **CLIP path** by matching the
@@ -189,7 +189,7 @@ training data/recipe, not by fixing the head.
 
 **VERDICT: MATCHES** (CLIP path; the head is a faithful VIB). The CLIP-vs-official
 gap is data/recipe, closeable by retraining on the official ProGAN/SD-v1.4 data
-with their schedule. The only code-level deltas are AGID's extra `BatchNorm1d`
+with their schedule. The only code-level deltas are SynthScope's extra `BatchNorm1d`
 (`vib_net.py:46`) and std `clamp` (`vib_net.py:116`); to be bit-faithful to the
 official CLIP model, drop the BatchNorm (apply dropout to raw features as in
 `clip_models.py:33`). The FLAVA non-convergence is a method/backbone-choice
@@ -214,5 +214,5 @@ instability, **not** a VIB head bug, and FLAVA is not the shipped official backb
   reconstruction**. Fix preprocessing and retrain.
 - **VIB-Net** — MATCHES (CLIP ViT-L/14 path; VIB head is faithful). Official ships
   **CLIP, not FLAVA**; the FLAVA non-convergence is a frozen-FLAVA training
-  instability (why AGID added BatchNorm), not a head bug. CLIP-vs-paper gap is
-  data/recipe. AGID-only deltas: extra `BatchNorm1d` + std `clamp`.
+  instability (why SynthScope added BatchNorm), not a head bug. CLIP-vs-paper gap is
+  data/recipe. SynthScope-only deltas: extra `BatchNorm1d` + std `clamp`.

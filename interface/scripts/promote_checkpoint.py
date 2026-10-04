@@ -4,7 +4,7 @@ The trainer writes ``model_<epoch>.pth`` to the staging dir on each val-loss imp
 (with save_policy=min the last/highest-epoch file is the best). This copies that file to
 ``<key>.pth`` so the interface registry picks it up, then refreshes the manifest.
 
-  conda run -n AGID python interface/scripts/promote_checkpoint.py <key> [--epoch N] [--copy]
+  conda run -n SynthScope python interface/scripts/promote_checkpoint.py <key> [--epoch N] [--copy]
 """
 import argparse
 import re

@@ -30,11 +30,11 @@
       "official_eval_protocol": "ANY-/NATIVE-RESOLUTION. configs/spai.yaml: RESOLUTION_MODE='arbitrary', TEST.ORIGINAL_RESOLUTION=True, MINIMUM_PATCHES=4, REQUIRED_NORMALIZATION='positive_0_1' (no ImageNet norm at dataset side), FEATURE_EXTRACTION_BATCH=400. Each test image is processed at its NATIVE resolution: spai/models/sid.py PatchBasedMFViT.forward_arbitrary_resolution_batch (sid.py:176-237) patchifies the full image into overlapping 224x224 patches (patchify_image, stride=PATCH_STRIDE), runs every patch through the MFM ViT, and aggregates with Spectral Context Attention (patches_attention). If an image yields < MINIMUM_PATCHES(4) patches it falls back to five_crop (sid.py:198-202). NO global resize to a fixed size. Metric = torchmetrics AUROC (spai/metrics.py:56,88-96). Run: `python -m spai test --cfg configs/spai.yaml --opt MODEL.PATCH_VIT.MINIMUM_PATCHES 4 --test-csv <csv>` with --model <epoch>.pth.",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) AGID cannot reproduce the protocol: AGID implements ONLY the FIXED-resolution MFViT variant and deliberately omits the any-resolution Spectral Context Attention wrapper (models/image/spai/README.md 'Scope of this implementation', line 180; conf/model/image/spai.yaml patch_size=patch_stride=224 feeding a fixed 448x448 -> 2x2=4-patch grid). AGID eval transform is resize_short_256 + center_crop_224 (README:112), discarding the native high-resolution spectral statistics the paper depends on. AGID also reports mAP/acc, not the paper's AUC.",
+      "gap_cause": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) SynthScope cannot reproduce the protocol: SynthScope implements ONLY the FIXED-resolution MFViT variant and deliberately omits the any-resolution Spectral Context Attention wrapper (models/image/spai/README.md 'Scope of this implementation', line 180; conf/model/image/spai.yaml patch_size=patch_stride=224 feeding a fixed 448x448 -> 2x2=4-patch grid). SynthScope eval transform is resize_short_256 + center_crop_224 (README:112), discarding the native high-resolution spectral statistics the paper depends on. SynthScope also reports mAP/acc, not the paper's AUC.",
       "dataset_source": "gated/external. Synthbuster: Zenodo https://zenodo.org/records/10066460 (record 10066460). SD3/MJv6.1/GigaGAN/Flux: authors' GDrive https://drive.google.com/file/d/1no5T89h97TZvAKNCHKt2PQfKZ1UDtbI4/view . Real sources: RAISE-1k (loki.disi.unitn.it/RAISE), FODB (faui1-files.cs.fau.de/.../fodb), Open Images V7, COCO2017 test, ImageNet test (Kaggle ILSVRC). docs/data.md lists all; data/*.csv enumerate the exact files."
     },
     {
-      "name": "GenImage (cross-dataset, AGID benchmark)",
+      "name": "GenImage (cross-dataset, SynthScope benchmark)",
       "datasets": [
         "GenImage test"
       ],
@@ -44,7 +44,7 @@
       "metric": "AP",
       "paper_number": {
         "map": null,
-        "note": "GenImage is NOT a primary SPAI paper table; it is the AGID cross-reference benchmark. The paper's headline is its own 13-gen/5-real AUC set, not GenImage."
+        "note": "GenImage is NOT a primary SPAI paper table; it is the SynthScope cross-reference benchmark. The paper's headline is its own 13-gen/5-real AUC set, not GenImage."
       },
       "paper_per_generator": {},
       "official_eval_protocol": "Same any-/native-resolution protocol (arbitrary mode, ORIGINAL_RESOLUTION, MINIMUM_PATCHES=4) applied to GenImage 8-gen test; AUROC.",
@@ -53,7 +53,7 @@
         "map": 94.22,
         "mauroc": 94.28,
         "acc": 87.44,
-        "note": "SERVED path: official SPAI weights remapped into the AGID class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
+        "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
       },
       "gap_cause": "RESOLVED. The 88.8 gap was the fixed-448 2x2 approximation on a retrain; wiring the official any-res path into the registry (native resolution, sub-patch upscale) serves 94.22 mAP. Numbers on a 300/gen subset.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (real source variant) and test_full. Origin: github.com/GenImage-Dataset/GenImage."
@@ -78,7 +78,7 @@
         "map": 96.75,
         "mauroc": 96.97,
         "acc": 89.53,
-        "note": "SERVED native-res path (official weights in AGID class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+        "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
       },
       "gap_cause": "RESOLVED by the native-res serving path.",
       "dataset_source": "Zenodo https://zenodo.org/records/10066460 (record 10066460)."

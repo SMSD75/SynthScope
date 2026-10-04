@@ -1,12 +1,12 @@
-"""Unified benchmark eval for AGID detectors — reproduce a paper's per-generator table.
+"""Unified benchmark eval for SynthScope detectors — reproduce a paper's per-generator table.
 
 Scores a detector over a benchmark's per-generator real/fake folders through the SAME verified
-agid inference path the web app uses (engine + registry + per-model preprocessing + fake-prob),
+synthscope inference path the web app uses (engine + registry + per-model preprocessing + fake-prob),
 computes per-generator + mean acc@0.5 / AP / AUROC, writes a JSON, and APPENDS a verified line to
 ``repro/MASTER_RESULTS.jsonl`` so every reported number traces to this run + its job log.
 
     python benchmark/bench_eval.py --model clip --benchmark forensynths \
-        --data /hddstore/ssalehi/AGID/CNNDetection/test --tag clip_agid_forensynths
+        --data /hddstore/ssalehi/AGID/CNNDetection/test --tag clip_synthscope_forensynths
 
 Benchmark profiles encode each dataset's correct generator grouping + real-pairing:
   forensynths  CNNDetection/test    per top-level generator; reals+fakes collected recursively
@@ -17,7 +17,7 @@ Benchmark profiles encode each dataset's correct generator grouping + real-pairi
                cospybench/generic
   pool         GenImage/single-pool one group from <root>/{real,fake} or {0_real,1_fake}
 
-Use --ckpt to override the checkpoint (official vs AGID-trained, for side-by-side runs).
+Use --ckpt to override the checkpoint (official vs SynthScope-trained, for side-by-side runs).
 """
 from __future__ import annotations
 
@@ -184,12 +184,12 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor) -> dict | None:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `synthscope list`)")
+    ap.add_argument("-m", "--model", required=True, help="SynthScope detector key (see `synthscope list`)")
     ap.add_argument("--benchmark", required=True,
                     choices=["forensynths", "ufd", "pergen", "pool"])
     ap.add_argument("--data", required=True, help="benchmark root")
     ap.add_argument("--reals", default=None, help="shared real dir (pergen/forensynths fallback)")
-    ap.add_argument("--ckpt", default=None, help="checkpoint override (official vs AGID weights)")
+    ap.add_argument("--ckpt", default=None, help="checkpoint override (official vs SynthScope weights)")
     ap.add_argument("--select", default=None, help="comma list: only these generators")
     ap.add_argument("--limit", type=int, default=None, help="cap images per class per generator")
     ap.add_argument("--bs", type=int, default=32)
@@ -260,7 +260,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": getattr(agid, "__version__", "?"),
+        "synthscope_version": getattr(synthscope, "__version__", "?"),
     }
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")

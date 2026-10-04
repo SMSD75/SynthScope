@@ -8,7 +8,7 @@ AI-generated image & video detection. The most valuable contributions are **new 
 
 ```bash
 git clone https://github.com/SMSD75/AGID.git
-cd AGID
+cd SynthScope
 pip install -e ".[dev]"          # editable install + contributor tooling
 # PyTorch: install the build matching your CUDA from https://pytorch.org if needed.
 # Some detectors also need OpenAI CLIP:  pip install git+https://github.com/openai/CLIP.git
@@ -17,8 +17,8 @@ pip install -e ".[dev]"          # editable install + contributor tooling
 Before opening a PR:
 
 ```bash
-ruff check agid                   # lint the library surface (errors only; see pyproject [tool.ruff])
-python -m compileall agid interface models *.py
+ruff check synthscope                   # lint the library surface (errors only; see pyproject [tool.ruff])
+python -m compileall synthscope interface models *.py
 pytest tests/ -k smoke            # where data/weights are available
 ```
 
@@ -30,7 +30,7 @@ per-generator metrics. To add a method `foo`:
 
 1. **Model** — create `models/<image|video>/foo/foo.py` with an `nn.Module` exposing
    `compute_loss(batch) -> {"loss": ..., "outputs": ...}`. Add a short method `README.md`.
-2. **Dispatch** — register `model_type=foo` in `AGIDModelTrainer._build_model` (`trainer.py`).
+2. **Dispatch** — register `model_type=foo` in `SynthScopeModelTrainer._build_model` (`trainer.py`).
 3. **Config** — add `conf/model/<modality>/foo.yaml` and `conf/trainer/<modality>/foo.yaml`.
 4. **Recipe** — add `experiments/<modality>/foo.sh` with the env vars + launch command.
 5. **(Optional) API/demo** — add a `ModelSpec` to `interface/backend/registry.py` so the detector

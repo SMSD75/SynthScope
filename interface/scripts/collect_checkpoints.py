@@ -5,8 +5,8 @@
 - Writes a MANIFEST.{json,md} summarizing, per model, whether a checkpoint is present and how
   it was obtained (official weights / trained-from-scratch / training-free).
 
-Run:  conda run -n AGID python interface/scripts/collect_checkpoints.py
-Override the destination with AGID_CKPT_DIR.
+Run:  conda run -n SynthScope python interface/scripts/collect_checkpoints.py
+Override the destination with SYNTHSCOPE_CKPT_DIR.
 """
 import json
 import os
@@ -62,7 +62,7 @@ def main():
         })
 
     (dst / "MANIFEST.json").write_text(json.dumps(manifest, indent=2))
-    lines = ["# AGID checkpoints manifest", "",
+    lines = ["# SynthScope checkpoints manifest", "",
              f"Directory: `{dst}`  ", f"Generated: {manifest['generated']}", "",
              "| Model | Modality | Checkpoint | Present | Status |",
              "| --- | --- | --- | --- | --- |"]

@@ -6,7 +6,7 @@ export CUDA_VISIBLE_DEVICES=1,2
 export OMP_NUM_THREADS=1
 
 # VIB-Net uses a frozen CLIP ViT-L/14 backbone (CLIP normalization, 224 crops).
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
     trainer@TrainerConfig=image/vib_net \
     model@ModelConfig=image/vib_net \
     dataset@DatasetConfig=image/genimage \
@@ -17,4 +17,4 @@ export OMP_NUM_THREADS=1
     DatasetConfig.eval_transform_list=[resize_short_256,center_crop_224,to_dtype,normalize_clip] \
     logger.name=vib_net \
     logger.mode=online \
-    logger.tags=[AGID,VIBNet,genimage]
+    logger.tags=[SynthScope,VIBNet,genimage]

@@ -11,7 +11,7 @@ export OMP_NUM_THREADS=1
 # residual is resolution-sensitive, so we use CROP-only transforms (no resize) to preserve the
 # per-pixel quantization pattern. Trained here on ProGAN (CNNDetection); swap the dataset for
 # GenImage to match the paper's SDv1.4 setting.
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
     trainer@TrainerConfig=image/pgc \
     model@ModelConfig=image/pgc \
     dataset@DatasetConfig=image/cnndetection \
@@ -24,4 +24,4 @@ export OMP_NUM_THREADS=1
     metrics=[real_accuracy,fake_accuracy,AP,AUC] \
     logger.name=pgc \
     logger.mode=online \
-    logger.tags=[AGID,PGC,cnndetection]
+    logger.tags=[SynthScope,PGC,cnndetection]

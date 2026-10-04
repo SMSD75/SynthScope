@@ -20,7 +20,7 @@ and no generated videos are required.
 
 ## Pipeline
 
-Given a clip `frames` of shape `[B, T, 3, 224, 224]` in `[0, 1]` (decoded by the AGID video
+Given a clip `frames` of shape `[B, T, 3, 224, 224]` in `[0, 1]` (decoded by the SynthScope video
 dataset and normalized by its transform pipeline):
 
 1. **Zero-order features.** A frozen pretrained visual encoder embeds each frame:
@@ -35,7 +35,7 @@ dataset and normalized by its transform pipeline):
 4. **Score.** `s[b] = std(F2[b, :])` over the time axis. The unbiased std over the `T-2`
    second-order values equals `sqrt( 1/(T-3) · Σ (F2 − mean)^2 )`, i.e. Eq. (8) of the paper.
    Real videos → **high** `s`; AI-generated → **low** `s`.
-5. **Two-class output for AGID metrics.** `outputs = stack([s − tau, tau − s], dim=1)` where
+5. **Two-class output for SynthScope metrics.** `outputs = stack([s − tau, tau − s], dim=1)` where
    `tau` is `threshold` (default `0.0`). Column 0 = real, column 1 = fake, so
    `softmax(outputs)[:, 1]` (the fake score) ranks AI-generated videos by **low** `s`.
 
@@ -49,7 +49,7 @@ exactly what the paper reports). The argmax-based real/fake **accuracy** depends
 chosen `threshold` (`tau`); with the default `tau = 0` it reflects the sign of `s`, which is not
 calibrated. Use AP/AUROC to judge D3.
 
-To satisfy the AGID trainer (its `AdamW` is built over *trainable* parameters and would crash on
+To satisfy the SynthScope trainer (its `AdamW` is built over *trainable* parameters and would crash on
 an empty list), the module carries a single dummy parameter `self._noop = nn.Parameter(zeros(1))`
 and returns `loss = (self._noop * 0).sum()` — a true no-op with a valid gradient. "Training" runs
 for zero effect; evaluation (the val/test passes the trainer runs every epoch, including epoch 0)
@@ -57,7 +57,7 @@ produces the real result. The trainer config uses `epochs: 1`.
 
 ## Model details
 
-Implemented in `models/video/d3/d3.py` as `AGIDD3Model`.
+Implemented in `models/video/d3/d3.py` as `SynthScopeD3Model`.
 
 | Component | Setting |
 |---|---|
@@ -133,9 +133,9 @@ labels, folder_ids)` and `frames` of shape `[B, T, 3, H, W]`:
 | Key | Meaning |
 |---|---|
 | `loss` | no-op scalar `(_noop * 0).sum()` (training-free) |
-| `outputs` | two-class real/fake scores `stack([s − tau, tau − s], dim=1)` for AGID metrics |
+| `outputs` | two-class real/fake scores `stack([s − tau, tau − s], dim=1)` for SynthScope metrics |
 
-`AGIDD3Model` is registered in `trainer.py` under `model_type == "d3"`. The AGID video dataset
+`SynthScopeD3Model` is registered in `trainer.py` under `model_type == "d3"`. The SynthScope video dataset
 (`VideoFolderDataset`) decodes `num_frames` frames per clip at `224×224` in `[0, 1]`; D3 samples
 at ~8 fps over up to 2 s (`num_frames: 16`, `fps: 8` in the dataset config).
 
@@ -146,38 +146,38 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 > **Faithful protocol (training-free):** D3 now runs the official setup — **X-CLIP-B/16** per-frame
 > features + a **10% center edge-crop** before resize (registry `backbone_name=xclip, edge_crop=0.1`).
 > On GenVideo this lifts the robust metrics **AUROC 93.87→95.95, acc 86.04→91.71** (`d3_xclip_genvideo`).
-> Note D3 is training-free and AGID's GenVideo **mAP is degenerate** — the pool pairs **10,000 shared
+> Note D3 is training-free and SynthScope's GenVideo **mAP is degenerate** — the pool pairs **10,000 shared
 > reals against as few as 56 fakes** per generator (Sora), so AP is dominated by a few high-scoring
 > reals (the 89.0→63.93 "drop" is imbalance noise). **AUROC/acc are the metrics to compare** (~96 ≈ paper-quality).
 
-| Benchmark | Paper | AGID (training-free, XCLIP+edge-crop) | Status |
+| Benchmark | Paper | SynthScope (training-free, XCLIP+edge-crop) | Status |
 |---|---|---|---|
 | GenVideo (DeMamba GenVideo-Val, Table 1) | mAP=98.46 | AUROC=95.95 / acc=91.71 | reproduced (AUROC) |
 | EvalCrafter (Table 2, 14 generators) | mAP=98.87 | AUROC=95.41 / acc=87.67 | below |
 | VideoPhy (Table 3, 10 generators) | mAP=99.16 | — | missing |
 | VidProM (Table 4, 6 generators) | mAP=88.46 | — | missing |
 
-**reproduced (AUROC)** = AGID matches the paper on the robust ranking metric (mAP unreliable here due to extreme real:fake imbalance) · **below** = gap remains · **missing** = not yet evaluated.
+**reproduced (AUROC)** = SynthScope matches the paper on the robust ranking metric (mAP unreliable here due to extreme real:fake imbalance) · **below** = gap remains · **missing** = not yet evaluated.
 
 ## Differences from the paper / official code
 
 | Difference | Reason |
 |---|---|
 | **Default encoder is CLIP ViT-B/16, not XCLIP-B/16** | The paper's best encoder is XCLIP-B/16, but HF `XCLIPVisionModel` does cross-frame message-token attention (tied to `num_frames`), which violates D3's independent-per-frame premise and crashes unless `B·T % num_frames == 0`. CLIP-B/16 is a clean per-frame encoder ≈0.7–1 mAP behind; XCLIP is intentionally not included. |
-| Default frame sampling is `num_frames=16` at `fps=8` over 2 s (configurable) | Matches the paper's "up to 2 s at 8 fps"; AGID fixes `T` per dataset so clips can be batch-collated. |
-| Frames are decoded with **decord** and resized to `224×224` | The paper crops 10% of the longer edge before resizing; AGID's generic video loader resizes directly. This preprocessing detail does not change the second-order std signal materially. |
-| Metrics via AGID's `AIGIMetrics` (per-generator AP/AUROC) | Keeps evaluation/logging consistent with the rest of the project; the paper also reports per-subset AP/AUROC. |
-| One dummy `_noop` parameter | Required so the AGID `AdamW` trainer does not crash on a training-free model; it has zero effect. |
+| Default frame sampling is `num_frames=16` at `fps=8` over 2 s (configurable) | Matches the paper's "up to 2 s at 8 fps"; SynthScope fixes `T` per dataset so clips can be batch-collated. |
+| Frames are decoded with **decord** and resized to `224×224` | The paper crops 10% of the longer edge before resizing; SynthScope's generic video loader resizes directly. This preprocessing detail does not change the second-order std signal materially. |
+| Metrics via SynthScope's `AIGIMetrics` (per-generator AP/AUROC) | Keeps evaluation/logging consistent with the rest of the project; the paper also reports per-subset AP/AUROC. |
+| One dummy `_noop` parameter | Required so the SynthScope `AdamW` trainer does not crash on a training-free model; it has zero effect. |
 
 These are integration/preprocessing differences, not conceptual changes: the detector is still the
 frozen-encoder → first-order → second-order-central-difference → std pipeline of the paper.
 
 ## Summary
 
-D3 in AGID is a faithful, method-level reproduction of Zheng et al.'s ICCV 2025 training-free
+D3 in SynthScope is a faithful, method-level reproduction of Zheng et al.'s ICCV 2025 training-free
 detector. A frozen visual encoder (CLIP ViT-B/16 by default) turns each frame into a feature; the L2
 distance between consecutive frames gives first-order features; their central difference gives
 second-order features; and the standard deviation of those second-order features is the detection
 score. Real videos are volatile (high std), AI-generated videos are flat (low std). The score is
-mapped to two-class outputs so AGID's AP/AUROC metrics rank fakes by low std. There is nothing to
+mapped to two-class outputs so SynthScope's AP/AUROC metrics rank fakes by low std. There is nothing to
 train — a single no-op parameter only keeps the optimizer happy.

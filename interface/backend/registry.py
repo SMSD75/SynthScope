@@ -1,10 +1,10 @@
 """Model registry: the single source of truth for every detector the interface can run.
 
 For each detector we record:
-  * how to compose its AGID config (Hydra overrides, exactly like ``main.py``),
+  * how to compose its SynthScope config (Hydra overrides, exactly like ``main.py``),
   * its evaluation preprocessing (matched to the training/eval recipe or the verified
     official-weights eval script under repro/),
-  * which checkpoint file backs it and how that checkpoint loads (strict AGID vs. an
+  * which checkpoint file backs it and how that checkpoint loads (strict SynthScope vs. an
     official-weights key remap), and
   * how to turn a forward pass into a fake-probability.
 
@@ -96,7 +96,7 @@ def tf_square_resize(resize: int, crop: Optional[int], mean=None, std=None) -> T
 
 
 # ---------------------------------------------------------------------------
-# Official-weights -> AGID state_dict remaps (copied verbatim from the verified repro
+# Official-weights -> SynthScope state_dict remaps (copied verbatim from the verified repro
 # eval scripts in /hddstore/ssalehi/AGID/repro/{fatformer,aide,npr}_eval.py).
 # ---------------------------------------------------------------------------
 def remap_fatformer(sd: dict) -> dict:
@@ -112,7 +112,7 @@ def remap_fatformer(sd: dict) -> dict:
 
 
 def remap_aide(sd: dict) -> dict:
-    """Official AIDE checkpoint -> AGIDAIDEModel. The AGID class now wraps the GENUINE arch as
+    """Official AIDE checkpoint -> SynthScopeAIDEModel. The SynthScope class now wraps the GENUINE arch as
     ``self.net`` (key-for-key identical to the official ``AIDE_Model``), so we just strip any
     DataParallel ``module.`` prefix and add the ``net.`` prefix; every official key loads strict."""
     return {("net." + (k[len("module."):] if k.startswith("module.") else k)): v
@@ -139,7 +139,7 @@ def remap_npr(sd: dict) -> dict:
 
 
 def remap_safe(sd: dict) -> dict:
-    """Official SAFE (Ouxiang-Li/SAFE) → AGIDSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
+    """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
     ``head``. (The engine already unwraps the ``model`` wrapper before this.)"""
     out = {}
@@ -157,7 +157,7 @@ class ModelSpec:
     overrides: list[str]           # Hydra overrides for config_utils.compose_config
     predict_kind: str              # ce | bce | bce_npr | vib | video
     checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file)
-    ckpt_kind: str                 # agid | official_fatformer | official_aide | official_npr | none
+    ckpt_kind: str                 # synthscope | official_fatformer | official_aide | official_npr | none
     transform: Optional[T.Compose] = None  # image preprocessing (None for pure-video models)
     # Video-clip sampling (used when modality == "video").
     num_frames: int = 16
@@ -169,10 +169,10 @@ class ModelSpec:
     edge_crop: float = 0.0              # center edge-crop fraction per frame before resize (D3: 0.1)
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
-    #   "official"      = authors' released weights (loaded into the AGID class)
-    #   "agid_trained"  = our from-scratch AGID checkpoint
+    #   "official"      = authors' released weights (loaded into the SynthScope class)
+    #   "synthscope_trained"  = our from-scratch SynthScope checkpoint
     #   "training_free" = no weights (frozen-feature / training-free detector)
-    weights: str = "agid_trained"
+    weights: str = "synthscope_trained"
     # Score at native/arbitrary resolution one image at a time (bs=1) instead of stacking a
     # fixed-size batch — required by SPAI's any-res spectral path (variable patch count per image).
     native_res: bool = False
@@ -195,7 +195,7 @@ def _add(spec: ModelSpec):
 # --- Image detectors ---------------------------------------------------------
 _add(ModelSpec(
     key="clip", name="UnivFD / CLIP", paper="Ojha et al., CVPR'23",
-    modality="image", predict_kind="ce", checkpoint="clip.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="clip.pth", ckpt_kind="synthscope",
     overrides=["ModelConfig.model_type=clip", "ModelConfig.backbone_name=CLIP:ViT-L/14",
                "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
                "ModelConfig.freeze_backbone=true"],
@@ -204,14 +204,14 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="cnn", name="CNNDetection (ResNet-50)", paper="Wang et al., CVPR'20",
-    modality="image", predict_kind="ce", checkpoint="cnn.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="cnn.pth", ckpt_kind="synthscope",
     overrides=["ModelConfig.model_type=cnn", "ModelConfig.freeze_backbone=false"],
     transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
     notes="ImageNet ResNet-50 fine-tuned as a real/fake classifier (trained on ProGAN).",
 ))
 _add(ModelSpec(
     key="dinov2", name="DINOv2 probe", paper="Oquab et al., 2023",
-    modality="image", predict_kind="ce", checkpoint="dinov2.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="dinov2.pth", ckpt_kind="synthscope",
     overrides=["ModelConfig.model_type=dinov2", "ModelConfig.backbone_name=dinov2_vitl14",
                "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
                "ModelConfig.freeze_backbone=true"],
@@ -220,7 +220,7 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="dinov3", name="DINOv3 probe", paper="Meta AI, 2025",
-    modality="image", predict_kind="ce", checkpoint="dinov3.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="dinov3.pth", ckpt_kind="synthscope",
     overrides=["ModelConfig.model_type=dinov3", "ModelConfig.backbone_name=dinov3_vitl16",
                "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
                "ModelConfig.freeze_backbone=true"],
@@ -228,8 +228,8 @@ _add(ModelSpec(
     notes="Frozen DINOv3 ViT-L/16 + linear head. Requires DINOv3 backbone weights.",
 ))
 _add(ModelSpec(
-    key="adapted_dino", name="Adapter-tuned DINOv2", paper="AGID",
-    modality="image", predict_kind="ce", checkpoint="adapted_dino.pth", ckpt_kind="agid",
+    key="adapted_dino", name="Adapter-tuned DINOv2", paper="SynthScope",
+    modality="image", predict_kind="ce", checkpoint="adapted_dino.pth", ckpt_kind="synthscope",
     overrides=["ModelConfig.model_type=adapted_dino", "ModelConfig.backbone_name=dinov2_vitl14",
                "ModelConfig.use_adapter=true", "ModelConfig.bottleneck_dim=64",
                "ModelConfig.freeze_backbone=true"],
@@ -239,11 +239,11 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="safe", name="SAFE", paper="Li et al., KDD'25",
     modality="image", predict_kind="ce", checkpoint="safe.pth",
-    ckpt_kind="agid", remap=None, weights="agid_trained",
+    ckpt_kind="synthscope", remap=None, weights="synthscope_trained",
     overrides=["model@ModelConfig=image/safe"],
     transform=tf_crop(256),
     interpret="safe_hf",   # DWT HH-band high-frequency artifact map
-    notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Serves the AGID-TRAINED checkpoint "
+    notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Serves the SynthScope-TRAINED checkpoint "
           "(full 40-epoch SAFE crop recipe, safe_full_v2/model_38), which reproduces the paper "
           "(ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP) and beats the official "
           "checkpoint on GenImage and full-13 ForenSynths. Center-crop-256, no resize/no norm (a resize "
@@ -273,34 +273,34 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="spai", name="SPAI", paper="Karageorgiou et al., CVPR'25",
-    modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="agid",
-    weights="official",  # shipped spai.pth = official SPAI weights remapped into the AGID class
+    modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="synthscope",
+    weights="official",  # shipped spai.pth = official SPAI weights remapped into the SynthScope class
     overrides=["model@ModelConfig=image/spai"],
     transform=tf_native_cap(1024),  # NATIVE resolution (raw [0,1], cap long side 1024) — the faithful any-res path
     native_res=True,                # score one image at a time (variable patch count)
     interpret="spai_patch",   # per-patch spectral fake-evidence over the native 224-grid
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
           "image is patchified into a variable 224-grid (five_crop fallback for tiny images). Serves the "
-          "official SPAI weights remapped into the AGID class; reproduces the paper (GenImage-8 90.74 / "
+          "official SPAI weights remapped into the SynthScope class; reproduces the paper (GenImage-8 90.74 / "
           "Synthbuster 96.07 mAP). A fixed 448 resize/crop destroys the native-res spectral statistics.",
 ))
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
-    modality="image", predict_kind="vib", checkpoint="vib_net.pth", ckpt_kind="agid",
+    modality="image", predict_kind="vib", checkpoint="vib_net.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/vib_net"],
     transform=tf_resize_crop(256, 224, CLIP_MEAN, CLIP_STD),
     notes="Variational information bottleneck on frozen CLIP features (trained on GenImage).",
 ))
 _add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
-    modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="agid",
+    modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
     transform=tf_resize_crop(384, 384, None, None),  # raw [0,1]; per-branch norm inside the model
     notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained on ProGAN).",
 ))
 _add(ModelSpec(
     key="pgc", name="PGC", paper="Zhou et al., 2026",
-    modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="agid",
+    modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="synthscope",
     weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
     overrides=["model@ModelConfig=image/pgc"],
     transform=tf_crop(224, IMAGENET_MEAN, IMAGENET_STD),  # official PGC eval = PadCenterCrop(224), NO resize
@@ -312,7 +312,7 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="cure", name="CuRe", paper="arXiv 2609.14316 (manic-cui/CuRe)",
-    modality="image", predict_kind="ce", checkpoint="cure.pth", ckpt_kind="agid",
+    modality="image", predict_kind="ce", checkpoint="cure.pth", ckpt_kind="synthscope",
     weights="official",  # cure.pth = the official 25MB cure_adapter.pt unchanged; frozen PE-Core base fetched from HF
     overrides=["model@ModelConfig=image/cure"],
     transform=CuReTransform(),  # official: PNG->JPEG96, SmallestMaxSize(390)+CenterCrop+Resize(336), JPEG70, mean=std=0.5
@@ -343,7 +343,7 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="restrav", name="ReStraV (video)", paper="2025",
-    modality="video", predict_kind="video", checkpoint="restrav.pth", ckpt_kind="agid",
+    modality="video", predict_kind="video", checkpoint="restrav.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=video/restrav", "ModelConfig.backbone_name=dinov2_vits14"],
     num_frames=24, fps=None, frame_size=224, video_norm=((0.0, 0.0, 0.0), (1.0, 1.0, 1.0)),
     window_center=True, resize_interp="bicubic",
@@ -365,7 +365,7 @@ _add(ModelSpec(
 # eval; official-weights rows are cross-checked against the paper, from-scratch/probe rows are our
 # reproductions. Honest caveats are kept in `note` (see README repro section + session findings).
 # ---------------------------------------------------------------------------
-# Full per-method benchmark table (ALL reported benchmarks: paper vs AGID-trained vs official-weights
+# Full per-method benchmark table (ALL reported benchmarks: paper vs SynthScope-trained vs official-weights
 # + status), generated by build_repro_full.py from repro/benchmark_specs/ + repro/bench_results/.
 # Loaded FIRST so the headline cards below DERIVE from the same data and can never drift out of sync.
 import json as _json, pathlib as _pathlib
@@ -374,13 +374,13 @@ try:
 except Exception:
     REPRO_FULL = {}
 
-# AGID-only probe variants (no paper benchmark table of their own) — hand-kept headline cards.
+# SynthScope-only probe variants (no paper benchmark table of their own) — hand-kept headline cards.
 _PROBE_REPRO: dict[str, dict] = {
     "dinov2": {"benchmark": "ForenSynths", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "95.03 mAP / 94.86 AUROC",
                "match": "close", "note": "frozen DINOv2 ViT-L/14 probe."},
     "dinov3": {"benchmark": "ForenSynths-8", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "93.68 mAP / 92.92 AUROC",
                "match": "close", "note": "frozen DINOv3 ViT-L/16 probe (8 ForenSynths gens, n=400/class)."},
-    "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (AGID variant)", "ours": "98.96 mAP / 98.77 AUROC",
+    "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (SynthScope variant)", "ours": "98.96 mAP / 98.77 AUROC",
                      "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8 gens, n=400/class)."},
 }
 

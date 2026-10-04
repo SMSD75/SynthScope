@@ -66,7 +66,7 @@ def models():
             "modality": spec.modality,
             "available": engine.is_available(spec),
             "checkpoint": spec.checkpoint,
-            "weights": spec.weights,   # "official" | "agid_trained" | "training_free"
+            "weights": spec.weights,   # "official" | "synthscope_trained" | "training_free"
             "notes": spec.notes,
             "repro": REPRO.get(spec.key),
             "repro_full": REPRO_FULL.get(spec.key),
@@ -302,9 +302,9 @@ def leaderboard():
             groups.setdefault(fam, []).append({
                 "method": _METHOD_NAMES.get(key, key), "key": key,
                 "benchmark": r["benchmark"], "paper": r["paper"],
-                "agid": r.get("ours_agid", ""), "official": r.get("ours_official", ""),
+                "synthscope": r.get("ours_synthscope", ""), "official": r.get("ours_official", ""),
                 "status": r["status"],
-                "_sort": max(_lead_num(r.get("ours_agid")), _lead_num(r.get("ours_official"))),
+                "_sort": max(_lead_num(r.get("ours_synthscope")), _lead_num(r.get("ours_official"))),
             })
     out = []
     for fam, methods in groups.items():

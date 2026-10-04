@@ -37,8 +37,8 @@ def load_runs() -> dict[str, dict]:
 def weights_of(tag: str) -> str:
     if "_official_" in tag:
         return "official"
-    if "_agid_" in tag:
-        return "agid"
+    if "_synthscope_" in tag:
+        return "synthscope"
     return "other"
 
 
@@ -86,7 +86,7 @@ def main() -> int:
                      tag, r.get("n_generators", 0),
                      me.get("acc"), me.get("map"), me.get("mauroc")))
     rows.sort(key=lambda x: (x[0], x[1], x[3]))
-    lines = ["# AGID reproduced benchmark results (auto-generated from repro/bench_results/)\n",
+    lines = ["# SynthScope reproduced benchmark results (auto-generated from repro/bench_results/)\n",
              "| model | weights | benchmark | tag | n_gen | acc | mAP | mAUROC |",
              "| --- | --- | --- | --- | --- | --- | --- | --- |"]
     for model, w, bench, tag, n, acc, mp, au in rows:

@@ -1,6 +1,6 @@
-"""Check that AGID's cv2/PIL CuReTransform equals the OFFICIAL CuRe preprocessing.
+"""Check that SynthScope's cv2/PIL CuReTransform equals the OFFICIAL CuRe preprocessing.
 
-The official ``cure/preprocess.py`` needs ``albumentations==2.0.8`` (not an AGID dependency). Run
+The official ``cure/preprocess.py`` needs ``albumentations==2.0.8`` (not an SynthScope dependency). Run
 this with the official repo and albumentations on the path, e.g.:
 
   PYTHONPATH=/path/to/albumentations-2.0.8-target:/path/to/CuRe \\
@@ -23,7 +23,7 @@ from models.image.cure.preprocess import SRC_FORMAT_KEY, CuReTransform
 EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 
 
-def agid_preprocess(path: Path) -> torch.Tensor:
+def synthscope_preprocess(path: Path) -> torch.Tensor:
     with Image.open(path) as source:
         fmt = source.format
         image = source.convert("RGB")
@@ -43,7 +43,7 @@ def main() -> None:
     paths = paths[: args.limit]
     worst, n_exact = 0.0, 0
     for path in paths:
-        ref, ours = official_preprocess(path), agid_preprocess(path)
+        ref, ours = official_preprocess(path), synthscope_preprocess(path)
         assert ref.shape == ours.shape == (3, 336, 336), (ref.shape, ours.shape)
         diff = (ref - ours).abs().max().item()
         worst = max(worst, diff)

@@ -10,7 +10,7 @@ _DINOV3_REPO = os.environ.get("DINO_V3_REPO_DIR", "/home/ssalehi/.cache/torch/hu
 _DINOV3_WEIGHTS_DIR = os.environ.get("DINO_V3_WEIGHTS_DIR", "/hddstore/ssalehi/AGID/dinov3_checkpoints")
 
 
-class AGIDDINOModel(nn.Module):
+class SynthScopeDINOModel(nn.Module):
     MODEL_DICT = {
         "dinov2": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
         "adapted_dino": lambda backbone_name: torch.hub.load("facebookresearch/dinov2", backbone_name),
@@ -56,7 +56,7 @@ class AGIDDINOModel(nn.Module):
         loss = self.criterion(outputs, labels)
         return {"loss": loss, "outputs": outputs}
 
-class AGIDDINOv3Model(AGIDDINOModel):
+class SynthScopeDINOv3Model(SynthScopeDINOModel):
     def forward(self, x):
         x, (H, W) = self.backbone.prepare_tokens_with_masks(x)
 

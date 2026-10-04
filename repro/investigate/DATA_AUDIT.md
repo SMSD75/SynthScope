@@ -1,4 +1,4 @@
-# AGID Dataset Integrity Audit
+# SynthScope Dataset Integrity Audit
 
 - **Node:** ivi-cn023 (all data node-local under `/hddstore/ssalehi/AGID/`)
 - **Date:** 2026-06-07
@@ -41,7 +41,7 @@
 adm, biggan, glide, midjourney, sdv1.4, sdv1.5, vqdm, wukong — each `{0_real,1_fake}` balanced. sdv1.4 has 6000/6000, the rest 1500/1500.
 
 ### 3. UniversalFakeDetect — OK (by-design layout)
-Standard UniversalFakeDetect layout: the 8 fake generators (dalle, glide_100_10, glide_100_27, glide_50_27, guided, ldm_100, ldm_200, ldm_200_cfg) ship **only `1_fake`** (1000 each); reals live in shared pools `imagenet/0_real` (1000) and `laion/0_real` (1000). The AGID loader pairs fakes against these shared reals, so the lopsided 2000-real/8000-fake on-disk count is expected, not a defect.
+Standard UniversalFakeDetect layout: the 8 fake generators (dalle, glide_100_10, glide_100_27, glide_50_27, guided, ldm_100, ldm_200, ldm_200_cfg) ship **only `1_fake`** (1000 each); reals live in shared pools `imagenet/0_real` (1000) and `laion/0_real` (1000). The SynthScope loader pairs fakes against these shared reals, so the lopsided 2000-real/8000-fake on-disk count is expected, not a defect.
 
 ### 4. AIGCDetectBenchmark — OK
 17 generators, every one balanced 1000/1000.
@@ -92,7 +92,7 @@ Two parallel real sources exist:
 | P3 | DiffusionForensics **ddpm** has 768 fakes vs 1000 reals (imbalanced single generator). | DiffusionForensics eval (any model) | Minor per-gen AUC noise only; total set still 8000/7768. Optionally re-download ddpm fakes. |
 | P3 | AIGIBench FaceSwap/InSwap 4400 fakes (vs 4500), DALLE-3 4000 fakes (vs 4002). | AIGIBench eval | Negligible (<2.5% short on 3 of 25 gens). |
 | P4 (note) | `dmid_real` reals resolve via `/ssdstore/mdorkenw/…` (works on cn023). If `dmid_real` is rsynced to another node (cees), those symlinks may not resolve there. | SPAI cross-node retrain | The retrain sbatch rsyncs `dmid_real`; verify reals materialize on the target node, else rsync with `-L` (deref) or restage reals from Paneco COCO. |
-| P4 (note) | UniversalFakeDetect uses shared `imagenet`/`laion` reals (no per-gen reals). | UniversalFakeDetect eval | By design; confirm the AGID loader pairs shared reals (it does) — not a defect. |
+| P4 (note) | UniversalFakeDetect uses shared `imagenet`/`laion` reals (no per-gen reals). | UniversalFakeDetect eval | By design; confirm the SynthScope loader pairs shared reals (it does) — not a defect. |
 | P4 (note) | Co-Spy trained on ProGAN (symlinked CNNDetection), not DRCT. | Co-Spy faithfulness | Data-source mismatch vs paper, not an integrity error. |
 
 ## Bottom line

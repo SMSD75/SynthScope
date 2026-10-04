@@ -3,7 +3,7 @@
 #SBATCH --time=1-12:00:00 --cpus-per-task=24 --mem=90G --gres=gpu:3
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_aideG_%j.log
 # AIDE GenImage gap-closer, 3-GPU DeepSpeed (per-GPU bs16 -> eff 48). Closes AIDE's GenImage table
-# (AGID 55 OOD -> official ~95). Saves to checkpoints_retrain/aide_genimage (distinct from ProGAN run).
+# (SynthScope 55 OOD -> official ~95). Saves to checkpoints_retrain/aide_genimage (distinct from ProGAN run).
 set -uo pipefail
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 DATA=/ssdstore/ssalehi/AGID; CONDA=/home/ssalehi/miniconda3/bin/conda
@@ -13,7 +13,7 @@ export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$HF_HOME" "$TORCH_HOME" "$TRITON_CACHE_DIR"
 for i in $(seq 1 240); do [ -f repro/eval_logs/DATA_READY_cn029 ] && [ -d "$DATA/GenImage/train/real" ] && break; echo "[wait] data ($i)"; sleep 30; done
 echo "node=$(hostname) gpus=3 data=$DATA/GenImage real=$(ls $DATA/GenImage/train/real|wc -l) $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 3 --main_process_port 29653 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 3 --main_process_port 29653 \
   main.py trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]" \
   DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_clip]" \

@@ -11,10 +11,10 @@ W=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_wt
 cd $W
 CONDA=/home/ssalehi/miniconda3/bin/conda
 S=/ssdstore/ssalehi/AGID; R=$S/AIGIBench/test
-export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 AGID_CKPT_DIR=$S/cure_ckpt PYTHONPATH=$W
+export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt PYTHONPATH=$W
 export UNZIP_DISABLE_ZIPBOMB_DETECTION=TRUE
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date) | code=$(git -C $W log --oneline -1)"
-$CONDA run --no-capture-output -n AGID python -c "import agid,interface.backend.registry as r;assert 'cure' in r.MODELS;print('cure registered from',r.__file__)" || exit 1
+$CONDA run --no-capture-output -n SynthScope python -c "import synthscope,interface.backend.registry as r;assert 'cure' in r.MODELS;print('cure registered from',r.__file__)" || exit 1
 echo "=== extract all zips (parallel x6) $(date) ==="
 cd $R
 ls *.zip | xargs -P 6 -I{} sh -c 'unzip -q -n "{}" && echo "ok {}" || echo "UNZIP FAILED {}"'
@@ -29,7 +29,7 @@ done
 echo "=== evaluate $(date) ==="
 cd $W
 tag=cure_repro_aigibench; full=repro/logs/${tag}_cn029_${SLURM_JOB_ID}.full.log
-$CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model cure --benchmark pergen \
+$CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model cure --benchmark pergen \
   --data $R --bs 16 --device cuda --limit 1500 --tag $tag > $full 2>&1
 grep -aE "RESULT|: acc=|=== bench_eval|skip " $full | tail -45
 echo "=== CURE AIGIBENCH RESUME DONE $(date) ==="

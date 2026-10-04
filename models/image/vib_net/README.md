@@ -35,7 +35,7 @@ L = prediction_loss + beta * KL(q(z | x) || r(z))
 
 In this implementation:
 
-| Term | AGID implementation |
+| Term | SynthScope implementation |
 |---|---|
 | Prediction loss | `BCEWithLogitsLoss` on the binary real/fake logit |
 | Latent posterior | diagonal Gaussian parameterized by `mu` and `std` |
@@ -53,7 +53,7 @@ This is the standard closed-form KL divergence from `N(mu, diag(std^2))` to `N(0
 
 ## Model details
 
-The current AGID model is implemented in `models/image/vib_net/vib_net.py` as `AGIDVIBNetModel`.
+The current SynthScope model is implemented in `models/image/vib_net/vib_net.py` as `SynthScopeVIBNetModel`.
 
 | Component | Setting |
 |---|---|
@@ -72,9 +72,9 @@ The model follows the architecture described by the paper: pretrained image feat
 
 ## Why this is considered an implementation of the paper
 
-This AGID implementation reproduces the method-defining pieces of VIB-Net:
+This SynthScope implementation reproduces the method-defining pieces of VIB-Net:
 
-| Paper concept | AGID implementation |
+| Paper concept | SynthScope implementation |
 |---|---|
 | Use a pretrained CLIP image representation | `clip.load(backbone_name)` and `backbone.encode_image(inputs)` |
 | Avoid directly classifying the full representation | features are passed through a stochastic latent bottleneck |
@@ -85,7 +85,7 @@ This AGID implementation reproduces the method-defining pieces of VIB-Net:
 | Optimize the VIB objective | binary prediction loss plus beta-weighted Gaussian KL |
 | Use real/fake binary labels | `BCEWithLogitsLoss` with labels `0` and `1` |
 
-The implementation is therefore best understood as a **paper-faithful AGID reproduction** of VIB-Net's architecture and objective, adapted to this repository's Hydra configuration, Accelerate trainer, dataset module, and metrics interface.
+The implementation is therefore best understood as a **paper-faithful SynthScope reproduction** of VIB-Net's architecture and objective, adapted to this repository's Hydra configuration, Accelerate trainer, dataset module, and metrics interface.
 
 ## Training setup
 
@@ -108,7 +108,7 @@ The current model config sets:
 | `std_shift` | `5.0` |
 | `freeze_backbone` | `true` |
 
-The current trainer config uses AdamW through the AGID trainer:
+The current trainer config uses AdamW through the SynthScope trainer:
 
 | Setting | Value |
 |---|---:|
@@ -119,31 +119,31 @@ The current trainer config uses AdamW through the AGID trainer:
 | Validation interval | `1` |
 | Test interval | `1` |
 
-`label_smoothing` is part of the shared trainer configuration and is used by the cross-entropy models. VIB-Net uses `BCEWithLogitsLoss`, so label smoothing is not part of its current loss unless it is explicitly added to `AGIDVIBNetModel.compute_loss`.
+`label_smoothing` is part of the shared trainer configuration and is used by the cross-entropy models. VIB-Net uses `BCEWithLogitsLoss`, so label smoothing is not part of its current loss unless it is explicitly added to `SynthScopeVIBNetModel.compute_loss`.
 
 ## Reproduced benchmark results
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | Diffusion-source (SDv1.4-trained), AP -- HEADL | map=95.53 | *none released* | mAP=83.94 / acc=77.57 | below |
 | Diffusion-source (SDv1.4-trained), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
 | GAN-source (ForenSynths/ProGAN-trained), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |
 | GAN-source (ForenSynths/ProGAN-trained), ACC | acc=82.5 | *none released* | mAP=61.71 / acc=57.91 | below |
 
-**AGID_official** = authors' released weights run through the AGID class/eval (VIB-Net has no official weights released, so this is *none released* on every row) · **AGID_train** = AGID class trained from scratch by us (single best run) · **Status:** reproduced = AGID_train matches paper/official · official = AGID_official matches (AGID_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
+**SynthScope_official** = authors' released weights run through the SynthScope class/eval (VIB-Net has no official weights released, so this is *none released* on every row) · **SynthScope_train** = SynthScope class trained from scratch by us (single best run) · **Status:** reproduced = SynthScope_train matches paper/official · official = SynthScope_official matches (SynthScope_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
 
 ## Integration notes
 
-The VIB-Net model is designed to be called through the shared `compute_loss(batch)` interface used by the AGID trainer. It returns:
+The VIB-Net model is designed to be called through the shared `compute_loss(batch)` interface used by the SynthScope trainer. It returns:
 
 | Key | Meaning |
 |---|---|
 | `loss` | scalar training objective |
-| `outputs` | two-class logits for AGID metrics |
+| `outputs` | two-class logits for SynthScope metrics |
 
-For the trainer to instantiate VIB-Net, `AGIDVIBNetModel` should be registered in `trainer.py` before the generic CLIP branch. Since `vib_net` uses a `CLIP:` backbone name, a generic CLIP condition placed first can accidentally instantiate `AGIDCLIPModel` instead of `AGIDVIBNetModel`.
+For the trainer to instantiate VIB-Net, `SynthScopeVIBNetModel` should be registered in `trainer.py` before the generic CLIP branch. Since `vib_net` uses a `CLIP:` backbone name, a generic CLIP condition placed first can accidentally instantiate `SynthScopeCLIPModel` instead of `SynthScopeVIBNetModel`.
 
 For metric compatibility, the binary VIB logit should be converted to two-class logits in a way that preserves the same decision boundary as `sigmoid(logit) > 0.5`. A common mapping is:
 
@@ -155,15 +155,15 @@ This makes `argmax(outputs, dim=1)` equivalent to predicting fake when the VIB l
 
 ## Differences from the paper text
 
-The paper specifies the method and objective, but not every engineering detail needed for integration into AGID. The current implementation makes the following practical choices:
+The paper specifies the method and objective, but not every engineering detail needed for integration into SynthScope. The current implementation makes the following practical choices:
 
 | Difference | Reason |
 |---|---|
-| Uses AGID's `compute_loss(batch)` model interface | Keeps VIB-Net compatible with the shared trainer |
+| Uses SynthScope's `compute_loss(batch)` model interface | Keeps VIB-Net compatible with the shared trainer |
 | Uses `BCEWithLogitsLoss` for the one-logit binary classifier | Matches the model's single-logit output and avoids an unnecessary two-logit head |
 | Uses an analytic KL to `N(0, I)` | Direct implementation of the Gaussian VIB objective |
-| Uses Hydra configs | Matches the rest of AGID |
-| Uses Accelerate trainer and AGID metrics | Keeps training, validation, testing, logging, and distributed support consistent |
+| Uses Hydra configs | Matches the rest of SynthScope |
+| Uses Accelerate trainer and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent |
 
 These are integration differences rather than conceptual changes: the detector still uses CLIP features, a stochastic Gaussian bottleneck, reparameterized latent sampling, and the VIB loss.
 
@@ -187,4 +187,4 @@ The classifier predicts real/fake from the sampled latent variable, so the final
 
 ## Summary
 
-VIB-Net in AGID is a method-level reproduction of Zhang et al.'s CVPR 2025 VIB-Net paper. It uses CLIP image features, predicts Gaussian bottleneck statistics, samples a latent code with reparameterization, and trains with binary prediction loss plus a beta-weighted Gaussian KL term. The implementation is adapted to AGID's model, config, trainer, and metrics structure, so it is not a line-by-line official-code reproduction, but it implements the central architecture and objective that define the paper.
+VIB-Net in SynthScope is a method-level reproduction of Zhang et al.'s CVPR 2025 VIB-Net paper. It uses CLIP image features, predicts Gaussian bottleneck statistics, samples a latent code with reparameterization, and trains with binary prediction loss plus a beta-weighted Gaussian KL term. The implementation is adapted to SynthScope's model, config, trainer, and metrics structure, so it is not a line-by-line official-code reproduction, but it implements the central architecture and objective that define the paper.

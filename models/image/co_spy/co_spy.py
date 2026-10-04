@@ -1,4 +1,4 @@
-"""CO-SPY integrated into AGID.
+"""CO-SPY integrated into SynthScope.
 
 Paper: "CO-SPY: Combining Semantic and Pixel Features to Detect Synthetic
 Images by AI" (Cheng et al., CVPR 2025).
@@ -24,7 +24,7 @@ The detector has three trainable + two frozen sub-modules:
    feature to a single real/fake logit.
 
 Training loss is `BCEWithLogits` with optional label smoothing, on a
-single logit per sample. The two-class outputs returned to AGID metrics
+single logit per sample. The two-class outputs returned to SynthScope metrics
 are `stack([-logit, +logit], dim=1)`, matching the convention used by
 `npr.py` and `vib_net.py`.
 
@@ -144,8 +144,8 @@ class _LabelSmoothingBCEWithLogits(nn.Module):
         return F.binary_cross_entropy_with_logits(logits, target, reduction="mean")
 
 
-class AGIDCoSpyModel(nn.Module):
-    """CO-SPY adapted to AGID's `compute_loss(batch) -> {loss, outputs}` API."""
+class SynthScopeCoSpyModel(nn.Module):
+    """CO-SPY adapted to SynthScope's `compute_loss(batch) -> {loss, outputs}` API."""
 
     SEMANTIC_MEAN = (0.5, 0.5, 0.5)
     SEMANTIC_STD = (0.5, 0.5, 0.5)

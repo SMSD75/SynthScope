@@ -1,7 +1,7 @@
 #!/bin/bash
 # Deploy + TEST the official PGC and SAFE weights as the default inference checkpoints on cn023.
 # Tests them on ForenSynths first (PGC official ProGAN ckpt should reach ~96 mAP / hard-3 ~94 AUROC;
-# SAFE official ~98), backs up the existing AGID-trained pgc.pth/safe.pth, then swaps in the official.
+# SAFE official ~98), backs up the existing SynthScope-trained pgc.pth/safe.pth, then swaps in the official.
 #SBATCH --job-name=deploy_off
 #SBATCH --partition=quva
 #SBATCH --account=quvausers
@@ -22,7 +22,7 @@ echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 # --- CUDA precheck (cn023 old kernel flakily fails CUDA init) ---
 ok=0
 for i in 1 2 3 4 5; do
-  $CONDA run --no-capture-output -n AGID python -c \
+  $CONDA run --no-capture-output -n SynthScope python -c \
     "import torch; assert torch.cuda.is_available(); (torch.randn(4,4,device='cuda')@torch.randn(4,4,device='cuda')).sum().item(); print('CUDA OK')" && { ok=1; break; }
   echo "CUDA init failed ($i)"; sleep 5
 done
@@ -43,7 +43,7 @@ echo "[data] TEST=$TEST  exists=$( [ -d $TEST ] && echo yes || echo NO )"
 
 run_eval () {  # model  ckpt  tag
   echo "[eval] $1 <- $2"
-  $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py \
+  $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
     --model "$1" --benchmark forensynths --data "$TEST" --bs 32 --ckpt "$2" --tag "$3" 2>&1 | tail -25
 }
 
@@ -54,12 +54,12 @@ if [ -n "$SAFE_OFF" ]; then
   run_eval safe "$SAFE_OFF" safe_official_deploycheck
 fi
 
-# --- DEPLOY: back up existing AGID-trained ckpts, then swap in official ---
+# --- DEPLOY: back up existing SynthScope-trained ckpts, then swap in official ---
 mkdir -p "$CKDIR"
 ts=$(date +%Y%m%d)
 for f in pgc safe; do
-  if [ -f "$CKDIR/$f.pth" ] && [ ! -e "$CKDIR/$f.agidtrained.$ts.bak" ]; then
-    cp -a "$CKDIR/$f.pth" "$CKDIR/$f.agidtrained.$ts.bak" && echo "[backup] $f.pth -> $f.agidtrained.$ts.bak"
+  if [ -f "$CKDIR/$f.pth" ] && [ ! -e "$CKDIR/$f.synthscopetrained.$ts.bak" ]; then
+    cp -a "$CKDIR/$f.pth" "$CKDIR/$f.synthscopetrained.$ts.bak" && echo "[backup] $f.pth -> $f.synthscopetrained.$ts.bak"
   fi
 done
 cp -f "$PGC_OFF" "$CKDIR/pgc.pth" && echo "[deploy] pgc.pth <- official ProGAN ckpt"

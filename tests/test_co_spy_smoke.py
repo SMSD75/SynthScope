@@ -1,6 +1,6 @@
 """End-to-end smoke test for the CO-SPY integration.
 
-Builds AGIDCoSpyModel with a tiny OpenCLIP backbone (ViT-B-32/openai) so the
+Builds SynthScopeCoSpyModel with a tiny OpenCLIP backbone (ViT-B-32/openai) so the
 download stays small, then exercises the forward pass, compute_loss, the
 two-class output convention, the coefficient-dropout / feature-interpolation
 paths, and confirms the parameter freezing layout.
@@ -16,7 +16,7 @@ from omegaconf import OmegaConf
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.image.co_spy.co_spy import AGIDCoSpyModel
+from models.image.co_spy.co_spy import SynthScopeCoSpyModel
 
 
 def build_test_config() -> OmegaConf:
@@ -46,8 +46,8 @@ def main() -> None:
 
     config = build_test_config()
 
-    print("[1] Building AGIDCoSpyModel ...")
-    model = AGIDCoSpyModel(config)
+    print("[1] Building SynthScopeCoSpyModel ...")
+    model = SynthScopeCoSpyModel(config)
     model.eval()
 
     print(f"    semantic_dim = {model.semantic_dim}, artifact_dim = {model.artifact_dim}")

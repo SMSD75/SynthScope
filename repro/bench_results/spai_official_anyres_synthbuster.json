@@ -1,7 +1,7 @@
 {
   "tag": "spai_official_anyres_synthbuster",
   "model": "spai-anyres",
-  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/spai_official_agid.pth",
+  "ckpt": "/hddstore/ssalehi/AGID/repro/ckpts/spai_official_synthscope.pth",
   "benchmark": "pergen",
   "data_root": "/hddstore/ssalehi/AGID/Synthbuster/test",
   "n_generators": 9,
@@ -76,5 +76,5 @@
     }
   },
   "date": "2026-06-09T12:23:31",
-  "agid_version": "spai-anyres-official"
+  "synthscope_version": "spai-anyres-official"
 }

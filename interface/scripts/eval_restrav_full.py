@@ -1,7 +1,7 @@
 """Evaluate the ReStraV video detector on the full (staged) GenVideo-Val test set, through the
 same engine the web app uses. Reports acc@0.5, real/fake accuracy, AP and AUROC.
 
-  conda run -n AGID python interface/scripts/eval_restrav_full.py [--n 800]
+  conda run -n SynthScope python interface/scripts/eval_restrav_full.py [--n 800]
 --n caps videos PER CLASS (videos are decode-heavy); 0 = all.
 """
 import argparse

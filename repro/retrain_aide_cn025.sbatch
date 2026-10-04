@@ -14,7 +14,7 @@ export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$HF_HOME" "$TORCH_HOME" "$TRITON_CACHE_DIR"
 for i in $(seq 1 240); do [ -f /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/DATA_READY_cn025 ] && [ -d "$DATA/GenImage/train/real" ] && break; echo "[wait] data not ready ($i)"; sleep 30; done
 echo "node=$(hostname) scratch=$SCR data=$DATA/GenImage $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29651 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29651 \
   main.py trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]" \
   DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_clip]" \

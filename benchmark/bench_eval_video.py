@@ -1,6 +1,6 @@
-"""Unified VIDEO benchmark eval for AGID video detectors (d3, restrav, stall).
+"""Unified VIDEO benchmark eval for SynthScope video detectors (d3, restrav, stall).
 
-Scores each video through the SAME verified agid engine path the web app uses
+Scores each video through the SAME verified synthscope engine path the web app uses
 (engine.predict_video_clip -> native clip pipeline + per-model norm + fake-prob), computes
 per-generator + mean acc@0.5 / AP / AUROC, and writes the SAME JSON schema as bench_eval.py
 (repro/bench_results/<tag>.json + append repro/MASTER_RESULTS.jsonl) so the aggregator ingests it.
@@ -165,7 +165,7 @@ def main(argv=None) -> int:
               "benchmark": f"video:{args.benchmark}", "data_root": str(root),
               "n_generators": len(per_gen), "means": means, "per_generator": per_gen,
               "date": datetime.datetime.now().isoformat(timespec="seconds"),
-              "agid_version": "video"}
+              "synthscope_version": "video"}
     out = Path(args.out) if args.out else (REPRO / "bench_results" / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2) + "\n")

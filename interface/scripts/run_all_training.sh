@@ -1,4 +1,6 @@
 #!/bin/bash
+# Old AGID_* variables still work: map each to its SYNTHSCOPE_* name unless that is already set.
+for _v in $(compgen -e | grep '^AGID_' || true); do _n="SYNTHSCOPE_${_v#AGID_}"; [ -n "${!_n:-}" ] || export "$_n=${!_v}"; done
 # Unattended orchestrator: finishes the whole "train the missing detectors" pipeline on cn023
 # so it completes even if the user disconnects. It does NOT relaunch the jobs already running
 # (clip/dinov2/vib_net probes, restrav) -- it waits for them, then trains the rest, promoting
@@ -12,7 +14,7 @@ set +e
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 CONDA="${CONDA_EXE:-/home/ssalehi/miniconda3/bin/conda}"
-CKPT_DIR="${AGID_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
+CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
 ORCH_LOG="$CKPT_DIR/_train/orchestrator.log"
 mkdir -p "$CKPT_DIR/_train"
 TRAIN=interface/scripts/train_model.sh
@@ -28,9 +30,9 @@ wait_for() {  # wait until none of the named jobs are running
     sleep 30
   done
 }
-promote() { "$CONDA" run --no-capture-output -n AGID python interface/scripts/promote_checkpoint.py "$1" 2>&1 | tee -a "$ORCH_LOG"; }
-verify()  { "$CONDA" run --no-capture-output -n AGID python interface/scripts/verify_model.py "$1" --n 240 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"; }
-collect() { "$CONDA" run --no-capture-output -n AGID python interface/scripts/collect_checkpoints.py 2>&1 | tee -a "$ORCH_LOG"; }
+promote() { "$CONDA" run --no-capture-output -n SynthScope python interface/scripts/promote_checkpoint.py "$1" 2>&1 | tee -a "$ORCH_LOG"; }
+verify()  { "$CONDA" run --no-capture-output -n SynthScope python interface/scripts/verify_model.py "$1" --n 240 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"; }
+collect() { "$CONDA" run --no-capture-output -n SynthScope python interface/scripts/collect_checkpoints.py 2>&1 | tee -a "$ORCH_LOG"; }
 have_ckpt() { ls "$CKPT_DIR/_train/$1"/model_*.pth >/dev/null 2>&1; }
 finish() {  # promote+verify if a checkpoint was produced
   if have_ckpt "$1"; then log "promote+verify $1"; promote "$1"; verify "$1"
@@ -71,14 +73,14 @@ sleep 10
 if have_ckpt restrav; then
   log "promote restrav + full GenVideo-Val eval"
   promote restrav
-  "$CONDA" run --no-capture-output -n AGID python interface/scripts/eval_restrav_full.py --n 600 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"
+  "$CONDA" run --no-capture-output -n SynthScope python interface/scripts/eval_restrav_full.py --n 600 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"
 else
   log "WARN: restrav produced no checkpoint"
 fi
 
 # Phase 5: D3 calibration (GPUs free now).
 log "calibrating D3 ..."
-CUDA_VISIBLE_DEVICES=0 "$CONDA" run --no-capture-output -n AGID python interface/scripts/calibrate_d3.py --n 200 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"
+CUDA_VISIBLE_DEVICES=0 "$CONDA" run --no-capture-output -n SynthScope python interface/scripts/calibrate_d3.py --n 200 2>&1 | grep -v libpng | tee -a "$ORCH_LOG"
 
 # Phase 6: refresh manifest + summary.
 log "refreshing manifest ..."

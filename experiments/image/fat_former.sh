@@ -9,7 +9,7 @@ export OMP_NUM_THREADS=1
 # mean/std -- NOT CLIP stats -- despite the CLIP ViT-L/14 backbone. `normalize_dinov2` is the
 # ImageNet Normalize in this repo, so we use it here to match the official preprocessing (and the
 # deployed official-weights eval, which reproduces 98.39 acc / 99.70 mAP with ImageNet norm).
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
     trainer@TrainerConfig=image/fat_former \
     model@ModelConfig=image/fat_former \
     dataset@DatasetConfig=image/aigibench \
@@ -20,4 +20,4 @@ export OMP_NUM_THREADS=1
     DatasetConfig.eval_transform_list=[resize_short_256,center_crop_224,to_dtype,normalize_dinov2] \
     logger.name=fat_former \
     logger.mode=online \
-    logger.tags=[AGID,FatFormer,aigibench]
+    logger.tags=[SynthScope,FatFormer,aigibench]

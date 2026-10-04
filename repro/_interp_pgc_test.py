@@ -1,8 +1,8 @@
-"""Verify the PGC peak-guided interpretability map end-to-end via the real agid.predict path."""
+"""Verify the PGC peak-guided interpretability map end-to-end via the real synthscope.predict path."""
 import sys, os, base64, io
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from PIL import Image
-import agid
+import synthscope
 
 OFFICIAL = "/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval/PGC_train_progan_ckpt.pth"
 OUT = os.path.join(os.path.dirname(__file__), "interp_smoketest_out")
@@ -10,7 +10,7 @@ os.makedirs(OUT, exist_ok=True)
 FAKE = os.path.join(os.path.dirname(__file__), "ideogram_bench", "fake", "000.png")
 REAL = os.path.join(os.path.dirname(__file__), "ideogram_bench", "real", "000.png")
 
-det = agid.load("pgc", checkpoint=OFFICIAL, device="cuda")
+det = synthscope.load("pgc", checkpoint=OFFICIAL, device="cuda")
 ok = True
 for label, p in [("fake", FAKE), ("real", REAL)]:
     if not os.path.exists(p):

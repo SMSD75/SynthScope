@@ -13,7 +13,7 @@ cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname)  GPUS=$CUDA_VISIBLE_DEVICES  $(date)"
 
-$CONDA run --no-capture-output -n AGID python -c \
+$CONDA run --no-capture-output -n SynthScope python -c \
   "import torch; assert torch.cuda.is_available(); print('CUDA OK,', torch.cuda.device_count(), 'GPUs')" || { echo "CUDA FAIL"; exit 1; }
 
 # --- data: REUSE pre-staged GenImage if present (cn030/31 /nvmestore), else ssh-stream from cn023 ---
@@ -40,7 +40,7 @@ export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf
 export PYTHONUNBUFFERED=1
 NG=$(echo $CUDA_VISIBLE_DEVICES | tr ',' '\n' | wc -l)
 echo "[train] DDP on $NG GPUs (GenImage SD-v1.4 regime)"
-$CONDA run --no-capture-output -n AGID accelerate launch \
+$CONDA run --no-capture-output -n SynthScope accelerate launch \
   --multi_gpu --num_processes $NG --mixed_precision bf16 --main_process_port 29572 \
   repro/train_pgc_ddp.py
 echo "[train] done $(date)"

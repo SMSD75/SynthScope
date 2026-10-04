@@ -1,6 +1,6 @@
 # Hugging Face Space dependencies. Spaces installs these automatically.
-# AGID itself (pulls torch/torchvision/transformers/etc. per pyproject):
-agid @ git+https://github.com/SMSD75/AGID.git
+# SynthScope itself (pulls torch/torchvision/transformers/etc. per pyproject):
+synthscope @ git+https://github.com/SMSD75/AGID.git
 gradio>=4
 # A few detectors (clip, fat_former) also need OpenAI CLIP:
 clip @ git+https://github.com/openai/CLIP.git

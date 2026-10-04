@@ -1,6 +1,6 @@
 """Runtime configuration and path wiring for the SynthScope web interface.
 
-The interface imports the AGID repo (models, dataset decoders, Hydra config composition)
+The interface imports the SynthScope repo (models, dataset decoders, Hydra config composition)
 directly, so we add the repo root to ``sys.path`` and pin a few cache locations that make
 sense on the GPU node where the models/checkpoints actually live (cn023 -> /hddstore).
 Everything is overridable via environment variables.
@@ -9,12 +9,14 @@ import os
 import sys
 from pathlib import Path
 
+import _synthscope_env  # noqa: F401  (maps legacy AGID_* variables to SYNTHSCOPE_*)
+
 # interface/backend/config.py -> interface/ -> repo root
 BACKEND_DIR = Path(__file__).resolve().parent
 INTERFACE_DIR = BACKEND_DIR.parent
 REPO_ROOT = INTERFACE_DIR.parent
 
-# Make the AGID package importable (models.*, dataset, config_utils, ...).
+# Make the SynthScope package importable (models.*, dataset, config_utils, ...).
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
@@ -61,29 +63,30 @@ def _load_dotenv() -> None:
 
 _load_dotenv()
 
-# Central checkpoint directory. Defaults to the portable ``~/.cache/agid`` home (matching the
-# ``agid`` package + README); cluster jobs override with AGID_CKPT_DIR for node-local scratch.
-_AGID_HOME = Path(os.environ.get("AGID_HOME", Path.home() / ".cache" / "agid")).expanduser()
+# Central checkpoint directory. Defaults to the portable ``~/.cache/synthscope`` home (matching the
+# ``synthscope`` package + README); cluster jobs override with SYNTHSCOPE_CKPT_DIR for node-local scratch.
+_LEGACY_HOME = Path.home() / ".cache" / "agid"       # pre-rename location, reused if it exists
+_HOME = Path(os.environ.get("SYNTHSCOPE_HOME") or (_LEGACY_HOME if _LEGACY_HOME.exists() else Path.home() / ".cache" / "synthscope")).expanduser()
 CHECKPOINTS_DIR = Path(
-    os.environ.get("AGID_CKPT_DIR", str(_AGID_HOME / "checkpoints"))
+    os.environ.get("SYNTHSCOPE_CKPT_DIR", str(_HOME / "checkpoints"))
 ).expanduser()
 
 # Where to cache downloaded pretrained backbones (CLIP/DINOv2/SigLIP/ConvNeXt/...). On cn023
 # the /nvmestore caches referenced by the experiment scripts are not present, so default to a
 # node-local cache. Only set if the caller has not already configured these.
-_DEFAULT_CACHE = Path(os.environ.get("AGID_CACHE_DIR", str(_AGID_HOME / "cache"))).expanduser()
+_DEFAULT_CACHE = Path(os.environ.get("SYNTHSCOPE_CACHE_DIR", str(_HOME / "cache"))).expanduser()
 os.environ.setdefault("HF_HOME", str(_DEFAULT_CACHE / "huggingface"))
 os.environ.setdefault("TORCH_HOME", str(_DEFAULT_CACHE / "torch"))
 os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
 
 # Upload / decoding limits.
-MAX_UPLOAD_BYTES = int(os.environ.get("AGID_MAX_UPLOAD_MB", "200")) * 1024 * 1024
+MAX_UPLOAD_BYTES = int(os.environ.get("SYNTHSCOPE_MAX_UPLOAD_MB", "200")) * 1024 * 1024
 # Number of frames sampled from a video when running an *image* detector frame-by-frame.
-VIDEO_IMAGE_FRAMES = int(os.environ.get("AGID_VIDEO_IMAGE_FRAMES", "16"))
+VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 
 # How many models to keep resident at once (LRU). Big backbones (ConvNeXt-XXL, SigLIP+VAE)
 # are several GB each, so we evict rather than risk OOM on a shared GPU.
-MAX_RESIDENT_MODELS = int(os.environ.get("AGID_MAX_RESIDENT_MODELS", "2"))
+MAX_RESIDENT_MODELS = int(os.environ.get("SYNTHSCOPE_MAX_RESIDENT_MODELS", "2"))
 
 
 def device() -> str:

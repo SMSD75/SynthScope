@@ -1,4 +1,4 @@
-"""FatFormer integrated into AGID without vendoring a CLIP fork.
+"""FatFormer integrated into SynthScope without vendoring a CLIP fork.
 
 The original FatFormer (Liu et al., CVPR 2024) is built on a modified copy of
 OpenAI's CLIP that adds:
@@ -279,8 +279,8 @@ class LanguageGuidedAlignment(nn.Module):
         return torch.stack(prompts)
 
 
-class AGIDFatFormerModel(nn.Module):
-    """FatFormer adapted to AGID's `compute_loss(batch) -> {loss, outputs}` API.
+class SynthScopeFatFormerModel(nn.Module):
+    """FatFormer adapted to SynthScope's `compute_loss(batch) -> {loss, outputs}` API.
 
     The forward path mirrors FatFormer's `CLIPModel.forward`:
 

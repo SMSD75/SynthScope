@@ -10,6 +10,6 @@ backbone_name: PE-Core-L14-336
 freeze_backbone: true
 base_repo_id: facebook/PE-Core-L14-336
 base_filename: PE-Core-L14-336.pt
-base_checkpoint: null          # local PE-Core-L14-336.pt override (or env AGID_PE_CORE_CKPT)
+base_checkpoint: null          # local PE-Core-L14-336.pt override (or env SYNTHSCOPE_PE_CORE_CKPT)
 load_base_backbone: true       # false = build the architecture only (smoke tests / key checks)
 label_smoothing: 0.0

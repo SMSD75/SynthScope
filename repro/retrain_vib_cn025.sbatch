@@ -3,7 +3,7 @@
 #SBATCH --time=2-00:00:00 --cpus-per-task=10 --mem=40G --gres=gpu:1
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/retrain_vib_%j.log
 # VIB-Net gap-closing retrain with the FAITHFUL FLAVA-full backbone (the paper's headline arch; the old
-# AGID class used CLIP). This job ALSO stages the shared data onto cn025 scratch (GenImage + cospy_subset)
+# SynthScope class used CLIP). This job ALSO stages the shared data onto cn025 scratch (GenImage + cospy_subset)
 # and writes a DATA_READY marker that the AIDE/Co-Spy jobs on this node gate on. FLAVA loads from the
 # shared /ivi HF cache (already downloaded) so no internet is needed. Saves to /ivi shared.
 set -uo pipefail
@@ -22,7 +22,7 @@ echo "[stage] cospy_subset ...";            "${RS[@]}" ivi-cn023:/hddstore/ssale
 echo "$SCR" > /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/eval_logs/DATA_READY_cn025
 echo "node=$(hostname) scratch=$SCR data=$DATA/GenImage flava=$HF_HOME genimage_real=$(ls $DATA/GenImage/train/real 2>/dev/null|wc -l) $(date)"
 # --- train ---
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29641 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29641 \
   main.py trainer@TrainerConfig=image/vib_net model@ModelConfig=image/vib_net dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]" \
   DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_clip]" \

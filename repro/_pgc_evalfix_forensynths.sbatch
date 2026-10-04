@@ -8,11 +8,11 @@ CONDA=/home/ssalehi/miniconda3/bin/conda
 export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf PYTHONUNBUFFERED=1
 H=/hddstore/ssalehi/AGID
 echo "NODE=$(hostname) $(date)"
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 run(){ local tag="$1"; shift; local full=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/${tag}_${SLURM_JOB_ID}.full.log
   echo "===== $tag ====="
-  $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model pgc \
+  $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model pgc \
     --benchmark forensynths --data "$H/CNNDetection/test" --bs 32 --device cuda --tag "$tag" "$@" > "$full" 2>&1
   grep -aE "RESULT|: acc=|=== bench_eval" "$full" | tail -16; }
 # served official weights (registry default) — the one that matters

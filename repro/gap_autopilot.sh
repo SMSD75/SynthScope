@@ -1,17 +1,17 @@
 #!/bin/bash
 # Autonomous gap-closing eval pipeline (cn023 GPU4). Waits for the full-GenImage batch to free GPU4,
 # then repeatedly evals the newest checkpoint of each running retrain (cospy/spai/vib) on its
-# paper-relevant benchmark, so AGID-vs-official gap-closing is tracked as training progresses.
+# paper-relevant benchmark, so SynthScope-vs-official gap-closing is tracked as training progresses.
 # Results -> repro/bench_results/<tag>.json (+ MASTER_RESULTS.jsonl). Log: repro/eval_logs/gap_autopilot.log
 set -uo pipefail
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-export AGID_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
+export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
 export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi/.cache/torch
-export AGID_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
+export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
 export CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=4
 FULLG=/hddstore/ssalehi/AGID/GenImage_full/test_full
 COSPYB=/hddstore/ssalehi/AGID/CoSpyBench/test
-EV(){ conda run --no-capture-output -n AGID python benchmark/bench_eval.py "$@" 2>&1 | grep -vE "libpng|UserWarning|warnings.warn" | tail -4; }
+EV(){ conda run --no-capture-output -n SynthScope python benchmark/bench_eval.py "$@" 2>&1 | grep -vE "libpng|UserWarning|warnings.warn" | tail -4; }
 
 echo "[autopilot] waiting for full-genimage GPU4 batch to finish $(date)"
 for i in $(seq 1 90); do grep -q "BATCH DONE" repro/eval_logs/full_genimage_gpu4.log 2>/dev/null && break; sleep 60; done

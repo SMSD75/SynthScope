@@ -27,11 +27,11 @@ def _entry_line(e: dict) -> str:
     head = f"[{name}]({link})" if link else name
     venue = " · ".join(x for x in (e.get("authors", ""), e.get("venue", ""), str(e.get("year", ""))) if x)
     code = f" — [code]({e['github']})" if e.get("github") else (f" — [arXiv]({e['arxiv']})" if e.get("arxiv") else "")
-    agid = f" · _in SynthScope: `{e['agid']}`_" if e.get("agid") else ""
+    synthscope = f" · _in SynthScope: `{e['synthscope']}`_" if e.get("synthscope") else ""
     parts = [f"- **{head}**"]
     if venue:
         parts.append(f" ({venue})")
-    parts.append(f"{code}{agid}")
+    parts.append(f"{code}{synthscope}")
     body = f"  \n  {e['summary']}" if e.get("summary") else ""
     res = f"  \n  _Results: {e['result']}_" if e.get("result") else ""
     return "".join(parts) + body + res
@@ -71,7 +71,7 @@ def render_full(data: dict) -> str:
 def render_teaser(data: dict) -> str:
     """The short README block that links to TRENDING.md."""
     n_img, n_vid = len(data.get("image", [])), len(data.get("video", []))
-    n_in = sum(1 for k in ("image", "video") for e in data.get(k, []) if e.get("agid"))
+    n_in = sum(1 for k in ("image", "video") for e in data.get(k, []) if e.get("synthscope"))
     return "\n".join([
         START,
         "## 📈 What's Trending",

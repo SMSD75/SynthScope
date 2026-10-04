@@ -71,15 +71,15 @@ The nearest-neighbor version improves over the prior state of the art by **+15.0
 
 The full evaluation includes images from multiple generator families, including ProGAN, StyleGAN, BigGAN, CycleGAN, StarGAN, GauGAN, CRN, IMLE, SITD, SAN, DeepFake, LDM, GLIDE, Guided Diffusion, and DALL-E-mini.  [oai_citation:5‡CVF Open Access](https://openaccess.thecvf.com/content/CVPR2023/papers/Ojha_Towards_Universal_Fake_Image_Detectors_That_Generalize_Across_Generative_Models_CVPR_2023_paper.pdf?utm_source=chatgpt.com)
 
-### AGID reproduction (paper vs reproduced)
+### SynthScope reproduction (paper vs reproduced)
 
-Reproduced through `benchmark/bench_eval.py` (%). AGID's `clip` is a frozen
+Reproduced through `benchmark/bench_eval.py` (%). SynthScope's `clip` is a frozen
 CLIP:ViT-L/14 + **linear-probe** detector, so it is compared against the paper's **LC** (linear-classifier)
-variant. **AGID_official** loads the authors' released linear weights into the AGID class; **AGID_train** trains the
+variant. **SynthScope_official** loads the authors' released linear weights into the SynthScope class; **SynthScope_train** trains the
 linear probe from scratch on ProGAN (single best run). Both reproduce the LC numbers; the per-generator mean differs slightly
-from the paper because AGID averages over the on-disk generator set.
+from the paper because SynthScope averages over the on-disk generator set.
 
-| Benchmark | Paper | AGID_official | AGID_train |
+| Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---|---|---|
 | ForenSynths GAN/low-level (11) | — | mAP 96.95 | mAP 97.22 / acc 88.28 |
 | UniversalFakeDetect diffusion/AR (8) | 95.0 | mAP 95.66 | mAP 96.44 / acc 87.23 |
@@ -109,9 +109,9 @@ The paper argues that CNNDetection-style models trained on one generator can dev
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | ForenSynths GAN/low-level test (11 of the pape | — | mAP=96.95 | mAP=97.22 / acc=88.28 | reference |
 | UniversalFakeDetect diffusion/autoregressive t | map=95.0 | mAP=95.66 | mAP=96.44 / acc=87.23 | reproduced |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

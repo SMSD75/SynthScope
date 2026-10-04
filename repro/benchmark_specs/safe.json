@@ -16,7 +16,7 @@
       "paper_section": "Table 1 (p.6). ACCM/APM = 96.2/98.8. Format is ACC/AP per cell.",
       "official_eval_protocol": "scripts/eval.sh: --input_size 256 --transform_mode 'crop'. data/datasets.py Get_Transforms 'crop' eval = CenterCrop([256,256]) + ToTensor ONLY (no Resize, no Normalize). Model internally applies DWT bior1.3 -> HH band. checkpoint/checkpoint-best.pth. AP=average_precision_score, acc@0.5.",
       "our_status": "reproduced",
-      "our_number": {"map": 97.79, "acc": 95.1, "note": "SAFE now SERVES the AGID-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSynths = 87.31 mAP, which BEATS the official checkpoint's own 85.74 on that protocol."},
+      "our_number": {"map": 97.79, "acc": 95.1, "note": "SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSynths = 87.31 mAP, which BEATS the official checkpoint's own 85.74 on that protocol."},
       "gap_cause": "RESOLVED. The earlier 81.74 was a short/under-trained run; the full 40-epoch retrain reaches 97.79 on the 8-GAN subset (deepfake AP recovered 58.82@ep10 -> 86.74@ep38). The full-13 set folds in CRN/IMLE (graphics) + whichfaceisreal (faces) where BOTH official (85.74) and retrain (87.31) drop — a generator-distribution effect, not a training gap.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/CNNDetection/test (ForenSynths, 13 gens incl 8 paper-GANs)"
     },
@@ -31,8 +31,8 @@
       "paper_section": "Table 2 (p.5). ACCM/APM = 99.0/99.8.",
       "official_eval_protocol": "Same eval.sh crop@256, ToTensor only, DWT-HH, checkpoint-best.pth. Repo path test2_Self-Synthesis/test.",
       "our_status": "reproduced",
-      "our_number": {"map": 99.85, "acc": 98.99, "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The agid_trained retrain v2 (model_38) was NOT re-evaluated on GANGen — the GANGen/freqnet data is not present on the cn023 eval node for this run."},
-      "gap_cause": "Official faithful matches the paper. AGID-trained retrain v2 reproduces the other SAFE benchmarks (ForenSynths-8/UFD/GenImage/DiTFake); GANGen re-eval pending data availability.",
+      "our_number": {"map": 99.85, "acc": 98.99, "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The synthscope_trained retrain v2 (model_38) was NOT re-evaluated on GANGen — the GANGen/freqnet data is not present on the cn023 eval node for this run."},
+      "gap_cause": "Official faithful matches the paper. SynthScope-trained retrain v2 reproduces the other SAFE benchmarks (ForenSynths-8/UFD/GenImage/DiTFake); GANGen re-eval pending data availability.",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/freqnet/test (9 GANs = Self-Synthesis set)"
     },
     {
@@ -46,7 +46,7 @@
       "paper_section": "Table 3 (p.5). ACCM/APM = 95.7/99.1.",
       "official_eval_protocol": "Same eval.sh crop@256, ToTensor, DWT-HH, checkpoint-best.pth. test3_Ojha/test (guided==ADM).",
       "our_status": "reproduced",
-      "our_number": {"map": 98.44, "acc": 94.0, "note": "agid_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this AGID-trained checkpoint."},
+      "our_number": {"map": 98.44, "acc": 94.0, "note": "synthscope_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this SynthScope-trained checkpoint."},
       "gap_cause": "Reproduced — the full 40-epoch retrain reaches 98.44 mAP on UniversalFakeDetect-8 (~0.7 mAP from the official checkpoint).",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/universialfakedetection/test (8 DMs)"
     },
@@ -61,7 +61,7 @@
       "paper_section": "Table 4 (p.6). ACCM/APM = 95.6/99.3.",
       "official_eval_protocol": "Same eval.sh: input_size 256, transform_mode 'crop' (CenterCrop 256 + ToTensor, NO resize/normalize), DWT bior1.3 HH-band, checkpoint-best.pth. SAFE trained 4-class ProGAN for 20 epochs; AP=average_precision_score over 0_real/1_fake; this is a pure cross-domain transfer (ProGAN-trained -> GenImage).",
       "our_status": "reproduced",
-      "our_number": {"map": 99.51, "acc": 95.9, "note": "agid_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this AGID-trained checkpoint (safe.pth -> safe_full_v2/model_38)."},
+      "our_number": {"map": 99.51, "acc": 95.9, "note": "synthscope_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this SynthScope-trained checkpoint (safe.pth -> safe_full_v2/model_38)."},
       "gap_cause": "RESOLVED. The earlier 95.70 was the under-trained epoch-10 checkpoint; the full 40-epoch schedule (best val = epoch 38) keeps improving and reaches 99.51 mAP on GenImage-8 — above the official checkpoint. ADM recovered (95.59@ep10 -> 99.06@ep38). Eval protocol correctly matched (CenterCrop 256 + ToTensor, no resize).",
       "dataset_source": "on-disk /hddstore/ssalehi/AGID/GenImage_full/test (8 gens)"
     },
@@ -76,7 +76,7 @@
       "paper_section": "Table 6 (p.6). Mean = 99.4/99.9. DiTFake is the paper's own new testset (3 SOTA DiT generators).",
       "official_eval_protocol": "Same eval.sh crop@256 + ToTensor + DWT-HH, checkpoint-best.pth. Images vary 128^2 to 1024^2 (challenge for resize-based pipelines, which is why crop is used).",
       "our_status": "reproduced",
-      "our_number": {"map": 99.96, "acc": 99.2, "note": "agid_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this AGID-trained checkpoint."},
+      "our_number": {"map": 99.96, "acc": 99.2, "note": "synthscope_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this SynthScope-trained checkpoint."},
       "gap_cause": "Reproduced. DiTFake downloaded to /hddstore/ssalehi/AGID/DiTFake/test; the retrained SAFE matches the paper on the 3 DiT generators.",
       "dataset_source": "HF https://huggingface.co/datasets/lioooox/DiTFake (open) -> /hddstore/ssalehi/AGID/DiTFake/test"
     }

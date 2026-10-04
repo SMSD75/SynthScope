@@ -55,7 +55,7 @@ dataset@DatasetConfig=cnndetection
 
 SAFE's main contribution is its image transformation recipe. The official training transform uses crop-based preprocessing, horizontal flip, 180-degree random rotation, color jitter, tensor conversion, and patch-based random masking.
 
-| Component | Official SAFE setting | AGID SAFE setting |
+| Component | Official SAFE setting | SynthScope SAFE setting |
 |---|---|---|
 | Input size | `256` | `256` |
 | Train crop | Random crop with `pad_if_needed=True` | `random_crop_256_pad` |
@@ -86,7 +86,7 @@ The official SAFE model is a ResNet-50-style detector with a DWT preprocessing s
 4. Global average pooling
 5. A binary linear classifier
 
-The AGID implementation follows the same active path:
+The SynthScope implementation follows the same active path:
 
 ```python
 self.dwt_filter = DWTForward(J=1, mode="symmetric", wave="bior1.3")
@@ -100,7 +100,7 @@ It then feeds the high-frequency image through the same ResNet-50-style stem, `l
 
 The official SAFE training defaults include:
 
-| Setting | Official SAFE | AGID SAFE pre-test |
+| Setting | Official SAFE | SynthScope SAFE pre-test |
 |---|---:|---:|
 | Model | SAFE / ResNet50-style | `ModelConfig.model_type=safe` |
 | Per-GPU batch size | `64` | `64` |
@@ -112,23 +112,23 @@ The official SAFE training defaults include:
 | Warmup | `20` epochs | `warmup_ratio=0.2` |
 | Scheduler | Cosine-style decay | `cosine` scheduler |
 
-The AGID launcher is:
+The SynthScope launcher is:
 
 ```bash
 experiments/safe_pretest.sh
 ```
 
-It runs through Accelerate and the `AGID` conda environment.
+It runs through Accelerate and the `SynthScope` conda environment.
 
 ## Reproduced benchmark results
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-`AGID_train` = **retrained SAFE v2** (the full 40-epoch SAFE crop recipe, checkpoint `checkpoints_retrain/safe_full_v2/model_38.pth`; best-val epoch). This supersedes the earlier under-trained / resize-era column (ForenSynths 81.74). Traced to `repro/bench_results/safe_v2_*.json` (jobs 186232 / 186235).
+`SynthScope_train` = **retrained SAFE v2** (the full 40-epoch SAFE crop recipe, checkpoint `checkpoints_retrain/safe_full_v2/model_38.pth`; best-val epoch). This supersedes the earlier under-trained / resize-era column (ForenSynths 81.74). Traced to `repro/bench_results/safe_v2_*.json` (jobs 186232 / 186235).
 
-> **Served checkpoint:** the web app / `agid.load("safe")` now serves this **AGID-trained** checkpoint (registry `weights="agid_trained"`, `ckpt_kind="agid"`, `safe.pth → safe_full_v2/model_38`), since the retrain reproduces the paper and beats the official checkpoint on GenImage and full-13 ForenSynths. The official SAFE weights remain available under `repro/official_ckpts/safe/checkpoint-best.pth`.
+> **Served checkpoint:** the web app / `synthscope.load("safe")` now serves this **SynthScope-trained** checkpoint (registry `weights="synthscope_trained"`, `ckpt_kind="synthscope"`, `safe.pth → safe_full_v2/model_38`), since the retrain reproduces the paper and beats the official checkpoint on GenImage and full-13 ForenSynths. The official SAFE weights remain available under `repro/official_ckpts/safe/checkpoint-best.pth`.
 
-| Benchmark | Paper | AGID_official | AGID_train (retrain v2) | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train (retrain v2) | Status |
 |---|---|---|---|---|
 | ForenSynths-8 (Table 1, intra-architecture GANs) | map=98.8 / acc=96.2 | mAP=98.78 / acc=96.2 | mAP=97.79 / acc=95.1 | reproduced |
 | Self-Synthesis / GANGen (Table 2, intra-archit) | map=99.8 / acc=99.0 | mAP=99.85 / acc=99.0 | not re-run (GANGen data offline on cn023) | official |
@@ -138,13 +138,13 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | DiffusionForensics-8 | — | — | mAP=99.34 / acc=91.3 | reproduced |
 | ForenSynths-13 (full set, incl. CRN/IMLE/face) | — | mAP=85.74 / acc=84.9 | mAP=87.31 / acc=83.9 | retrain ≥ official |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match · **retrain ≥ official** = on this protocol the retrain equals/exceeds the official checkpoint · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match · **retrain ≥ official** = on this protocol the retrain equals/exceeds the official checkpoint · **missing** = not yet evaluated.
 
 > **ForenSynths-8 vs -13.** The paper's ForenSynths protocol is the **8-generator** subset (`progan, stylegan, stylegan2, biggan, cyclegan, stargan, gaugan, deepfake`). The full 13-category CNNDetection test set additionally contains CRN/IMLE (graphics-rendered) and `whichfaceisreal` (faces), where **both** the official checkpoint (85.74) and our retrain (87.31) drop — it is a generator-distribution effect, not a training failure. On the paper's own 8-subset the retrain reaches 97.79 mAP (deepfake AP recovered from 58.82 at epoch 10 → 86.74 at epoch 38 over the full schedule).
 
 ## Similarity to the official SAFE implementation
 
-The AGID implementation is intentionally close to the official SAFE implementation in the parts that define the method:
+The SynthScope implementation is intentionally close to the official SAFE implementation in the parts that define the method:
 
 | Area | Similarity |
 |---|---|
@@ -159,12 +159,12 @@ The remaining differences are minor integration differences caused by adapting S
 
 | Difference | Why it exists |
 |---|---|
-| Classifier name is `head` instead of `fc1` | Matches the naming convention used by other AGID image models |
+| Classifier name is `head` instead of `fc1` | Matches the naming convention used by other SynthScope image models |
 | DWT module is created once in `__init__` | Avoids recreating `DWTForward` every forward pass; the DWT settings are the same |
 | DWT resize uses `F.interpolate` | Keeps resizing inside PyTorch tensor operations; it is equivalent in purpose to resizing the HH band back to input size |
-| Training loop uses AGID + Accelerate | Keeps distributed training, metrics, and logging consistent with the rest of this project |
-| Scheduler uses Hugging Face `get_scheduler` | Matches AGID's scheduler integration; it approximates SAFE's warmup plus cosine schedule |
-| Metrics use AGID metrics | Current repo reports real/fake accuracy through `AIGIMetrics`; official SAFE also reports average precision in evaluation |
+| Training loop uses SynthScope + Accelerate | Keeps distributed training, metrics, and logging consistent with the rest of this project |
+| Scheduler uses Hugging Face `get_scheduler` | Matches SynthScope's scheduler integration; it approximates SAFE's warmup plus cosine schedule |
+| Metrics use SynthScope metrics | Current repo reports real/fake accuracy through `AIGIMetrics`; official SAFE also reports average precision in evaluation |
 
 These differences should not change the conceptual method: the detector still trains on CNNDetection with SAFE's DWT high-frequency input and SAFE's transformation recipe.
 
@@ -188,4 +188,4 @@ Random masking forces the detector to use local regions instead of depending too
 
 ## Summary
 
-SAFE is a compact synthetic-image detector built around high-frequency DWT features and a SID-specific augmentation recipe. In AGID, `AGIDSAFEModel` follows the official SAFE active model path and `experiments/safe_pretest.sh` uses the official-style CNNDetection training setup. The implementation is not a byte-for-byte copy of the official repo, but it is method-aligned: same core DWT feature, same lightweight classifier path, same 256-pixel transformation recipe, and same main training hyperparameters.
+SAFE is a compact synthetic-image detector built around high-frequency DWT features and a SID-specific augmentation recipe. In SynthScope, `SynthScopeSAFEModel` follows the official SAFE active model path and `experiments/safe_pretest.sh` uses the official-style CNNDetection training setup. The implementation is not a byte-for-byte copy of the official repo, but it is method-aligned: same core DWT feature, same lightweight classifier path, same 256-pixel transformation recipe, and same main training hyperparameters.

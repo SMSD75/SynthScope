@@ -11,11 +11,11 @@ set -a; . /ivi/zfs/s0/original_homes/ssalehi/AGID/.env 2>/dev/null; set +a      
 SCR=/ssdstore; [ -w $SCR ] || SCR=/tmp
 export HF_HOME=$SCR/ssalehi/AGID/.cache_hf_gen PYTHONUNBUFFERED=1 PYTHONPATH=$G/gen_env/diffusers_main
 mkdir -p $HF_HOME
-echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"; $CONDA run --no-capture-output -n AGID python -c "import torch,diffusers;print('CUDA',torch.cuda.get_device_name(0),'| diffusers',diffusers.__version__)"
+echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"; $CONDA run --no-capture-output -n SynthScope python -c "import torch,diffusers;print('CUDA',torch.cuda.get_device_name(0),'| diffusers',diffusers.__version__)"
 IMG=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png
 for M in ${MODELS_TO_TEST:-flux2_klein_4b qwen_image_2_1}; do
   echo "================ $M $(date +%T) ================"
-  LOCAL_GEN_DEBUG=1 $CONDA run --no-capture-output -n AGID python $W/interface/backend/local_gen.py \
+  LOCAL_GEN_DEBUG=1 $CONDA run --no-capture-output -n SynthScope python $W/interface/backend/local_gen.py \
      --model $M --image $IMG --prompt "make another image conceptually similar to this" --out $G/gen_test_out/$M.png \
      > $G/gen_test_out/$M.log 2>&1
   grep -aE "saved|\[mem\]|Error|error:|Killed" $G/gen_test_out/$M.log | cut -c1-240 | tail -10

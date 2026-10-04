@@ -4,7 +4,7 @@ import torchvision
 from torchvision.models import ResNet50_Weights
 import torch
 
-class AGIDCNNModel(nn.Module):
+class SynthScopeCNNModel(nn.Module):
     def __init__(self, config: DictConfig):
         super().__init__()
         self.backbone = torchvision.models.resnet50(weights=ResNet50_Weights.IMAGENET1K_V2)

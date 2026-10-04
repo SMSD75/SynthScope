@@ -2,10 +2,10 @@
 
 This script vendors the *official* PGC architecture, the *official* eval
 preprocessing, and loads the *official* checkpoints, so its numbers are the
-"official-weights" side of an apples-to-apples comparison against the AGID
+"official-weights" side of an apples-to-apples comparison against the SynthScope
 re-implementation (run via ``benchmark/bench_eval.py --model pgc``).
 
-It is deliberately SELF-CONTAINED: it does not import the ``agid`` package nor the
+It is deliberately SELF-CONTAINED: it does not import the ``synthscope`` package nor the
 ``PGC_official`` repo. The architecture/transform below are transcribed from
 ``/hddstore/ssalehi/AGID/PGC_official`` (= github.com/xiaoyu6868/PGC):
   - models/pgc.py, models/encoder/{rgb_stream,residual_stream,residual_extractor}.py
@@ -16,7 +16,7 @@ It is deliberately SELF-CONTAINED: it does not import the ``agid`` package nor t
 
 Discovery (discover/_images/_collect/metrics) is COPIED verbatim from
 ``benchmark/bench_eval.py`` so the per-generator grouping + UFD real-pairing +
-metric definitions are byte-for-byte identical to the AGID side.
+metric definitions are byte-for-byte identical to the SynthScope side.
 
 The DINOv2-large backbone is loaded via HF ``AutoModel.from_pretrained`` from the
 local HF cache (export TORCH_HOME / HF_HOME first); no ``pretrained_root`` needed.
@@ -563,7 +563,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")

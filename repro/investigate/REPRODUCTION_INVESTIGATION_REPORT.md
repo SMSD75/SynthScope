@@ -1,4 +1,4 @@
-# AGID Reproduction Investigation — Why we don't match official-weight results, and what we fixed
+# SynthScope Reproduction Investigation — Why we don't match official-weight results, and what we fixed
 
 *2026-06-07. Triggered by: "we still can't reproduce official-weight results on all benchmarks; check
 the datasets on every partition (train + eval) for missing/fractional data, check the architectures
@@ -12,9 +12,9 @@ repos**, and **evaluation-protocol fidelity** — followed by GPU hypothesis tes
 
 ---
 
-## FINAL SCORECARD — can the AGID checkpoints reproduce official?
+## FINAL SCORECARD — can the SynthScope checkpoints reproduce official?
 
-| Detector | Paper's benchmark | AGID before | AGID after this work | Official | Verdict |
+| Detector | Paper's benchmark | SynthScope before | SynthScope after this work | Official | Verdict |
 |---|---|---:|---:|---:|---|
 | CLIP/UnivFD | ForenSynths-8 | 97.2 | 97.2 | 96.95 | ✅ reproduces |
 | CNNDetection | ForenSynths | 91.05 | 91.05 | 91.16 | ✅ reproduces (exact) |
@@ -43,7 +43,7 @@ not beating the shipped checkpoints in feasible time).
 
 **The headline closure: Co-Spy went 72.81 → 95.88 mAP on its own benchmark** (≈ paper 96.0, above
 official 86.65) once we (1) fixed the corrupt flickr reals and (2) retrained on the correct SD-v1.4 data
-instead of ProGAN — a 12k-subset, 5-epoch retrain. This is the proof of the whole thesis: **the AGID
+instead of ProGAN — a 12k-subset, 5-epoch retrain. This is the proof of the whole thesis: **the SynthScope
 checkpoints reproduce official when the data is clean and the training source is correct.** Promotion of
 the new `co_spy.pth` awaits your OK (the guardrail blocked auto-repromotion of a shared checkpoint).
 
@@ -60,8 +60,8 @@ the new `co_spy.pth` awaits your OK (the guardrail blocked auto-repromotion of a
    - **A data-corruption bug, not a model failure (Co-Spy).** Official Co-Spy reproduces the paper on the
      4 clean real-sources (**95.81 mAP** vs paper 95.95). The full-110 number (86.65) was dragged to chance
      by **one bucket (flickr) whose proxy reals are 50% 212-byte corrupt stubs**.
-2. **The remaining real gaps are AGID-trained-from-scratch vs official, and they are training/data/recipe
-   gaps — NOT architecture gaps.** The architecture audit found the AGID classes are faithful ports:
+2. **The remaining real gaps are SynthScope-trained-from-scratch vs official, and they are training/data/recipe
+   gaps — NOT architecture gaps.** The architecture audit found the SynthScope classes are faithful ports:
    - **Co-Spy MATCHES** the official sd-v1.4 detector (SigLIP-384 + SD-VAE residual + coefficient fusion).
      Its 72.7 ceiling came from training on the **wrong data (ProGAN), not SD-v1.4** → retraining on
      GenImage SD-v1.4 now (the same lever that fixed PGC 69→97).
@@ -69,7 +69,7 @@ the new `co_spy.pth` awaits your OK (the guardrail blocked auto-repromotion of a
      pursuit chased a backbone the authors never shipped.
    - **SPAI** is a faithful port; its gap is **data + resolution** (trained on 81k reals vs the official
      ~180k, fixed-448 2×2 vs native-arbitrary resolution).
-   - **AIDE** is the genuine ConvNeXt-XXL + 5-view DCT/SRM model; its AGID-class gap is **preprocessing**
+   - **AIDE** is the genuine ConvNeXt-XXL + 5-view DCT/SRM model; its SynthScope-class gap is **preprocessing**
      (224-CLIP crop instead of native-res ImageNet + skipped DCT/IDCT reconstruction).
 3. **Datasets were fractional.** Every eval-only benchmark loader hard-caps images per class
    (`GenImage 1500`, `DiffusionForensics/Diffusion1kStep/AIGCDetect/CommGen15 1000`) and takes the **first N
@@ -133,10 +133,10 @@ ceilings" — **that was wrong.**
 
 | Model | Verdict | Key finding |
 |---|---|---|
-| **Co-Spy** | **MATCHES** | AGID = the official sd-v1.4 detector exactly (SigLIP-384 semantic, SD-VAE `(x−recon)·100/7` residual → ResNet-50 stem, coefficient-fusion `Linear(1664,1)`, Beta feature-interp). Gap is **training data** (was trained on ProGAN, not SD-v1.4). |
-| **VIB-Net** | **MATCHES (CLIP)** | Official ships **CLIP ViT-L/14, no FLAVA anywhere** (`base_options.py:32`). AGID's VIB head is identical (fc 768→1024→1024→512, k=256, softplus(−5), reparam, KL→N(0,I)). FLAVA non-convergence was chasing a non-shipped backbone. |
-| **SPAI** | faithful port; recipe gap | Backbone/projectors/SRS/SCV/SCA/head all match the published config. Gap = **input resolution** (official runs native/arbitrary res, `MINIMUM_PATCHES=4`; AGID uses fixed 448→2×2) **+ half the training reals** (81k vs ~180k, no LSUN). |
-| **AIDE** | faithful arch; preprocessing gap | Genuine 30-kernel SRM + dual-ResNet + ConvNeXt-XXL. AGID-class gap = **224 CLIP-norm crop** vs official **native-res ToTensor → DCT-on-native → Resize(256)+ImageNet**, and a **skipped DCT/IDCT level-filter reconstruction**. |
+| **Co-Spy** | **MATCHES** | SynthScope = the official sd-v1.4 detector exactly (SigLIP-384 semantic, SD-VAE `(x−recon)·100/7` residual → ResNet-50 stem, coefficient-fusion `Linear(1664,1)`, Beta feature-interp). Gap is **training data** (was trained on ProGAN, not SD-v1.4). |
+| **VIB-Net** | **MATCHES (CLIP)** | Official ships **CLIP ViT-L/14, no FLAVA anywhere** (`base_options.py:32`). SynthScope's VIB head is identical (fc 768→1024→1024→512, k=256, softplus(−5), reparam, KL→N(0,I)). FLAVA non-convergence was chasing a non-shipped backbone. |
+| **SPAI** | faithful port; recipe gap | Backbone/projectors/SRS/SCV/SCA/head all match the published config. Gap = **input resolution** (official runs native/arbitrary res, `MINIMUM_PATCHES=4`; SynthScope uses fixed 448→2×2) **+ half the training reals** (81k vs ~180k, no LSUN). |
+| **AIDE** | faithful arch; preprocessing gap | Genuine 30-kernel SRM + dual-ResNet + ConvNeXt-XXL. SynthScope-class gap = **224 CLIP-norm crop** vs official **native-res ToTensor → DCT-on-native → Resize(256)+ImageNet**, and a **skipped DCT/IDCT level-filter reconstruction**. |
 
 **No model needs a fundamentally different architecture.** Every remaining gap is data / resolution /
 preprocessing / training recipe — exactly the levers the user suspected.
@@ -165,7 +165,7 @@ we already fixed → 96.49).
 
 ---
 
-## Part 4 — Gap-closing (AGID-trained → official): hypotheses under test
+## Part 4 — Gap-closing (SynthScope-trained → official): hypotheses under test
 
 | Model | Gap (mAP) | Hypothesis (from audits) | Action | Status |
 |---|---|---|---|---|
@@ -179,10 +179,10 @@ we already fixed → 96.49).
 
 ---
 
-## Part 5 — Results (AGID checkpoint vs official, with causes)
+## Part 5 — Results (SynthScope checkpoint vs official, with causes)
 
-### The AGID-vs-official gap is concentrated in the cross-generator (non-SD) columns
-Per-generator AP, AGID-trained checkpoint vs official, on GenImage-8 (both on identical data):
+### The SynthScope-vs-official gap is concentrated in the cross-generator (non-SD) columns
+Per-generator AP, SynthScope-trained checkpoint vs official, on GenImage-8 (both on identical data):
 
 | Gen | AIDE A/O | SPAI A/O | PGC A/O | Co-Spy A/O | note |
 |---|---|---|---|---|---|
@@ -195,7 +195,7 @@ Per-generator AP, AGID-trained checkpoint vs official, on GenImage-8 (both on id
 | **adm** | **58.6/94.3** | 78.7/80.9 | **89.7/100** | 77.7/79.3 | non-SD diffusion |
 | **vqdm** | **80.4/95.7** | 90.6/91.2 | **94.6/100** | 94.1/90.3 | non-SD diffusion |
 
-**On in-domain / SD-family / GAN generators, AGID matches or beats official.** The deficit lives in
+**On in-domain / SD-family / GAN generators, SynthScope matches or beats official.** The deficit lives in
 **adm and vqdm** (the non-Stable-Diffusion generators), confirmed to be **cross-generator generalization,
 not corrupt eval data** (the adm/vqdm images are clean: 0 blank, correct resolutions). The official
 checkpoints generalize better there because of training-recipe/preprocessing fidelity (e.g. AIDE's DCT
@@ -203,7 +203,7 @@ reconstruction, PGC's ~100-epoch schedule), not architecture.
 
 ### Co-Spy — the flickr data-fix works
 - **Shipped `co_spy.pth` on the 22 flickr subsets: chance ~44 → 76.99 mAP** after replacing the corrupt
-  reals. The flickr collapse was a pure data-corruption artifact; fixing it lifts the AGID full-110
+  reals. The flickr collapse was a pure data-corruption artifact; fixing it lifts the SynthScope full-110
   CoSpyBench from 72.81 toward ~79, and (by the same recovery) the official full-110 from 86.65 toward the
   ~95 the clean sources already showed.
 - **Co-Spy retrain on the correct SD-v1.4 data CLOSES most of the gap: GenImage-8 79.10 → 85.54 mAP**

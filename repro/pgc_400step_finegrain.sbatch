@@ -9,12 +9,12 @@
 #SBATCH --gres=gpu:1 --cpus-per-task=12 --mem=64G --time=08:00:00
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_400step_%j.out
 set -u
-AGID=/ivi/zfs/s0/original_homes/ssalehi/AGID
+SynthScope=/ivi/zfs/s0/original_homes/ssalehi/AGID
 SHARED=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
 DEST=$AGID/checkpoints_retrain/pgc_400step; mkdir -p "$DEST"
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 
 DATA=/ssdstore/ssalehi/AGID/CNNDetection
@@ -41,7 +41,7 @@ archiver() { local ck="$SCR/ckpts/pgc_train_progan"; while true; do sleep 120; [
 archiver & ARCH=$!
 
 # their train.py VERBATIM (README 3.2 args), eval/save every 100 micro-steps; niter=100 keeps their LR schedule
-$CONDA run --no-capture-output -n AGID python train.py \
+$CONDA run --no-capture-output -n SynthScope python train.py \
   --name pgc_train_progan --checkpoints_dir "$SCR/ckpts" --devices 0 \
   --batch_size 32 --dino_variant dinov2-large --dino_pretrained_root "$SHARED/pretrained_dino" \
   --lora_rank 8 --lora_alpha 1.0 --lora_dropout 0.1 \

@@ -1,8 +1,8 @@
 """Standalone, faithful eval of the OFFICIAL UnivFD / CLIPDetection detector (Ojha et al., CVPR'23).
 
-This bypasses the AGID `clip` class (which did not load the official linear head faithfully —
+This bypasses the SynthScope `clip` class (which did not load the official linear head faithfully —
 in-domain ProGAN came out random, fake_acc=0) and vendors the official pipeline end to end so the
-official-weights numbers can sit side by side with the AGID re-implementation in the same
+official-weights numbers can sit side by side with the SynthScope re-implementation in the same
 ``repro/bench_results`` / ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 Official model (github.com/WisconsinAIVision/UniversalFakeDetect, the "LC" linear-classifier variant):
@@ -297,7 +297,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (BENCH_RESULTS_DIR / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

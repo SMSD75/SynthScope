@@ -15,7 +15,7 @@ export OMP_NUM_THREADS=1
 # mismatch that collapses cross-generator transfer. Official optimizer is plain Adam (no
 # weight decay), 10 epochs -- matched below. The video benchmark must be present under
 # DatasetConfig.root_dir; this is a template (data download is out of scope).
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
     trainer@TrainerConfig=video/restrav \
     model@ModelConfig=video/restrav \
     dataset@DatasetConfig=video/vidprom \
@@ -30,4 +30,4 @@ export OMP_NUM_THREADS=1
     metrics=[real_accuracy,fake_accuracy,AP,AUC] \
     logger.name=restrav \
     logger.mode=online \
-    logger.tags=[AGID,ReStraV,vidprom]
+    logger.tags=[SynthScope,ReStraV,vidprom]

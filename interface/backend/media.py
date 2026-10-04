@@ -1,6 +1,6 @@
 """Image and video decoding helpers.
 
-Reuses the AGID repo's own decoders so the interface sees pixels exactly the way the
+Reuses the SynthScope repo's own decoders so the interface sees pixels exactly the way the
 training/eval pipeline does:
   * ``dataset._decode_rgb``         -> robust still-image decode (torchvision, PIL fallback)
   * ``dataset.sample_video_frames`` -> evenly-sampled clip [T,3,size,size] float in [0,1]

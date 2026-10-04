@@ -7,20 +7,22 @@ Perception Encoder Core L/14 (336 px) visual tower with Q/V LoRA, a "source-resp
     features = PECore(images)                       # mean of the 576 patch tokens, [B, 1024]
     logits   = head((features - mu) @ W)            # [B, 2]; P(fake) = softmax(logits)[:, 1]
 
-``AGIDCuReModel`` keeps the official module/key names (``backbone.*``, ``mu``, ``W``, ``head.*``) so
+``SynthScopeCuReModel`` keeps the official module/key names (``backbone.*``, ``mu``, ``W``, ``head.*``) so
 the released 25 MB adapter (``cure_adapter.pt``) loads key-for-key as ``cure.pth``. The frozen base
 weights (``PE-Core-L14-336.pt``, Apache-2.0) are fetched from the Hugging Face Hub on first use (or
-from ``ModelConfig.base_checkpoint`` / ``$AGID_PE_CORE_CKPT``), exactly as the official code does.
+from ``ModelConfig.base_checkpoint`` / ``$SYNTHSCOPE_PE_CORE_CKPT``), exactly as the official code does.
 
 Input contract: ``forward`` takes the tensor produced by ``CuReTransform`` (``[B, 3, 336, 336]``,
 mean=std=0.5 normalized, after the official PNG->JPEG96 / 390-crop / JPEG70 pipeline).
 
 Training: the paper's two-stage mixing-ratio-regression recipe is NOT in the official release, so
 ``compute_loss`` is plain cross-entropy on the 2-way head (LoRA + subspace + head trainable). It
-exists to satisfy AGID's trainer interface; it does not reproduce the paper's training.
+exists to satisfy SynthScope's trainer interface; it does not reproduce the paper's training.
 """
 import os
 from pathlib import Path
+
+import _synthscope_env  # noqa: F401  (maps legacy AGID_* variables to SYNTHSCOPE_*)
 
 import torch
 import torch.nn as nn
@@ -37,8 +39,8 @@ _VISUAL_PREFIX = "visual."
 
 
 def resolve_base_checkpoint(path=None, repo_id: str = BASE_REPO_ID, filename: str = BASE_FILENAME) -> Path:
-    """Local path to the frozen PE Core checkpoint: explicit path > $AGID_PE_CORE_CKPT > HF Hub."""
-    path = path or os.environ.get("AGID_PE_CORE_CKPT")
+    """Local path to the frozen PE Core checkpoint: explicit path > $SYNTHSCOPE_PE_CORE_CKPT > HF Hub."""
+    path = path or os.environ.get("SYNTHSCOPE_PE_CORE_CKPT")
     if path:
         path = Path(path)
         if not path.is_file():
@@ -53,7 +55,7 @@ def load_base_visual_state(path: Path) -> dict:
     return {"backbone." + k[len(_VISUAL_PREFIX):]: v for k, v in state.items() if k.startswith(_VISUAL_PREFIX)}
 
 
-class AGIDCuReModel(nn.Module):
+class SynthScopeCuReModel(nn.Module):
     """Frozen PE Core backbone + Q/V LoRA + source-response subspace + linear head."""
 
     def __init__(self, config: DictConfig):

@@ -4,7 +4,7 @@
     synthscope detect FILE --model fat_former    # score an image or video (auto-downloads weights)
     synthscope detect FILE -m d3 --json          # machine-readable output
     synthscope pull --model clip                 # fetch a checkpoint from the model zoo
-    synthscope push --repo USER/agid-checkpoints # (maintainer) publish checkpoints to the Hub
+    synthscope push --repo USER/synthscope-checkpoints # (maintainer) publish checkpoints to the Hub
 """
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ def _cmd_list(args: argparse.Namespace) -> int:
         mark = "  ok " if m["available"] else "  -- "
         print(f"{m['key'].ljust(width)}  {mark}  {m['modality']:<8}  {m['name']} ({m['paper']})")
     if not args.json:
-        print("\n'--' = weights not found under $AGID_CKPT_DIR (training-free models are always available).")
+        print("\n'--' = weights not found under $SYNTHSCOPE_CKPT_DIR (training-free models are always available).")
     return 0
 
 
@@ -59,7 +59,7 @@ def _cmd_detect(args: argparse.Namespace) -> int:
                auto_download=not args.no_download, repo=args.repo)
     if not det.available:
         print(
-            f"error: no weights for '{args.model}'. Place its checkpoint under $AGID_CKPT_DIR "
+            f"error: no weights for '{args.model}'. Place its checkpoint under $SYNTHSCOPE_CKPT_DIR "
             f"or pass --checkpoint PATH (training-free models need none).",
             file=sys.stderr,
         )
@@ -96,11 +96,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     pp = sub.add_parser("pull", help="download a detector's checkpoint from the model zoo")
     pp.add_argument("-m", "--model", required=True, help="detector key")
-    pp.add_argument("--repo", default=None, help="Hub repo (default: $AGID_HUB_REPO)")
+    pp.add_argument("--repo", default=None, help="Hub repo (default: $SYNTHSCOPE_HUB_REPO)")
     pp.set_defaults(func=_cmd_pull)
 
     pu = sub.add_parser("push", help="(maintainer) publish checkpoints to the Hub model zoo")
-    pu.add_argument("--repo", default=None, help="target Hub repo id (default: $AGID_HUB_REPO)")
+    pu.add_argument("--repo", default=None, help="target Hub repo id (default: $SYNTHSCOPE_HUB_REPO)")
     pu.add_argument("--models", default=None, help="comma-separated keys (default: all eligible)")
     pu.add_argument("--include-official", action="store_true",
                     help="also upload official-weights checkpoints (verify their license first!)")

@@ -1938,7 +1938,7 @@ class VideoFolderDatasetModule:
 
 class AIGIDatasetModule:
     def __init__(self, config):
-        self.delegate = AGIDModuleDict[config.DatasetConfig.name](config)
+        self.delegate = SynthScopeModuleDict[config.DatasetConfig.name](config)
 
     def train_dataloader(self):
         return self.delegate.train_dataloader()
@@ -2472,7 +2472,7 @@ class ComGenVidDatasetModule(_TestOnlyVideoModule):
     DATASET_CLASS = ComGenVidDataset
 
 
-AGIDModuleDict = {
+SynthScopeModuleDict = {
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
     "cospy": CoSpyDatasetModule,
@@ -2504,7 +2504,7 @@ AGIDModuleDict = {
 
 if __name__ == "__main__":
     config = compose_config()
-    dataset_module = AGIDModuleDict[config.DatasetConfig.name](config)
+    dataset_module = SynthScopeModuleDict[config.DatasetConfig.name](config)
     train_dataloader = dataset_module.train_dataloader()
     val_dataloader = dataset_module.val_dataloader()
     test_dataloader = dataset_module.test_dataloader()

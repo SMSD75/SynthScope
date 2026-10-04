@@ -1,7 +1,7 @@
 """Model zoo: publish SynthScope checkpoints to the Hugging Face Hub and auto-download them.
 
 ``synthscope.load(...)`` transparently pulls a detector's weights from the Hub when they are not
-already present under ``$AGID_CKPT_DIR``. Maintainers publish with ``synthscope push``.
+already present under ``$SYNTHSCOPE_CKPT_DIR``. Maintainers publish with ``synthscope push``.
 
 License safety (see LICENSES.md): by default ``push`` uploads only **SynthScope-trained** checkpoints,
 which are this project's to redistribute. Checkpoints derived from authors' **official released
@@ -16,8 +16,8 @@ from pathlib import Path
 from interface.backend import config as _config
 from interface.backend.registry import list_specs
 
-# Where the public zoo lives by default; override with $AGID_HUB_REPO.
-DEFAULT_REPO = os.environ.get("AGID_HUB_REPO", "SMSD75/agid-checkpoints")
+# Where the public zoo lives by default; override with $SYNTHSCOPE_HUB_REPO.
+DEFAULT_REPO = os.environ.get("SYNTHSCOPE_HUB_REPO", "SMSD75/synthscope-checkpoints")
 
 # Small SynthScope-produced auxiliary files (calibration stats) that some detectors read from the
 # checkpoint dir. Safe to redistribute (produced by this project).
@@ -42,7 +42,7 @@ def repo_filename(key: str) -> str:
 # Download (used by the public API)
 # ---------------------------------------------------------------------------
 def download(key: str, repo_id: str | None = None, token: str | None = None) -> Path:
-    """Fetch ``<key>.pth`` from the Hub into ``$AGID_CKPT_DIR`` and return its local path."""
+    """Fetch ``<key>.pth`` from the Hub into ``$SYNTHSCOPE_CKPT_DIR`` and return its local path."""
     from huggingface_hub import hf_hub_download
 
     repo_id = repo_id or DEFAULT_REPO
@@ -103,7 +103,7 @@ def _manifest_text(uploaded_keys: list[str], repo_id: str) -> str:
         "- deepfake-detection", "---", "",
         "# SynthScope model zoo", "",
         "Checkpoints for [SynthScope](https://github.com/SMSD75/AGID) detectors. Load them with:", "",
-        "```python", "import synthscope", f'# export AGID_HUB_REPO="{repo_id}" (or pass repo=...)',
+        "```python", "import synthscope", f'# export SYNTHSCOPE_HUB_REPO="{repo_id}" (or pass repo=...)',
         'synthscope.load("clip").predict("image.png")  # auto-downloads from this repo', "```", "",
         "## Contents", "",
         "| Detector | File | Provenance |", "| --- | --- | --- |",
@@ -129,7 +129,7 @@ def push(
     token: str | None = None,
     dry_run: bool = False,
 ) -> dict:
-    """Publish checkpoints to ``repo_id`` (default ``$AGID_HUB_REPO``).
+    """Publish checkpoints to ``repo_id`` (default ``$SYNTHSCOPE_HUB_REPO``).
 
     Returns a summary dict. With ``dry_run=True`` nothing is uploaded — it only reports the
     selection (use this to sanity-check before an unattended run).

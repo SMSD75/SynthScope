@@ -43,7 +43,7 @@ The official repository ships a custom copy of CLIP (`models/clip/`) because the
 | `VisionTransformer.forward(x, return_full=True)` | Expose all patch tokens | We provide a 10-line `_visual_forward(visual, x, return_full)` helper that re-runs stock CLIP's vision forward and exposes the full token sequence. No new weights involved. |
 | `ForgeryAwareAdapterLayer` injected into selected blocks | **Core method change** | We attach an `ForgeryAwareAdapterLayer` to selected `ResidualAttentionBlock`s and rebind their `forward` to include the adapter in the residual path. |
 
-Result: this implementation depends only on the already-installed `clip` package and `pytorch_wavelets`, both of which the AGID repo already requires. No vendored `clip.py` / `model.py` / `simple_tokenizer.py` / BPE file.
+Result: this implementation depends only on the already-installed `clip` package and `pytorch_wavelets`, both of which the SynthScope repo already requires. No vendored `clip.py` / `model.py` / `simple_tokenizer.py` / BPE file.
 
 ## Forgery-Aware Adapter (FAA)
 
@@ -67,7 +67,7 @@ This is implemented verbatim from the FatFormer source.
 
 ## Model details
 
-The AGID model is implemented in `models/image/fat_former/fat_former.py` as `AGIDFatFormerModel`.
+The SynthScope model is implemented in `models/image/fat_former/fat_former.py` as `SynthScopeFatFormerModel`.
 
 | Component | Setting |
 |---|---|
@@ -82,7 +82,7 @@ The AGID model is implemented in `models/image/fat_former/fat_former.py` as `AGI
 
 ## Why this is considered an implementation of the paper
 
-| Paper concept | AGID implementation |
+| Paper concept | SynthScope implementation |
 |---|---|
 | Frozen CLIP visual backbone with adapters | `clip.load(backbone_name)` + parameter freezing that keeps only `forgery_aware_adapter.*` trainable |
 | Forgery-Aware Adapter on selected blocks | `ForgeryAwareAdapterLayer` attached to `num_vit_adapter` evenly spaced visual blocks |
@@ -92,7 +92,7 @@ The AGID model is implemented in `models/image/fat_former/fat_former.py` as `AGI
 | Two-branch real/fake logits | `forward` returns `logits + aug_logits` as two-class scores |
 | Cross-entropy training | `nn.CrossEntropyLoss` with optional `label_smoothing` from `TrainerConfig` |
 
-The implementation is therefore best understood as a **paper-faithful AGID reproduction** of FatFormer's architecture and objective. The only structural difference from the official code is the absence of a vendored CLIP fork — we obtain the same effective network by attaching FAAs to stock CLIP and exposing the patch-token sequence via a small re-implemented `_visual_forward`.
+The implementation is therefore best understood as a **paper-faithful SynthScope reproduction** of FatFormer's architecture and objective. The only structural difference from the official code is the absence of a vendored CLIP fork — we obtain the same effective network by attaching FAAs to stock CLIP and exposing the patch-token sequence via a small re-implemented `_visual_forward`.
 
 ## Training setup
 
@@ -130,9 +130,9 @@ It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `cen
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-Values are `mAP / acc`. **AGID_official** = the authors' released weights run through the AGID class / eval. **AGID_train** = the AGID class trained from scratch by us. For both FatFormer entries we did not train from scratch, so AGID_train is `—`.
+Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us. For both FatFormer entries we did not train from scratch, so SynthScope_train is `—`.
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | — | official |
 | GANs — 8 GANs (2-class ProGAN) | 99.2 / 95.8 | — | — | missing |
@@ -140,18 +140,18 @@ Values are `mAP / acc`. **AGID_official** = the authors' released weights run th
 | UniversalFakeDetect-8 | — | 98.60 / 93.7 | — | official |
 | DiffusionForensics-8 | — | 94.66 / 79.0 | — | official |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 
-The FatFormer model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:
+The FatFormer model is called through the shared `compute_loss(batch)` interface used by the SynthScope trainer:
 
 | Key | Meaning |
 |---|---|
 | `loss` | scalar training objective (cross-entropy on the summed two-class logits) |
-| `outputs` | two-class real/fake logits for AGID metrics |
+| `outputs` | two-class real/fake logits for SynthScope metrics |
 
-For the trainer to instantiate FatFormer, `AGIDFatFormerModel` is registered in `trainer.py` **before** the generic CLIP branch. FatFormer uses a `CLIP:` backbone name, so if the generic CLIP branch came first it would accidentally instantiate `AGIDCLIPModel` instead. (This is the same lesson noted in `models/image/vib_net/README.md`.)
+For the trainer to instantiate FatFormer, `SynthScopeFatFormerModel` is registered in `trainer.py` **before** the generic CLIP branch. FatFormer uses a `CLIP:` backbone name, so if the generic CLIP branch came first it would accidentally instantiate `SynthScopeCLIPModel` instead. (This is the same lesson noted in `models/image/vib_net/README.md`.)
 
 ## Differences from the paper / official code
 
@@ -159,8 +159,8 @@ For the trainer to instantiate FatFormer, `AGIDFatFormerModel` is registered in 
 |---|---|
 | No vendored CLIP fork — FAA is attached to stock CLIP via `forward`-rebinding | The only real architectural change is FAA itself; the other upstream changes are cosmetic or trivially re-derivable, so vendoring CLIP would just duplicate code |
 | `force_fp32` defaults to `true` | Stable training under Accelerate; upstream relies on fp16 on GPU |
-| Single CE loss on the summed logits | Matches AGID's `compute_loss(batch) -> {loss, outputs}` API; the official code also classifies via the two-class output and uses CE |
-| Uses Hydra configs and AGID metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project |
+| Single CE loss on the summed logits | Matches SynthScope's `compute_loss(batch) -> {loss, outputs}` API; the official code also classifies via the two-class output and uses CE |
+| Uses Hydra configs and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project |
 | Pretrained CLIP weights come from the standard `clip` cache (`~/.cache/clip`) | Avoids the hardcoded `pretrained/ViT-L-14.pt` path used by the upstream `clip.py` |
 
 These are integration differences rather than conceptual changes: the detector still uses a frozen CLIP, FAA-injected residual blocks, LGA prompt learning, a text-guided interactor, and the same two-branch real/fake logits.
@@ -185,4 +185,4 @@ CLIP stays frozen. Only FAA, LGA, TGI, and the small classifier-side norms / FFN
 
 ## Summary
 
-FatFormer in AGID is a method-level reproduction of Liu et al.'s CVPR 2024 FatFormer paper. It uses frozen CLIP image features, attaches Forgery-Aware Adapters into selected visual blocks, learns class-conditional prompts with Language-Guided Alignment, and combines two real/fake logit branches via a Text-Guided Interactor. The implementation is adapted to AGID's model, config, trainer, and metrics structure, and is built directly on the standard `clip` package rather than vendoring a custom CLIP fork — so it is not a line-by-line copy of the official repo, but it implements the central architecture and objective that define the paper.
+FatFormer in SynthScope is a method-level reproduction of Liu et al.'s CVPR 2024 FatFormer paper. It uses frozen CLIP image features, attaches Forgery-Aware Adapters into selected visual blocks, learns class-conditional prompts with Language-Guided Alignment, and combines two real/fake logit branches via a Text-Guided Interactor. The implementation is adapted to SynthScope's model, config, trainer, and metrics structure, and is built directly on the standard `clip` package rather than vendoring a custom CLIP fork — so it is not a line-by-line copy of the official repo, but it implements the central architecture and objective that define the paper.

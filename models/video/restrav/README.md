@@ -43,7 +43,7 @@ logits `[B, 2]`.
 
 ## Model details
 
-Implemented in `models/video/restrav/restrav.py` as `AGIDReStraVModel`.
+Implemented in `models/video/restrav/restrav.py` as `SynthScopeReStraVModel`.
 
 | Component | Setting |
 |---|---|
@@ -90,7 +90,7 @@ Physics-IQ**; configs exist for all three under `conf/dataset/`.
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | A) VidProM vs image-based detectors (Table 2) | acc=97.06 / mAP=98.81 | — | — | missing |
 | B) VidProM vs VideoSwin — seen/unseen/future ( | — | — | — | missing |
@@ -99,7 +99,7 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | D) Veo3 zero-shot generalization (Sec 7-D) | acc=83.2 / F1=85.1 / AUROC=86.9 | — | — | missing |
 | E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E, | Pika=97.5 / Runway=94.9 / Sora=99.0 | — | — | missing |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 
@@ -109,9 +109,9 @@ labels, folder_ids)` and `frames` of shape `[B, T, 3, H, W]`:
 | Key | Meaning |
 |---|---|
 | `loss` | `CrossEntropyLoss(logits, labels)` (with optional label smoothing) |
-| `outputs` | two-class real/fake logits `[B, 2]` for AGID metrics |
+| `outputs` | two-class real/fake logits `[B, 2]` for SynthScope metrics |
 
-`AGIDReStraVModel` is registered in `trainer.py` under `model_type == "restrav"`. The AGID video
+`SynthScopeReStraVModel` is registered in `trainer.py` under `model_type == "restrav"`. The SynthScope video
 dataset (`VideoFolderDataset`) decodes `num_frames = 24` frames per clip at `224×224` in `[0, 1]`,
 sampled evenly across a 2 s window (`fps: null`).
 
@@ -120,10 +120,10 @@ sampled evenly across a 2 s window (`fps: null`).
 | Difference | Reason |
 |---|---|
 | Per-frame embedding dimension is **not hardcoded to 75648** | The paper states 384 (CLS) + 196 patch tokens × 384 = 75648, which assumes a 196-token patch grid. DINOv2 ViT-S/14 has patch size 14, so a `224×224` input yields a `16×16 = 256` patch grid → embedding `384 + 256·384 = 98688`. The trajectory geometry (distance, curvature) is **dimension-invariant**, so we concatenate CLS + *all* patch tokens dynamically and the method is unchanged. (Resizing to `196×196` would reproduce the exact 75648 if needed.) |
-| Classifier is the **MLP** only | The paper benchmarks several off-the-shelf classifiers (LR, GNB, RF, GB, SVM, MLP) and reports the MLP as best (AUROC ≈ 98.6%); AGID implements the MLP, trained end-to-end with the AGID trainer. |
+| Classifier is the **MLP** only | The paper benchmarks several off-the-shelf classifiers (LR, GNB, RF, GB, SVM, MLP) and reports the MLP as best (AUROC ≈ 98.6%); SynthScope implements the MLP, trained end-to-end with the SynthScope trainer. |
 | Variance uses the population estimator (`1/N`) | Matches the paper's `σ² = 1/(T-1) Σ (·)²` over the `T-1` distance / `T-2` curvature values (sum divided by the number of terms). |
-| Frames decoded with **decord**, 24 frames over 2 s, resized `224` | Matches the paper's `T = 24`, 2 s window, `224×224`, `[0, 1]` preprocessing; AGID's generic loader handles decoding. |
-| Metrics via AGID's `AIGIMetrics` | Keeps evaluation/logging consistent with the rest of the project. |
+| Frames decoded with **decord**, 24 frames over 2 s, resized `224` | Matches the paper's `T = 24`, 2 s window, `224×224`, `[0, 1]` preprocessing; SynthScope's generic loader handles decoding. |
+| Metrics via SynthScope's `AIGIMetrics` | Keeps evaluation/logging consistent with the rest of the project. |
 
 These are integration/representation-bookkeeping differences, not conceptual changes: the detector
 still computes DINOv2 trajectory distance + curvature, aggregates the same 21-d feature, and trains
@@ -131,7 +131,7 @@ the same small MLP.
 
 ## Summary
 
-ReStraV in AGID is a method-level reproduction of Internò et al.'s perceptual-straightening video
+ReStraV in SynthScope is a method-level reproduction of Internò et al.'s perceptual-straightening video
 detector. A frozen DINOv2 ViT-S/14 turns each frame into a CLS-⊕-patch embedding; the sequence of
 embeddings forms a trajectory whose **stepwise distance** and **curvature** are computed per step;
 21 aggregated geometry statistics feed a small `64 → 32` MLP that is trained to separate natural

@@ -4,7 +4,7 @@ from the local ForenSynths/CNNDetection test set, through the SAME engine the we
 Reports accuracy@0.5, real/fake accuracy, AP and AUC so the checkpoint's quality is a real,
 reproducible number (not a training-log artifact).
 
-  conda run -n AGID python interface/scripts/verify_model.py <key> [--n 200] [--gens progan,biggan]
+  conda run -n SynthScope python interface/scripts/verify_model.py <key> [--n 200] [--gens progan,biggan]
 """
 import argparse
 import glob

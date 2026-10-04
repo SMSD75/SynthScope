@@ -1,6 +1,6 @@
-"""Eval an AGID-TRAINED AIDE checkpoint (the Phase-2 from-scratch retrain) on GenImage/ForenSynths.
+"""Eval an SynthScope-TRAINED AIDE checkpoint (the Phase-2 from-scratch retrain) on GenImage/ForenSynths.
 
-The retrained checkpoint is already an AGIDAIDEModel state_dict (keys 'net.*'), so it loads directly
+The retrained checkpoint is already an SynthScopeAIDEModel state_dict (keys 'net.*'), so it loads directly
 (NOT through the registry's remap_aide, which adds a net. prefix for the official no-prefix ckpts).
 Uses the uncapped native-res 5-view transform + bench_eval's discover()/metrics()."""
 import argparse, datetime, json, sys

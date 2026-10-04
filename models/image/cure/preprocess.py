@@ -1,5 +1,5 @@
 """CuRe's deterministic eval preprocessing (official ``cure/preprocess.py``), reimplemented with
-cv2 + PIL so AGID needs no ``albumentations`` dependency.
+cv2 + PIL so SynthScope needs no ``albumentations`` dependency.
 
 Official pipeline (albumentations 2.0.8), per image:
   1. decode -> RGB; if the SOURCE FILE is a PNG, re-encode as JPEG q96 and decode again
@@ -11,7 +11,7 @@ Official pipeline (albumentations 2.0.8), per image:
   6. Normalize(mean=std=0.5)   -> (x - 127.5) / 127.5, float32, CHW
 
 Step 1 depends on the source file's format, which a PIL image loaded + ``convert("RGB")`` has lost.
-Loaders therefore record it in ``img.info["agid_src_format"]`` (see ``SRC_FORMAT_KEY``); without the
+Loaders therefore record it in ``img.info["synthscope_src_format"]`` (see ``SRC_FORMAT_KEY``); without the
 hint the image is treated as non-PNG. Equivalence with the official albumentations pipeline is
 checked by ``repro/cure_preproc_equiv.py``: identical up to 1 float32 ulp (max |diff| 5.96e-8, from
 the normalize arithmetic) on PNG/JPEG images from 200 px to 4256 px, square and non-square.
@@ -27,7 +27,7 @@ INPUT_SIZE = 336
 RESIZE_SIZE = 390
 PNG_REENCODE_QUALITY = 96
 EVAL_JPEG_QUALITY = 70
-SRC_FORMAT_KEY = "agid_src_format"
+SRC_FORMAT_KEY = "synthscope_src_format"
 
 
 def _cubic_resize(arr: np.ndarray, height: int, width: int) -> np.ndarray:

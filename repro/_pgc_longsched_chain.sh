@@ -8,9 +8,9 @@ echo "=== full-data eval done; starting long-schedule continuation (30 epochs, 2
 PGC_REGIME=progan PGC_N=12000 PGC_EPOCHS=30 PGC_BS=128 \
   PGC_INIT=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_full/model.pth \
   PGC_OUT=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_long/model.pth \
-  CUDA_VISIBLE_DEVICES=4 $CONDA run --no-capture-output -n AGID python repro/train_pgc_fast.py 2>&1 | grep -aE "\[init\]|\[data\]|\[epoch|\[done\]"
+  CUDA_VISIBLE_DEVICES=4 $CONDA run --no-capture-output -n SynthScope python repro/train_pgc_fast.py 2>&1 | grep -aE "\[init\]|\[data\]|\[epoch|\[done\]"
 echo "=== continuation done; ForenSynths AUROC eval ==="
-CUDA_VISIBLE_DEVICES=4 $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py \
+CUDA_VISIBLE_DEVICES=4 $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
   --model pgc --benchmark forensynths --data /hddstore/ssalehi/AGID/CNNDetection/test \
   --ckpt /ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/pgc_progan_long/model.pth \
   --tag pgc_longsched_forensynths 2>&1 | tail -2

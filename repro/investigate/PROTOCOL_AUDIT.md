@@ -1,4 +1,4 @@
-# Protocol & Official-Weights Fidelity Audit — AGID detector reproductions
+# Protocol & Official-Weights Fidelity Audit — SynthScope detector reproductions
 
 Date: 2026-06-07. Auditor: headless agent on ivi-cn023 (CPU/analysis only, no GPU).
 Repo: `/ivi/zfs/s0/original_homes/ssalehi/AGID`.
@@ -43,7 +43,7 @@ The transform (`official_repos/NPR/data/datasets.py:34-50`):
 **Answer to the critical question:** for the **ForenSynths/CNNDetection test set the official recipe RESIZES** (square 256×256), it does NOT use native-resolution. Native-res (`no_resize=True`) is the recipe for the **GANGen** Table-2 set only. So the prompt's hypothesis ("native-res is the correct ForenSynths recipe") is **inverted** for ForenSynths. The README adds a *separate* AIGCDetectBenchmark recipe (README "Detection Results" section) that DOES use `no_resize=no_crop=True, batch_size=1` plus an odd-size cropping patch in `networks/resnet.py:163` — but that is the 17-generator AIGCDetectBenchmark, not ForenSynths.
 
 ### Our run already uses the official preprocessing
-`npr_official_forensynths.json` was produced by the **AGID harness** (`ckpt: registry-default`, `agid_version: 0.1.0`), not the vendored official script. The NPR registry spec is `interface/backend/registry.py:242-246`:
+`npr_official_forensynths.json` was produced by the **SynthScope harness** (`ckpt: registry-default`, `synthscope_version: 0.1.0`), not the vendored official script. The NPR registry spec is `interface/backend/registry.py:242-246`:
 ```
 transform = tf_square_resize(256, None, IMAGENET_MEAN, IMAGENET_STD)   # Resize((256,256)) + ToTensor + ImageNet-norm, NO crop
 ```
@@ -125,7 +125,7 @@ ProGAN 100.0/100.0 · StyleGAN 98.51/98.5 · BigGAN 88.24/88.2 · CycleGAN 96.83
 - our FS-13 mAP = **91.15** vs official **91.16** — exact (<0.01).
 - our FS-8 mAP = **92.67** vs official 92.66.
 
-> NOTE: `repro/RESULTS_SUMMARY.md:21` lists paper "~96–98" for CNNDetection. **That is wrong for this variant/protocol** — no 96–98 figure exists for Blur+JPEG(0.5) AP(224) on ForenSynths. The actual official paper number is 91.16 (FS-13) / 92.66 (FS-8), which we reproduce exactly. The "~96–98" likely conflated the No-crop AP column (where some generators hit 99–100) or a different detector. **Recommend correcting RESULTS_SUMMARY to "Paper 91.16 (Blur+JPEG0.5, AP224), AGID 91.15 — exact".**
+> NOTE: `repro/RESULTS_SUMMARY.md:21` lists paper "~96–98" for CNNDetection. **That is wrong for this variant/protocol** — no 96–98 figure exists for Blur+JPEG(0.5) AP(224) on ForenSynths. The actual official paper number is 91.16 (FS-13) / 92.66 (FS-8), which we reproduce exactly. The "~96–98" likely conflated the No-crop AP column (where some generators hit 99–100) or a different detector. **Recommend correcting RESULTS_SUMMARY to "Paper 91.16 (Blur+JPEG0.5, AP224), SynthScope 91.15 — exact".**
 
 **VERDICT: REPRODUCED (exact).**
 
@@ -135,7 +135,7 @@ ProGAN 100.0/100.0 · StyleGAN 98.51/98.5 · BigGAN 88.24/88.2 · CycleGAN 96.83
 
 **Official repo:** `/hddstore/ssalehi/AGID/official_repos/FatFormer`.
 
-- **Adapter count:** `main.py:31` → `--num_vit_adapter` default = **8** (not 3). AGID `conf/model/image/fat_former.yaml:7` = `num_vit_adapter: 8`. ✅ correct. (24 visual layers / 8 = adapter every 3rd block; the "3" in the prompt is the block *stride*, not the adapter count.)
+- **Adapter count:** `main.py:31` → `--num_vit_adapter` default = **8** (not 3). SynthScope `conf/model/image/fat_former.yaml:7` = `num_vit_adapter: 8`. ✅ correct. (24 visual layers / 8 = adapter every 3rd block; the "3" in the prompt is the block *stride*, not the adapter count.)
 - **Paper ForenSynths-8 AP** (README "Ours" row, AP = 2nd number per `Acc / AP` pair): ProGAN 100.0, StyleGAN 99.8, StyleGAN2 100.0, BigGAN 100.0, CycleGAN 100.0, StarGAN 100.0, GauGAN 100.0, Deepfake 98.0 → **mean 99.72**.
 - Our run `fatformer_official_forensynths.json` = **99.70 mAP** (per-gen AP within 0.25 of paper each).
 

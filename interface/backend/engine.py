@@ -1,4 +1,4 @@
-"""Inference engine: build AGID models from config, load checkpoints, and predict.
+"""Inference engine: build SynthScope models from config, load checkpoints, and predict.
 
 Models are built lazily on first use (backbones are large and slow to download/instantiate)
 and kept in a small LRU so a shared GPU is not exhausted. All forward passes happen under
@@ -71,62 +71,62 @@ def _geometric_base(spec, pil: Image.Image) -> Image.Image:
 
 
 # ---------------------------------------------------------------------------
-# Model construction (mirrors trainer.AGIDModelTrainer._build_model dispatch, with lazy
+# Model construction (mirrors trainer.SynthScopeModelTrainer._build_model dispatch, with lazy
 # imports so unused heavy dependencies are never loaded).
 # ---------------------------------------------------------------------------
 def _build_model(cfg):
     model_type = cfg.ModelConfig.get("model_type", "dino").lower()
     if model_type == "safe":
-        from models.image.safe.safe import AGIDSAFEModel
-        return AGIDSAFEModel(cfg)
+        from models.image.safe.safe import SynthScopeSAFEModel
+        return SynthScopeSAFEModel(cfg)
     if model_type == "fat_former":
-        from models.image.fat_former.fat_former import AGIDFatFormerModel
-        return AGIDFatFormerModel(cfg)
+        from models.image.fat_former.fat_former import SynthScopeFatFormerModel
+        return SynthScopeFatFormerModel(cfg)
     if model_type == "co_spy":
-        from models.image.co_spy.co_spy import AGIDCoSpyModel
-        return AGIDCoSpyModel(cfg)
+        from models.image.co_spy.co_spy import SynthScopeCoSpyModel
+        return SynthScopeCoSpyModel(cfg)
     if model_type == "aide":
-        from models.image.aide.aide import AGIDAIDEModel
-        return AGIDAIDEModel(cfg)
+        from models.image.aide.aide import SynthScopeAIDEModel
+        return SynthScopeAIDEModel(cfg)
     if model_type == "spai":
         from models.image.spai.spai import SPAI
         return SPAI(cfg)
     if model_type == "vib_net":
-        from models.image.vib_net.vib_net import AGIDVIBNetModel
-        return AGIDVIBNetModel(cfg)
+        from models.image.vib_net.vib_net import SynthScopeVIBNetModel
+        return SynthScopeVIBNetModel(cfg)
     if model_type == "npr":
         from models.image.npr.npr import NPR
         return NPR(cfg)
     if model_type == "pgc":
-        from models.image.pgc.pgc import AGIDPGCModel
-        return AGIDPGCModel(cfg)
+        from models.image.pgc.pgc import SynthScopePGCModel
+        return SynthScopePGCModel(cfg)
     if model_type == "cure":
-        from models.image.cure.cure import AGIDCuReModel
-        return AGIDCuReModel(cfg)
+        from models.image.cure.cure import SynthScopeCuReModel
+        return SynthScopeCuReModel(cfg)
     if model_type == "stall":
-        from models.video.stall.stall import AGIDSTALLModel
-        return AGIDSTALLModel(cfg)
+        from models.video.stall.stall import SynthScopeSTALLModel
+        return SynthScopeSTALLModel(cfg)
     if model_type == "d3":
-        from models.video.d3.d3 import AGIDD3Model
-        return AGIDD3Model(cfg)
+        from models.video.d3.d3 import SynthScopeD3Model
+        return SynthScopeD3Model(cfg)
     if model_type == "restrav":
-        from models.video.restrav.restrav import AGIDReStraVModel
-        return AGIDReStraVModel(cfg)
+        from models.video.restrav.restrav import SynthScopeReStraVModel
+        return SynthScopeReStraVModel(cfg)
     if model_type == "cnn":
-        from models.image.cnn_detection.cnn_detection import AGIDCNNModel
-        return AGIDCNNModel(cfg)
+        from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
+        return SynthScopeCNNModel(cfg)
     if model_type == "adapted_dino":
-        from models.image.adapted_dino.adapted_dino import AGIDAdaptedDINOModel
-        return AGIDAdaptedDINOModel(cfg)
+        from models.image.adapted_dino.adapted_dino import SynthScopeAdaptedDINOModel
+        return SynthScopeAdaptedDINOModel(cfg)
     if model_type == "dinov2":
-        from models.image.dino_detection.dino_detection import AGIDDINOModel
-        return AGIDDINOModel(cfg)
+        from models.image.dino_detection.dino_detection import SynthScopeDINOModel
+        return SynthScopeDINOModel(cfg)
     if model_type == "dinov3":
-        from models.image.dino_detection.dino_detection import AGIDDINOv3Model
-        return AGIDDINOv3Model(cfg)
+        from models.image.dino_detection.dino_detection import SynthScopeDINOv3Model
+        return SynthScopeDINOv3Model(cfg)
     if model_type == "clip" or cfg.ModelConfig.backbone_name.startswith("CLIP:"):
-        from models.image.clip_detection.clip_detection import AGIDCLIPModel
-        return AGIDCLIPModel(cfg)
+        from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
+        return SynthScopeCLIPModel(cfg)
     raise ValueError(f"Invalid model_type: {model_type}")
 
 
@@ -166,7 +166,7 @@ class Engine:
     """Lazily builds, caches, and runs the detectors."""
 
     def __init__(self, device: str | None = None):
-        # ``device`` lets a caller (e.g. the ``agid`` Python API) pin a specific device;
+        # ``device`` lets a caller (e.g. the ``synthscope`` Python API) pin a specific device;
         # the web backend constructs it with no argument and auto-detects via config.device().
         self.device = device or config.device()
         self._cache: "OrderedDict[str, torch.nn.Module]" = OrderedDict()

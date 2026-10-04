@@ -17,7 +17,7 @@ class Adapter(nn.Module):
         return x + self.scale * self.up(self.act(self.down(x)))
 
 
-class AGIDAdaptedDINOModel(nn.Module):
+class SynthScopeAdaptedDINOModel(nn.Module):
     def __init__(self, config: DictConfig):
         super().__init__()
         self.backbone = torch.hub.load(

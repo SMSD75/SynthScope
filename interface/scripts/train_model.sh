@@ -1,5 +1,5 @@
 #!/bin/bash
-# Train one AGID detector with checkpoint-saving enabled, into the central checkpoint dir's
+# Train one SynthScope detector with checkpoint-saving enabled, into the central checkpoint dir's
 # staging area. Recipes mirror experiments/image/*.sh; epochs are reduced for turnaround and
 # overridable. After training, run promote_checkpoint.py to publish <key>.pth.
 #
@@ -9,8 +9,10 @@
 # Notes:
 #  * save_policy is forced to "min" (lowest val loss) because the trainer initialises
 #    best_val_loss=+inf, so the repo default save_policy=max never writes a checkpoint.
-#  * Runs in the AGID conda env; logs to $CKPT_DIR/_train/<key>/train.log.
+#  * Runs in the SynthScope conda env; logs to $CKPT_DIR/_train/<key>/train.log.
 set -uo pipefail
+# Old AGID_* variables still work: map each to its SYNTHSCOPE_* name unless that is already set.
+for _v in $(compgen -e | grep '^AGID_' || true); do _n="SYNTHSCOPE_${_v#AGID_}"; [ -n "${!_n:-}" ] || export "$_n=${!_v}"; done
 
 MODEL="${1:?usage: train_model.sh <model_key> <gpus> <port> [epochs]}"
 GPUS="${2:?need GPU list, e.g. 0,1}"
@@ -20,8 +22,8 @@ EPOCHS_OVERRIDE="${4:-}"
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 CONDA="${CONDA_EXE:-/home/ssalehi/miniconda3/bin/conda}"
-CKPT_DIR="${AGID_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
-CACHE="${AGID_CACHE_DIR:-/hddstore/ssalehi/AGID/.cache}"
+CKPT_DIR="${SYNTHSCOPE_CKPT_DIR:-/hddstore/ssalehi/AGID/checkpoints}"
+CACHE="${SYNTHSCOPE_CACHE_DIR:-/hddstore/ssalehi/AGID/.cache}"
 SAVE_DIR="$CKPT_DIR/_train/$MODEL"
 mkdir -p "$SAVE_DIR"
 
@@ -132,13 +134,13 @@ echo "save_path=$SAVE_DIR" | tee -a "$LOG"
 
 # CUDA init can flake on this node's old kernel; retry the pre-check before launching.
 for try in 1 2 3 4 5; do
-  if "$CONDA" run -n AGID python -c "import torch; assert torch.cuda.is_available(); torch.zeros(1,device='cuda')" 2>/dev/null; then
+  if "$CONDA" run -n SynthScope python -c "import torch; assert torch.cuda.is_available(); torch.zeros(1,device='cuda')" 2>/dev/null; then
     break
   fi
   echo "[precheck] CUDA not ready (try $try), retrying..." | tee -a "$LOG"; sleep 5
 done
 
-"$CONDA" run --no-capture-output -n AGID accelerate launch \
+"$CONDA" run --no-capture-output -n SynthScope accelerate launch \
   --config_file accelerate_config.yaml --num_processes "$NPROC" --main_process_port "$PORT" \
   main.py "${OV[@]}" \
   ++TrainerConfig.epochs="$EPOCHS" \

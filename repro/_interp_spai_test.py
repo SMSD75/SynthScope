@@ -1,8 +1,8 @@
-"""Verify the SPAI per-patch spectral interpretability map end-to-end via agid.predict."""
+"""Verify the SPAI per-patch spectral interpretability map end-to-end via synthscope.predict."""
 import sys, os, base64, io
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from PIL import Image
-import agid
+import synthscope
 
 OUT = os.path.join(os.path.dirname(__file__), "interp_smoketest_out"); os.makedirs(OUT, exist_ok=True)
 FAKE = os.path.join(os.path.dirname(__file__), "ideogram_bench", "fake", "000.png")
@@ -14,7 +14,7 @@ try:
     if not torch.cuda.is_available(): dev = "cpu"
 except Exception:
     dev = "cpu"
-det = agid.load("spai", device=dev)
+det = synthscope.load("spai", device=dev)
 ok = True
 for label, p in [("fake", FAKE), ("real", REAL)]:
     if not os.path.exists(p):

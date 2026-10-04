@@ -13,7 +13,7 @@ Official repo: https://github.com/mever-team/spai
 Project page: https://mever-team.github.io/spai/
 Paper: https://openaccess.thecvf.com/content/CVPR2025/papers/Karageorgiou_Any-Resolution_AI-Generated_Image_Detection_by_Spectral_Learning_CVPR_2025_paper.pdf
 
-> **Scope of this implementation.** AGID implements the **fixed-resolution** variant of SPAI (the official `MFViT` path): a single `224 x 224` crop, SRS + Spectral Context Vector + classifier. The any-resolution **Spectral Context Attention** wrapper (`PatchBasedMFViT`) is intentionally **not** included. Everything else matches the paper, and the implementation is verified numerically identical to the official model (see *Equivalence with the official model* below).
+> **Scope of this implementation.** SynthScope implements the **fixed-resolution** variant of SPAI (the official `MFViT` path): a single `224 x 224` crop, SRS + Spectral Context Vector + classifier. The any-resolution **Spectral Context Attention** wrapper (`PatchBasedMFViT`) is intentionally **not** included. Everything else matches the paper, and the implementation is verified numerically identical to the official model (see *Equivalence with the official model* below).
 
 ## Pipeline
 
@@ -24,7 +24,7 @@ Given an input image `x` in `[0, 1]^{3 x 224 x 224}` (no normalization at the da
 3. **Per-block projection**. A separate projection head per block maps each block's tokens `768 -> 1024` (`LayerNorm -> Linear -> GELU -> Linear -> LayerNorm`, dropout `0.5`, no activation on the last layer). Applied identically to all three views.
 4. **Spectral Reconstruction Similarity (SRS)**. For each block, cosine similarity over the 196 tokens is computed for the three view pairs — `(orig, low)`, `(orig, high)`, `(low, high)` — and summarized by its **mean and std** over the tokens. This yields `6 x 12 = 72` scalars `z_srs`.
 5. **Spectral Context Vector (SCV)**. The projected original features are summarized per block by `[mean; std]` over tokens (`B x 12 x 2048`), projected to `B x 12 x 1024`, combined across blocks with a **learnable softmax importance map**, summed over blocks to `B x 1024`, and projected again. This is `z_src`.
-6. **Classification**. `z = [z_srs; z_src]` (dimension `72 + 1024 = 1096`) is fed to a 3-layer MLP (`mlp_ratio = 3`, ReLU + dropout) producing a single real/fake logit. The AGID-side output is `stack([-logit, +logit], dim=1)`.
+6. **Classification**. `z = [z_srs; z_src]` (dimension `72 + 1024 = 1096`) is fed to a 3-layer MLP (`mlp_ratio = 3`, ReLU + dropout) producing a single real/fake logit. The SynthScope-side output is `stack([-logit, +logit], dim=1)`.
 
 The detector uses label `0` for real images and label `1` for generated images.
 
@@ -41,7 +41,7 @@ The remaining logic (projectors, SRS, SCV, classifier) is re-implemented crisply
 
 ## Equivalence with the official model
 
-Sharing the same backbone weights and copying the same head weights into both models, the AGID `SPAI` and the official `MFViT` produce **bit-identical** logits in eval mode:
+Sharing the same backbone weights and copying the same head weights into both models, the SynthScope `SPAI` and the official `MFViT` produce **bit-identical** logits in eval mode:
 
 ```text
 mine     : [0.23217, 0.26906, 0.22517, 0.26105]
@@ -53,7 +53,7 @@ So the fixed-resolution forward — frequency split, backbone, per-block project
 
 ## Model details
 
-The AGID model is implemented in `models/image/spai/spai.py` as `SPAI`.
+The SynthScope model is implemented in `models/image/spai/spai.py` as `SPAI`.
 
 | Component | Setting |
 |---|---|
@@ -66,13 +66,13 @@ The AGID model is implemented in `models/image/spai/spai.py` as `SPAI`.
 | Classifier | MLP `1096 -> 3288 -> 3288 -> 1` (`mlp_ratio = 3`), ReLU + dropout `0.5` |
 | Frequency mask | circular low-pass, radius `mask_radius` (default `16`), input size `224` |
 | Normalization | input expected in `[0, 1]`; ImageNet normalization applied **inside** `forward` to all three views |
-| Output (AGID metrics) | two-class real / fake logits = `stack([-logit, +logit], dim=1)` |
+| Output (SynthScope metrics) | two-class real / fake logits = `stack([-logit, +logit], dim=1)` |
 
 Trainable parameters: the 12 per-block projectors, the spectral-context module, and the classifier head (~42M). The ViT backbone (~102M) stays frozen and runs under `torch.no_grad()`.
 
 ## Why this is considered an implementation of the paper
 
-| Paper concept | AGID implementation |
+| Paper concept | SynthScope implementation |
 |---|---|
 | MFM-pretrained ViT-B/16 backbone | vendored `vision_transformer.VisionTransformer` + `mfm_pretrain_vit_base.pth` |
 | Masking-radius frequency split (`r = 16`) | `filters.generate_circular_mask` + `filters.filter_image_frequencies` |
@@ -115,24 +115,24 @@ It uses the default dataset (`genimage`). **The transform lists end in `to_dtype
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-> **Served checkpoint:** the web app / `agid.load("spai")` now serves the **official SPAI weights remapped into the AGID class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `tf_native_cap(1024)`, `spai.pth → repro/ckpts/spai_official_agid.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
+> **Served checkpoint:** the web app / `synthscope.load("spai")` now serves the **official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `tf_native_cap(1024)`, `spai.pth → repro/ckpts/spai_official_synthscope.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
 
-| Benchmark | Paper | AGID_official (served, native-res) | AGID_train (retrain, superseded) | Status |
+| Benchmark | Paper | SynthScope_official (served, native-res) | SynthScope_train (retrain, superseded) | Status |
 |---|---|---|---|---|
 | SPAI main eval set (13 generators x 5 real sources) | auroc=91.0 | — | — | missing |
-| GenImage-8 (cross-dataset, AGID benchmark) | — | mAP=94.22 / AUROC=94.28 | mAP=88.80 / acc=82.81 | reference |
+| GenImage-8 (cross-dataset, SynthScope benchmark) | — | mAP=94.22 / AUROC=94.28 | mAP=88.80 / acc=82.81 | reference |
 | Synthbuster (9 gen) | — | mAP=96.75 / AUROC=96.97 | — | reference |
 
-The served native-res path **reproduces and beats** the vendored-official number (91.33 mAP on GenImage) and lifts Synthbuster from 55.67 (fixed-448) to 96.75 mAP. Traced to `repro/bench_results/spai_served_{genimage8,synthbuster}.json` (job 186246; limit 300/200 per class per generator). **AGID_official** = authors' released weights run through the AGID class · **AGID_train** = AGID class trained from scratch · reference = no comparable paper number · missing = not yet evaluated.
+The served native-res path **reproduces and beats** the vendored-official number (91.33 mAP on GenImage) and lifts Synthbuster from 55.67 (fixed-448) to 96.75 mAP. Traced to `repro/bench_results/spai_served_{genimage8,synthbuster}.json` (job 186246; limit 300/200 per class per generator). **SynthScope_official** = authors' released weights run through the SynthScope class · **SynthScope_train** = SynthScope class trained from scratch · reference = no comparable paper number · missing = not yet evaluated.
 
 ## Integration notes
 
-The SPAI model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:
+The SPAI model is called through the shared `compute_loss(batch)` interface used by the SynthScope trainer:
 
 | Key | Meaning |
 |---|---|
 | `loss` | scalar training objective (BCE-with-logits on the single logit) |
-| `outputs` | two-class real / fake logits for AGID metrics (`stack([-logit, +logit], dim=1)`) |
+| `outputs` | two-class real / fake logits for SynthScope metrics (`stack([-logit, +logit], dim=1)`) |
 
 `SPAI` is registered in `trainer.py` under `model_type == "spai"`. The MFM checkpoint path is set at the top of `spai.py` (`MFM_CKPT`); update it if the weights live elsewhere.
 
@@ -141,9 +141,9 @@ The SPAI model is called through the shared `compute_loss(batch)` interface used
 | Difference | Reason |
 |---|---|
 | No any-resolution Spectral Context Attention (`PatchBasedMFViT`) | We implement only the fixed-resolution `MFViT` path; a single `224 x 224` crop is used instead of patch-based attention over arbitrary-resolution images. |
-| No multi-view (`AUGMENTED_VIEWS`) training | The upstream training samples several augmented patches per image; AGID trains on one crop per image. |
+| No multi-view (`AUGMENTED_VIEWS`) training | The upstream training samples several augmented patches per image; SynthScope trains on one crop per image. |
 | Only `vision_transformer.py` and `filters.py` are vendored | The rest of the pipeline is re-implemented crisply and verified bit-identical to upstream `MFViT`, so vendoring the full `sid.py` would just duplicate unused code (ONNX/attention export, any-resolution). |
-| Uses Hydra configs, Accelerate, and AGID metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
+| Uses Hydra configs, Accelerate, and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
 
 These are scope/integration differences rather than conceptual changes: the detector still uses the frozen MFM backbone, the same frequency split, the same per-block projection, the same SRS statistics, the same learnable spectral-context aggregation, and the same BCE objective.
 
@@ -163,4 +163,4 @@ A learnable softmax importance map weights the per-block `[mean; std]` statistic
 
 ## Summary
 
-SPAI in AGID is a method-level reproduction of Karageorgiou et al.'s CVPR 2025 paper, restricted to its fixed-resolution variant. A frozen MFM-pretrained ViT-B/16 supplies multi-block patch features for an image and its low/high-frequency components; Spectral Reconstruction Similarity measures their cross-view coherence, a learnable Spectral Context Vector summarizes the per-block statistics, and a small MLP reads the combined representation to produce a real/fake logit. The backbone (`vision_transformer.py`) and frequency split (`filters.py`) are vendored verbatim from the official repo so the MFM checkpoint loads exactly; the rest is re-implemented and verified numerically identical to the official `MFViT`. The any-resolution Spectral Context Attention is deliberately omitted.
+SPAI in SynthScope is a method-level reproduction of Karageorgiou et al.'s CVPR 2025 paper, restricted to its fixed-resolution variant. A frozen MFM-pretrained ViT-B/16 supplies multi-block patch features for an image and its low/high-frequency components; Spectral Reconstruction Similarity measures their cross-view coherence, a learnable Spectral Context Vector summarizes the per-block statistics, and a small MLP reads the combined representation to produce a real/fake logit. The backbone (`vision_transformer.py`) and frequency split (`filters.py`) are vendored verbatim from the official repo so the MFM checkpoint loads exactly; the rest is re-implemented and verified numerically identical to the official `MFViT`. The any-resolution Spectral Context Attention is deliberately omitted.

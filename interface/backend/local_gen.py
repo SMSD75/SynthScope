@@ -1,7 +1,7 @@
 """Isolated runner for heavy OPEN-WEIGHT image generators (FLUX.2 [klein] 4B/9B, FLUX.1 Kontext [dev], Qwen-Image-2.1).
 
 ``generators.py`` launches this file as a SUBPROCESS, one image per call, so that
-  * these models can use a newer ``diffusers`` than the shared AGID env (set ``$AGID_GEN_PYTHONPATH`` to a
+  * these models can use a newer ``diffusers`` than the shared SynthScope env (set ``$SYNTHSCOPE_GEN_PYTHONPATH`` to a
     directory holding diffusers main + huggingface_hub 1.x; see ``interface/README.md``), and
   * every byte of GPU/CPU memory is released after the image, so the web UI's detectors keep their 24 GB.
 
@@ -143,7 +143,7 @@ def main() -> int:
 
     repo, cls_name, kw = MODELS[args.model]
     if not hasattr(diffusers, cls_name):
-        print(f"diffusers {diffusers.__version__} has no {cls_name}; point $AGID_GEN_PYTHONPATH at a newer diffusers",
+        print(f"diffusers {diffusers.__version__} has no {cls_name}; point $SYNTHSCOPE_GEN_PYTHONPATH at a newer diffusers",
               file=sys.stderr)
         return 3
     pipe = LOADERS.get(args.model, load_pipeline_cpu_offload)(repo, cls_name, os.environ.get("HF_TOKEN"))

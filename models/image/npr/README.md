@@ -69,9 +69,9 @@ The paper reports both accuracy and average precision, with the main result show
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-Values are `mAP / acc`. **AGID_official** = the authors' released weights run through the AGID class / eval. **AGID_train** = the AGID class trained from scratch by us. For all NPR entries we did not train from scratch, so AGID_train is `—`.
+Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us. For all NPR entries we did not train from scratch, so SynthScope_train is `—`.
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | Table 1 — ForenSynths / Cross-GAN (8) | 96.1 / 92.5 | 94.22 / 92.3 | — | official |
 | Table 2 — GANGen-Detection (9) | 96.6 / 93.2 | 96.49 / 94.81 | — | official |
@@ -79,11 +79,11 @@ Values are `mAP / acc`. **AGID_official** = the authors' released weights run th
 | Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 96.69 / 93.94 | — | official |
 | Table 5 — Diffusion1kStep | acc 80.1 | 83.47 / 79.13 | — | official |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Model details
 
-The AGID implementation lives in:
+The SynthScope implementation lives in:
 
 ```bash
 models/image/NPR/NPR.py
@@ -91,7 +91,7 @@ models/image/NPR/NPR.py
 
 The current model uses:
 
-| Component | AGID NPR setting |
+| Component | SynthScope NPR setting |
 |---|---|
 | NPR transform | nearest down-sample, nearest up-sample, subtract, scale by `2.0 / 3.0` |
 | Stem | `3x3` convolution, stride `2`, padding `1` |
@@ -102,7 +102,7 @@ The current model uses:
 | Loss | `BCEWithLogitsLoss` |
 | Metric output | two-class logits formed as `[-logit, logit]` |
 
-This keeps the public AGID model interface:
+This keeps the public SynthScope model interface:
 
 ```python
 loss_dict = model.compute_loss(batch)
@@ -112,7 +112,7 @@ outputs = loss_dict["outputs"]
 
 ## Similarity to the official NPR implementation
 
-The AGID implementation now matches the method-defining parts of the official NPR code closely:
+The SynthScope implementation now matches the method-defining parts of the official NPR code closely:
 
 | Area | Similarity |
 |---|---|
@@ -124,16 +124,16 @@ The AGID implementation now matches the method-defining parts of the official NP
 
 ## Integration differences
 
-The implementation is adapted to AGID rather than copied line-for-line from the official repository.
+The implementation is adapted to SynthScope rather than copied line-for-line from the official repository.
 
 | Difference | Why it exists |
 |---|---|
 | Uses `torchvision.models.resnet.Bottleneck` | Reuses the local PyTorch dependency instead of maintaining a separate ResNet copy |
-| Uses AGID's `compute_loss(batch)` interface | Keeps training, validation, metrics, and Accelerate integration consistent with the project |
-| Returns two-class metric logits | AGID metrics expect class logits, so the one binary logit is converted to `[-logit, logit]` |
-| Does not include the official standalone train/test scripts | AGID handles training through its shared trainer and Hydra-style configuration |
+| Uses SynthScope's `compute_loss(batch)` interface | Keeps training, validation, metrics, and Accelerate integration consistent with the project |
+| Returns two-class metric logits | SynthScope metrics expect class logits, so the one binary logit is converted to `[-logit, logit]` |
+| Does not include the official standalone train/test scripts | SynthScope handles training through its shared trainer and Hydra-style configuration |
 
-One practical caveat from the official repo is image size: NPR reconstruction is simplest when spatial dimensions are even. The official testing notes crop odd image dimensions before applying NPR in some settings. AGID transforms should likewise keep inputs at even spatial sizes.
+One practical caveat from the official repo is image size: NPR reconstruction is simplest when spatial dimensions are even. The official testing notes crop odd image dimensions before applying NPR in some settings. SynthScope transforms should likewise keep inputs at even spatial sizes.
 
 ## Core novelties
 
@@ -155,4 +155,4 @@ The official detector uses a compact ResNet-style classifier, making the main co
 
 ## Summary
 
-NPR is a compact detector built around local neighboring-pixel residuals caused by generator up-sampling operations. In AGID, `NPR` implements the nearest-neighbor NPR transform, the official scaling, and a lightweight ResNet-style binary classifier adapted to the shared model API. It is best understood as a method-aligned AGID implementation of Tan et al.'s CVPR 2024 NPR detector, not a byte-for-byte copy of the official repository.
+NPR is a compact detector built around local neighboring-pixel residuals caused by generator up-sampling operations. In SynthScope, `NPR` implements the nearest-neighbor NPR transform, the official scaling, and a lightweight ResNet-style binary classifier adapted to the shared model API. It is best understood as a method-aligned SynthScope implementation of Tan et al.'s CVPR 2024 NPR detector, not a byte-for-byte copy of the official repository.

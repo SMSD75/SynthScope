@@ -9,7 +9,7 @@ threshold defaults to 0.0, which is not a real decision boundary, so every video
 and writes them to ``<CKPT_DIR>/d3_calibration.json``. The engine then reports
 ``sigmoid(sign * (score - threshold) / scale)`` as P(fake).
 
-  conda run -n AGID python interface/scripts/calibrate_d3.py [--n 200]
+  conda run -n SynthScope python interface/scripts/calibrate_d3.py [--n 200]
 """
 import argparse
 import json

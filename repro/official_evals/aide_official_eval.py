@@ -1,16 +1,16 @@
 """Standalone, FAITHFUL eval of the OFFICIAL AIDE detector (Yan et al., ICLR'25).
 
 This vendors the GENUINE official AIDE network + its real multi-view preprocessing so the
-official-weights numbers can sit side by side with the AGID re-implementation in the same
+official-weights numbers can sit side by side with the SynthScope re-implementation in the same
 ``repro/bench_results`` / ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 WHY THE PREVIOUS VERSION WAS WRONG
 ----------------------------------
-The old eval (and the so-called "reference" ``/hddstore/.../repro/aide_eval.py``) ran the AGID
-``AGIDAIDEModel``: a *single* CLIP-normalized 224x224 view whose DCT/SRM preprocessing is done
+The old eval (and the so-called "reference" ``/hddstore/.../repro/aide_eval.py``) ran the SynthScope
+``SynthScopeAIDEModel``: a *single* CLIP-normalized 224x224 view whose DCT/SRM preprocessing is done
 *inside* the model, with a torchvision ResNet-50 trunk and the official ``model_min.fc`` /
 ``model_max.fc`` weights DROPPED. That is an explicitly documented approximation (the file even
-says "not bit-exact"), so its "official" numbers collapsed to the AGID re-impl (64.79 mAP,
+says "not bit-exact"), so its "official" numbers collapsed to the SynthScope re-impl (64.79 mAP,
 real_acc ~chance on adm/biggan/glide).
 
 The REAL official AIDE (https://github.com/shilinyan99/AIDE, ``models/AIDE.py`` + ``data/dct.py``
@@ -71,7 +71,7 @@ from torchvision import transforms
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-# AGID repo (only for the verified-identical SRM kernel list) + caches.
+# SynthScope repo (only for the verified-identical SRM kernel list) + caches.
 REPO = "/ivi/zfs/s0/original_homes/ssalehi/AGID"
 if REPO not in sys.path:
     sys.path.insert(0, REPO)
@@ -315,7 +315,7 @@ class DCT_base_Rec_Module(nn.Module):
 
 # ===========================================================================
 # GENUINE OFFICIAL AIDE: models/AIDE.py (vendored VERBATIM from shilinyan99/AIDE).
-# The SRM kernel list is the AGID one (verified bit-identical to the official).
+# The SRM kernel list is the SynthScope one (verified bit-identical to the official).
 # ===========================================================================
 class HPF(nn.Module):
     def __init__(self):
@@ -612,7 +612,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (BENCH_RESULTS_DIR / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

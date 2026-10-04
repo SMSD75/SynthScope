@@ -1,6 +1,6 @@
 # Detectors vs Ideogram 4.0 — ranked
 
-Dataset: 100 real (sampled from GenImage/CNNDetection reals) + 100 Ideogram-generated fakes (BLIP-caption prompts, 512px, 28 steps; people excluded — Ideogram refuses them). Detectors use the promoted AGID checkpoints + the web UI's preprocessing.
+Dataset: 100 real (sampled from GenImage/CNNDetection reals) + 100 Ideogram-generated fakes (BLIP-caption prompts, 512px, 28 steps; people excluded — Ideogram refuses them). Detectors use the promoted SynthScope checkpoints + the web UI's preprocessing.
 
 | Rank | Detector | AUROC | AP | acc@0.5 | fake detect % | real FP % |
 |---|---|---|---|---|---|---|

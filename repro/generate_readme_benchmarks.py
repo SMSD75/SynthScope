@@ -15,8 +15,8 @@ PATHS = {
     "stall": ("models/video/stall", "STALL"),
 }
 HDR = "## Reproduced benchmark results"
-LEGEND = ("**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights "
-          "loaded into the AGID class match (the AGID-trained number is shown alongside where we trained "
+LEGEND = ("**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights "
+          "loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained "
           "from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · "
           "**missing** = not yet evaluated.")
 
@@ -25,9 +25,9 @@ def section(model):
     out = [HDR, "",
            "All benchmarks the paper reports, with our numbers (verified, traced to "
            "`repro/bench_results/` + `repro/benchmark_specs/`).", "",
-           "| Benchmark | Paper | AGID (trained) | Official wts | Status |", "|---|---|---|---|---|"]
+           "| Benchmark | Paper | SynthScope (trained) | Official wts | Status |", "|---|---|---|---|---|"]
     for r in rows:
-        out.append(f"| {r['benchmark']} | {r['paper']} | {r.get('ours_agid') or '—'} | "
+        out.append(f"| {r['benchmark']} | {r['paper']} | {r.get('ours_synthscope') or '—'} | "
                    f"{r.get('ours_official') or '—'} | {r['status']} |")
     out += ["", LEGEND]
     return "\n".join(out) + "\n"
@@ -51,10 +51,10 @@ agg = ["## Full-benchmark reproduction (all models × all reported benchmarks)",
        "`models/*/<name>/README.md`; raw results in `repro/bench_results/`, specs in "
        "`repro/benchmark_specs/`, matrix in `repro/BENCHMARK_COVERAGE_MATRIX.md`.", "",
        LEGEND, "",
-       "| Model | Benchmark | Paper | AGID (trained) | Official wts | Status |", "|---|---|---|---|---|---|"]
+       "| Model | Benchmark | Paper | SynthScope (trained) | Official wts | Status |", "|---|---|---|---|---|---|"]
 for model, (_d, name) in PATHS.items():
     for r in full.get(model, []):
-        agg.append(f"| {name} | {r['benchmark']} | {r['paper']} | {r.get('ours_agid') or '—'} | "
+        agg.append(f"| {name} | {r['benchmark']} | {r['paper']} | {r.get('ours_synthscope') or '—'} | "
                    f"{r.get('ours_official') or '—'} | {r['status']} |")
 agg_md = "\n".join(agg) + "\n"
 (ROOT / "repro/AGGREGATED_BENCHMARK.md").write_text(agg_md)

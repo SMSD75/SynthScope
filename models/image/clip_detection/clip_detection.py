@@ -3,7 +3,7 @@ from omegaconf import DictConfig
 import clip
 import torch
 
-class AGIDCLIPModel(nn.Module):
+class SynthScopeCLIPModel(nn.Module):
     def __init__(self, config: DictConfig):
         super().__init__()
         backbone_name = config.ModelConfig.backbone_name

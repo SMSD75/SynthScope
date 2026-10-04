@@ -2,7 +2,7 @@
 
 The previous restrav.pth was trained on ImageNet-normalized frames but is *served* raw [0,1]
 (registry video_norm = identity) -- a train/serve mismatch that collapsed it (AUROC ~0.50,
-real_acc ~2%). This retrains the AGID `AGIDReStraVModel` head end-to-end on raw [0,1] frames,
+real_acc ~2%). This retrains the SynthScope `SynthScopeReStraVModel` head end-to-end on raw [0,1] frames,
 so training and serving use the exact same DINOv2 features.
 
 Key fidelity choices:
@@ -14,7 +14,7 @@ Key fidelity choices:
     21->64->32->1, BCEWithLogits, plain Adam lr 1e-3 (no weight decay), 10 epochs, batch 32.
   * Save the FINAL-epoch state_dict (no val-loss checkpoint selection).
 
-Run: conda run -n AGID python interface/scripts/retrain_restrav.py [--n 3000]
+Run: conda run -n SynthScope python interface/scripts/retrain_restrav.py [--n 3000]
 """
 import argparse
 import glob
@@ -82,7 +82,7 @@ def main():
     reals = sorted(glob.glob(TRAIN_ROOT + "/0_real/*.mp4"))
     fakes = sorted(glob.glob(TRAIN_ROOT + "/1_fake/*.mp4"))
     random.Random(0).shuffle(reals); random.Random(1).shuffle(fakes)
-    # AGID label convention: 0 = real, 1 = fake.
+    # SynthScope label convention: 0 = real, 1 = fake.
     items = [(p, 0) for p in reals[:args.n]] + [(p, 1) for p in fakes[:args.n]]
     random.Random(2).shuffle(items)
     print(f"extracting features for {len(items)} videos (raw [0,1], model._encode)...", flush=True)

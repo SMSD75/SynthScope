@@ -9,7 +9,7 @@ import {
 // Which weights back the default inference checkpoint for each detector (shown in the UI).
 const WEIGHTS_LABEL = {
   official: "official weights",
-  agid_trained: "SynthScope-trained",
+  synthscope_trained: "SynthScope-trained",
   training_free: "training-free",
 };
 const wlabel = (m) => WEIGHTS_LABEL[m && m.weights] || "SynthScope-trained";
@@ -35,7 +35,7 @@ function TrendingView() {
       <div className="trend-card" key={i}>
         <div className="trend-head">
           {link ? <a href={link} target="_blank" rel="noreferrer">{e.title}</a> : <b>{e.title}</b>}
-          {e.agid && <span className="wtag wtag-agid_trained">in SynthScope: {e.agid}</span>}
+          {e.synthscope && <span className="wtag wtag-synthscope_trained">in SynthScope: {e.synthscope}</span>}
         </div>
         {venue && <div className="muted" style={{ fontSize: 12 }}>{venue}</div>}
         {e.summary && <div style={{ margin: "4px 0", fontSize: 13 }}>{e.summary}</div>}
@@ -92,12 +92,12 @@ function LeaderboardView() {
           <h2>{g.benchmark} <span className="pill">{g.n_methods} method{g.n_methods > 1 ? "s" : ""}</span></h2>
           <div className="repro-scroll">
             <table className="repro repro-full">
-              <thead><tr><th>Method</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <thead><tr><th>Method</th><th>Paper</th><th>SynthScope (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
               <tbody>
                 {g.rows.map((r, i) => (
                   <tr key={i}>
                     <td><b>{r.method}</b><div className="lead-bn">{r.benchmark}</div></td>
-                    <td>{r.paper}</td><td>{r.agid || "—"}</td><td>{r.official || "—"}</td>
+                    <td>{r.paper}</td><td>{r.synthscope || "—"}</td><td>{r.official || "—"}</td>
                     <td className={"status-" + (r.status || "")}>{r.status}</td>
                   </tr>
                 ))}
@@ -226,7 +226,7 @@ function SotaView({ models }) {
         {imgDetectors.map((m) => (
           <label key={m.key}><input type="checkbox" checked={!!picked[m.key]}
             onChange={(e) => setPicked({ ...picked, [m.key]: e.target.checked })} /> {m.name}{" "}
-            <span className={"wtag wtag-" + (m.weights || "agid_trained")}>{wlabel(m)}</span></label>
+            <span className={"wtag wtag-" + (m.weights || "synthscope_trained")}>{wlabel(m)}</span></label>
         ))}
       </div>
       <button className="primary" disabled={busy} onClick={run}>{busy ? "Generating + scoring…" : "Generate & compare"}</button>
@@ -284,7 +284,7 @@ function ReproTable({ m }) {
     <div className="repro-wrap">
       {rep && (
         <table className="repro"><tbody>
-          <tr><td>Inference weights</td><td><span className={"wtag wtag-" + (m.weights || "agid_trained")}>{wlabel(m)}</span></td></tr>
+          <tr><td>Inference weights</td><td><span className={"wtag wtag-" + (m.weights || "synthscope_trained")}>{wlabel(m)}</span></td></tr>
           <tr><td>Headline</td><td>{rep.benchmark}</td></tr>
           <tr><td>Paper</td><td>{rep.paper}</td></tr>
           <tr><td>Reproduced</td><td className={"match-" + (rep.match || "")}>{rep.ours}</td></tr>
@@ -295,13 +295,13 @@ function ReproTable({ m }) {
           <summary>All {full.length} reported benchmarks — paper vs SynthScope vs official</summary>
           <div className="repro-scroll">
             <table className="repro repro-full">
-              <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <thead><tr><th>Benchmark</th><th>Paper</th><th>SynthScope (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
               <tbody>
                 {full.map((r, i) => (
                   <tr key={i}>
                     <td>{r.benchmark}</td>
                     <td>{r.paper}</td>
-                    <td>{r.ours_agid || "—"}</td>
+                    <td>{r.ours_synthscope || "—"}</td>
                     <td>{r.ours_official || "—"}</td>
                     <td className={"status-" + (r.status || "")}>{r.status}</td>
                   </tr>

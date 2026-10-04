@@ -1,11 +1,11 @@
-# AGID Benchmark & Leaderboard (v1)
+# SynthScope Benchmark & Leaderboard (v1)
 
 A standardized, **versioned** evaluation protocol for AI-generated image & video detection, so that
 methods are comparable under identical data, metrics, and scoring. The leaderboard is generated
 from the submission files in [`submissions/`](submissions/) — see [LEADERBOARD.md](../LEADERBOARD.md).
 
 > **Why:** every detection paper ships its own repo, data format, and metric conventions, which
-> makes cross-method comparison unreliable. AGID fixes the protocol once and evaluates every
+> makes cross-method comparison unreliable. SynthScope fixes the protocol once and evaluates every
 > detector through the same pipeline.
 
 ## Tracks (v1)
@@ -27,14 +27,14 @@ over generators at threshold 0.5.
    generators (not a pooled number), which measures generalization rather than rewarding a few
    large generators.
 3. **Declare provenance** via `evaluation`: `official-weights`, `from-scratch`, `frozen-probe`,
-   `training-free`, or `external` (numbers produced outside AGID).
-4. **Verified numbers trace to a run.** `verified: true` means the result came from a logged AGID
+   `training-free`, or `external` (numbers produced outside SynthScope).
+4. **Verified numbers trace to a run.** `verified: true` means the result came from a logged SynthScope
    evaluation (set `source` to the log/run path). Reference seed entries are transcribed from the
    repo's reproduction table.
 
 ## Data layout
 
-The evaluator expects the AGID common layout — one directory per generator, each split into
+The evaluator expects the SynthScope common layout — one directory per generator, each split into
 `real/` and `fake/`:
 
 ```
@@ -54,7 +54,7 @@ python benchmark/evaluate.py \
   --out benchmark/submissions/fat_former.json
 ```
 
-This loads the detector via the `agid` API, scores every image (batched), computes per-generator +
+This loads the detector via the `synthscope` API, scores every image (batched), computes per-generator +
 mean metrics, and writes a schema-valid submission JSON. Then regenerate the table:
 
 ```bash

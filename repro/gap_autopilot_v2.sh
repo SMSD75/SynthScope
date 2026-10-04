@@ -4,14 +4,14 @@
 # each on its paper-relevant benchmark with --limit (fast). Results -> repro/bench_results/<tag>.json.
 set -uo pipefail
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-export AGID_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
+export SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints
 export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi/.cache/torch
-export AGID_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
+export SYNTHSCOPE_MFM_CKPT=/hddstore/ssalehi/AGID/mfm/mfm_pretrain_vit_base.pth
 export CUDA_VISIBLE_DEVICES=4 OMP_NUM_THREADS=4
 G=/hddstore/ssalehi/AGID/GenImage_full/test_full
 FS=/hddstore/ssalehi/AGID/CNNDetection/test
 CB=/hddstore/ssalehi/AGID/CoSpyBench/test
-EV(){ conda run --no-capture-output -n AGID python benchmark/bench_eval.py "$@" 2>&1 \
+EV(){ conda run --no-capture-output -n SynthScope python benchmark/bench_eval.py "$@" 2>&1 \
       | grep -vE "libpng|Testing:|/375|warn|UserWarning|%\|" | tail -3; }
 RES(){ python3 -c "import json;d=json.load(open('repro/bench_results/$1.json'));print('  >> $1 mAP',d['means']['map'],'acc',d['means']['acc'])" 2>/dev/null; }
 declare -A SEEN

@@ -22,14 +22,14 @@ CK="${CK:-}"
 [ -z "$CK" ] && CK=$(ls -1 "$SV"/model_*.pth 2>/dev/null | sed 's/.*model_\([0-9]*\)\.pth/\1 &/' | sort -n | tail -1 | awk '{print $2}')
 echo "NODE=$(hostname) CK=$CK $(date)"
 [ -n "$CK" ] && [ -f "$CK" ] || { echo "no safe_full_v2 checkpoint yet"; exit 2; }
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 
 run () {  # tag  benchmark  data  [extra...]
   local tag="$1" bench="$2" data="$3"; shift 3
   [ -d "$data" ] || { echo "[skip] $tag: no data $data"; return; }
   echo "===== $tag ($bench) ====="
-  $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model safe --ckpt "$CK" \
+  $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model safe --ckpt "$CK" \
     --benchmark "$bench" --data "$data" --bs 64 --device cuda --tag "$tag" "$@" 2>&1 | grep -aE "RESULT|: acc=" | tail -16
 }
 

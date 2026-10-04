@@ -17,10 +17,10 @@ CONDA=/home/ssalehi/miniconda3/bin/conda
 CK=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/safe_full_v2/model_38.pth
 H=/hddstore/ssalehi/AGID
 echo "NODE=$(hostname) CK=$CK $(date)"
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 full=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/safe_v2_fs8_${SLURM_JOB_ID}.full.log
-$CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model safe --ckpt "$CK" \
+$CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model safe --ckpt "$CK" \
   --benchmark forensynths --data "$H/CNNDetection/test" \
   --select biggan,cyclegan,deepfake,gaugan,progan,stargan,stylegan,stylegan2 \
   --bs 64 --device cuda --tag safe_v2_forensynths8 > "$full" 2>&1

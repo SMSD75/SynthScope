@@ -17,7 +17,7 @@
 #SBATCH --time=6-23:00:00
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/logs/pgc_official_train_%j.out
 set -u
-AGID=/ivi/zfs/s0/original_homes/ssalehi/AGID
+SynthScope=/ivi/zfs/s0/original_homes/ssalehi/AGID
 SHARED=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/pgc_official_eval
 DEST=$AGID/checkpoints_retrain/pgc_official_script        # shared-FS archive of milestone ckpts
 CONDA=/home/ssalehi/miniconda3/bin/conda
@@ -26,7 +26,7 @@ echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 # --- CUDA precheck ---
 ok=0
 for i in 1 2 3 4 5; do
-  $CONDA run --no-capture-output -n AGID python -c \
+  $CONDA run --no-capture-output -n SynthScope python -c \
     "import torch; assert torch.cuda.is_available(); (torch.randn(4,4,device='cuda')@torch.randn(4,4,device='cuda')).sum().item(); print('CUDA OK')" && { ok=1; break; }
   echo "CUDA init failed ($i)"; sleep 5
 done
@@ -90,7 +90,7 @@ run_train() {
   local bs=$1 acc=$2 ees=$3
   echo "[train] OFFICIAL train.py  bs=$bs accum=$acc eval_every=$ees  $(date)"
   cd "$SCR/repo"
-  $CONDA run --no-capture-output -n AGID python train.py \
+  $CONDA run --no-capture-output -n SynthScope python train.py \
     --name pgc_train_progan \
     --checkpoints_dir "$SCR/ckpts" \
     --devices 0 \

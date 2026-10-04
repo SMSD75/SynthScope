@@ -5,7 +5,7 @@ export HF_HOME=/hddstore/ssalehi/AGID/.cache/huggingface
 export TORCH_HOME=/hddstore/ssalehi/AGID/.cache/torch
 export OMP_NUM_THREADS=4
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch \
   --config_file accelerate_config.yaml --num_processes 1 main.py \
   trainer@TrainerConfig=image/pgc \
   model@ModelConfig=image/pgc \

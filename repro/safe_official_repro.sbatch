@@ -23,10 +23,10 @@ done
 [ -n "$DATA" ] || { echo "NO ForenSynths test on this node (checked /ssdstore etc.) -- redirect to cn023"; exit 3; }
 echo "[data] $DATA ($(ls $DATA | wc -l) generators)"
 # CUDA precheck
-ok=0; for i in 1 2 3; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 4; done
+ok=0; for i in 1 2 3; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 4; done
 [ "$ok" = 1 ] || { echo "CUDA FAIL"; exit 1; }
 echo "===== OFFICIAL SAFE on ForenSynths (faithful vendored path; expect ~98 mAP, NOT all-fake) ====="
-$CONDA run --no-capture-output -n AGID python repro/official_evals/safe_official_eval.py \
+$CONDA run --no-capture-output -n SynthScope python repro/official_evals/safe_official_eval.py \
   --benchmark forensynths --data "$DATA" --bs 32 --device cuda \
   --ckpt "$CKPT" --tag safe_official_repro 2>&1 | tail -30
 echo "=== SAFE REPRO COMPLETE $(date) ==="

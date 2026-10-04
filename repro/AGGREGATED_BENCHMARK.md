@@ -4,12 +4,12 @@ Every benchmark each paper reports, with our verified numbers. Per-model detail 
 
 **Exactly three number columns:**
 - **Paper** — the figure reported in the paper.
-- **AGID_official** — the authors' released weights run through the AGID class / eval (architecture-fidelity check).
-- **AGID_train** — the AGID class **trained from scratch** by us; the **single best** run is kept (older/weaker from-scratch checkpoints are discarded, not shown).
+- **SynthScope_official** — the authors' released weights run through the SynthScope class / eval (architecture-fidelity check).
+- **SynthScope_train** — the SynthScope class **trained from scratch** by us; the **single best** run is kept (older/weaker from-scratch checkpoints are discarded, not shown).
 
-Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train matches paper/official · official = AGID_official matches (AGID_train may still lag) · below = gap remains · reference = no comparable paper figure · missing = not yet evaluated.
+Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = SynthScope_train matches paper/official · official = SynthScope_official matches (SynthScope_train may still lag) · below = gap remains · reference = no comparable paper figure · missing = not yet evaluated.
 
-| Model | Benchmark | Paper | AGID_official | AGID_train | Status |
+| Model | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|---|
 | CLIP / UnivFD | ForenSynths GAN/low-level (11) | — | mAP=96.95 | mAP=97.22 / acc=88.28 | reference |
 | CLIP / UnivFD | UniversalFakeDetect diffusion/AR (8) | map=95.0 | mAP=95.66 | mAP=96.44 / acc=87.23 | reproduced |
@@ -68,6 +68,6 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = AGID_train ma
 | STALL | VideoFeedback (TIGER-Lab, 11 gen) | avg_AUC≈0.83 | — | mAP=83.07 / acc=62.12 / AUROC=85.1 | reproduced |
 | STALL | ComGenVid (Sora + VEO3) | avg_AUC≈0.852 | — | mAP=82.59 / acc=57.34 / AUROC=84.0 | below |
 
-**[†] PGC ForenSynths caveat:** AGID_train mAP 94.57 (const-LR ep100, ProGAN-trained, job 185056) is the *13-generator* mean and looks close to AGID_official 96.25 — but the mean is carried by the 10 easy generators (~99). On the three hard generators (deepfake/san/seeingdark) AGID_train is only **75.87 mAUROC vs 94.35** for the official weights; that residual is the subject of `repro/investigate/pgc_gap_investigation.md`. Running the authors' own `train.py` verbatim shows the same plateau, so the released checkpoint is not reproducible from the published recipe+data.
+**[†] PGC ForenSynths caveat:** SynthScope_train mAP 94.57 (const-LR ep100, ProGAN-trained, job 185056) is the *13-generator* mean and looks close to SynthScope_official 96.25 — but the mean is carried by the 10 easy generators (~99). On the three hard generators (deepfake/san/seeingdark) SynthScope_train is only **75.87 mAUROC vs 94.35** for the official weights; that residual is the subject of `repro/investigate/pgc_gap_investigation.md`. Running the authors' own `train.py` verbatim shows the same plateau, so the released checkpoint is not reproducible from the published recipe+data.
 
-*Note: `AGID_train` shows the single best from-scratch run; earlier/weaker from-scratch checkpoints (e.g. PGC GenImage 69.68, SPAI 80.75) were superseded and are no longer listed.*
+*Note: `SynthScope_train` shows the single best from-scratch run; earlier/weaker from-scratch checkpoints (e.g. PGC GenImage 69.68, SPAI 80.75) were superseded and are no longer listed.*

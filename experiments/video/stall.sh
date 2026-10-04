@@ -16,7 +16,7 @@ export OMP_NUM_THREADS=1
 export DINO_V3_REPO_DIR=${DINO_V3_REPO_DIR:-/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3}
 export DINO_V3_WEIGHTS=${DINO_V3_WEIGHTS:-/hddstore/ssalehi/AGID/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth}
 
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
     trainer@TrainerConfig=video/stall \
     model@ModelConfig=video/stall \
     dataset@DatasetConfig=video/genvideo \
@@ -29,4 +29,4 @@ export DINO_V3_WEIGHTS=${DINO_V3_WEIGHTS:-/hddstore/ssalehi/AGID/dinov3_checkpoi
     metrics=[real_accuracy,fake_accuracy,AP,AUC] \
     logger.name=stall \
     logger.mode=online \
-    logger.tags=[AGID,STALL,genvideo]
+    logger.tags=[SynthScope,STALL,genvideo]

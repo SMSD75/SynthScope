@@ -11,7 +11,7 @@ from pathlib import Path
 
 SUB = Path(__file__).resolve().parent / "submissions"
 REPO = "https://github.com/SMSD75/AGID"
-SOURCE = "AGID reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md"
+SOURCE = "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md"
 DATE = "2026-06-02"
 
 # (slug, method, track, modality, model_type, paper, evaluation, metrics, protocol_notes)
@@ -34,14 +34,14 @@ ROWS = [
     ("safe", "SAFE", "forensynths", "image", "safe", "Li et al., KDD'25",
      "from-scratch", {"map": 94.13, "auroc": 93.68}, "ForenSynths; trained from scratch"),
     ("co_spy_scratch", "CO-SPY (from scratch)", "forensynths", "image", "co_spy", "Cheng et al., CVPR'25",
-     "from-scratch", {"map": 96.98, "auroc": 96.79}, "ForenSynths; AGID re-implementation trained on ProGAN"),
+     "from-scratch", {"map": 96.98, "auroc": 96.79}, "ForenSynths; SynthScope re-implementation trained on ProGAN"),
     # --- GenImage SD-v1.4 (image) ---
     ("spai_official", "SPAI (official weights)", "genimage-sdv1.4", "image", "spai", "Karageorgiou et al., CVPR'25",
      "official-weights", {"auroc": 98.45, "ap": 94.01}, "GenImage SD-v1.4; vendored official architecture, fixed-res 2x2x224"),
     ("vib_net", "VIB-Net", "genimage-sdv1.4", "image", "vib_net", "Zhang et al., CVPR'25",
      "from-scratch", {"map": 99.33, "auroc": 99.33}, "GenImage SD-v1.4 single real/fake pool (mAP == AUROC by construction)"),
     ("spai_scratch", "SPAI (from scratch)", "genimage-sdv1.4", "image", "spai", "Karageorgiou et al., CVPR'25",
-     "from-scratch", {"auroc": 97.66}, "DMID Latent-Diffusion vs COCO; AGID fixed-resolution variant"),
+     "from-scratch", {"auroc": 97.66}, "DMID Latent-Diffusion vs COCO; SynthScope fixed-resolution variant"),
     # --- GenVideo-Val (video) ---
     ("d3", "D3", "genvideo-val", "video", "d3", "ICCV'25",
      "training-free", {"ap": 95.6, "auroc": 93.6}, "Training-free frozen CLIP 2nd-order trajectory"),
@@ -59,8 +59,8 @@ def main() -> None:
         sub = {
             "method": method, "track": track, "modality": modality, "model_type": model_type,
             "paper": paper, "url": REPO, "evaluation": evaluation, "metrics": full_metrics,
-            "per_generator": None, "submitted_by": "AGID", "date": DATE,
-            "verified": True, "source": SOURCE, "protocol_notes": notes, "agid_version": "0.1.0",
+            "per_generator": None, "submitted_by": "SynthScope", "date": DATE,
+            "verified": True, "source": SOURCE, "protocol_notes": notes, "synthscope_version": "0.1.0",
         }
         (SUB / f"{slug}.json").write_text(json.dumps(sub, indent=2) + "\n")
     print(f"Wrote {len(ROWS)} reference submissions to {SUB}")

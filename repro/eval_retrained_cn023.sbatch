@@ -8,16 +8,16 @@
 set -uo pipefail; cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 : "${MODEL:?pass MODEL=vib_net|aide|co_spy|spai}"
 DATA=/hddstore/ssalehi/AGID; SC=/hddstore/ssalehi/.cache; CONDA=/home/ssalehi/miniconda3/bin/conda
-export AGID_CKPT_DIR=$DATA/checkpoints HF_HOME=$SC/huggingface TORCH_HOME=$SC/torch OMP_NUM_THREADS=4 \
-       AGID_MFM_CKPT=$DATA/mfm/mfm_pretrain_vit_base.pth PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export SYNTHSCOPE_CKPT_DIR=$DATA/checkpoints HF_HOME=$SC/huggingface TORCH_HOME=$SC/torch OMP_NUM_THREADS=4 \
+       SYNTHSCOPE_MFM_CKPT=$DATA/mfm/mfm_pretrain_vit_base.pth PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 CKDIR=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/$MODEL
 CK=$(ls -1v "$CKDIR"/model_*.pth 2>/dev/null | tail -1)
 [ -z "$CK" ] && { echo "no checkpoint in $CKDIR"; exit 1; }
 BS=64; case "$MODEL" in spai) BS=8 ;; aide) BS=32 ;; esac
 echo "=== eval retrained $MODEL ckpt=$CK bs=$BS node=$(hostname) $(date) ==="
 # wait for CUDA (cn023 flaky init)
-for i in $(seq 1 60); do "$CONDA" run -n AGID python -c "import torch;assert torch.cuda.is_available();torch.randn(1,device='cuda')" 2>/dev/null && break; echo "[cuda-gate] wait $i"; sleep 20; done
-run(){ echo ">>> $1"; "$CONDA" run --no-capture-output -n AGID python benchmark/bench_eval.py --model "$MODEL" --ckpt "$CK" --device cuda "${@:2}" || echo "FAILED: $1"; }
+for i in $(seq 1 60); do "$CONDA" run -n SynthScope python -c "import torch;assert torch.cuda.is_available();torch.randn(1,device='cuda')" 2>/dev/null && break; echo "[cuda-gate] wait $i"; sleep 20; done
+run(){ echo ">>> $1"; "$CONDA" run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model "$MODEL" --ckpt "$CK" --device cuda "${@:2}" || echo "FAILED: $1"; }
 run genimage8   --benchmark pergen     --data $DATA/GenImage_full/test          --bs $BS --limit 300 --tag ${MODEL}_retrain_genimage8
 run forensynths --benchmark forensynths --data $DATA/CNNDetection/test           --bs $BS            --tag ${MODEL}_retrain_forensynths
 run ufd         --benchmark ufd        --data $DATA/universialfakedetection      --bs $BS            --tag ${MODEL}_retrain_ufd

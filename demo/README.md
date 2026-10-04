@@ -27,7 +27,7 @@ python demo/app.py              # serves on http://localhost:7860
 1. Create a new **Gradio** Space.
 2. Add these three files at the Space **root**: `app.py`, `requirements.txt`, and this `README.md`
    (the YAML header above configures the Space).
-3. Set a Space **variable** `AGID_HUB_REPO=<your-username>/agid-checkpoints` so detectors
+3. Set a Space **variable** `SYNTHSCOPE_HUB_REPO=<your-username>/synthscope-checkpoints` so detectors
    auto-download their weights from your [model zoo](../README.md#model-zoo-hugging-face-hub). For a
    **private** zoo, also add an `HF_TOKEN` Space **secret**.
 4. Choose hardware: the large backbones (ConvNeXt-XXL, SigLIP, CLIP-L) want a **GPU**; CPU works but

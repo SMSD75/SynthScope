@@ -16,10 +16,10 @@ H=/hddstore/ssalehi/AGID
 GCK=$H/repro/official_ckpts/aide/AIDE_checkpoints/GenImage_train.pth
 [ -f "$GCK" ] || GCK=$H/repro/official_ckpts/aide/AIDE_checkpoints/sd14_train.pth
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES ckpt=$GCK $(date)"
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 echo "##### GenImage-8, official GenImage weights — NATIVE-res DCT (official preprocessing) #####"
-$CONDA run --no-capture-output -n AGID python repro/_aide_dct_ablation.py --data "$H/GenImage_full/test" --ckpt "$GCK" --benchmark pergen --limit 200 --mode native
-echo "##### GenImage-8, official GenImage weights — RESIZE-256 before DCT (mimics AGID class) #####"
-$CONDA run --no-capture-output -n AGID python repro/_aide_dct_ablation.py --data "$H/GenImage_full/test" --ckpt "$GCK" --benchmark pergen --limit 200 --mode resize256
+$CONDA run --no-capture-output -n SynthScope python repro/_aide_dct_ablation.py --data "$H/GenImage_full/test" --ckpt "$GCK" --benchmark pergen --limit 200 --mode native
+echo "##### GenImage-8, official GenImage weights — RESIZE-256 before DCT (mimics SynthScope class) #####"
+$CONDA run --no-capture-output -n SynthScope python repro/_aide_dct_ablation.py --data "$H/GenImage_full/test" --ckpt "$GCK" --benchmark pergen --limit 200 --mode resize256
 echo "=== AIDE DCT ABLATION COMPLETE $(date) ==="

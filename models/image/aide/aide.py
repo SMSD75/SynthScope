@@ -1,6 +1,6 @@
 """AIDE: AI-generated Image DEtector with Hybrid Features (Yan et al., ICLR 2025).
 
-Faithful AGID wrapper around the GENUINE official AIDE network (``official_arch.AIDE_Model``):
+Faithful SynthScope wrapper around the GENUINE official AIDE network (``official_arch.AIDE_Model``):
 a 5-view ``[B,5,3,256,256]`` model = 4 DCT-selected native-resolution patches (SRM/HPF + two
 custom ResNet-50 streams) + the full image (frozen OpenCLIP ConvNeXt-XXL semantic branch).
 
@@ -22,8 +22,8 @@ from omegaconf import DictConfig
 from .official_arch import AIDE_Model
 
 
-class AGIDAIDEModel(nn.Module):
-    """AIDE adapted to AGID's ``compute_loss(batch) -> {loss, outputs}`` API."""
+class SynthScopeAIDEModel(nn.Module):
+    """AIDE adapted to SynthScope's ``compute_loss(batch) -> {loss, outputs}`` API."""
 
     def __init__(self, config: DictConfig):
         super().__init__()

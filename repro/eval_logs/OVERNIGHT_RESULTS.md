@@ -28,19 +28,19 @@
 - VIB-Net official weights: NOT retrievable (GDrive permission-restricted incl. upgraded gdown; Baidu-only).
   Documented gated; from-scratch CLIP-VIB 83.94 stands.
 - INFRA: two simultaneous big-image evals OOM the cn023 48GiB cgroup -> run sequentially / --bs 16 / --limit.
-- D3 GenVideo (CLIP-B/16 + full official preproc, d3_eval.py): AGID-bench 89.0 -> **AUROC 0.944 / AP_real(bal) 0.944** (paper CLIP ~97, XCLIP 98.46). XCLIP temporal encoder = remaining headline lever.
+- D3 GenVideo (CLIP-B/16 + full official preproc, d3_eval.py): SynthScope-bench 89.0 -> **AUROC 0.944 / AP_real(bal) 0.944** (paper CLIP ~97, XCLIP 98.46). XCLIP temporal encoder = remaining headline lever.
 - Synthbuster downloaded (12GB zip) for SPAI eval.
 
 ## Synthbuster integrated (2026-06-09) — new benchmark, class written (template)
 - Data: Zenodo 10066460 (9 diffusion generators × 1000 fakes) + GenImage-nature proxy reals (RAISE-1k not shipped).
-- SynthbusterDataset class + module + AGIDModuleDict["synthbuster"] + conf/dataset/image/synthbuster.yaml + explorer DatasetDef.
+- SynthbusterDataset class + module + SynthScopeModuleDict["synthbuster"] + conf/dataset/image/synthbuster.yaml + explorer DatasetDef.
 - Results: **Co-Spy 98.48 / SAFE 93.92** (reproduce well) ; **SPAI 55.67** (fixed-448 fails — resolution-sensitive,
   needs the any-res SCA path + authentic RAISE reals to reach the paper's ~91 AUC).
 
 ## SPAI any-resolution REPRODUCED (2026-06-09) — minimal class change + official-weights remap
 - Class change (minimal): forward now patchifies each image at NATIVE res (variable L) + five_crop fallback
   when L<minimum_patches(4) [models/image/spai/spai.py] — matches official forward_arbitrary_resolution_batch.
-- Official SPAI weights remapped into the AGID class (repro/load_spai_official.py -> spai_official_agid.pth;
+- Official SPAI weights remapped into the SynthScope class (repro/load_spai_official.py -> spai_official_synthscope.pth;
   321 keys, 0 unexpected). Eval: repro/spai_anyres_eval.py (native-res, bs=1, AUROC metric).
 - **GenImage-8: fixed-448 88.80 -> any-res 90.74 mAP / 85.47 mAUROC (96.6 mAUROC excl. biggan)** ≈ paper ~91.
   biggan AUROC 7.3 = inverted (SPAI is a diffusion-spectral detector; genuinely flips on the GAN). SD-family
@@ -53,7 +53,7 @@
   backbone cases in models/video/d3/d3.py. Eval d3_eval.py --backbone xclip-16 --norm imagenet --crop 0.1.
 - GenVideo-Val: CLIP 94.4 -> **XCLIP-16 AUROC 95.12 / AP_real_bal 95.01 / AP_real_full 99.52** (paper 98.46
   mAP = official real-class AP; our full-pool AP_real 99.52 >= paper; residual on balanced = ffmpeg-vs-decord
-  frame extraction). Up from AGID-bench 89.
+  frame extraction). Up from SynthScope-bench 89.
 ## Web UI: per-method FULL benchmark table (2026-06-09)
 - interface/backend/repro_full.json (13 methods, 49 rows) from specs+results; /api/models serves repro_full;
   App.jsx ReproTable renders the full Benchmark|Paper|Ours|Status table per selected method (+CSS).
@@ -61,6 +61,6 @@
 ## AIDE native-res DCT confirmed (2026-06-09)
 - The native-res DCT IS implemented in the faithful eval (repro/official_evals/aide_official_eval.py: DCT on
   the native image -> 4 patches -> Resize(256)+ImageNet -> custom ResNet). On full GenImage-8 (sd14 weights):
-  **adm AP 94.31** (vs the AGID-class 256-DCT's 58-65) — recovers the ADM/VQDM collapse to the official level.
-  AIDE-official = 97.12 mAP (banked aide_official_genimage8), paper 86.9 acc. Reproduced. AGID-class native-DCT
+  **adm AP 94.31** (vs the SynthScope-class 256-DCT's 58-65) — recovers the ADM/VQDM collapse to the official level.
+  AIDE-official = 97.12 mAP (banked aide_official_genimage8), paper 86.9 acc. Reproduced. SynthScope-class native-DCT
   fold-in (SPAI-style) is optional code-org (number already achieved via the faithful eval).

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "AGID benchmark submission (v1)",
+  "title": "SynthScope benchmark submission (v1)",
   "description": "One result for one (method, track). Lives in benchmark/submissions/*.json.",
   "type": "object",
   "additionalProperties": false,
@@ -9,7 +9,7 @@
     "method": {"type": "string", "description": "Human-readable method name."},
     "track": {"type": "string", "enum": ["forensynths", "genimage-sdv1.4", "genvideo-val"]},
     "modality": {"type": "string", "enum": ["image", "video"]},
-    "model_type": {"type": ["string", "null"], "description": "AGID detector key, if applicable."},
+    "model_type": {"type": ["string", "null"], "description": "SynthScope detector key, if applicable."},
     "paper": {"type": ["string", "null"]},
     "url": {"type": ["string", "null"], "description": "Paper or code URL."},
     "evaluation": {
@@ -33,9 +33,9 @@
     },
     "submitted_by": {"type": "string"},
     "date": {"type": ["string", "null"], "description": "YYYY-MM-DD."},
-    "verified": {"type": "boolean", "description": "Traces to a logged AGID evaluation."},
+    "verified": {"type": "boolean", "description": "Traces to a logged SynthScope evaluation."},
     "source": {"type": ["string", "null"], "description": "Log / run path or external reference."},
     "protocol_notes": {"type": ["string", "null"]},
-    "agid_version": {"type": ["string", "null"]}
+    "synthscope_version": {"type": ["string", "null"]}
   }
 }

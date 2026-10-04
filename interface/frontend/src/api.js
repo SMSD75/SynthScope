@@ -1,4 +1,4 @@
-// API client for the AGID backend. In dev, Vite proxies /api to the FastAPI server.
+// API client for the SynthScope backend. In dev, Vite proxies /api to the FastAPI server.
 const BASE = import.meta.env.VITE_API_BASE || "";
 
 export async function fetchModels() {

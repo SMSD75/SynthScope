@@ -48,8 +48,8 @@ class Bottleneck(nn.Module):
         return self.relu(out)
 
 
-class AGIDSAFEModel(nn.Module):
-    """SAFE-style synthetic image detector adapted to AGID's model API."""
+class SynthScopeSAFEModel(nn.Module):
+    """SAFE-style synthetic image detector adapted to SynthScope's model API."""
 
     def __init__(self, config: DictConfig):
         super().__init__()

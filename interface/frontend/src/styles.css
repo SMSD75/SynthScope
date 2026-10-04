@@ -1,5 +1,5 @@
 /* ============================================================================
-   AGID web interface — visual theme
+   SynthScope web interface — visual theme
    Modern dark "glass dashboard": layered navy gradient, frosted panels, an
    indigo→cyan accent, soft shadows, and smooth motion. Class names are kept
    stable so App.jsx is untouched.
@@ -263,7 +263,7 @@ table.repro-full.lb-gen td:nth-child(2) { white-space: normal; }
 /* ---- weight-source badge --------------------------------------------------*/
 .wtag { font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 8px; border: 1px solid var(--line-strong); color: var(--muted); white-space: nowrap; vertical-align: middle; }
 .wtag-official { background: rgba(46, 125, 82, .22); border-color: #2e7d52; color: #8ee0b0; }
-.wtag-agid_trained { background: rgba(46, 93, 125, .22); border-color: #2e5d7d; color: #8ec6e0; }
+.wtag-synthscope_trained { background: rgba(46, 93, 125, .22); border-color: #2e5d7d; color: #8ec6e0; }
 .wtag-training_free { background: rgba(125, 102, 46, .22); border-color: #7d662e; color: #e0cf8e; }
 
 /* ---- What's Trending ------------------------------------------------------*/

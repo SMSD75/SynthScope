@@ -10,7 +10,7 @@ export HF_HOME=$SC/huggingface TORCH_HOME=$SC/torch TRITON_CACHE_DIR=$SC/triton 
 RS=(rsync -aL -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no")
 [ -d "$DATA/CNNDetection/train" ] || { echo "[stage] CNNDetection ~72G"; "${RS[@]}" ivi-cn023:/hddstore/ssalehi/AGID/CNNDetection "$DATA/" 2>&1 | tail -1; }
 echo "node=$(hostname) data=$DATA/CNNDetection $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 4 --main_process_port 29673 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 4 --main_process_port 29673 \
   main.py trainer@TrainerConfig=image/safe ModelConfig.model_type=safe ModelConfig.freeze_backbone=false \
   dataset@DatasetConfig=image/cnndetection DatasetConfig.root_dir=$DATA/CNNDetection \
   DatasetConfig.train_transform_list="[random_crop_256_pad,random_horizontal_flip,random_rotation_180,color_jitter_safe,to_dtype,random_mask_safe]" \

@@ -15,18 +15,18 @@ interface/
 ├── frontend/           Vite + React SPA (build where Node is available)
 ├── static/index.html   no-build React page (CDN) the backend serves by default
 ├── scripts/            checkpoint collection / training / promotion
-├── requirements.txt    web deps (added on top of the `AGID` conda env)
+├── requirements.txt    web deps (added on top of the `SynthScope` conda env)
 └── run_backend.sh      launch the backend
 ```
 
 ## Quick start (on the GPU node, e.g. cn023)
 
 ```bash
-# 1. one-time: web deps into the AGID conda env
-conda run -n AGID pip install -r interface/requirements.txt
+# 1. one-time: web deps into the SynthScope conda env
+conda run -n SynthScope pip install -r interface/requirements.txt
 
 # 2. assemble the central checkpoint dir (symlinks the available official weights)
-conda run -n AGID python interface/scripts/collect_checkpoints.py
+conda run -n SynthScope python interface/scripts/collect_checkpoints.py
 
 # 3. run the backend (serves the no-build UI at http://HOST:8000)
 bash interface/run_backend.sh
@@ -61,7 +61,7 @@ npm run dev
 * **Video**: native video detectors (D3, ReStraV, STALL) decode a clip and score it directly; image
   detectors sample frames (default 16), score each as an image, and report the **mean** P(fake)
   plus a per-frame breakdown.
-* Models load lazily on first request and are kept in a small LRU (`AGID_MAX_RESIDENT_MODELS`,
+* Models load lazily on first request and are kept in a small LRU (`SYNTHSCOPE_MAX_RESIDENT_MODELS`,
   default 2) so the GPU is not exhausted by the large backbones.
 
 ## Detectors (16) & helper scripts
@@ -72,7 +72,7 @@ checkpoint-zoo table are in the top-level [README](../README.md#web-interface--c
 
 | script | purpose |
 | --- | --- |
-| `scripts/collect_checkpoints.py` | symlink official weights into `$AGID_CKPT_DIR` + write `MANIFEST.md` |
+| `scripts/collect_checkpoints.py` | symlink official weights into `$SYNTHSCOPE_CKPT_DIR` + write `MANIFEST.md` |
 | `scripts/train_model.sh <key> <gpus> <port> [epochs]` | train a SynthScope-class detector (saving on) |
 | `scripts/promote_checkpoint.py <key>` | publish the best trained epoch as `<key>.pth` |
 | `scripts/verify_model.py <key>` | quick held-out check on ForenSynths |
@@ -111,7 +111,7 @@ are auto-discovered from disk (`backend/datasets.py`), so only those present on 
 
 ## Checkpoints
 
-Central directory (env `AGID_CKPT_DIR`, default `/hddstore/ssalehi/AGID/checkpoints`). The menu
+Central directory (env `SYNTHSCOPE_CKPT_DIR`, default `/hddstore/ssalehi/AGID/checkpoints`). The menu
 shows a model as available only when its checkpoint file is present (D3 is training-free and always
 available). See `MANIFEST.md` there for status.
 
@@ -123,17 +123,17 @@ available). See `MANIFEST.md` there for status.
 
 | Var | Default | Meaning |
 | --- | --- | --- |
-| `AGID_CKPT_DIR` | `/hddstore/ssalehi/AGID/checkpoints` | central checkpoint directory |
-| `AGID_CACHE_DIR` | `/hddstore/ssalehi/AGID/.cache` | HF/torch backbone cache |
-| `AGID_MAX_RESIDENT_MODELS` | `2` | models kept in GPU memory (LRU) |
-| `AGID_VIDEO_IMAGE_FRAMES` | `16` | frames sampled when an image detector runs on a video |
-| `AGID_MAX_UPLOAD_MB` | `200` | upload size limit |
-| `AGID_PORT` / `AGID_HOST` | `8000` / `0.0.0.0` | backend bind |
+| `SYNTHSCOPE_CKPT_DIR` | `/hddstore/ssalehi/AGID/checkpoints` | central checkpoint directory |
+| `SYNTHSCOPE_CACHE_DIR` | `/hddstore/ssalehi/AGID/.cache` | HF/torch backbone cache |
+| `SYNTHSCOPE_MAX_RESIDENT_MODELS` | `2` | models kept in GPU memory (LRU) |
+| `SYNTHSCOPE_VIDEO_IMAGE_FRAMES` | `16` | frames sampled when an image detector runs on a video |
+| `SYNTHSCOPE_MAX_UPLOAD_MB` | `200` | upload size limit |
+| `SYNTHSCOPE_PORT` / `SYNTHSCOPE_HOST` | `8000` / `0.0.0.0` | backend bind |
 
 ## Deployment notes
 
 * Checkpoints, datasets and backbone caches live on **node-local** storage (cn023 `/hddstore`), so
-  run the backend on that node, or set `AGID_CKPT_DIR`/`AGID_CACHE_DIR` to wherever the weights are.
+  run the backend on that node, or set `SYNTHSCOPE_CKPT_DIR`/`SYNTHSCOPE_CACHE_DIR` to wherever the weights are.
 * First use of a model downloads its pretrained backbone (CLIP/DINOv2/SigLIP/…) into the cache.
 * GPU is auto-detected; falls back to CPU (slow for the large backbones).
 
@@ -169,19 +169,19 @@ Two image-**conditioned** generators run locally and edit the uploaded photo int
 | `qwen_image_2_1` | `Qwen/Qwen-Image-2.1` (7B unified generation + editing) | 33 GB | **Qwen Research License (research use only)** | 40 steps (~1.5 min incl. load) |
 
 They need a newer `diffusers` than the shared env (`QwenImage21Pipeline`), so they run in an **isolated
-subprocess** (`interface/backend/local_gen.py`) with their own library path — the shared `AGID` env is left
+subprocess** (`interface/backend/local_gen.py`) with their own library path — the shared `SynthScope` env is left
 untouched. One-time setup (no env changes):
 
 ```bash
 G=/path/to/gen_env && mkdir -p $G
 pip install --no-deps --target $G git+https://github.com/huggingface/diffusers
 pip install --no-deps --target $G "huggingface_hub>=1.12,<2" hf_xet      # diffusers main needs hub 1.x; hub 2.x is rejected by transformers
-export AGID_GEN_PYTHONPATH=$G                                           # prepended to the child's PYTHONPATH
-export AGID_GEN_HF_HOME=/node-local/hf_cache                            # 57 GB of weights: keep them off the shared quota
+export SYNTHSCOPE_GEN_PYTHONPATH=$G                                           # prepended to the child's PYTHONPATH
+export SYNTHSCOPE_GEN_HF_HOME=/node-local/hf_cache                            # 57 GB of weights: keep them off the shared quota
 ```
 
 Both are ungated, but a `HF_TOKEN` in `.env` is passed through. A generator shows as available only when
-`AGID_GEN_PYTHONPATH` points at an existing directory **and** a GPU is visible.
+`SYNTHSCOPE_GEN_PYTHONPATH` points at an existing directory **and** a GPU is visible.
 
 How it fits a 24 GB GPU next to the detectors: the web engine first releases its resident detectors
 (`Engine.release_gpu`, they reload lazily); then the child runs one image and exits, freeing everything.

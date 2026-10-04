@@ -20,30 +20,30 @@ image ─ PNG? → JPEG q96 round-trip ─ SmallestMaxSize(390) → CenterCrop(3
 
 `cure.pth` is the official **25 MB adapter** (`cure_adapter.pt`, SHA-256 checked) unchanged: LoRA
 updates, `mu`, `W` and the head. The frozen base (`facebook/PE-Core-L14-336`, 2.7 GB, Apache-2.0) is
-fetched from the Hugging Face Hub on first use (or `ModelConfig.base_checkpoint` / `$AGID_PE_CORE_CKPT`).
+fetched from the Hugging Face Hub on first use (or `ModelConfig.base_checkpoint` / `$SYNTHSCOPE_PE_CORE_CKPT`).
 
-## AGID adaptations
+## SynthScope adaptations
 
 | choice | reason |
 |---|---|
 | `official_arch.py` = the official backbone, **byte-identical body** | The adapter loads key-for-key; Apache-2.0 attribution in the header. |
 | Preprocessing in cv2/PIL (`preprocess.py`), not albumentations | No new dependency. Equal to the official pipeline up to **1 float32 ulp (5.96e-8)** on 104 PNG/JPEG images, 200 px–4256 px, square and non-square (`repro/cure_preproc_equiv.py`). |
-| **Source-format hint** `img.info["agid_src_format"]` | Official PNG sources get an extra JPEG‑q96 round-trip, decided by the file suffix. `bench_eval` and the web decoder now record the original format on the PIL image; without the hint an image is treated as non-PNG. |
+| **Source-format hint** `img.info["synthscope_src_format"]` | Official PNG sources get an extra JPEG‑q96 round-trip, decided by the file suffix. `bench_eval` and the web decoder now record the original format on the PIL image; without the hint an image is treated as non-PNG. |
 | fp16 autocast on CUDA inside `forward` | The released results use fp16 AMP; CPU runs in fp32 (scores differ in the 3rd decimal). |
-| `compute_loss` = plain cross-entropy | **The paper's two-stage mixing-ratio-regression training recipe is not in the official release.** `compute_loss` only satisfies AGID's trainer interface (LoRA + head trainable); it does **not** reproduce the paper's training. The AGID-trained row below is therefore empty. |
+| `compute_loss` = plain cross-entropy | **The paper's two-stage mixing-ratio-regression training recipe is not in the official release.** `compute_loss` only satisfies SynthScope's trainer interface (LoRA + head trainable); it does **not** reproduce the paper's training. The SynthScope-trained row below is therefore empty. |
 
 ## Fidelity check (identical to the official model)
 
-`repro/cure_verify_load.py` loads the official `cure` package and AGID's class with the same adapter
+`repro/cure_verify_load.py` loads the official `cure` package and SynthScope's class with the same adapter
 and base, on an A5000: all **395 state-dict tensors identical**, all 100 adapter tensors consumed
 (`unexpected=0`), **max |logit diff| 4.8e-6**, **max |P(fake) diff| 5.4e-7, 0 verdict flips** over 60
-images (official preprocessing vs AGID preprocessing, each end to end). Log: `repro/logs/cure_verify_245812.out`.
+images (official preprocessing vs SynthScope preprocessing, each end to end). Log: `repro/logs/cure_verify_245812.out`.
 
 ## Results
 
-Summary in the repo's **Paper / AGID_official / AGID_train** schema (`acc` = mean per-generator balanced accuracy at 0.5):
+Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema (`acc` = mean per-generator balanced accuracy at 0.5):
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | AIGIBench (paper's 20 full-image-synthesis subsets, full test data) | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 | — | **reproduced** (every subset within 0.10 pt) |
 | UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
@@ -52,13 +52,13 @@ Summary in the repo's **Paper / AGID_official / AGID_train** schema (`acc` = mea
 | AIGCDetectBenchmark | acc=89.3 | — | — | missing |
 | EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | 98.1, 92.7, 95.8, 90.9, 81.5, 79.7, 93.8 | — | — | missing |
 
-`AGID_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
-(official weights through AGID; balanced accuracy at 0.5 unless noted).
+`SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
+(official weights through SynthScope; balanced accuracy at 0.5 unless noted).
 
 Paper: **89.7 avg over ten benchmarks** — AIGCDetect 89.3 · AIGIBench 92.8 · UnivFD 82.0 · EvalGEN 98.1 ·
 SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealChain 79.7 · Chameleon 93.8.
 
-| Benchmark (AGID) | generators | acc (mean of per-gen balanced) | mAP | mAUROC | Paper | Status |
+| Benchmark (SynthScope) | generators | acc (mean of per-gen balanced) | mAP | mAUROC | Paper | Status |
 |---|---|---:|---:|---:|---|---|
 | UFD-8 (diffusion/DALL·E half of UnivFD) | 8 | **93.94** | 99.19 | 98.98 | UnivFD 82.0 | **not comparable** (see below) |
 | ForenSynths-13 (GAN half) | 13 | **81.95** | 94.05 | 95.02 | UnivFD 82.0 | **not comparable** |
@@ -68,7 +68,7 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | same 20 subsets, `--limit 1500`/class (earlier run) | 20 | 93.13 | 97.14 | 97.59 | 92.8 | within 2.1 pt per subset; the cap caused the residual |
 | AIGIBench, all 25 test generators (adds 5 face-swap subsets the paper excludes) | 25 | 85.95 | 90.72 | 91.43 | – | not the paper's protocol |
 | AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
-| EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | – | *not in AGID* | | | see above | datasets not available here |
+| EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
 
 **Honest reading.** The port is verified identical to the official model (above), and the in-distribution
 behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, SD‑v1.5 **99.80**, Wukong
@@ -79,17 +79,17 @@ ADM/BigGAN/VQDM fake-recall 22–65 %, AUROC 87–99).
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,
 StyleGAN‑XL, StyleSwim, WFIR, DALL·E 3, FLUX.1‑dev, GLIDE, Imagen 3, Midjourney, SD3, SDXL, BLIP‑Diffusion,
 Infinite‑ID, InstantID, IP‑Adapter, PhotoMaker, CommunityAI, SocialRF. On exactly those 20 with the **full test data**
-(168,002 images), AGID's port of the official adapter gives **92.85 balanced accuracy / 97.48 AUROC vs the
+(168,002 images), SynthScope's port of the official adapter gives **92.85 balanced accuracy / 97.48 AUROC vs the
 paper's 92.8 / 97.5**, and **every one of the 20 subsets is within 0.10 pt of the paper's Table 2** (mean |diff|
 0.03, largest WFIR +0.10; ProGAN, StyleGAN3, StyleGAN‑XL, SD3 match to the printed digit). An earlier run on the
 first 1,500 images per class gave 93.13 / 97.59 (per-subset mean |diff| 0.76, max 2.13), so the cap, not the port,
-caused the residual. The five face-swap/editing subsets in AGID's 25-generator
+caused the residual. The five face-swap/editing subsets in SynthScope's 25-generator
 test split (BlendFace, FaceSwap, InSwap, SimSwap, E4S; mean 57.2) are excluded by the paper — including them is
 what produced my first, misleading 85.95. (Paper values were read from the arXiv
 HTML Table 2 via a text extraction, not from the PDF.)
 
-**Still NOT confirmed:** only 3 of the paper's 10 benchmarks exist in AGID. UnivFD: the paper's aggregation is not
-specified (AGID's UFD-8 and ForenSynths-13 splits give 93.9 and 82.0, the 16-generator union 89.3, vs 82.0).
+**Still NOT confirmed:** only 3 of the paper's 10 benchmarks exist in SynthScope. UnivFD: the paper's aggregation is not
+specified (SynthScope's UFD-8 and ForenSynths-13 splits give 93.9 and 82.0, the 16-generator union 89.3, vs 82.0).
 AIGCDetect was not run (its data lives only on cn023, fully booked). The other 7 benchmarks are not available here.
 
 Per-generator tables (balanced acc / AP / AUROC / real-acc / fake-acc), from `repro/bench_results/cure_repro_*.json`:
@@ -108,7 +108,7 @@ biggan 67.80 · adm 60.63
 ## Usage
 
 ```bash
-agid detect photo.png --model cure          # needs cure.pth in $AGID_CKPT_DIR (official adapter) + HF access
+synthscope detect photo.png --model cure          # needs cure.pth in $SYNTHSCOPE_CKPT_DIR (official adapter) + HF access
 python benchmark/bench_eval.py --model cure --benchmark ufd --data <UFD/test> --tag cure_repro_ufd
 ```
 

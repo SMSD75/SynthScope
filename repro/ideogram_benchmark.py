@@ -3,7 +3,7 @@
 Phase 1 — dataset: sample real images, BLIP-caption each (the demo's "conceptually similar" prompt),
 skip people (Ideogram refuses photorealistic humans) and any safety-blocked output, generate with the
 local Ideogram nf4 pipeline until N real + N Ideogram-fake images are collected.
-Phase 2 — score: run every available AGID image detector (promoted checkpoints + the web UI's exact
+Phase 2 — score: run every available SynthScope image detector (promoted checkpoints + the web UI's exact
 preprocessing) over all 2N images and rank by AUROC / AP / accuracy@0.5.
 
 Run with CUDA_VISIBLE_DEVICES=7. Outputs under repro/ideogram_bench/.
@@ -174,7 +174,7 @@ def score():
     md = ["# Detectors vs Ideogram 4.0 — ranked", "",
           f"Dataset: {len(real_imgs)} real (sampled from GenImage/CNNDetection reals) + {len(fake_imgs)} "
           f"Ideogram-generated fakes (BLIP-caption prompts, {RES}px, {STEPS} steps; people excluded — "
-          "Ideogram refuses them). Detectors use the promoted AGID checkpoints + the web UI's preprocessing.", "",
+          "Ideogram refuses them). Detectors use the promoted SynthScope checkpoints + the web UI's preprocessing.", "",
           "| Rank | Detector | AUROC | AP | acc@0.5 | fake detect % | real FP % |", "|---|---|---|---|---|---|---|"]
     for i, r in enumerate(rows, 1):
         md.append(f"| {i} | {r['name']} | {r['auroc']} | {r['ap']} | {r['acc']} | "

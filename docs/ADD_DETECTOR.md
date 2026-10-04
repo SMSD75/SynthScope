@@ -1,4 +1,4 @@
-# Adding a detector to AGID (the repo rules)
+# Adding a detector to SynthScope (the repo rules)
 
 This is the checklist the **What's-Trending daily agent** (and humans) follow to incorporate a new
 AI-generated-content detector cleanly and verify that SynthScope reproduces the paper's results. Keep the
@@ -11,7 +11,7 @@ the benchmark data can't be obtained, **do not** commit broken code — record a
 <reason>" note in the paper's `trending.json` entry and stop.
 
 ## Files to add (one detector = key `<k>`, e.g. `pgc`)
-1. **`models/<modality>/<k>/<k>.py`** — `class AGID<Name>Model(nn.Module)`:
+1. **`models/<modality>/<k>/<k>.py`** — `class SynthScope<Name>Model(nn.Module)`:
    - `__init__(self, config: DictConfig)` — build the architecture; respect `config.ModelConfig`.
    - `forward(self, images) -> logits` — raw logits (NOT probabilities). Do model-specific
      preprocessing (e.g. residual/DWT/DCT) **inside** forward where the official model does.
@@ -20,14 +20,14 @@ the benchmark data can't be obtained, **do not** commit broken code — record a
    - Add `models/<modality>/<k>/__init__.py` and a `README.md` (see structure below).
 2. **`conf/model/image/<k>.yaml`** (or `video/`): `defaults: [/model/default, _self_]`, then `model_type: <k>`
    plus any model knobs. Add `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
-3. **Dispatch** — add a branch in `trainer.py` `_build_model` (the `if model_type == "<k>": return AGID<Name>Model(config)` chain, ~line 69+). The interface lazy-imports by `model_type` in `interface/backend/engine.py` — mirror it if needed.
+3. **Dispatch** — add a branch in `trainer.py` `_build_model` (the `if model_type == "<k>": return SynthScope<Name>Model(config)` chain, ~line 69+). The interface lazy-imports by `model_type` in `interface/backend/engine.py` — mirror it if needed.
 4. **Interface registry** — `interface/backend/registry.py` `_add(ModelSpec(...))`:
    - `key`, `name`, `paper`, `modality` (`image`|`video`), `overrides=["model@ModelConfig=image/<k>"]`,
    - `predict_kind`: `ce` (logits→`softmax[:,1]`), `bce` (`sigmoid`), `bce_npr`, `vib`, or `video`,
-   - `checkpoint="<k>.pth"`, `ckpt_kind`: `agid` (our trained weights, strict load) **or** `official_<k>` + a `remap=remap_<k>` function (rename official keys → our module names) for the authors' released weights,
+   - `checkpoint="<k>.pth"`, `ckpt_kind`: `synthscope` (our trained weights, strict load) **or** `official_<k>` + a `remap=remap_<k>` function (rename official keys → our module names) for the authors' released weights,
    - `transform`: the eval preprocessing — match the **official** eval exactly (resize vs crop, norm vs none). Add a `tf_*` helper if needed. (Getting this wrong silently tanks results — see SAFE: a resize destroyed the high-freq signal.)
-   - `weights`: `"official"` | `"agid_trained"` | `"training_free"` (shown in the web UI badge).
-5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / AGID_official / AGID_train** schema.
+   - `weights`: `"official"` | `"synthscope_trained"` | `"training_free"` (shown in the web UI badge).
+5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:
@@ -39,7 +39,7 @@ python benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|p
 - Mismatched `load_state_dict` keys → write a `remap_<k>`; near-chance/all-fake → check the transform
   (preprocessing) and the head-name mapping first.
 - Record per-generator AP/AUROC; update `repro/AGGREGATED_BENCHMARK.md`, `repro/RESULTS_SUMMARY.md`,
-  the repo README table, and the per-model README — all in the Paper / AGID_official / AGID_train schema.
+  the repo README table, and the per-model README — all in the Paper / SynthScope_official / SynthScope_train schema.
 
 ## Git workflow (keep main clean)
 - Do the integration on a branch: `git checkout -b trending/<k>`. Commit the model + conf + registry +

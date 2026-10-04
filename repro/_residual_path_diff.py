@@ -1,7 +1,7 @@
-"""Does AGID's 3-ch-internal residual path equal the official 6-ch-transform residual path?
+"""Does SynthScope's 3-ch-internal residual path equal the official 6-ch-transform residual path?
 
 Official (PGC_official eval_dataset): ToTensor -> residual = extractor(x01) -> Normalize /0.5.
-AGID (engine): ToTensor -> Normalize(ImageNet) -> [model de-normalizes] -> residual(x01') -> /0.5.
+SynthScope (engine): ToTensor -> Normalize(ImageNet) -> [model de-normalizes] -> residual(x01') -> /0.5.
 The de-norm round-trip is the only mathematical difference. Quantify it on a real seeingdark crop.
 """
 import sys, os
@@ -23,8 +23,8 @@ def _residual_from(xp_int):
     x_rec = _t.matmul(_t.round(x_yuv), M_YUV.M_t_inv.T)
     return _t.clamp((xp - x_rec).permute(0, 3, 1, 2), -1.0, 1.0)
 
-def agid_residual(x01, snap=False):
-    """AGID engine path: normalize, then model de-normalizes back to [0,1] (lossy round-trip).
+def synthscope_residual(x01, snap=False):
+    """SynthScope engine path: normalize, then model de-normalizes back to [0,1] (lossy round-trip).
     snap=True applies the proposed fix: round(x01*255) recovers the exact uint8 pixel grid."""
     x_norm = (x01 - MEAN) / STD
     x01p = (x_norm * STD + MEAN).clamp(0.0, 1.0)   # de-norm round-trip (model does this)
@@ -41,8 +41,8 @@ for tag, p in samples.items():
     if os.path.isdir(p): p = sorted(glob.glob(p + "/*"))[0]
     x01 = CROP(Image.open(p).convert("RGB")).unsqueeze(0)
     off = QuantizationResidualExtractor()(x01)        # official: residual from exact [0,1]
-    cur = agid_residual(x01, snap=False)              # CURRENT AGID: de-norm round-trip
-    fix = agid_residual(x01, snap=True)               # PROPOSED FIX: snap to uint8 grid
+    cur = synthscope_residual(x01, snap=False)              # CURRENT SynthScope: de-norm round-trip
+    fix = synthscope_residual(x01, snap=True)               # PROPOSED FIX: snap to uint8 grid
     def stats(a, b):
         d = (a - b).abs()
         return d.max().item(), d.mean().item(), (a.sign() != b.sign()).float().mean().item()

@@ -5,17 +5,17 @@
       "metric": "acc",
       "paper": "acc=92.77",
       "ours": "mAP=97.94 / acc=91.89 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=97.94 / acc=91.89",
       "status": "official",
-      "note": "AGID metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."
+      "note": "SynthScope metric is mAP/mean-AP over the 17 on-disk AIGCDetect generators (adds sd_xl); acc 91.89 ~ paper 92.77. tag=aide_official_aigcdetect 2026-06-05, official progan_train.pth in vendored faithful eval."
     },
     {
       "benchmark": "GenImage (B2, Setting-I, SDv1.4-trained)",
       "metric": "acc",
       "paper": "acc=86.88",
-      "ours": "AGID mAP=96.42 / acc=77.87 \u00b7 official mAP=97.12 / acc=85.91",
-      "ours_agid": "mAP=96.42 / acc=77.87",
+      "ours": "SynthScope mAP=96.42 / acc=77.87 \u00b7 official mAP=97.12 / acc=85.91",
+      "ours_synthscope": "mAP=96.42 / acc=77.87",
       "ours_official": "mAP=97.12 / acc=85.91",
       "status": "official",
       "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88 (tag aide_official_genimage8). FROM-SCRATCH reproduction (native-res 5-view, aide_native_v2/model_2): GenImage-8 96.42 mAP / 97.07 mAUROC / 77.9 acc (tag aide_retrain_"
@@ -25,7 +25,7 @@
       "metric": "acc",
       "paper": "acc_ProGAN_trained=58.37 / acc_SDv14_trained=62.6 / acc_AllGenImage_trained=65.77",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
       "note": "GATED dataset \u2014 not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'academic research only, commercial use prohibited'. No HF/gdrive mirror; access is "
@@ -36,21 +36,21 @@
       "benchmark": "ForenSynths GAN/low-level test (11 of the pape",
       "metric": "AP (Table 2) and acc@0.5 (Table 3); paper also reports best-threshold acc",
       "paper": "\u2014",
-      "ours": "AGID mAP=97.22 / acc=88.28 \u00b7 official mAP=96.95",
-      "ours_agid": "mAP=97.22 / acc=88.28",
+      "ours": "SynthScope mAP=97.22 / acc=88.28 \u00b7 official mAP=96.95",
+      "ours_synthscope": "mAP=97.22 / acc=88.28",
       "ours_official": "mAP=96.95",
       "status": "reference",
-      "note": "AGID ForenSynths-8 mAP 97.22 (official-weights-in-AGID 96.95); ForenSynths-13 92.99 (official 93.14). AGID-trained head matches the official fc_weights.pth."
+      "note": "SynthScope ForenSynths-8 mAP 97.22 (official-weights-in-SynthScope 96.95); ForenSynths-13 92.99 (official 93.14). SynthScope-trained head matches the official fc_weights.pth."
     },
     {
       "benchmark": "UniversalFakeDetect diffusion/autoregressive t",
       "metric": "AP and acc@0.5",
       "paper": "map=95.0",
-      "ours": "AGID mAP=96.44 / acc=87.23 \u00b7 official mAP=95.66",
-      "ours_agid": "mAP=96.44 / acc=87.23",
+      "ours": "SynthScope mAP=96.44 / acc=87.23 \u00b7 official mAP=95.66",
+      "ours_synthscope": "mAP=96.44 / acc=87.23",
       "ours_official": "mAP=95.66",
       "status": "reproduced",
-      "note": "AGID UFD-8 mAP 96.44, official-weights 95.66, both \u2248 paper LC diffusion AP ~95."
+      "note": "SynthScope UFD-8 mAP 96.44, official-weights 95.66, both \u2248 paper LC diffusion AP ~95."
     }
   ],
   "cnn": [
@@ -58,11 +58,11 @@
       "benchmark": "ForenSynths test set (CVPR paper Table 2 = 11 ",
       "metric": "AP and acc@0.5",
       "paper": "map=90.8",
-      "ours": "AGID mAP=94.42 / acc=76.36 \u00b7 official mAP=92.67",
-      "ours_agid": "mAP=94.42 / acc=76.36",
+      "ours": "SynthScope mAP=94.42 / acc=76.36 \u00b7 official mAP=92.67",
+      "ours_synthscope": "mAP=94.42 / acc=76.36",
       "ours_official": "mAP=92.67",
       "status": "reproduced",
-      "note": "AGID ForenSynths-13 mAP 91.05 \u2248 official-vendored 91.15; AGID FS-8 94.42 \u2265 official 92.67. Matches the paper's Blur+JPEG(0.5) headline ~90.8."
+      "note": "SynthScope ForenSynths-13 mAP 91.05 \u2248 official-vendored 91.15; SynthScope FS-8 94.42 \u2265 official 92.67. Matches the paper's Blur+JPEG(0.5) headline ~90.8."
     }
   ],
   "co_spy": [
@@ -70,48 +70,48 @@
       "benchmark": "Co-Spy-Bench",
       "metric": "AP",
       "paper": "map=96.02 / acc=87.06",
-      "ours": "AGID mAP=96.6 / acc=89.9 \u00b7 official mAP=86.65 / acc=83.88",
-      "ours_agid": "mAP=96.6 / acc=89.9",
+      "ours": "SynthScope mAP=96.6 / acc=89.9 \u00b7 official mAP=86.65 / acc=83.88",
+      "ours_synthscope": "mAP=96.6 / acc=89.9",
       "ours_official": "mAP=86.65 / acc=83.88",
       "status": "reproduced",
-      "note": "Reproduced and BEATS official-weights-in-AGID (86.65). Earlier AGID checkpoint (72.81) was below due to a deleted-reals/wrong-flickr-source data bug; after the full-SD-v1.4 retrain it matches paper 96.0."
+      "note": "Reproduced and BEATS official-weights-in-SynthScope (86.65). Earlier SynthScope checkpoint (72.81) was below due to a deleted-reals/wrong-flickr-source data bug; after the full-SD-v1.4 retrain it matches paper 96.0."
     },
     {
       "benchmark": "AIGCDetectionBenchmark (AIGCDetect)",
       "metric": "AP",
       "paper": "map=95.21 / acc=90.58",
-      "ours": "AGID mAP=84.91 \u00b7 official mAP=94.59 / acc=89.25",
-      "ours_agid": "mAP=84.91",
+      "ours": "SynthScope mAP=84.91 \u00b7 official mAP=94.59 / acc=89.25",
+      "ours_synthscope": "mAP=84.91",
       "ours_official": "mAP=94.59 / acc=89.25",
       "status": "official",
-      "note": "Official-weights-in-AGID reproduces (94.59 vs paper 95.21). The AGID *from-scratch* checkpoint trails (84.91) on the non-SD adm/vqdm/biggan GAN generators because it is the SD-v1.4-trained Co-Spy, not the ProGAN-trained one; the cross-gener"
+      "note": "Official-weights-in-SynthScope reproduces (94.59 vs paper 95.21). The SynthScope *from-scratch* checkpoint trails (84.91) on the non-SD adm/vqdm/biggan GAN generators because it is the SD-v1.4-trained Co-Spy, not the ProGAN-trained one; the cross-gener"
     },
     {
       "benchmark": "GenImage",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "AGID mAP=90.59 / acc=75.91 \u00b7 official mAP=92.41",
-      "ours_agid": "mAP=90.59 / acc=75.91",
+      "ours": "SynthScope mAP=90.59 / acc=75.91 \u00b7 official mAP=92.41",
+      "ours_synthscope": "mAP=90.59 / acc=75.91",
       "ours_official": "mAP=92.41",
       "status": "reference",
-      "note": "AGID retrain (90.59) below official-weights-in-AGID (92.41) by ~1.8 mAP, concentrated on non-SD generators adm/biggan/vqdm (fake_acc collapses: official wts adm fake_acc 9.6, biggan 22.3). The SD-v1.4-trained Co-Spy generalizes weakly to GA"
+      "note": "SynthScope retrain (90.59) below official-weights-in-SynthScope (92.41) by ~1.8 mAP, concentrated on non-SD generators adm/biggan/vqdm (fake_acc collapses: official wts adm fake_acc 9.6, biggan 22.3). The SD-v1.4-trained Co-Spy generalizes weakly to GA"
     },
     {
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "AGID mAP=96.17 \u00b7 official mAP=87.97",
-      "ours_agid": "mAP=96.17",
+      "ours": "SynthScope mAP=96.17 \u00b7 official mAP=87.97",
+      "ours_synthscope": "mAP=96.17",
       "ours_official": "mAP=87.97",
       "status": "reference",
-      "note": "AGID retrain (96.17) beats official-weights-in-AGID (87.97) on ForenSynths-13; no gap."
+      "note": "SynthScope retrain (96.17) beats official-weights-in-SynthScope (87.97) on ForenSynths-13; no gap."
     },
     {
       "benchmark": "In-the-wild (Co-Spy-Bench in-the-wild)",
       "metric": "AP",
       "paper": "map=84.65 / acc=77.41",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
       "note": "Dataset NOT on disk and not reproducible end-to-end. /hddstore/.../Co-Spy/data/in_the_wild/ contains only README.md + urls/ (flux.txt, lexica.txt). Per the official README & Issue #6, several samples (instavibe.ai) are deliberately NOT redi"
@@ -123,17 +123,17 @@
       "metric": "AP",
       "paper": "mAP=98.46",
       "ours": "mAP=63.93 / acc=91.71 / AUROC=95.95",
-      "ours_agid": "mAP=63.93 / acc=91.71 / AUROC=95.95",
+      "ours_synthscope": "mAP=63.93 / acc=91.71 / AUROC=95.95",
       "ours_official": "",
       "status": "below",
-      "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 AGID's GenVideo pool pairs 10000 sh"
+      "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 SynthScope's GenVideo pool pairs 10000 sh"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only",
       "metric": "AP",
       "paper": "mAP=98.87",
       "ours": "mAP=91.19 / acc=87.67 / AUROC=95.41",
-      "ours_agid": "mAP=91.19 / acc=87.67 / AUROC=95.41",
+      "ours_synthscope": "mAP=91.19 / acc=87.67 / AUROC=95.41",
       "ours_official": "",
       "status": "below",
       "note": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 9"
@@ -143,20 +143,20 @@
       "metric": "AP",
       "paper": "mAP=99.16",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not evaluated in AGID \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the AGID encoder."
+      "note": "Not evaluated in SynthScope \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the SynthScope encoder."
     },
     {
       "benchmark": "VidProM (Table 4, 6 generators)",
       "metric": "AP",
       "paper": "mAP=88.46",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not evaluated in AGID \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)"
+      "note": "Not evaluated in SynthScope \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)"
     }
   ],
   "fat_former": [
@@ -165,17 +165,17 @@
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.7 / acc=98.4",
       "ours": "mAP=99.7 / acc=98.39 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=99.7 / acc=98.39",
       "status": "official",
-      "note": "AGID class + official weights = 99.70 mAP / 98.39 acc \u2014 EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."
+      "note": "SynthScope class + official weights = 99.70 mAP / 98.39 acc \u2014 EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."
     },
     {
       "benchmark": "GANs dataset \u2014 8 GANs (2-class ProGAN supervis",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.2 / acc=95.8",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
       "note": "Not evaluated: only the 4-class official checkpoint is available; reproducing the 2-class row needs a from-scratch 2-class ProGAN training run (4-GPU, the paper recipe). Not attempted in this campaign (the 4-class headline already matches e"
@@ -185,10 +185,10 @@
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=98.8 / acc=95.0",
       "ours": "mAP=98.6 / acc=93.72 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=98.6 / acc=93.72",
       "status": "official",
-      "note": "AGID evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which AGID's UFD-8 run omi"
+      "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omi"
     }
   ],
   "npr": [
@@ -197,7 +197,7 @@
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.1 / acc=92.5",
       "ours": "mAP=94.22 / acc=92.3 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=94.22 / acc=92.3",
       "status": "official",
       "note": "Our npr_official_forensynths.json logs the full 13-gen mean 79.45 mAP; the 8-GAN subset {progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake} computes to 92.81 mAP / 91.83 acc."
@@ -207,7 +207,7 @@
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.6 / acc=93.2",
       "ours": "mAP=96.49 / acc=94.81 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=96.49 / acc=94.81",
       "status": "official",
       "note": "n/a \u2014 96.49 vs paper 96.6 (\u2248match). NOTE this benchmark works with the same model_epoch_last_3090.pth checkpoint because it is robust at native res; the Table-1 gap is specific to the GAN sets that the wrong checkpoint mis-scores. Without -"
@@ -217,7 +217,7 @@
       "metric": "AP (and acc@0.5)",
       "paper": "map=99.8 / acc=95.3",
       "ours": "mAP=99.4 / acc=95.03 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=99.4 / acc=95.03",
       "status": "official",
       "note": "n/a \u2014 99.40 vs paper 99.8 (\u2248match)."
@@ -227,7 +227,7 @@
       "metric": "AP (and acc@0.5)",
       "paper": "acc=95.2",
       "ours": "mAP=96.69 / acc=93.94 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=96.69 / acc=93.94",
       "status": "official",
       "note": "n/a \u2014 96.69 mAP / 93.94 acc, close to paper acc 95.2."
@@ -237,7 +237,7 @@
       "metric": "AP (and acc@0.5)",
       "paper": "acc=80.1",
       "ours": "mAP=83.47 / acc=79.13 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=83.47 / acc=79.13",
       "status": "official",
       "note": "n/a \u2014 83.47 mAP / 79.13 acc \u2248 paper acc 80.1."
@@ -248,51 +248,51 @@
       "benchmark": "GenImage",
       "metric": "AP",
       "paper": "map=100.0 / acc=98.3",
-      "ours": "AGID mAP=97.62 / acc=78.6 \u00b7 official mAP=100.0 / acc=99.49",
-      "ours_agid": "mAP=97.62 / acc=78.6",
+      "ours": "SynthScope mAP=97.62 / acc=78.6 \u00b7 official mAP=100.0 / acc=99.49",
+      "ours_synthscope": "mAP=97.62 / acc=78.6",
       "ours_official": "mAP=100.0 / acc=99.49",
       "status": "official",
-      "note": "Official-weights-in-AGID reproduces exactly (mAP 100.0). AGID from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the AGID LoRA-DINOv2 retrain is less calibrated than the released checkpoint; l"
+      "note": "Official-weights-in-SynthScope reproduces exactly (mAP 100.0). SynthScope from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the SynthScope LoRA-DINOv2 retrain is less calibrated than the released checkpoint; l"
     },
     {
       "benchmark": "UniversalFakeDetect (UFD)",
       "metric": "AP",
       "paper": "map=98.0",
-      "ours": "AGID mAP=99.01 \u00b7 official mAP=99.34 / acc=94.16",
-      "ours_agid": "mAP=99.01",
+      "ours": "SynthScope mAP=99.01 \u00b7 official mAP=99.34 / acc=94.16",
+      "ours_synthscope": "mAP=99.01",
       "ours_official": "mAP=99.34 / acc=94.16",
       "status": "reproduced",
-      "note": "Reproduced (official-wts 99.34, AGID retrain 99.01) >= paper 98.0; no gap."
+      "note": "Reproduced (official-wts 99.34, SynthScope retrain 99.01) >= paper 98.0; no gap."
     },
     {
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "AGID mAP=89.03 \u00b7 official mAP=96.25 / acc=83.73",
-      "ours_agid": "mAP=89.03",
+      "ours": "SynthScope mAP=89.03 \u00b7 official mAP=96.25 / acc=83.73",
+      "ours_synthscope": "mAP=89.03",
       "ours_official": "mAP=96.25 / acc=83.73",
       "status": "reference",
-      "note": "Official-weights-in-AGID reproduces (96.25 mAP). AGID retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect."
+      "note": "Official-weights-in-SynthScope reproduces (96.25 mAP). SynthScope retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect."
     },
     {
       "benchmark": "AIGIBench (AIGI)",
       "metric": "AP",
       "paper": "map=95.0 / acc=86.6",
-      "ours": "AGID mAP=86.88 \u00b7 official mAP=95.36 / acc=88.33",
-      "ours_agid": "mAP=86.88",
+      "ours": "SynthScope mAP=86.88 \u00b7 official mAP=95.36 / acc=88.33",
+      "ours_synthscope": "mAP=86.88",
       "ours_official": "mAP=95.36 / acc=88.33",
       "status": "official",
-      "note": "Official-weights-in-AGID reproduces (95.36 vs paper 95.0). AGID retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it."
+      "note": "Official-weights-in-SynthScope reproduces (95.36 vs paper 95.0). SynthScope retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it."
     },
     {
       "benchmark": "CommGen15 (commercial in-the-wild)",
       "metric": "AP",
       "paper": "acc=97.9",
-      "ours": "AGID mAP=98.61 / acc=66.66 \u00b7 official mAP=99.26 / acc=97.39",
-      "ours_agid": "mAP=98.61 / acc=66.66",
+      "ours": "SynthScope mAP=98.61 / acc=66.66 \u00b7 official mAP=99.26 / acc=97.39",
+      "ours_synthscope": "mAP=98.61 / acc=66.66",
       "ours_official": "mAP=99.26 / acc=97.39",
       "status": "official",
-      "note": "Official-weights-in-AGID reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. AGID retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-gu"
+      "note": "Official-weights-in-SynthScope reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. SynthScope retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-gu"
     }
   ],
   "restrav": [
@@ -301,60 +301,60 @@
       "metric": "acc",
       "paper": "acc=97.06 / mAP=98.81",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run as the VidProM-vs-image protocol in AGID. AGID only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav."
+      "note": "Not run as the VidProM-vs-image protocol in SynthScope. SynthScope only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav."
     },
     {
       "benchmark": "B) VidProM vs VideoSwin \u2014 seen/unseen/future (",
       "metric": "acc",
       "paper": "\u2014",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID (VidProM not downloaded). AGID's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but thi"
+      "note": "Not run in SynthScope (VidProM not downloaded). SynthScope's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but thi"
     },
     {
       "benchmark": "B) GenVidBench vs SoTA video detectors \u2014 Main ",
       "metric": "acc",
       "paper": "Main_M_avg=93.01 / Plants_P_avg=96.96",
       "ours": "mAP=92.7 / acc=86.87 / AUROC=95.9",
-      "ours_agid": "mAP=92.7 / acc=86.87 / AUROC=95.9",
+      "ours_synthscope": "mAP=92.7 / acc=86.87 / AUROC=95.9",
       "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED: AGID mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). AGID's accuracy (86.87) is the uncalibrated argmax accuracy and the AGID test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 f"
+      "note": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 f"
     },
     {
       "benchmark": "C) DeMamba one-to-many generalization (Table 5",
       "metric": "AP",
       "paper": "\u2014",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run as the one-to-many DeMamba protocol in AGID. AGID DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 \u2014 this is NOT a "
+      "note": "Not run as the one-to-many DeMamba protocol in SynthScope. SynthScope DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 \u2014 this is NOT a "
     },
     {
       "benchmark": "D) Veo3 zero-shot generalization (Sec 7-D)",
       "metric": "acc",
       "paper": "acc=83.2 / F1=85.1 / AUROC=86.9",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID. Veo3 videos are GATED \u2014 Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collec"
+      "note": "Not run in SynthScope. Veo3 videos are GATED \u2014 Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collec"
     },
     {
       "benchmark": "E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E,",
       "metric": "acc (2AFC)",
       "paper": "Pika=97.5 / Runway=94.9 / Sora=99.0",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run in AGID. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the AGID video pipeline."
+      "note": "Not run in SynthScope. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the SynthScope video pipeline."
     }
   ],
   "safe": [
@@ -362,51 +362,51 @@
       "benchmark": "ForenSynths (Table 1, intra-architecture GANs)",
       "metric": "acc/AP",
       "paper": "map=98.8 / acc=96.2",
-      "ours": "AGID mAP=97.79 / acc=95.1 \u00b7 official mAP=98.78 / acc=96.2",
-      "ours_agid": "mAP=97.79 / acc=95.1",
+      "ours": "SynthScope mAP=97.79 / acc=95.1 \u00b7 official mAP=98.78 / acc=96.2",
+      "ours_synthscope": "mAP=97.79 / acc=95.1",
       "ours_official": "mAP=98.78 / acc=96.2",
       "status": "reproduced",
-      "note": "SAFE now SERVES the AGID-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSy"
+      "note": "SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSy"
     },
     {
       "benchmark": "Self-Synthesis / GANGen (Table 2, intra-archit",
       "metric": "acc/AP",
       "paper": "map=99.8 / acc=99.0",
       "ours": "mAP=99.85 / acc=99.0 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=99.85 / acc=99.0",
       "status": "official",
-      "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The agid_trained retrain v2 (model_38) was NOT re-evaluated on GANGen \u2014 the GANGen/freqnet data is not present on the cn023 eval node for this run."
+      "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The synthscope_trained retrain v2 (model_38) was NOT re-evaluated on GANGen \u2014 the GANGen/freqnet data is not present on the cn023 eval node for this run."
     },
     {
       "benchmark": "Ojha / UniversalFakeDetect (Table 3, cross-arc",
       "metric": "acc/AP",
       "paper": "map=99.1 / acc=95.7",
-      "ours": "AGID mAP=98.44 / acc=94.0 \u00b7 official mAP=99.1 / acc=95.71",
-      "ours_agid": "mAP=98.44 / acc=94.0",
+      "ours": "SynthScope mAP=98.44 / acc=94.0 \u00b7 official mAP=99.1 / acc=95.71",
+      "ours_synthscope": "mAP=98.44 / acc=94.0",
       "ours_official": "mAP=99.1 / acc=95.71",
       "status": "reproduced",
-      "note": "agid_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this AGID-trained checkpoint."
+      "note": "synthscope_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this SynthScope-trained checkpoint."
     },
     {
       "benchmark": "GenImage (Table 4, cross-architecture DM+GAN) ",
       "metric": "acc/AP",
       "paper": "map=99.3 / acc=95.6",
-      "ours": "AGID mAP=99.51 / acc=95.9 \u00b7 official mAP=99.32 / acc=95.62",
-      "ours_agid": "mAP=99.51 / acc=95.9",
+      "ours": "SynthScope mAP=99.51 / acc=95.9 \u00b7 official mAP=99.32 / acc=95.62",
+      "ours_synthscope": "mAP=99.51 / acc=95.9",
       "ours_official": "mAP=99.32 / acc=95.62",
       "status": "reproduced",
-      "note": "agid_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this AGID-trained checkpoint (safe.pth -> safe_full_v2/model_38)."
+      "note": "synthscope_trained retrain v2 (model_38, full 40-epoch crop recipe) = 99.51 mAP / 95.9 acc (tag=safe_v2_genimage8), which MATCHES/BEATS official 99.32 ~ paper 99.3. SAFE now serves this SynthScope-trained checkpoint (safe.pth -> safe_full_v2/model_38)."
     },
     {
       "benchmark": "DiTFake (Table 6, cross-architecture DiT)",
       "metric": "acc/AP",
       "paper": "map=99.9 / acc=99.4",
       "ours": "mAP=99.96 / acc=99.2",
-      "ours_agid": "mAP=99.96 / acc=99.2",
+      "ours_synthscope": "mAP=99.96 / acc=99.2",
       "ours_official": "",
       "status": "reproduced",
-      "note": "agid_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this AGID-trained checkpoint."
+      "note": "synthscope_trained retrain v2 (model_38) = 99.96 mAP / 99.2 acc (tag=safe_v2_ditfake) over Flux/PixArt/SD3 = MATCH paper 99.9/99.4. SAFE serves this SynthScope-trained checkpoint."
     }
   ],
   "spai": [
@@ -415,30 +415,30 @@
       "metric": "AUROC",
       "paper": "auroc=91.0",
       "ours": "",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) AGID cannot reproduce the protocol: AGID implements ONLY "
+      "note": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) SynthScope cannot reproduce the protocol: SynthScope implements ONLY "
     },
     {
-      "benchmark": "GenImage (cross-dataset, AGID benchmark)",
+      "benchmark": "GenImage (cross-dataset, SynthScope benchmark)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "AGID mAP=88.8 / acc=82.81 \u00b7 official mAP=94.22 / AUROC=94.28",
-      "ours_agid": "mAP=88.8 / acc=82.81",
+      "ours": "SynthScope mAP=88.8 / acc=82.81 \u00b7 official mAP=94.22 / AUROC=94.28",
+      "ours_synthscope": "mAP=88.8 / acc=82.81",
       "ours_official": "mAP=94.22 / AUROC=94.28",
       "status": "reference",
-      "note": "SERVED path: official SPAI weights remapped into the AGID class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exc"
+      "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exc"
     },
     {
       "benchmark": "Synthbuster",
       "metric": "AUROC",
       "paper": "\u2014",
       "ours": "mAP=96.75 / AUROC=96.97 (official wts)",
-      "ours_agid": "",
+      "ours_synthscope": "",
       "ours_official": "mAP=96.75 / AUROC=96.97",
       "status": "reference",
-      "note": "SERVED native-res path (official weights in AGID class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+      "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
     }
   ],
   "stall": [
@@ -447,30 +447,30 @@
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.8 / avg_AP=0.8 / per_gen_AUC_range=0.72-0.85 / per_gen_AP_range=0.75-0.84",
       "ours": "mAP=82.38 / acc=56.88 / AUROC=83.51",
-      "ours_agid": "mAP=82.38 / acc=56.88 / AUROC=83.51",
+      "ours_synthscope": "mAP=82.38 / acc=56.88 / AUROC=83.51",
       "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED (slightly ABOVE paper): AGID mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to AGID recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params,"
+      "note": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params,"
     },
     {
       "benchmark": "VideoFeedback (TIGER-Lab, 11 generators + DiDe",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.83 / avg_AP=0.85 / per_gen_AUC_range=0.78-0.93 / per_gen_AP_range=0.80-0.94",
       "ours": "mAP=83.07 / acc=62.12 / AUROC=85.1",
-      "ours_agid": "mAP=83.07 / acc=62.12 / AUROC=85.1",
+      "ours_synthscope": "mAP=83.07 / acc=62.12 / AUROC=85.1",
       "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED: AGID mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). AGID uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter "
+      "note": "REPRODUCED: SynthScope mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). SynthScope uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter "
     },
     {
       "benchmark": "ComGenVid (paper's new benchmark \u2014 Sora + VEO3",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.852 / avg_AP=0.858",
       "ours": "mAP=82.59 / acc=57.34 / AUROC=84.0",
-      "ours_agid": "mAP=82.59 / acc=57.34 / AUROC=84.0",
+      "ours_synthscope": "mAP=82.59 / acc=57.34 / AUROC=84.0",
       "ours_official": "",
       "status": "below",
-      "note": "REPRODUCED: AGID mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = AGID decoding the on-disk mp4s with decord + recomputing calibr"
+      "note": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibr"
     }
   ],
   "vib_net": [
@@ -479,17 +479,17 @@
       "metric": "AP",
       "paper": "map=95.53",
       "ours": "mAP=83.94 / acc=77.57",
-      "ours_agid": "mAP=83.94 / acc=77.57",
+      "ours_synthscope": "mAP=83.94 / acc=77.57",
       "ours_official": "",
       "status": "below",
-      "note": "AGID GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 mo"
+      "note": "SynthScope GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 mo"
     },
     {
       "benchmark": "Diffusion-source (SDv1.4-trained), ACC",
       "metric": "acc",
       "paper": "acc=85.83",
       "ours": "mAP=83.94 / acc=77.57",
-      "ours_agid": "mAP=83.94 / acc=77.57",
+      "ours_synthscope": "mAP=83.94 / acc=77.57",
       "ours_official": "",
       "status": "below",
       "note": "GenImage-8 subset only; see Table 1 entry. acc 77.57."
@@ -499,20 +499,20 @@
       "metric": "AP",
       "paper": "map=93.14",
       "ours": "mAP=61.71 / acc=57.91",
-      "ours_agid": "mAP=61.71 / acc=57.91",
+      "ours_synthscope": "mAP=61.71 / acc=57.91",
       "ours_official": "",
       "status": "below",
-      "note": "AGID ForenSynths-13 with the GenImage-SDv1.4-trained AGID VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: AGID only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is Gen"
+      "note": "SynthScope ForenSynths-13 with the GenImage-SDv1.4-trained SynthScope VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: SynthScope only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is Gen"
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), ACC",
       "metric": "acc",
       "paper": "acc=82.5",
       "ours": "mAP=61.71 / acc=57.91",
-      "ours_agid": "mAP=61.71 / acc=57.91",
+      "ours_synthscope": "mAP=61.71 / acc=57.91",
       "ours_official": "",
       "status": "below",
-      "note": "No ProGAN-trained AGID VIB checkpoint and no official ProGAN weights loaded; AGID only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cross-domain). No like-for-like acc number was produced."
+      "note": "No ProGAN-trained SynthScope VIB checkpoint and no official ProGAN weights loaded; SynthScope only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cross-domain). No like-for-like acc number was produced."
     }
   ]
 }

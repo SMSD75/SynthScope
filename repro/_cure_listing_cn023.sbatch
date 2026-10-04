@@ -7,7 +7,7 @@
 set -u
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 echo "NODE=$(hostname) $(date)"
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID python repro/_cure_make_lists.py 800 300 2>&1 | grep -avE "Warning|warn|nvml|raw_cnt"
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope python repro/_cure_make_lists.py 800 300 2>&1 | grep -avE "Warning|warn|nvml|raw_cnt"
 touch /ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref/lists/READY
 echo "LISTS READY $(date); holding node for rsync pulls"
 sleep 1500

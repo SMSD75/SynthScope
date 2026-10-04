@@ -9,7 +9,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: process.env.AGID_BACKEND || "http://127.0.0.1:8000",
+        target: process.env.SYNTHSCOPE_BACKEND || "http://127.0.0.1:8000",
         changeOrigin: true,
       },
     },

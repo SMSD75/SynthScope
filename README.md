@@ -7,8 +7,8 @@
 
 SynthScope is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
 
-> **Renamed:** SynthScope was previously called *AGID*. `import agid` and the `agid` command still work as aliases;
-> the `AGID_*` environment variables, the `AGID` conda env and the GitHub URL keep their names for now.
+> **Renamed:** SynthScope was previously called *AGID*. `import agid` and the `agid` command still work as deprecated aliases,
+> and old `AGID_*` environment variables and `AGID` conda-env launch scripts keep working. The GitHub URL below still uses the old name until the repo is renamed.
 
 Every detector is a binary classifier (`real` vs `fake`), and results are reported **per generator**, the standard way to measure generalization to unseen generative models. **17 detectors** are included (14 image, 3 video), each verified against its paper.
 
@@ -18,7 +18,7 @@ Every detector is a binary classifier (`real` vs `fake`), and results are report
 
 ```bash
 git clone https://github.com/SMSD75/AGID.git
-cd AGID
+cd SynthScope
 pip install -e .                 # editable install
 # extras:  ".[web]" web demo · ".[train]" wandb + dataset download · ".[dev]" contributor tooling
 ```
@@ -54,18 +54,18 @@ synthscope detect photo.png --model fat_former   # human-readable verdict
 synthscope detect clip.mp4  --model d3 --json    # machine-readable
 ```
 
-Checkpoints resolve from `$AGID_CKPT_DIR` (default `~/.cache/agid/checkpoints`); pass
+Checkpoints resolve from `$SYNTHSCOPE_CKPT_DIR` (default `~/.cache/synthscope/checkpoints`); pass
 `synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
 (D3, STALL) need none.
 
 ### Model zoo (Hugging Face Hub)
 
 When a detector's weights aren't present locally, `synthscope.load(...)` **auto-downloads** them from a Hub
-model-zoo repo (set `AGID_HUB_REPO`, or pass `synthscope.load(..., repo="user/agid-checkpoints")`):
+model-zoo repo (set `SYNTHSCOPE_HUB_REPO`, or pass `synthscope.load(..., repo="user/synthscope-checkpoints")`):
 
 ```bash
 synthscope pull --model clip                                 # fetch one checkpoint
-synthscope push --repo user/agid-checkpoints --public        # publish SynthScope-trained checkpoints (license-safe)
+synthscope push --repo user/synthscope-checkpoints --public        # publish SynthScope-trained checkpoints (license-safe)
 ```
 
 `push` uploads only SynthScope-trained checkpoints by default; weights derived from authors' official

@@ -1,4 +1,4 @@
-"""D3 integrated into AGID.
+"""D3 integrated into SynthScope.
 
 Paper: "D3: Training-Free AI-Generated Video Detection Using Second-Order
 Features" (Zheng et al., ICCV 2025). https://github.com/Zig-HS/D3
@@ -16,7 +16,7 @@ the per-video score is the standard deviation of the second-order features:
     s[b]                = std(F2[b, :])                              # [B]
 
 Real -> high ``s``; AI-generated -> low ``s``. We map ``s`` to two-class outputs
-so the AGID metrics work:
+so the SynthScope metrics work:
 
     outputs = stack([s - tau, tau - s], dim=1)      # col 0 = real, col 1 = fake
 
@@ -97,7 +97,7 @@ class _ResnetEncoder(nn.Module):
         return self.model(x)
 
 
-class AGIDD3Model(nn.Module):
+class SynthScopeD3Model(nn.Module):
     """Training-free second-order video detector (D3)."""
 
     def __init__(self, config: DictConfig):

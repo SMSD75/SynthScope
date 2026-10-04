@@ -14,7 +14,7 @@ export OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 mkdir -p "$TORCH_HOME" "$TRITON_CACHE_DIR"
 [ -d "$DATA/GenImage/train/real" ] || { echo "GenImage not staged on $(hostname)!"; exit 1; }
 echo "node=$(hostname) data=$DATA/GenImage real=$(ls $DATA/GenImage/train/real 2>/dev/null|wc -l) $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29663 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29663 \
   main.py trainer@TrainerConfig=image/pgc model@ModelConfig=image/pgc ModelConfig.backbone_name=facebook/dinov2-large \
   dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_dinov2]" \

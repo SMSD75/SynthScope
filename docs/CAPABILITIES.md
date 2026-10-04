@@ -5,33 +5,33 @@ hosts many published detectors behind one interface, reproduces each on its own 
 serves a web UI + a Python/CLI API. Read this before adding a method, then follow
 [`docs/ADD_DETECTOR.md`](ADD_DETECTOR.md) for the exact checklist.
 
-> Environment: everything runs in the **`AGID` conda env** —
-> `/home/ssalehi/miniconda3/bin/conda run -n AGID <cmd>`. Config is **Hydra** (`conf/`).
+> Environment: everything runs in the **`SynthScope` conda env** —
+> `/home/ssalehi/miniconda3/bin/conda run -n SynthScope <cmd>`. Config is **Hydra** (`conf/`).
 
 ---
 
 ## 1. What's already integrated (17 detectors)
 
-`synthscope.list_models()` / `from synthscope.api import list_specs`. Each is an `AGID<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs`. Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`.
 
 | key | modality | predict_kind | weights | interp map | method |
 |---|---|---|---|---|---|
-| `clip` | image | ce | agid | – | UnivFD / CLIP linear probe |
-| `cnn` | image | ce | agid | – | CNNDetection (ResNet-50) |
-| `dinov2`,`dinov3`,`adapted_dino` | image | ce | agid | – | DINO probes / adapter-tuned |
+| `clip` | image | ce | synthscope | – | UnivFD / CLIP linear probe |
+| `cnn` | image | ce | synthscope | – | CNNDetection (ResNet-50) |
+| `dinov2`,`dinov3`,`adapted_dino` | image | ce | synthscope | – | DINO probes / adapter-tuned |
 | `npr` | image | bce_npr | official | npr_residual | Neighboring-Pixel Relationships |
-| `safe` | image | ce | agid | safe_hf | High-freq DWT artifacts |
+| `safe` | image | ce | synthscope | safe_hf | High-freq DWT artifacts |
 | `aide` | image | ce | official | aide_dct | ConvNeXt-XXL + DCT/SRM (native-res 5-view) |
 | `fat_former` | image | ce | official | – | Forgery-aware adaptive transformer (CLIP) |
-| `spai` | image | bce | agid* | spai_patch | Spectral, any-resolution (MFM ViT-B/16) |
-| `co_spy` | image | bce | agid* | – | Semantic + artifact fusion (SigLIP + SD-VAE) |
+| `spai` | image | bce | synthscope* | spai_patch | Spectral, any-resolution (MFM ViT-B/16) |
+| `co_spy` | image | bce | synthscope* | – | Semantic + artifact fusion (SigLIP + SD-VAE) |
 | `pgc` | image | bce | official | pgc_peak | LoRA-DINOv2 + YCbCr residual, peak-guided |
 | `cure` | image | ce | official | – | Frozen PE-Core L/14 + Q/V LoRA + source-response subspace (mixing-ratio regression) |
-| `vib_net` | image | vib | agid | – | Variational information bottleneck (FLAVA) |
+| `vib_net` | image | vib | synthscope | – | Variational information bottleneck (FLAVA) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
-| `restrav` | video | video | agid | – | Representation-trajectory geometry (DINOv2) |
+| `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
@@ -44,7 +44,7 @@ convention the engine applies to `forward()` logits: `ce`→`softmax[:,1]`, `bce
 
 `models/<modality>/<key>/<key>.py`:
 ```python
-class AGID<Name>Model(nn.Module):
+class SynthScope<Name>Model(nn.Module):
     def __init__(self, config: DictConfig): ...        # build arch from config.ModelConfig
     def forward(self, images) -> logits: ...           # RAW logits, not probs; model-specific
                                                        # preprocessing (residual/DWT/DCT) goes INSIDE forward
@@ -61,7 +61,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 ## 3. Training infrastructure
 
-- **`trainer.py`** (`AGIDModelTrainer`) + **`main.py`** entrypoint; Hydra config in `conf/config.yaml`
+- **`trainer.py`** (`SynthScopeModelTrainer`) + **`main.py`** entrypoint; Hydra config in `conf/config.yaml`
   with groups `model/`, `dataset/`, `trainer/`. Multi-GPU via 🤗 `accelerate` (`accelerate_config.yaml`).
 - **`dataset.py`** — image/video dataset loaders; `_decode_rgb` feeds uint8 `[3,H,W]` tensors;
   `sample_video_frames(..., edge_crop=)` for video.
@@ -81,7 +81,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native_res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
 - **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --benchmark {genvideo|fakeonly|pergen}`.
-- `--ckpt` overrides the registry checkpoint (for official-vs-AGID side-by-side).
+- `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
 - Results live in `repro/`: `RESULTS_SUMMARY.md` (read first), `AGGREGATED_BENCHMARK.md`,
   `BENCHMARK_COVERAGE_MATRIX.md`, `REPRODUCED_MODELS_BENCHMARKS.md`, `repro/bench_results/*.json`,
@@ -98,7 +98,7 @@ Video: `genvideo_val`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedb
 
 Each `DatasetDef` lists candidate roots; **`_resolve_root` is node-portable** — it remaps the configured
 `/hddstore` path onto whatever scratch mount exists (`/hddstore`↔`/ssdstore`↔`/nvmestore`), overridable
-with `AGID_DATA_PREFIXES`. Labels are inferred from path tokens (`0_real`/`nature`→real,
+with `SYNTHSCOPE_DATA_PREFIXES`. Labels are inferred from path tokens (`0_real`/`nature`→real,
 `1_fake`/`ai`→fake). **Not every dataset is physically present on every node** — data is node-local
 scratch; check what's staged (e.g. CNNDetection, GenImage, GenImage_full are on cn029 `/ssdstore`).
 
@@ -113,14 +113,14 @@ det.predict("img.png")                  # -> {fake_probability, verdict, confide
 synthscope.list_models(); synthscope.available_models()   # registered / weights-present
 ```
 CLI: `synthscope list`, `synthscope detect <file> --model <k>`, `synthscope pull <k>` (fetch weights from the HF model
-zoo), `synthscope push` (maintainer). Weights resolve under **`$AGID_CKPT_DIR`** (default
+zoo), `synthscope push` (maintainer). Weights resolve under **`$SYNTHSCOPE_CKPT_DIR`** (default
 `/hddstore/ssalehi/AGID/checkpoints`; override per node) or are auto-downloaded.
 
 ---
 
 ## 7. Web interface (`interface/`, FastAPI + uvicorn)
 
-`bash interface/run_backend.sh` (`AGID_PORT`, `AGID_HOST`). Serves `frontend/dist` if built, else the
+`bash interface/run_backend.sh` (`SYNTHSCOPE_PORT`, `SYNTHSCOPE_HOST`). Serves `frontend/dist` if built, else the
 no-build `static/index.html`. Endpoints (`interface/backend/app.py`): `/api/models`, `/api/predict`
 (image/video, lazy model load + LRU), `/api/datasets[.../sample]`, `/api/predict_dataset`,
 `/api/score_batch`, `/api/leaderboard`, `/api/generator_benchmarks`, and a **SOTA-vs-detector** demo
@@ -152,13 +152,13 @@ weights (`*.pth`), `.env`, or caches.
 ## 9. Cluster cheat-sheet (IvI SLURM)
 
 - **cn023** (`quva`/`quvausers`, A6000) holds all detector checkpoints + most datasets on node-local
-  **`/hddstore`**; GPUs are often booked for days. `AGID_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints`.
+  **`/hddstore`**; GPUs are often booked for days. `SYNTHSCOPE_CKPT_DIR=/hddstore/ssalehi/AGID/checkpoints`.
 - **cees** (`ceesusers`: cn029 etc., a5000, free) and **cees6000** (cn030/31, rtx6000) use node-local
   `/ssdstore` / `/nvmestore`. To run there, stage checkpoints/data from cn023 (`rsync -aL`, dereference
   the symlinks) — note `pam_slurm_adopt` only allows ssh to a node where you hold an active job.
 - `/ivi/zfs/...` is the shared home (24 GiB user quota — don't park big checkpoints there);
   HF cache is shared at `/ivi/.../AGID/.cache_shared/hf` (`HF_HOME`). DINOv3 weights gated, under
-  `dinov3_checkpoints/` (`DINO_V3_WEIGHTS`); SPAI MFM backbone via `AGID_MFM_CKPT`.
+  `dinov3_checkpoints/` (`DINO_V3_WEIGHTS`); SPAI MFM backbone via `SYNTHSCOPE_MFM_CKPT`.
 
 ---
 

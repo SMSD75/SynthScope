@@ -6,7 +6,7 @@
   "training_set_in_paper": "NONE — STALL is training-free/zero-shot. It uses a CALIBRATION set of REAL videos only: VATEX (~33k real videos, disjoint from all eval benchmarks) to fit the spatial+temporal PCA-whitening transforms and the calibration log-likelihood distributions (shipped as precomputed/stall_params_vatex_dino_v3.npz). No fake videos, no labels, no fine-tuning. (paper abstract; README 'Custom Calibration Set')",
   "encoder_in_paper": "DINOv3 ViT-L/16 distilled (LVD-1689M, dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth), frozen, D=1024 per-frame embeddings. NOT DINOv2.",
   "paper_protocol": "8 fps over a centered 2-second window = 16 frames (decode via torchcodec); except 1-second generators (HotShot, MoonValley in GenVideo; Hotshot-XL in VideoFeedback) scored at 8 fps / 1 s = 8 frames. Frames resized 224x224. Score = average of spatial (max over frames) + temporal (min over frame-pairs) whitened-Gaussian log-likelihood percentiles vs VATEX calibration; higher=more real. Metric: AUC + AP. (README 'Reproducing Paper Results'; src/eval.py)",
-  "agid_encoder": "DINOv3 ViT-L/16 (same as paper, gated weights). AGID port verified BIT-EXACT against the official STALL._scores_from_embs (0 diff). AGID dataset configs (comgenvid/videofeedback) normalize with normalize_dinov3; restrav README + stall README note the official DINOv3 transform actually uses ImageNet mean/std (normalize_dinov2). AGID recomputes calibration on the GenVideo reals (recompute_params=true) rather than using shipped VATEX params.",
+  "synthscope_encoder": "DINOv3 ViT-L/16 (same as paper, gated weights). SynthScope port verified BIT-EXACT against the official STALL._scores_from_embs (0 diff). SynthScope dataset configs (comgenvid/videofeedback) normalize with normalize_dinov3; restrav README + stall README note the official DINOv3 transform actually uses ImageNet mean/std (normalize_dinov2). SynthScope recomputes calibration on the GenVideo reals (recompute_params=true) rather than using shipped VATEX params.",
   "benchmarks": [
     {
       "name": "GenVideo (DeMamba GenVideo-Val, 10 generators + MSR-VTT)",
@@ -19,7 +19,7 @@
       "our_status": "reproduced",
       "our_number": {"mAP": 82.38, "mAUROC": 83.51, "acc": 56.88},
       "our_per_generator_auroc": {"Crafter": 90.79, "Gen2": 92.13, "HotShot": 77.70, "Lavie": 88.71, "ModelScope": 76.68, "MoonValley": 89.24, "MorphStudio": 85.95, "Show_1": 81.57, "Sora": 82.68, "WildScrape": 69.64},
-      "gap_cause": "REPRODUCED (slightly ABOVE paper): AGID mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to AGID recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and AGID decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported per-gen AUC range 0.72-0.85.",
+      "gap_cause": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and SynthScope decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported per-gen AUC range 0.72-0.85.",
       "dataset_source": "on-disk: /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val (14 GB; ModelScope cccnju/Gen-Video). Reals = MSR-VTT."
     },
     {
@@ -33,7 +33,7 @@
       "our_status": "reproduced",
       "our_number": {"mAP": 83.07, "mAUROC": 85.10, "acc": 62.12},
       "our_per_generator_auroc": {"AnimateDiff": 86.90, "Fast-SVD": 92.88, "Hotshot-XL": 81.23, "LVDM": 88.83, "LaVie-base": 82.58, "ModelScope": 83.70, "Pika": 84.02, "SoRA-Clip": 80.18, "Text2Video-Zero": 84.08, "VideoCrafter2": 93.44, "ZeroScope-576w": 78.27},
-      "gap_cause": "REPRODUCED: AGID mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). AGID uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter much. Per-gen AUROC 78-93 sits inside the paper's reported 0.78-0.93 range.",
+      "gap_cause": "REPRODUCED: SynthScope mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). SynthScope uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter much. Per-gen AUROC 78-93 sits inside the paper's reported 0.78-0.93 range.",
       "dataset_source": "on-disk: /hddstore/ssalehi/AGID/VideoFeedback/test (812 MB; HF TIGER-Lab/VideoFeedback). Reals DiDeMo+Panda70M."
     },
     {
@@ -49,15 +49,15 @@
       "our_number": {"mAP": 82.59, "mAUROC": 84.00, "acc": 57.34},
       "our_per_generator_auroc": {"Sora": 82.38, "VEO3": 85.61},
       "our_per_generator_ap": {"Sora": 80.87, "VEO3": 84.30},
-      "gap_cause": "REPRODUCED: AGID mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = AGID decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in ComGenVid on-disk).",
+      "gap_cause": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in ComGenVid on-disk).",
       "dataset_source": "on-disk: /hddstore/ssalehi/AGID/ComGenVid (12 GB; HF OmerXYZ/comgenvid — ships both mp4s under real/MSVD + test/, AND precomputed embeddings.parquet). Sora+VEO3 fakes, MSVD real. NOT gated."
     }
   ],
   "summary": {
     "n_benchmarks_reported": 3,
-    "n_reproduced_in_agid": 3,
+    "n_reproduced_in_synthscope": 3,
     "n_below": 0,
     "n_missing": 0,
-    "key_finding": "ALL THREE STALL benchmarks (GenVideo, VideoFeedback, ComGenVid) are REPRODUCED in AGID using the paper's DINOv3 ViT-L/16 encoder, within ~0-3 points of paper and matching/slightly exceeding it (GenVideo 83.5 vs 80, VideoFeedback 85.1 vs 83, ComGenVid 84.0 vs 85). The AGID scoring math is verified BIT-EXACT against the official STALL._scores_from_embs. DINOv3 ViT-L/16 weights are GATED (Meta dinov3-downloads) but already downloaded locally (/hddstore/ssalehi/AGID/dinov3_checkpoints per memory). ComGenVid (incl. the gated-model VEO3 split) is fully on-disk and not gated. STALL is the cleanest of the three video repros."
+    "key_finding": "ALL THREE STALL benchmarks (GenVideo, VideoFeedback, ComGenVid) are REPRODUCED in SynthScope using the paper's DINOv3 ViT-L/16 encoder, within ~0-3 points of paper and matching/slightly exceeding it (GenVideo 83.5 vs 80, VideoFeedback 85.1 vs 83, ComGenVid 84.0 vs 85). The SynthScope scoring math is verified BIT-EXACT against the official STALL._scores_from_embs. DINOv3 ViT-L/16 weights are GATED (Meta dinov3-downloads) but already downloaded locally (/hddstore/ssalehi/AGID/dinov3_checkpoints per memory). ComGenVid (incl. the gated-model VEO3 split) is fully on-disk and not gated. STALL is the cleanest of the three video repros."
   }
 }

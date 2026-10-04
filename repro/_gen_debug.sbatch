@@ -10,7 +10,7 @@ export HF_HOME=/ssdstore/ssalehi/AGID/.cache_hf_gen PYTHONUNBUFFERED=1 PYTHONPAT
 IMG=/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/ideogram_bench/real/001.png
 P="make another image conceptually similar to this"
 run(){ name=$1; shift; echo "== $name $(date +%T)"
-  $CONDA run --no-capture-output -n AGID python $W/interface/backend/local_gen.py --model qwen_image_2_1 --image $IMG --out $G/gen_test_out/qwen_$name.png "$@" > $G/gen_test_out/qwen_$name.log 2>&1
+  $CONDA run --no-capture-output -n SynthScope python $W/interface/backend/local_gen.py --model qwen_image_2_1 --image $IMG --out $G/gen_test_out/qwen_$name.png "$@" > $G/gen_test_out/qwen_$name.log 2>&1
   grep -aE "saved|Error|OutOfMemory" $G/gen_test_out/qwen_$name.log | cut -c1-200 | tail -3; }
 run t2i          --prompt "a photograph of a black vulture perched on a bare tree branch, winter, natural light" --text-only
 run i2i_notile   --prompt "$P" --no-tiling --res 768

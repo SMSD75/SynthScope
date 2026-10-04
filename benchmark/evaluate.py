@@ -1,4 +1,4 @@
-"""Evaluate an AGID detector on a benchmark track and write a schema-valid submission JSON.
+"""Evaluate an SynthScope detector on a benchmark track and write a schema-valid submission JSON.
 
     python benchmark/evaluate.py --model fat_former --track forensynths \
         --data /path/to/forensynths_test --out benchmark/submissions/fat_former.json
@@ -8,7 +8,7 @@ preprocessing + fake-probability), then computes per-generator + mean metrics wi
 the same metrics the trainer reports. Image tracks only in v1 (video harness is future work; the
 video seed entries come from their reproduction eval).
 
-Expected data layout (AGID common layout):
+Expected data layout (SynthScope common layout):
 
     <data>/<generator>/real/*.png   <data>/<generator>/fake/*.png
 
@@ -108,7 +108,7 @@ def _infer_eval_type(model_type: str) -> str:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Evaluate a detector and emit a benchmark submission.")
-    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `synthscope list`)")
+    ap.add_argument("-m", "--model", required=True, help="SynthScope detector key (see `synthscope list`)")
     ap.add_argument("--track", required=True, choices=["forensynths", "genimage-sdv1.4"],
                     help="benchmark track (image tracks only in v1)")
     ap.add_argument("--data", required=True, help="benchmark root (per-generator real/fake dirs)")
@@ -120,7 +120,7 @@ def main(argv=None) -> int:
     ap.add_argument("--method", default=None, help="display name (default: registry name)")
     ap.add_argument("--eval-type", default=None,
                     help="override provenance (official-weights/from-scratch/frozen-probe/...)")
-    ap.add_argument("--submitted-by", default="AGID")
+    ap.add_argument("--submitted-by", default="SynthScope")
     args = ap.parse_args(argv)
 
     det = synthscope.load(args.model, device=args.device)
@@ -175,7 +175,7 @@ def main(argv=None) -> int:
         "verified": True,
         "source": f"synthscope evaluate.py on {root} ({len(per_gen)} generators)",
         "protocol_notes": None,
-        "agid_version": synthscope.__version__,
+        "synthscope_version": synthscope.__version__,
     }
     out = Path(args.out).expanduser()
     out.parent.mkdir(parents=True, exist_ok=True)

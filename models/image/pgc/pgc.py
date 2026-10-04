@@ -1,4 +1,4 @@
-"""PGC integrated into AGID.
+"""PGC integrated into SynthScope.
 
 Paper: "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection"
 (Zhou et al., 2026). https://github.com/xiaoyu6868/PGC
@@ -13,11 +13,11 @@ PGC is a *trained* image detector with two streams fused by a peak-guided calibr
   * Decision        : y = z_global + z_local   (single logit; paper Eq. 5).
 
 This file vendors the official model pieces (LoRA, residual extractor, residual stream, PGCM)
-faithfully, with two AGID-framework adaptations:
+faithfully, with two SynthScope-framework adaptations:
   1. The 6-channel input (RGB ‖ residual) is built INSIDE the model: the dataset feeds a normal
      3-channel image (ImageNet-normalized via ``normalize_dinov2``), the model de-normalizes to
      [0,1], computes the YCbCr quantization residual (paper Eq. 1), and concatenates. So the
-     dataset/transform pipeline stays standard, like every other AGID detector.
+     dataset/transform pipeline stays standard, like every other SynthScope detector.
   2. The DINO backbone loads by Hugging Face name (auto-download) instead of a local path.
 
 Residual / RGB normalization matches the official transforms: RGB uses ImageNet mean/std (what
@@ -25,7 +25,7 @@ DINOv2 expects), the residual uses mean 0 / std 0.5. The residual is resolution-
 pair this model with CROP-only transforms (no resize) in the experiment/dataset config.
 
 ``compute_loss`` returns ``{"loss": BCEWithLogits(logit, label), "outputs": [-logit, logit]}``
-(col 0 = real, col 1 = fake), so ``softmax(outputs)[:, 1]`` is the AGID fake score.
+(col 0 = real, col 1 = fake), so ``softmax(outputs)[:, 1]`` is the SynthScope fake score.
 """
 import logging
 import math
@@ -175,9 +175,9 @@ def _extract_cls_and_tokens(backbone, rgb):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# AGID model
+# SynthScope model
 # ─────────────────────────────────────────────────────────────────────────────
-class AGIDPGCModel(nn.Module):
+class SynthScopePGCModel(nn.Module):
     """Peak-Guided Calibration AI-generated-image detector (PGC)."""
 
     def __init__(self, config: DictConfig):

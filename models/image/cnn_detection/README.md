@@ -94,17 +94,17 @@ CNNDetection shows that a detector trained only on ProGAN can detect many other 
 | Other CNN synthesis tasks | CRN, IMLE, SITD, SAN | Often above chance |
 | Face manipulation | DeepFake, WhichFaceIsReal | Detectable but domain-dependent |
 
-### AGID reproduction (paper vs reproduced)
+### SynthScope reproduction (paper vs reproduced)
 
-Reproduced through `benchmark/bench_eval.py` (%). **AGID_official** loads the authors'
-released `blur_jpg_prob0.1` ResNet-50 into the AGID class; **AGID_train** fine-tunes ResNet-50 from scratch on
-ProGAN via the AGID recipe (single best run).
+Reproduced through `benchmark/bench_eval.py` (%). **SynthScope_official** loads the authors'
+released `blur_jpg_prob0.1` ResNet-50 into the SynthScope class; **SynthScope_train** fine-tunes ResNet-50 from scratch on
+ProGAN via the SynthScope recipe (single best run).
 
-| Benchmark | Paper | AGID_official | AGID_train |
+| Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---|---|---|
 | ForenSynths test set (11) | 90.8 | mAP 92.67 | mAP 94.42 / acc 76.36 |
 
-Both reproduce the paper's ForenSynths mAP (~91 vs 92.6); the lower acc@0.5 reflects the AGID per-generator
+Both reproduce the paper's ForenSynths mAP (~91 vs 92.6); the lower acc@0.5 reflects the SynthScope per-generator
 mean over the full on-disk set (including non-256 sources the paper's headline omits), while the *ranking*
 metric (mAP) matches.
 
@@ -144,8 +144,8 @@ CNNDetection is a foundational fake-image detection baseline. It trains an Image
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | ForenSynths test set (CVPR paper Table 2 = 11  | map=90.8 | mAP=92.67 | mAP=94.42 / acc=76.36 | reproduced |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

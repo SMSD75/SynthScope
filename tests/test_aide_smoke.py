@@ -5,7 +5,7 @@ Exercises, without any download (tiny ``convnext_base`` trunk, random ResNet-50s
 * ``AIDEFiveView`` native-resolution preprocessing: arbitrary PIL -> ``[5, 3, 256, 256]``,
 * ``DCT_base_Rec_Module`` picks 4 distinct native-res patches,
 * ``HPF`` (30 SRM kernels) shape + frozen weights,
-* ``AGIDAIDEModel`` forward / compute_loss on a ``[B, 5, 3, 256, 256]`` batch + backward,
+* ``SynthScopeAIDEModel`` forward / compute_loss on a ``[B, 5, 3, 256, 256]`` batch + backward,
 * the ConvNeXt trunk stays frozen.
 """
 
@@ -20,7 +20,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.image.aide.aide import AGIDAIDEModel
+from models.image.aide.aide import SynthScopeAIDEModel
 from models.image.aide.official_arch import AIDEFiveView, DCT_base_Rec_Module, HPF
 
 
@@ -76,8 +76,8 @@ def main() -> None:
     test_five_view()
 
     config = build_test_config()
-    print("[1] Building AGIDAIDEModel (convnext_base, no pretrained, random ResNet-50s) ...")
-    model = AGIDAIDEModel(config)
+    print("[1] Building SynthScopeAIDEModel (convnext_base, no pretrained, random ResNet-50s) ...")
+    model = SynthScopeAIDEModel(config)
     model.eval()
 
     print("[2] ConvNeXt trunk must be frozen ...")

@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Compile all Python sources
-        run: python -m compileall -q synthscope agid interface models benchmark *.py
+        run: python -m compileall -q synthscope synthscope interface models benchmark *.py
 
   leaderboard:
     name: Benchmark submissions + leaderboard
@@ -43,7 +43,7 @@ jobs:
       - run: pip install "ruff>=0.4"
       # Lint the maintained library surface (config + ignores in pyproject.toml [tool.ruff]).
       # Repo-wide syntax is covered by the byte-compile job above.
-      - run: ruff check synthscope agid
+      - run: ruff check synthscope synthscope
 
   package:
     name: Build + metadata check

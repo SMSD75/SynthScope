@@ -65,12 +65,12 @@ def load(
     Parameters
     ----------
     model:        detector key (see :func:`list_models`).
-    checkpoint:   optional path to a ``.pth`` to load instead of the one in ``$AGID_CKPT_DIR``.
+    checkpoint:   optional path to a ``.pth`` to load instead of the one in ``$SYNTHSCOPE_CKPT_DIR``.
     device:       ``"cuda"``/``"cpu"`` (default: CUDA if available). The model is built lazily on
                   the first :meth:`Detector.predict` call.
     auto_download: if the weights are absent locally, fetch them from the Hugging Face model zoo
                   on first use (default True). Ignored when ``checkpoint`` is given.
-    repo:         Hub repo to download from (default ``$AGID_HUB_REPO`` / the project default).
+    repo:         Hub repo to download from (default ``$SYNTHSCOPE_HUB_REPO`` / the project default).
     """
     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
                     auto_download=auto_download, repo=repo)
@@ -94,7 +94,7 @@ class Detector:
     ):
         self._custom_ckpt = checkpoint is not None
         if checkpoint is not None:
-            # An absolute checkpoint path overrides the file resolved under $AGID_CKPT_DIR
+            # An absolute checkpoint path overrides the file resolved under $SYNTHSCOPE_CKPT_DIR
             # (CHECKPOINTS_DIR / "<abs>" collapses to the absolute path in pathlib).
             ckpt = str(Path(checkpoint).expanduser().resolve())
             spec = dataclasses.replace(spec, checkpoint=ckpt)
@@ -165,7 +165,7 @@ class Detector:
         if not self._auto_download:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "
-                f"file under $AGID_CKPT_DIR, or pass checkpoint=PATH."
+                f"file under $SYNTHSCOPE_CKPT_DIR, or pass checkpoint=PATH."
             )
         from . import hub
 

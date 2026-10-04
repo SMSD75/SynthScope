@@ -6,7 +6,7 @@
   "training_set_in_paper": "VidProM (Wang & Yang) AI fakes — 50k samples, 10k each from Pika, VideoCrafter2, Text2Video-Zero, ModelScope, Sora — vs 50k natural videos from DVSC2023/DVSC (Video Similarity Challenge); stratified 50/50 train/test, classes balanced. Only an MLP (64->32) trains on the 21-D geometry feature; DINOv2 is frozen. (paper Sec 5-6)",
   "encoder_in_paper": "DINOv2 ViT-S/14 (frozen, torch.hub facebookresearch/dinov2), final block (block.11) CLS (384) + patch tokens flattened/concatenated. NOT trained.",
   "paper_protocol": "T=24 frames sampled over a 2 s window (dt = 2s/23); each frame resized to 224x224, normalized to [0,1] (NO ImageNet normalize — official preprocess is frames/255 + BICUBIC resize). 21-D feature = 7 distances + 6 curvatures + (mean,min,max,var) of distances + (mean,min,max,var) of curvatures. Classifier MLP threshold tau* tuned on train for F1. Metric: accuracy + mAP (+ AUROC/F1). (paper Sec 4-7)",
-  "agid_encoder": "DINOv2 ViT-S/14 (same as paper). AGID port standardizes the 21-D features with BatchNorm1d(affine=False) instead of saved mean.npy/std.npy, and uses a single-logit BCE head; bit-exact repro lives in interface/scripts/restrav_repro.py. NB: AGID dataset config genvidbench.yaml uses normalize_dinov2 (ImageNet stats), but restrav.py docstring warns the official recipe is raw [0,1] — a train/serve normalization caveat.",
+  "synthscope_encoder": "DINOv2 ViT-S/14 (same as paper). SynthScope port standardizes the 21-D features with BatchNorm1d(affine=False) instead of saved mean.npy/std.npy, and uses a single-logit BCE head; bit-exact repro lives in interface/scripts/restrav_repro.py. NB: SynthScope dataset config genvidbench.yaml uses normalize_dinov2 (ImageNet stats), but restrav.py docstring warns the official recipe is raw [0,1] — a train/serve normalization caveat.",
   "benchmarks": [
     {
       "name": "A) VidProM vs image-based detectors (Table 2)",
@@ -18,7 +18,7 @@
       "official_eval_protocol": "Balanced test set 40,000 real + 10,000 fake per generator; DINOv2 ViT-S/14, 24 frames @ 2 s, MLP. Accuracy + mAP. (paper Sec 7-A)",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not run as the VidProM-vs-image protocol in AGID. AGID only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav.",
+      "gap_cause": "Not run as the VidProM-vs-image protocol in SynthScope. SynthScope only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav.",
       "dataset_source": "HF: VidProM (Wang & Yang, openreview pYNl76onJL). Needs download."
     },
     {
@@ -30,7 +30,7 @@
       "official_eval_protocol": "Seen: 80k balanced 50/50 split on the 4 generators. Unseen: train excluding 2 generators (VC2,T2VZ), test on them. Future: train on older gens, test on Sora. (paper Sec 7-B, Table 3)",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not run in AGID (VidProM not downloaded). AGID's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but this was not logged into bench_results.",
+      "gap_cause": "Not run in SynthScope (VidProM not downloaded). SynthScope's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but this was not logged into bench_results.",
       "dataset_source": "HF: VidProM. Needs download."
     },
     {
@@ -44,7 +44,7 @@
       "our_status": "reproduced",
       "our_number": {"acc": 86.87, "mAP": 92.70, "mAUROC": 95.90},
       "our_per_generator_ap": {"cogvideo": 99.79, "mora": 89.76, "ms": 99.62, "musev": 96.24, "pika": 91.90, "svd": 97.98, "t2vz": 66.78, "vc2": 99.55},
-      "gap_cause": "REPRODUCED: AGID mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). AGID's accuracy (86.87) is the uncalibrated argmax accuracy and the AGID test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the paper's quality. The one weak generator is t2vz (AP 66.78, fake_acc 2.0) — the same Text2Video-Zero failure mode D3 reports.",
+      "gap_cause": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the paper's quality. The one weak generator is t2vz (AP 66.78, fake_acc 2.0) — the same Text2Video-Zero failure mode D3 reports.",
       "dataset_source": "on-disk: /hddstore/ssalehi/AGID/GenVidBench/test (362 GB; HF bitmind/GenVidBench, per-source rar/7z, needs unrar). reals = Vript + HD-VG-130M; 8 generators -> 1_fake."
     },
     {
@@ -56,7 +56,7 @@
       "official_eval_protocol": "Train on a single generator, test on 10 unseen GenVideo generators; report avg Recall/F1/AP across the unseen test generators per training condition. Baselines (TALL/NPR/STIL/DeMamba) from DeMamba benchmark. (paper Sec 7-C, Table 5)",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not run as the one-to-many DeMamba protocol in AGID. AGID DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 — this is NOT a paper protocol (it shifts the real-video source too) and is documented in the restrav README as a stress test, not a repro target. The proper one-train-generator protocol was not reproduced.",
+      "gap_cause": "Not run as the one-to-many DeMamba protocol in SynthScope. SynthScope DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 — this is NOT a paper protocol (it shifts the real-video source too) and is documented in the restrav README as a stress test, not a repro target. The proper one-train-generator protocol was not reproduced.",
       "dataset_source": "on-disk reals/fakes available via /hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val, but the per-train-generator splits were not constructed."
     },
     {
@@ -68,7 +68,7 @@
       "official_eval_protocol": "Zero-shot: MLP trained in Sec 6 (no Veo3 in training), tested on 200 Veo3 vs 200 natural video pairs. (paper Sec 7-D)",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not run in AGID. Veo3 videos are GATED — Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collected independently, so a Veo3 evaluation is possible via that data even though ReStraV's own 200-clip set is not released.",
+      "gap_cause": "Not run in SynthScope. Veo3 videos are GATED — Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collected independently, so a Veo3 evaluation is possible via that data even though ReStraV's own 200-clip set is not released.",
       "dataset_source": "gated — ReStraV authors' Veo3 200-clip set not released. Alternative VEO3 clips available on-disk via ComGenVid (/hddstore/ssalehi/AGID/ComGenVid, STALL's set)."
     },
     {
@@ -80,15 +80,15 @@
       "official_eval_protocol": "2AFC on matched real/AI pairs (198 per source) sharing the same start frame; predict higher-mean-curvature video as AI-generated; NO classifier training/calibration. Compared to Gemini 1.5 Pro numbers from Motamed et al. (Physics-IQ). (paper Sec 7-E)",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "Not run in AGID. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the AGID video pipeline.",
+      "gap_cause": "Not run in SynthScope. Physics-IQ dataset (Motamed et al., arXiv:2501.09038) not downloaded, and the 2AFC matched-pair protocol is not implemented in the SynthScope video pipeline.",
       "dataset_source": "github/HF: Physics-IQ (Motamed et al., arXiv:2501.09038; github.com/google-deepmind/physics-IQ-benchmark). Needs download."
     }
   ],
   "summary": {
     "n_benchmarks_reported": 6,
-    "n_reproduced_in_agid": 1,
+    "n_reproduced_in_synthscope": 1,
     "n_below": 0,
     "n_missing": 5,
-    "key_finding": "ReStraV's HEADLINE GenVidBench Main-task number (93.01 acc) is REPRODUCED in AGID (mAP 92.70, mAUROC 95.90) using the same DINOv2 ViT-S/14 encoder + 21-D geometry MLP. The other 5 paper benchmarks (VidProM image+video tables, DeMamba one-to-many, Veo3 zero-shot, Physics-IQ 2AFC) are NOT run in AGID, almost all because the datasets are not downloaded (VidProM, Physics-IQ) or are gated (ReStraV's own Veo3 200-clip set is unreleased — though STALL's ComGenVid VEO3 split is on-disk as an alternative). The single AGID GenVideo-Val number (mAP 59.16) is a cross-DATASET stress test, not a paper protocol, and should not be read as a repro miss."
+    "key_finding": "ReStraV's HEADLINE GenVidBench Main-task number (93.01 acc) is REPRODUCED in SynthScope (mAP 92.70, mAUROC 95.90) using the same DINOv2 ViT-S/14 encoder + 21-D geometry MLP. The other 5 paper benchmarks (VidProM image+video tables, DeMamba one-to-many, Veo3 zero-shot, Physics-IQ 2AFC) are NOT run in SynthScope, almost all because the datasets are not downloaded (VidProM, Physics-IQ) or are gated (ReStraV's own Veo3 200-clip set is unreleased — though STALL's ComGenVid VEO3 split is on-disk as an alternative). The single SynthScope GenVideo-Val number (mAP 59.16) is a cross-DATASET stress test, not a paper protocol, and should not be read as a repro miss."
   }
 }

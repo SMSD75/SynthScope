@@ -1,20 +1,20 @@
 import torch
-from models.image.clip_detection.clip_detection import AGIDCLIPModel
-from models.image.cnn_detection.cnn_detection import AGIDCNNModel
-from models.image.dino_detection.dino_detection import AGIDDINOModel, AGIDDINOv3Model
-from models.image.adapted_dino.adapted_dino import AGIDAdaptedDINOModel
-from models.image.safe.safe import AGIDSAFEModel
-from models.image.fat_former.fat_former import AGIDFatFormerModel
-from models.image.co_spy.co_spy import AGIDCoSpyModel
-from models.image.aide.aide import AGIDAIDEModel
+from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
+from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
+from models.image.dino_detection.dino_detection import SynthScopeDINOModel, SynthScopeDINOv3Model
+from models.image.adapted_dino.adapted_dino import SynthScopeAdaptedDINOModel
+from models.image.safe.safe import SynthScopeSAFEModel
+from models.image.fat_former.fat_former import SynthScopeFatFormerModel
+from models.image.co_spy.co_spy import SynthScopeCoSpyModel
+from models.image.aide.aide import SynthScopeAIDEModel
 from models.image.spai.spai import SPAI
-from models.image.vib_net.vib_net import AGIDVIBNetModel
+from models.image.vib_net.vib_net import SynthScopeVIBNetModel
 from models.image.npr.npr import NPR
-from models.image.pgc.pgc import AGIDPGCModel
-from models.image.cure.cure import AGIDCuReModel
-from models.video.d3.d3 import AGIDD3Model
-from models.video.restrav.restrav import AGIDReStraVModel
-from models.video.stall.stall import AGIDSTALLModel
+from models.image.pgc.pgc import SynthScopePGCModel
+from models.image.cure.cure import SynthScopeCuReModel
+from models.video.d3.d3 import SynthScopeD3Model
+from models.video.restrav.restrav import SynthScopeReStraVModel
+from models.video.stall.stall import SynthScopeSTALLModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
@@ -24,7 +24,7 @@ import os
 from logger import build_logger
 from tqdm import tqdm
 
-class AGIDModelTrainer:
+class SynthScopeModelTrainer:
     def __init__(self, config: DictConfig, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
         self.optimizer = torch.optim.AdamW(
@@ -69,41 +69,41 @@ class AGIDModelTrainer:
     def _build_model(self, config: DictConfig):
         model_type = config.ModelConfig.get("model_type", "dino").lower()
         if model_type == "safe":
-            return AGIDSAFEModel(config)
+            return SynthScopeSAFEModel(config)
         if model_type == "fat_former":
-            return AGIDFatFormerModel(config)
+            return SynthScopeFatFormerModel(config)
         if model_type == "co_spy":
-            return AGIDCoSpyModel(config)
+            return SynthScopeCoSpyModel(config)
         if model_type == "aide":
-            return AGIDAIDEModel(config)
+            return SynthScopeAIDEModel(config)
         if model_type == "spai":
             return SPAI(config)
         if model_type == "vib_net":
-            return AGIDVIBNetModel(config)
+            return SynthScopeVIBNetModel(config)
         if model_type == "npr":
             return NPR(config)
         if model_type == "pgc":
-            return AGIDPGCModel(config)
+            return SynthScopePGCModel(config)
         if model_type == "cure":
-            return AGIDCuReModel(config)
+            return SynthScopeCuReModel(config)
         if model_type == "d3":
-            return AGIDD3Model(config)
+            return SynthScopeD3Model(config)
         if model_type == "restrav":
-            return AGIDReStraVModel(config)
+            return SynthScopeReStraVModel(config)
         if model_type == "stall":
-            return AGIDSTALLModel(config)
+            return SynthScopeSTALLModel(config)
         if model_type == "cnn":
-            return AGIDCNNModel(config)
+            return SynthScopeCNNModel(config)
         if model_type == "adapted_dino":
-            return AGIDAdaptedDINOModel(config)
+            return SynthScopeAdaptedDINOModel(config)
         if model_type == "dinov2":
-            return AGIDDINOModel(config)
+            return SynthScopeDINOModel(config)
         if model_type == "dinov3":
-            return AGIDDINOv3Model(config)
+            return SynthScopeDINOv3Model(config)
         # Explicit model_type wins above; the CLIP-prefixed backbone is only a last-resort
         # fallback, so e.g. model_type=cnn with the default CLIP:ViT-L/14 backbone is not hijacked.
         if model_type == "clip" or config.ModelConfig.backbone_name.startswith("CLIP:"):
-            return AGIDCLIPModel(config)
+            return SynthScopeCLIPModel(config)
         raise ValueError(f"Invalid model_type: {model_type}")
     
     def _filter_trainable_parameters(self):

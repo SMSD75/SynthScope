@@ -37,7 +37,7 @@ GITHUB_RE = re.compile(r'https?://github\.com/[A-Za-z0-9_.\-]+/[A-Za-z0-9_.\-]+'
 def _query(term: str, max_results: int) -> list[dict]:
     q = f'(ti:"{term}" OR abs:"{term}") AND cat:cs.CV'
     url = f"{API}?{urllib.parse.urlencode({'search_query': q, 'start': 0, 'max_results': max_results, 'sortBy': 'submittedDate', 'sortOrder': 'descending'})}"
-    req = urllib.request.Request(url, headers={"User-Agent": "AGID-trending/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "SynthScope-trending/1.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         root = ET.fromstring(r.read())
     out = []

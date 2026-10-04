@@ -8,7 +8,7 @@ SCR=$(for d in /hddstore /ssdstore /sddstore; do [ -d "$d/ssalehi" ] && echo "$d
 CONDA=/home/ssalehi/miniconda3/bin/conda; SAVE=/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide; mkdir -p "$SAVE" "$SC"/{huggingface,torch,triton}
 export HF_HOME=$SC/huggingface TORCH_HOME=$SC/torch TRITON_CACHE_DIR=$SC/triton OMP_NUM_THREADS=4 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 echo "node=$(hostname) scratch=$SCR data=$DATA/GenImage $(date)"
-$CONDA run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29631 \
+$CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29631 \
   main.py trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
   DatasetConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]" \
   DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_clip]" \

@@ -17,7 +17,7 @@ cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 CONDA=/home/ssalehi/miniconda3/bin/conda
 echo "NODE=$(hostname)  GPUS=$CUDA_VISIBLE_DEVICES  $(date)"
 
-$CONDA run --no-capture-output -n AGID python -c \
+$CONDA run --no-capture-output -n SynthScope python -c \
   "import torch; assert torch.cuda.is_available(); print('CUDA OK,', torch.cuda.device_count(), 'GPUs')" || { echo "CUDA FAIL"; exit 1; }
 
 # data: MUST reuse pre-staged node-local copy on cn029 (cn023 is down -> no ssh-stream fallback)
@@ -39,7 +39,7 @@ export HF_HOME=/ivi/zfs/s0/original_homes/ssalehi/AGID/.cache_shared/hf
 export PYTHONUNBUFFERED=1
 NG=$(echo $CUDA_VISIBLE_DEVICES | tr ',' '\n' | wc -l)
 echo "[train] DDP on $NG GPUs (ProGAN, const-LR / official-matched schedule)"
-$CONDA run --no-capture-output -n AGID accelerate launch \
+$CONDA run --no-capture-output -n SynthScope accelerate launch \
   --multi_gpu --num_processes $NG --mixed_precision bf16 --main_process_port 29572 \
   repro/train_pgc_ddp.py
 echo "[train] done $(date)"
@@ -49,7 +49,7 @@ if [ -d "$DATA/test" ]; then
   for ck in model_ep10 model_ep25 model_ep50 model_ep75 model_ep100; do
     [ -f "$OUTDIR/$ck.pth" ] || { echo "[eval] missing $ck.pth, skip"; continue; }
     echo "[eval] === $ck on ForenSynths ==="
-    $CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py \
+    $CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py \
       --model pgc --benchmark forensynths --data "$DATA/test" --bs 32 \
       --ckpt "$OUTDIR/$ck.pth" --tag "pgc_constlr_${ck#model_}"
   done

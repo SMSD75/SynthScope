@@ -1,4 +1,4 @@
-"""STALL integrated into AGID.
+"""STALL integrated into SynthScope.
 
 Paper: "Training-free Detection of Generated Videos via Spatial-Temporal Likelihoods"
 (Ben Hayun et al., CVPR 2026). https://github.com/OmerBenHayun/STALL
@@ -19,7 +19,7 @@ averaged:
 
     final = 0.5 * ( pct(max_t spatial_LL) + pct(min_t temporal_LL) )   # higher => more REAL
 
-We map ``final`` to two-class outputs so the AGID metrics work:
+We map ``final`` to two-class outputs so the SynthScope metrics work:
 
     outputs = stack([final, 1 - final], dim=1)        # col 0 = real, col 1 = fake
 
@@ -185,7 +185,7 @@ class _Dinov3Encoder(nn.Module):
 # ─────────────────────────────────────────────────────────────────────────────
 # Detector
 # ─────────────────────────────────────────────────────────────────────────────
-class AGIDSTALLModel(nn.Module):
+class SynthScopeSTALLModel(nn.Module):
     """Training-free spatial-temporal likelihood video detector (STALL)."""
 
     def __init__(self, config: DictConfig):
@@ -242,7 +242,7 @@ class AGIDSTALLModel(nn.Module):
     def fit_calibration(self, loader=None, save_to=None) -> dict:
         """Compute calibration params from a REAL-video set, then ``fit_stall_params``.
 
-        Uses the AGID stack so calibration sees pixels exactly like inference: video loading
+        Uses the SynthScope stack so calibration sees pixels exactly like inference: video loading
         via the dataset layer, ImageNet preprocessing via the transform pipeline, and this
         model's frozen DINOv3 backbone for features. If ``loader`` is None it is built from
         ``self.config`` (``ModelConfig.calib_split``, default 'train'); only real clips
@@ -315,7 +315,7 @@ class AGIDSTALLModel(nn.Module):
         feats = self.backbone.encode_frames(flat).float()           # [B*T, D]
         return feats.reshape(b, t, -1).cpu().numpy()
 
-    # ── AGID framework interface ────────────────────────────────────────────────
+    # ── SynthScope framework interface ────────────────────────────────────────────────
     def forward(self, frames: torch.Tensor) -> torch.Tensor:
         """``frames`` [B, T, 3, H, W] (normalized by the dataset transform) -> [B, 2] = [real, fake]."""
         embs = self.extract_embeddings(frames)                      # [B, T, D]

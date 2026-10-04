@@ -1,9 +1,9 @@
 """Standalone, FAITHFUL evaluation of the OFFICIAL CNNDetection detector (Wang et al., CVPR'20).
 
-The AGID ``cnn`` re-implementation does NOT load the official weights faithfully
+The SynthScope ``cnn`` re-implementation does NOT load the official weights faithfully
 (in-domain ProGAN AP came out ~72 instead of ~100). This script vendors the EXACT
 official ResNet-50 architecture (``networks/resnet.py``) and the EXACT official eval
-preprocessing so we can report official-weights numbers side by side with the AGID
+preprocessing so we can report official-weights numbers side by side with the SynthScope
 re-implementation.
 
 OFFICIAL PIPELINE (verified against github.com/PeterWang512/CNNDetection @ master):
@@ -21,7 +21,7 @@ OFFICIAL PIPELINE (verified against github.com/PeterWang512/CNNDetection @ maste
 
 The discover()/_images()/_collect()/metrics() helpers below are COPIED VERBATIM from
 ``benchmark/bench_eval.py`` so generator discovery + UFD real-pairing + metrics are
-IDENTICAL to the AGID re-implementation runs and the aggregator picks up the output.
+IDENTICAL to the SynthScope re-implementation runs and the aggregator picks up the output.
 
 CLI:
   python repro/official_evals/cnn_official_eval.py \
@@ -395,7 +395,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (BENCH_RESULTS_DIR / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

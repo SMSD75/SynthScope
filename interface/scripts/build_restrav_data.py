@@ -14,8 +14,8 @@ full 18k-clip benchmark would dominate runtime). The full GenVideo-Val also gets
 Single 'genvideo' folder per split: with one folder_id the per-folder AP/AUROC AIGIMetrics
 reports equal the global real-vs-fake metric (per-generator folders would be single-class).
 
-  conda run -n AGID python interface/scripts/build_restrav_data.py
-Override OUT with AGID_RESTRAV_DIR.
+  conda run -n SynthScope python interface/scripts/build_restrav_data.py
+Override OUT with SYNTHSCOPE_RESTRAV_DIR.
 """
 import os
 import random
@@ -26,7 +26,7 @@ from pathlib import Path
 
 EXTRACTED = Path("/hddstore/ssalehi/AGID/d3_repro/extracted")
 GENVIDEO_VAL = Path("/hddstore/ssalehi/AGID/d3_repro/genvideo_val/GenVideo-Val")
-OUT = Path(os.environ.get("AGID_RESTRAV_DIR", "/hddstore/ssalehi/AGID/restrav_data"))
+OUT = Path(os.environ.get("SYNTHSCOPE_RESTRAV_DIR", "/hddstore/ssalehi/AGID/restrav_data"))
 FULLTEST = Path(str(OUT) + "_fulltest")
 
 N_TRAIN_PER_CLASS = int(os.environ.get("RESTRAV_N_TRAIN", "8000"))

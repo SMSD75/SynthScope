@@ -1,6 +1,6 @@
 # Multi-GPU retrain plan — push the "near" detectors to official (tomorrow)
 
-*Goal: close the remaining AGID-vs-official gaps that this session showed are training/recipe-bound, using
+*Goal: close the remaining SynthScope-vs-official gaps that this session showed are training/recipe-bound, using
 multi-GPU so the heavyweight frozen backbones (SigLIP-384, MFM-ViT-448, ConvNeXt-XXL, dinov2-L) are
 tractable. The diagnosis is done; this is execution.*
 

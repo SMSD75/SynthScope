@@ -2,7 +2,7 @@
 
 This vendors the official ``PatchBasedMFViT`` (github mever-team/spai, built via the official
 ``build_mf_vit`` from the checkpoint's own stored config), so its official-weights numbers sit
-side by side with the AGID re-implementation in the same ``repro/bench_results`` /
+side by side with the SynthScope re-implementation in the same ``repro/bench_results`` /
 ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 Model build + preprocessing + P(fake) are COPIED from the verified vendored eval
@@ -303,7 +303,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (BENCH_RESULTS_DIR / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

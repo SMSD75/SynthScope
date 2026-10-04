@@ -17,7 +17,7 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 from accelerate import Accelerator
 
 from config_utils import compose_config
-from models.image.pgc.pgc import AGIDPGCModel
+from models.image.pgc.pgc import SynthScopePGCModel
 
 DATA_ROOT = os.environ.get("PGC_DATA_ROOT", "/hddstore/ssalehi/AGID/CNNDetection/train")
 N = int(os.environ.get("PGC_N", "400000"))
@@ -82,7 +82,7 @@ def main():
                     pin_memory=True, drop_last=True, persistent_workers=True)
     cfg = compose_config(["model@ModelConfig=image/pgc", "trainer@TrainerConfig=image/pgc",
                           "dataset@DatasetConfig=image/cnndetection"])
-    model = AGIDPGCModel(cfg)
+    model = SynthScopePGCModel(cfg)
     init = os.environ.get("PGC_INIT", "")
     if init and os.path.isfile(init):                 # resume from a prior epoch checkpoint
         sd = torch.load(init, map_location="cpu", weights_only=False)

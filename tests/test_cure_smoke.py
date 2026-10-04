@@ -3,7 +3,7 @@
 Checks, on CPU:
 * ``CuReTransform``: any PIL size -> finite ``[3, 336, 336]`` in [-1, 1]; the PNG source-format hint
   changes the result (PNG sources get the official JPEG q96 round-trip), non-PNG / no hint does not,
-* ``AGIDCuReModel`` keeps the official key layout (backbone.*, mu, W [1024,128], head.*) so the
+* ``SynthScopeCuReModel`` keeps the official key layout (backbone.*, mu, W [1024,128], head.*) so the
   released adapter loads key-for-key,
 * only the LoRA tensors + head are trainable; the rest of the backbone is frozen,
 * ``forward`` -> [B, 2] finite logits; ``compute_loss`` + backward reach the LoRA and head params.
@@ -20,7 +20,7 @@ from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models.image.cure.cure import AGIDCuReModel
+from models.image.cure.cure import SynthScopeCuReModel
 from models.image.cure.preprocess import SRC_FORMAT_KEY, CuReTransform
 
 
@@ -59,8 +59,8 @@ def main() -> None:
     torch.manual_seed(0)
     test_transform()
 
-    print("[1] Building AGIDCuReModel (architecture only, no base download) ...")
-    model = AGIDCuReModel(build_test_config())
+    print("[1] Building SynthScopeCuReModel (architecture only, no base download) ...")
+    model = SynthScopeCuReModel(build_test_config())
     model.eval()
 
     print("[2] Official key layout ...")

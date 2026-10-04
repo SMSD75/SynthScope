@@ -2,7 +2,7 @@
 
 This script vendors the EXACT official SAFE architecture + eval preprocessing from
 github.com/Ouxiang-Li/SAFE so the in-repo official checkpoint loads faithfully.
-The AGID `safe` class does NOT load the official weights correctly (in-domain ProGAN
+The SynthScope `safe` class does NOT load the official weights correctly (in-domain ProGAN
 AP came out ~32, i.e. random), so this is a separate, self-contained reference run.
 
 Faithfully vendored from the official repo:
@@ -18,10 +18,10 @@ Faithfully vendored from the official repo:
 
 The dataset discovery / real-pairing (discover / _images / _collect / metrics) is COPIED
 VERBATIM from benchmark/bench_eval.py so the generator grouping + UFD pairing are identical
-to the AGID re-implementation runs (apples-to-apples).
+to the SynthScope re-implementation runs (apples-to-apples).
 
 Output JSON + MASTER_RESULTS.jsonl line match bench_eval.py exactly, with
-model="safe", agid_version="official-vendored".
+model="safe", synthscope_version="official-vendored".
 
 CLI:
   python repro/official_evals/safe_official_eval.py \
@@ -351,7 +351,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")

@@ -74,7 +74,7 @@ agid = "synthscope.cli:main"      # deprecated alias
 # install (`pip install -e .`) is the supported path — it puts the repo root on sys.path so
 # the existing flat imports (dataset, trainer, models.*, config_utils, interface.*) all resolve.
 [tool.setuptools]
-py-modules = ["main", "trainer", "dataset", "metrics", "transformations", "logger", "config_utils"]
+py-modules = ["main", "trainer", "dataset", "metrics", "transformations", "logger", "config_utils", "_synthscope_env"]
 
 [tool.setuptools.packages.find]
 include = ["synthscope*", "agid*", "models*", "interface*"]

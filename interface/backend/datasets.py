@@ -12,6 +12,7 @@ GenVideo ``Real`` + ``Fake/<gen>``, ReStraV ``genvideo/{0_real,1_fake}``).
 from __future__ import annotations
 
 import os
+import _synthscope_env  # noqa: F401  (maps legacy AGID_* variables to SYNTHSCOPE_*)
 import random
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -109,7 +110,7 @@ DATASET_DEFS: list[DatasetDef] = [
 
 # Which dataset each detector was trained on (best-effort, from interface/scripts/train_model.sh
 # and experiments/*). `official` flags checkpoints whose deployed weights are the authors' (the
-# AGID from-scratch dataset is noted, but the served weights are the official ProGAN-trained ones).
+# SynthScope from-scratch dataset is noted, but the served weights are the official ProGAN-trained ones).
 MODEL_TRAIN_DATASET: dict[str, dict] = {
     "clip": {"dataset": "cnndetection"},
     "cnn": {"dataset": "cnndetection"},
@@ -132,9 +133,9 @@ MODEL_TRAIN_DATASET: dict[str, dict] = {
 
 # Node-local scratch differs per node (cn023 -> /hddstore, cees -> /ssdstore, cn030/31 -> /nvmestore).
 # Try each configured root, then the same tail remapped onto the other scratch mounts, so the explorer
-# works wherever the data was staged. Override the prefix set with AGID_DATA_PREFIXES (colon-separated).
+# works wherever the data was staged. Override the prefix set with SYNTHSCOPE_DATA_PREFIXES (colon-separated).
 _SCRATCH_PREFIXES = tuple(p for p in (
-    os.environ.get("AGID_DATA_PREFIXES") or "/hddstore:/ssdstore:/nvmestore").split(":") if p)
+    os.environ.get("SYNTHSCOPE_DATA_PREFIXES") or "/hddstore:/ssdstore:/nvmestore").split(":") if p)
 
 
 def _root_candidates(r: str) -> list[str]:
@@ -275,7 +276,7 @@ def resolve_media(key: str, rel: str) -> Path:
     """Resolve ``rel`` under the dataset root, guarding against ``..`` traversal.
 
     Some datasets (e.g. ``restrav_data``) populate their split dirs with *symlinks* into other
-    AGID data folders, so we must NOT ``.resolve()`` and then reject by the symlink's target
+    SynthScope data folders, so we must NOT ``.resolve()`` and then reject by the symlink's target
     (that would 403 every restrav_data thumbnail). Instead we forbid absolute paths and ``..``
     components in the user-supplied ``rel`` — which keeps the addressed path lexically under the
     dataset root — then follow the symlink (``is_file``) to serve the actual file.

@@ -9,11 +9,11 @@ CONDA=/home/ssalehi/miniconda3/bin/conda
 REF=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref
 S=/ssdstore/ssalehi/AGID
 mkdir -p $S/cure_ckpt $S/.cache_hf_cure
-export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 AGID_CKPT_DIR=$S/cure_ckpt
-cp $REF/CuRe/weights/cure_adapter.pt $AGID_CKPT_DIR/cure.pth      # OFFICIAL adapter, unchanged
+export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt
+cp $REF/CuRe/weights/cure_adapter.pt $SYNTHSCOPE_CKPT_DIR/cure.pth      # OFFICIAL adapter, unchanged
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"
 tag=cure_repro_genimage8; full=repro/logs/${tag}_${SLURM_JOB_ID}.full.log
-$CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model cure --benchmark pergen \
+$CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model cure --benchmark pergen \
   --data $S/GenImage_full/test --bs 16 --device cuda --limit 1500 --tag $tag > $full 2>&1
 grep -aE "RESULT|: acc=|=== bench_eval" $full | tail -20
 echo "=== CURE GENIMAGE8 DONE $(date) ==="

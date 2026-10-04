@@ -11,11 +11,11 @@ REF=/ivi/zfs/s0/original_homes/ssalehi/AGID_shared/cure_ref
 S=/ssdstore/ssalehi/AGID
 A=$S/AIGIBench; R=$A/test
 mkdir -p $S/cure_ckpt $S/.cache_hf_cure
-export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 AGID_CKPT_DIR=$S/cure_ckpt
-cp $REF/CuRe/weights/cure_adapter.pt $AGID_CKPT_DIR/cure.pth      # OFFICIAL adapter, unchanged
+export HF_HOME=$S/.cache_hf_cure PYTHONUNBUFFERED=1 SYNTHSCOPE_CKPT_DIR=$S/cure_ckpt
+cp $REF/CuRe/weights/cure_adapter.pt $SYNTHSCOPE_CKPT_DIR/cure.pth      # OFFICIAL adapter, unchanged
 echo "NODE=$(hostname) GPU=$CUDA_VISIBLE_DEVICES $(date)"; df -h /ssdstore | tail -1
 echo "=== 1/3 download missing test zips (resumable) ==="
-$CONDA run --no-capture-output -n AGID python - <<PY
+$CONDA run --no-capture-output -n SynthScope python - <<PY
 from pathlib import Path
 from huggingface_hub import snapshot_download
 R=Path("$R")
@@ -33,7 +33,7 @@ n=$(ls -d */ | wc -l); echo "generator dirs: $n"
 echo "=== 3/3 evaluate $(date) ==="
 cd /ivi/zfs/s0/original_homes/ssalehi/AGID
 tag=cure_repro_aigibench; full=repro/logs/${tag}_cn029_${SLURM_JOB_ID}.full.log
-$CONDA run --no-capture-output -n AGID python benchmark/bench_eval.py --model cure --benchmark pergen \
+$CONDA run --no-capture-output -n SynthScope python benchmark/bench_eval.py --model cure --benchmark pergen \
   --data $R --bs 16 --device cuda --limit 1500 --tag $tag > $full 2>&1
 grep -aE "RESULT|: acc=|=== bench_eval|skip " $full | tail -45
 echo "=== CURE AIGIBENCH CN029 DONE $(date) ==="

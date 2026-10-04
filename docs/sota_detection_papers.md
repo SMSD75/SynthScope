@@ -1,9 +1,9 @@
 # SOTA AI-Generated Media Detection — papers worth looking into
 
-Curated for the AGID project (AI-generated **image** and **video** detection). ✓ = already
+Curated for the SynthScope project (AI-generated **image** and **video** detection). ✓ = already
 implemented in this repo. Venues are best-effort; verify before citing.
 
-## Already in AGID
+## Already in SynthScope
 - **Image:** CNNDetection ✓, UnivFD/CLIP ✓, NPR ✓, FatFormer ✓, AIDE ✓, CO-SPY ✓, SAFE ✓,
   SPAI ✓, VIB-Net ✓ (+ DINOv2 / CLIP / ResNet linear-probe baselines).
 - **Video:** D3 ✓, ReStraV ✓.

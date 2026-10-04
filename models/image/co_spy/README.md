@@ -25,13 +25,13 @@ Given an input image `x` in `[0, 1]^{3 x H x W}` (no normalization at the datase
 1. **Semantic encoding**. Resize to `semantic_image_size x semantic_image_size`, apply SigLIP normalization (`mean = std = 0.5`), and feed through the frozen OpenCLIP visual encoder to get `v_sem`.
 2. **Artifact encoding**. Resize to `artifact_image_size x artifact_image_size`. Encode with the frozen SD-v1.4 VAE: `mu = E(x)`, `x' = D(mu)`. Compute the scaled residual `r = (x - x') * artifact_residual_scale` (default `100 / 7`, matching upstream). Feed `r` through a small ResNet-50-style stem (`conv1 + bn1 + maxpool + layer1(3 x Bottleneck 64) + layer2(4 x Bottleneck 128) + avgpool`) to obtain `v_art` (512-d).
 3. **Adaptive fusion**. Two linear regulators produce per-sample scalar coefficients `alpha = sem_fc(v_sem)` and `beta = art_fc(v_art)`. During training, with probability `coeff_dropout`, randomly zero one of them. The fused feature is `[alpha * v_sem, beta * v_art]`.
-4. **Classification**. A linear head maps the fused feature to a single real/fake logit. The two AGID-side outputs are `stack([-logit, +logit], dim=1)` so the downstream metrics behave the same as for `npr` and `vib_net`.
+4. **Classification**. A linear head maps the fused feature to a single real/fake logit. The two SynthScope-side outputs are `stack([-logit, +logit], dim=1)` so the downstream metrics behave the same as for `npr` and `vib_net`.
 
 The detector uses label `0` for real images and label `1` for generated images.
 
 ## Why this is considered an implementation of the paper
 
-| Paper concept | AGID implementation |
+| Paper concept | SynthScope implementation |
 |---|---|
 | Frozen OpenCLIP semantic backbone | `open_clip.create_model_and_transforms(semantic_model_name, pretrained=semantic_pretrained)` with default `ViT-SO400M-14-SigLIP-384` / `webli` |
 | Feature-space interpolation augmentation (Eq. 2) | `_mix_semantic_features` mixes `v_sem` and labels within batch using `delta ~ Beta(alpha, alpha)` for a `feat_interp_prob` fraction of samples |
@@ -44,7 +44,7 @@ The detector uses label `0` for real images and label `1` for generated images.
 
 ## Model details
 
-The AGID model is implemented in `models/image/co_spy/co_spy.py` as `AGIDCoSpyModel`.
+The SynthScope model is implemented in `models/image/co_spy/co_spy.py` as `SynthScopeCoSpyModel`.
 
 | Component | Setting |
 |---|---|
@@ -58,7 +58,7 @@ The AGID model is implemented in `models/image/co_spy/co_spy.py` as `AGIDCoSpyMo
 | Classifier | `fc(d_sem + 512 -> 1)` |
 | Coefficient dropout | `coeff_dropout` (default `0.3`) |
 | Feature interpolation | `feat_interp_prob` (default `0.5`), `feat_interp_alpha` (default `0.2`) |
-| Output (AGID metrics) | two-class real / fake logits = `stack([-logit, +logit], dim=1)` |
+| Output (SynthScope metrics) | two-class real / fake logits = `stack([-logit, +logit], dim=1)` |
 
 Trainable parameters: the artifact encoder, both regulators, and the final classifier head. The OpenCLIP backbone and the VAE remain frozen.
 
@@ -102,7 +102,7 @@ It uses the default dataset (`genimage`) and a CO-SPY-style transform pipeline t
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.60 / acc=89.9 | reproduced |
 | AIGCDetectionBenchmark (AIGCDetect) | map=95.21 / acc=90.58 | mAP=94.59 / acc=89.25 | mAP=86.18 / acc=73.0 | official |
@@ -110,18 +110,18 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
 | In-the-wild (Co-Spy-Bench in-the-wild) | map=84.65 / acc=77.41 | — | — | missing |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Integration notes
 
-The CO-SPY model is called through the shared `compute_loss(batch)` interface used by the AGID trainer:
+The CO-SPY model is called through the shared `compute_loss(batch)` interface used by the SynthScope trainer:
 
 | Key | Meaning |
 |---|---|
 | `loss` | scalar training objective (BCE-with-logits on the single fused logit; soft targets are used when feature interpolation is active) |
-| `outputs` | two-class real / fake logits for AGID metrics (`stack([-logit, +logit], dim=1)`) |
+| `outputs` | two-class real / fake logits for SynthScope metrics (`stack([-logit, +logit], dim=1)`) |
 
-For the trainer to instantiate CO-SPY, `AGIDCoSpyModel` is registered in `trainer.py` **before** the generic CLIP branch. CO-SPY does not use the `CLIP:` backbone prefix (it loads OpenCLIP directly), but registering early keeps the file in line with `fat_former` and avoids surprises if `backbone_name` ever leaks into the config.
+For the trainer to instantiate CO-SPY, `SynthScopeCoSpyModel` is registered in `trainer.py` **before** the generic CLIP branch. CO-SPY does not use the `CLIP:` backbone prefix (it loads OpenCLIP directly), but registering early keeps the file in line with `fat_former` and avoids surprises if `backbone_name` ever leaks into the config.
 
 The model holds large frozen sub-modules (the SigLIP encoder and the SD-v1.4 VAE). To reduce memory pressure, the default `experiments/co_spy.sh` uses a per-process batch size of `16`. Increase it on hardware with more GPU memory.
 
@@ -129,11 +129,11 @@ The model holds large frozen sub-modules (the SigLIP encoder and the SD-v1.4 VAE
 
 | Difference | Reason |
 |---|---|
-| Single end-to-end training pipeline | The official repo offers `end2end`, `branch`, and `fusion` modes. AGID's trainer is single-pass, so we replicate the `end2end` variant. The two regulator heads, the residual scaling, the coefficient dropout, and the feature interpolation are all preserved. |
-| Feature interpolation always on (controlled by `feat_interp_prob`) | The official code only enables feature interpolation in the `branch:semantic` stage. Since AGID trains all parts jointly, we apply it during end-to-end training as well; setting `feat_interp_prob=0.0` disables it. |
-| Augmentations (`gaussian_blur`, `jpeg_compression`) come from AGID's transform pipeline | The upstream code applies blur and JPEG inside a `transforms.Lambda` on PIL images; AGID does the equivalent with `torchvision.transforms.v2.GaussianBlur` and `torchvision.transforms.v2.JPEG`. |
+| Single end-to-end training pipeline | The official repo offers `end2end`, `branch`, and `fusion` modes. SynthScope's trainer is single-pass, so we replicate the `end2end` variant. The two regulator heads, the residual scaling, the coefficient dropout, and the feature interpolation are all preserved. |
+| Feature interpolation always on (controlled by `feat_interp_prob`) | The official code only enables feature interpolation in the `branch:semantic` stage. Since SynthScope trains all parts jointly, we apply it during end-to-end training as well; setting `feat_interp_prob=0.0` disables it. |
+| Augmentations (`gaussian_blur`, `jpeg_compression`) come from SynthScope's transform pipeline | The upstream code applies blur and JPEG inside a `transforms.Lambda` on PIL images; SynthScope does the equivalent with `torchvision.transforms.v2.GaussianBlur` and `torchvision.transforms.v2.JPEG`. |
 | Pretrained weights come from the standard HuggingFace / OpenCLIP caches | `HF_HOME` and `TORCH_HOME` are already set in `experiments/co_spy.sh`. |
-| Uses Hydra configs, Accelerate, and AGID metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
+| Uses Hydra configs, Accelerate, and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
 
 These are integration differences rather than conceptual changes: the detector still uses a frozen SigLIP, a frozen SD-v1.4 VAE, the same artifact residual, a learnable ResNet-50 stem, two per-sample regulators, coefficient dropout, semantic feature interpolation, and the same BCE-with-logits objective.
 
@@ -157,4 +157,4 @@ Two regulator heads emit per-sample scalar coefficients `alpha` and `beta`. The 
 
 ## Summary
 
-CO-SPY in AGID is a method-level reproduction of Cheng et al.'s CVPR 2025 paper. A frozen OpenCLIP SigLIP backbone supplies the semantic feature, a frozen SD-v1.4 VAE supplies a reconstruction-residual artifact feature, two learned regulator heads emit per-sample mixing coefficients, and a small linear classifier reads the fused representation. Training adds the paper's semantic feature interpolation and coefficient dropout. The implementation is adapted to AGID's model / config / trainer / metrics structure, and is built directly on the `open_clip_torch` and `diffusers` packages -- so it is not a line-by-line copy of the official repo, but it implements the central architecture and objective that define the paper.
+CO-SPY in SynthScope is a method-level reproduction of Cheng et al.'s CVPR 2025 paper. A frozen OpenCLIP SigLIP backbone supplies the semantic feature, a frozen SD-v1.4 VAE supplies a reconstruction-residual artifact feature, two learned regulator heads emit per-sample mixing coefficients, and a small linear classifier reads the fused representation. Training adds the paper's semantic feature interpolation and coefficient dropout. The implementation is adapted to SynthScope's model / config / trainer / metrics structure, and is built directly on the `open_clip_torch` and `diffusers` packages -- so it is not a line-by-line copy of the official repo, but it implements the central architecture and objective that define the paper.

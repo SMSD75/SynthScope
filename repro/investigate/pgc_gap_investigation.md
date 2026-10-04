@@ -2,7 +2,7 @@
 
 **Question:** why does our from-scratch PGC training not reach the official checkpoint's numbers on
 ForenSynths — specifically deepfake / san / seeingdark — when the official weights loaded into the
-same AGID class reproduce the paper exactly?
+same SynthScope class reproduce the paper exactly?
 
 **Status (2026-06-11):** every variable of the published recipe has been matched and tested; the
 hard-generator gap is unmoved. Pending only the definitive 100-epoch exact-recipe run (job 184771),
@@ -75,7 +75,7 @@ provably do not produce the released checkpoint; if it climbs, the defect is in 
 diff run-for-run.
 
 ## Architecture & inference are NOT the cause
-The official released weights, loaded into the AGID `AGIDPGCModel` (with the engine's standard
+The official released weights, loaded into the SynthScope `SynthScopePGCModel` (with the engine's standard
 remap-free load), reproduce the paper on every benchmark — e.g. ForenSynths 96.25 mAP / 96.64 mAUROC,
 GenImage 100 mAP / 99.49 acc (`repro/bench_results/pgc_official_*.json`). So the model class,
 preprocessing (PadCenterCrop-224 + ImageNet/0-0.5 norm), residual math (BT.601 quantization), PGCM
@@ -126,7 +126,7 @@ recipe. Recipe-external verdict further reinforced.
 ## Control experiment: official code validates the harness to the decimal (2026-06-11)
 Job 184880 ran the official repo's own `test.py` + their released `PGC_train_progan_ckpt.pth` on OUR
 copies of the three hard generators. Their evaluator reports deepfake AUC 0.9648 / san 0.9906 /
-seeingdark 0.8749 — identical (to rounding) to what the same weights produce through the AGID
+seeingdark 0.8749 — identical (to rounding) to what the same weights produce through the SynthScope
 harness. **Test data, preprocessing, and metric computation are therefore byte-equivalent between
 the two pipelines; the entire gap is training-side.**
 
@@ -190,7 +190,7 @@ ALSO a modest reimplementation gap on our side — but both are far below the re
 **their own code does not reproduce their own released checkpoint** from the published recipe+data.
 **VERDICT (CONFIRMED, 4 control points across 8 epochs): the released ProGAN checkpoint was NOT produced by
 the public recipe+data as documented** — it must involve undocumented training data/augmentation or a
-different (internal/earlier) training configuration. The residual AGID-side reimpl gap is secondary and the
+different (internal/earlier) training configuration. The residual SynthScope-side reimpl gap is secondary and the
 smaller of the two. The control keeps running to ~ep29 (walltime) to pile on confirmation points, but the
 conclusion is settled; nothing in the public PGC release reproduces the released hard-generator numbers.
 
@@ -228,10 +228,10 @@ not retained -- /ivi quota -- regenerate via repro/pgc_400step_finegrain.sbatch;
 - **Erosion within epoch 0 confirmed:** recovered step ckpts show mean AP peak ~94.4 at step 900-1100, then
   decay step1200 93 / step1500 92 / step1700 92 — continuing into the ep10+ collapse (55-91). Full early-peak
   -> overfit curve, all inside/just past the first epoch, exactly the authors' DINOv2-overfitting effect.
-- **AGID bench_eval cross-check (registry PGC transform, full ForenSynths-13), step900:** mAP 92.43 / mAUROC
+- **SynthScope bench_eval cross-check (registry PGC transform, full ForenSynths-13), step900:** mAP 92.43 / mAUROC
   92.9. Easy gens + deepfake reproduce (progan AP 99.37, cyclegan 99.54, gaugan 99.51, deepfake AUROC 94.36),
   but **san (AUROC 73.29) and seeingdark (72.46) are understated vs the official evaluator's 99.25 / 91.13 on
-  the SAME checkpoint** — both threshold-free AUROC, so it's an AGID PGC EVAL-TRANSFORM divergence
+  the SAME checkpoint** — both threshold-free AUROC, so it's an SynthScope PGC EVAL-TRANSFORM divergence
   (tf_resize_crop 256->224 + ImageNet) on those two special generators (super-res / low-light), NOT a model
   gap. The faithful reproduction number is the official evaluator's hard-3 mean AUROC 94.56 (~ official 94.35).
   Matching the official PGC eval transform would close the bench_eval san/seeingdark gap too (same family as

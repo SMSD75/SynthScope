@@ -2,7 +2,7 @@
 
 This vendors the official Co-Spy fusion-detector architecture + preprocessing + weight loading
 (from github Megum1/Co-Spy detectors/progan/{semantic,artifact,fusion}.py + base.py), so its
-official-weights numbers sit side by side with the AGID re-implementation in the same
+official-weights numbers sit side by side with the SynthScope re-implementation in the same
 ``repro/bench_results`` / ``repro/MASTER_RESULTS.jsonl`` schema as ``benchmark/bench_eval.py``.
 
 The vendored architecture + loading + P(fake) are COPIED from the verified vendored eval
@@ -597,7 +597,7 @@ def main(argv=None) -> int:
         "means": means,
         "per_generator": per_gen,
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
-        "agid_version": "official-vendored",
+        "synthscope_version": "official-vendored",
     }
     out = Path(args.out).expanduser() if args.out else (BENCH_RESULTS_DIR / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

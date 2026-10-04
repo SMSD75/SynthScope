@@ -1,9 +1,9 @@
 """Genuine AIDE architecture + native-resolution 5-view preprocessing (Yan et al., ICLR'25).
 
 Ported VERBATIM from the official repo (shilinyan99/AIDE: ``data/dct.py`` + ``models/AIDE.py`` +
-``data/datasets.py``) so the released checkpoints load key-for-key and the AGID class trains the
+``data/datasets.py``) so the released checkpoints load key-for-key and the SynthScope class trains the
 SAME network. This is the single source of truth for the AIDE arch; ``aide.py`` wraps it for the
-AGID ``compute_loss`` API and ``repro/official_evals/aide_official_eval.py`` mirrors it for the
+SynthScope ``compute_loss`` API and ``repro/official_evals/aide_official_eval.py`` mirrors it for the
 standalone official eval.
 
 The decisive detail (see repro: native-res DCT vs resize-256 is a ~12 mAP swing on the SAME weights):

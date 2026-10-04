@@ -9,12 +9,12 @@ export HF_HOME=/hddstore/ssalehi/.cache/huggingface TORCH_HOME=/hddstore/ssalehi
 H=/hddstore/ssalehi/AGID
 CK="${CK:-/ivi/zfs/s0/original_homes/ssalehi/AGID/checkpoints_retrain/aide_native_v2/model_2.pth}"
 echo "NODE=$(hostname) ckpt=$CK $(date)"
-ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n AGID python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
+ok=0; for i in 1 2 3 4 5; do $CONDA run --no-capture-output -n SynthScope python -c "import torch;assert torch.cuda.is_available();print('CUDA OK')" && { ok=1;break; }; sleep 5; done
 [ "$ok" = 1 ] || { echo "CUDA NEVER"; exit 1; }
 echo "##### GenImage-8 (in-domain SDv1.4 setting) #####"
-$CONDA run --no-capture-output -n AGID python repro/_aide_retrain_eval.py \
+$CONDA run --no-capture-output -n SynthScope python repro/_aide_retrain_eval.py \
   --data "$H/GenImage_full/test" --ckpt "$CK" --benchmark pergen --limit 300 --bs 16 --tag aide_retrain_native_g8
 echo "##### ForenSynths-13 (cross-domain GAN, reference) #####"
-$CONDA run --no-capture-output -n AGID python repro/_aide_retrain_eval.py \
+$CONDA run --no-capture-output -n SynthScope python repro/_aide_retrain_eval.py \
   --data "$H/CNNDetection/test" --ckpt "$CK" --benchmark forensynths --limit 300 --bs 16 --tag aide_retrain_native_fs
 echo "=== AIDE RETRAIN EVAL COMPLETE $(date) ==="

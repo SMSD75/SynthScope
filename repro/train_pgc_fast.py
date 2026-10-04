@@ -1,8 +1,8 @@
 """Fast standalone PGC trainer for the official-reproduction attempt.
 
-Trains the AGID PGC model (corrected recipe: MLP-only LoRA, label smoothing 0.1) on a SUBSAMPLE of a
+Trains the SynthScope PGC model (corrected recipe: MLP-only LoRA, label smoothing 0.1) on a SUBSAMPLE of a
 data regime with parallel decode + bf16 + corrupt-image skipping — no per-epoch test eval. Saves a raw
-state_dict that the AGID engine / bench_eval load directly. Prints per-epoch time so we can extrapolate.
+state_dict that the SynthScope engine / bench_eval load directly. Prints per-epoch time so we can extrapolate.
 
 env: IDEO unused. Knobs: PGC_REGIME(progan|sdv14), PGC_N(per class), PGC_EPOCHS, PGC_OUT, CUDA_VISIBLE_DEVICES.
 """
@@ -15,7 +15,7 @@ from PIL import Image, ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True            # tolerate the ProGAN PNGs' truncated/odd zlib
 
 from config_utils import compose_config
-from models.image.pgc.pgc import AGIDPGCModel
+from models.image.pgc.pgc import SynthScopePGCModel
 
 REGIME = os.environ.get("PGC_REGIME", "progan")
 N = int(os.environ.get("PGC_N", "12000"))
@@ -96,7 +96,7 @@ def main():
 
     cfg = compose_config(["model@ModelConfig=image/pgc", "trainer@TrainerConfig=image/pgc",
                           "dataset@DatasetConfig=image/cnndetection"])
-    model = AGIDPGCModel(cfg).to(dev)
+    model = SynthScopePGCModel(cfg).to(dev)
     init = os.environ.get("PGC_INIT", "")
     if init:                                          # continue training from a prior checkpoint
         sd = torch.load(init, map_location="cpu", weights_only=False)

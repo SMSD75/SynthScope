@@ -29,7 +29,7 @@ are anomalous (high distance, low likelihood).
 
 ## Model details
 
-Implemented in `models/video/stall/stall.py` as `AGIDSTALLModel`.
+Implemented in `models/video/stall/stall.py` as `SynthScopeSTALLModel`.
 
 | Component | Setting |
 |---|---|
@@ -75,13 +75,13 @@ meaningful metrics (the percentile score is calibrated, but accuracy@0.5 depends
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-| Benchmark | Paper | AGID_official | AGID_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | GenVideo (DeMamba GenVideo-Val, 10 generators  | avg_AUC=0.8 / avg_AP=0.8 / per_gen_AUC_range=0.72-0.85 / per_gen_AP_range=0.75-0.84 | — | mAP=82.38 / acc=56.88 / AUROC=83.51 | reproduced |
 | VideoFeedback (TIGER-Lab, 11 generators + DiDe | avg_AUC=0.83 / avg_AP=0.85 / per_gen_AUC_range=0.78-0.93 / per_gen_AP_range=0.80-0.94 | — | mAP=83.07 / acc=62.12 / AUROC=85.1 | reproduced |
 | ComGenVid (paper's new benchmark — Sora + VEO3 | avg_AUC=0.852 / avg_AP=0.858 | — | mAP=82.59 / acc=57.34 / AUROC=84.0 | below |
 
-**reproduced** = AGID-trained checkpoint matches the paper · **official** = official weights loaded into the AGID class match (the AGID-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+**reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
 ## Differences from the paper / official code
 
@@ -89,5 +89,5 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 |---|---|
 | Faithful re-implementation of the scoring math | Verified **bit-exact** against the official `STALL._scores_from_embs` on identical embeddings (0 difference). |
 | `fit_stall_params` reimplements `create_params.build_params` | Lets the model recompute calibration in-framework; verified to give identical final scores to the official `WhiteningTransform`. |
-| Decode via the AGID video dataset (decord) | The official uses torchcodec with a center 2 s window; AGID's loader samples evenly. Minor preprocessing detail; the calibration is recomputable to match whatever decode is used. |
-| One dummy `_noop` parameter | Required so the AGID `AdamW` trainer does not crash on a training-free model. |
+| Decode via the SynthScope video dataset (decord) | The official uses torchcodec with a center 2 s window; SynthScope's loader samples evenly. Minor preprocessing detail; the calibration is recomputable to match whatever decode is used. |
+| One dummy `_noop` parameter | Required so the SynthScope `AdamW` trainer does not crash on a training-free model. |

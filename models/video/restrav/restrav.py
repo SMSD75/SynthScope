@@ -1,4 +1,4 @@
-"""ReStraV integrated into AGID.
+"""ReStraV integrated into SynthScope.
 
 Paper: "AI-Generated Video Detection via Perceptual Straightening" (Internò
 et al., 2025). https://github.com/ChristianInterno/ReStraV
@@ -39,7 +39,7 @@ This class is a *deployable* re-implementation, faithful to the official recipe 
 few framework-imposed differences (the bit-exact reproduction is ``interface/scripts/
 restrav_repro.py``): standardization uses an in-model ``BatchNorm1d(affine=False)`` (running
 stats) rather than fixed ``mean.npy``/``std.npy`` saved from the train set, and the head
-emits the AGID 2-column ``[-logit, logit]`` (col 1 is the single BCE logit -- functionally
+emits the SynthScope 2-column ``[-logit, logit]`` (col 1 is the single BCE logit -- functionally
 identical for ranking metrics). Feed it with plain Adam (no weight decay), 10 epochs.
 """
 
@@ -55,7 +55,7 @@ NUM_DIRECT_DISTANCES = 7
 NUM_DIRECT_CURVATURES = 6
 
 
-class AGIDReStraVModel(nn.Module):
+class SynthScopeReStraVModel(nn.Module):
     """Perceptual-straightening video detector (ReStraV)."""
 
     def __init__(self, config: DictConfig):
@@ -141,7 +141,7 @@ class AGIDReStraVModel(nn.Module):
         z = self._encode(frames)
         y = self._geometry_features(z)
         logit = self.classifier(self.feature_norm(y)).squeeze(-1)   # [B], P(fake) logit
-        return torch.stack([-logit, logit], dim=1)                  # [B, 2] (col 1 = fake) for AGID metrics
+        return torch.stack([-logit, logit], dim=1)                  # [B, 2] (col 1 = fake) for SynthScope metrics
 
     def compute_loss(self, batch):
         frames, labels, _folder_ids = batch

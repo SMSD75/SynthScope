@@ -11,7 +11,7 @@ export OMP_NUM_THREADS=1
 # backbone -- switch to normalize_dinov2 if you set a DINOv2/ResNet backbone). AP/AUROC are the
 # meaningful metrics. The video benchmark must be present under DatasetConfig.root_dir;
 # this is a template (data download is out of scope).
-/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n AGID accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
+/home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 main.py \
     trainer@TrainerConfig=video/d3 \
     model@ModelConfig=video/d3 \
     dataset@DatasetConfig=video/genvideo \
@@ -25,4 +25,4 @@ export OMP_NUM_THREADS=1
     metrics=[real_accuracy,fake_accuracy,AP,AUC] \
     logger.name=d3 \
     logger.mode=online \
-    logger.tags=[AGID,D3,genvideo]
+    logger.tags=[SynthScope,D3,genvideo]

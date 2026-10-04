@@ -9,4 +9,4 @@ ls -d /ssdstore/ssalehi/AGID/GenImage/train/real /ssdstore/ssalehi/AGID/GenImage
 for d in /ssdstore/ssalehi/AGID/GenImage/train/real /ssdstore/ssalehi/AGID/GenImage/train/fake; do
   [ -d "$d" ] && echo "$d: $(ls "$d" 2>/dev/null | wc -l) files"
 done
-echo "=== CUDA ==="; /home/ssalehi/miniconda3/bin/conda run -n AGID python -c "import torch;print('cuda',torch.cuda.is_available(),torch.cuda.device_count())" 2>&1 | tail -1
+echo "=== CUDA ==="; /home/ssalehi/miniconda3/bin/conda run -n SynthScope python -c "import torch;print('cuda',torch.cuda.is_available(),torch.cuda.device_count())" 2>&1 | tail -1
