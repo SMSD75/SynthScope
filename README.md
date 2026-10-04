@@ -28,7 +28,7 @@ A browser app for trying the detectors without writing code. The detectors alway
 | Tab | What you do there |
 | --- | --- |
 | **Detect** | Upload an image or video, pick a detector, and get a verdict with a probability. The page shows the image *as the detector sees it* (after that detector's own preprocessing, with a short explanation) and, for some detectors, a heatmap of where it looked. |
-| **Test a generator** | Take a real photo, let a current image generator create a new image from it, and see which detectors catch it. Generate once, then add or remove detectors freely: they all score the same image. |
+| **Test a generator** | Take a real photo and let a current image generator make a new image from it: either **re-create** it from a written description of your photo (every pixel is synthesized) or **edit** your photo. Then see which detectors catch the result. Generate once, then add or remove detectors freely: they all score the same image. A similarity score warns you when a result is just a lightly edited copy of your photo. |
 | **Browse datasets** | Click through samples of the benchmark datasets and see a detector's score on each. Score a whole batch and tune the decision threshold. |
 | **Leaderboard** | Every method on every benchmark it reports: the paper's number, our own retrained checkpoint, and the authors' official weights. |
 | **Generator benchmarks** | How each detector does against specific modern generators, ranked by AUROC. |
@@ -37,7 +37,7 @@ A browser app for trying the detectors without writing code. The detectors alway
   <img src="docs/images/generator.jpg" width="49%" alt="Test a generator: a real photo, the image FLUX.2 klein made from it, and four detectors scoring both"/>
   <img src="docs/images/detect.jpg" width="49%" alt="Detect: verdict, what the detector sees after its own preprocessing, and a heatmap of where it looked"/>
 </p>
-<p align="center"><sub><b>Left:</b> <i>Test a generator</i>, where FLUX.2 klein turns a real photo into a new image and four detectors score both.
+<p align="center"><sub><b>Left:</b> <i>Test a generator</i>, where your photo is described in words, FLUX.2 klein creates a new image from that description, and four detectors score both.
 <b>Right:</b> <i>Detect</i>, with the verdict, the image as the detector sees it, and a heatmap.</sub></p>
 
 <details>

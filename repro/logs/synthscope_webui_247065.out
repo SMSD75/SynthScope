@@ -1,0 +1,22 @@
+NODE=ivi-cn029 GPU=0 PORT=8021 Sun Oct  4 18:05:41 CEST 2026 | code=8bbb307 Test a generator: re-create images from a description by default (edit mode optional), editable description, similarity warning
+ckpts: 16 | PE-Core base: /ssdstore/ssalehi/SynthScope/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt
+CUDA OK NVIDIA RTX A5000
+[webui] tunnel:  ssh -f -N -L 8021:ivi-cn029:8021 ssalehi@ivi-h1.science.uva.nl   then open http://localhost:8021
+Serving SynthScope interface on http://0.0.0.0:8021  (Ctrl-C to stop)
+INFO:     Started server process [1506523]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8021 (Press CTRL+C to quit)
+INFO:     10.4.0.1:49306 - "GET /api/sota/generators HTTP/1.1" 200 OK
+Loading weights:   0%|          | 0/473 [00:00<?, ?it/s]Loading weights: 100%|██████████| 473/473 [00:00<00:00, 24801.30it/s]
+[1mBlipForConditionalGeneration LOAD REPORT[0m from: Salesforce/blip-image-captioning-base
+Key                                       | Status     |  | 
+------------------------------------------+------------+--+-
+text_decoder.bert.embeddings.position_ids | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+INFO:     10.4.0.1:39824 - "POST /api/sota/describe HTTP/1.1" 200 OK
+INFO:     10.4.0.1:54204 - "POST /api/sota/generate HTTP/1.1" 200 OK
+INFO:     10.4.0.1:43682 - "POST /api/sota/generate HTTP/1.1" 200 OK
+[2026-10-04T18:08:29.582] error: *** JOB 247065 ON ivi-cn029 CANCELLED AT 2026-10-04T18:08:29 DUE to SIGNAL Terminated ***

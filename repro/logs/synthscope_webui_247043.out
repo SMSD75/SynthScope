@@ -15,3 +15,319 @@ INFO:     10.4.0.1:37742 - "GET /static/vendor/react.production.min.js HTTP/1.1"
 INFO:     10.4.0.1:37728 - "GET /api/models HTTP/1.1" 200 OK
 INFO:     10.4.0.1:34278 - "POST /api/predict HTTP/1.1" 200 OK
 INFO:     10.4.0.1:53548 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49484 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49484 - "GET /static/vendor/htm.umd.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:49488 - "GET /static/vendor/react.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:49500 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:49500 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:50720 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:50720 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:50742 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:50726 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:50726 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51740 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51740 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51754 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51748 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51748 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:51748 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:48368 - "GET / HTTP/1.1" 200 OK
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 421, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/fastapi/routing.py", line 121, in app
+    await response(scope, receive, send)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/responses.py", line 366, in __call__
+    await self._handle_simple(send, send_header_only, send_pathsend)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/responses.py", line 397, in _handle_simple
+    await send({"type": "http.response.body", "body": chunk, "more_body": more_body})
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/_exception_handler.py", line 39, in sender
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/starlette/middleware/errors.py", line 161, in _send
+    await send(message)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/uvicorn/protocols/http/httptools_impl.py", line 543, in send
+    raise RuntimeError("Response content longer than Content-Length")
+RuntimeError: Response content longer than Content-Length
+INFO:     10.4.0.1:48382 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:48390 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:48406 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46016 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46016 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46040 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46024 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46024 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:46054 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38614 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38618 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38624 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38614 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38614 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:38614 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36896 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36906 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36918 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36896 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36932 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36906 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36944 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36918 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36932 - "GET /api/sota/real_image HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36906 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49162 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36944 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49134 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49146 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49134 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36906 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49146 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36944 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49162 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36944 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49162 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49146 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49134 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36906 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36944 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49162 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36940 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49134 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49146 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49134 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png HTTP/1.1" 200 OK
+INFO:     10.4.0.1:49146 - "POST /api/predict_dataset HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36918 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36918 - "POST /api/sota/generate HTTP/1.1" 200 OK
+INFO:     10.4.0.1:36918 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41374 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41374 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41386 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "POST /api/predict HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00049239.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00049439.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00031528.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F493_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00033024.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F643_sdv4_00020.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F581_sdv4_00039.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00035526.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00027808.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00001824.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F417_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F183_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F999_sdv4_00127.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00036108.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00020290.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F249_sdv4_00127.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00022898.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00025201.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53938 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00018398.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53936 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F620_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:41376 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F190_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53944 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F678_sdv4_00020.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F425_sdv4_00074.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F116_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53956 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F581_sdv4_00039.png HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "POST /api/predict_dataset HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "POST /api/sota/generate HTTP/1.1" 200 OK
+INFO:     10.4.0.1:53970 - "POST /api/sota/score HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/cnndetection/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/cnndetection/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/cnndetection/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/cnndetection/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/cnndetection/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/cnndetection/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/cnndetection/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Fcrn%2F1_fake%2F104597_output.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105148.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Fstargan%2F0_real%2F1184.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00105551.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00104143.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00104008.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcat%2F0_real%2F16892.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Fcrn%2F1_fake%2F101482_output.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F0_real%2F01719.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fcat%2F0_real%2F12749.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105633.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F094443.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fhorse%2F0_real%2F03986.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fcar%2F1_fake%2F013540.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan2%2Fcat%2F1_fake%2F001551.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Fdeepfake%2F1_fake%2F979_875_0177.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F0_real%2F00100177.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00104118.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Fgaugan%2F1_fake%2F000000076417.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Fgaugan%2F0_real%2F000000356968.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Fimle%2F1_fake%2F00105426.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Fstylegan%2Fbedroom%2F0_real%2F07407.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Fprogan%2Fbicycle%2F0_real%2F12901.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/media?rel=test%2Fstargan%2F0_real%2F0363.png&thumb=1 HTTP/1.1" 404 Not Found
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00049239.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00049439.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00031528.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00033024.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F493_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F643_sdv4_00020.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00001824.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F581_sdv4_00039.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00035526.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00027808.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F183_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00018398.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00020290.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00025201.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F116_sdv4_00035.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F678_sdv4_00020.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F249_sdv4_00127.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F999_sdv4_00127.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56484 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F425_sdv4_00074.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56450 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F620_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56440 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00036108.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56470 - "GET /api/datasets/genimage/media?rel=test%2Freal%2FILSVRC2012_val_00022898.JPEG&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F190_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F417_sdv4_00143.png&thumb=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56430 - "GET /api/datasets/genimage/media?rel=test%2Ffake%2F581_sdv4_00039.png HTTP/1.1" 200 OK
+INFO:     10.4.0.1:56466 - "POST /api/predict_dataset HTTP/1.1" 200 OK
+INFO:     10.4.0.1:47988 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:47988 - "GET /static/vendor/react.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:47990 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:48000 - "GET /static/vendor/htm.umd.js HTTP/1.1" 200 OK
+INFO:     10.4.0.1:47990 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:47990 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59144 - "GET / HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59144 - "GET /static/vendor/react-dom.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:59148 - "GET /static/vendor/react.production.min.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:59164 - "GET /static/vendor/htm.umd.js HTTP/1.1" 304 Not Modified
+INFO:     10.4.0.1:59164 - "GET /api/models HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59164 - "GET /api/sota/generators HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59164 - "GET /api/datasets HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59174 - "GET /api/leaderboard HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59164 - "GET /api/datasets/cnndetection/sample?split=test&n=24&seed=1 HTTP/1.1" 200 OK
+INFO:     10.4.0.1:59164 - "GET /api/generator_benchmarks HTTP/1.1" 200 OK
+[2026-10-04T18:05:35.432] error: *** JOB 247043 ON ivi-cn029 CANCELLED AT 2026-10-04T18:05:35 DUE to SIGNAL Terminated ***
