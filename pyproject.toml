@@ -79,8 +79,15 @@ agid = "synthscope.cli:main"      # deprecated alias
 py-modules = ["main", "trainer", "dataset", "metrics", "transformations", "logger", "config_utils", "_synthscope_env"]
 
 [tool.setuptools.packages.find]
-include = ["synthscope*", "agid*", "models*", "interface*"]
-exclude = ["tests*", "outputs*", "wandb*", "docs*", "experiments*", "conf*"]
+include = ["synthscope*", "agid*", "models*", "interface*", "conf*"]
+exclude = ["tests*", "outputs*", "wandb*", "docs*", "experiments*", "interface.frontend*"]
+namespaces = true
+
+# Non-Python files the library needs at run time: Hydra configs (conf/), model data (STALL statistics, D3 calibration),
+# the web page and its vendored scripts, and the leaderboard/trending data. Without this a regular (non-editable)
+# install, e.g. `pip install git+https://github.com/SMSD75/SynthScope.git`, cannot build any detector.
+[tool.setuptools.package-data]
+"*" = ["*.yaml", "*.json", "*.npz", "*.html", "*.js", "*.css"]
 
 [tool.ruff]
 line-length = 110
