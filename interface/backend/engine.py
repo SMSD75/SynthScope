@@ -13,10 +13,11 @@ from collections import OrderedDict
 
 import numpy as np
 import torch
+import torchvision.transforms as T
 from PIL import Image
 
 from . import config
-from .registry import ModelSpec, get_spec
+from .registry import ModelSpec, get_spec, input_note
 from . import media
 
 
@@ -308,12 +309,40 @@ class Engine:
         except Exception:  # noqa: BLE001 — interpretability is optional, never break predict
             return None
 
+    @staticmethod
+    def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280) -> str:
+        """The image exactly as the network receives it (after this detector's preprocessing), as a PNG data URL.
+        Normalization is undone for display; multi-view inputs (AIDE) are laid out side by side."""
+        t = x[0].detach().float().cpu()
+        if t.dim() == 4:
+            t = torch.cat(list(t), dim=2)
+        norm = next((s for s in getattr(spec.transform, "transforms", []) if isinstance(s, T.Normalize)), None)
+        if norm is not None:
+            t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
+        elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
+            t = t * 0.5 + 0.5
+        if t.min() < 0 or t.max() > 1:                 # unknown scaling: stretch for display only
+            t = (t - t.min()) / (t.max() - t.min() + 1e-8)
+        img = Image.fromarray((t.clamp(0, 1) * 255).round().byte().permute(1, 2, 0).numpy())
+        if max(img.size) > max_side:
+            k = max_side / max(img.size)
+            img = img.resize((max(1, int(img.width * k)), max(1, int(img.height * k))), Image.LANCZOS)
+        buf = io.BytesIO(); img.save(buf, "PNG")
+        return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+
     def predict_image(self, spec: ModelSpec, pil: Image.Image) -> dict:
         model = self._get_model(spec)
         x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
         p = float(self._fake_prob(model, spec, x).item())
         res = self._result(spec, p, time.time() - t0)
+        res["orig_size"] = [pil.width, pil.height]
+        res["input_size"] = [int(x.shape[-1]), int(x.shape[-2])]     # what the network actually received
+        res["input_note"] = input_note(spec)
+        try:
+            res["input_image"] = self._model_input_data_url(spec, x)
+        except Exception:                                           # display-only: never fail a prediction over it
+            pass
         amap = self._interpret_map(model, spec, x, pil)
         if amap is not None:
             res["interpret_map"] = amap["map"]

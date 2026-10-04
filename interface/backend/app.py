@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import config, datasets, media
 from .engine import get_engine
-from .registry import REPRO, REPRO_FULL, get_spec, list_specs
+from .registry import REPRO, REPRO_FULL, get_spec, input_note, list_specs
 
 app = FastAPI(title="SynthScope Detector Interface", version="1.0")
 app.add_middleware(
@@ -68,6 +68,7 @@ def models():
             "checkpoint": spec.checkpoint,
             "weights": spec.weights,   # "official" | "synthscope_trained" | "training_free"
             "notes": spec.notes,
+            "input": input_note(spec),     # {label, explanation}: what the detector does to the image
             "repro": REPRO.get(spec.key),
             "repro_full": REPRO_FULL.get(spec.key),
         })

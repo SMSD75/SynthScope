@@ -376,6 +376,27 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 .explore .detsel label { margin-top: 0; }
 .explore .thumbs { margin-top: 16px; }
 .explore .stat { margin-top: 14px; font-size: 13px; }
+
+/* ---- input note, centered image boxes, heatmap legend --------------------------------------------------------*/
+.inote { margin-top: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.itag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 9px; border-radius: 999px; margin-right: 6px;
+  background: rgba(124,140,255,.18); border: 1px solid var(--accent); color: var(--text); white-space: nowrap; }
+.preview { align-items: center; min-height: 200px; }
+.interp-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.interp-row { justify-content: center; }
+.interp-cell { text-align: center; }
+.imgcell { display: flex; align-items: center; justify-content: center; min-height: 160px; min-width: 160px;
+  background: rgba(0,0,0,.28); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); padding: 6px; }
+.imgcell .interp-map { max-width: 240px; max-height: 240px; width: auto; border: 0; box-shadow: none; }
+.legend { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); margin-top: 10px; }
+.legbar { flex: 0 0 120px; height: 9px; border-radius: 5px;
+  background: linear-gradient(90deg, #00007f, #0000ff, #00ffff, #7fff7f, #ffff00, #ff0000, #7f0000); }
+
+.seen { margin-top: 18px; }
+.seen-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; text-align: center; }
+.seenbox { min-height: 200px; width: 100%; }
+.seenbox img { max-width: 100%; max-height: 300px; image-rendering: auto; }
+.seen-cap { text-align: center; line-height: 1.55; margin-top: 8px; }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -422,6 +443,12 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
       const facc = fakes.length ? fakes.filter(s => s.p >= thr).length / fakes.length : null;
       const acc = scored.filter(s => verdictAt(s.p, thr) === s.gt).length / scored.length;
       return { n: scored.length, acc, racc, facc };
+    }
+
+    // Short label + plain-language explanation of what a detector does to the image before scoring it.
+    function InputNote({ m }) {
+      if (!m || !m.input) return null;
+      return html`<div class="inote"><span class="itag">${m.input.label}</span> ${m.input.explanation}</div>`;
     }
 
     function ModelSelect({ models, model, setModel, onChange }) {
@@ -661,7 +688,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
                   <div class="detlabel">${label}</div>
                   <div class="chips">
                     ${ms.map(m => html`<button key=${m.key} disabled=${!m.available}
-                      title=${m.available ? m.paper : "checkpoint not available on this server"}
+                      title=${m.available ? m.paper + (m.input ? " · input: " + m.input.label : "") : "checkpoint not available on this server"}
                       class=${"chip" + (picked && picked[m.key] ? " on" : "")}
                       onClick=${() => setPicked({ ...(picked || {}), [m.key]: !(picked && picked[m.key]) })}>${m.name}</button>`)}
                   </div>
@@ -885,6 +912,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
             ${error && html`<div class="err">${error}</div>`}
             ${selected && html`<${Adv} title="About this detector">
               <div class="meta">${selected.paper}${selected.notes ? " · " + selected.notes : ""}</div>
+              <${InputNote} m=${selected} />
               <${ReproTable} m=${selected} />
             <//>`}
           </div>
@@ -1005,7 +1033,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
             ${trainDsKey && html`<div class="meta">Trained on
               <b>${(datasets.find(d=>d.key===trainDsKey)||{}).name || trainDsKey}</b>
               ${(trainMap[model]||{}).official ? html`<span class="badge">official weights</span>` : ""}</div>`}
-            <${Adv} title="About this detector"><${ReproTable} m=${models.find(m => m.key === model)} /><//>
+            <${Adv} title="About this detector"><${InputNote} m=${models.find(m => m.key === model)} /><${ReproTable} m=${models.find(m => m.key === model)} /><//>
           </div>
           <div class="grid" style=${{gridTemplateColumns: "2fr 1fr", marginTop: 22}}>
             <div class="card">
@@ -1083,6 +1111,15 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
           <span class="real" style=${{width: realPct + "%"}}>${realPct >= 12 ? "real " + realPct.toFixed(0) + "%" : ""}</span>
           <span class="thrline" style=${{left: (threshold*100) + "%"}}></span>
         </div>
+        ${r.input_image && html`<div class="seen">
+          <div class="seen-title">What ${r.model_name || "the detector"} sees</div>
+          <div class="imgcell seenbox"><img src=${r.input_image} alt="the detector's input" /></div>
+          <div class="meta seen-cap">
+            ${r.input_note && html`<span class="itag">${r.input_note.label}</span>`}
+            ${r.input_size && r.orig_size && html`<b>${r.input_size[0]}×${r.input_size[1]} px</b>${(r.input_size[0] === r.orig_size[0] && r.input_size[1] === r.orig_size[1]) ? " (your image's own size)" : " (from your " + r.orig_size[0] + "×" + r.orig_size[1] + " image)"}. `}
+            ${r.input_note && r.input_note.explanation}
+          </div>
+        </div>`}
         <div class="meta" style=${{textAlign:"center"}}>${[r.media_type ? r.media_type + (r.num_frames ? " · " + r.num_frames + " frames" : "") : "", r.elapsed_ms ? r.elapsed_ms + " ms" : ""].filter(Boolean).join(" · ")}</div>
         ${r.per_frame && r.per_frame.length > 1 && html`<div class="frames">
           <div class="meta">Per-frame P(fake) — ${r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
@@ -1097,13 +1134,33 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
             <span>max <b>${(Math.max(...r.per_frame)*100).toFixed(0)}%</b></span>
           </div>
         </div>`}
-        ${r.interpret_map && html`<div class="interp">
-          <div class="meta">Interpretability — ${({safe_hf:"DWT high-frequency band (SAFE)", npr_residual:"neighboring-pixel residual (NPR)", pgc_peak:"peak-guided residual fake-evidence (PGC)", aide_dct:"native-res DCT patch-energy (AIDE)", spai_patch:"per-patch spectral fake-evidence (SPAI)"})[r.interpret_kind] || "artifact map"} · warmer = stronger artifact signal</div>
-          <div class="interp-row">
-            ${r.interpret_overlay && html`<figure class="interp-cell"><img class="interp-map" src=${r.interpret_overlay} alt="overlay on image"/><figcaption>overlay on image</figcaption></figure>`}
-            <figure class="interp-cell"><img class="interp-map" src=${r.interpret_map} alt="heatmap"/><figcaption>heatmap</figcaption></figure>
-          </div>
-        </div>`}`;
+        ${r.interpret_map && html`<${Heatmap} r=${r} />`}`;
+    }
+
+    // What each heatmap shows. "evidence" maps point at regions that look generated; "signal" maps show the low-level
+    // pattern the detector reads, which is not by itself a verdict.
+    const HEAT_INFO = {
+      spai_patch: ["evidence", "Spectral evidence (SPAI)", "Each patch is scored on its frequency spectrum. Red patches look most like AI-generated content."],
+      pgc_peak: ["evidence", "Peak-guided evidence (PGC)", "Highlights the image regions whose fine residual pattern contributes most to the 'fake' score."],
+      safe_hf: ["signal", "High-frequency detail (SAFE)", "Shows the fine texture band SAFE inspects. Bright areas have stronger fine-grained structure; this is the signal it reads, not a verdict."],
+      npr_residual: ["signal", "Neighbouring-pixel residual (NPR)", "Shows how each pixel differs from its neighbours, the up-sampling trace NPR looks for. Brighter means a stronger trace."],
+      aide_dct: ["signal", "Frequency-patch energy (AIDE)", "Shows where the image has the most high-frequency (DCT) energy; AIDE picks its patches from these areas."],
+    };
+
+    function Heatmap({ r }) {
+      const [kind, title, expl] = HEAT_INFO[r.interpret_kind] || ["signal", "Artifact map", "Highlights image regions the detector relies on."];
+      return html`<div class="interp">
+        <div class="interp-title">Where the detector looked <span class="itag">${title}</span></div>
+        <div class="meta">${expl}</div>
+        <div class="legend">
+          <span>${kind === "evidence" ? "weaker evidence" : "weaker signal"}</span><i class="legbar"></i><span>${kind === "evidence" ? "stronger evidence of AI generation" : "stronger signal"}</span>
+        </div>
+        <div class="interp-row">
+          ${r.interpret_overlay && html`<figure class="interp-cell"><div class="imgcell"><img class="interp-map" src=${r.interpret_overlay} alt="heatmap on your image"/></div><figcaption>On your image</figcaption></figure>`}
+          <figure class="interp-cell"><div class="imgcell"><img class="interp-map" src=${r.interpret_map} alt="heatmap"/></div><figcaption>Heatmap only</figcaption></figure>
+        </div>
+        <div class="meta">${kind === "signal" ? "A strong signal is not proof of AI generation: real photos can have it too." : "Evidence maps are an aid to interpretation; the verdict above is the detector's actual score."}</div>
+      </div>`;
     }
 
     createRoot(document.getElementById("root")).render(html`<${App}/>`);

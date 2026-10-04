@@ -361,6 +361,47 @@ _add(ModelSpec(
 
 
 # ---------------------------------------------------------------------------
+# What each detector does to the input before scoring, shown in the UI as a short label + explanation. These mirror
+# the transforms above, which in turn mirror each paper's evaluation (changing them would break reproduction).
+# ---------------------------------------------------------------------------
+_CENTER = ("Resize + center-crop", "The shorter side is scaled to {r} px and the central {c}×{c} square is used. "
+           "The aspect ratio is kept; anything outside the square is not seen by the detector.")
+INPUT_NOTES: dict[str, tuple[str, str]] = {
+    "clip": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "cnn": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "dinov2": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "adapted_dino": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "vib_net": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "dinov3": (_CENTER[0] + " 256", _CENTER[1].format(r=256, c=256)),
+    "co_spy": (_CENTER[0] + " 384", _CENTER[1].format(r=384, c=384)),
+    "safe": ("Center-crop 256, no resize", "The central 256×256 pixels are used exactly as they are - no scaling, so fine "
+             "pixel patterns are preserved. The rest of the image is not seen."),
+    "pgc": ("Center-crop 224, no resize", "The central 224×224 pixels are used exactly as they are - no scaling, so fine "
+            "pixel patterns are preserved. The rest of the image is not seen."),
+    "fat_former": ("Squashed to a square", "The whole image is stretched to 256×256 (the aspect ratio changes), then the "
+                   "central 224×224 is used."),
+    "npr": ("Squashed to 256×256", "The whole image is stretched to a 256×256 square (the aspect ratio changes)."),
+    "spai": ("Original resolution", "Scored at its original size and aspect ratio; it is only downscaled if the long side "
+             "exceeds 1024 px."),
+    "aide": ("Original resolution, 5 views", "Builds five 256×256 views, shown side by side: four patches cut from the "
+             "original pixels (picked by their frequency content) plus one resized view of the whole image."),
+    "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
+             "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
+}
+
+
+def input_note(spec: ModelSpec) -> dict:
+    """{label, explanation} describing the preprocessing of ``spec`` (frames for video models)."""
+    if spec.modality == "video":
+        crop = f", after trimming {int(spec.edge_crop * 100)}% off every edge" if spec.edge_crop else ""
+        return {"label": f"{spec.num_frames} sampled frames",
+                "explanation": f"{spec.num_frames} frames are sampled from the clip and resized to "
+                               f"{spec.frame_size}×{spec.frame_size}{crop}."}
+    label, expl = INPUT_NOTES.get(spec.key, ("Model-specific", "Preprocessing follows the detector's paper."))
+    return {"label": label, "explanation": expl + " This matches the paper's evaluation."}
+
+
+# ---------------------------------------------------------------------------
 # Paper-vs-reproduced numbers, shown per model in the UI. Every "ours" value traces to a logged
 # eval; official-weights rows are cross-checked against the paper, from-scratch/probe rows are our
 # reproductions. Honest caveats are kept in `note` (see README repro section + session findings).
