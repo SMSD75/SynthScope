@@ -8,6 +8,7 @@ Endpoints:
 Serves the built Vite frontend from ``frontend/dist`` if present, otherwise the no-build
 standalone page in ``static/index.html`` (works without Node).
 """
+import asyncio
 import json
 import tempfile
 from pathlib import Path
@@ -182,7 +183,10 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
     # text-to-image generators get a caption-derived prompt (see generators.effective_prompt)
     prompt = _gens.effective_prompt(generator, real_bytes, prompt)
     try:
-        gen_bytes = _gens.generate(generator, real_bytes, prompt)
+        if generator in _gens.GENERATORS and _gens.GENERATORS[generator].heavy:
+            get_engine().release_gpu()               # free the detectors' GPU memory for the local generator
+        # off the event loop: a local generation takes 1-4 minutes and must not freeze the whole UI
+        gen_bytes = await asyncio.to_thread(_gens.generate, generator, real_bytes, prompt)
     except KeyError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:                       # missing API key

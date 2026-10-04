@@ -5,6 +5,7 @@ and kept in a small LRU so a shared GPU is not exhausted. All forward passes hap
 ``torch.no_grad()`` with the model in fp32/eval mode.
 """
 import base64
+import gc
 import io
 import threading
 import time
@@ -189,6 +190,15 @@ class Engine:
         return bool(p and p.exists())
 
     # -- model lifecycle ----------------------------------------------------
+    def release_gpu(self) -> None:
+        """Drop every resident detector (they reload lazily on the next request) so a heavy local image generator,
+        which runs in its own process and wants most of the GPU, does not collide with them."""
+        with self._lock:
+            self._cache.clear()
+        gc.collect()
+        if self.device == "cuda":
+            torch.cuda.empty_cache()
+
     def _get_model(self, spec: ModelSpec) -> torch.nn.Module:
         with self._lock:
             if spec.key in self._cache:

@@ -6,8 +6,9 @@ user can see how today's detectors hold up against today's generators. API keys 
 if a key is absent the generator is reported unavailable (the UI greys it out).
 """
 from __future__ import annotations
-import base64, io, os, re
+import base64, io, os, re, subprocess, sys, tempfile, threading
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Optional
 
 import requests
@@ -25,8 +26,12 @@ class Generator:
     call: Callable[[bytes, str], bytes]
     note: str = ""
     local: bool = False   # True = open-weight, runs locally (no paid API key)
+    avail: Optional[Callable[[], bool]] = None   # custom availability check (overrides the defaults)
+    heavy: bool = False   # True = needs (most of) the GPU: the web engine releases its detectors first
 
     def available(self) -> bool:
+        if self.avail is not None:
+            return self.avail()
         if self.local:                       # local = available if the inference pipeline is importable
             try:
                 from diffusers import Ideogram4Pipeline  # noqa: F401
@@ -152,6 +157,46 @@ def _ideogram_local(image_png: bytes, prompt: str) -> bytes:
     return _png_bytes(out)
 
 
+# --- Open-weight image-conditioned generators (FLUX.2 [klein], Qwen-Image-2.1), run in a SUBPROCESS ------
+# These are 20-60 GB repos that need a newer diffusers than the shared AGID env and would not fit on the
+# web UI's 24 GB GPU next to the detectors, so each image is produced by interface/backend/local_gen.py in a
+# separate process (model CPU-offload, memory fully released afterwards). Configure with:
+#   AGID_GEN_PYTHONPATH  dir holding diffusers main + huggingface_hub 1.x (prepended to the child PYTHONPATH)
+#   AGID_GEN_HF_HOME     node-local HF cache for the child (keeps tens of GB off the shared /ivi quota)
+_LOCAL_GEN = Path(__file__).with_name("local_gen.py")
+_LOCAL_LOCK = threading.Lock()      # one heavy local generation at a time
+
+
+def _local_gen_available() -> bool:
+    extra = os.environ.get("AGID_GEN_PYTHONPATH", "")
+    try:
+        import torch
+        has_gpu = torch.cuda.is_available()
+    except Exception:
+        has_gpu = False
+    return bool(extra) and Path(extra).is_dir() and has_gpu
+
+
+def _local_subprocess(model_key: str) -> Callable[[bytes, str], bytes]:
+    def call(image_png: bytes, prompt: str) -> bytes:
+        env = dict(os.environ)
+        env["PYTHONPATH"] = os.pathsep.join(p for p in (os.environ["AGID_GEN_PYTHONPATH"], env.get("PYTHONPATH", "")) if p)
+        if os.environ.get("AGID_GEN_HF_HOME"):
+            env["HF_HOME"] = os.environ["AGID_GEN_HF_HOME"]
+        with _LOCAL_LOCK, tempfile.TemporaryDirectory() as tmp:
+            src, dst = Path(tmp) / "in.png", Path(tmp) / "out.png"
+            src.write_bytes(image_png)
+            r = subprocess.run(
+                [sys.executable, str(_LOCAL_GEN), "--model", model_key, "--image", str(src),
+                 "--prompt", prompt, "--out", str(dst)],
+                env=env, capture_output=True, text=True, timeout=3600)
+            if r.returncode != 0 or not dst.exists():
+                tail = (r.stderr or r.stdout or "").strip().splitlines()[-3:]
+                raise RuntimeError(f"{model_key} failed (exit {r.returncode}): " + " | ".join(tail))
+            return dst.read_bytes()
+    return call
+
+
 GENERATORS = {
     g.key: g for g in [
         Generator("nanobanana", "Nano Banana (Gemini 2.5 Flash Image)", "GEMINI_API_KEY", True, _gemini,
@@ -166,6 +211,16 @@ GENERATORS = {
                   "Open-weight 9.3B DiT, nf4 on a 24GB GPU — runs locally via diffusers, NO paid API "
                   "key. HF_TOKEN only to download the license-gated weights once. Text-to-image: "
                   "generates from an auto-caption of the source (~4 min/image).", local=True),
+        Generator("flux2_klein", "FLUX.2 [klein] 4B (open-weight, local)", "AGID_GEN_PYTHONPATH", True,
+                  _local_subprocess("flux2_klein_4b"),
+                  "Black Forest Labs' distilled FLUX.2 [klein] 4B (Apache-2.0), edits the source photo into a "
+                  "new image locally on the GPU (4 steps); no API key.", local=True, avail=_local_gen_available,
+                  heavy=True),
+        Generator("qwen_image_2_1", "Qwen-Image-2.1 (open-weight, local)", "AGID_GEN_PYTHONPATH", True,
+                  _local_subprocess("qwen_image_2_1"),
+                  "Alibaba Qwen-Image-2.1 (7B unified generation + editing; Qwen Research License - research use "
+                  "only), edits the source photo locally on the GPU; no API key.", local=True,
+                  avail=_local_gen_available, heavy=True),
     ]
 }
 

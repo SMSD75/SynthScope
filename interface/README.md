@@ -158,3 +158,39 @@ production, prefer real env vars / a secrets manager over the `.env` file.
 pip install "git+https://github.com/huggingface/diffusers.git"
 ```
 and a free `HF_TOKEN` (once) to download the license-gated nf4 weights (accept at hf.co/ideogram-ai/ideogram-4-nf4-diffusers). It then runs locally on a 24 GB GPU.
+
+### Local open-weight generators: FLUX.2 [klein] 4B and Qwen-Image-2.1 (no paid API key)
+
+Two image-**conditioned** generators run locally and edit the uploaded photo into a new image:
+
+| key | model | size | license | notes |
+|---|---|---|---|---|
+| `flux2_klein` | `black-forest-labs/FLUX.2-klein-4B` | 24 GB | Apache-2.0 | distilled, 4 steps (~1 min incl. load) |
+| `qwen_image_2_1` | `Qwen/Qwen-Image-2.1` (7B unified generation + editing) | 33 GB | **Qwen Research License (research use only)** | 40 steps (~1.5 min incl. load) |
+
+They need a newer `diffusers` than the shared env (`QwenImage21Pipeline`), so they run in an **isolated
+subprocess** (`interface/backend/local_gen.py`) with their own library path — the shared `AGID` env is left
+untouched. One-time setup (no env changes):
+
+```bash
+G=/path/to/gen_env && mkdir -p $G
+pip install --no-deps --target $G git+https://github.com/huggingface/diffusers
+pip install --no-deps --target $G "huggingface_hub>=1.12,<2" hf_xet      # diffusers main needs hub 1.x; hub 2.x is rejected by transformers
+export AGID_GEN_PYTHONPATH=$G                                           # prepended to the child's PYTHONPATH
+export AGID_GEN_HF_HOME=/node-local/hf_cache                            # 57 GB of weights: keep them off the shared quota
+```
+
+Both are ungated, but a `HF_TOKEN` in `.env` is passed through. A generator shows as available only when
+`AGID_GEN_PYTHONPATH` points at an existing directory **and** a GPU is visible.
+
+How it fits a 24 GB GPU next to the detectors: the web engine first releases its resident detectors
+(`Engine.release_gpu`, they reload lazily); then the child runs one image and exits, freeing everything.
+FLUX.2 uses `enable_model_cpu_offload`. Qwen-Image-2.1 (33 GB, would need >28 GB of host RAM that way) is
+loaded **in stages** straight to the GPU — text encoder (17 GiB) → dropped → 7B transformer (14 GiB) → moved to
+host RAM just before a single-pass VAE decode — so host RAM stays small. (VAE *tiling* is deliberately not used:
+tiling the encode of the conditioning image corrupts it, and tiled decode leaves visible seams a detector could
+key on.) Generation runs off the event loop, and local runs are serialized by a lock.
+
+Other FLUX variants (`FLUX.2-klein-9B`, `FLUX.1-Kontext-dev`, `FLUX.2-dev`) are gated on the Hub: accept the licence
+on the model page with the `HF_TOKEN` account, then add an entry to `MODELS` in `local_gen.py` and `GENERATORS` in
+`generators.py`. FLUX 3 *Image* has no public open weights at the time of writing (only FLUX 3 Action does).
