@@ -142,9 +142,9 @@ adding a branch in `engine._interpret_map` that produces a 2-D saliency tensor.
 ## 8. Trending pipeline & repo hygiene
 
 `repro/fetch_arxiv_trending.py` → `repro/generate_trending_readme.py` keep a curated
-`interface/backend/trending.json` (image+video) and the README `<!-- TRENDING -->` block + a web tab.
+`interface/backend/trending.json` (image+video) and `TRENDING.md` (full list) + a short teaser in the README `<!-- TRENDING -->` block + a web tab.
 Daily rule: new detectors are integrated **on a `trending/<key>` branch and pushed for review — never
-auto-merged to `main`**; only `trending.json`/README docs go to `main` from the pipeline. Never commit
+auto-merged to `main`**; only `trending.json`/`TRENDING.md`/README docs go to `main` from the pipeline. Never commit
 weights (`*.pth`), `.env`, or caches.
 
 ---
