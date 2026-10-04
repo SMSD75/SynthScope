@@ -51,8 +51,11 @@ A browser app for trying the detectors without writing code. The detectors alway
 
 ### 🔌 Connect your own generators
 
-*Test a generator* can talk to the image generators you have access to. Copy `.env.example` to `.env`, fill in the keys you have, and
-restart the page. A generator without a key is greyed out, so everything is optional.
+The *Test a generator* tab creates the AI-generated images that the detectors are tested on, and you choose which generator makes them.
+Hosted services (Nano Banana, GPT Image, Grok, FLUX.1) work once you add your own API key; the open-weight models run on your own GPU and need no key.
+
+To add a key, copy `.env.example` to `.env`, paste the keys you have, and restart the page. A generator without a key is greyed out in the
+dropdown, so you only need the ones you want to use.
 
 | Generator | How to connect | Modes |
 | --- | --- | --- |
