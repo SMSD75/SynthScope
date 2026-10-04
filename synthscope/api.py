@@ -77,7 +77,7 @@ def load(
 
 
 class Detector:
-    """A single loaded detector. Build via :func:`agid.load`.
+    """A single loaded detector. Build via :func:`synthscope.load`.
 
     The underlying model is constructed lazily on the first :meth:`predict` and then kept
     resident for the lifetime of this object.
@@ -169,7 +169,7 @@ class Detector:
             )
         from . import hub
 
-        print(f"[agid] downloading '{self.spec.key}' weights from the model zoo ...")
+        print(f"[synthscope] downloading '{self.spec.key}' weights from the model zoo ...")
         hub.download(self.spec.key, repo_id=self._repo)
 
     # -- helpers ------------------------------------------------------------

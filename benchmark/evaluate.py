@@ -3,7 +3,7 @@
     python benchmark/evaluate.py --model fat_former --track forensynths \
         --data /path/to/forensynths_test --out benchmark/submissions/fat_former.json
 
-Reuses the verified ``agid`` inference path (model build + checkpoint load + per-model
+Reuses the verified ``synthscope`` inference path (model build + checkpoint load + per-model
 preprocessing + fake-probability), then computes per-generator + mean metrics with torchmetrics —
 the same metrics the trainer reports. Image tracks only in v1 (video harness is future work; the
 video seed entries come from their reproduction eval).
@@ -24,7 +24,7 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageFile
 
-import agid
+import synthscope
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -65,7 +65,7 @@ def discover_generators(root: Path, shared_reals: Path | None):
 
 
 @torch.no_grad()
-def score(det: "agid.Detector", paths: list[Path], batch_size: int) -> torch.Tensor:
+def score(det: "synthscope.Detector", paths: list[Path], batch_size: int) -> torch.Tensor:
     """Return P(fake) for a list of image paths, using the detector's own preprocessing."""
     det._ensure_weights()
     model = det._engine._get_model(det.spec)          # build + load (verified path)
@@ -108,7 +108,7 @@ def _infer_eval_type(model_type: str) -> str:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="Evaluate a detector and emit a benchmark submission.")
-    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `agid list`)")
+    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `synthscope list`)")
     ap.add_argument("--track", required=True, choices=["forensynths", "genimage-sdv1.4"],
                     help="benchmark track (image tracks only in v1)")
     ap.add_argument("--data", required=True, help="benchmark root (per-generator real/fake dirs)")
@@ -123,7 +123,7 @@ def main(argv=None) -> int:
     ap.add_argument("--submitted-by", default="AGID")
     args = ap.parse_args(argv)
 
-    det = agid.load(args.model, device=args.device)
+    det = synthscope.load(args.model, device=args.device)
     root = Path(args.data).expanduser()
     gens = discover_generators(root, Path(args.reals).expanduser() if args.reals else None)
     if not gens:
@@ -173,9 +173,9 @@ def main(argv=None) -> int:
         "submitted_by": args.submitted_by,
         "date": datetime.date.today().isoformat(),
         "verified": True,
-        "source": f"agid evaluate.py on {root} ({len(per_gen)} generators)",
+        "source": f"synthscope evaluate.py on {root} ({len(per_gen)} generators)",
         "protocol_notes": None,
-        "agid_version": agid.__version__,
+        "agid_version": synthscope.__version__,
     }
     out = Path(args.out).expanduser()
     out.parent.mkdir(parents=True, exist_ok=True)

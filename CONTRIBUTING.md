@@ -1,6 +1,6 @@
-# Contributing to AGID
+# Contributing to SynthScope
 
-Thanks for your interest! AGID aims to be the **unified, reproducible benchmark** for
+Thanks for your interest! SynthScope aims to be the **unified, reproducible benchmark** for
 AI-generated image & video detection. The most valuable contributions are **new detectors**,
 **new datasets/generators**, and **independently reproduced results**.
 
@@ -34,7 +34,7 @@ per-generator metrics. To add a method `foo`:
 3. **Config** — add `conf/model/<modality>/foo.yaml` and `conf/trainer/<modality>/foo.yaml`.
 4. **Recipe** — add `experiments/<modality>/foo.sh` with the env vars + launch command.
 5. **(Optional) API/demo** — add a `ModelSpec` to `interface/backend/registry.py` so the detector
-   is runnable via `agid.load("foo")`, the CLI, and the web demo (preprocessing, checkpoint +
+   is runnable via `synthscope.load("foo")`, the CLI, and the web demo (preprocessing, checkpoint +
    any official-weights remap, and the forward → P(fake) convention).
 6. **Results** — run it and paste the logged `Test Metrics` in the PR. New numbers should trace to
    a real run, never be estimated (see the reproduction table convention in the README).

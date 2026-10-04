@@ -1,5 +1,5 @@
 ---
-title: AGID AI-Generated Media Detection
+title: SynthScope AI-Generated Media Detection
 emoji: 🔎
 colorFrom: indigo
 colorTo: red
@@ -10,15 +10,15 @@ pinned: false
 license: apache-2.0
 ---
 
-# AGID demo (Gradio / Hugging Face Spaces)
+# SynthScope demo (Gradio / Hugging Face Spaces)
 
 Upload an image or video, pick a detector, and get the probability it is AI-generated. Built on
-the [`agid`](https://github.com/SMSD75/AGID) Python API (`agid.load(key).predict(file)`).
+the [`synthscope`](https://github.com/SMSD75/AGID) Python API (`synthscope.load(key).predict(file)`).
 
 ## Run locally
 
 ```bash
-pip install -e ".[demo]"        # from the AGID repo root
+pip install -e ".[demo]"        # from the SynthScope repo root
 python demo/app.py              # serves on http://localhost:7860
 ```
 

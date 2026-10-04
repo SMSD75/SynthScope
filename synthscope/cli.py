@@ -1,10 +1,10 @@
-"""``agid`` command-line interface.
+"""``synthscope`` command-line interface.
 
-    agid list                              # list detectors and weight availability
-    agid detect FILE --model fat_former    # score an image or video (auto-downloads weights)
-    agid detect FILE -m d3 --json          # machine-readable output
-    agid pull --model clip                 # fetch a checkpoint from the model zoo
-    agid push --repo USER/agid-checkpoints # (maintainer) publish checkpoints to the Hub
+    synthscope list                              # list detectors and weight availability
+    synthscope detect FILE --model fat_former    # score an image or video (auto-downloads weights)
+    synthscope detect FILE -m d3 --json          # machine-readable output
+    synthscope pull --model clip                 # fetch a checkpoint from the model zoo
+    synthscope push --repo USER/agid-checkpoints # (maintainer) publish checkpoints to the Hub
 """
 from __future__ import annotations
 
@@ -75,7 +75,7 @@ def _cmd_detect(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="agid", description="AI-generated image & video detection.")
+    p = argparse.ArgumentParser(prog="synthscope", description="AI-generated image & video detection.")
     sub = p.add_subparsers(dest="command", required=True)
 
     pl = sub.add_parser("list", help="list available detectors")
@@ -84,7 +84,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     pd = sub.add_parser("detect", help="score an image or video file")
     pd.add_argument("file", help="path to an image or video")
-    pd.add_argument("-m", "--model", required=True, help="detector key (see `agid list`)")
+    pd.add_argument("-m", "--model", required=True, help="detector key (see `synthscope list`)")
     pd.add_argument("--checkpoint", default=None, help="override the .pth checkpoint path")
     pd.add_argument("--device", default=None, help="cuda | cpu (default: cuda if available)")
     pd.add_argument("--frames", type=int, default=None,

@@ -18,7 +18,7 @@ body:
       placeholder: |
         bash experiments/aide.sh
         # or
-        import agid; agid.load("fat_former").predict("x.png")
+        import synthscope; synthscope.load("fat_former").predict("x.png")
       render: shell
     validations:
       required: true
@@ -31,9 +31,9 @@ body:
     id: env
     attributes:
       label: Environment
-      description: OS, Python, PyTorch + CUDA versions, GPU, and `agid` / commit hash.
+      description: OS, Python, PyTorch + CUDA versions, GPU, and `synthscope` / commit hash.
       placeholder: |
-        python -c "import torch, agid; print(agid.__version__, torch.__version__, torch.version.cuda)"
+        python -c "import torch, synthscope; print(synthscope.__version__, torch.__version__, torch.version.cuda)"
       render: shell
     validations:
       required: true

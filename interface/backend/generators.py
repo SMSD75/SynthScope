@@ -1,7 +1,7 @@
 """SOTA image-generation backends for the live detector-comparison demo.
 
 Each generator takes a source image + a prompt ("make another image conceptually similar to this")
-and returns PNG bytes of a freshly generated image, which is then scored by the AGID detectors so a
+and returns PNG bytes of a freshly generated image, which is then scored by the SynthScope detectors so a
 user can see how today's detectors hold up against today's generators. API keys come from env vars;
 if a key is absent the generator is reported unavailable (the UI greys it out).
 """

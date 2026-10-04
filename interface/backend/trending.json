@@ -10,7 +10,7 @@
       "github": "https://github.com/manic-cui/CuRe",
       "arxiv": "https://arxiv.org/abs/2609.14316",
       "summary": "Reframes backbone adaptation as regressing real-generated MIXING RATIOS instead of binary classification (finer supervision), with a compact source-response subspace that suppresses nuisance variation/shortcut cues. Frozen Perception-Encoder (PE-Core L/14-336) backbone + LoRA + subspace + linear head; the 25 MB adapter ships in the repo and infer.py scores a single image.",
-      "result": "89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Integrated in AGID as `cure` (merged to main 2026-10-03): AGID's class is identical to the official model (395/395 state-dict tensors, logit diff 4.8e-6, 0 verdict flips). AGID-protocol results with the official adapter: UFD-8 93.9 / ForenSynths-13 82.0 / GenImage-8 85.2 balanced acc (SD-v1.4, its training set, 99.7). AIGIBench REPRODUCED: on the paper's own 20 full-image-synthesis subsets (full test data) the port scores 92.85 balanced acc / 97.48 AUROC vs the paper's 92.8 / 97.5, every subset within 0.10 pt (per-subset mean abs diff 0.03; the paper excludes the 5 face-swap subsets, which is why all 25 gives 85.95). Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, not run), and 7 of the paper's 10 benchmarks (not in AGID).]",
+      "result": "89.7% average balanced accuracy over ten public benchmarks, +5.2 pts over the second-best method, robust to common degradations (paper). [Integrated in SynthScope as `cure` (merged to main 2026-10-03): SynthScope's class is identical to the official model (395/395 state-dict tensors, logit diff 4.8e-6, 0 verdict flips). SynthScope-protocol results with the official adapter: UFD-8 93.9 / ForenSynths-13 82.0 / GenImage-8 85.2 balanced acc (SD-v1.4, its training set, 99.7). AIGIBench REPRODUCED: on the paper's own 20 full-image-synthesis subsets (full test data) the port scores 92.85 balanced acc / 97.48 AUROC vs the paper's 92.8 / 97.5, every subset within 0.10 pt (per-subset mean abs diff 0.03; the paper excludes the 5 face-swap subsets, which is why all 25 gives 85.95). Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, not run), and 7 of the paper's 10 benchmarks (not in SynthScope).]",
       "agid": "cure"
     },
     {
@@ -32,7 +32,7 @@
       "github": "https://github.com/Amamiya-C/PROBE-AIGI-Detection",
       "arxiv": "https://arxiv.org/abs/2605.24906",
       "summary": "Boosts cross-generator generalization by augmenting training with images sampled from probed generative-space variations; the detector is a fine-tuned DINOv2 (sliding-patch) classifier. Released weights on ModelScope.",
-      "result": "PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (paper). AGID reproduces the official weights: GenImage 98.54 / Synthbuster 99.27 / UFD 95.95 mAP (mAUROC 96-99). [Integration on branch trending/probe, under review.]"
+      "result": "PROBE-DINOv2 93.9% avg balanced-acc over 7 benchmarks (paper). SynthScope reproduces the official weights: GenImage 98.54 / Synthbuster 99.27 / UFD 95.95 mAP (mAUROC 96-99). [Integration on branch trending/probe, under review.]"
     },
     {
       "title": "DiCoME: Divide-and-Conquer Multi-View Evidential Learning for Deepfake Detection",
@@ -42,7 +42,7 @@
       "github": "https://github.com/kxl0825/DiCoME",
       "arxiv": "https://arxiv.org/abs/2606.01885",
       "summary": "Disentangles semantic vs structural-artifact views and fuses them with evidential learning to counter the 'semantic masking effect'. Released checkpoint (HF).",
-      "result": "SOTA cross-dataset deepfake generalization (DeepfakeBench protocol). [face-deepfake domain; AGID lacks those datasets locally \u2014 integration pending data.]"
+      "result": "SOTA cross-dataset deepfake generalization (DeepfakeBench protocol). [face-deepfake domain; SynthScope lacks those datasets locally \u2014 integration pending data.]"
     },
     {
       "title": "Images as Tables: In-Context AIGI Detection with TabPFN",
@@ -52,7 +52,7 @@
       "github": "https://github.com/jpwalter30/Towards-Generalizable-Detection-of-AI-Generated-Images",
       "arxiv": "https://arxiv.org/abs/2606.00872",
       "summary": "Frozen DINOv3 CLS feature -> PCA(500) -> TabPFN in-context tabular classification; strong few-shot/low-data generalization with no task-specific training.",
-      "result": "Generalizable detection in the low-data regime (few labeled examples per new generator). [integration pending: in-context TabPFN paradigm \u2014 a clean AGID forward->logit needs the released fitted TabPFN+PCA+labeled-support-set checkpoint baked in (GDrive), plus an external version-sensitive tabpfn dependency; a different paradigm from the trained-detector template, and the headline is a low-data/few-shot niche (multi-multi acc 0.8765 / AUROC 0.9501 @625 samples) rather than full-data SOTA. Verified repo 2026-06-20: weights on GDrive, frozen DINOv3->PCA(500)->TabPFN.]"
+      "result": "Generalizable detection in the low-data regime (few labeled examples per new generator). [integration pending: in-context TabPFN paradigm \u2014 a clean SynthScope forward->logit needs the released fitted TabPFN+PCA+labeled-support-set checkpoint baked in (GDrive), plus an external version-sensitive tabpfn dependency; a different paradigm from the trained-detector template, and the headline is a low-data/few-shot niche (multi-multi acc 0.8765 / AUROC 0.9501 @625 samples) rather than full-data SOTA. Verified repo 2026-06-20: weights on GDrive, frozen DINOv3->PCA(500)->TabPFN.]"
     },
     {
       "title": "Co-Spy: Fusing Semantic and Artifact Cues for Synthetic Image Detection",
@@ -63,7 +63,7 @@
       "github": "https://github.com/Megum1/Co-Spy",
       "arxiv": "",
       "summary": "Adaptive fusion of a SigLIP semantic stream and an SD-VAE artifact-residual stream.",
-      "result": "Co-Spy-Bench ~96 mAP; AGID retrain reaches 96.6 (beats released weights on that bench)."
+      "result": "Co-Spy-Bench ~96 mAP; SynthScope retrain reaches 96.6 (beats released weights on that bench)."
     },
     {
       "title": "SAFE: High-Frequency Artifact Detector with Targeted Augmentation",
@@ -74,7 +74,7 @@
       "github": "https://github.com/Ouxiang-Li/SAFE",
       "arxiv": "",
       "summary": "Lightweight DWT high-frequency artifact detector with a carefully designed augmentation recipe.",
-      "result": "AGID-trained reproduction (served): ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP \u2014 beats the official checkpoint on GenImage."
+      "result": "SynthScope-trained reproduction (served): ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96 mAP \u2014 beats the official checkpoint on GenImage."
     },
     {
       "title": "AIDE: ConvNeXt Semantic + Low-Level DCT/SRM Cues",
@@ -96,7 +96,7 @@
       "github": "https://github.com/mever-team/spai",
       "arxiv": "",
       "summary": "Spectral Reconstruction Similarity + Spectral Context Attention; detects at native/arbitrary resolution.",
-      "result": "AGID serves the official weights at native resolution (the faithful any-res path): GenImage 94.22 / Synthbuster 96.75 mAP \u2014 reproduces & beats the vendored-official 91.33."
+      "result": "SynthScope serves the official weights at native resolution (the faithful any-res path): GenImage 94.22 / Synthbuster 96.75 mAP \u2014 reproduces & beats the vendored-official 91.33."
     },
     {
       "title": "FatFormer: Forgery-Aware Adaptive Transformer",
@@ -129,7 +129,7 @@
       "github": "https://github.com/WisconsinAIVision/UniversalFakeDetect",
       "arxiv": "",
       "summary": "Linear probe on frozen CLIP ViT-L/14 features \u2014 a simple, strong cross-generator baseline.",
-      "result": "UniversalFakeDetect 95.66 mAP; AGID-trained 96.44."
+      "result": "UniversalFakeDetect 95.66 mAP; SynthScope-trained 96.44."
     },
     {
       "title": "MoE-JEPA: Unifying Semantic Priors and High-Frequency Traces (V-JEPA for synthetic image forensics)",
@@ -172,7 +172,7 @@
       "github": "https://github.com/Zig-HS/D3",
       "arxiv": "",
       "summary": "Training-free: 2nd-order std of frozen per-frame features as the score.",
-      "result": "GenVideo-Val ~98 mAP (paper). AGID faithful protocol (X-CLIP-B/16 + 10% edge-crop): AUROC 95.95 / acc 91.7 (the paper's mAP isn't comparable on AGID's 10000:56 real:fake pool \u2014 AUROC is the robust metric)."
+      "result": "GenVideo-Val ~98 mAP (paper). SynthScope faithful protocol (X-CLIP-B/16 + 10% edge-crop): AUROC 95.95 / acc 91.7 (the paper's mAP isn't comparable on SynthScope's 10000:56 real:fake pool \u2014 AUROC is the robust metric)."
     },
     {
       "title": "ReStraV: Representation-Trajectory Geometry",
@@ -182,7 +182,7 @@
       "github": "https://github.com/ChristianInterno/ReStraV",
       "arxiv": "",
       "summary": "Frozen DINOv2 trajectory-geometry features + a standardized MLP head.",
-      "result": "GenVidBench Main ~93; AGID 92.7 mAP."
+      "result": "GenVidBench Main ~93; SynthScope 92.7 mAP."
     },
     {
       "title": "STALL: Spatio-Temporal whitened Log-Likelihoods (training-free)",
@@ -193,7 +193,7 @@
       "github": "https://github.com/OmerBenHayun/STALL",
       "arxiv": "",
       "summary": "Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.",
-      "result": "GenVideo-Val ~0.80 AUC (paper); AGID AUROC 83.5."
+      "result": "GenVideo-Val ~0.80 AUC (paper); SynthScope AUROC 83.5."
     },
     {
       "title": "ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection",
@@ -203,7 +203,7 @@
       "github": "https://github.com/hwang-cs-ime/ATSS",
       "arxiv": "https://arxiv.org/abs/2604.04029",
       "summary": "Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.",
-      "result": "Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video \u2014 and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. AGID feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]"
+      "result": "Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video \u2014 and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. SynthScope feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]"
     },
     {
       "title": "G2VD: Generalizable AI-Generated Video Detection via Counterfactual Intervention and Causal Disentanglement",
@@ -213,7 +213,7 @@
       "github": "https://github.com/DMOSCAR-98/G2VD",
       "arxiv": "https://arxiv.org/abs/2607.04607",
       "summary": "Counterfactual-intervention + causal-disentanglement detector: a training-time CFIPipeline synthesizes controlled counterfactual samples (VAEs + frequency/pixel alignment), and a causal-disentanglement classifier with two domain-anchored branches and an HSIC independence constraint isolates the generalizable artifact signal from domain-specific content.",
-      "result": "GenVidBench cross-domain: >90% accuracy / AUC ~0.95 using only 10% of the training data (paper). Repo live 2026-07-07 (CLIP/XCLIP/DeMamba backbones \u2014 the same family as AGID's D3). [integration pending (re-checked 2026-10-02): repo moved from dumeng98/G2VD (now 404) to DMOSCAR-98/G2VD; checkpoints are still NOT released ('not stored in this repository', MODEL_ZOO.md lists no links) and the CFIPipeline VAE-pool is part of the staged pipeline. Revisit when checkpoints appear.]"
+      "result": "GenVidBench cross-domain: >90% accuracy / AUC ~0.95 using only 10% of the training data (paper). Repo live 2026-07-07 (CLIP/XCLIP/DeMamba backbones \u2014 the same family as SynthScope's D3). [integration pending (re-checked 2026-10-02): repo moved from dumeng98/G2VD (now 404) to DMOSCAR-98/G2VD; checkpoints are still NOT released ('not stored in this repository', MODEL_ZOO.md lists no links) and the CFIPipeline VAE-pool is part of the staged pipeline. Revisit when checkpoints appear.]"
     },
     {
       "title": "RIFT: Mind the Rift - Cross-Scale Coupling Mismatch for AI-Generated Video Detection",

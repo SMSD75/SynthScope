@@ -1,4 +1,4 @@
-"""FastAPI app for the AGID detector web interface.
+"""FastAPI app for the SynthScope detector web interface.
 
 Endpoints:
   GET  /api/models             -> list detectors + availability
@@ -22,7 +22,7 @@ from . import config, datasets, media
 from .engine import get_engine
 from .registry import REPRO, REPRO_FULL, get_spec, list_specs
 
-app = FastAPI(title="AGID Detector Interface", version="1.0")
+app = FastAPI(title="SynthScope Detector Interface", version="1.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -133,7 +133,7 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
 # --- SOTA generator vs detector comparison demo ------------------------------
 # Pick a real image from our datasets -> send it to a current SOTA generator (Nano Banana / GPT Image /
 # Grok / FLUX) with "make another image conceptually similar to this" -> score the generated image with
-# the AGID detectors (best/promoted checkpoints) so the user sees how today's detectors hold up.
+# the SynthScope detectors (best/promoted checkpoints) so the user sees how today's detectors hold up.
 import base64 as _b64, glob as _glob, random as _random
 from . import generators as _gens
 
@@ -240,7 +240,7 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
             "results": await asyncio.to_thread(_sota_score, real_bytes, gen_bytes, detectors)}
 
 
-# --- Leaderboard: all methods x benchmarks (paper vs AGID-trained vs official), by benchmark ------
+# --- Leaderboard: all methods x benchmarks (paper vs SynthScope-trained vs official), by benchmark ------
 _METHOD_NAMES = {
     "clip": "CLIP / UnivFD", "cnn": "CNNDetection", "fat_former": "FatFormer", "npr": "NPR",
     "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
@@ -278,7 +278,7 @@ def _lead_num(s: str) -> float:
 
 @app.get("/api/leaderboard")
 def leaderboard():
-    """Every method x benchmark with paper / AGID-trained / official-weights numbers, grouped by
+    """Every method x benchmark with paper / SynthScope-trained / official-weights numbers, grouped by
     benchmark family so methods that share a benchmark can be compared head-to-head."""
     groups: dict[str, list] = {}
     for key, rows in REPRO_FULL.items():
@@ -320,7 +320,7 @@ def generator_benchmarks():
             "settings": f"{meta.get('res','?')}px · {meta.get('steps','?')} steps"
                         + (f" · {meta['attempts']} attempts" if meta.get("attempts") else ""),
             "note": "Balanced real (GenImage/CNNDetection) vs Ideogram fakes from BLIP-caption prompts; "
-                    "people excluded (Ideogram refuses them). Detectors = promoted AGID checkpoints. "
+                    "people excluded (Ideogram refuses them). Detectors = promoted SynthScope checkpoints. "
                     "None were trained on Ideogram, so this is cross-generator generalization. Ranked by AUROC.",
             "rows": rows,
         })

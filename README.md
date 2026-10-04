@@ -1,11 +1,14 @@
-# AGID — AI-Generated Image & Video Detection
+# SynthScope — AI-Generated Image & Video Detection
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![CI](https://github.com/SMSD75/AGID/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/AGID/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-AGID is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
+SynthScope is a unified library for **detecting AI-generated (synthetic) images and videos**. It re-implements a range of state-of-the-art real-vs-fake detectors behind one [Hydra](https://hydra.cc/) config system and an [Accelerate](https://huggingface.co/docs/accelerate) training loop, so any method can be run, trained, and benchmarked on the same datasets, transforms, and metrics — through a one-line Python/CLI API, a web demo, or a standardized leaderboard.
+
+> **Renamed:** SynthScope was previously called *AGID*. `import agid` and the `agid` command still work as aliases;
+> the `AGID_*` environment variables, the `AGID` conda env and the GitHub URL keep their names for now.
 
 Every detector is a binary classifier (`real` vs `fake`), and results are reported **per generator**, the standard way to measure generalization to unseen generative models. **17 detectors** are included (14 image, 3 video), each verified against its paper.
 
@@ -26,46 +29,46 @@ See [LICENSES.md](LICENSES.md) for per-method/weight licenses.
 
 ## Quick start
 
-> **Try it without installing:** open the [Colab quickstart](notebooks/agid_quickstart.ipynb) or launch
+> **Try it without installing:** open the [Colab quickstart](notebooks/synthscope_quickstart.ipynb) or launch
 > the [Gradio demo](demo/) (`pip install -e ".[demo]" && python demo/app.py`).
 
 Run any detector on an image or video and get the probability it is AI-generated:
 
 ```python
-import agid
+import synthscope
 
-agid.list_models()                         # detectors + which weights are present
-det = agid.load("fat_former")              # builds lazily; downloads backbones on first use
+synthscope.list_models()                         # detectors + which weights are present
+det = synthscope.load("fat_former")              # builds lazily; downloads backbones on first use
 det.predict("photo.png")
 # -> {'model': 'fat_former', 'fake_probability': 0.98, 'verdict': 'fake', 'confidence': 0.98, ...}
 
 det.predict("clip.mp4")                    # image detectors sample frames; video detectors score the clip
-agid.load("d3").predict("clip.mp4")        # D3 is training-free — no checkpoint needed
+synthscope.load("d3").predict("clip.mp4")        # D3 is training-free — no checkpoint needed
 ```
 
 From the shell:
 
 ```bash
-agid list                                  # list detectors and weight availability
-agid detect photo.png --model fat_former   # human-readable verdict
-agid detect clip.mp4  --model d3 --json    # machine-readable
+synthscope list                                  # list detectors and weight availability
+synthscope detect photo.png --model fat_former   # human-readable verdict
+synthscope detect clip.mp4  --model d3 --json    # machine-readable
 ```
 
 Checkpoints resolve from `$AGID_CKPT_DIR` (default `~/.cache/agid/checkpoints`); pass
-`agid.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
+`synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
 (D3, STALL) need none.
 
 ### Model zoo (Hugging Face Hub)
 
-When a detector's weights aren't present locally, `agid.load(...)` **auto-downloads** them from a Hub
-model-zoo repo (set `AGID_HUB_REPO`, or pass `agid.load(..., repo="user/agid-checkpoints")`):
+When a detector's weights aren't present locally, `synthscope.load(...)` **auto-downloads** them from a Hub
+model-zoo repo (set `AGID_HUB_REPO`, or pass `synthscope.load(..., repo="user/agid-checkpoints")`):
 
 ```bash
-agid pull --model clip                                 # fetch one checkpoint
-agid push --repo user/agid-checkpoints --public        # publish AGID-trained checkpoints (license-safe)
+synthscope pull --model clip                                 # fetch one checkpoint
+synthscope push --repo user/agid-checkpoints --public        # publish SynthScope-trained checkpoints (license-safe)
 ```
 
-`push` uploads only AGID-trained checkpoints by default; weights derived from authors' official
+`push` uploads only SynthScope-trained checkpoints by default; weights derived from authors' official
 releases are held back unless you opt in and confirm the upstream license permits redistribution.
 
 ---
@@ -99,7 +102,7 @@ CVPR'26), training-free spatio-temporal whitened log-likelihoods.
 
 ## Benchmarks
 
-AGID ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
+SynthScope ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
 fixed test sets, per-generator metrics, one evaluation pipeline. See the ranked
 **[LEADERBOARD.md](LEADERBOARD.md)** and the protocol in **[benchmark/](benchmark/)**.
 
@@ -113,11 +116,11 @@ Submit your own result via PR — one JSON under [benchmark/submissions/](benchm
 validates it against the [schema](benchmark/schema.json).
 
 **Every detector is verified against its paper** — headline numbers below (mAP unless noted; "official"
-= authors' weights run through AGID). Full per-benchmark tables (paper / official / AGID-trained, all
+= authors' weights run through SynthScope). Full per-benchmark tables (paper / official / SynthScope-trained, all
 generators) live in [`repro/AGGREGATED_BENCHMARK.md`](repro/AGGREGATED_BENCHMARK.md) and each model's
 `README.md`.
 
-| Detector | Headline benchmark | Paper | AGID |
+| Detector | Headline benchmark | Paper | SynthScope |
 | --- | --- | ---: | ---: |
 | CLIP / UnivFD | UniversalFakeDetect | 95.0 | 96.44 |
 | CNNDetection | ForenSynths | 90.8 | 94.42 |
@@ -149,7 +152,7 @@ bash interface/run_backend.sh                      # serves http://<host>:8000
 
 It exposes every detector with its exact preprocessing, runs image detectors frame-by-frame on videos
 and video detectors through their native clip pipeline, shows which weights back each model
-(official / AGID-trained / training-free), and includes a benchmark view, the **What's Trending** feed ([TRENDING.md](TRENDING.md)), and a *SOTA vs
+(official / SynthScope-trained / training-free), and includes a benchmark view, the **What's Trending** feed ([TRENDING.md](TRENDING.md)), and a *SOTA vs
 detectors* demo that generates images with hosted models (Nano Banana, GPT Image, Grok, FLUX.1) or **local open-weight
 ones (FLUX.2 [klein] 4B, Qwen-Image-2.1, Ideogram 4.0)** and scores them with every detector. See
 [interface/README.md](interface/README.md).
@@ -177,5 +180,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 <!-- TRENDING:START -->
 ## 📈 What's Trending
 
-A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: **15 image · 6 video** tracked (13 already integrated in AGID), last updated **2026-10-04**. → **[TRENDING.md](TRENDING.md)** (also in the web UI's *What's Trending* tab).
+A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: **15 image · 6 video** tracked (13 already integrated in SynthScope), last updated **2026-10-04**. → **[TRENDING.md](TRENDING.md)** (also in the web UI's *What's Trending* tab).
 <!-- TRENDING:END -->

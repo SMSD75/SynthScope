@@ -1,13 +1,13 @@
 # Licenses and attribution
 
-The **AGID framework** — the training/eval pipeline, the unified config system, the dataset
-modules, the metrics/transform/logging stack, the `agid` Python API, and the web interface — is
+The **SynthScope framework** — the training/eval pipeline, the unified config system, the dataset
+modules, the metrics/transform/logging stack, the `synthscope` Python API, and the web interface — is
 released under the **Apache License 2.0** (see [LICENSE](LICENSE)).
 
-AGID **re-implements** a range of published detectors and, for a few methods, **vendors** the
+SynthScope **re-implements** a range of published detectors and, for a few methods, **vendors** the
 authors' original network code so their released weights can be loaded faithfully. Those
-third-party components, and every **pretrained checkpoint / backbone** AGID loads, remain under
-**their original licenses**. AGID does not relicense them.
+third-party components, and every **pretrained checkpoint / backbone** SynthScope loads, remain under
+**their original licenses**. SynthScope does not relicense them.
 
 > ⚠️ **Before redistributing any model weights** (e.g. via a public model zoo / Hugging Face Hub),
 > confirm that the upstream license permits redistribution and your intended use. Several
@@ -18,24 +18,24 @@ third-party components, and every **pretrained checkpoint / backbone** AGID load
 
 ## Detectors
 
-| `model_type` | Method (venue) | Upstream code | Code license | Released weights AGID can load | Weights license |
+| `model_type` | Method (venue) | Upstream code | Code license | Released weights SynthScope can load | Weights license |
 | --- | --- | --- | --- | --- | --- |
-| `cnn` | CNNDetection (CVPR'20) | PeterWang512/CNNDetection | ⚠ verify | ProGAN-trained (AGID-trained here) | ⚠ verify |
-| `clip` | UnivFD (CVPR'23) | WisconsinAIVision/UniversalFakeDetect | ⚠ verify | — (AGID-trained probe) | n/a |
+| `cnn` | CNNDetection (CVPR'20) | PeterWang512/CNNDetection | ⚠ verify | ProGAN-trained (SynthScope-trained here) | ⚠ verify |
+| `clip` | UnivFD (CVPR'23) | WisconsinAIVision/UniversalFakeDetect | ⚠ verify | — (SynthScope-trained probe) | n/a |
 | `npr` | NPR (CVPR'24) | chuangchuangtan/NPR-DeepfakeDetection | ⚠ verify | **official** ProGAN weights | ⚠ verify |
 | `fat_former` | FatFormer (CVPR'24) | Michel-liu/FatFormer (verify) | ⚠ verify | **official** weights | ⚠ verify |
 | `aide` | AIDE (ICLR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
 | `co_spy` | CO-SPY (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
 | `spai` | SPAI (CVPR'25) | mever-team/spai (verify) | ⚠ verify | **official** weights | ⚠ verify |
-| `vib_net` | VIB-Net (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
-| `safe` | SAFE (KDD'25) | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
-| `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `vib_net` | VIB-Net (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
+| `safe` | SAFE (KDD'25) | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
+| `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `cure` | CuRe (arXiv 2609.14316) | manic-cui/CuRe | Apache-2.0 (repo `LICENSE`) | **official** 25 MB adapter (`cure_adapter.pt`, loads as `cure.pth`) | Apache-2.0 (shipped in the repo; verify before redistributing) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
-| `adapted_dino` | Adapter-tuned DINOv2 (AGID) | this repo | Apache-2.0 | — (AGID-trained) | n/a |
+| `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
 | `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
-| `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (AGID-trained) | n/a |
+| `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `stall` | STALL (CVPR'26) | ⚠ verify (official repo) | ⚠ verify | training-free; needs DINOv3 backbone | gated (DINOv3) |
 
 ## Backbones / foundation models (downloaded on first use)
@@ -55,7 +55,7 @@ third-party components, and every **pretrained checkpoint / backbone** AGID load
 
 The dataset auto-downloaders fetch third-party datasets (GenImage, ForenSynths/CNNDetection,
 AIGIBench, Co-Spy-Bench, DiTFake, UniversalFakeDetect, GenVideo, …). Each dataset is governed by
-its **own** terms / license at the source; AGID only automates retrieval and restructuring. Review
+its **own** terms / license at the source; SynthScope only automates retrieval and restructuring. Review
 and comply with each dataset's terms before use or redistribution.
 
 ---

@@ -1,6 +1,6 @@
-# AGID capabilities (orientation for an agent building a new detector)
+# SynthScope capabilities (orientation for an agent building a new detector)
 
-AGID is a **reproduction + benchmarking library for AI-generated *image and video* detection**. It
+SynthScope is a **reproduction + benchmarking library for AI-generated *image and video* detection**. It
 hosts many published detectors behind one interface, reproduces each on its own benchmark, and
 serves a web UI + a Python/CLI API. Read this before adding a method, then follow
 [`docs/ADD_DETECTOR.md`](ADD_DETECTOR.md) for the exact checklist.
@@ -12,7 +12,7 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ## 1. What's already integrated (17 detectors)
 
-`agid.list_models()` / `from agid.api import list_specs`. Each is an `AGID<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs`. Each is an `AGID<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`.
 
@@ -34,7 +34,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `restrav` | video | video | agid | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
 
-`*` served via official weights remapped into the AGID class. **`predict_kind`** sets the score
+`*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
 convention the engine applies to `forward()` logits: `ce`→`softmax[:,1]`, `bce`→`sigmoid`,
 `bce_npr` (NPR residual transform then sigmoid), `vib` (tuple out), `video` (clip in).
 
@@ -104,16 +104,16 @@ scratch; check what's staged (e.g. CNNDetection, GenImage, GenImage_full are on 
 
 ---
 
-## 6. The `agid` package (Python + CLI)
+## 6. The `synthscope` package (Python + CLI)
 
 ```python
-import agid
-det = agid.load("pgc")                  # or load(key, checkpoint=PATH, device=...)
+import synthscope
+det = synthscope.load("pgc")                  # or load(key, checkpoint=PATH, device=...)
 det.predict("img.png")                  # -> {fake_probability, verdict, confidence, interpret_map, ...}
-agid.list_models(); agid.available_models()   # registered / weights-present
+synthscope.list_models(); synthscope.available_models()   # registered / weights-present
 ```
-CLI: `agid list`, `agid detect <file> --model <k>`, `agid pull <k>` (fetch weights from the HF model
-zoo), `agid push` (maintainer). Weights resolve under **`$AGID_CKPT_DIR`** (default
+CLI: `synthscope list`, `synthscope detect <file> --model <k>`, `synthscope pull <k>` (fetch weights from the HF model
+zoo), `synthscope push` (maintainer). Weights resolve under **`$AGID_CKPT_DIR`** (default
 `/hddstore/ssalehi/AGID/checkpoints`; override per node) or are auto-downloaded.
 
 ---

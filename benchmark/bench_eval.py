@@ -29,7 +29,7 @@ from pathlib import Path
 import torch
 from PIL import Image, ImageFile
 
-import agid
+import synthscope
 from models.image.cure.preprocess import SRC_FORMAT_KEY
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -184,7 +184,7 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor) -> dict | None:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `agid list`)")
+    ap.add_argument("-m", "--model", required=True, help="AGID detector key (see `synthscope list`)")
     ap.add_argument("--benchmark", required=True,
                     choices=["forensynths", "ufd", "pergen", "pool"])
     ap.add_argument("--data", required=True, help="benchmark root")
@@ -204,7 +204,7 @@ def main(argv=None) -> int:
     load_kw = {}
     if args.ckpt:
         load_kw["checkpoint"] = args.ckpt
-    det = agid.load(args.model, device=args.device, **load_kw)
+    det = synthscope.load(args.model, device=args.device, **load_kw)
     det._ensure_weights()
     spec = det.spec
     model = det._engine._get_model(spec)

@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AGID — AI-Generated Media Detector</title>
+  <title>SynthScope — AI-Generated Media Detector</title>
   <style>
 /* ============================================================================
-   AGID web interface — visual theme
+   SynthScope web interface — visual theme
    Modern dark "glass dashboard": layered navy gradient, frosted panels, an
    indigo→cyan accent, soft shadows, and smooth motion. Class names are kept
    stable so App.jsx is untouched.
@@ -421,7 +421,7 @@ a { color: var(--accent); }
           <tr><td>Reproduced</td><td class=${"match-" + (rep.match || "")}>${rep.ours}</td></tr>
         </tbody></table>`}
         ${full && full.length > 0 && html`<details class="repro-details">
-          <summary>All ${full.length} reported benchmarks — paper vs AGID vs official</summary>
+          <summary>All ${full.length} reported benchmarks — paper vs SynthScope vs official</summary>
           <div class="repro-scroll">
             <table class="repro-full">
               <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
@@ -437,8 +437,8 @@ a { color: var(--accent); }
             </table>
           </div>
           <div class="repro-legend">
-            <b>reproduced</b> = AGID-trained checkpoint matches the paper ·
-            <b>official</b> = official weights loaded into the AGID class match (AGID-trained number shown where we trained from scratch) ·
+            <b>reproduced</b> = SynthScope-trained checkpoint matches the paper ·
+            <b>official</b> = official weights loaded into the SynthScope class match (SynthScope-trained number shown where we trained from scratch) ·
             <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
           </div>
         </details>`}
@@ -665,11 +665,11 @@ a { color: var(--accent); }
     }
 
     const REPRO_LEGEND = html`<div class="repro-legend">
-      <b>reproduced</b> = AGID-trained checkpoint matches the paper ·
-      <b>official</b> = official weights loaded into the AGID class match (AGID-trained shown alongside where trained from scratch) ·
+      <b>reproduced</b> = SynthScope-trained checkpoint matches the paper ·
+      <b>official</b> = official weights loaded into the SynthScope class match (SynthScope-trained shown alongside where trained from scratch) ·
       <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.</div>`;
 
-    // Leaderboard: every method x benchmark (paper / AGID-trained / official-weights), grouped by benchmark.
+    // Leaderboard: every method x benchmark (paper / SynthScope-trained / official-weights), grouped by benchmark.
     function LeaderboardView() {
       const [groups, setGroups] = useState([]);
       const [sel, setSel] = useState("");
@@ -681,8 +681,8 @@ a { color: var(--accent); }
       const shown = sel ? groups.filter(g => g.benchmark === sel) : groups;
       return html`<div class="lead">
         <div class="lead-head">
-          <p class="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>AGID-trained</b>
-            checkpoint, and <b>official weights</b> loaded into the AGID class. Grouped by benchmark so methods that
+          <p class="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>SynthScope-trained</b>
+            checkpoint, and <b>official weights</b> loaded into the SynthScope class. Grouped by benchmark so methods that
             share one can be compared head-to-head (sorted best-first within each).</p>
           <label>Benchmark:
             <select value=${sel} onChange=${e => setSel(e.target.value)}>
@@ -723,7 +723,7 @@ a { color: var(--accent); }
       }, []);
       return html`<div class="topgen">
         <p class="muted">How our detectors hold up against today's SOTA image generators. Each: a balanced
-          real-vs-generated set scored by every AGID detector (promoted checkpoints), ranked by AUROC.
+          real-vs-generated set scored by every SynthScope detector (promoted checkpoints), ranked by AUROC.
           None of the detectors were trained on these generators — this is cross-generator generalization.</p>
         ${err && html`<div class="err">${err}</div>`}
         ${!bm.length && !err && html`<div class="empty">No generator benchmarks yet.</div>`}
@@ -768,7 +768,7 @@ a { color: var(--accent); }
       return html`
         <div class="wrap">
           <header>
-            <h1>AGID — AI-Generated Media Detector</h1>
+            <h1>SynthScope — AI-Generated Media Detector</h1>
             <p>Detect AI-generated media, or explore the datasets each detector was trained / tested on.
                ${device && html`<span class="pill" style=${{marginLeft:8}}>device: ${device}</span>`}</p>
           </header>

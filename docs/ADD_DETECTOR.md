@@ -1,7 +1,7 @@
 # Adding a detector to AGID (the repo rules)
 
 This is the checklist the **What's-Trending daily agent** (and humans) follow to incorporate a new
-AI-generated-content detector cleanly and verify that AGID reproduces the paper's results. Keep the
+AI-generated-content detector cleanly and verify that SynthScope reproduces the paper's results. Keep the
 code style and structure consistent with the existing detectors (PGC, SAFE, Co-Spy, AIDE, …).
 
 ## When to integrate
@@ -27,7 +27,7 @@ the benchmark data can't be obtained, **do not** commit broken code — record a
    - `checkpoint="<k>.pth"`, `ckpt_kind`: `agid` (our trained weights, strict load) **or** `official_<k>` + a `remap=remap_<k>` function (rename official keys → our module names) for the authors' released weights,
    - `transform`: the eval preprocessing — match the **official** eval exactly (resize vs crop, norm vs none). Add a `tf_*` helper if needed. (Getting this wrong silently tanks results — see SAFE: a resize destroyed the high-freq signal.)
    - `weights`: `"official"` | `"agid_trained"` | `"training_free"` (shown in the web UI badge).
-5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "AGID adaptations", and a results table in the **Paper / AGID_official / AGID_train** schema.
+5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / AGID_official / AGID_train** schema.
 
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:

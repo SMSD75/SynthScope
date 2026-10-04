@@ -3,7 +3,7 @@ requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "agid"
+name = "synthscope"
 version = "0.1.0"
 description = "A unified library and benchmark for AI-generated image & video detection."
 readme = "README.md"
@@ -23,7 +23,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Image Recognition",
 ]
 
-# Core runtime: everything the public API (`import agid`) pulls at import/inference time.
+# Core runtime: everything the public API (`import synthscope`) pulls at import/inference time.
 # `interface.backend.{engine,media}` import the repo decoders at module load, so torch/
 # torchvision/decord/matplotlib are genuinely required, not optional.
 dependencies = [
@@ -48,7 +48,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# FastAPI + React web demo (interface/). Not imported by `import agid`.
+# FastAPI + React web demo (interface/). Not imported by `import synthscope`.
 web = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
 # Training + dataset auto-download stack.
 train = ["wandb>=0.16", "gdown>=5"]
@@ -67,22 +67,23 @@ Repository = "https://github.com/SMSD75/AGID"
 Issues = "https://github.com/SMSD75/AGID/issues"
 
 [project.scripts]
-agid = "agid.cli:main"
+synthscope = "synthscope.cli:main"
+agid = "synthscope.cli:main"      # deprecated alias
 
-# Flat (research) layout: top-level modules + the model/interface/agid packages. Editable
+# Flat (research) layout: top-level modules + the model/interface/synthscope packages. Editable
 # install (`pip install -e .`) is the supported path — it puts the repo root on sys.path so
 # the existing flat imports (dataset, trainer, models.*, config_utils, interface.*) all resolve.
 [tool.setuptools]
 py-modules = ["main", "trainer", "dataset", "metrics", "transformations", "logger", "config_utils"]
 
 [tool.setuptools.packages.find]
-include = ["agid*", "models*", "interface*"]
+include = ["synthscope*", "agid*", "models*", "interface*"]
 exclude = ["tests*", "outputs*", "wandb*", "docs*", "experiments*", "conf*"]
 
 [tool.ruff]
 line-length = 110
 target-version = "py310"
-# Heavy research / vendored model code is not held to the package lint bar; CI lints `agid`.
+# Heavy research / vendored model code is not held to the package lint bar; CI lints `synthscope`.
 extend-exclude = ["models", "outputs", "wandb", "experiments", "docs", "interface/frontend", ".cache"]
 
 [tool.ruff.lint]

@@ -1,4 +1,4 @@
-"""AGID Gradio demo — runs any detector on an uploaded image or video.
+"""SynthScope Gradio demo — runs any detector on an uploaded image or video.
 
 Deployable as a Hugging Face Space (see demo/README.md) or locally:
 
@@ -10,7 +10,7 @@ set the ``AGID_HUB_REPO`` env var to your checkpoints repo.
 """
 from __future__ import annotations
 
-import agid
+import synthscope
 
 # Detectors that need gated backbones we can't host on a public demo (DINOv3 weights).
 _GATED = {"dinov3", "stall"}
@@ -18,7 +18,7 @@ _GATED = {"dinov3", "stall"}
 
 def _model_choices():
     """Dropdown choices as (label, key), available/runnable detectors first."""
-    models = [m for m in agid.list_models() if m["key"] not in _GATED]
+    models = [m for m in synthscope.list_models() if m["key"] not in _GATED]
     models.sort(key=lambda m: (not m["available"], m["modality"], m["key"]))
     return [(f"{m['name']} · {m['paper']} ({m['modality']})", m["key"]) for m in models]
 
@@ -30,7 +30,7 @@ def run_detection(file_path, model_key):
     if not model_key:
         return {}, {"error": "Pick a detector."}
     try:
-        det = agid.load(model_key)
+        det = synthscope.load(model_key)
         res = det.predict(file_path)
     except FileNotFoundError:
         return {}, {"error": f"No weights available for '{model_key}' "
@@ -49,12 +49,12 @@ def build_demo():
 
     choices = _model_choices()
     default = choices[0][1] if choices else None
-    with gr.Blocks(title="AGID — AI-generated media detection") as demo:
+    with gr.Blocks(title="SynthScope — AI-generated media detection") as demo:
         gr.Markdown(
-            "# AGID — AI-generated image & video detection\n"
+            "# SynthScope — AI-generated image & video detection\n"
             "Upload an **image or video** and pick a detector to estimate the probability that it "
             "is **AI-generated**. Each detector is a re-implementation benchmarked in "
-            "[AGID](https://github.com/SMSD75/AGID)."
+            "[SynthScope](https://github.com/SMSD75/AGID)."
         )
         with gr.Row():
             with gr.Column():

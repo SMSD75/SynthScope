@@ -1,6 +1,6 @@
-# AGID Web Interface
+# SynthScope Web Interface
 
-A web app to run the AGID detectors on an uploaded **image or video** and get the probability
+A web app to run the SynthScope detectors on an uploaded **image or video** and get the probability
 that it is **AI-generated (fake)** vs **real**. Pick any detector from a menu; the backend loads
 the corresponding model + checkpoint and runs real inference.
 
@@ -48,12 +48,12 @@ npm run dev
 
 ## How it works
 
-* Every detector is an AGID `nn.Module` built exactly like `main.py` does, via
+* Every detector is a SynthScope `nn.Module` built exactly like `main.py` does, via
   `config_utils.compose_config(<hydra overrides>)` + the same `model_type` dispatch as
   `trainer._build_model`.
 * The checkpoint is loaded into that module. Official weights (FatFormer, AIDE, NPR) are remapped
-  to the AGID state-dict layout (the verified remaps from `repro/*_eval.py`); trained-from-scratch
-  AGID checkpoints load directly.
+  to the SynthScope state-dict layout (the verified remaps from `repro/*_eval.py`); trained-from-scratch
+  SynthScope checkpoints load directly.
 * Preprocessing matches each model's training/eval recipe (see `registry.py`).
 * The fake probability is the model's native positive-class score: `softmax(logits)[fake]` for the
   cross-entropy heads, `sigmoid(logit)` for the BCE heads. Label index **1 = fake**
@@ -73,7 +73,7 @@ checkpoint-zoo table are in the top-level [README](../README.md#web-interface--c
 | script | purpose |
 | --- | --- |
 | `scripts/collect_checkpoints.py` | symlink official weights into `$AGID_CKPT_DIR` + write `MANIFEST.md` |
-| `scripts/train_model.sh <key> <gpus> <port> [epochs]` | train an AGID-class detector (saving on) |
+| `scripts/train_model.sh <key> <gpus> <port> [epochs]` | train a SynthScope-class detector (saving on) |
 | `scripts/promote_checkpoint.py <key>` | publish the best trained epoch as `<key>.pth` |
 | `scripts/verify_model.py <key>` | quick held-out check on ForenSynths |
 | `scripts/build_restrav_data.py` | stage GenVideo into the image-style `<split>/<gen>/{0_real,1_fake}` layout |

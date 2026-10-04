@@ -1,9 +1,9 @@
-"""Model zoo: publish AGID checkpoints to the Hugging Face Hub and auto-download them.
+"""Model zoo: publish SynthScope checkpoints to the Hugging Face Hub and auto-download them.
 
-``agid.load(...)`` transparently pulls a detector's weights from the Hub when they are not
-already present under ``$AGID_CKPT_DIR``. Maintainers publish with ``agid push``.
+``synthscope.load(...)`` transparently pulls a detector's weights from the Hub when they are not
+already present under ``$AGID_CKPT_DIR``. Maintainers publish with ``synthscope push``.
 
-License safety (see LICENSES.md): by default ``push`` uploads only **AGID-trained** checkpoints,
+License safety (see LICENSES.md): by default ``push`` uploads only **SynthScope-trained** checkpoints,
 which are this project's to redistribute. Checkpoints derived from authors' **official released
 weights** (``ckpt_kind`` starting with ``official_`` — e.g. FatFormer, AIDE, NPR) are skipped
 unless you pass ``--include-official`` AND have confirmed the upstream license permits it.
@@ -19,7 +19,7 @@ from interface.backend.registry import list_specs
 # Where the public zoo lives by default; override with $AGID_HUB_REPO.
 DEFAULT_REPO = os.environ.get("AGID_HUB_REPO", "SMSD75/agid-checkpoints")
 
-# Small AGID-produced auxiliary files (calibration stats) that some detectors read from the
+# Small SynthScope-produced auxiliary files (calibration stats) that some detectors read from the
 # checkpoint dir. Safe to redistribute (produced by this project).
 AUX_FILES = ["d3_calibration.json", "stall_params_genvideo.npz"]
 
@@ -74,7 +74,7 @@ def _maybe_download_aux(key: str, repo_id: str, token: str | None) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Upload (maintainer side, via `agid push`)
+# Upload (maintainer side, via `synthscope push`)
 # ---------------------------------------------------------------------------
 def _select(keys: list[str] | None, include_official: bool):
     """Return (to_upload: list[(spec, resolved_path)], skipped: list[(key, reason)])."""
@@ -98,23 +98,23 @@ def _select(keys: list[str] | None, include_official: bool):
 
 def _manifest_text(uploaded_keys: list[str], repo_id: str) -> str:
     lines = [
-        "---", "license: apache-2.0", "library_name: agid",
+        "---", "license: apache-2.0", "library_name: synthscope",
         "tags:", "- ai-generated-image-detection", "- synthetic-image-detection",
         "- deepfake-detection", "---", "",
-        "# AGID model zoo", "",
-        "Checkpoints for [AGID](https://github.com/SMSD75/AGID) detectors. Load them with:", "",
-        "```python", "import agid", f'# export AGID_HUB_REPO="{repo_id}" (or pass repo=...)',
-        'agid.load("clip").predict("image.png")  # auto-downloads from this repo', "```", "",
+        "# SynthScope model zoo", "",
+        "Checkpoints for [SynthScope](https://github.com/SMSD75/AGID) detectors. Load them with:", "",
+        "```python", "import synthscope", f'# export AGID_HUB_REPO="{repo_id}" (or pass repo=...)',
+        'synthscope.load("clip").predict("image.png")  # auto-downloads from this repo', "```", "",
         "## Contents", "",
         "| Detector | File | Provenance |", "| --- | --- | --- |",
     ]
     for s in list_specs():
         if s.key in uploaded_keys:
-            prov = "official weights" if is_official(s) else "AGID-trained"
+            prov = "official weights" if is_official(s) else "SynthScope-trained"
             lines.append(f"| {s.key} | `{repo_filename(s.key)}` | {prov} |")
     lines += [
         "", "## License", "",
-        "The AGID framework is Apache-2.0. Re-implementation-trained weights are released under "
+        "The SynthScope framework is Apache-2.0. Re-implementation-trained weights are released under "
         "Apache-2.0. Any weights derived from third-party official releases retain their upstream "
         "license — see the repo's `LICENSES.md`. Verify terms before downstream use.",
     ]

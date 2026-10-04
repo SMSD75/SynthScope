@@ -1,4 +1,4 @@
-<!-- Thanks for contributing to AGID! -->
+<!-- Thanks for contributing to SynthScope! -->
 
 ## Summary
 <!-- What does this PR do and why? -->

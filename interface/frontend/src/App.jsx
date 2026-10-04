@@ -9,15 +9,15 @@ import {
 // Which weights back the default inference checkpoint for each detector (shown in the UI).
 const WEIGHTS_LABEL = {
   official: "official weights",
-  agid_trained: "AGID-trained",
+  agid_trained: "SynthScope-trained",
   training_free: "training-free",
 };
-const wlabel = (m) => WEIGHTS_LABEL[m && m.weights] || "AGID-trained";
+const wlabel = (m) => WEIGHTS_LABEL[m && m.weights] || "SynthScope-trained";
 
 const REPRO_LEGEND = (
   <div className="repro-legend">
-    <b>reproduced</b> = AGID-trained checkpoint matches the paper · <b>official</b> = official weights loaded
-    into the AGID class match (AGID-trained shown alongside where trained from scratch) · <b>below</b> = gap
+    <b>reproduced</b> = SynthScope-trained checkpoint matches the paper · <b>official</b> = official weights loaded
+    into the SynthScope class match (SynthScope-trained shown alongside where trained from scratch) · <b>below</b> = gap
     remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
   </div>
 );
@@ -35,7 +35,7 @@ function TrendingView() {
       <div className="trend-card" key={i}>
         <div className="trend-head">
           {link ? <a href={link} target="_blank" rel="noreferrer">{e.title}</a> : <b>{e.title}</b>}
-          {e.agid && <span className="wtag wtag-agid_trained">in AGID: {e.agid}</span>}
+          {e.agid && <span className="wtag wtag-agid_trained">in SynthScope: {e.agid}</span>}
         </div>
         {venue && <div className="muted" style={{ fontSize: 12 }}>{venue}</div>}
         {e.summary && <div style={{ margin: "4px 0", fontSize: 13 }}>{e.summary}</div>}
@@ -76,8 +76,8 @@ function LeaderboardView() {
   return (
     <div className="lead">
       <div className="lead-head">
-        <p className="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>AGID-trained</b>
-          checkpoint, and <b>official weights</b> loaded into the AGID class. Grouped by benchmark so methods that
+        <p className="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>SynthScope-trained</b>
+          checkpoint, and <b>official weights</b> loaded into the SynthScope class. Grouped by benchmark so methods that
           share one can be compared head-to-head (sorted best-first).</p>
         <label>Benchmark:
           <select value={sel} onChange={(e) => setSel(e.target.value)}>
@@ -121,7 +121,7 @@ function TopGeneratorsView() {
   return (
     <div className="topgen">
       <p className="muted">How our detectors hold up against today's SOTA image generators. Each: a balanced
-        real-vs-generated set scored by every AGID detector (promoted checkpoints), ranked by AUROC. None of the
+        real-vs-generated set scored by every SynthScope detector (promoted checkpoints), ranked by AUROC. None of the
         detectors were trained on these generators — cross-generator generalization.</p>
       {err && <div className="err">{err}</div>}
       {!bm.length && !err && <div className="empty">No generator benchmarks yet.</div>}
@@ -156,7 +156,7 @@ function b64ToFile(b64, name) {
 }
 
 // SOTA generator vs detector comparison: pick/upload a real image -> a current SOTA generator makes a
-// "conceptually similar" image -> the selected AGID detectors score it (best/promoted checkpoints).
+// "conceptually similar" image -> the selected SynthScope detectors score it (best/promoted checkpoints).
 function SotaView({ models }) {
   const [gens, setGens] = useState([]);
   const [gen, setGen] = useState("");
@@ -204,7 +204,7 @@ function SotaView({ models }) {
   return (
     <div className="sota">
       <p className="muted">Send a real image from our datasets to a current SOTA generator, then see whether
-        the AGID detectors catch the freshly-generated image. Generators need an API key
+        the SynthScope detectors catch the freshly-generated image. Generators need an API key
         (greyed-out = key not set on the server).</p>
       <div className="sota-controls">
         <div>
@@ -292,7 +292,7 @@ function ReproTable({ m }) {
       )}
       {full && full.length > 0 && (
         <details className="repro-details">
-          <summary>All {full.length} reported benchmarks — paper vs AGID vs official</summary>
+          <summary>All {full.length} reported benchmarks — paper vs SynthScope vs official</summary>
           <div className="repro-scroll">
             <table className="repro repro-full">
               <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
@@ -310,8 +310,8 @@ function ReproTable({ m }) {
             </table>
           </div>
           <div className="repro-legend">
-            <b>reproduced</b> = AGID-trained checkpoint matches the paper · <b>official</b> = official weights
-            loaded into the AGID class match (AGID-trained number shown where we trained from scratch) ·
+            <b>reproduced</b> = SynthScope-trained checkpoint matches the paper · <b>official</b> = official weights
+            loaded into the SynthScope class match (SynthScope-trained number shown where we trained from scratch) ·
             <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
           </div>
         </details>
@@ -351,7 +351,7 @@ export default function App() {
   return (
     <div className="wrap">
       <header>
-        <h1>AGID — AI-Generated Media Detector</h1>
+        <h1>SynthScope — AI-Generated Media Detector</h1>
         <p>Detect AI-generated media, or explore the datasets each detector was trained / tested on.
           {device && <span className="pill">device: {device}</span>}</p>
       </header>

@@ -27,7 +27,7 @@ def _entry_line(e: dict) -> str:
     head = f"[{name}]({link})" if link else name
     venue = " · ".join(x for x in (e.get("authors", ""), e.get("venue", ""), str(e.get("year", ""))) if x)
     code = f" — [code]({e['github']})" if e.get("github") else (f" — [arXiv]({e['arxiv']})" if e.get("arxiv") else "")
-    agid = f" · _in AGID: `{e['agid']}`_" if e.get("agid") else ""
+    agid = f" · _in SynthScope: `{e['agid']}`_" if e.get("agid") else ""
     parts = [f"- **{head}**"]
     if venue:
         parts.append(f" ({venue})")
@@ -77,7 +77,7 @@ def render_teaser(data: dict) -> str:
         "## 📈 What's Trending",
         "",
         f"A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: "
-        f"**{n_img} image · {n_vid} video** tracked ({n_in} already integrated in AGID), last updated "
+        f"**{n_img} image · {n_vid} video** tracked ({n_in} already integrated in SynthScope), last updated "
         f"**{data.get('updated','')}**. → **[TRENDING.md](TRENDING.md)** (also in the web UI's *What's Trending* tab).",
         END])
 
