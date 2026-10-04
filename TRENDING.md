@@ -2,7 +2,7 @@
 
 *High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-04.*
 
-Entries marked _in AGID_ are integrated in this repo; the rest are tracked, with the reason an integration is pending noted in their _Results_ line. See [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how a paper is integrated and reproduced.
+Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked, with the reason an integration is pending noted in their _Results_ line. See [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how a paper is integrated and reproduced.
 
 ## Image detectors
 - **[CuRe: Learning Continuous Source Responses for Generalizable AI-Generated Image Detection](https://github.com/manic-cui/CuRe)** (manic-cui · arXiv · 2026) — [code](https://github.com/manic-cui/CuRe) · _in SynthScope: `cure`_  

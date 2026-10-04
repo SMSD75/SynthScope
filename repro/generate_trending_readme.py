@@ -44,7 +44,7 @@ def render_full(data: dict) -> str:
            f"*High-quality recent papers for image & video AIGC detection. {data.get('criteria','')}"
            f" Last updated: {data.get('updated','')}.*",
            "",
-           "Entries marked _in AGID_ are integrated in this repo; the rest are tracked, with the reason an "
+           "Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked, with the reason an "
            "integration is pending noted in their _Results_ line. See [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) "
            "for how a paper is integrated and reproduced.",
            ""]

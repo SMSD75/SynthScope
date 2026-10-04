@@ -157,7 +157,7 @@ weights (`*.pth`), `.env`, or caches.
   `/ssdstore` / `/nvmestore`. To run there, stage checkpoints/data from cn023 (`rsync -aL`, dereference
   the symlinks) — note `pam_slurm_adopt` only allows ssh to a node where you hold an active job.
 - `/ivi/zfs/...` is the shared home (24 GiB user quota — don't park big checkpoints there);
-  HF cache is shared at `/ivi/.../AGID/.cache_shared/hf` (`HF_HOME`). DINOv3 weights gated, under
+  HF cache is shared at `/ivi/.../SynthScope/.cache_shared/hf` (`HF_HOME`). DINOv3 weights gated, under
   `dinov3_checkpoints/` (`DINO_V3_WEIGHTS`); SPAI MFM backbone via `SYNTHSCOPE_MFM_CKPT`.
 
 ---
@@ -167,5 +167,5 @@ weights (`*.pth`), `.env`, or caches.
 1. Confirm it passes both trending rules (public repo + strong results). Read `ADD_DETECTOR.md`.
 2. `git checkout -b trending/<key>`; add the 5 files (model, conf, trainer dispatch, registry ModelSpec, README) + smoke test.
 3. **Match the official eval transform exactly** in the `ModelSpec` (resize vs crop, norm) — this is the #1 silent-failure source.
-4. Reproduce on the paper's benchmark with official weights via `bench_eval.py --ckpt`; fix `remap_<k>` for key mismatches; record per-gen AP/AUROC in the Paper/AGID_official/AGID_train schema.
+4. Reproduce on the paper's benchmark with official weights via `bench_eval.py --ckpt`; fix `remap_<k>` for key mismatches; record per-gen AP/AUROC in the Paper/SynthScope_official/SynthScope_train schema.
 5. (Optional) add an interpretability map. Push the branch; do **not** merge to `main`.
