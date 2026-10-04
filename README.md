@@ -33,6 +33,22 @@ A browser app for trying the detectors without writing code. The detectors alway
 | **Leaderboard** | Every method on every benchmark it reports: the paper's number, our own retrained checkpoint, and the authors' official weights. |
 | **Generator benchmarks** | How each detector does against specific modern generators, ranked by AUROC. |
 
+<p align="center">
+  <img src="docs/images/generator.jpg" width="49%" alt="Test a generator: a real photo, the image FLUX.2 klein made from it, and four detectors scoring both"/>
+  <img src="docs/images/detect.jpg" width="49%" alt="Detect: verdict, what the detector sees after its own preprocessing, and a heatmap of where it looked"/>
+</p>
+<p align="center"><sub><b>Left:</b> <i>Test a generator</i>, where FLUX.2 klein turns a real photo into a new image and four detectors score both.
+<b>Right:</b> <i>Detect</i>, with the verdict, the image as the detector sees it, and a heatmap.</sub></p>
+
+<details>
+<summary><b>More screenshots</b>: Browse datasets, Leaderboard, Generator benchmarks</summary>
+
+<img src="docs/images/datasets.jpg" alt="Browse datasets: a grid of real and fake samples with the detector's score on the selected one"/>
+<img src="docs/images/leaderboard.jpg" alt="Leaderboard: every method on every benchmark, paper vs retrained vs official weights"/>
+<img src="docs/images/genbench.jpg" alt="Generator benchmarks: detectors ranked against a modern generator"/>
+
+</details>
+
 *Test a generator* works with hosted models (Nano Banana, GPT Image, Grok, FLUX.1: set the API key in `.env`; the source photo is
 sent to that provider) and with open-weight models that run locally on a 24 GB GPU and keep your image on your machine
 (FLUX.2 [klein] 4B and 9B, FLUX.1 Kontext, Qwen-Image-2.1, Ideogram 4.0).
