@@ -113,7 +113,21 @@ def load_pipeline_staged(repo: str, cls_name: str, token):
     return pipe
 
 
-LOADERS = {"qwen_image_2_1": load_pipeline_staged}
+def load_pipeline_group_offload(repo: str, cls_name: str, token):
+    """FLUX.1 Kontext [dev]: the 12B transformer (24 GB in bf16) cannot sit whole on a 24 GB GPU, which is what
+    ``enable_model_cpu_offload`` needs. Keep the text encoders + VAE (~10 GB) on the GPU and stream the transformer
+    through it two blocks at a time."""
+    pipe = getattr(diffusers, cls_name).from_pretrained(repo, torch_dtype=torch.bfloat16, token=token)
+    for name in ("text_encoder", "text_encoder_2", "vae"):
+        getattr(pipe, name).to(DEVICE)
+    pipe.transformer.enable_group_offload(onload_device=DEVICE, offload_device=torch.device("cpu"),
+                                          offload_type="block_level", num_blocks_per_group=2)
+    type(pipe)._execution_device = property(lambda self: DEVICE)   # the transformer reports "cpu" between blocks
+    mem("kontext loaded")
+    return pipe
+
+
+LOADERS = {"qwen_image_2_1": load_pipeline_staged, "flux1_kontext_dev": load_pipeline_group_offload}
 
 
 def main() -> int:

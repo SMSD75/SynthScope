@@ -348,6 +348,34 @@ a { color: var(--accent); }
 .interp-cell figcaption { font-size: 11px; color: #8b93a7; margin-top: 4px; text-align: center; }
 .interp-map { display: block; width: 100%; max-width: 240px; border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
+
+/* ---- polish: header, collapsible details, badges, page heads ---------------*/
+header.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+header.top h1 { font-size: 38px; }
+header.top .pill { margin-top: 10px; white-space: nowrap; }
+details.adv { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(31,41,71,.35); }
+details.adv > summary { cursor: pointer; padding: 10px 14px; font-size: 13px; color: var(--muted); font-weight: 600; list-style: none; user-select: none; }
+details.adv > summary::-webkit-details-marker { display: none; }
+details.adv > summary::before { content: "▸"; display: inline-block; width: 16px; }
+details.adv[open] > summary::before { content: "▾"; }
+details.adv > summary:hover { color: var(--text); }
+details.adv > .adv-body { padding: 0 14px 14px; }
+details.adv .thr { margin-top: 6px; border: 0; padding: 0; background: none; }
+.pagehead { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin: 18px 0 14px; flex-wrap: wrap; }
+.pagehead p { margin: 0; max-width: 720px; line-height: 1.5; }
+select.inline { width: auto; min-width: 240px; }
+.sbadge { font-size: 12px; font-weight: 600; white-space: nowrap; }
+details.lead-card { margin-bottom: 14px; padding: 0; }
+details.lead-card > summary { cursor: pointer; list-style: none; padding: 16px 22px; display: flex; align-items: center; gap: 10px; user-select: none; }
+details.lead-card > summary::-webkit-details-marker { display: none; }
+details.lead-card > summary::before { content: "▸"; color: var(--muted); }
+details.lead-card[open] > summary::before { content: "▾"; }
+details.lead-card .sumtitle { font-size: 16px; font-weight: 700; }
+details.lead-card .repro-scroll { padding: 0 22px 18px; }
+.explore .detbar2 { padding-bottom: 16px; }
+.explore .detsel label { margin-top: 0; }
+.explore .thumbs { margin-top: 16px; }
+.explore .stat { margin-top: 14px; font-size: 13px; }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -424,14 +452,14 @@ a { color: var(--accent); }
           <summary>All ${full.length} reported benchmarks — paper vs SynthScope vs official</summary>
           <div class="repro-scroll">
             <table class="repro-full">
-              <thead><tr><th>Benchmark</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <thead><tr><th>Benchmark</th><th>Paper</th><th>SynthScope-trained</th><th>Official weights</th><th>Status</th></tr></thead>
               <tbody>
                 ${full.map((r, i) => html`<tr key=${i}>
                   <td>${r.benchmark}</td>
                   <td>${r.paper}</td>
                   <td>${r.ours_agid || "—"}</td>
                   <td>${r.ours_official || "—"}</td>
-                  <td class=${"status-" + (r.status || "")}>${r.status}</td>
+                  <td><${StatusBadge} s=${r.status} /></td>
                 </tr>`)}
               </tbody>
             </table>
@@ -655,6 +683,16 @@ a { color: var(--accent); }
         </div>`;
     }
 
+    const STATUS_LABEL = { reproduced: "✓ Reproduced", official: "✓ Official weights match", below: "Below paper",
+      reference: "Reference only", missing: "Not evaluated" };
+    function StatusBadge({ s }) {
+      return html`<span class=${"sbadge status-" + (s || "")}>${STATUS_LABEL[s] || s || "—"}</span>`;
+    }
+    // Collapsed-by-default section for details most users do not need.
+    function Adv({ title, open, children }) {
+      return html`<details class="adv" open=${!!open}><summary>${title}</summary><div class="adv-body">${children}</div></details>`;
+    }
+
     function ThresholdSlider({ threshold, setThreshold, children }) {
       return html`<div class="thr">
         <div class="lab"><span>Decision threshold</span><span>P(fake) ≥ <b>${threshold.toFixed(2)}</b> → fake</span></div>
@@ -664,12 +702,13 @@ a { color: var(--accent); }
       </div>`;
     }
 
-    const REPRO_LEGEND = html`<div class="repro-legend">
-      <b>reproduced</b> = SynthScope-trained checkpoint matches the paper ·
-      <b>official</b> = official weights loaded into the SynthScope class match (SynthScope-trained shown alongside where trained from scratch) ·
-      <b>below</b> = gap remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.</div>`;
+    const LEGEND = html`<div class="repro-legend">
+      <b>Reproduced</b>: our own trained checkpoint matches the paper ·
+      <b>Official weights match</b>: the authors' released weights, run through SynthScope, match the paper ·
+      <b>Below paper</b>: a gap remains · <b>Reference only</b>: the paper reports no comparable number ·
+      <b>Not evaluated</b>: not run yet.</div>`;
 
-    // Leaderboard: every method x benchmark (paper / SynthScope-trained / official-weights), grouped by benchmark.
+    // Leaderboard: every method x benchmark (paper / SynthScope-trained / official weights), grouped by benchmark.
     function LeaderboardView() {
       const [groups, setGroups] = useState([]);
       const [sel, setSel] = useState("");
@@ -680,40 +719,38 @@ a { color: var(--accent); }
       }, []);
       const shown = sel ? groups.filter(g => g.benchmark === sel) : groups;
       return html`<div class="lead">
-        <div class="lead-head">
-          <p class="muted">Every benchmark each paper reports, with the <b>paper</b> number, our <b>SynthScope-trained</b>
-            checkpoint, and <b>official weights</b> loaded into the SynthScope class. Grouped by benchmark so methods that
-            share one can be compared head-to-head (sorted best-first within each).</p>
-          <label>Benchmark:
-            <select value=${sel} onChange=${e => setSel(e.target.value)}>
-              <option value="">All benchmarks (${groups.length})</option>
-              ${groups.map(g => html`<option key=${g.benchmark} value=${g.benchmark}>${g.benchmark} (${g.n_methods})</option>`)}
-            </select>
-          </label>
+        <div class="pagehead">
+          <p class="muted">How each detector scores on each benchmark: the number in its paper, our own re-trained
+            checkpoint, and the authors' official weights. Methods that share a benchmark are ranked best-first.</p>
+          <select class="inline" value=${sel} onChange=${e => setSel(e.target.value)}>
+            <option value="">All benchmarks (${groups.length})</option>
+            ${groups.map(g => html`<option key=${g.benchmark} value=${g.benchmark}>${g.benchmark} (${g.n_methods})</option>`)}
+          </select>
         </div>
         ${err && html`<div class="err">${err}</div>`}
-        ${shown.map(g => html`<div key=${g.benchmark} class="card lead-card">
-          <h2>${g.benchmark} <span class="pill">${g.n_methods} method${g.n_methods > 1 ? "s" : ""}</span></h2>
+        ${shown.map((g, gi) => html`<details key=${g.benchmark} class="card lead-card" open=${!!sel || gi < 2}>
+          <summary><span class="sumtitle">${g.benchmark}</span>
+            <span class="pill">${g.n_methods} method${g.n_methods > 1 ? "s" : ""}</span></summary>
           <div class="repro-scroll">
             <table class="repro-full">
-              <thead><tr><th>Method</th><th>Paper</th><th>AGID (trained)</th><th>Official wts</th><th>Status</th></tr></thead>
+              <thead><tr><th>Method</th><th>Paper</th><th>SynthScope-trained</th><th>Official weights</th><th>Status</th></tr></thead>
               <tbody>
                 ${g.rows.map((r, i) => html`<tr key=${i}>
-                  <td><b>${r.method}</b><div class="lead-bn">${r.benchmark}</div></td>
+                  <td><b>${r.method}</b></td>
                   <td>${r.paper}</td>
                   <td>${r.agid || "—"}</td>
                   <td>${r.official || "—"}</td>
-                  <td class=${"status-" + (r.status || "")}>${r.status}</td>
+                  <td><${StatusBadge} s=${r.status} /></td>
                 </tr>`)}
               </tbody>
             </table>
           </div>
-        </div>`)}
-        ${REPRO_LEGEND}
+        </details>`)}
+        <${Adv} title="What do the statuses mean?">${LEGEND}<//>
       </div>`;
     }
 
-    // Top Generators: how detectors hold up against today's SOTA generators (Ideogram, ...).
+    // Generator benchmarks: how detectors hold up against today's SOTA generators.
     function TopGeneratorsView() {
       const [bm, setBm] = useState([]);
       const [err, setErr] = useState("");
@@ -722,30 +759,32 @@ a { color: var(--accent); }
           .catch(e => setErr(String(e.message || e)));
       }, []);
       return html`<div class="topgen">
-        <p class="muted">How our detectors hold up against today's SOTA image generators. Each: a balanced
-          real-vs-generated set scored by every SynthScope detector (promoted checkpoints), ranked by AUROC.
-          None of the detectors were trained on these generators — this is cross-generator generalization.</p>
+        <div class="pagehead"><p class="muted">How well each detector spots images from today's best generators. None of the
+          detectors were trained on these generators, so this measures how well they generalize. Ranked by AUROC (higher is better).</p></div>
         ${err && html`<div class="err">${err}</div>`}
         ${!bm.length && !err && html`<div class="empty">No generator benchmarks yet.</div>`}
         ${bm.map(b => html`<div key=${b.key} class="card">
-          <h2>vs ${b.generator} <span class="pill">${b.n_real}+${b.n_fake} imgs · ${b.settings}</span></h2>
-          <div class="meta" style=${{marginBottom: 8}}>${b.note}</div>
+          <h2>${b.generator} <span class="pill">${b.n_real + b.n_fake} images</span></h2>
           <div class="repro-scroll">
             <table class="repro-full lb-gen">
-              <thead><tr><th>#</th><th>Detector</th><th>AUROC</th><th>AP</th><th>acc@.5</th><th>fake-detect %</th><th>real-FP %</th></tr></thead>
+              <thead><tr><th>#</th><th>Detector</th><th>AUROC</th><th>AP</th><th>Accuracy</th><th>Fakes caught</th><th>Reals flagged</th></tr></thead>
               <tbody>
                 ${b.rows.map((r, i) => html`<tr key=${i} class=${i < 3 ? "lb-top" : ""}>
                   <td>${i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1)}</td>
                   <td><b>${r.name || r.detector}</b></td>
                   <td class="lb-best">${r.auroc}</td>
-                  <td>${r.ap}</td><td>${r.acc}</td><td>${r.fake_detect_rate}</td><td>${r.real_false_pos}</td>
+                  <td>${r.ap}</td><td>${r.acc}</td><td>${r.fake_detect_rate}%</td><td>${r.real_false_pos}%</td>
                 </tr>`)}
               </tbody>
             </table>
           </div>
+          <${Adv} title="Setup and notes"><div class="meta">${b.settings}. ${b.note}</div><//>
         </div>`)}
       </div>`;
     }
+
+    const TABS = [["detect", "Detect"], ["sota", "Test a generator"], ["explore", "Browse datasets"],
+                  ["leaderboard", "Leaderboard"], ["topgen", "Generator benchmarks"]];
 
     function App() {
       const [models, setModels] = useState([]);
@@ -767,17 +806,15 @@ a { color: var(--accent); }
       const shared = { models, model, setModel, threshold, setThreshold };
       return html`
         <div class="wrap">
-          <header>
-            <h1>SynthScope — AI-Generated Media Detector</h1>
-            <p>Detect AI-generated media, or explore the datasets each detector was trained / tested on.
-               ${device && html`<span class="pill" style=${{marginLeft:8}}>device: ${device}</span>`}</p>
+          <header class="top">
+            <div>
+              <h1>SynthScope</h1>
+              <p>Detect AI-generated images and videos, and see how today's detectors hold up against today's generators.</p>
+            </div>
+            ${device && html`<span class="pill" title="Where the detectors run">${device}</span>`}
           </header>
           <div class="tabs">
-            <button class=${"tab" + (tab==="detect"?" active":"")} onClick=${() => setTab("detect")}>Detect</button>
-            <button class=${"tab" + (tab==="explore"?" active":"")} onClick=${() => setTab("explore")}>Data Explorer</button>
-            <button class=${"tab" + (tab==="sota"?" active":"")} onClick=${() => setTab("sota")}>SOTA vs Detectors</button>
-            <button class=${"tab" + (tab==="leaderboard"?" active":"")} onClick=${() => setTab("leaderboard")}>Leaderboard</button>
-            <button class=${"tab" + (tab==="topgen"?" active":"")} onClick=${() => setTab("topgen")}>Top Generators</button>
+            ${TABS.map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
           </div>
           ${error && html`<div class="err">${error}</div>`}
           ${tab === "detect" ? html`<${DetectView} ...${shared} />`
@@ -822,39 +859,41 @@ a { color: var(--accent); }
       return html`
         <div class="grid">
           <div class="card">
-            <h2>Input</h2>
-            <label>Detector model</label>
-            <${ModelSelect} models=${models} model=${model} setModel=${setModel} onChange=${() => setResult(null)} />
-            ${selected && html`<div class="meta">${selected.notes}
-              ${selected.modality === "image" ? " · On a video, runs frame-by-frame and averages." : " · Native video model."}</div>`}
-            ${selected && html`<${ReproTable} m=${selected} />`}
-
-            <label>Media file</label>
+            <h2>Your file</h2>
             <div class=${"drop" + (drag ? " drag" : "")}
               onClick=${() => inputRef.current.click()}
               onDragOver=${e => { e.preventDefault(); setDrag(true); }}
               onDragLeave=${() => setDrag(false)}
               onDrop=${e => { e.preventDefault(); setDrag(false); onPick(e.dataTransfer.files[0]); }}>
-              ${file ? html`<b>${file.name}</b> <span class="meta">(${(file.size/1048576).toFixed(2)} MB)</span>`
-                     : "Click or drop an image / video here"}
+              ${file ? html`<b>${file.name}</b> <span class="meta">(${(file.size/1048576).toFixed(2)} MB) · click to change</span>`
+                     : "Click or drop an image or video here"}
             </div>
             <input ref=${inputRef} type="file" accept="image/*,video/*" style=${{display:"none"}}
               onChange=${e => onPick(e.target.files[0])} />
             ${previewUrl && html`<div class="preview">
               ${isVideo ? html`<video src=${previewUrl} controls/>` : html`<img src=${previewUrl}/>`}
             </div>`}
+
+            <label>Detector</label>
+            <${ModelSelect} models=${models} model=${model} setModel=${setModel} onChange=${() => setResult(null)} />
+            ${selected && selected.modality === "image" && isVideo && html`<div class="meta">This image detector scores sampled video frames and averages them.</div>`}
+
             <button class="go" disabled=${!file || !model || busy} onClick=${run}>
               ${busy ? "Analyzing…" : "Analyze"}
             </button>
             ${error && html`<div class="err">${error}</div>`}
+            ${selected && html`<${Adv} title="About this detector">
+              <div class="meta">${selected.paper}${selected.notes ? " · " + selected.notes : ""}</div>
+              <${ReproTable} m=${selected} />
+            <//>`}
           </div>
 
           <div class="card">
             <h2>Result</h2>
-            ${!result && !busy && html`<div class="empty">No result yet.</div>`}
-            ${busy && html`<div class="empty">Running ${selected ? selected.name : ""}… first run loads the model and may take a while.</div>`}
+            ${!result && !busy && html`<div class="empty">Upload a file and press Analyze.</div>`}
+            ${busy && html`<div class="empty">Running ${selected ? selected.name : "the detector"}… the first run loads the model and may take a while.</div>`}
             ${result && html`<${Result} r=${result} threshold=${threshold} />`}
-            ${result && html`<${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold} />`}
+            ${result && html`<${Adv} title="Advanced: decision threshold"><${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold} /><//>`}
           </div>
         </div>`;
     }
@@ -956,71 +995,75 @@ a { color: var(--accent); }
       const stats = batchStats(scored, threshold);
 
       return html`
-        <div class="grid" style=${{gridTemplateColumns: "2fr 1fr"}}>
-          <div class="card">
-            <h2>Datasets</h2>
-            <label>Detector model</label>
-            <${ModelSelect} models=${models} model=${model} setModel=${setModel} />
+        <div class="explore">
+          <div class="card detbar2">
+            <div class="detsel">
+              <label>Detector</label>
+              <${ModelSelect} models=${models} model=${model} setModel=${setModel} />
+            </div>
             ${trainDsKey && html`<div class="meta">Trained on
               <b>${(datasets.find(d=>d.key===trainDsKey)||{}).name || trainDsKey}</b>
-              ${(trainMap[model]||{}).official ? html`<span class="badge">official wts</span>` : ""}</div>`}
-            <${ReproTable} m=${models.find(m => m.key === model)} />
-
-            <div class="toolbar" style=${{marginTop: 14}}>
-              <div><label>Dataset</label>
-                <select value=${dataset} onChange=${e => setDataset(e.target.value)}>
-                  ${datasets.map(d => html`<option key=${d.key} value=${d.key}>
-                    ${d.name}${d.key === trainDsKey ? " ★ trains " + model : ""} · ${d.modality}</option>`)}
-                </select></div>
-              <div style=${{maxWidth: 130}}><label>Split</label>
-                <select value=${split} onChange=${e => { setSplit(e.target.value); loadBatch(dataset, e.target.value, seed); }}>
-                  ${(curDs ? curDs.splits : []).map(s => html`<option key=${s} value=${s}>${s === "." ? "(all)" : s}</option>`)}
-                </select></div>
-              <div style=${{maxWidth: 110, flex: "0 0 auto"}}><button class="sm" disabled=${busy} onClick=${newBatch}>↻ New batch</button></div>
-            </div>
-
-            <${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold}>
-              <div class="calib">
-                <button disabled=${scoring || !model} onClick=${scoreAll}>${scoring ? "Scoring…" : "Score batch"}</button>
-                <button disabled=${scoring || !model} onClick=${calibrate} title="Threshold that maximizes balanced accuracy on this labeled batch">Auto-calibrate</button>
-                <button disabled=${scoring || !model} onClick=${applyFpr}>Target FPR</button>
-                <input type="number" min="0" max="50" step="1" value=${fpr} onChange=${e => setFpr(parseFloat(e.target.value) || 0)} />%
-              </div>
-              ${stats && html`<div class="stat">batch (${stats.n} scored) @${threshold.toFixed(2)}:
-                <b>acc ${(stats.acc*100).toFixed(0)}%</b>
-                ${stats.racc != null ? html` · real ${(stats.racc*100).toFixed(0)}%` : ""}
-                ${stats.facc != null ? html` · fake ${(stats.facc*100).toFixed(0)}%` : ""}</div>`}
-            </${ThresholdSlider}>
-
-            ${error && html`<div class="err">${error}</div>`}
-            ${busy && html`<div class="empty">Sampling…</div>`}
-            <div class="thumbs">
-              ${items.map(it => {
-                const pr = preds[it.rel];
-                const has = pr && typeof pr.fake_probability === "number";
-                const v = has ? verdictAt(pr.fake_probability, threshold) : null;
-                const ok = has && v === it.label;
-                return html`<div key=${it.rel} class=${"thumb" + (it.rel === sel ? " sel" : "")} onClick=${() => pickItem(it)} title=${it.name}>
-                  <img loading="lazy" src=${mediaUrl(it, true)} />
-                  <span class=${"tag " + it.label}>${it.label}</span>
-                  ${it.modality === "video" && html`<span class="play">▶</span>`}
-                  ${has && html`<span class=${"pred " + (ok ? "ok" : "no")}>${(pr.fake_probability*100).toFixed(0)}% ${ok ? "✓" : "✗"}</span>`}
-                </div>`;
-              })}
-            </div>
+              ${(trainMap[model]||{}).official ? html`<span class="badge">official weights</span>` : ""}</div>`}
+            <${Adv} title="About this detector"><${ReproTable} m=${models.find(m => m.key === model)} /><//>
           </div>
-
-          <div class="card">
-            <h2>Model output</h2>
-            ${!selItem && html`<div class="empty">Click a sample to run ${(models.find(m=>m.key===model)||{}).name || "the model"} on it. Use "Score batch" + Auto-calibrate / Target FPR to set the threshold.</div>`}
-            ${selItem && html`<div>
-              <div class="preview">
-                ${selItem.modality === "video" ? html`<video src=${mediaUrl(selItem, false)} controls/>` : html`<img src=${mediaUrl(selItem, false)}/>`}
+          <div class="grid" style=${{gridTemplateColumns: "2fr 1fr", marginTop: 22}}>
+            <div class="card">
+              <h2>Samples</h2>
+              <div class="toolbar">
+                <div><label>Dataset</label>
+                  <select value=${dataset} onChange=${e => setDataset(e.target.value)}>
+                    ${datasets.map(d => html`<option key=${d.key} value=${d.key}>
+                      ${d.name}${d.key === trainDsKey ? " ★ training set" : ""} · ${d.modality}</option>`)}
+                  </select></div>
+                <div style=${{maxWidth: 130}}><label>Split</label>
+                  <select value=${split} onChange=${e => { setSplit(e.target.value); loadBatch(dataset, e.target.value, seed); }}>
+                    ${(curDs ? curDs.splits : []).map(s => html`<option key=${s} value=${s}>${s === "." ? "(all)" : s}</option>`)}
+                  </select></div>
+                <div style=${{maxWidth: 120, flex: "0 0 auto"}}><button class="sm" disabled=${busy} onClick=${newBatch}>↻ New batch</button></div>
               </div>
-              <div class="meta">${selItem.name} · ground truth: <b style=${{color: selItem.label==="fake"?"var(--fake)":"var(--real)"}}>${selItem.label}</b></div>
-              ${selRes && selRes.error && html`<div class="err">${selRes.error}</div>`}
-              ${selRes && !selRes.error && typeof selRes.fake_probability === "number" && html`<${Result} r=${selRes} threshold=${threshold} gt=${selItem.label} />`}
-            </div>`}
+              ${error && html`<div class="err">${error}</div>`}
+              ${busy && html`<div class="empty">Sampling…</div>`}
+              <div class="thumbs">
+                ${items.map(it => {
+                  const pr = preds[it.rel];
+                  const has = pr && typeof pr.fake_probability === "number";
+                  const v = has ? verdictAt(pr.fake_probability, threshold) : null;
+                  const ok = has && v === it.label;
+                  return html`<div key=${it.rel} class=${"thumb" + (it.rel === sel ? " sel" : "")} onClick=${() => pickItem(it)} title=${it.name}>
+                    <img loading="lazy" src=${mediaUrl(it, true)} />
+                    <span class=${"tag " + it.label}>${it.label}</span>
+                    ${it.modality === "video" && html`<span class="play">▶</span>`}
+                    ${has && html`<span class=${"pred " + (ok ? "ok" : "no")}>${(pr.fake_probability*100).toFixed(0)}% ${ok ? "✓" : "✗"}</span>`}
+                  </div>`;
+                })}
+              </div>
+              ${stats && html`<div class="stat">Batch accuracy (${stats.n} scored, threshold ${threshold.toFixed(2)}):
+                <b>${(stats.acc*100).toFixed(0)}%</b>
+                ${stats.racc != null ? html` · real images ${(stats.racc*100).toFixed(0)}% right` : ""}
+                ${stats.facc != null ? html` · fake images ${(stats.facc*100).toFixed(0)}% right` : ""}</div>`}
+              <${Adv} title="Score the whole batch / tune the threshold">
+                <div class="calib">
+                  <button disabled=${scoring || !model} onClick=${scoreAll}>${scoring ? "Scoring…" : "Score batch"}</button>
+                  <button disabled=${scoring || !model} onClick=${calibrate} title="Threshold that maximizes balanced accuracy on this labeled batch">Auto-calibrate</button>
+                  <button disabled=${scoring || !model} onClick=${applyFpr} title="Threshold that keeps real images wrongly flagged below this rate">Limit false alarms to</button>
+                  <input type="number" min="0" max="50" step="1" value=${fpr} onChange=${e => setFpr(parseFloat(e.target.value) || 0)} />%
+                </div>
+                <${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold} />
+              <//>
+            </div>
+
+            <div class="card">
+              <h2>Detector output</h2>
+              ${!selItem && html`<div class="empty">Click a sample to run ${(models.find(m=>m.key===model)||{}).name || "the detector"} on it.</div>`}
+              ${selItem && html`<div>
+                <div class="preview">
+                  ${selItem.modality === "video" ? html`<video src=${mediaUrl(selItem, false)} controls/>` : html`<img src=${mediaUrl(selItem, false)}/>`}
+                </div>
+                <div class="meta">${selItem.name} · ground truth: <b style=${{color: selItem.label==="fake"?"var(--fake)":"var(--real)"}}>${selItem.label}</b></div>
+                ${selRes && selRes.error && html`<div class="err">${selRes.error}</div>`}
+                ${selRes && !selRes.error && typeof selRes.fake_probability === "number" && html`<${Result} r=${selRes} threshold=${threshold} gt=${selItem.label} />`}
+              </div>`}
+            </div>
           </div>
         </div>`;
     }
@@ -1032,19 +1075,14 @@ a { color: var(--accent); }
       return html`
         <div class=${"verdict " + verdict}>${verdict === "fake" ? "AI-GENERATED" : "REAL"}</div>
         <div style=${{textAlign:"center", color:"var(--muted)", fontSize:13}}>
-          P(fake) ${fakePct.toFixed(1)}% vs threshold ${threshold.toFixed(2)}
+          ${fakePct.toFixed(1)}% likely AI-generated
           ${correct != null ? html` · <b style=${{color: correct ? "var(--real)" : "var(--fake)"}}>${correct ? "correct" : "wrong"}</b>` : ""}</div>
         <div class="bar">
           <span class="fake" style=${{width: fakePct + "%"}}>${fakePct >= 12 ? "fake " + fakePct.toFixed(0) + "%" : ""}</span>
           <span class="real" style=${{width: realPct + "%"}}>${realPct >= 12 ? "real " + realPct.toFixed(0) + "%" : ""}</span>
           <span class="thrline" style=${{left: (threshold*100) + "%"}}></span>
         </div>
-        <div style=${{marginTop:14}}>
-          <div class="row"><span>P(fake)</span><b>${fakePct.toFixed(2)}%</b></div>
-          <div class="row"><span>Model</span><b>${r.model_name || ""}</b></div>
-          ${r.media_type && html`<div class="row"><span>Media</span><b>${r.media_type}${r.num_frames ? " · " + r.num_frames + " frames" : ""}</b></div>`}
-          ${r.elapsed_ms && html`<div class="row"><span>Inference</span><b>${r.elapsed_ms} ms</b></div>`}
-        </div>
+        <div class="meta" style=${{textAlign:"center"}}>${[r.media_type ? r.media_type + (r.num_frames ? " · " + r.num_frames + " frames" : "") : "", r.elapsed_ms ? r.elapsed_ms + " ms" : ""].filter(Boolean).join(" · ")}</div>
         ${r.per_frame && r.per_frame.length > 1 && html`<div class="frames">
           <div class="meta">Per-frame P(fake) — ${r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
           <div class="spark">
