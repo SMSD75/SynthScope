@@ -176,6 +176,15 @@ Image detectors can also score a video: they run frame by frame and average the 
 
 ## 📊 Benchmarks
 
+> **Setting up the benchmarks?** The [benchmark guide](docs/BENCHMARKS.md) explains the three kinds of benchmark below, where to
+> get each dataset (with a download helper), the exact commands, run times, and how results show up in the web page.
+
+| Benchmark | Question it answers | Run | Shown in |
+| --- | --- | --- | --- |
+| **Paper reproduction** | Does our port match the published numbers? | `benchmark/bench_eval.py` | Leaderboard tab |
+| **Generator benchmark** | How do detectors do against a given image generator (FLUX, Qwen, ...)? | `benchmark/generator_bench.py` | Generator benchmarks tab |
+| **Standardized submissions** | A versioned, comparable table anyone can submit to | `benchmark/evaluate.py` | [LEADERBOARD.md](LEADERBOARD.md) |
+
 SynthScope ships a **versioned, standardized benchmark** so detectors are comparable under one protocol —
 fixed test sets, per-generator metrics, one evaluation pipeline. See the ranked
 **[LEADERBOARD.md](LEADERBOARD.md)** and the protocol in **[benchmark/](benchmark/)**.

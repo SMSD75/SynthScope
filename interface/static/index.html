@@ -413,6 +413,16 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 .sota .sim { margin-top: 12px; padding: 9px 12px; border-radius: var(--radius-sm); font-size: 13px; line-height: 1.5; border: 1px solid var(--line-strong); }
 .sota .sim.warn { border-color: #ffcf6e; background: rgba(255,207,110,.08); color: #ffe0a0; }
 .sota .sim.ok { border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.07); }
+
+/* ---- benchmark pages ------------------------------------------------------------------------------------------*/
+.coverage { margin: 8px 0 16px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(31,41,71,.35); font-size: 14px; }
+.coverage .covchips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 6px; }
+.coverage .covchips .sbadge { padding: 3px 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--panel2); }
+.coverage a, .topgen a { color: var(--accent2); }
+.topgen .ovtable .ovcell { text-align: center; font-variant-numeric: tabular-nums; }
+.topgen h2 .muted { text-transform: none; letter-spacing: 0; font-weight: 500; margin-left: 8px; }
+pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: var(--radius-sm);
+  font-size: 12px; overflow-x: auto; color: var(--text); }
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -773,6 +783,7 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
         </div>`;
     }
 
+    const DOCS_URL = "https://github.com/SMSD75/SynthScope/blob/main/docs/BENCHMARKS.md";
     const STATUS_LABEL = { reproduced: "✓ Reproduced", official: "✓ Official weights match", below: "Below paper",
       reference: "Reference only", missing: "Not evaluated" };
     function StatusBadge({ s }) {
@@ -801,10 +812,11 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
     // Leaderboard: every method x benchmark (paper / SynthScope-trained / official weights), grouped by benchmark.
     function LeaderboardView() {
       const [groups, setGroups] = useState([]);
+      const [summary, setSummary] = useState(null);
       const [sel, setSel] = useState("");
       const [err, setErr] = useState("");
       useEffect(() => {
-        fetch(API("/api/leaderboard")).then(r => r.json()).then(d => setGroups(d.groups || []))
+        fetch(API("/api/leaderboard")).then(r => r.json()).then(d => { setGroups(d.groups || []); setSummary(d.summary || null); })
           .catch(e => setErr(String(e.message || e)));
       }, []);
       const shown = sel ? groups.filter(g => g.benchmark === sel) : groups;
@@ -817,6 +829,17 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
             ${groups.map(g => html`<option key=${g.benchmark} value=${g.benchmark}>${g.benchmark} (${g.n_methods})</option>`)}
           </select>
         </div>
+        ${summary && html`<div class="coverage">
+          <div><b>${summary.detectors_listed}</b> of ${summary.detectors_total} detectors · <b>${summary.benchmarks}</b> benchmarks · <b>${summary.results}</b> results</div>
+          <div class="covchips">
+            <span class="sbadge status-reproduced">${summary.by_status.reproduced + summary.by_status.official} match the paper</span>
+            <span class="sbadge status-below">${summary.by_status.below} below the paper</span>
+            <span class="sbadge status-reference">${summary.by_status.reference} reference only</span>
+            <span class="sbadge status-missing">${summary.by_status.missing} not evaluated yet</span>
+          </div>
+          ${summary.not_listed.length > 0 && html`<div class="meta">Not listed: ${summary.not_listed.join(", ")} (our own baselines; there is no paper to reproduce).</div>`}
+          <div class="meta">Missing a number, or want to add one? <a href=${DOCS_URL} target="_blank" rel="noopener">How to set up and run the benchmarks</a>.</div>
+        </div>`}
         ${err && html`<div class="err">${err}</div>`}
         ${shown.map((g, gi) => html`<details key=${g.benchmark} class="card lead-card" open=${!!sel || gi < 2}>
           <summary><span class="sumtitle">${g.benchmark}</span>
@@ -843,9 +866,10 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
     // Generator benchmarks: how detectors hold up against today's SOTA generators.
     function TopGeneratorsView() {
       const [bm, setBm] = useState([]);
+      const [ov, setOv] = useState(null);
       const [err, setErr] = useState("");
       useEffect(() => {
-        fetch(API("/api/generator_benchmarks")).then(r => r.json()).then(d => setBm(d.benchmarks || []))
+        fetch(API("/api/generator_benchmarks")).then(r => r.json()).then(d => { setBm(d.benchmarks || []); setOv(d.overview || null); })
           .catch(e => setErr(String(e.message || e)));
       }, []);
       return html`<div class="topgen">
@@ -853,6 +877,23 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
           detectors were trained on these generators, so this measures how well they generalize. Ranked by AUROC (higher is better).</p></div>
         ${err && html`<div class="err">${err}</div>`}
         ${!bm.length && !err && html`<div class="empty">No generator benchmarks yet.</div>`}
+        ${ov && ov.generators.length > 0 && html`<div class="card">
+          <h2>Overview <span class="muted">AUROC, higher is better</span></h2>
+          <div class="repro-scroll"><table class="repro-full ovtable">
+            <thead><tr><th>Detector</th>${ov.generators.map(g => html`<th key=${g}>${g}</th>`)}<th>Mean</th></tr></thead>
+            <tbody>${ov.rows.map(r => html`<tr key=${r.name}><td><b>${r.name}</b></td>
+              ${r.auroc.map((v, i) => html`<td key=${i} class="ovcell" style=${v == null ? {} : {background: "hsla(" + Math.max(0, Math.min(120, (v - 50) * 2.4)) + ",65%,45%,.35)"}}>${v == null ? "n/a" : v}</td>`)}
+              <td class="ovcell"><b>${r.mean == null ? "n/a" : r.mean}</b></td></tr>`)}</tbody>
+          </table></div>
+          <div class="meta">Colour runs from red (about 50, chance level) to green (100). One row per detector, one column per generator.</div>
+        </div>`}
+        <${Adv} title="Add a generator to this page">
+          <div class="meta">Each column comes from one run of <code>benchmark/generator_bench.py</code>: it makes the images, scores every detector and writes the
+            results this page shows. Local open-weight generators and hosted ones (with your API key) both work.
+            <a href=${DOCS_URL} target="_blank" rel="noopener">Step-by-step guide</a>.</div>
+          <pre class="cmd">python benchmark/generator_bench.py --generator flux2_klein --label "FLUX.2 [klein] 4B" \
+    --reuse benchmark/generator_runs/reference/manifest.json --out benchmark/generator_runs/flux2_klein_4b</pre>
+        <//>
         ${bm.map(b => html`<div key=${b.key} class="card">
           <h2>${b.generator} <span class="pill">${b.n_real + b.n_fake} images</span></h2>
           <div class="repro-scroll">

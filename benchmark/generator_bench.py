@@ -7,6 +7,7 @@ result is a ranking by AUROC, shown in the web page's "Generator benchmarks" tab
     # same 100 real images + prompts as the reference run, so generators are compared on identical content
     python benchmark/generator_bench.py --generator flux2_klein --label "FLUX.2 [klein] 4B" \\
         --reuse benchmark/generator_runs/reference/manifest.json --out benchmark/generator_runs/flux2_klein_4b
+    # (the reference real images are not in git: add --real-root <your GenImage and CNNDetection folders> to find them by name)
 
     # build a fresh image set from your own real images
     python benchmark/generator_bench.py --generator nanobanana --real-glob "/data/real/*.jpg" --n 100 \\
@@ -49,12 +50,25 @@ def build_pairs(args, real_dir: Path) -> list:
     if args.reuse:
         src = json.load(open(args.reuse))
         src_real = Path(args.reuse).parent / "real"
+        found = None                                   # file name -> path, built only if --real-root is needed
         for p in src["pairs"][: args.n]:
             png = src_real / f"{p['idx']:03d}.png"
+            dst = real_dir / f"{p['idx']:03d}.png"
             if png.is_file():
-                shutil.copyfile(png, real_dir / f"{p['idx']:03d}.png")
-                pairs.append({"idx": p["idx"], "caption": p.get("caption", ""), "prompt": p["prompt"],
-                              "real_src": p.get("real_src", "")})
+                shutil.copyfile(png, dst)
+            elif args.real_root:                       # the real images are not in git: find them by file name
+                if found is None:
+                    found = {f.name: f for root in args.real_root for f in Path(root).rglob("*")
+                             if f.suffix.lower() in IMG_EXT}
+                match = found.get(Path(p.get("real_src", "")).name)
+                if match is None:
+                    log(f"  [{p['idx']}] real image {Path(p.get('real_src', '')).name} not found under --real-root, skipped")
+                    continue
+                Image.open(match).convert("RGB").save(dst)
+            else:
+                continue
+            pairs.append({"idx": p["idx"], "caption": p.get("caption", ""), "prompt": p["prompt"],
+                          "real_src": p.get("real_src", "")})
         log(f"[pairs] reusing {len(pairs)} prompts + real images from {args.reuse}")
         return pairs
     if not args.real_glob:
@@ -149,6 +163,8 @@ def main():
     ap.add_argument("--label", help="name shown in the web page (default: the generator's name)")
     ap.add_argument("--out", required=True, help="output directory, e.g. benchmark/generator_runs/flux2_klein_4b")
     ap.add_argument("--reuse", help="manifest.json of an earlier run: reuse its real images + prompts (same content for every generator)")
+    ap.add_argument("--real-root", action="append", help="with --reuse: folder(s) to search for the reference run's real images by file "
+                    "name (e.g. your GenImage and CNNDetection downloads), because the images themselves are not in the repo")
     ap.add_argument("--real-glob", action="append", help="glob of real images to caption (repeatable); needed without --reuse")
     ap.add_argument("--n", type=int, default=100, help="number of real/fake pairs")
     ap.add_argument("--res", type=int, default=1024, help="output side in pixels for local generators")
@@ -165,8 +181,9 @@ def main():
     if manifest_path.exists():                              # resume
         pairs = json.load(open(manifest_path))["pairs"]
         for p in pairs:                                     # real images may have been cleaned up after a partial run
-            if not (real_dir / f"{p['idx']:03d}.png").exists() and p.get("real_src") and args.reuse:
-                shutil.copyfile(Path(args.reuse).parent / "real" / f"{p['idx']:03d}.png", real_dir / f"{p['idx']:03d}.png")
+            src_png = Path(args.reuse).parent / "real" / f"{p['idx']:03d}.png" if args.reuse else None
+            if not (real_dir / f"{p['idx']:03d}.png").exists() and src_png and src_png.exists():
+                shutil.copyfile(src_png, real_dir / f"{p['idx']:03d}.png")
     else:
         pairs = build_pairs(args, real_dir)
     if not args.skip_generate:

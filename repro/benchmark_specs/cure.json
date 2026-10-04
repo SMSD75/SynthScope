@@ -1,0 +1,187 @@
+{
+  "model": "cure",
+  "paper": "CuRe: Learning Continuous Source Responses for Generalizable AI-Generated Image Detection (arXiv 2609.14316)",
+  "arxiv_id": "2609.14316",
+  "official_repo": "https://github.com/manic-cui/CuRe",
+  "training_set_in_paper": "Trained only on GenImage SD-v1.4. The paper's two-stage mixing-ratio-regression training recipe is not in the official release, so only the official adapter (weights) is evaluated here; there is no SynthScope-trained checkpoint.",
+  "benchmarks": [
+    {
+      "name": "AIGIBench (20 full-image-synthesis subsets, full test data)",
+      "datasets": [
+        "AIGIBench"
+      ],
+      "metric": "balanced accuracy / AUROC",
+      "paper_number": {
+        "acc": 92.8,
+        "auroc": 97.5,
+        "note": "Paper Table 2: unweighted macro-average over the 20 full-image-synthesis subsets."
+      },
+      "our_status": "official",
+      "our_number": {
+        "note": "Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC)."
+      }
+    },
+    {
+      "name": "UniversalFakeDetect (UFD-8, diffusion and DALL-E half)",
+      "datasets": [
+        "UniversalFakeDetect"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Paper reports 82.0 for 'UnivFD' but does not specify the aggregation, so it is not directly comparable to the per-generator mean measured here."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "UFD-8 mean balanced accuracy 93.94; 16-generator union 89.27 (aggregation differs from the paper)."
+      }
+    },
+    {
+      "name": "ForenSynths (13 GAN generators)",
+      "datasets": [
+        "ForenSynths"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "GAN half of the paper's UnivFD number (82.0); aggregation unspecified."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Mean balanced accuracy 81.95 (low scores are fake-recall; AP/AUROC are 95-99 on those generators)."
+      }
+    },
+    {
+      "name": "GenImage-8 (CuRe's training set, in-distribution sanity check)",
+      "datasets": [
+        "GenImage"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's ten benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "SD-v1.4 99.73, SD-v1.5 99.80, Wukong 99.87; weaker on ADM/BigGAN/VQDM at the fixed 0.5 threshold."
+      }
+    },
+    {
+      "name": "AIGCDetectBenchmark",
+      "datasets": [
+        "AIGCDetectBenchmark"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 89.3,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
+      }
+    },
+    {
+      "name": "EvalGEN",
+      "datasets": [
+        "EvalGEN"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 98.1,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "SynthWildX",
+      "datasets": [
+        "SynthWildX"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 92.7,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "WildRF",
+      "datasets": [
+        "WildRF"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 95.8,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "BFree-Online",
+      "datasets": [
+        "BFree-Online"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 90.9,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "RRDataset",
+      "datasets": [
+        "RRDataset"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 81.5,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "RealChain",
+      "datasets": [
+        "RealChain"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 79.7,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    },
+    {
+      "name": "Chameleon",
+      "datasets": [
+        "Chameleon"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "acc": 93.8,
+        "note": "Paper table."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      }
+    }
+  ]
+}

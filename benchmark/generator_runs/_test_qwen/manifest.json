@@ -1,0 +1,29 @@
+{
+  "label": "Qwen-Image-2.1",
+  "generator": "qwen_image_2_1",
+  "n": 3,
+  "res": 1024,
+  "settings": "1024px \u00b7 text-to-image from a caption",
+  "created": "2026-10-04",
+  "reuse_from": "benchmark/generator_runs/reference/manifest.json",
+  "pairs": [
+    {
+      "idx": 0,
+      "caption": "sheep is white",
+      "prompt": "sheep is white, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/003443_ILSVRC2012_val_00028605.JPEG"
+    },
+    {
+      "idx": 1,
+      "caption": "a bird sitting on a branch in a tree",
+      "prompt": "a bird sitting on a branch in a tree, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/vqdm/0_real/000582_ILSVRC2012_val_00004554.JPEG"
+    },
+    {
+      "idx": 2,
+      "caption": "a green grasshopper on a leaf",
+      "prompt": "a green grasshopper on a leaf, photorealistic, high detail",
+      "real_src": "/hddstore/ssalehi/SynthScope/GenImage_full/test_full/wukong/0_real/002258_ILSVRC2012_val_00018535.JPEG"
+    }
+  ]
+}

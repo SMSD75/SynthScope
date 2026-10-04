@@ -79,7 +79,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 ## 4. Evaluation / benchmarking
 
-- **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native_res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
+- **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
 - **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --benchmark {genvideo|fakeonly|pergen}`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.

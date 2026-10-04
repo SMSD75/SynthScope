@@ -285,7 +285,7 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
 _METHOD_NAMES = {
     "clip": "CLIP / UnivFD", "cnn": "CNNDetection", "fat_former": "FatFormer", "npr": "NPR",
     "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
-    "pgc": "PGC", "d3": "D3", "restrav": "ReStraV", "stall": "STALL",
+    "pgc": "PGC", "cure": "CuRe", "d3": "D3", "restrav": "ReStraV", "stall": "STALL",
 }
 _FAMILY = [  # (substring -> benchmark family label); first match wins
     ("genimage", "GenImage"), ("forensynth", "ForenSynths"), ("universalfakedetect", "UniversalFakeDetect"),
@@ -339,34 +339,58 @@ def leaderboard():
             m.pop("_sort", None)
         out.append({"benchmark": fam, "n_methods": len(methods), "rows": methods})
     out.sort(key=lambda g: (-g["n_methods"], g["benchmark"]))  # most cross-method-compared first
-    return {"groups": out}
+    rows = [r for g in out for r in g["rows"]]
+    shown = {r["key"] for r in rows}
+    summary = {
+        "benchmarks": len(out), "results": len(rows), "detectors_listed": len(shown),
+        "detectors_total": len(list_specs()),
+        "by_status": {st: sum(1 for r in rows if r["status"] == st)
+                      for st in ("reproduced", "official", "below", "reference", "missing")},
+        "not_listed": [sp.name for sp in list_specs() if sp.key not in shown],
+    }
+    return {"groups": out, "summary": summary}
+
+
+def _generator_runs() -> list[Path]:
+    """Result folders: benchmark/generator_runs/<id>/ (made by benchmark/generator_bench.py; names starting with
+    '_' or the 'reference' prompt set are skipped) plus the legacy repro/ideogram_bench* runs."""
+    import glob as _glob2
+    runs = sorted(Path(d) for d in _glob2.glob(str(config.REPO_ROOT / "benchmark" / "generator_runs" / "*"))
+                  if not Path(d).name.startswith("_") and Path(d).name != "reference")
+    runs += sorted(Path(d) for d in _glob2.glob(str(config.REPO_ROOT / "repro" / "ideogram_bench*")))
+    return [d for d in runs if (d / "results.json").is_file()]
 
 
 @app.get("/api/generator_benchmarks")
 def generator_benchmarks():
-    """Detector-vs-SOTA-generator benchmarks. Scans repro/ideogram_bench* (e.g. 512px and 1024px runs);
-    extensible to FLUX / Nano Banana / GPT-Image by dropping in more results.json dirs."""
-    import json as _json, glob as _glob2
+    """Detector-vs-generator benchmarks, one card per generator plus an overview matrix (detector x generator AUROC).
+    Add a generator by running benchmark/generator_bench.py (see docs/BENCHMARKS.md)."""
+    import json as _json
     out = []
-    for d in sorted(_glob2.glob(str(config.REPO_ROOT / "repro" / "ideogram_bench*"))):
-        res_f, man_f = Path(d) / "results.json", Path(d) / "manifest.json"
-        if not res_f.is_file():
-            continue
-        rows = _json.loads(res_f.read_text())
+    for d in _generator_runs():
+        rows = _json.loads((d / "results.json").read_text())
+        man_f = d / "manifest.json"
         meta = _json.loads(man_f.read_text()) if man_f.is_file() else {}
+        n = meta.get("n") or len(meta.get("pairs", [])) or None
         out.append({
             "generator": meta.get("label") or "Ideogram 4.0",
-            "key": Path(d).name,
-            "n_real": meta.get("n"), "n_fake": meta.get("n"), "res": meta.get("res", 0),
-            "settings": f"{meta.get('res','?')}px · {meta.get('steps','?')} steps"
-                        + (f" · {meta['attempts']} attempts" if meta.get("attempts") else ""),
-            "note": "Balanced real (GenImage/CNNDetection) vs Ideogram fakes from BLIP-caption prompts; "
-                    "people excluded (Ideogram refuses them). Detectors = promoted SynthScope checkpoints. "
-                    "None were trained on Ideogram, so this is cross-generator generalization. Ranked by AUROC.",
+            "key": d.name, "n_real": n, "n_fake": n, "res": meta.get("res", 0),
+            "settings": meta.get("settings") or f"{meta.get('res','?')}px · {meta.get('steps','?')} steps",
+            "note": "Real photos (people excluded) against images the generator created from a caption of each photo, text "
+                    "only. Detectors are the SynthScope checkpoints with their paper-faithful preprocessing. None were "
+                    "trained on this generator, so this measures generalization. Ranked by AUROC.",
             "rows": rows,
         })
-    out.sort(key=lambda b: b.get("res", 0), reverse=True)   # highest-res first
-    return {"benchmarks": out}
+    out.sort(key=lambda b: (b["generator"], -b.get("res", 0)))
+    labels = [b["generator"] for b in out]
+    names = sorted({r["name"] for b in out for r in b["rows"]})
+    table = []
+    for nm in names:
+        vals = [next((r["auroc"] for r in b["rows"] if r["name"] == nm), None) for b in out]
+        got = [v for v in vals if v is not None]
+        table.append({"name": nm, "auroc": vals, "mean": round(sum(got) / len(got), 2) if got else None})
+    table.sort(key=lambda r: -(r["mean"] or 0))
+    return {"benchmarks": out, "overview": {"generators": labels, "rows": table}}
 
 
 # --- dataset explorer --------------------------------------------------------

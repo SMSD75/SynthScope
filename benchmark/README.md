@@ -1,5 +1,8 @@
 # SynthScope Benchmark & Leaderboard (v1)
 
+> Looking for the full setup guide (datasets, paper reproduction, generator benchmarks, run times)? See [`docs/BENCHMARKS.md`](../docs/BENCHMARKS.md).
+> This page covers the standardized, versioned submission track.
+
 A standardized, **versioned** evaluation protocol for AI-generated image & video detection, so that
 methods are comparable under identical data, metrics, and scoring. The leaderboard is generated
 from the submission files in [`submissions/`](submissions/) — see [LEADERBOARD.md](../LEADERBOARD.md).

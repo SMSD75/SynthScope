@@ -7,8 +7,9 @@ pulled into an explicit, auditable VAL table below — every value here traces t
 repro/bench_results/ (see the per-row tags in the spec notes). Run with --audit to print the table.
 """
 import json, glob, os, sys
+from pathlib import Path
 
-ROOT = "/ivi/zfs/s0/original_homes/ssalehi/SynthScope"
+ROOT = str(Path(__file__).resolve().parents[2])   # the repository root, wherever it is checked out
 
 # (model, benchmark-name-substring) -> verified {synthscope:{...}, official:{...}} numbers.
 # These resolve the SynthScope-vs-official ambiguity in the spec our_number dicts and surface the number
@@ -25,6 +26,11 @@ VAL = {
     ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "synthscope": {"map": 84.91}},
     ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 75.91}},
     ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "synthscope": {"map": 96.17}},
+    # CuRe: only the official adapter exists (the training recipe is unreleased), so there is no SynthScope-trained number.
+    ("cure", "AIGIBench"):               {"official": {"map": 97.0, "acc": 92.85, "auroc": 97.48}},
+    ("cure", "UniversalFakeDetect"):     {"official": {"map": 99.19, "acc": 93.94}},
+    ("cure", "ForenSynths"):             {"official": {"map": 94.05, "acc": 81.95}},
+    ("cure", "GenImage"):                {"official": {"map": 97.3, "acc": 85.18}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},
@@ -189,7 +195,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
             "ours_synthscope": fmt_ours(synthscope),
             "ours_official": fmt_ours(official),
             "status": status,
-            "note": note[:240],
+            "note": note[:400],
         })
         audit.append((model, name[:38], fmt_paper(paper)[:22],
                       (fmt_ours(synthscope) or "-")[:22], (fmt_ours(official) or "-")[:22],
