@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-04",
+  "updated": "2026-10-05",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -139,7 +139,7 @@
       "github": "https://github.com/ALCOR-Lab-DIAG/MoE-JEPA",
       "arxiv": "https://arxiv.org/abs/2609.16778",
       "summary": "Frozen V-JEPA 2 ViT-L backbone with a Residual Mixture-of-Experts injected into the last blocks, a Bayar-conv noise branch and Gated-Attention MIL pooling; uses JEPA 'world understanding' as a semantic prior.",
-      "result": "95.54% acc / 94.21 F1 on SID-Set (300K images), outperforming much larger models (paper). [integration pending (assessed 2026-10-02): the authors' trained weights are NOT linked (only the frozen V-JEPA 2 backbone is downloaded separately) and there is no single-image inference entrypoint; can only be retrained.]"
+      "result": "95.54% acc / 94.21 F1 on SID-Set (300K images), outperforming much larger models (paper). [integration pending (assessed 2026-10-02): the authors' trained weights are NOT linked (only the frozen V-JEPA 2 backbone is downloaded separately) and there is no single-image inference entrypoint; can only be retrained. Re-checked 2026-10-05: unchanged.]"
     },
     {
       "title": "RAID: Towards Robust AI-Generated Image Detection with Bit-Reversed Images",
@@ -149,7 +149,7 @@
       "github": "https://github.com/renxi-seu/RAID",
       "arxiv": "https://arxiv.org/abs/2607.28974",
       "summary": "Detects via bit-planes: a bit-reversed image, gradient-based patch selection and a small convolutional classifier, with a theoretical analysis; ~100x faster than counterparts.",
-      "result": "Claims to outperform existing methods on 40+ benchmarks across cross-generator, cross-dataset and zero-shot settings (paper; README gives no numbers). [integration pending (assessed 2026-10-02): the SD-v1.4-trained weights are only shared via Baidu Cloud (not fetchable programmatically), and the README leaves the architecture and patch-score aggregation unspecified; revisit if a direct weight link appears.]"
+      "result": "Claims to outperform existing methods on 40+ benchmarks across cross-generator, cross-dataset and zero-shot settings (paper; README gives no numbers). [integration pending (assessed 2026-10-02): the SD-v1.4-trained weights are only shared via Baidu Cloud (not fetchable programmatically), and the README leaves the architecture and patch-score aggregation unspecified; revisit if a direct weight link appears. Re-checked 2026-10-05: unchanged.]"
     },
     {
       "title": "Fleet: Few Shots Lead Effective AI-generated Image Detection",
@@ -203,7 +203,7 @@
       "github": "https://github.com/hwang-cs-ime/ATSS",
       "arxiv": "https://arxiv.org/abs/2604.04029",
       "summary": "Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.",
-      "result": "Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video \u2014 and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. SynthScope feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released.]"
+      "result": "Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video \u2014 and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. SynthScope feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released. Re-checked 2026-10-05: unchanged.]"
     },
     {
       "title": "G2VD: Generalizable AI-Generated Video Detection via Counterfactual Intervention and Causal Disentanglement",
@@ -213,7 +213,7 @@
       "github": "https://github.com/DMOSCAR-98/G2VD",
       "arxiv": "https://arxiv.org/abs/2607.04607",
       "summary": "Counterfactual-intervention + causal-disentanglement detector: a training-time CFIPipeline synthesizes controlled counterfactual samples (VAEs + frequency/pixel alignment), and a causal-disentanglement classifier with two domain-anchored branches and an HSIC independence constraint isolates the generalizable artifact signal from domain-specific content.",
-      "result": "GenVidBench cross-domain: >90% accuracy / AUC ~0.95 using only 10% of the training data (paper). Repo live 2026-07-07 (CLIP/XCLIP/DeMamba backbones \u2014 the same family as SynthScope's D3). [integration pending (re-checked 2026-10-02): repo moved from dumeng98/G2VD (now 404) to DMOSCAR-98/G2VD; checkpoints are still NOT released ('not stored in this repository', MODEL_ZOO.md lists no links) and the CFIPipeline VAE-pool is part of the staged pipeline. Revisit when checkpoints appear.]"
+      "result": "GenVidBench cross-domain: >90% accuracy / AUC ~0.95 using only 10% of the training data (paper). Repo live 2026-07-07 (CLIP/XCLIP/DeMamba backbones \u2014 the same family as SynthScope's D3). [integration pending (re-checked 2026-10-05): repo moved from dumeng98/G2VD (now 404) to DMOSCAR-98/G2VD; checkpoints are still NOT released ('not stored in this repository', MODEL_ZOO.md lists no links) and the CFIPipeline VAE-pool is part of the staged pipeline. Revisit when checkpoints appear.]"
     },
     {
       "title": "RIFT: Mind the Rift - Cross-Scale Coupling Mismatch for AI-Generated Video Detection",
@@ -223,7 +223,7 @@
       "github": "https://github.com/Litsay/RIFT",
       "arxiv": "https://arxiv.org/abs/2609.00742",
       "summary": "Treats a cross-scale coupling mismatch between macro temporal dynamics (differential geometry / persistent homology on frozen DINOv2 features) and micro residuals (steganalytic filtering + RAFT motion) as the forensic signal, scored by a coupling-divergence module.",
-      "result": "Own benchmark: 99.22% acc / 99.33 F1 / 99.96 AUC, 97.87% leave-one-generator-out (paper; no head-to-head against named prior detectors in the abstract, so not directly comparable). [integration pending (assessed 2026-10-02): trained weights are 'released upon acceptance' (not available), and it needs DINOv2 + RAFT features over ~120K training videos.]"
+      "result": "Own benchmark: 99.22% acc / 99.33 F1 / 99.96 AUC, 97.87% leave-one-generator-out (paper; no head-to-head against named prior detectors in the abstract, so not directly comparable). [integration pending (assessed 2026-10-02): trained weights are 'released upon acceptance' (not available), and it needs DINOv2 + RAFT features over ~120K training videos. Re-checked 2026-10-05: unchanged.]"
     }
   ],
   "landscape": [
