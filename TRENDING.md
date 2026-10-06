@@ -1,6 +1,6 @@
 # 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-05.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-06.*
 
 Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked, with the reason an integration is pending noted in their _Results_ line. See [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how a paper is integrated and reproduced.
 
@@ -61,6 +61,9 @@ Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked
 - **[STALL: Spatio-Temporal whitened Log-Likelihoods (training-free)](https://github.com/OmerBenHayun/STALL)** (Ben Hayun et al. · CVPR · 2026) — [code](https://github.com/OmerBenHayun/STALL) · _in SynthScope: `stall`_  
   Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.  
   _Results: GenVideo-Val ~0.80 AUC (paper); SynthScope AUROC 83.5._
+- **[MTOR: Generalizable AI-Generated Video Detection with Multimodal Semantics and Temporal Over-Regularity](https://github.com/hwang-cs-ime/MTOR)** (Hang Wang, Chao Shen, Lei Zhang, Zhi-Qi Cheng · arXiv · 2026) — [code](https://github.com/hwang-cs-ime/MTOR)  
+  Combines global visual features with caption-derived text features, and models 'temporal over-regularity' (generated videos change too smoothly over time) at three levels: inter-frame continuity, token correspondence and frame-to-video stability.  
+  _Results: Claims the best overall performance on five benchmarks covering 46 generator variants against 16 baselines, and robustness to twelve real-world video perturbations (paper; per-benchmark numbers are not in the abstract). [integration pending (assessed 2026-10-06): the repo is so far an empty placeholder (README + MIT license only; 'Inference code and Pre-trained models will be released'). Pruned if still empty around 2026-10-09; integrate once code and weights appear.]_
 - **[ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection](https://github.com/hwang-cs-ime/ATSS)** (Wang et al. (hwang-cs-ime) · arXiv · 2026) — [code](https://github.com/hwang-cs-ime/ATSS)  
   Multimodal detector that exploits anomalous temporal self-similarity fingerprints across frames of AI-generated video. Inference code + a pretrained checkpoint (best.pt) are released; the data sampling/extraction pipeline is still being cleaned for release.  
   _Results: Claims SOTA in AP/AUC/ACC over GenVideo, EvalCrafter, VideoPhy, and VidProM vs prior methods (e.g. DeMamba). Repo live 2026-06-21 with code+weights; per-generator numbers not yet in the README. [integration pending: the released checkpoint's forward() consumes PRECOMPUTED multimodal temporal-self-similarity tensors (sim_img/sim_txt/sim_cross, BLIP2-based), not raw video — and the feature-extraction/data-sampling front-end that produces them is 'still being cleaned for release (coming soon)'. SynthScope feeds raw video clips, so there is no faithful way to run ATSS until that pipeline is published; will revisit when released. Re-checked 2026-10-05: unchanged.]_
