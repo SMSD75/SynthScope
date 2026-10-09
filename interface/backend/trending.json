@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-08",
+  "updated": "2026-10-09",
   "criteria": "High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily.",
   "image": [
     {
@@ -194,17 +194,6 @@
       "arxiv": "",
       "summary": "Training-free spatial + temporal whitened-Gaussian log-likelihoods vs a real-video calibration.",
       "result": "GenVideo-Val ~0.80 AUC (paper); SynthScope AUROC 83.5."
-    },
-    {
-      "title": "MTOR: Generalizable AI-Generated Video Detection with Multimodal Semantics and Temporal Over-Regularity",
-      "authors": "Hang Wang, Chao Shen, Lei Zhang, Zhi-Qi Cheng",
-      "venue": "arXiv",
-      "year": 2026,
-      "github": "https://github.com/hwang-cs-ime/MTOR",
-      "arxiv": "https://arxiv.org/abs/2610.06378",
-      "summary": "Combines global visual features with caption-derived text features, and models 'temporal over-regularity' (generated videos change too smoothly over time) at three levels: inter-frame continuity, token correspondence and frame-to-video stability.",
-      "result": "Claims the best overall performance on five benchmarks covering 46 generator variants against 16 baselines, and robustness to twelve real-world video perturbations (paper; per-benchmark numbers are not in the abstract). [integration pending (assessed 2026-10-06): the repo is so far an empty placeholder (README + MIT license only; 'Inference code and Pre-trained models will be released'). Still a placeholder on 2026-10-08; pruned if still empty around 2026-10-09; integrate once code and weights appear.]",
-      "agid": null
     },
     {
       "title": "ATSS: Anomalous Temporal Self-Similarity for AI-Generated Video Detection",
