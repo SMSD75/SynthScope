@@ -79,6 +79,8 @@ have no automatic source: get them from their official sites and place them in t
 | `cospy` | Co-Spy-Bench | Hugging Face `ruojiruoli/Co-Spy-Bench` |
 | `synthbuster` | Synthbuster | Zenodo record `10066460` |
 | `ditfake`, `commgen15` | DiTFake, CommGen15 | Hugging Face (`lioooox/DiTFake`, `xiaoyuzhou68/CommGen15`) |
+| `realchain` | RealChain (REM; used by CuRe): 7 generators × 1000 fakes and 7000 reals, all JPEG q60. CC BY-NC 4.0. The reals are one unpaired pool, so the loader splits them into 7 disjoint slices of 1000 (the mean over generators then equals the pooled balanced accuracy) | Hugging Face `handsomerich/RealChain` |
+| `evalgen` | EvalGEN (DDA; used by DDA and CuRe): Flux, GoT, Infinity, OmniGen, NOVA, about 11,060 fakes each, no reals. The loader pairs every generator with MSCOCO val2017 (5000 reals), our choice: CuRe only says "a shared MSCOCO pool". `fake_acc` matches DDA's fakes-only accuracy | Hugging Face `Junwei-Xi/EvalGEN` + `images.cocodataset.org` |
 | `diffusionforensics`, `diffusion1kstep`, `freqnetdetection` | DiffusionForensics, Diffusion-1kStep, FreqNet sets | see the yamls |
 | Video: `genvideo`, `genvidbench`, `evalcrafter`, `videofeedback`, `vidprom`, `comgenvid`, `physics_iq`, `videophy` | the video benchmarks | Hugging Face where a repo is set; otherwise place the files by hand |
 

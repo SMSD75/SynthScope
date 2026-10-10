@@ -1,0 +1,15 @@
+name: realchain
+# RealChain — 7 recent generators (Flux1, SDv3.5, QwenImage, Hunyuan3, NanoBanana, Seedream4, i2i) vs 7000 reals;
+# REM paper, used by CuRe Table 1. (HF handsomerich/RealChain, CC BY-NC 4.0 — non-commercial use only.)
+root_dir: /hddstore/ssalehi/SynthScope/RealChain
+hf_repo_id: handsomerich/RealChain
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

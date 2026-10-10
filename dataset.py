@@ -2371,6 +2371,92 @@ class SynthbusterDataset(_TestOnlyImageDataset):
         shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
+def _link_images(imgs, out_dir):
+    """Hard-link (copy as fallback) ``imgs`` into ``out_dir`` as ``<i>_<name>``, keeping the order."""
+    out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
+    for i, p in enumerate(imgs):
+        tgt = out_dir / f"{i:05d}_{p.name}"
+        if not tgt.exists():
+            try: os.link(p, tgt)
+            except OSError: shutil.copy2(p, tgt)
+
+
+def _first_int(path):
+    """Sort key: the first integer in the file stem (``Flux1_100_person.jpg`` -> 100), then the name."""
+    m = re.search(r"\d+", Path(path).stem)
+    return (int(m.group()) if m else -1, Path(path).name)
+
+
+class RealChainDataset(_TestOnlyImageDataset):
+    """RealChain (REM paper; used by CuRe Table 1) — 7 generators (Flux1, SDv3.5, QwenImage, Hunyuan3,
+    NanoBanana, Seedream4, i2i), 1000 fakes each, plus one pool of 7000 reals. Sourced from the HF dataset
+    ``handsomerich/RealChain`` (CC BY-NC 4.0: <gen>.zip, Real.tar). The paper describes a clean (ND) and a
+    chain-degraded (CD) version, but only one image set is released; every image in it (real and fake) is
+    JPEG at the same quality (luma quant step 46.1, i.e. libjpeg q60). The real pool is not paired with
+    the generators, so it is split into 7 disjoint slices in file-index order, one per generator: the mean
+    of the per-generator balanced accuracies then equals the pooled 7000-vs-7000 balanced accuracy."""
+    hf_repo_id = "handsomerich/RealChain"
+    generators = ("Flux1", "SDv3.5", "QwenImage", "Hunyuan3", "NanoBanana", "Seedream4", "i2i")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl),
+                          allow_patterns=[f"{g}.zip" for g in cls.generators] + ["Real.tar"])
+        staging = root_dir / "_staging"
+        for g in cls.generators:                     # the zips are flat, so each gets its own folder
+            _safe_extract_zip(dl / f"{g}.zip", staging / g)
+        _safe_extract_tar(dl / "Real.tar", staging)
+        reals = sorted((p for p in (staging / "Real").rglob("*") if p.suffix.lower() in IMAGE_EXTENSIONS),
+                       key=_first_int)
+        per_gen = len(reals) // len(cls.generators)
+        for i, g in enumerate(cls.generators):
+            fakes = sorted((p for p in (staging / g).rglob("*") if p.suffix.lower() in IMAGE_EXTENSIONS),
+                           key=_first_int)
+            _link_images(fakes, dest / g / "1_fake")
+            _link_images(reals[i * per_gen:(i + 1) * per_gen], dest / g / "0_real")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
+class EvalGENDataset(_TestOnlyImageDataset):
+    """EvalGEN (DDA, NeurIPS 2025; used by DDA and CuRe) — 5 generators (Flux, GoT, Infinity, OmniGen,
+    NOVA) on GenEval prompts, about 11,060 fakes each, JPEG q96. Sourced from the HF dataset
+    ``Junwei-Xi/EvalGEN`` (Apache-2.0: EvalGEN.zip = GenEval-JPEG/<gen>/*.jpg). EvalGEN ships no reals:
+    CuRe pairs it with an unspecified "shared MSCOCO real pool", and DDA reports accuracy on the fakes
+    only. This loader pairs every generator with the same MSCOCO val2017 pool (5000 images, downloaded
+    from cocodataset.org), so ``fake_acc`` reproduces the DDA protocol and ``acc`` the balanced one."""
+    hf_repo_id = "Junwei-Xi/EvalGEN"
+    hf_filename = "EvalGEN.zip"
+    coco_url = "http://images.cocodataset.org/zips/val2017.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import hf_hub_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        z = hf_hub_download(repo_id=cls.hf_repo_id, filename=cls.hf_filename,
+                            repo_type="dataset", local_dir=str(dl))
+        coco = dl / "val2017.zip"
+        if not coco.exists():
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "-o", str(coco), cls.coco_url], check=True)
+        staging = root_dir / "_staging"
+        _safe_extract_zip(z, staging)
+        _safe_extract_zip(coco, staging)
+        reals = sorted(p for p in (staging / "val2017").glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)
+        inner = next((p for p in staging.rglob("GenEval-JPEG") if p.is_dir()), staging)
+        for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
+            fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)
+            _link_images(fakes, dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2418,6 +2504,14 @@ class GenImageFullDatasetModule(_TestOnlyImageModule):
 
 class SynthbusterDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = SynthbusterDataset
+
+
+class RealChainDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = RealChainDataset
+
+
+class EvalGENDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = EvalGENDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2488,6 +2582,8 @@ SynthScopeModuleDict = {
     "diffusion1kstep": Diffusion1kStepDatasetModule,
     "aigcdetect": AIGCDetectBenchmarkDatasetModule,
     "commgen15": CommGen15DatasetModule,
+    "realchain": RealChainDatasetModule,
+    "evalgen": EvalGENDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

@@ -100,6 +100,13 @@ DATASET_DEFS: list[DatasetDef] = [
     DatasetDef("commgen15", "CommGen15 (15 commercial gen)", "image",
                ["/hddstore/ssalehi/SynthScope/CommGen15"], ["test"],
                "15 commercial generators (Midjourney, Sora, Flux, Kling, ...); PGC Table 3."),
+    DatasetDef("realchain", "RealChain (7 recent generators)", "image",
+               ["/hddstore/ssalehi/SynthScope/RealChain"], ["test"],
+               "Flux1, SDv3.5, QwenImage, Hunyuan3, NanoBanana, Seedream4, i2i vs 7000 reals, all JPEG q60; "
+               "CuRe Table 1. CC BY-NC 4.0 (non-commercial)."),
+    DatasetDef("evalgen", "EvalGEN (5 diffusion + AR gen)", "image",
+               ["/hddstore/ssalehi/SynthScope/EvalGEN"], ["test"],
+               "Flux, GoT, Infinity, OmniGen, NOVA on GenEval prompts (DDA); paired with MSCOCO val2017 reals."),
     DatasetDef("videofeedback", "VideoFeedback (TIGER-Lab)", "video",
                ["/hddstore/ssalehi/SynthScope/VideoFeedback"], ["test"],
                "11 video generators vs DiDeMo+Panda70M real; STALL benchmark."),

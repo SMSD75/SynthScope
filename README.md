@@ -210,7 +210,7 @@ Training does the same on its own: a dataset config with `prefetch: true` fetche
 (`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
 first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-paper-benchmarks).
 
-**Supported benchmark datasets** — 13 image and 8 video. *Auto* means the loader downloads and arranges it.
+**Supported benchmark datasets** — 15 image and 8 video. *Auto* means the loader downloads and arranges it.
 
 | Dataset (`config name`) | What it is | Source | Download |
 | --- | --- | --- | --- |
@@ -222,6 +222,8 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `cospy` | Co-Spy-Bench | Hugging Face | Auto |
 | `synthbuster` | Synthbuster | Zenodo | Auto |
 | `ditfake`, `commgen15` | DiTFake, CommGen15 (commercial generators) | Hugging Face | Auto |
+| `realchain` | RealChain: 7 recent generators (FLUX.1, SD 3.5, Qwen-Image, NanoBanana, ...), JPEG-degraded; non-commercial license | Hugging Face | Auto |
+| `evalgen` | EvalGEN: 5 diffusion + autoregressive generators, paired with MSCOCO val2017 reals | Hugging Face + cocodataset.org | Auto |
 | `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
 | `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
