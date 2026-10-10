@@ -54,7 +54,8 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | — | **reproduced** (our real pool; see below) |
 | SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | — | **reproduced** (on the images still online) |
 | WildRF (Facebook, Reddit, Twitter test sets, 1251 real / 1252 fake) | acc=95.8 | mAP=99.13 / acc=95.89 / AUROC=99.14 | — | **reproduced** |
-| BFree-Online, RRDataset, Chameleon | 90.9, 81.5, 93.8 | — | — | missing |
+| BFree-Online (807 of the 1111 listed links still online; the paper had about 1400 images) | acc=90.9 | mAP=99.06 / acc=91.64 / AUROC=98.08 | — | close (about 58% of the paper's images) |
+| RRDataset, Chameleon | 81.5, 93.8 | — | — | missing |
 
 `SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
 (official weights through SynthScope; balanced accuracy at 0.5 unless noted).
@@ -76,7 +77,8 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | **EvalGEN** (`--dataset evalgen`, full data, MSCOCO val2017 reals) | 5 | **98.14** | 99.86 | 99.66 | **98.1** | **reproduced** |
 | **SynthWildX** (`--dataset synthwildx`; 1713/2000 images still on X) | 3 | **92.69** | 95.61 | 96.50 | **92.7** | **reproduced** |
 | **WildRF** (`--dataset wildrf`, full test split) | 3 | **95.89** | 99.13 | 99.14 | **95.8** | **reproduced** |
-| BFree-Online, RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
+| BFree-Online (`--dataset bfree_online`; 269 real / 538 fake still online) | 1 | **91.64** | 99.06 | 98.08 | 90.9 | close; not the paper's full set |
+| RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
 
 **Honest reading.** The port is verified identical to the official model (above), and the in-distribution
 behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, SD‑v1.5 **99.80**, Wukong
@@ -95,6 +97,10 @@ GoT 99.71, Infinity 98.55, NOVA 99.32, OmniGen 99.76.
 the 2000 have been deleted since, so we score the 1713 still online (413 real; DALL-E 3 94.83, Firefly 88.35,
 Midjourney v5 94.88). WildRF uses its full test split, one subset per platform (Facebook 95.31, Reddit 96.60,
 Twitter 95.75). Both are the unweighted mean over subsets, as in the paper.
+
+**BFree-Online is close but not the same data** (job 251449). It is released as URLs with md5s; only 807 of the 1111
+listed images are still online (269 real, 538 fake), against about 1400 in the paper, so 91.64 (real acc 96.65,
+fake acc 86.62) is not a like-for-like comparison with 90.9.
 
 **AIGIBench is reproduced.** The paper evaluates "the 20 subsets corresponding to full-image synthesis" and
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,

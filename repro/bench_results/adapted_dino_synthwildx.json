@@ -1,0 +1,38 @@
+{
+  "tag": "adapted_dino_synthwildx",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 50.0,
+    "map": 49.9,
+    "mauroc": 48.52
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 41.8,
+      "auroc": 42.59,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "firefly": {
+      "ap": 57.63,
+      "auroc": 55.42,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "midjourney_v5": {
+      "ap": 50.27,
+      "auroc": 47.54,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-10-10T22:29:28",
+  "synthscope_version": "0.1.0"
+}

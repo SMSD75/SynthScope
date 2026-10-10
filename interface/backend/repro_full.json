@@ -199,14 +199,14 @@
       "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440)."
     },
     {
-      "benchmark": "BFree-Online",
+      "benchmark": "BFree-Online (viral images still online)",
       "metric": "balanced accuracy",
       "paper": "acc=90.9",
-      "ours": "",
+      "ours": "mAP=99.06 / acc=91.64 / AUROC=98.08 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=99.06 / acc=91.64 / AUROC=98.08",
+      "status": "reference",
+      "note": "Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449)."
     },
     {
       "benchmark": "RRDataset",

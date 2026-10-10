@@ -1,0 +1,38 @@
+{
+  "tag": "fat_former_synthwildx",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 53.47,
+    "map": 58.11,
+    "mauroc": 58.57
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 43.66,
+      "auroc": 46.76,
+      "real_acc": 94.92,
+      "fake_acc": 1.53,
+      "acc": 48.22
+    },
+    "firefly": {
+      "ap": 76.17,
+      "auroc": 72.96,
+      "real_acc": 94.92,
+      "fake_acc": 28.33,
+      "acc": 61.62
+    },
+    "midjourney_v5": {
+      "ap": 54.5,
+      "auroc": 55.99,
+      "real_acc": 94.92,
+      "fake_acc": 6.21,
+      "acc": 50.56
+    }
+  },
+  "date": "2026-10-10T22:27:15",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "tag": "vib_net_wildrf",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 56.13,
+    "map": 71.33,
+    "mauroc": 71.27
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 77.98,
+      "auroc": 77.41,
+      "real_acc": 13.75,
+      "fake_acc": 97.5,
+      "acc": 55.63
+    },
+    "reddit": {
+      "ap": 64.48,
+      "auroc": 65.03,
+      "real_acc": 28.27,
+      "fake_acc": 86.67,
+      "acc": 57.47
+    },
+    "twitter": {
+      "ap": 71.53,
+      "auroc": 71.38,
+      "real_acc": 16.13,
+      "fake_acc": 94.44,
+      "acc": 55.29
+    }
+  },
+  "date": "2026-10-10T21:27:42",
+  "synthscope_version": "0.1.0"
+}

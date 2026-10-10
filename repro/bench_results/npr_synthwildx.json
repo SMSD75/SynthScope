@@ -1,0 +1,38 @@
+{
+  "tag": "npr_synthwildx",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 50.44,
+    "map": 51.45,
+    "mauroc": 51.69
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 43.88,
+      "auroc": 46.16,
+      "real_acc": 54.72,
+      "fake_acc": 37.5,
+      "acc": 46.11
+    },
+    "firefly": {
+      "ap": 63.95,
+      "auroc": 64.8,
+      "real_acc": 54.72,
+      "fake_acc": 67.86,
+      "acc": 61.29
+    },
+    "midjourney_v5": {
+      "ap": 46.52,
+      "auroc": 44.1,
+      "real_acc": 54.72,
+      "fake_acc": 33.1,
+      "acc": 43.91
+    }
+  },
+  "date": "2026-10-10T22:21:24",
+  "synthscope_version": "0.1.0"
+}

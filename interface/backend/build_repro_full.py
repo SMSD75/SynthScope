@@ -35,6 +35,7 @@ VAL = {
     ("cure", "EvalGEN"):                 {"official": {"map": 99.86, "acc": 98.14, "auroc": 99.66}},
     ("cure", "SynthWildX"):              {"official": {"map": 95.61, "acc": 92.69, "auroc": 96.5}},
     ("cure", "WildRF"):                  {"official": {"map": 99.13, "acc": 95.89, "auroc": 99.14}},
+    ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},
@@ -155,11 +156,14 @@ def status_for(name, paper, synthscope, official, spec_status):
     """reproduced = SynthScope-trained matches paper; official = official-weights-in-SynthScope matches paper
     (SynthScope-trained number shown alongside where attempted); below = neither; reference = paper gives
     no number for this cross-dataset; missing = not evaluated. Falls back to the spec's label only
-    when the paper metric keys are not numerically comparable (e.g. ReStraV's nested per-split dicts)."""
+    when the paper metric keys are not numerically comparable (e.g. ReStraV's nested per-split dicts), and keeps
+    the spec's "reference" when it says our data or protocol differs from the paper's (not like-for-like)."""
     if not has_paper_number(paper):
         return "reference" if (synthscope or official) else "missing"
     if not (synthscope or official):
         return "missing"
+    if spec_status == "reference":               # the spec says the data/protocol differs from the paper's
+        return "reference"
     pm = paper_metrics(paper)
     if not pm:                                   # paper has numbers but not in comparable keys
         return spec_status or "below"
