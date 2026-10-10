@@ -2570,6 +2570,31 @@ class BFreeOnlineDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True)
 
 
+class RRDataset(_TestOnlyImageDataset):
+    """RRDataset (ICCV 2025, "Bridging the Gap Between Ideal and Real-world Evaluation"; used by CuRe) — real and
+    AI-generated images in three scenarios: ``original``, ``transfer`` (after sharing over online platforms) and
+    ``redigital`` (re-captured / re-digitized), about 8500 real and 8500 fake each. The scenarios become the
+    "generators" here. Sourced from Zenodo record 14963880 (RRDataset_test.tar.gz, 20 GB, CC BY 4.0); the separate
+    train/val archive is not used."""
+    zenodo_record = "14963880"
+    zenodo_file = "RRDataset_test.tar.gz"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / cls.zenodo_file
+        if not archive.exists():
+            url = f"https://zenodo.org/api/records/{cls.zenodo_record}/files/{cls.zenodo_file}/content"
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(archive), url], check=True)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        inner = next((p for p in staging.rglob("RRDataset_final") if p.is_dir()), staging)
+        _restructure_image_pergen(inner, dest)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2637,6 +2662,10 @@ class WildRFDatasetModule(_TestOnlyImageModule):
 
 class BFreeOnlineDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = BFreeOnlineDataset
+
+
+class RRDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = RRDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2712,6 +2741,7 @@ SynthScopeModuleDict = {
     "synthwildx": SynthWildXDatasetModule,
     "wildrf": WildRFDatasetModule,
     "bfree_online": BFreeOnlineDatasetModule,
+    "rrdataset": RRDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

@@ -117,6 +117,9 @@ DATASET_DEFS: list[DatasetDef] = [
                ["/hddstore/ssalehi/SynthScope/BFreeOnline"], ["test"],
                "Real and fake images that went viral, several web copies each (B-Free); fetched from the URL list, "
                "dead links skipped. Nonprofit use only."),
+    DatasetDef("rrdataset", "RRDataset (original / transfer / redigital)", "image",
+               ["/hddstore/ssalehi/SynthScope/RRDataset"], ["test"],
+               "Real vs AI images as created, after sharing online, and after re-digitization (ICCV 2025)."),
     DatasetDef("videofeedback", "VideoFeedback (TIGER-Lab)", "video",
                ["/hddstore/ssalehi/SynthScope/VideoFeedback"], ["test"],
                "11 video generators vs DiDeMo+Panda70M real; STALL benchmark."),
