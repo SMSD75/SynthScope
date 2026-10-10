@@ -109,9 +109,11 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
 | GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
 | AIGIBench, paper's 20 full-image-synthesis subsets (full test data, 168k images) | **92.85** | 97.00 | **92.8** | **reproduced**: AUROC 97.48 vs 97.5; every subset within 0.10 pt (mean abs diff 0.03). The earlier `--limit 1500` run gave 93.13 (the cap caused its 0.3 residual); adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
+| RealChain (full data, 7000/7000; `--dataset realchain`) | **79.69** | 87.39 | **79.7** | **reproduced** (AUROC 85.47). One released JPEG-q60 set; unpaired reals split into 7 disjoint slices, so the per-gen mean = the pooled balanced acc. Weakest: i2i 61.9, Seedream4 63.6 |
+| EvalGEN (full data, 55,298 fakes vs MSCOCO val2017; `--dataset evalgen`) | **98.14** | 99.86 | **98.1** | **reproduced** (AUROC 99.66). The paper's "shared MSCOCO pool" is unspecified; val2017 is our choice. Flux is the hardest (93.4) |
 | AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
 
-**Verdict: faithful port (identical to the official model) and AIGIBench reproduced (92.85 vs 92.8 on the paper's 20 subsets, every subset within 0.10 pt).** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 7 of the paper's 10 benchmarks (not available here).
+**Verdict: faithful port (identical to the official model); AIGIBench (92.85 vs 92.8), RealChain (79.69 vs 79.7) and EvalGEN (98.14 vs 98.1) reproduced.** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 5 of the paper's 10 benchmarks (SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon; not in SynthScope yet).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

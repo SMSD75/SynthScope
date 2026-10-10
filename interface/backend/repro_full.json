@@ -169,14 +169,14 @@
       "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
     },
     {
-      "benchmark": "EvalGEN",
+      "benchmark": "EvalGEN (5 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=98.1",
-      "ours": "",
+      "ours": "mAP=99.86 / acc=98.14 / AUROC=99.66 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=99.86 / acc=98.14 / AUROC=99.66",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
     },
     {
       "benchmark": "SynthWildX",
@@ -219,14 +219,14 @@
       "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
     },
     {
-      "benchmark": "RealChain",
+      "benchmark": "RealChain (7 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=79.7",
-      "ours": "",
+      "ours": "mAP=87.39 / acc=79.69 / AUROC=85.47 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=87.39 / acc=79.69 / AUROC=85.47",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one."
     },
     {
       "benchmark": "Chameleon",

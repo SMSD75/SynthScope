@@ -79,18 +79,18 @@
       }
     },
     {
-      "name": "EvalGEN",
+      "name": "EvalGEN (5 generators, full data)",
       "datasets": [
         "EvalGEN"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 98.1,
-        "note": "Paper table."
+        "note": "Paper Table 1; EvalGEN is fakes only, paired with a \"shared MSCOCO real pool\" the paper does not specify."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
       }
     },
     {
@@ -154,18 +154,18 @@
       }
     },
     {
-      "name": "RealChain",
+      "name": "RealChain (7 generators, full data)",
       "datasets": [
         "RealChain"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 79.7,
-        "note": "Paper table."
+        "note": "Paper Table 1; 7.0k real / 7.0k fake."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one."
       }
     },
     {

@@ -50,7 +50,9 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | — | reference |
 | GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | — | reference |
 | AIGCDetectBenchmark | acc=89.3 | — | — | missing |
-| EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | 98.1, 92.7, 95.8, 90.9, 81.5, 79.7, 93.8 | — | — | missing |
+| RealChain (7 generators, 7000 real / 7000 fake, full data) | acc=79.7 | mAP=87.39 / acc=79.69 / AUROC=85.47 | — | **reproduced** |
+| EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | — | **reproduced** (our real pool; see below) |
+| SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon | 92.7, 95.8, 90.9, 81.5, 93.8 | — | — | missing |
 
 `SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
 (official weights through SynthScope; balanced accuracy at 0.5 unless noted).
@@ -68,12 +70,22 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | same 20 subsets, `--limit 1500`/class (earlier run) | 20 | 93.13 | 97.14 | 97.59 | 92.8 | within 2.1 pt per subset; the cap caused the residual |
 | AIGIBench, all 25 test generators (adds 5 face-swap subsets the paper excludes) | 25 | 85.95 | 90.72 | 91.43 | – | not the paper's protocol |
 | AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
-| EvalGEN, SynthWildX, WildRF, BFree-Online, RRDataset, RealChain, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
+| **RealChain** (`--dataset realchain`, full data) | 7 | **79.69** | 87.39 | 85.47 | **79.7** | **reproduced** |
+| **EvalGEN** (`--dataset evalgen`, full data, MSCOCO val2017 reals) | 5 | **98.14** | 99.86 | 99.66 | **98.1** | **reproduced** |
+| SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
 
 **Honest reading.** The port is verified identical to the official model (above), and the in-distribution
 behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, SD‑v1.5 **99.80**, Wukong
 **99.87** — while other families are weaker at the fixed 0.5 threshold, with high AP/AUROC (e.g. GenImage
 ADM/BigGAN/VQDM fake-recall 22–65 %, AUROC 87–99).
+
+**RealChain and EvalGEN are reproduced** (jobs 251412, logs `repro/logs/evalds_251412.out`).
+RealChain: the release holds one image set, all JPEG q60, with 7000 unpaired reals that the loader splits into 7 disjoint
+slices, so the mean of the per-generator balanced accuracies equals the pooled 7000-vs-7000 one the paper reports
+(real acc 94.79, fake acc 64.60). Per generator: Flux1 90.75, Hunyuan3 91.65, QwenImage 89.10, NanoBanana 81.80,
+SDv3.5 79.10, Seedream4 63.62, i2i 61.90. EvalGEN ships fakes only; CuRe pairs it with an unspecified "shared MSCOCO
+real pool", and we use MSCOCO val2017 (5000 images; real acc 99.72, mean fake acc 96.56). Per generator: Flux 93.37,
+GoT 99.71, Infinity 98.55, NOVA 99.32, OmniGen 99.76.
 
 **AIGIBench is reproduced.** The paper evaluates "the 20 subsets corresponding to full-image synthesis" and
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,
