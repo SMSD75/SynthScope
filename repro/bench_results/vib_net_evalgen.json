@@ -1,0 +1,52 @@
+{
+  "tag": "vib_net_evalgen",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 94.82,
+    "map": 99.87,
+    "mauroc": 99.73
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 99.86,
+      "auroc": 99.7,
+      "real_acc": 90.04,
+      "fake_acc": 99.74,
+      "acc": 94.89
+    },
+    "GoT": {
+      "ap": 99.96,
+      "auroc": 99.92,
+      "real_acc": 89.68,
+      "fake_acc": 99.98,
+      "acc": 94.83
+    },
+    "Infinity": {
+      "ap": 99.93,
+      "auroc": 99.85,
+      "real_acc": 89.98,
+      "fake_acc": 99.95,
+      "acc": 94.97
+    },
+    "NOVA": {
+      "ap": 99.69,
+      "auroc": 99.37,
+      "real_acc": 89.84,
+      "fake_acc": 99.22,
+      "acc": 94.53
+    },
+    "OmniGen": {
+      "ap": 99.9,
+      "auroc": 99.79,
+      "real_acc": 89.88,
+      "fake_acc": 99.93,
+      "acc": 94.9
+    }
+  },
+  "date": "2026-10-10T21:10:52",
+  "synthscope_version": "0.1.0"
+}

@@ -33,6 +33,8 @@ VAL = {
     ("cure", "GenImage"):                {"official": {"map": 97.3, "acc": 85.18}},
     ("cure", "RealChain"):               {"official": {"map": 87.39, "acc": 79.69, "auroc": 85.47}},
     ("cure", "EvalGEN"):                 {"official": {"map": 99.86, "acc": 98.14, "auroc": 99.66}},
+    ("cure", "SynthWildX"):              {"official": {"map": 95.61, "acc": 92.69, "auroc": 96.5}},
+    ("cure", "WildRF"):                  {"official": {"map": 99.13, "acc": 95.89, "auroc": 99.14}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},

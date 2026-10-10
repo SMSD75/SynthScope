@@ -111,9 +111,11 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | AIGIBench, paper's 20 full-image-synthesis subsets (full test data, 168k images) | **92.85** | 97.00 | **92.8** | **reproduced**: AUROC 97.48 vs 97.5; every subset within 0.10 pt (mean abs diff 0.03). The earlier `--limit 1500` run gave 93.13 (the cap caused its 0.3 residual); adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
 | RealChain (full data, 7000/7000; `--dataset realchain`) | **79.69** | 87.39 | **79.7** | **reproduced** (AUROC 85.47). One released JPEG-q60 set; unpaired reals split into 7 disjoint slices, so the per-gen mean = the pooled balanced acc. Weakest: i2i 61.9, Seedream4 63.6 |
 | EvalGEN (full data, 55,298 fakes vs MSCOCO val2017; `--dataset evalgen`) | **98.14** | 99.86 | **98.1** | **reproduced** (AUROC 99.66). The paper's "shared MSCOCO pool" is unspecified; val2017 is our choice. Flux is the hardest (93.4) |
+| SynthWildX (`--dataset synthwildx`; 1713/2000 images still on X) | **92.69** | 95.61 | **92.7** | **reproduced** (AUROC 96.50); 287 posts deleted from X since release |
+| WildRF (`--dataset wildrf`; full test split, 1251/1252) | **95.89** | 99.13 | **95.8** | **reproduced** (AUROC 99.14) |
 | AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
 
-**Verdict: faithful port (identical to the official model); AIGIBench (92.85 vs 92.8), RealChain (79.69 vs 79.7) and EvalGEN (98.14 vs 98.1) reproduced.** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 5 of the paper's 10 benchmarks (SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon; not in SynthScope yet).
+**Verdict: faithful port (identical to the official model); AIGIBench (92.85 vs 92.8), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7) and WildRF (95.89 vs 95.8) reproduced.** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 3 of the paper's 10 benchmarks (BFree-Online, RRDataset, Chameleon; not in SynthScope yet).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

@@ -52,7 +52,9 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | AIGCDetectBenchmark | acc=89.3 | — | — | missing |
 | RealChain (7 generators, 7000 real / 7000 fake, full data) | acc=79.7 | mAP=87.39 / acc=79.69 / AUROC=85.47 | — | **reproduced** |
 | EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | — | **reproduced** (our real pool; see below) |
-| SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon | 92.7, 95.8, 90.9, 81.5, 93.8 | — | — | missing |
+| SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | — | **reproduced** (on the images still online) |
+| WildRF (Facebook, Reddit, Twitter test sets, 1251 real / 1252 fake) | acc=95.8 | mAP=99.13 / acc=95.89 / AUROC=99.14 | — | **reproduced** |
+| BFree-Online, RRDataset, Chameleon | 90.9, 81.5, 93.8 | — | — | missing |
 
 `SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
 (official weights through SynthScope; balanced accuracy at 0.5 unless noted).
@@ -72,7 +74,9 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
 | **RealChain** (`--dataset realchain`, full data) | 7 | **79.69** | 87.39 | 85.47 | **79.7** | **reproduced** |
 | **EvalGEN** (`--dataset evalgen`, full data, MSCOCO val2017 reals) | 5 | **98.14** | 99.86 | 99.66 | **98.1** | **reproduced** |
-| SynthWildX, WildRF, BFree-Online, RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
+| **SynthWildX** (`--dataset synthwildx`; 1713/2000 images still on X) | 3 | **92.69** | 95.61 | 96.50 | **92.7** | **reproduced** |
+| **WildRF** (`--dataset wildrf`, full test split) | 3 | **95.89** | 99.13 | 99.14 | **95.8** | **reproduced** |
+| BFree-Online, RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
 
 **Honest reading.** The port is verified identical to the official model (above), and the in-distribution
 behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, SD‑v1.5 **99.80**, Wukong
@@ -86,6 +90,11 @@ slices, so the mean of the per-generator balanced accuracies equals the pooled 7
 SDv3.5 79.10, Seedream4 63.62, i2i 61.90. EvalGEN ships fakes only; CuRe pairs it with an unspecified "shared MSCOCO
 real pool", and we use MSCOCO val2017 (5000 images; real acc 99.72, mean fake acc 96.56). Per generator: Flux 93.37,
 GoT 99.71, Infinity 98.55, NOVA 99.32, OmniGen 99.76.
+
+**SynthWildX and WildRF are reproduced** (jobs 251435 and 251440). SynthWildX is released as URLs of posts on X; 287 of
+the 2000 have been deleted since, so we score the 1713 still online (413 real; DALL-E 3 94.83, Firefly 88.35,
+Midjourney v5 94.88). WildRF uses its full test split, one subset per platform (Facebook 95.31, Reddit 96.60,
+Twitter 95.75). Both are the unweighted mean over subsets, as in the paper.
 
 **AIGIBench is reproduced.** The paper evaluates "the 20 subsets corresponding to full-image synthesis" and
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,

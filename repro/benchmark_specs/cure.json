@@ -94,33 +94,33 @@
       }
     },
     {
-      "name": "SynthWildX",
+      "name": "SynthWildX (3 generators, images still online on X)",
       "datasets": [
         "SynthWildX"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 92.7,
-        "note": "Paper table."
+        "note": "Paper Table 1; 0.5k real / 1.5k fake; unweighted mean over DALL-E 3, Firefly, Midjourney v5."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435)."
       }
     },
     {
-      "name": "WildRF",
+      "name": "WildRF (Facebook, Reddit, Twitter test sets)",
       "datasets": [
         "WildRF"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 95.8,
-        "note": "Paper table."
+        "note": "Paper Table 1; 1.3k real / 1.3k fake; unweighted mean over the Reddit, Facebook and X test subsets."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440)."
       }
     },
     {
