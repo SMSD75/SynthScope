@@ -1,0 +1,24 @@
+{
+  "tag": "dinov3_bfree_online",
+  "model": "dinov3",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 57.06,
+    "map": 85.0,
+    "mauroc": 76.54
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 85.0,
+      "auroc": 76.54,
+      "real_acc": 92.19,
+      "fake_acc": 21.93,
+      "acc": 57.06
+    }
+  },
+  "date": "2026-10-10T22:47:48",
+  "synthscope_version": "0.1.0"
+}

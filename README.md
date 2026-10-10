@@ -232,7 +232,9 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
 | `genvideo`, `vidprom`, `videophy`, `physics_iq` | video benchmarks | official sites | Place by hand in the same layout |
 
-The **Leaderboard** tab covers 30+ benchmark groups across these datasets.
+The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
+and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 14 image detectors on RealChain,
+EvalGEN, SynthWildX, WildRF and BFree-Online.
 
 ### 🏁 Standardized leaderboard
 

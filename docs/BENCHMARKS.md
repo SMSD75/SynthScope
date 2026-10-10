@@ -92,6 +92,9 @@ source in the table and unpack it so it matches the layout above (`real/`+`fake/
 understood; see the docstring of [`bench_eval.py`](../benchmark/bench_eval.py)). Datasets are large, so keep them on fast
 local disk.
 
+**Results on the in-the-wild sets.** [WILD_BENCHMARKS.md](WILD_BENCHMARKS.md) has every image detector on `realchain`,
+`evalgen`, `synthwildx`, `wildrf` and `bfree_online` (built from `repro/bench_results/` by `repro/build_wild_table.py`).
+
 ---
 
 ## 3. Reproduce a paper's numbers

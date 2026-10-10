@@ -1,0 +1,52 @@
+{
+  "tag": "fat_former_evalgen",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 62.13,
+    "map": 78.77,
+    "mauroc": 62.67
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 60.8,
+      "auroc": 37.49,
+      "real_acc": 97.08,
+      "fake_acc": 1.58,
+      "acc": 49.33
+    },
+    "GoT": {
+      "ap": 81.29,
+      "auroc": 64.57,
+      "real_acc": 97.08,
+      "fake_acc": 16.19,
+      "acc": 56.64
+    },
+    "Infinity": {
+      "ap": 80.67,
+      "auroc": 62.14,
+      "real_acc": 97.08,
+      "fake_acc": 19.01,
+      "acc": 58.05
+    },
+    "NOVA": {
+      "ap": 99.26,
+      "auroc": 98.23,
+      "real_acc": 97.08,
+      "fake_acc": 91.86,
+      "acc": 94.47
+    },
+    "OmniGen": {
+      "ap": 71.83,
+      "auroc": 50.93,
+      "real_acc": 97.08,
+      "fake_acc": 7.29,
+      "acc": 52.18
+    }
+  },
+  "date": "2026-10-10T22:49:36",
+  "synthscope_version": "0.1.0"
+}
