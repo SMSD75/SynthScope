@@ -2461,6 +2461,41 @@ class EvalGENDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
 
 
+def _read_csv_url(url, headers):
+    """Rows of the CSV file at ``url`` as dicts."""
+    with urllib.request.urlopen(urllib.request.Request(url, None, headers), timeout=60) as resp:
+        return list(csv.DictReader(resp.read().decode().splitlines()))
+
+
+def _fetch_url_list(rows, out_dir, headers, name, attempts=3):
+    """Download each ``row["url"]`` to ``out_dir / row["filename"]`` (datasets released as URL lists). A link that
+    answers with an HTTP error, keeps failing, or (when the row has an ``md5``) returns different bytes, e.g. a
+    placeholder for a deleted image, is skipped. Returns the filenames that could not be fetched."""
+    missing = []
+    for i, row in enumerate(rows):
+        fpath = Path(out_dir) / row["filename"]
+        fpath.parent.mkdir(parents=True, exist_ok=True)
+        for attempt in range(attempts):
+            if fpath.is_file():
+                break
+            try:
+                with urllib.request.urlopen(urllib.request.Request(row["url"], None, headers), timeout=30) as resp:
+                    data = resp.read()
+            except urllib.error.HTTPError:          # deleted post or page: the official scripts also skip it
+                break
+            except (OSError, ValueError):           # network hiccup or bad URL: back off and retry
+                time.sleep(2 ** attempt)
+                continue
+            if row.get("md5") and hashlib.md5(data).hexdigest() != row["md5"]:
+                break
+            fpath.write_bytes(data)
+        if not fpath.is_file():
+            missing.append(row["filename"])
+        if (i + 1) % 200 == 0:
+            print(f"  {name}: {i + 1}/{len(rows)} fetched, {len(missing)} missing", flush=True)
+    return missing
+
+
 class SynthWildXDataset(_TestOnlyImageDataset):
     """SynthWildX (Cozzolino et al., CVPRW 2024; used by DDA and CuRe) — images posted on X: 500 real and 500 each
     from DALL-E 3, Firefly and Midjourney v5. Only the image URLs are released (``data/synthwildx/list.csv`` in
@@ -2477,26 +2512,8 @@ class SynthWildXDataset(_TestOnlyImageDataset):
         if not force and _has_images(dest):
             return
         dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
-        with urllib.request.urlopen(urllib.request.Request(cls.list_url, None, cls.headers)) as resp:
-            rows = list(csv.DictReader(resp.read().decode().splitlines()))
-        missing = []
-        for i, row in enumerate(rows):
-            fpath = dl / row["filename"]
-            fpath.parent.mkdir(parents=True, exist_ok=True)
-            for attempt in range(5):
-                if fpath.is_file():
-                    break
-                try:
-                    with urllib.request.urlopen(urllib.request.Request(row["url"], None, cls.headers),
-                                                timeout=30) as resp:
-                        fpath.write_bytes(resp.read())
-                except urllib.error.HTTPError:          # deleted post: the official script also skips it
-                    missing.append(row["filename"])
-                    break
-                except OSError:                          # network hiccup: back off and retry
-                    time.sleep(2 ** attempt)
-            if (i + 1) % 200 == 0:
-                print(f"  SynthWildX: {i + 1}/{len(rows)} fetched, {len(missing)} missing", flush=True)
+        rows = _read_csv_url(cls.list_url, cls.headers)
+        missing = _fetch_url_list(rows, dl, cls.headers, "SynthWildX")
         (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
         reals = sorted((dl / "real").glob("*"))
         for gen_dir in sorted(p for p in dl.iterdir() if p.is_dir() and p.name != "real"):
@@ -2525,6 +2542,32 @@ class WildRFDataset(_TestOnlyImageDataset):
         inner = next(p for p in staging.rglob("test") if p.is_dir())
         _restructure_image_pergen(inner, dest)
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class BFreeOnlineDataset(_TestOnlyImageDataset):
+    """BFree-Online — the B-Free paper's viral-images set (Guillaro et al., CVPR 2025; used by DDA and CuRe): real
+    and fake images that went viral, with several web-scraped copies of each (about 1400 in the paper). Only URLs are
+    released (``viral_images_dataset/BFree_viral_images.csv`` in grip-unina/B-Free, 1111 rows, nonprofit use only);
+    the loader fetches them and keeps an image only when its md5 matches the list, so dead links and placeholders are
+    skipped (listed in ``<root>/missing.txt``). The 3 Facebook links need a browser to resolve and are skipped too.
+    Laid out as a single group, ``test/viral/{0_real,1_fake}``."""
+    list_url = "https://raw.githubusercontent.com/grip-unina/B-Free/main/viral_images_dataset/BFree_viral_images.csv"
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                             "Chrome/128.0.0.0 Safari/537.36"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        rows = _read_csv_url(cls.list_url, cls.headers)
+        missing = _fetch_url_list(rows, dl, cls.headers, "BFree-Online")
+        (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
+        for label, folder in (("REAL", "0_real"), ("FAKE", "1_fake")):
+            _link_images(sorted((dl / label).rglob("*.*")), dest / "viral" / folder)
+        print(f"BFree-Online: {len(rows) - len(missing)}/{len(rows)} images available ({len(missing)} links dead)")
+        shutil.rmtree(dl, ignore_errors=True)
 
 
 class _TestOnlyImageModule:
@@ -2590,6 +2633,10 @@ class SynthWildXDatasetModule(_TestOnlyImageModule):
 
 class WildRFDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = WildRFDataset
+
+
+class BFreeOnlineDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = BFreeOnlineDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2664,6 +2711,7 @@ SynthScopeModuleDict = {
     "evalgen": EvalGENDatasetModule,
     "synthwildx": SynthWildXDatasetModule,
     "wildrf": WildRFDatasetModule,
+    "bfree_online": BFreeOnlineDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

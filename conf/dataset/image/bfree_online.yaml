@@ -1,0 +1,14 @@
+name: bfree_online
+# BFree-Online — viral real/fake images with several web-scraped copies each (B-Free, CVPR 2025); used by DDA and CuRe.
+# Fetched from the official URL list (md5-checked; dead links skipped). Nonprofit use only (GRIP license).
+root_dir: /hddstore/ssalehi/SynthScope/BFreeOnline
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

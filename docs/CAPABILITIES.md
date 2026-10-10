@@ -93,7 +93,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 Known image sets: `cnndetection` (ForenSynths/ProGAN), `genimage`, `genimage_full` (8-gen),
 `universialfakedetection` (Ojha UFD), `aigibench`, `synthbuster`, `ditfake`, `diffusionforensics`,
-`diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
+`diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `bfree_online`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
 Video: `genvideo_val`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
 
 Each `DatasetDef` lists candidate roots; **`_resolve_root` is node-portable** — it remaps the configured

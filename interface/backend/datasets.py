@@ -113,6 +113,10 @@ DATASET_DEFS: list[DatasetDef] = [
     DatasetDef("wildrf", "WildRF (Facebook, Reddit, Twitter)", "image",
                ["/hddstore/ssalehi/SynthScope/WildRF"], ["test"],
                "In-the-wild real and fake images from three social platforms (LaDeDa paper); one folder per platform."),
+    DatasetDef("bfree_online", "BFree-Online (viral images)", "image",
+               ["/hddstore/ssalehi/SynthScope/BFreeOnline"], ["test"],
+               "Real and fake images that went viral, several web copies each (B-Free); fetched from the URL list, "
+               "dead links skipped. Nonprofit use only."),
     DatasetDef("videofeedback", "VideoFeedback (TIGER-Lab)", "video",
                ["/hddstore/ssalehi/SynthScope/VideoFeedback"], ["test"],
                "11 video generators vs DiDeMo+Panda70M real; STALL benchmark."),
