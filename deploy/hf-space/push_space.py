@@ -24,6 +24,9 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--space", required=True, help="owner/name of the Space")
     ap.add_argument("--private", action="store_true", help="create the Space as private (it can be made public later)")
+    ap.add_argument("--hardware", default="cpu-upgrade",
+                    help="Space hardware when creating it (Docker Spaces on free 'cpu-basic' need a PRO subscription)")
+    ap.add_argument("--sleep", type=int, default=3600, help="seconds without visitors before the Space sleeps (paid hardware)")
     ap.add_argument("--confirm", action="store_true", help="actually upload (default: dry run)")
     a = ap.parse_args()
 
@@ -37,7 +40,8 @@ def main() -> None:
 
     from huggingface_hub import HfApi
     api = HfApi(token=os.environ.get("HF_TOKEN"))
-    api.create_repo(a.space, repo_type="space", space_sdk="docker", private=a.private, exist_ok=True)
+    api.create_repo(a.space, repo_type="space", space_sdk="docker", private=a.private, exist_ok=True,
+                    space_hardware=a.hardware, space_sleep_time=a.sleep)
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         for f in files:
