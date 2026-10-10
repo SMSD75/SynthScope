@@ -94,7 +94,7 @@ understood; see the docstring of [`bench_eval.py`](../benchmark/bench_eval.py)).
 local disk.
 
 **Results on the in-the-wild sets.** [WILD_BENCHMARKS.md](WILD_BENCHMARKS.md) has every image detector on `realchain`,
-`evalgen`, `synthwildx`, `wildrf` and `bfree_online` (built from `repro/bench_results/` by `repro/build_wild_table.py`).
+`evalgen`, `synthwildx`, `wildrf`, `bfree_online` and `rrdataset` (built from `repro/bench_results/` by `repro/build_wild_table.py`).
 
 ---
 

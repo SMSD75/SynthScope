@@ -23,6 +23,8 @@ DATASETS = [  # (config name, column title, what the set is, caveat)
     ("wildrf", "WildRF", "real and fake images from Facebook, Reddit and Twitter", "full test split, 1251 / 1252"),
     ("bfree_online", "BFree-Online", "real and fake images that went viral, several web copies each",
      "807 of about 1400 images are still online"),
+    ("rrdataset", "RRDataset", "real vs AI images as created, after sharing online and after re-digitization",
+     "test archive only; three scenarios, about 8500 / 8500 each"),
 ]
 
 # Display names, in the order of the README's detector table.
@@ -56,12 +58,12 @@ def main():
     lines = [
         "# Detectors on recent and in-the-wild benchmarks",
         "",
-        "Every SynthScope image detector, with its default (published) weights, on five benchmarks built from recent",
+        "Every SynthScope image detector, with its default (published) weights, on six benchmarks built from recent",
         "commercial generators or from images collected online. Each cell is **balanced accuracy at a 0.5 threshold /",
         "AUROC**, both the unweighted mean over the dataset's subsets (generators or platforms), in percent; bold marks",
         "a balanced accuracy of 75 or more. `…` means the run has not finished yet.",
         "",
-        "All five datasets download and lay themselves out on first use, for example",
+        "All six datasets download and lay themselves out on first use, for example",
         "`python benchmark/bench_eval.py --model cure --dataset realchain --root /data/RealChain`.",
         "Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate this page with",
         "`python repro/build_wild_table.py`.",
