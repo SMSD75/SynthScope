@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
+IMAGE_EXT = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 REAL_NAMES = {"0_real", "real", "reals"}
 FAKE_NAMES = {"1_fake", "fake", "fakes", "ai"}
 # datasets whose generator grouping / real pairing is special-cased by a bench_eval profile

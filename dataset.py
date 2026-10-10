@@ -44,7 +44,7 @@ def _decode_rgb(path) -> torch.Tensor:
         return torch.zeros(3, 256, 256, dtype=torch.uint8)
 
 
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".jfif", ".png", ".webp")
 VIDEO_EXTENSIONS = (".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v", ".gif")
 
 def _iter_images(directory: Path):

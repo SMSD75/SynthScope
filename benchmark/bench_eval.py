@@ -39,7 +39,7 @@ from datasets_util import ensure_dataset, find_eval_root
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 Image.MAX_IMAGE_PIXELS = None   # benchmark data is trusted; some real photos (e.g. RealChain) exceed PIL's 179 MP bomb guard
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
 REAL_DIRNAMES = ("0_real", "real", "reals")
 FAKE_DIRNAMES = ("1_fake", "fake", "fakes", "ai")
 SHARED_REAL_DIRS = {"imagenet", "laion", "_real_pool", "real", "0_real", "reals"}
