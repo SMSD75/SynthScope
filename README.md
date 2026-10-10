@@ -210,7 +210,7 @@ Training does the same on its own: a dataset config with `prefetch: true` fetche
 (`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
 first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-paper-benchmarks).
 
-**Supported benchmark datasets** — 15 image and 8 video. *Auto* means the loader downloads and arranges it.
+**Supported benchmark datasets** — 17 image and 8 video. *Auto* means the loader downloads and arranges it.
 
 | Dataset (`config name`) | What it is | Source | Download |
 | --- | --- | --- | --- |
@@ -224,6 +224,8 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `ditfake`, `commgen15` | DiTFake, CommGen15 (commercial generators) | Hugging Face | Auto |
 | `realchain` | RealChain: 7 recent generators (FLUX.1, SD 3.5, Qwen-Image, NanoBanana, ...), JPEG-degraded; non-commercial license | Hugging Face | Auto |
 | `evalgen` | EvalGEN: 5 diffusion + autoregressive generators, paired with MSCOCO val2017 reals | Hugging Face + cocodataset.org | Auto |
+| `synthwildx` | SynthWildX: DALL·E 3, Firefly, Midjourney images posted on X (posts deleted since release are skipped) | X, via the official URL list | Auto |
+| `wildrf` | WildRF: real and fake images from Facebook, Reddit and Twitter | Google Drive | Auto |
 | `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
 | `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |

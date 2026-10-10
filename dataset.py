@@ -8,6 +8,10 @@ import zipfile
 import tarfile
 import shutil
 import subprocess
+import csv
+import time
+import urllib.error
+import urllib.request
 from matplotlib import pyplot as plt
 import numpy as np
 import torch
@@ -2457,6 +2461,72 @@ class EvalGENDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
 
 
+class SynthWildXDataset(_TestOnlyImageDataset):
+    """SynthWildX (Cozzolino et al., CVPRW 2024; used by DDA and CuRe) — images posted on X: 500 real and 500 each
+    from DALL-E 3, Firefly and Midjourney v5. Only the image URLs are released (``data/synthwildx/list.csv`` in
+    grip-unina/ClipBased-SyntheticImageDetection), so, like the official script, this loader fetches each image
+    from X. Posts deleted since release return 404 and are skipped (listed in ``<root>/missing.txt``), so the set
+    on disk can be smaller than the paper's. Each generator is paired with all 500 reals."""
+    list_url = ("https://raw.githubusercontent.com/grip-unina/ClipBased-SyntheticImageDetection/"
+                "main/data/synthwildx/list.csv")
+    headers = {"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        with urllib.request.urlopen(urllib.request.Request(cls.list_url, None, cls.headers)) as resp:
+            rows = list(csv.DictReader(resp.read().decode().splitlines()))
+        missing = []
+        for i, row in enumerate(rows):
+            fpath = dl / row["filename"]
+            fpath.parent.mkdir(parents=True, exist_ok=True)
+            for attempt in range(5):
+                if fpath.is_file():
+                    break
+                try:
+                    with urllib.request.urlopen(urllib.request.Request(row["url"], None, cls.headers),
+                                                timeout=30) as resp:
+                        fpath.write_bytes(resp.read())
+                except urllib.error.HTTPError:          # deleted post: the official script also skips it
+                    missing.append(row["filename"])
+                    break
+                except OSError:                          # network hiccup: back off and retry
+                    time.sleep(2 ** attempt)
+            if (i + 1) % 200 == 0:
+                print(f"  SynthWildX: {i + 1}/{len(rows)} fetched, {len(missing)} missing", flush=True)
+        (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
+        reals = sorted((dl / "real").glob("*"))
+        for gen_dir in sorted(p for p in dl.iterdir() if p.is_dir() and p.name != "real"):
+            _link_images(sorted(gen_dir.glob("*")), dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        print(f"SynthWildX: {len(rows) - len(missing)}/{len(rows)} images available ({len(missing)} deleted from X)")
+        shutil.rmtree(dl, ignore_errors=True)
+
+
+class WildRFDataset(_TestOnlyImageDataset):
+    """WildRF (Cavia et al. 2024, the LaDeDa paper; used by DDA and CuRe) — real and fake images collected from
+    social platforms. Its test split has one folder per platform (facebook, reddit, twitter), each with real/fake;
+    those become the "generators" here. Sourced from the authors' Google Drive zip (barcavia/
+    RealTime-DeepfakeDetection-in-the-RealWorld); only the test split is laid out."""
+    gdrive_file_id = "1A0xoL44Yg68ixd-FuIJn2VC4vdZ6M2gn"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        import gdown
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        gdown.download(id=cls.gdrive_file_id, output=str(dl / "WildRF.zip"), quiet=False, use_cookies=False)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        inner = next(p for p in staging.rglob("test") if p.is_dir())
+        _restructure_image_pergen(inner, dest)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2512,6 +2582,14 @@ class RealChainDatasetModule(_TestOnlyImageModule):
 
 class EvalGENDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = EvalGENDataset
+
+
+class SynthWildXDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = SynthWildXDataset
+
+
+class WildRFDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = WildRFDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2584,6 +2662,8 @@ SynthScopeModuleDict = {
     "commgen15": CommGen15DatasetModule,
     "realchain": RealChainDatasetModule,
     "evalgen": EvalGENDatasetModule,
+    "synthwildx": SynthWildXDatasetModule,
+    "wildrf": WildRFDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.
