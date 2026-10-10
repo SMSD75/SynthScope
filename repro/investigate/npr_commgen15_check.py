@@ -58,9 +58,9 @@ def stats(paths):
 def auroc(det, model, spec, reals, fakes, variant):
     tf, bs = (None, 32) if VARIANTS[variant] is None else VARIANTS[variant]
     paths = reals + fakes
-    probs = be.score(det, model, spec, paths, bs, transform=tf or spec.transform)
-    y = torch.tensor([0] * len(reals) + [1] * len(fakes))[: probs.numel()]
-    return float(roc_auc_score(y.numpy(), probs.numpy())) * 100, float(probs[: len(reals)].mean()), float(probs[len(reals):].mean())
+    probs, kept = be.score(det, model, spec, paths, bs, transform=tf or spec.transform)
+    y = torch.tensor([0] * len(reals) + [1] * len(fakes))[kept]
+    return float(roc_auc_score(y.numpy(), probs.numpy())) * 100, float(probs[y == 0].mean()), float(probs[y == 1].mean())
 
 
 def main():
