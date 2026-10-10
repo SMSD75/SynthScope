@@ -86,7 +86,7 @@ def main():
         "## Reading the table",
         "",
         "- Only CuRe's paper reports these benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs",
-        "  98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, BFree-Online 91.64 vs 90.9 (fewer images; see",
+        "  98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, RRDataset 82.04 vs 81.5, BFree-Online 91.64 vs 90.9 (fewer images; see",
         "  [the CuRe README](../models/image/cure/README.md)). The other detectors were never evaluated on these sets by",
         "  their authors, so their rows are new measurements, not reproductions.",
         "- Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50",

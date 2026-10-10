@@ -1,0 +1,52 @@
+{
+  "tag": "co_spy_evalgen",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 96.66,
+    "map": 99.74,
+    "mauroc": 99.49
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 99.61,
+      "auroc": 99.25,
+      "real_acc": 97.86,
+      "fake_acc": 92.59,
+      "acc": 95.22
+    },
+    "GoT": {
+      "ap": 99.85,
+      "auroc": 99.72,
+      "real_acc": 97.86,
+      "fake_acc": 98.22,
+      "acc": 98.04
+    },
+    "Infinity": {
+      "ap": 99.79,
+      "auroc": 99.59,
+      "real_acc": 97.86,
+      "fake_acc": 96.2,
+      "acc": 97.03
+    },
+    "NOVA": {
+      "ap": 99.55,
+      "auroc": 99.06,
+      "real_acc": 97.86,
+      "fake_acc": 91.31,
+      "acc": 94.59
+    },
+    "OmniGen": {
+      "ap": 99.92,
+      "auroc": 99.84,
+      "real_acc": 97.86,
+      "fake_acc": 98.94,
+      "acc": 98.4
+    }
+  },
+  "date": "2026-10-11T00:19:18",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "tag": "cure_rrdataset",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 82.04,
+    "map": 90.4,
+    "mauroc": 88.88
+  },
+  "per_generator": {
+    "original": {
+      "ap": 96.38,
+      "auroc": 96.06,
+      "real_acc": 94.54,
+      "fake_acc": 87.62,
+      "acc": 91.08
+    },
+    "redigital": {
+      "ap": 81.82,
+      "auroc": 79.46,
+      "real_acc": 93.47,
+      "fake_acc": 45.54,
+      "acc": 69.51
+    },
+    "transfer": {
+      "ap": 92.99,
+      "auroc": 91.11,
+      "real_acc": 95.08,
+      "fake_acc": 75.96,
+      "acc": 85.52
+    }
+  },
+  "date": "2026-10-11T00:32:18",
+  "synthscope_version": "0.1.0"
+}

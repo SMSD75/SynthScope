@@ -139,18 +139,18 @@
       }
     },
     {
-      "name": "RRDataset",
+      "name": "RRDataset (original / transfer / redigital)",
       "datasets": [
         "RRDataset"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 81.5,
-        "note": "Paper table."
+        "note": "Paper Table 1; dataset table counts 30.0k real / 30.0k fake; unweighted mean over the three scenarios."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476)."
       }
     },
     {

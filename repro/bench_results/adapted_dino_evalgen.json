@@ -1,0 +1,52 @@
+{
+  "tag": "adapted_dino_evalgen",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 50.87,
+    "map": 77.56,
+    "mauroc": 64.92
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 66.79,
+      "auroc": 49.41,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "GoT": {
+      "ap": 68.73,
+      "auroc": 51.02,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "Infinity": {
+      "ap": 82.83,
+      "auroc": 71.72,
+      "real_acc": 100.0,
+      "fake_acc": 0.02,
+      "acc": 50.01
+    },
+    "NOVA": {
+      "ap": 96.67,
+      "auroc": 92.99,
+      "real_acc": 100.0,
+      "fake_acc": 8.73,
+      "acc": 54.36
+    },
+    "OmniGen": {
+      "ap": 72.79,
+      "auroc": 59.44,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-10-10T23:30:24",
+  "synthscope_version": "0.1.0"
+}

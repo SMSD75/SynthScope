@@ -36,6 +36,7 @@ VAL = {
     ("cure", "SynthWildX"):              {"official": {"map": 95.61, "acc": 92.69, "auroc": 96.5}},
     ("cure", "WildRF"):                  {"official": {"map": 99.13, "acc": 95.89, "auroc": 99.14}},
     ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}},
+    ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},

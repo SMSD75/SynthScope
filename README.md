@@ -269,7 +269,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | SAFE | GenImage-8 | 99.3 | 99.51 | ✅ reproduced |
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
-| CuRe | AIGIBench · RealChain · EvalGEN · SynthWildX · WildRF | 92.8 · 79.7 · 98.1 · 92.7 · 95.8 acc | 92.85 · 79.69 · 98.14 · 92.69 · 95.89 acc (official) | ✅ official weights match |
+| CuRe | AIGIBench · RealChain · EvalGEN · SynthWildX · WildRF · RRDataset | 92.8 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val | 98.5 | 95.95 AUROC | ⚠️ mAP not comparable: our test pool is far more imbalanced |

@@ -12,20 +12,20 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
 
 | Detector | RealChain | EvalGEN | SynthWildX | WildRF | BFree-Online | RRDataset | Mean acc |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| CuRe | **79.7 / 85.5** | **98.1 / 99.7** | **92.7 / 96.5** | **95.9 / 99.1** | **91.6 / 98.1** | … | … |
+| CuRe | **79.7 / 85.5** | **98.1 / 99.7** | **92.7 / 96.5** | **95.9 / 99.1** | **91.6 / 98.1** | **82.0 / 88.9** | 90.0 |
 | SPAI | … | … | **76.2 / 84.6** | **80.6 / 88.4** | 59.8 / 60.2 | … | … |
 | DINOv3 probe | 50.3 / 49.7 | 66.6 / 81.7 | 72.8 / 82.5 | **77.3 / 87.7** | 57.1 / 76.5 | … | … |
-| Co-Spy | 71.0 / 76.5 | … | 64.3 / 69.5 | 61.6 / 71.2 | 56.3 / 73.3 | … | … |
+| Co-Spy | 71.0 / 76.5 | **96.7 / 99.5** | 64.3 / 69.5 | 61.6 / 71.2 | 56.3 / 73.3 | … | … |
 | AIDE | … | … | 57.4 / 65.7 | 63.6 / 68.6 | 52.8 / 63.1 | … | … |
 | VIB-Net | 65.8 / 74.3 | **94.8 / 99.7** | 58.5 / 73.6 | 56.1 / 71.3 | 51.9 / 53.6 | … | … |
 | PGC | 49.9 / 36.0 | 50.2 / 77.7 | 50.9 / 56.3 | 60.1 / 76.8 | 50.0 / 46.5 | … | … |
 | NPR | … | … | 50.4 / 51.7 | 65.0 / 70.9 | 44.1 / 32.2 | … | … |
 | SAFE | … | … | 50.0 / 51.1 | 58.5 / 58.5 | 50.2 / 48.7 | … | … |
 | FatFormer | 48.9 / 38.7 | 62.1 / 62.7 | 53.5 / 58.6 | 59.5 / 72.8 | 50.0 / 52.7 | … | … |
-| UnivFD / CLIP | … | … | 49.3 / 48.1 | 53.4 / 64.8 | 50.4 / 43.9 | … | … |
+| UnivFD / CLIP | 49.2 / 40.9 | … | 49.3 / 48.1 | 53.4 / 64.8 | 50.4 / 43.9 | … | … |
 | CNNDetection | … | … | 50.2 / 53.0 | 49.9 / 58.9 | 50.0 / 64.3 | … | … |
-| DINOv2 probe | … | … | 51.1 / 49.6 | 58.9 / 63.6 | 50.0 / 19.4 | … | … |
-| Adapted DINOv2 | 50.0 / 46.0 | … | 50.0 / 48.5 | 50.4 / 63.4 | 50.0 / 19.0 | … | … |
+| DINOv2 probe | 47.9 / 38.8 | 52.6 / 57.6 | 51.1 / 49.6 | 58.9 / 63.6 | 50.0 / 19.4 | … | … |
+| Adapted DINOv2 | 50.0 / 46.0 | 50.9 / 64.9 | 50.0 / 48.5 | 50.4 / 63.4 | 50.0 / 19.0 | … | … |
 
 ## The datasets
 
@@ -41,7 +41,7 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
 ## Reading the table
 
 - Only CuRe's paper reports these benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs
-  98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, BFree-Online 91.64 vs 90.9 (fewer images; see
+  98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, RRDataset 82.04 vs 81.5, BFree-Online 91.64 vs 90.9 (fewer images; see
   [the CuRe README](../models/image/cure/README.md)). The other detectors were never evaluated on these sets by
   their authors, so their rows are new measurements, not reproductions.
 - Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50

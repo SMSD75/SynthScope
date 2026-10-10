@@ -1,0 +1,66 @@
+{
+  "tag": "dinov2_realchain",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RealChain/test",
+  "n_generators": 7,
+  "means": {
+    "acc": 47.86,
+    "map": 42.56,
+    "mauroc": 38.82
+  },
+  "per_generator": {
+    "Flux1": {
+      "ap": 44.2,
+      "auroc": 42.01,
+      "real_acc": 96.7,
+      "fake_acc": 1.1,
+      "acc": 48.9
+    },
+    "Hunyuan3": {
+      "ap": 39.47,
+      "auroc": 34.22,
+      "real_acc": 89.2,
+      "fake_acc": 1.2,
+      "acc": 45.2
+    },
+    "NanoBanana": {
+      "ap": 37.84,
+      "auroc": 29.87,
+      "real_acc": 91.7,
+      "fake_acc": 1.2,
+      "acc": 46.45
+    },
+    "QwenImage": {
+      "ap": 43.62,
+      "auroc": 39.96,
+      "real_acc": 92.3,
+      "fake_acc": 4.4,
+      "acc": 48.35
+    },
+    "SDv3.5": {
+      "ap": 44.2,
+      "auroc": 41.7,
+      "real_acc": 94.5,
+      "fake_acc": 2.5,
+      "acc": 48.5
+    },
+    "Seedream4": {
+      "ap": 42.72,
+      "auroc": 40.24,
+      "real_acc": 96.9,
+      "fake_acc": 0.6,
+      "acc": 48.75
+    },
+    "i2i": {
+      "ap": 45.88,
+      "auroc": 43.77,
+      "real_acc": 91.6,
+      "fake_acc": 6.1,
+      "acc": 48.85
+    }
+  },
+  "date": "2026-10-10T23:40:43",
+  "synthscope_version": "0.1.0"
+}

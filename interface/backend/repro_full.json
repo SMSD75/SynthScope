@@ -209,14 +209,14 @@
       "note": "Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449)."
     },
     {
-      "benchmark": "RRDataset",
+      "benchmark": "RRDataset (original / transfer / redigital)",
       "metric": "balanced accuracy",
       "paper": "acc=81.5",
-      "ours": "",
+      "ours": "mAP=90.4 / acc=82.04 / AUROC=88.88 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=90.4 / acc=82.04 / AUROC=88.88",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476)."
     },
     {
       "benchmark": "RealChain (7 generators, full data)",

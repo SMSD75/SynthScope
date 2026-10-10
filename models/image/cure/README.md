@@ -55,7 +55,8 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | — | **reproduced** (on the images still online) |
 | WildRF (Facebook, Reddit, Twitter test sets, 1251 real / 1252 fake) | acc=95.8 | mAP=99.13 / acc=95.89 / AUROC=99.14 | — | **reproduced** |
 | BFree-Online (807 of the 1111 listed links still online; the paper had about 1400 images) | acc=90.9 | mAP=99.06 / acc=91.64 / AUROC=98.08 | — | close (about 58% of the paper's images) |
-| RRDataset, Chameleon | 81.5, 93.8 | — | — | missing |
+| RRDataset (original / transfer / redigital, public test archive, 25.5k real / 25.5k fake) | acc=81.5 | mAP=90.40 / acc=82.04 / AUROC=88.88 | — | **reproduced** within 0.6 pt (the paper counts 30k/30k) |
+| Chameleon | 93.8 | — | — | missing (available by request only) |
 
 `SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
 (official weights through SynthScope; balanced accuracy at 0.5 unless noted).
@@ -78,7 +79,8 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | **SynthWildX** (`--dataset synthwildx`; 1713/2000 images still on X) | 3 | **92.69** | 95.61 | 96.50 | **92.7** | **reproduced** |
 | **WildRF** (`--dataset wildrf`, full test split) | 3 | **95.89** | 99.13 | 99.14 | **95.8** | **reproduced** |
 | BFree-Online (`--dataset bfree_online`; 269 real / 538 fake still online) | 1 | **91.64** | 99.06 | 98.08 | 90.9 | close; not the paper's full set |
-| RRDataset, Chameleon | – | *not in SynthScope* | | | see above | datasets not available here |
+| **RRDataset** (`--dataset rrdataset`, public test archive) | 3 | **82.04** | 90.40 | 88.88 | **81.5** | **reproduced** within 0.6 pt |
+| Chameleon | – | *not in SynthScope* | | | see above | released by email request only |
 
 **Honest reading.** The port is verified identical to the official model (above), and the in-distribution
 behaviour is exactly what the paper's training implies — SD‑v1.4 **99.73**, SD‑v1.5 **99.80**, Wukong
@@ -101,6 +103,10 @@ Twitter 95.75). Both are the unweighted mean over subsets, as in the paper.
 **BFree-Online is close but not the same data** (job 251449). It is released as URLs with md5s; only 807 of the 1111
 listed images are still online (269 real, 538 fake), against about 1400 in the paper, so 91.64 (real acc 96.65,
 fake acc 86.62) is not a like-for-like comparison with 90.9.
+
+**RRDataset is reproduced within 0.6 pt** (job 251476): original 91.08, transfer 85.52, redigital 69.51, mean 82.04
+vs 81.5. We use the public test archive (25.5k real / 25.5k fake); the paper's dataset table counts 30k/30k, which
+probably includes the separate train/val archive, so the evaluated sets may differ slightly.
 
 **AIGIBench is reproduced.** The paper evaluates "the 20 subsets corresponding to full-image synthesis" and
 reports "the unweighted macro-average over its evaluated subsets" (Table 2): ProGAN, R3GAN, StyleGAN3,
