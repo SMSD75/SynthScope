@@ -231,7 +231,10 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
 | `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
-| `genvideo`, `vidprom`, `videophy`, `physics_iq` | video benchmarks | official sites | Place by hand in the same layout |
+| `genvideo` | GenVideo-Val: 10 video generators vs 10,000 MSR-VTT reals (D3, STALL) | ModelScope | Auto |
+| `videophy` | VideoPhy: 10 text-to-video generators (dead links skipped), paired with MSR-VTT reals | the web, via the official URL list | Auto |
+| `vidprom` | VidProM: ModelScope, Pika, Text2Video-Zero, VideoCrafter2 (first 1,000 clips each; the full set is terabytes); non-commercial license | Hugging Face | Auto |
+| `physics_iq` | Physics-IQ | official site | Place by hand in the same layout |
 
 The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
 and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 14 image detectors on RealChain,

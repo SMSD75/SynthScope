@@ -11,6 +11,7 @@ import subprocess
 import csv
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from matplotlib import pyplot as plt
 import numpy as np
@@ -2716,12 +2717,162 @@ class ComGenVidDataset(VideoFolderDataset):
         self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
 
 
+GENVIDEO_VAL_URL = "https://modelscope.cn/datasets/cccnju/Gen-Video/resolve/master/GenVideo-Val.zip"
+
+
+def _genvideo_val_zip(dl_dir):
+    """GenVideo-Val.zip (DeMamba's validation set, 14 GB) from ModelScope, downloaded into ``dl_dir`` unless present."""
+    zip_path = Path(dl_dir) / "GenVideo-Val.zip"
+    if not zip_path.is_file():
+        Path(dl_dir).mkdir(parents=True, exist_ok=True)
+        subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(zip_path), GENVIDEO_VAL_URL],
+                       check=True)
+    return zip_path
+
+
+def _msrvtt_reals(dl_dir):
+    """The 10,000 MSR-VTT real videos of GenVideo-Val (``Real/msrvtt_<n>.mp4``), extracted into ``dl_dir/msrvtt`` and
+    returned in numeric order. D3 pairs every fake-only video benchmark (EvalCrafter, VideoPhy, VidProM) with them."""
+    out = Path(dl_dir) / "msrvtt"
+    if not _has_videos(out):
+        out.mkdir(parents=True, exist_ok=True)
+        with zipfile.ZipFile(_genvideo_val_zip(dl_dir)) as zf:
+            for m in zf.infolist():
+                name = Path(m.filename).name
+                if "/Real/" in m.filename and name.lower().endswith(VIDEO_EXTENSIONS):
+                    with zf.open(m) as src, open(out / name, "wb") as dst:
+                        shutil.copyfileobj(src, dst)
+    return sorted((p for p in out.iterdir() if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
+
+
+class GenVideoValDataset(VideoFolderDataset):
+    """GenVideo-Val (DeMamba, Chen et al. 2024) — the test set of D3 (Table 1) and STALL: 10 generators (Crafter, Gen2,
+    HotShot, Lavie, ModelScope, MoonValley, MorphStudio, Show_1, Sora, WildScrape) against 10,000 MSR-VTT real videos.
+    Sourced from ModelScope ``cccnju/Gen-Video`` (GenVideo-Val.zip, 14 GB). Laid out as ``test/<generator>/1_fake`` with
+    the shared real pool hard-linked into every ``test/<generator>/0_real`` (numeric order, so ``--limit 1000`` takes
+    the first 1000 reals, as D3's official eval does with ``max_len=1000``)."""
+    hf_repo_id = None
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        dl = root_dir / "_downloads"
+        staging = root_dir / "_staging"
+        _safe_extract_zip(_genvideo_val_zip(dl), staging)
+        inner = next(p for p in staging.rglob("Fake") if p.is_dir()).parent
+        reals = sorted((p for p in (inner / "Real").iterdir() if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
+        for gen_dir in sorted(p for p in (inner / "Fake").iterdir() if p.is_dir()):
+            fakes = sorted((p for p in gen_dir.rglob("*") if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
+            _link_images(fakes, dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class VideoPhyDataset(VideoFolderDataset):
+    """VideoPhy test set (Bansal et al. 2024; D3 Table 3) — 3360 text-to-video clips from 10 generators, released only as
+    URLs (``videophysics/videophy_test_public`` on Hugging Face, MIT). The loader fetches each clip; links that no longer
+    work (both CogVideoX sets were offline in October 2026) are skipped and listed in ``<root>/missing.txt``. VideoPhy has
+    no real videos, so, as D3 does for its fake-only sets, every generator is paired with GenVideo-Val's MSR-VTT reals."""
+    hf_repo_id = None
+    csv_url = "https://huggingface.co/datasets/videophysics/videophy_test_public/resolve/main/videophy_test_public.csv"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    source_names = {"lavie": "LaVie", "vc2": "VideoCrafter2", "opensora": "OpenSora", "zeroscope": "ZeroScope",
+                    "gen2": "Gen-2", "svd": "SVD", "pika": "Pika", "Dream Machine (LumaAI)": "Dream-Machine",
+                    "CogVideoX-2B": "CogVideoX-2B", "CogVideoX-5B": "CogVideoX-5B"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        rows = []
+        for i, row in enumerate(_read_csv_url(cls.csv_url, cls.headers)):
+            url = urllib.parse.quote(row["video_url"], safe=":/?=&%")
+            gen = cls.source_names.get(row["source"], row["source"])
+            rows.append({"url": url, "filename": f"{gen}/{i:05d}_{Path(urllib.parse.urlparse(url).path).name}"})
+        missing = _fetch_url_list(rows, dl / "videos", cls.headers, "VideoPhy")
+        (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
+        reals = _msrvtt_reals(dl)
+        for gen_dir in sorted(p for p in (dl / "videos").iterdir() if p.is_dir()):
+            fakes = sorted(p for p in gen_dir.iterdir() if p.suffix.lower() in VIDEO_EXTENSIONS)
+            if fakes:
+                _link_images(fakes, dest / gen_dir.name / "1_fake")
+                _link_images(reals, dest / gen_dir.name / "0_real")
+        print(f"VideoPhy: {len(rows) - len(missing)}/{len(rows)} clips available ({len(missing)} links dead)")
+        shutil.rmtree(dl, ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class VidProMDataset(VideoFolderDataset):
+    """VidProM (Wang & Yang, NeurIPS 2024; D3 Table 4, ReStraV) — millions of text-to-video clips from ModelScope, Pika,
+    Text2Video-Zero and VideoCrafter2 on Hugging Face ``WenhaoWang/VidProM`` (CC BY-NC 4.0; 30 tar parts per generator,
+    0.35-1 TB each). The loader streams only the first ``cap`` clips of part 1 per generator instead of downloading
+    terabytes, so results are on a subsample (D3 does not say how it sampled). OpenSora and StreamingT2V, also in D3's
+    table, are not in that repository. Each generator is paired with GenVideo-Val's MSR-VTT reals."""
+    hf_repo_id = "WenhaoWang/VidProM"
+    generators = {"ms": "ModelScope", "pika": "Pika", "t2vz": "Text2Video-Zero", "vc2": "VideoCrafter2"}
+    cap = 1000
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        repo = hf_repo_id or cls.hf_repo_id
+        for key, gen in cls.generators.items():
+            out = dl / "videos" / gen; out.mkdir(parents=True, exist_ok=True)
+            url = f"https://huggingface.co/datasets/{repo}/resolve/main/{key}_videos/{key}_videos_1.tar"
+            kept = len(list(out.glob("*.mp4")))
+            if kept < cls.cap:
+                with urllib.request.urlopen(urllib.request.Request(url, None, {"User-Agent": "Mozilla/5.0"})) as resp, \
+                        tarfile.open(fileobj=resp, mode="r|*") as tf:      # streamed: stops after `cap` clips
+                    for m in tf:
+                        name = Path(m.name).name
+                        if not (m.isfile() and name.lower().endswith(VIDEO_EXTENSIONS)):
+                            continue
+                        with tf.extractfile(m) as src, open(out / name, "wb") as dst:
+                            shutil.copyfileobj(src, dst)
+                        kept += 1
+                        if kept >= cls.cap:
+                            break
+            print(f"  VidProM {gen}: {kept} clips", flush=True)
+        reals = _msrvtt_reals(dl)
+        for gen_dir in sorted(p for p in (dl / "videos").iterdir() if p.is_dir()):
+            _link_images(sorted(gen_dir.glob("*.mp4"))[:cls.cap], dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        shutil.rmtree(dl, ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
 class VideoFeedbackDatasetModule(_TestOnlyVideoModule):
     DATASET_CLASS = VideoFeedbackDataset
 
 
 class ComGenVidDatasetModule(_TestOnlyVideoModule):
     DATASET_CLASS = ComGenVidDataset
+
+
+class GenVideoValDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = GenVideoValDataset
+
+
+class VideoPhyDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = VideoPhyDataset
+
+
+class VidProMDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = VidProMDataset
 
 
 SynthScopeModuleDict = {
@@ -2749,10 +2900,10 @@ SynthScopeModuleDict = {
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.
-    "genvideo": VideoFolderDatasetModule,
-    "videophy": VideoFolderDatasetModule,
+    "genvideo": GenVideoValDatasetModule,
+    "videophy": VideoPhyDatasetModule,
     "evalcrafter": EvalCrafterDatasetModule,
-    "vidprom": VideoFolderDatasetModule,
+    "vidprom": VidProMDatasetModule,
     "genvidbench": GenVidBenchDatasetModule,
     "physics_iq": VideoFolderDatasetModule,
     "videofeedback": VideoFeedbackDatasetModule,

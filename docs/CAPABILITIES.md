@@ -80,7 +80,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 ## 4. Evaluation / benchmarking
 
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
-- **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --benchmark {genvideo|fakeonly|pergen}`.
+- **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
 - Results live in `repro/`: `RESULTS_SUMMARY.md` (read first), `AGGREGATED_BENCHMARK.md`,
@@ -94,7 +94,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 Known image sets: `cnndetection` (ForenSynths/ProGAN), `genimage`, `genimage_full` (8-gen),
 `universialfakedetection` (Ojha UFD), `aigibench`, `synthbuster`, `ditfake`, `diffusionforensics`,
 `diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `bfree_online`, `rrdataset`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
-Video: `genvideo_val`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
+Video: `genvideo_val`, `genvideo`, `videophy`, `vidprom`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
 
 Each `DatasetDef` lists candidate roots; **`_resolve_root` is node-portable** — it remaps the configured
 `/hddstore` path onto whatever scratch mount exists (`/hddstore`↔`/ssdstore`↔`/nvmestore`), overridable
