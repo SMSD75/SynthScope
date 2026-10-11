@@ -64,108 +64,109 @@
       }
     },
     {
-      "name": "AIGCDetectBenchmark",
+      "name": "AIGCDetectBenchmark (17 generators, full data)",
       "datasets": [
         "AIGCDetectBenchmark"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 89.3,
-        "note": "Paper table."
+        "auroc": 98.0,
+        "note": "Paper Table 6: unweighted mean over the 17 generators; 76.3k real / 76.3k fake."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
+        "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523)."
       }
     },
     {
-      "name": "EvalGEN",
+      "name": "EvalGEN (5 generators, full data)",
       "datasets": [
         "EvalGEN"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 98.1,
-        "note": "Paper table."
+        "note": "Paper Table 1; EvalGEN is fakes only, paired with a \"shared MSCOCO real pool\" the paper does not specify."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
       }
     },
     {
-      "name": "SynthWildX",
+      "name": "SynthWildX (3 generators, images still online on X)",
       "datasets": [
         "SynthWildX"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 92.7,
-        "note": "Paper table."
+        "note": "Paper Table 1; 0.5k real / 1.5k fake; unweighted mean over DALL-E 3, Firefly, Midjourney v5."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435)."
       }
     },
     {
-      "name": "WildRF",
+      "name": "WildRF (Facebook, Reddit, Twitter test sets)",
       "datasets": [
         "WildRF"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 95.8,
-        "note": "Paper table."
+        "note": "Paper Table 1; 1.3k real / 1.3k fake; unweighted mean over the Reddit, Facebook and X test subsets."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440)."
       }
     },
     {
-      "name": "BFree-Online",
+      "name": "BFree-Online (viral images still online)",
       "datasets": [
         "BFree-Online"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 90.9,
-        "note": "Paper table."
+        "note": "Paper Table 1; about 1.4k images in total."
       },
-      "our_status": "missing",
+      "our_status": "reference",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449)."
       }
     },
     {
-      "name": "RRDataset",
+      "name": "RRDataset (original / transfer / redigital)",
       "datasets": [
         "RRDataset"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 81.5,
-        "note": "Paper table."
+        "note": "Paper Table 1; dataset table counts 30.0k real / 30.0k fake; unweighted mean over the three scenarios."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476)."
       }
     },
     {
-      "name": "RealChain",
+      "name": "RealChain (7 generators, full data)",
       "datasets": [
         "RealChain"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 79.7,
-        "note": "Paper table."
+        "note": "Paper Table 1; 7.0k real / 7.0k fake."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+        "note": "Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one."
       }
     },
     {

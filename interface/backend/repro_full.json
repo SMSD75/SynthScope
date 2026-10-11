@@ -159,74 +159,74 @@
       "note": "SD-v1.4 99.73, SD-v1.5 99.80, Wukong 99.87; weaker on ADM/BigGAN/VQDM at the fixed 0.5 threshold."
     },
     {
-      "benchmark": "AIGCDetectBenchmark",
+      "benchmark": "AIGCDetectBenchmark (17 generators, full data)",
       "metric": "balanced accuracy",
-      "paper": "acc=89.3",
-      "ours": "",
+      "paper": "acc=89.3 / auroc=98.0",
+      "ours": "mAP=98.08 / acc=89.3 / AUROC=98.02 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
+      "ours_official": "mAP=98.08 / acc=89.3 / AUROC=98.02",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523)."
     },
     {
-      "benchmark": "EvalGEN",
+      "benchmark": "EvalGEN (5 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=98.1",
-      "ours": "",
+      "ours": "mAP=99.86 / acc=98.14 / AUROC=99.66 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=99.86 / acc=98.14 / AUROC=99.66",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
     },
     {
-      "benchmark": "SynthWildX",
+      "benchmark": "SynthWildX (3 generators, images still online ",
       "metric": "balanced accuracy",
       "paper": "acc=92.7",
-      "ours": "",
+      "ours": "mAP=95.61 / acc=92.69 / AUROC=96.5 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=95.61 / acc=92.69 / AUROC=96.5",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435)."
     },
     {
-      "benchmark": "WildRF",
+      "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
       "metric": "balanced accuracy",
       "paper": "acc=95.8",
-      "ours": "",
+      "ours": "mAP=99.13 / acc=95.89 / AUROC=99.14 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=99.13 / acc=95.89 / AUROC=99.14",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440)."
     },
     {
-      "benchmark": "BFree-Online",
+      "benchmark": "BFree-Online (viral images still online)",
       "metric": "balanced accuracy",
       "paper": "acc=90.9",
-      "ours": "",
+      "ours": "mAP=99.06 / acc=91.64 / AUROC=98.08 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=99.06 / acc=91.64 / AUROC=98.08",
+      "status": "reference",
+      "note": "Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449)."
     },
     {
-      "benchmark": "RRDataset",
+      "benchmark": "RRDataset (original / transfer / redigital)",
       "metric": "balanced accuracy",
       "paper": "acc=81.5",
-      "ours": "",
+      "ours": "mAP=90.4 / acc=82.04 / AUROC=88.88 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=90.4 / acc=82.04 / AUROC=88.88",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476)."
     },
     {
-      "benchmark": "RealChain",
+      "benchmark": "RealChain (7 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=79.7",
-      "ours": "",
+      "ours": "mAP=87.39 / acc=79.69 / AUROC=85.47 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Dataset is not part of SynthScope yet; add it with conf/dataset/image/<name>.yaml (see docs/BENCHMARKS.md)."
+      "ours_official": "mAP=87.39 / acc=79.69 / AUROC=85.47",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one."
     },
     {
       "benchmark": "Chameleon",

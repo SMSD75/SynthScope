@@ -1,0 +1,38 @@
+{
+  "tag": "adapted_dino_rrdataset",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 53.05,
+    "map": 62.14,
+    "mauroc": 60.04
+  },
+  "per_generator": {
+    "original": {
+      "ap": 63.31,
+      "auroc": 61.22,
+      "real_acc": 99.94,
+      "fake_acc": 7.04,
+      "acc": 53.49
+    },
+    "redigital": {
+      "ap": 59.94,
+      "auroc": 57.71,
+      "real_acc": 99.93,
+      "fake_acc": 5.29,
+      "acc": 52.61
+    },
+    "transfer": {
+      "ap": 63.18,
+      "auroc": 61.2,
+      "real_acc": 99.96,
+      "fake_acc": 6.11,
+      "acc": 53.04
+    }
+  },
+  "date": "2026-10-11T05:20:56",
+  "synthscope_version": "0.1.0"
+}

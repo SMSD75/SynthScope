@@ -1,0 +1,38 @@
+{
+  "tag": "spai_wildrf",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 80.56,
+    "map": 88.32,
+    "mauroc": 88.44
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 88.75,
+      "auroc": 89.6,
+      "real_acc": 83.75,
+      "fake_acc": 81.25,
+      "acc": 82.5
+    },
+    "reddit": {
+      "ap": 87.77,
+      "auroc": 86.68,
+      "real_acc": 78.67,
+      "fake_acc": 78.93,
+      "acc": 78.8
+    },
+    "twitter": {
+      "ap": 88.43,
+      "auroc": 89.04,
+      "real_acc": 78.3,
+      "fake_acc": 82.46,
+      "acc": 80.38
+    }
+  },
+  "date": "2026-10-10T22:29:27",
+  "synthscope_version": "0.1.0"
+}

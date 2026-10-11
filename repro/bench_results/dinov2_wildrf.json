@@ -1,0 +1,38 @@
+{
+  "tag": "dinov2_wildrf",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 58.93,
+    "map": 66.89,
+    "mauroc": 63.6
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 61.45,
+      "auroc": 55.42,
+      "real_acc": 99.37,
+      "fake_acc": 7.5,
+      "acc": 53.44
+    },
+    "reddit": {
+      "ap": 75.42,
+      "auroc": 74.87,
+      "real_acc": 90.13,
+      "fake_acc": 42.8,
+      "acc": 66.47
+    },
+    "twitter": {
+      "ap": 63.8,
+      "auroc": 60.51,
+      "real_acc": 95.89,
+      "fake_acc": 17.84,
+      "acc": 56.87
+    }
+  },
+  "date": "2026-10-10T22:43:19",
+  "synthscope_version": "0.1.0"
+}

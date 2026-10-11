@@ -210,7 +210,7 @@ Training does the same on its own: a dataset config with `prefetch: true` fetche
 (`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
 first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-paper-benchmarks).
 
-**Supported benchmark datasets** — 13 image and 8 video. *Auto* means the loader downloads and arranges it.
+**Supported benchmark datasets** — 19 image and 8 video. *Auto* means the loader downloads and arranges it.
 
 | Dataset (`config name`) | What it is | Source | Download |
 | --- | --- | --- | --- |
@@ -218,16 +218,24 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `universialfakedetection` | UnivFD test sets (LDM, Glide, DALL·E, guided) | Google Drive | Auto |
 | `genimage`, `genimage_full` | GenImage: SD-v1.4 training set, 8 generators | Hugging Face | Auto |
 | `aigibench` | AIGIBench | Hugging Face | Auto |
-| `aigcdetect` | AIGCDetectBenchmark, 16 generators | ModelScope | Auto |
+| `aigcdetect` | AIGCDetectBenchmark, 17 generators | ModelScope | Auto |
 | `cospy` | Co-Spy-Bench | Hugging Face | Auto |
 | `synthbuster` | Synthbuster | Zenodo | Auto |
 | `ditfake`, `commgen15` | DiTFake, CommGen15 (commercial generators) | Hugging Face | Auto |
+| `realchain` | RealChain: 7 recent generators (FLUX.1, SD 3.5, Qwen-Image, NanoBanana, ...), JPEG-degraded; non-commercial license | Hugging Face | Auto |
+| `evalgen` | EvalGEN: 5 diffusion + autoregressive generators, paired with MSCOCO val2017 reals | Hugging Face + cocodataset.org | Auto |
+| `synthwildx` | SynthWildX: DALL·E 3, Firefly, Midjourney images posted on X (posts deleted since release are skipped) | X, via the official URL list | Auto |
+| `wildrf` | WildRF: real and fake images from Facebook, Reddit and Twitter | Google Drive | Auto |
+| `bfree_online` | BFree-Online: viral real and fake images, several web copies each (dead links are skipped); nonprofit use only | the web, via the official URL list | Auto |
+| `rrdataset` | RRDataset: real vs AI images as created, after sharing online, and after re-digitization (51k images) | Zenodo | Auto |
 | `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
 | `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
 | `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid` | video benchmarks | Hugging Face | Auto |
 | `genvideo`, `vidprom`, `videophy`, `physics_iq` | video benchmarks | official sites | Place by hand in the same layout |
 
-The **Leaderboard** tab covers 30+ benchmark groups across these datasets.
+The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
+and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 14 image detectors on RealChain,
+EvalGEN, SynthWildX, WildRF, BFree-Online and RRDataset.
 
 ### 🏁 Standardized leaderboard
 
@@ -261,7 +269,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | SAFE | GenImage-8 | 99.3 | 99.51 | ✅ reproduced |
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
-| CuRe | AIGIBench (20 subsets) | 92.8 acc | 92.85 acc (official) | ✅ official weights match |
+| CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val | 98.5 | 95.95 AUROC | ⚠️ mAP not comparable: our test pool is far more imbalanced |

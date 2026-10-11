@@ -1,0 +1,15 @@
+name: rrdataset
+# RRDataset (ICCV 2025) — real vs AI images in three scenarios: original, transfer (shared online), redigital
+# (re-digitized); used by CuRe. (Zenodo record 14963880, RRDataset_test.tar.gz, 20 GB, CC BY 4.0)
+root_dir: /hddstore/ssalehi/SynthScope/RRDataset
+zenodo_record: "14963880"
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

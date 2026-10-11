@@ -1,0 +1,14 @@
+name: wildrf
+# WildRF — real/fake images from Facebook, Reddit and Twitter (LaDeDa paper, Cavia et al. 2024); used by DDA and CuRe.
+# Test split only, one folder per platform. (Google Drive zip from barcavia/RealTime-DeepfakeDetection-in-the-RealWorld)
+root_dir: /hddstore/ssalehi/SynthScope/WildRF
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

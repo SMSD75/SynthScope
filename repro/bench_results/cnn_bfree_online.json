@@ -1,0 +1,24 @@
+{
+  "tag": "cnn_bfree_online",
+  "model": "cnn",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 50.0,
+    "map": 73.71,
+    "mauroc": 64.32
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 73.71,
+      "auroc": 64.32,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-10-10T22:36:20",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "tag": "vib_net_rrdataset",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 60.02,
+    "map": 65.55,
+    "mauroc": 66.4
+  },
+  "per_generator": {
+    "original": {
+      "ap": 71.11,
+      "auroc": 71.62,
+      "real_acc": 41.44,
+      "fake_acc": 82.71,
+      "acc": 62.07
+    },
+    "redigital": {
+      "ap": 60.54,
+      "auroc": 61.22,
+      "real_acc": 63.22,
+      "fake_acc": 52.39,
+      "acc": 57.8
+    },
+    "transfer": {
+      "ap": 64.99,
+      "auroc": 66.36,
+      "real_acc": 43.91,
+      "fake_acc": 76.47,
+      "acc": 60.19
+    }
+  },
+  "date": "2026-10-11T00:56:39",
+  "synthscope_version": "0.1.0"
+}

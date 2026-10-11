@@ -164,3 +164,20 @@ real image is a 500-640 px JPEG and every fake a 320 px PNG, the paper's square 
 about 23); scoring at native resolution (`bench_eval.py --native-res --bs 1`) recovers most of the signal (AUROC 37-96 per
 generator). We verified that SynthScope's NPR matches the official network, preprocessing and weights exactly, and still scores
 AUROC 100 on ProGAN; details in [`repro/investigate/npr_commgen15.md`](../../../repro/investigate/npr_commgen15.md).
+
+## License, credit and permission
+
+The official NPR repository has no license. Its first author, Chuangchuang Tan, gave SynthScope written permission
+(2026-10-11) to include this implementation under Apache-2.0 and to use the released `NPR.pth` weights for benchmarking
+and in a free, non-commercial public web demo, with the original work and repository credited. Please cite the paper:
+
+```bibtex
+@InProceedings{Tan_2024_CVPR,
+    author    = {Tan, Chuangchuang and Zhao, Yao and Wei, Shikui and Gu, Guanghua and Liu, Ping and Wei, Yunchao},
+    title     = {Rethinking the Up-Sampling Operations in CNN-based Generative Network for Generalizable Deepfake Detection},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2024},
+    pages     = {28130-28139}
+}
+```

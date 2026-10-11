@@ -1,0 +1,24 @@
+{
+  "tag": "fat_former_bfree_online",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 50.0,
+    "map": 67.98,
+    "mauroc": 52.68
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 67.98,
+      "auroc": 52.68,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-10-10T22:48:39",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,15 @@
+name: evalgen
+# EvalGEN — 5 generators (Flux, GoT, Infinity, OmniGen, NOVA) on GenEval prompts, fakes only; DDA (NeurIPS 2025),
+# used by DDA and CuRe. Paired with MSCOCO val2017 reals by the loader. (HF Junwei-Xi/EvalGEN, Apache-2.0)
+root_dir: /hddstore/ssalehi/SynthScope/EvalGEN
+hf_repo_id: Junwei-Xi/EvalGEN
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

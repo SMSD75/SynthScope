@@ -1,0 +1,38 @@
+{
+  "tag": "dinov2_rrdataset",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 50.62,
+    "map": 49.19,
+    "mauroc": 42.97
+  },
+  "per_generator": {
+    "original": {
+      "ap": 50.98,
+      "auroc": 44.55,
+      "real_acc": 90.79,
+      "fake_acc": 12.61,
+      "acc": 51.7
+    },
+    "redigital": {
+      "ap": 46.9,
+      "auroc": 40.72,
+      "real_acc": 84.3,
+      "fake_acc": 13.95,
+      "acc": 49.13
+    },
+    "transfer": {
+      "ap": 49.69,
+      "auroc": 43.65,
+      "real_acc": 90.2,
+      "fake_acc": 11.85,
+      "acc": 51.02
+    }
+  },
+  "date": "2026-10-11T05:44:53",
+  "synthscope_version": "0.1.0"
+}

@@ -109,9 +109,15 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | ForenSynths-13 (GAN half) | 81.95 | 94.05 | UnivFD 82.0 | not comparable |
 | GenImage-8 (`--limit 1500`; training distribution) | 85.18 | 97.30 | — | sdv1.4 99.73 / sdv1.5 99.80 / wukong 99.87 |
 | AIGIBench, paper's 20 full-image-synthesis subsets (full test data, 168k images) | **92.85** | 97.00 | **92.8** | **reproduced**: AUROC 97.48 vs 97.5; every subset within 0.10 pt (mean abs diff 0.03). The earlier `--limit 1500` run gave 93.13 (the cap caused its 0.3 residual); adding the 5 face-swap subsets the paper excludes gives 85.95 (not the paper's protocol) |
-| AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
+| RealChain (full data, 7000/7000; `--dataset realchain`) | **79.69** | 87.39 | **79.7** | **reproduced** (AUROC 85.47). One released JPEG-q60 set; unpaired reals split into 7 disjoint slices, so the per-gen mean = the pooled balanced acc. Weakest: i2i 61.9, Seedream4 63.6 |
+| EvalGEN (full data, 55,298 fakes vs MSCOCO val2017; `--dataset evalgen`) | **98.14** | 99.86 | **98.1** | **reproduced** (AUROC 99.66). The paper's "shared MSCOCO pool" is unspecified; val2017 is our choice. Flux is the hardest (93.4) |
+| SynthWildX (`--dataset synthwildx`; 1713/2000 images still on X) | **92.69** | 95.61 | **92.7** | **reproduced** (AUROC 96.50); 287 posts deleted from X since release |
+| WildRF (`--dataset wildrf`; full test split, 1251/1252) | **95.89** | 99.13 | **95.8** | **reproduced** (AUROC 99.14) |
+| BFree-Online (`--dataset bfree_online`; 807 of ~1400 images still online) | 91.64 | 99.06 | 90.9 | close, not like-for-like: 269 real / 538 fake survive (AUROC 98.08) |
+| RRDataset (`--dataset rrdataset`; public test archive, 25.5k/25.5k) | **82.04** | 90.40 | **81.5** | **reproduced** within 0.6 pt (AUROC 88.88; original 91.1, transfer 85.5, redigital 69.5) |
+| AIGCDetectBenchmark (`--dataset aigcdetect`; all 17 generators, full data, 76.3k/76.3k) | **89.30** | 98.08 | **89.3** | **reproduced** (AUROC 98.02 vs 98.0) |
 
-**Verdict: faithful port (identical to the official model) and AIGIBench reproduced (92.85 vs 92.8 on the paper's 20 subsets, every subset within 0.10 pt).** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), and 7 of the paper's 10 benchmarks (not available here).
+**Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

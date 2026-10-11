@@ -1,0 +1,38 @@
+{
+  "tag": "cure_wildrf",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 95.89,
+    "map": 99.13,
+    "mauroc": 99.14
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 98.81,
+      "auroc": 98.93,
+      "real_acc": 91.25,
+      "fake_acc": 99.37,
+      "acc": 95.31
+    },
+    "reddit": {
+      "ap": 99.33,
+      "auroc": 99.27,
+      "real_acc": 95.6,
+      "fake_acc": 97.6,
+      "acc": 96.6
+    },
+    "twitter": {
+      "ap": 99.24,
+      "auroc": 99.23,
+      "real_acc": 93.84,
+      "fake_acc": 97.66,
+      "acc": 95.75
+    }
+  },
+  "date": "2026-10-10T21:25:06",
+  "synthscope_version": "0.1.0"
+}

@@ -28,7 +28,7 @@ import synthscope
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 REAL_NAMES = {"real", "0_real", "reals"}
 FAKE_NAMES = {"fake", "1_fake", "fakes", "ai"}
 

@@ -1,0 +1,52 @@
+{
+  "tag": "npr_evalgen",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "n_generators": 5,
+  "means": {
+    "acc": 52.59,
+    "map": 72.43,
+    "mauroc": 50.57
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 68.93,
+      "auroc": 44.29,
+      "real_acc": 60.64,
+      "fake_acc": 36.84,
+      "acc": 48.74
+    },
+    "GoT": {
+      "ap": 65.63,
+      "auroc": 38.41,
+      "real_acc": 60.64,
+      "fake_acc": 29.32,
+      "acc": 44.98
+    },
+    "Infinity": {
+      "ap": 79.71,
+      "auroc": 63.04,
+      "real_acc": 60.64,
+      "fake_acc": 60.33,
+      "acc": 60.48
+    },
+    "NOVA": {
+      "ap": 73.01,
+      "auroc": 51.96,
+      "real_acc": 60.64,
+      "fake_acc": 46.96,
+      "acc": 53.8
+    },
+    "OmniGen": {
+      "ap": 74.87,
+      "auroc": 55.14,
+      "real_acc": 60.64,
+      "fake_acc": 49.3,
+      "acc": 54.97
+    }
+  },
+  "date": "2026-10-11T01:53:21",
+  "synthscope_version": "0.1.0"
+}

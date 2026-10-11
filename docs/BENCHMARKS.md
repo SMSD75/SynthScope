@@ -75,10 +75,16 @@ have no automatic source: get them from their official sites and place them in t
 | `universialfakedetection` | UnivFD test sets (LDM, Glide, DALL-E, guided) | Google Drive |
 | `genimage`, `genimage_full` | GenImage, 8 generators | Hugging Face `jzousz/GenImage` (Google Drive is quota-limited) |
 | `aigibench` | AIGIBench | Hugging Face `HorizonTEL/AIGIBench` |
-| `aigcdetect` | AIGCDetectBenchmark, 16 generators | ModelScope `aemilia/AIGCDetectionBenchmark` |
+| `aigcdetect` | AIGCDetectBenchmark, 17 generators, full test data (76.3k real / 76.3k fake, 34 GB) | ModelScope `aemilia/AIGCDetectionBenchmark` |
 | `cospy` | Co-Spy-Bench | Hugging Face `ruojiruoli/Co-Spy-Bench` |
 | `synthbuster` | Synthbuster | Zenodo record `10066460` |
 | `ditfake`, `commgen15` | DiTFake, CommGen15 | Hugging Face (`lioooox/DiTFake`, `xiaoyuzhou68/CommGen15`) |
+| `realchain` | RealChain (REM; used by CuRe): 7 generators × 1000 fakes and 7000 reals, all JPEG q60. CC BY-NC 4.0. The reals are one unpaired pool, so the loader splits them into 7 disjoint slices of 1000 (the mean over generators then equals the pooled balanced accuracy) | Hugging Face `handsomerich/RealChain` |
+| `evalgen` | EvalGEN (DDA; used by DDA and CuRe): Flux, GoT, Infinity, OmniGen, NOVA, about 11,060 fakes each, no reals. The loader pairs every generator with MSCOCO val2017 (5000 reals), our choice: CuRe only says "a shared MSCOCO pool". `fake_acc` matches DDA's fakes-only accuracy | Hugging Face `Junwei-Xi/EvalGEN` + `images.cocodataset.org` |
+| `synthwildx` | SynthWildX (GRIP; used by DDA and CuRe): 500 real + 500 each DALL-E 3 / Firefly / Midjourney v5, all posted on X. Only URLs are released, so the loader fetches each image from X; posts deleted since then return 404 and are listed in `<root>/missing.txt` (in October 2026, 1713 of 2000 were still online) | `data/synthwildx/list.csv` in `grip-unina/ClipBased-SyntheticImageDetection` |
+| `wildrf` | WildRF (LaDeDa paper; used by DDA and CuRe): test split, one folder per platform (Facebook 160/160, Reddit 750/750, Twitter 341/342 real/fake; 262 Twitter files are `.jfif`) | Google Drive file from `barcavia/RealTime-DeepfakeDetection-in-the-RealWorld` |
+| `bfree_online` | BFree-Online (B-Free's viral images; used by DDA and CuRe): real and fake images that went viral, several web-scraped copies of each (about 1400 in the paper). Only URLs are released; the loader keeps an image only if its md5 matches, so dead links and placeholders are skipped (`<root>/missing.txt`; in October 2026, 807 of the 1111 listed were still online: 269 real, 538 fake). One group, `test/viral` | `viral_images_dataset/BFree_viral_images.csv` in `grip-unina/B-Free` (nonprofit use only) |
+| `rrdataset` | RRDataset (ICCV 2025; used by CuRe): three scenarios, `original`, `transfer` (shared over online platforms) and `redigital` (re-digitized), about 8500 real and 8500 fake each. Only the test archive is used | Zenodo record `14963880` (`RRDataset_test.tar.gz`, 20 GB, CC BY 4.0) |
 | `diffusionforensics`, `diffusion1kstep`, `freqnetdetection` | DiffusionForensics, Diffusion-1kStep, FreqNet sets | see the yamls |
 | Video: `genvideo`, `genvidbench`, `evalcrafter`, `videofeedback`, `vidprom`, `comgenvid`, `physics_iq`, `videophy` | the video benchmarks | Hugging Face where a repo is set; otherwise place the files by hand |
 
@@ -86,6 +92,9 @@ have no automatic source: get them from their official sites and place them in t
 source in the table and unpack it so it matches the layout above (`real/`+`fake/` and `nature/`+`ai/` folders are also
 understood; see the docstring of [`bench_eval.py`](../benchmark/bench_eval.py)). Datasets are large, so keep them on fast
 local disk.
+
+**Results on the in-the-wild sets.** [WILD_BENCHMARKS.md](WILD_BENCHMARKS.md) has every image detector on `realchain`,
+`evalgen`, `synthwildx`, `wildrf`, `bfree_online` and `rrdataset` (built from `repro/bench_results/` by `repro/build_wild_table.py`).
 
 ---
 

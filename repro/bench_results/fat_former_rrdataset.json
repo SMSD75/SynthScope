@@ -1,0 +1,38 @@
+{
+  "tag": "fat_former_rrdataset",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 52.99,
+    "map": 54.84,
+    "mauroc": 53.4
+  },
+  "per_generator": {
+    "original": {
+      "ap": 64.39,
+      "auroc": 62.27,
+      "real_acc": 92.13,
+      "fake_acc": 22.07,
+      "acc": 57.1
+    },
+    "redigital": {
+      "ap": 52.79,
+      "auroc": 51.37,
+      "real_acc": 91.75,
+      "fake_acc": 11.82,
+      "acc": 51.79
+    },
+    "transfer": {
+      "ap": 47.33,
+      "auroc": 46.55,
+      "real_acc": 99.66,
+      "fake_acc": 0.53,
+      "acc": 50.09
+    }
+  },
+  "date": "2026-10-11T04:56:45",
+  "synthscope_version": "0.1.0"
+}

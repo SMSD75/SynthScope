@@ -1,0 +1,38 @@
+{
+  "tag": "fat_former_wildrf",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 59.55,
+    "map": 73.89,
+    "mauroc": 72.77
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 75.68,
+      "auroc": 74.09,
+      "real_acc": 100.0,
+      "fake_acc": 8.75,
+      "acc": 54.37
+    },
+    "reddit": {
+      "ap": 80.68,
+      "auroc": 79.64,
+      "real_acc": 91.87,
+      "fake_acc": 47.07,
+      "acc": 69.47
+    },
+    "twitter": {
+      "ap": 65.32,
+      "auroc": 64.57,
+      "real_acc": 96.77,
+      "fake_acc": 12.87,
+      "acc": 54.82
+    }
+  },
+  "date": "2026-10-10T22:38:11",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,24 @@
+{
+  "tag": "cure_bfree_online",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 91.64,
+    "map": 99.06,
+    "mauroc": 98.08
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 99.06,
+      "auroc": 98.08,
+      "real_acc": 96.65,
+      "fake_acc": 86.62,
+      "acc": 91.64
+    }
+  },
+  "date": "2026-10-10T22:32:11",
+  "synthscope_version": "0.1.0"
+}

@@ -17,7 +17,7 @@ import random
 from dataclasses import dataclass, field
 from pathlib import Path
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 VIDEO_EXTS = {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v"}
 
 # Directory-name tokens that identify a sample's ground-truth label.
@@ -94,12 +94,32 @@ DATASET_DEFS: list[DatasetDef] = [
     DatasetDef("diffusion1kstep", "Diffusion-1kStep", "image",
                ["/hddstore/ssalehi/SynthScope/Diffusion1kStep"], ["test"],
                "DALLE, DDPM, guided-diffusion, improved-diffusion, midjourney; NPR Table 5."),
-    DatasetDef("aigcdetect", "AIGCDetectBenchmark (16 gen)", "image",
+    DatasetDef("aigcdetect", "AIGCDetectBenchmark (17 gen)", "image",
                ["/hddstore/ssalehi/SynthScope/AIGCDetectBenchmark"], ["test"],
-               "16-generator GAN+diffusion benchmark; Co-Spy / AIDE cross-generator table."),
+               "17-generator GAN+diffusion benchmark; Co-Spy / AIDE / CuRe cross-generator table."),
     DatasetDef("commgen15", "CommGen15 (15 commercial gen)", "image",
                ["/hddstore/ssalehi/SynthScope/CommGen15"], ["test"],
                "15 commercial generators (Midjourney, Sora, Flux, Kling, ...); PGC Table 3."),
+    DatasetDef("realchain", "RealChain (7 recent generators)", "image",
+               ["/hddstore/ssalehi/SynthScope/RealChain"], ["test"],
+               "Flux1, SDv3.5, QwenImage, Hunyuan3, NanoBanana, Seedream4, i2i vs 7000 reals, all JPEG q60; "
+               "CuRe Table 1. CC BY-NC 4.0 (non-commercial)."),
+    DatasetDef("evalgen", "EvalGEN (5 diffusion + AR gen)", "image",
+               ["/hddstore/ssalehi/SynthScope/EvalGEN"], ["test"],
+               "Flux, GoT, Infinity, OmniGen, NOVA on GenEval prompts (DDA); paired with MSCOCO val2017 reals."),
+    DatasetDef("synthwildx", "SynthWildX (images from X)", "image",
+               ["/hddstore/ssalehi/SynthScope/SynthWildX"], ["test"],
+               "DALL-E 3, Firefly, Midjourney v5 vs real, all posted on X; fetched from X, so deleted posts are missing."),
+    DatasetDef("wildrf", "WildRF (Facebook, Reddit, Twitter)", "image",
+               ["/hddstore/ssalehi/SynthScope/WildRF"], ["test"],
+               "In-the-wild real and fake images from three social platforms (LaDeDa paper); one folder per platform."),
+    DatasetDef("bfree_online", "BFree-Online (viral images)", "image",
+               ["/hddstore/ssalehi/SynthScope/BFreeOnline"], ["test"],
+               "Real and fake images that went viral, several web copies each (B-Free); fetched from the URL list, "
+               "dead links skipped. Nonprofit use only."),
+    DatasetDef("rrdataset", "RRDataset (original / transfer / redigital)", "image",
+               ["/hddstore/ssalehi/SynthScope/RRDataset"], ["test"],
+               "Real vs AI images as created, after sharing online, and after re-digitization (ICCV 2025)."),
     DatasetDef("videofeedback", "VideoFeedback (TIGER-Lab)", "video",
                ["/hddstore/ssalehi/SynthScope/VideoFeedback"], ["test"],
                "11 video generators vs DiDeMo+Panda70M real; STALL benchmark."),

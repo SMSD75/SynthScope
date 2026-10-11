@@ -8,6 +8,10 @@ import zipfile
 import tarfile
 import shutil
 import subprocess
+import csv
+import time
+import urllib.error
+import urllib.request
 from matplotlib import pyplot as plt
 import numpy as np
 import torch
@@ -40,7 +44,7 @@ def _decode_rgb(path) -> torch.Tensor:
         return torch.zeros(3, 256, 256, dtype=torch.uint8)
 
 
-IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".webp")
+IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".jfif", ".png", ".webp")
 VIDEO_EXTENSIONS = (".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v", ".gif")
 
 def _iter_images(directory: Path):
@@ -2269,8 +2273,9 @@ class Diffusion1kStepDataset(_TestOnlyImageDataset):
 
 
 class AIGCDetectBenchmarkDataset(_TestOnlyImageDataset):
-    """AIGCDetectBenchmark 16-generator test set — used by Co-Spy (ProGAN/AIGCDetect table) and
-    AIDE. Sourced from the ModelScope dataset ``aemilia/AIGCDetectionBenchmark`` (test_set.zip)."""
+    """AIGCDetectBenchmark test set (16-17 GAN and diffusion generators) — used by Co-Spy (ProGAN/AIGCDetect table),
+    AIDE and CuRe. Sourced from the ModelScope dataset ``aemilia/AIGCDetectionBenchmark`` (test_set.zip). The full
+    test data is kept (the papers evaluate all of it, about 76k real / 76k fake)."""
     modelscope_url = ("https://modelscope.cn/api/v1/datasets/aemilia/AIGCDetectionBenchmark/"
                       "repo?Revision=master&FilePath=AIGCDetectionBenchMark%2Ftest_set.zip")
 
@@ -2284,7 +2289,10 @@ class AIGCDetectBenchmarkDataset(_TestOnlyImageDataset):
         subprocess.run(["curl", "-L", "--fail", "-C", "-", "-o", str(zip_path), cls.modelscope_url],
                        check=True)
         staging = _extract_archives_into(dl, root_dir / "_staging")
-        _restructure_image_pergen(staging, dest, cap=1000)
+        inner = staging
+        while len(subdirs := [p for p in inner.iterdir() if p.is_dir()]) == 1:   # step into wrapper folders
+            inner = subdirs[0]
+        _restructure_image_pergen(inner, dest)
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
@@ -2371,6 +2379,226 @@ class SynthbusterDataset(_TestOnlyImageDataset):
         shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
+def _link_images(imgs, out_dir):
+    """Hard-link (copy as fallback) ``imgs`` into ``out_dir`` as ``<i>_<name>``, keeping the order."""
+    out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
+    for i, p in enumerate(imgs):
+        tgt = out_dir / f"{i:05d}_{p.name}"
+        if not tgt.exists():
+            try: os.link(p, tgt)
+            except OSError: shutil.copy2(p, tgt)
+
+
+def _first_int(path):
+    """Sort key: the first integer in the file stem (``Flux1_100_person.jpg`` -> 100), then the name."""
+    m = re.search(r"\d+", Path(path).stem)
+    return (int(m.group()) if m else -1, Path(path).name)
+
+
+class RealChainDataset(_TestOnlyImageDataset):
+    """RealChain (REM paper; used by CuRe Table 1) — 7 generators (Flux1, SDv3.5, QwenImage, Hunyuan3,
+    NanoBanana, Seedream4, i2i), 1000 fakes each, plus one pool of 7000 reals. Sourced from the HF dataset
+    ``handsomerich/RealChain`` (CC BY-NC 4.0: <gen>.zip, Real.tar). The paper describes a clean (ND) and a
+    chain-degraded (CD) version, but only one image set is released; every image in it (real and fake) is
+    JPEG at the same quality (luma quant step 46.1, i.e. libjpeg q60). The real pool is not paired with
+    the generators, so it is split into 7 disjoint slices in file-index order, one per generator: the mean
+    of the per-generator balanced accuracies then equals the pooled 7000-vs-7000 balanced accuracy."""
+    hf_repo_id = "handsomerich/RealChain"
+    generators = ("Flux1", "SDv3.5", "QwenImage", "Hunyuan3", "NanoBanana", "Seedream4", "i2i")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl),
+                          allow_patterns=[f"{g}.zip" for g in cls.generators] + ["Real.tar"])
+        staging = root_dir / "_staging"
+        for g in cls.generators:                     # the zips are flat, so each gets its own folder
+            _safe_extract_zip(dl / f"{g}.zip", staging / g)
+        _safe_extract_tar(dl / "Real.tar", staging)
+        reals = sorted((p for p in (staging / "Real").rglob("*") if p.suffix.lower() in IMAGE_EXTENSIONS),
+                       key=_first_int)
+        per_gen = len(reals) // len(cls.generators)
+        for i, g in enumerate(cls.generators):
+            fakes = sorted((p for p in (staging / g).rglob("*") if p.suffix.lower() in IMAGE_EXTENSIONS),
+                           key=_first_int)
+            _link_images(fakes, dest / g / "1_fake")
+            _link_images(reals[i * per_gen:(i + 1) * per_gen], dest / g / "0_real")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
+class EvalGENDataset(_TestOnlyImageDataset):
+    """EvalGEN (DDA, NeurIPS 2025; used by DDA and CuRe) — 5 generators (Flux, GoT, Infinity, OmniGen,
+    NOVA) on GenEval prompts, about 11,060 fakes each, JPEG q96. Sourced from the HF dataset
+    ``Junwei-Xi/EvalGEN`` (Apache-2.0: EvalGEN.zip = GenEval-JPEG/<gen>/*.jpg). EvalGEN ships no reals:
+    CuRe pairs it with an unspecified "shared MSCOCO real pool", and DDA reports accuracy on the fakes
+    only. This loader pairs every generator with the same MSCOCO val2017 pool (5000 images, downloaded
+    from cocodataset.org), so ``fake_acc`` reproduces the DDA protocol and ``acc`` the balanced one."""
+    hf_repo_id = "Junwei-Xi/EvalGEN"
+    hf_filename = "EvalGEN.zip"
+    coco_url = "http://images.cocodataset.org/zips/val2017.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import hf_hub_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        z = hf_hub_download(repo_id=cls.hf_repo_id, filename=cls.hf_filename,
+                            repo_type="dataset", local_dir=str(dl))
+        coco = dl / "val2017.zip"
+        if not coco.exists():
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "-o", str(coco), cls.coco_url], check=True)
+        staging = root_dir / "_staging"
+        _safe_extract_zip(z, staging)
+        _safe_extract_zip(coco, staging)
+        reals = sorted(p for p in (staging / "val2017").glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)
+        inner = next((p for p in staging.rglob("GenEval-JPEG") if p.is_dir()), staging)
+        for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
+            fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)
+            _link_images(fakes, dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
+def _read_csv_url(url, headers):
+    """Rows of the CSV file at ``url`` as dicts."""
+    with urllib.request.urlopen(urllib.request.Request(url, None, headers), timeout=60) as resp:
+        return list(csv.DictReader(resp.read().decode().splitlines()))
+
+
+def _fetch_url_list(rows, out_dir, headers, name, attempts=3):
+    """Download each ``row["url"]`` to ``out_dir / row["filename"]`` (datasets released as URL lists). A link that
+    answers with an HTTP error, keeps failing, or (when the row has an ``md5``) returns different bytes, e.g. a
+    placeholder for a deleted image, is skipped. Returns the filenames that could not be fetched."""
+    missing = []
+    for i, row in enumerate(rows):
+        fpath = Path(out_dir) / row["filename"]
+        fpath.parent.mkdir(parents=True, exist_ok=True)
+        for attempt in range(attempts):
+            if fpath.is_file():
+                break
+            try:
+                with urllib.request.urlopen(urllib.request.Request(row["url"], None, headers), timeout=30) as resp:
+                    data = resp.read()
+            except urllib.error.HTTPError:          # deleted post or page: the official scripts also skip it
+                break
+            except (OSError, ValueError):           # network hiccup or bad URL: back off and retry
+                time.sleep(2 ** attempt)
+                continue
+            if row.get("md5") and hashlib.md5(data).hexdigest() != row["md5"]:
+                break
+            fpath.write_bytes(data)
+        if not fpath.is_file():
+            missing.append(row["filename"])
+        if (i + 1) % 200 == 0:
+            print(f"  {name}: {i + 1}/{len(rows)} fetched, {len(missing)} missing", flush=True)
+    return missing
+
+
+class SynthWildXDataset(_TestOnlyImageDataset):
+    """SynthWildX (Cozzolino et al., CVPRW 2024; used by DDA and CuRe) — images posted on X: 500 real and 500 each
+    from DALL-E 3, Firefly and Midjourney v5. Only the image URLs are released (``data/synthwildx/list.csv`` in
+    grip-unina/ClipBased-SyntheticImageDetection), so, like the official script, this loader fetches each image
+    from X. Posts deleted since release return 404 and are skipped (listed in ``<root>/missing.txt``), so the set
+    on disk can be smaller than the paper's. Each generator is paired with all 500 reals."""
+    list_url = ("https://raw.githubusercontent.com/grip-unina/ClipBased-SyntheticImageDetection/"
+                "main/data/synthwildx/list.csv")
+    headers = {"User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        rows = _read_csv_url(cls.list_url, cls.headers)
+        missing = _fetch_url_list(rows, dl, cls.headers, "SynthWildX")
+        (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
+        reals = sorted((dl / "real").glob("*"))
+        for gen_dir in sorted(p for p in dl.iterdir() if p.is_dir() and p.name != "real"):
+            _link_images(sorted(gen_dir.glob("*")), dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
+        print(f"SynthWildX: {len(rows) - len(missing)}/{len(rows)} images available ({len(missing)} deleted from X)")
+        shutil.rmtree(dl, ignore_errors=True)
+
+
+class WildRFDataset(_TestOnlyImageDataset):
+    """WildRF (Cavia et al. 2024, the LaDeDa paper; used by DDA and CuRe) — real and fake images collected from
+    social platforms. Its test split has one folder per platform (facebook, reddit, twitter), each with real/fake;
+    those become the "generators" here. Sourced from the authors' Google Drive zip (barcavia/
+    RealTime-DeepfakeDetection-in-the-RealWorld); only the test split is laid out."""
+    gdrive_file_id = "1A0xoL44Yg68ixd-FuIJn2VC4vdZ6M2gn"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        import gdown
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        gdown.download(id=cls.gdrive_file_id, output=str(dl / "WildRF.zip"), quiet=False, use_cookies=False)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        inner = next(p for p in staging.rglob("test") if p.is_dir())
+        _restructure_image_pergen(inner, dest)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
+class BFreeOnlineDataset(_TestOnlyImageDataset):
+    """BFree-Online — the B-Free paper's viral-images set (Guillaro et al., CVPR 2025; used by DDA and CuRe): real
+    and fake images that went viral, with several web-scraped copies of each (about 1400 in the paper). Only URLs are
+    released (``viral_images_dataset/BFree_viral_images.csv`` in grip-unina/B-Free, 1111 rows, nonprofit use only);
+    the loader fetches them and keeps an image only when its md5 matches the list, so dead links and placeholders are
+    skipped (listed in ``<root>/missing.txt``). The 3 Facebook links need a browser to resolve and are skipped too.
+    Laid out as a single group, ``test/viral/{0_real,1_fake}``."""
+    list_url = "https://raw.githubusercontent.com/grip-unina/B-Free/main/viral_images_dataset/BFree_viral_images.csv"
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                             "Chrome/128.0.0.0 Safari/537.36"}
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        rows = _read_csv_url(cls.list_url, cls.headers)
+        missing = _fetch_url_list(rows, dl, cls.headers, "BFree-Online")
+        (root_dir / "missing.txt").write_text("".join(f"{m}\n" for m in missing))
+        for label, folder in (("REAL", "0_real"), ("FAKE", "1_fake")):
+            _link_images(sorted((dl / label).rglob("*.*")), dest / "viral" / folder)
+        print(f"BFree-Online: {len(rows) - len(missing)}/{len(rows)} images available ({len(missing)} links dead)")
+        shutil.rmtree(dl, ignore_errors=True)
+
+
+class RRDataset(_TestOnlyImageDataset):
+    """RRDataset (ICCV 2025, "Bridging the Gap Between Ideal and Real-world Evaluation"; used by CuRe) — real and
+    AI-generated images in three scenarios: ``original``, ``transfer`` (after sharing over online platforms) and
+    ``redigital`` (re-captured / re-digitized), about 8500 real and 8500 fake each. The scenarios become the
+    "generators" here. Sourced from Zenodo record 14963880 (RRDataset_test.tar.gz, 20 GB, CC BY 4.0); the separate
+    train/val archive is not used."""
+    zenodo_record = "14963880"
+    zenodo_file = "RRDataset_test.tar.gz"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / cls.zenodo_file
+        if not archive.exists():
+            url = f"https://zenodo.org/api/records/{cls.zenodo_record}/files/{cls.zenodo_file}/content"
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(archive), url], check=True)
+        staging = _extract_archives_into(dl, root_dir / "_staging")
+        inner = next((p for p in staging.rglob("RRDataset_final") if p.is_dir()), staging)
+        _restructure_image_pergen(inner, dest)
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2418,6 +2646,30 @@ class GenImageFullDatasetModule(_TestOnlyImageModule):
 
 class SynthbusterDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = SynthbusterDataset
+
+
+class RealChainDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = RealChainDataset
+
+
+class EvalGENDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = EvalGENDataset
+
+
+class SynthWildXDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = SynthWildXDataset
+
+
+class WildRFDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = WildRFDataset
+
+
+class BFreeOnlineDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = BFreeOnlineDataset
+
+
+class RRDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = RRDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2488,6 +2740,12 @@ SynthScopeModuleDict = {
     "diffusion1kstep": Diffusion1kStepDatasetModule,
     "aigcdetect": AIGCDetectBenchmarkDatasetModule,
     "commgen15": CommGen15DatasetModule,
+    "realchain": RealChainDatasetModule,
+    "evalgen": EvalGENDatasetModule,
+    "synthwildx": SynthWildXDatasetModule,
+    "wildrf": WildRFDatasetModule,
+    "bfree_online": BFreeOnlineDatasetModule,
+    "rrdataset": RRDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

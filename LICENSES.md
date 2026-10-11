@@ -22,7 +22,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | --- | --- | --- | --- | --- | --- |
 | `cnn` | CNNDetection (CVPR'20) | PeterWang512/CNNDetection | ⚠ verify | ProGAN-trained (SynthScope-trained here) | ⚠ verify |
 | `clip` | UnivFD (CVPR'23) | WisconsinAIVision/UniversalFakeDetect | ⚠ verify | — (SynthScope-trained probe) | n/a |
-| `npr` | NPR (CVPR'24) | chuangchuangtan/NPR-DeepfakeDetection | ⚠ verify | **official** ProGAN weights | ⚠ verify |
+| `npr` | NPR (CVPR'24) | chuangchuangtan/NPR-DeepfakeDetection | no license in the repo; **written permission** from the first author (C. Tan, 2026-10-11) to include SynthScope's implementation under Apache-2.0, with credit and citation | **official** ProGAN weights (`NPR.pth`) | same permission: benchmarking and the free, non-commercial public demo, crediting the paper and repository |
 | `fat_former` | FatFormer (CVPR'24) | Michel-liu/FatFormer (verify) | ⚠ verify | **official** weights | ⚠ verify |
 | `aide` | AIDE (ICLR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
 | `co_spy` | CO-SPY (CVPR'25) | ⚠ verify (official repo) | ⚠ verify | **official** weights | ⚠ verify |
@@ -56,7 +56,9 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 The dataset auto-downloaders fetch third-party datasets (GenImage, ForenSynths/CNNDetection,
 AIGIBench, Co-Spy-Bench, DiTFake, UniversalFakeDetect, GenVideo, …). Each dataset is governed by
 its **own** terms / license at the source; SynthScope only automates retrieval and restructuring. Review
-and comply with each dataset's terms before use or redistribution.
+and comply with each dataset's terms before use or redistribution. Some are restricted: RealChain is CC BY-NC 4.0
+(non-commercial), BFree-Online's URL list is for informational and nonprofit use only (GRIP license), and SynthWildX and
+BFree-Online point to images hosted by third parties (X and other websites).
 
 ---
 

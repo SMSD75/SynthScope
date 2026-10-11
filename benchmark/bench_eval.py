@@ -37,8 +37,9 @@ from models.image.cure.preprocess import SRC_FORMAT_KEY
 from datasets_util import ensure_dataset, find_eval_root
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+Image.MAX_IMAGE_PIXELS = None   # benchmark data is trusted; some real photos (e.g. RealChain) exceed PIL's 179 MP bomb guard
 
-IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
 REAL_DIRNAMES = ("0_real", "real", "reals")
 FAKE_DIRNAMES = ("1_fake", "fake", "fakes", "ai")
 SHARED_REAL_DIRS = {"imagenet", "laion", "_real_pool", "real", "0_real", "reals"}
@@ -150,26 +151,28 @@ def _open_rgb(path: Path) -> Image.Image:
     return image
 
 
-def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> torch.Tensor:
+def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> tuple[torch.Tensor, list[int]]:
+    """Fake probabilities for the images that could be read, and the indices (into ``paths``) they belong to."""
     device = det._engine.device
     tf = transform if transform is not None else spec.transform
     # Native-resolution specs (SPAI any-res) produce variable-size tensors that cannot be stacked,
     # so they MUST be scored one image at a time.
     if getattr(spec, "native_res", False):
         bs = 1
-    probs = []
+    probs, kept = [], []
     for i in range(0, len(paths), bs):
         batch = []
-        for p in paths[i:i + bs]:
+        for j, p in enumerate(paths[i:i + bs], start=i):
             try:
                 batch.append(tf(_open_rgb(p)))
+                kept.append(j)
             except Exception as e:  # noqa: BLE001
                 print(f"    bad image {p}: {e}")
         if not batch:
             continue
         x = torch.stack(batch).to(device)
         probs.append(det._engine._fake_prob(model, spec, x).detach().float().cpu())
-    return torch.cat(probs) if probs else torch.empty(0)
+    return (torch.cat(probs) if probs else torch.empty(0)), kept
 
 
 def metrics(fake_probs: torch.Tensor, labels: torch.Tensor) -> dict | None:
@@ -252,9 +255,10 @@ def main(argv=None) -> int:
             reals, fakes = reals[:args.limit], fakes[:args.limit]
         labels = torch.tensor([0] * len(reals) + [1] * len(fakes))
         print(f"  {name}: {len(reals)} real + {len(fakes)} fake ...", flush=True)
-        probs = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform)
-        if probs.numel() != labels.numel():
-            labels = labels[:probs.numel()]
+        probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform)
+        if len(kept) != labels.numel():     # unreadable images are skipped: keep each score paired with its own label
+            print(f"    {labels.numel() - len(kept)} unreadable image(s) left out of {name}", flush=True)
+            labels = labels[kept]
         m = metrics(probs, labels)
         if m is None:
             print(f"    skip {name}: one class only")

@@ -1,0 +1,38 @@
+{
+  "tag": "dinov3_synthwildx",
+  "model": "dinov3",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 72.77,
+    "map": 81.99,
+    "mauroc": 82.5
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 80.53,
+      "auroc": 84.05,
+      "real_acc": 89.59,
+      "fake_acc": 57.65,
+      "acc": 73.62
+    },
+    "firefly": {
+      "ap": 83.84,
+      "auroc": 80.23,
+      "real_acc": 89.59,
+      "fake_acc": 56.87,
+      "acc": 73.23
+    },
+    "midjourney_v5": {
+      "ap": 81.61,
+      "auroc": 83.21,
+      "real_acc": 89.59,
+      "fake_acc": 53.33,
+      "acc": 71.46
+    }
+  },
+  "date": "2026-10-10T22:24:42",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "tag": "npr_rrdataset",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 61.09,
+    "map": 61.4,
+    "mauroc": 64.13
+  },
+  "per_generator": {
+    "original": {
+      "ap": 78.49,
+      "auroc": 82.09,
+      "real_acc": 67.94,
+      "fake_acc": 88.88,
+      "acc": 78.41
+    },
+    "redigital": {
+      "ap": 50.76,
+      "auroc": 54.6,
+      "real_acc": 50.66,
+      "fake_acc": 55.33,
+      "acc": 53.0
+    },
+    "transfer": {
+      "ap": 54.96,
+      "auroc": 55.7,
+      "real_acc": 98.11,
+      "fake_acc": 5.6,
+      "acc": 51.85
+    }
+  },
+  "date": "2026-10-11T03:50:13",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,24 @@
+{
+  "tag": "adapted_dino_bfree_online",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 50.0,
+    "map": 49.61,
+    "mauroc": 18.97
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 49.61,
+      "auroc": 18.97,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-10-10T22:49:25",
+  "synthscope_version": "0.1.0"
+}

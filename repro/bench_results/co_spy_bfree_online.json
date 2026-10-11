@@ -1,0 +1,24 @@
+{
+  "tag": "co_spy_bfree_online",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 56.32,
+    "map": 86.42,
+    "mauroc": 73.35
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 86.42,
+      "auroc": 73.35,
+      "real_acc": 30.48,
+      "fake_acc": 82.16,
+      "acc": 56.32
+    }
+  },
+  "date": "2026-10-10T22:35:12",
+  "synthscope_version": "0.1.0"
+}

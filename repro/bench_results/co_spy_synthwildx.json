@@ -1,0 +1,38 @@
+{
+  "tag": "co_spy_synthwildx",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 64.28,
+    "map": 63.85,
+    "mauroc": 69.45
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 57.37,
+      "auroc": 66.13,
+      "real_acc": 38.5,
+      "fake_acc": 89.8,
+      "acc": 64.15
+    },
+    "firefly": {
+      "ap": 72.17,
+      "auroc": 75.36,
+      "real_acc": 38.5,
+      "fake_acc": 93.23,
+      "acc": 65.87
+    },
+    "midjourney_v5": {
+      "ap": 62.0,
+      "auroc": 66.86,
+      "real_acc": 38.5,
+      "fake_acc": 87.13,
+      "acc": 62.81
+    }
+  },
+  "date": "2026-10-10T21:34:51",
+  "synthscope_version": "0.1.0"
+}

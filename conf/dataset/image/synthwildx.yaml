@@ -1,0 +1,14 @@
+name: synthwildx
+# SynthWildX — images from X: 500 real + 500 each DALL-E 3 / Firefly / Midjourney v5 (Cozzolino et al., CVPRW 2024);
+# used by DDA and CuRe. Fetched from X via the official URL list; deleted posts are skipped (see <root>/missing.txt).
+root_dir: /hddstore/ssalehi/SynthScope/SynthWildX
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

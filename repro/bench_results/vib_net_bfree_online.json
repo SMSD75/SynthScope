@@ -1,0 +1,24 @@
+{
+  "tag": "vib_net_bfree_online",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "n_generators": 1,
+  "means": {
+    "acc": 51.86,
+    "map": 70.27,
+    "mauroc": 53.61
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 70.27,
+      "auroc": 53.61,
+      "real_acc": 3.72,
+      "fake_acc": 100.0,
+      "acc": 51.86
+    }
+  },
+  "date": "2026-10-10T22:32:50",
+  "synthscope_version": "0.1.0"
+}
