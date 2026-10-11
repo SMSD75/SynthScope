@@ -13,8 +13,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
-# Detectors whose upstream licenses allow a free public demo. NPR's repository has no license: we asked the authors
-# (2026-10-04) and drop it if they decline.
+# Detectors whose upstream licenses allow a free public demo. NPR's repository has no license; its first author gave
+# written permission (2026-10-11) to use NPR.pth in this free, non-commercial demo with credit (see LICENSES.md).
 DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "vib_net", "dinov2", "adapted_dino",
            "restrav"]
 
