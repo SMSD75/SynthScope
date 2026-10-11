@@ -107,6 +107,10 @@ def video_clip_tensor(
     window_center: bool = False,
     interp: str = "bilinear",
     edge_crop: float = 0.0,
+    edge_crop_long_side: bool = False,
+    short_clip_frames: int = 0,
+    fps_nearest: bool = False,
+    bgr: bool = False,
 ) -> torch.Tensor:
     """Decode a clip for a *video* detector: [T, 3, frame_size, frame_size] float in [0, 1].
 
@@ -123,4 +127,8 @@ def video_clip_tensor(
         window_center=window_center,
         interp=interp,
         edge_crop=edge_crop,
+        edge_crop_long_side=edge_crop_long_side,
+        short_clip_frames=short_clip_frames,
+        fps_nearest=fps_nearest,
+        bgr=bgr,
     )

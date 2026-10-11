@@ -367,22 +367,27 @@ class Engine:
         res["aggregation"] = "mean over sampled frames"
         return res
 
-    def predict_video_clip(self, spec: ModelSpec, path) -> dict:
-        """Run a native *video* detector on a decoded clip."""
-        model = self._get_model(spec)
+    def video_clip(self, spec: ModelSpec, path) -> torch.Tensor:
+        """Decode and normalize a clip exactly as ``spec`` prescribes: ``[T, 3, H, W]``."""
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
             window_center=spec.window_center, interp=spec.resize_interp,
             edge_crop=getattr(spec, "edge_crop", 0.0),
+            edge_crop_long_side=getattr(spec, "edge_crop_long_side", False),
+            short_clip_frames=getattr(spec, "short_clip_frames", 0),
+            fps_nearest=getattr(spec, "fps_nearest", False), bgr=getattr(spec, "bgr", False),
         )
         mean, std = spec.video_norm
-        norm = torch.tensor(mean).view(1, 3, 1, 1)
-        sd = torch.tensor(std).view(1, 3, 1, 1)
-        clip = (clip - norm) / sd
+        return (clip - torch.tensor(mean).view(1, 3, 1, 1)) / torch.tensor(std).view(1, 3, 1, 1)
+
+    def predict_video_clip(self, spec: ModelSpec, path) -> dict:
+        """Run a native *video* detector on a decoded clip."""
+        model = self._get_model(spec)
+        clip = self.video_clip(spec, path)
         t0 = time.time()
         p = float(self._video_fake_prob(model, spec, clip).item())
         res = self._result(spec, p, time.time() - t0)
-        res["num_frames"] = spec.num_frames
+        res["num_frames"] = int(clip.shape[0])
         return res
 
     def _result(self, spec: ModelSpec, fake_prob: float, elapsed: float) -> dict:

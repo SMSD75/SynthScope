@@ -73,6 +73,10 @@ def sample_video_frames(
     window_center: bool = False,
     interp: str = "bilinear",
     edge_crop: float = 0.0,
+    edge_crop_long_side: bool = False,
+    short_clip_frames: int = 0,
+    fps_nearest: bool = False,
+    bgr: bool = False,
 ) -> torch.Tensor:
     """Decode a clip of exactly ``num_frames`` frames and return ``[T, 3, size, size]`` float in ``[0, 1]``.
 
@@ -84,6 +88,14 @@ def sample_video_frames(
     resize interpolation is ``interp`` (``"bilinear"`` default; ``"bicubic"`` for ReStraV, with
     antialiasing, matching the official preprocessing). The output frame count is always
     ``num_frames`` so the default collate can stack clips into ``[B, T, 3, size, size]``.
+
+    Two options reproduce the official D3 preprocessing: ``edge_crop_long_side`` trims ``edge_crop`` from the two ends
+    of the LONGER side only (D3's ``crop_center_by_percentage``), and ``short_clip_frames`` (D3: 8) returns that many
+    frames, instead of repeating frames up to ``num_frames``, when the video holds fewer than ``num_frames`` frames at
+    ``fps`` (D3 reads 16 frames, or 8 when fewer than 16 exist). With it the frame count can be below ``num_frames``.
+    ``fps_nearest`` takes the source frame nearest to each time ``k / fps`` (what ffmpeg's ``fps`` filter writes) instead
+    of spreading frames evenly over the window, and ``bgr`` returns the channels in BGR order (D3 reads its frames with
+    ``cv2.imread`` and never converts them to RGB, so its model sees BGR).
     """
     try:
         reader = VideoReader(str(path), ctx=cpu(0))
@@ -97,6 +109,8 @@ def sample_video_frames(
     duration = num_source / avg_fps
     window = min(window_seconds, duration)
     if fps and fps > 0:
+        if short_clip_frames and int(duration * fps) < num_frames:     # too short for num_frames at this fps
+            num_frames = short_clip_frames
         window = min(window, num_frames / float(fps))
 
     n_window = max(int(round(window * avg_fps)), 1)        # frames spanning the window
@@ -105,7 +119,10 @@ def sample_video_frames(
         start_index = int(round((duration / 2.0 - window / 2.0) * avg_fps))
     start_index = min(max(start_index, 0), num_source - 1)
     end_index = min(start_index + n_window - 1, num_source - 1)
-    indices = np.linspace(start_index, end_index, num=num_frames)
+    if fps_nearest and fps and fps > 0:
+        indices = start_index + np.rint(np.arange(num_frames) * avg_fps / float(fps))
+    else:
+        indices = np.linspace(start_index, end_index, num=num_frames)
     indices = np.clip(np.rint(indices).astype(np.int64), 0, num_source - 1)
 
     # decord's batched get_batch raises a size-mismatch DECORDError on videos whose frames
@@ -118,6 +135,8 @@ def sample_video_frames(
             # trajectory. Default 0.0 leaves D3-without-crop / ReStraV / STALL untouched.
             h, w = t.shape[-2], t.shape[-1]
             ch, cw = int(round(h * edge_crop)), int(round(w * edge_crop))
+            if edge_crop_long_side:                        # D3: crop only along the longer side
+                ch, cw = (0, int(w * edge_crop)) if w > h else (int(h * edge_crop), 0)
             if h - 2 * ch >= 8 and w - 2 * cw >= 8:
                 t = t[..., ch:h - ch, cw:w - cw]
         if t.shape[-2:] != (size, size):
@@ -148,6 +167,8 @@ def sample_video_frames(
         clip = clip.repeat(1, 3, 1, 1)
     elif c != 3:
         clip = clip[:, :3]
+    if bgr:
+        clip = clip[:, [2, 1, 0]]
     return clip.clamp_(0.0, 1.0)
 
 
@@ -2739,7 +2760,8 @@ def _msrvtt_reals(dl_dir):
         with zipfile.ZipFile(_genvideo_val_zip(dl_dir)) as zf:
             for m in zf.infolist():
                 name = Path(m.filename).name
-                if "/Real/" in m.filename and name.lower().endswith(VIDEO_EXTENSIONS):
+                if ("/Real/" in m.filename and "__MACOSX" not in m.filename and not name.startswith("._")
+                        and name.lower().endswith(VIDEO_EXTENSIONS)):           # skip macOS resource-fork stubs
                     with zf.open(m) as src, open(out / name, "wb") as dst:
                         shutil.copyfileobj(src, dst)
     return sorted((p for p in out.iterdir() if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
@@ -2761,10 +2783,11 @@ class GenVideoValDataset(VideoFolderDataset):
         dl = root_dir / "_downloads"
         staging = root_dir / "_staging"
         _safe_extract_zip(_genvideo_val_zip(dl), staging)
-        inner = next(p for p in staging.rglob("Fake") if p.is_dir()).parent
-        reals = sorted((p for p in (inner / "Real").iterdir() if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
+        inner = next(p for p in staging.rglob("Fake") if p.is_dir() and "__MACOSX" not in p.parts).parent
+        ok = lambda p: p.suffix.lower() in VIDEO_EXTENSIONS and not p.name.startswith("._")    # noqa: E731
+        reals = sorted((p for p in (inner / "Real").iterdir() if ok(p)), key=_first_int)
         for gen_dir in sorted(p for p in (inner / "Fake").iterdir() if p.is_dir()):
-            fakes = sorted((p for p in gen_dir.rglob("*") if p.suffix.lower() in VIDEO_EXTENSIONS), key=_first_int)
+            fakes = sorted((p for p in gen_dir.rglob("*") if ok(p)), key=_first_int)
             _link_images(fakes, dest / gen_dir.name / "1_fake")
             _link_images(reals, dest / gen_dir.name / "0_real")
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
