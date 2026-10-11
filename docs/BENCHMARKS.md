@@ -86,7 +86,10 @@ have no automatic source: get them from their official sites and place them in t
 | `bfree_online` | BFree-Online (B-Free's viral images; used by DDA and CuRe): real and fake images that went viral, several web-scraped copies of each (about 1400 in the paper). Only URLs are released; the loader keeps an image only if its md5 matches, so dead links and placeholders are skipped (`<root>/missing.txt`; in October 2026, 807 of the 1111 listed were still online: 269 real, 538 fake). One group, `test/viral` | `viral_images_dataset/BFree_viral_images.csv` in `grip-unina/B-Free` (nonprofit use only) |
 | `rrdataset` | RRDataset (ICCV 2025; used by CuRe): three scenarios, `original`, `transfer` (shared over online platforms) and `redigital` (re-digitized), about 8500 real and 8500 fake each. Only the test archive is used | Zenodo record `14963880` (`RRDataset_test.tar.gz`, 20 GB, CC BY 4.0) |
 | `diffusionforensics`, `diffusion1kstep`, `freqnetdetection` | DiffusionForensics, Diffusion-1kStep, FreqNet sets | see the yamls |
-| Video: `genvideo`, `genvidbench`, `evalcrafter`, `videofeedback`, `vidprom`, `comgenvid`, `physics_iq`, `videophy` | the video benchmarks | Hugging Face where a repo is set; otherwise place the files by hand |
+| `genvideo` | GenVideo-Val (DeMamba; D3 Table 1, STALL): 10 generators vs 10,000 MSR-VTT reals, shared reals hard-linked into every generator | ModelScope `cccnju/Gen-Video` (`GenVideo-Val.zip`, 14 GB) |
+| `videophy` | VideoPhy test set (D3 Table 3): 3360 clips from 10 generators, released as URLs; dead links are skipped (both CogVideoX sets were offline in October 2026). Fake-only, so paired with GenVideo-Val's MSR-VTT reals, as D3 does | `videophysics/videophy_test_public` (MIT) + ModelScope for the reals |
+| `vidprom` | VidProM (D3 Table 4, ReStraV): ModelScope, Pika, Text2Video-Zero, VideoCrafter2. The full set is terabytes, so the loader streams the first 1,000 clips of tar part 1 per generator (results are on that subsample); paired with MSR-VTT reals. OpenSora and StreamingT2V, in D3's table, are not in the repository | `WenhaoWang/VidProM` (CC BY-NC 4.0) |
+| Video: `genvidbench`, `evalcrafter`, `videofeedback`, `comgenvid`, `physics_iq` | the other video benchmarks | Hugging Face where a repo is set; otherwise place the files by hand |
 
 **If a download fails.** Hosts sometimes rate-limit (Google Drive) or ask you to accept terms first. Fetch the data by hand from the
 source in the table and unpack it so it matches the layout above (`real/`+`fake/` and `nature/`+`ai/` folders are also
@@ -117,7 +120,9 @@ With `--dataset` the grouping below is chosen for you; with `--data` you pick `-
 
 Useful flags: `--ckpt FILE` to score a different checkpoint (official vs SynthScope-trained side by side), `--select a,b` to
 limit the generators, `--limit N` to cap images per class (quick checks), `--native-res` to score at the original resolution,
-`--bs` for the batch size. Video: `python benchmark/bench_eval_video.py --model d3 --benchmark genvideo --data ... --tag ...`.
+`--bs` for the batch size. Video: `python benchmark/bench_eval_video.py --model d3 --dataset genvideo --root /data/GenVideo --limit 1000` downloads
+the dataset if needed and evaluates it (`--limit 1000` is D3's official protocol: at most 1000 videos per class per generator;
+each generator also reports `ap_real`, D3's AP with real videos as the positive class).
 
 Each run prints per-generator accuracy, AP and AUROC with the mean, writes `repro/bench_results/<tag>.json` and appends a
 line to `repro/MASTER_RESULTS.jsonl`, so every reported number traces to a run. `python benchmark/aggregate_results.py`

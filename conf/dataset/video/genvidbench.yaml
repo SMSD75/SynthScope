@@ -15,7 +15,7 @@ test_batch_size: 8
 num_workers: 4
 persistent_workers: true
 pin_memory: true
-prefetch: false
+prefetch: true
 # Normalization happens HERE (not in the model). normalize_dinov2 = ImageNet stats, what
 # DINOv2 (ReStraV's backbone) expects.
 train_transform_list:

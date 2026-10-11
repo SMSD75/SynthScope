@@ -20,7 +20,7 @@
 | PGC | GenImage | 100 AP | 100.0 | 97.62 | ✅ near |
 | VIB-Net | GenImage (SD-v1.4) | 95.5 AP | *none released* | 83.26 | ⚠️ recipe/arch gap |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
-| D3 (video) | GenVideo-Val | 98.5 | — | 89.00 | below (encoder diff) |
+| D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 99.14 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
 
@@ -122,12 +122,18 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
 |---|---:|---:|
-| D3 · GenVideo-Val-10 | 98.5 | 89.00 (86.0) |
-| D3 · EvalCrafter-14 | 98.9 | 91.19 (87.7) |
+| D3 · GenVideo-Val-10 | 98.46 | 99.14 (96.15); official code 97.93 |
+| D3 · EvalCrafter-14 | 98.87 | 99.30 (96.59); official code 98.70 |
+| D3 · VideoPhy (8 of 10 generators online) | 99.16 | 99.45 (95.19); official code 98.84 |
+| D3 · VidProM (4 of 6 generators, 1000-clip subsample) | 88.46 (84.95 on those 4) | 92.15 (84.86); official code 84.91 |
 | ReStraV · GenVidBench-8 | 93.0 | 92.70 (86.9) |
 | STALL · GenVideo-Val-10 | ~80 AUC | 82.38 / AUROC 83.5 |
 | STALL · VideoFeedback-11 | ~83 AUC | 83.07 (62.1) |
 | STALL · ComGenVid | ~85 AUC | 82.59 (57.3) |
+
+D3 numbers are AP with real videos as the positive class on the first 1000 clips per class per generator (D3's official
+eval.py); "official code" runs the D3 repository's own frame extraction + reader + model on the same data
+(`repro/official_evals/d3_official_eval.py`) and reproduces every generator within 0.25 AP except GenVideo WildScrape.
 
 ## Key findings
 1. **Architecture is faithful where we can check it.** Loading official weights into the SynthScope class reproduces the paper for CLIP, CNN, FatFormer, NPR, **PGC**, SAFE, Co-Spy. AIDE/SPAI needed a preprocessing/any-resolution port to make official weights load correctly (now done).

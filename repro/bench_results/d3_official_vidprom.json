@@ -1,0 +1,44 @@
+{
+  "tag": "d3_official_vidprom",
+  "model": "d3",
+  "ckpt": "official D3 code (XCLIP-16, l2)",
+  "benchmark": "video:official-d3",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "map_real": 84.91,
+    "map": 81.43,
+    "mauroc": 82.83
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap_real": 96.3,
+      "ap": 91.37,
+      "auroc": 95.0,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "Pika": {
+      "ap_real": 98.79,
+      "ap": 96.89,
+      "auroc": 98.34,
+      "n_real": 1000,
+      "n_fake": 998
+    },
+    "Text2Video-Zero": {
+      "ap_real": 46.36,
+      "ap": 41.4,
+      "auroc": 40.33,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "VideoCrafter2": {
+      "ap_real": 98.21,
+      "ap": 96.06,
+      "auroc": 97.65,
+      "n_real": 1000,
+      "n_fake": 1000
+    }
+  },
+  "date": "2026-10-11T18:28:30"
+}

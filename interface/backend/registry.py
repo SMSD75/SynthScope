@@ -167,6 +167,10 @@ class ModelSpec:
     window_center: bool = False         # center the sampling window (ReStraV) vs start (D3/STALL)
     resize_interp: str = "bilinear"     # frame resize interpolation ("bicubic" for ReStraV)
     edge_crop: float = 0.0              # center edge-crop fraction per frame before resize (D3: 0.1)
+    edge_crop_long_side: bool = False   # crop only the longer side (D3's crop_center_by_percentage)
+    short_clip_frames: int = 0          # frames to use when a video is too short for num_frames (D3: 8)
+    fps_nearest: bool = False           # frame nearest to each k/fps, as ffmpeg's fps filter (D3)
+    bgr: bool = False                   # feed BGR channels (D3's official reader never converts cv2's BGR)
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
     #   "official"      = authors' released weights (loaded into the SynthScope class)
@@ -337,9 +341,11 @@ _add(ModelSpec(
     modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",
     overrides=["model@ModelConfig=video/d3", "ModelConfig.backbone_name=xclip",
                "ModelConfig.first_order=l2"],
-    num_frames=16, fps=8.0, frame_size=224, video_norm=(CLIP_MEAN, CLIP_STD), edge_crop=0.1,
+    num_frames=16, fps=8.0, frame_size=224, video_norm=(IMAGENET_MEAN, IMAGENET_STD), edge_crop=0.1,
+    edge_crop_long_side=True, short_clip_frames=8, fps_nearest=True, bgr=True,
     notes="Training-free: frozen X-CLIP-B/16 per-frame features; 2nd-order trajectory std is the score. "
-          "Official preprocessing: 10% center edge-crop per frame before resize.",
+          "Official preprocessing (D3 utils/video2frame.py + data/datasets.py): 16 frames at 8 fps (8 for clips under "
+          "2 s), BGR channels as cv2 reads them, 10% crop of the longer side, resize 224, ImageNet normalization.",
 ))
 _add(ModelSpec(
     key="restrav", name="ReStraV (video)", paper="2025",

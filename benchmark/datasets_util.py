@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 IMAGE_EXT = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff"}
+VIDEO_EXT = {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v", ".gif"}
 REAL_NAMES = {"0_real", "real", "reals"}
 FAKE_NAMES = {"1_fake", "fake", "fakes", "ai"}
 # datasets whose generator grouping / real pairing is special-cased by a bench_eval profile
@@ -37,12 +38,13 @@ def dataset_config(name: str, modality: str = "image", root: str | None = None):
     return compose_config(overrides)
 
 
-def has_images(root: Path) -> bool:
-    """True as soon as one image file is found under ``root`` (cheap: stops at the first hit)."""
+def has_images(root: Path, exts=IMAGE_EXT) -> bool:
+    """True as soon as one file with an extension in ``exts`` (images by default) is found under ``root`` (cheap: stops at
+    the first hit)."""
     if not root.is_dir():
         return False
     for _, _, files in os.walk(root):
-        if any(os.path.splitext(f)[1].lower() in IMAGE_EXT for f in files):
+        if any(os.path.splitext(f)[1].lower() in exts for f in files):
             return True
     return False
 
@@ -56,10 +58,10 @@ def download_dataset(name: str, modality: str = "image", root: str | None = None
 
 
 def ensure_dataset(name: str, modality: str = "image", root: str | None = None, download: bool = True) -> Path:
-    """The dataset's root directory, downloading it first when no images are there yet."""
+    """The dataset's root directory, downloading it first when no images (or videos) are there yet."""
     cfg = dataset_config(name, modality, root)
     path = Path(cfg.DatasetConfig.root_dir).expanduser()
-    if has_images(path):
+    if has_images(path, VIDEO_EXT if modality == "video" else IMAGE_EXT):
         return path
     if not download:
         raise SystemExit(f"{name}: no data under {path} (drop --no-download to fetch it, or pass --root)")

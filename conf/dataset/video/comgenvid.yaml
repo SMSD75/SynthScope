@@ -12,6 +12,6 @@ test_batch_size: 8
 num_workers: 4
 persistent_workers: true
 pin_memory: true
-prefetch: false
+prefetch: true
 eval_transform_list:
   - normalize_dinov3

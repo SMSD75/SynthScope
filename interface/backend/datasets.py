@@ -126,6 +126,16 @@ DATASET_DEFS: list[DatasetDef] = [
     DatasetDef("comgenvid", "ComGenVid (Sora/VEO3)", "video",
                ["/hddstore/ssalehi/SynthScope/ComGenVid"], ["test"],
                "Sora + VEO3 fakes vs MSVD real; STALL's new benchmark."),
+    DatasetDef("genvideo", "GenVideo-Val (10 generators)", "video",
+               ["/hddstore/ssalehi/SynthScope/GenVideo"], ["test"],
+               "DeMamba's GenVideo-Val per generator vs 10,000 MSR-VTT reals; D3 Table 1, STALL."),
+    DatasetDef("videophy", "VideoPhy (text-to-video)", "video",
+               ["/hddstore/ssalehi/SynthScope/VideoPhy"], ["test"],
+               "VideoPhy test clips from up to 10 generators vs MSR-VTT reals; D3 Table 3."),
+    DatasetDef("vidprom", "VidProM (4 generators, subsample)", "video",
+               ["/hddstore/ssalehi/SynthScope/VidProM"], ["test"],
+               "First 1,000 clips per generator (ModelScope, Pika, Text2Video-Zero, VideoCrafter2) vs MSR-VTT reals; "
+               "CC BY-NC 4.0."),
 ]
 
 # Which dataset each detector was trained on (best-effort, from interface/scripts/train_model.sh

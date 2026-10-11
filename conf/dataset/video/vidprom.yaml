@@ -1,10 +1,9 @@
 name: vidprom
-# VidProM benchmark (Wang & Yang 2024). Shared by D3 and ReStraV. Lay out videos as
-# <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
+# VidProM (Wang & Yang 2024), D3 Table 4 and ReStraV: ModelScope, Pika, Text2Video-Zero, VideoCrafter2 (CC BY-NC 4.0).
+# VidProMDataset streams the first 1000 clips of tar part 1 per generator (the full set is terabytes) and pairs them
+# with GenVideo-Val's MSR-VTT reals.
 root_dir: /hddstore/ssalehi/SynthScope/VidProM
-# WenhaoWang/VidProM on the Hugging Face Hub hosts the prompts/videos; set this to enable
-# the download stub once the desired split layout is known. null = manual placement.
-hf_repo_id: null
+hf_repo_id: WenhaoWang/VidProM
 # 24 frames evenly across 2 s works for both ReStraV (needs >=8) and D3 (needs >=4).
 # Override num_frames/fps on the command line if you want D3's 16-frame@8fps sampling.
 num_frames: 24
@@ -17,7 +16,7 @@ test_batch_size: 8
 num_workers: 4
 persistent_workers: true
 pin_memory: true
-prefetch: false
+prefetch: true
 # Normalization happens HERE (not in the model). Default normalize_dinov2 = ReStraV's
 # DINOv2 backbone; for D3 (XCLIP/CLIP) override to normalize_clip in the experiment script.
 train_transform_list:

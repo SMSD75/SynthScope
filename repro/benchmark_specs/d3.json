@@ -6,7 +6,7 @@
   "training_set_in_paper": "NONE \u2014 D3 is training-free (inference only). Baselines (re-implemented for comparison) were trained on real videos from Youku-mPLUG + Pika fakes, following DeMamba (paper Sec 4.1).",
   "encoder_in_paper": "XCLIP-B/16 (X-CLIP ViT-B/16, Ni et al. ECCV'22, paper ref [34]) as the frozen per-frame visual encoder; first-order = L2 distance. CLIP-B/16 is the ablation runner-up (~97 on GenVideo, Table 7).",
   "paper_protocol": "Extract up to a 2 s segment, sample frames at 8 fps, JPEG; crop 10% of the longer edge then resize to 224x224. Score = std of 2nd-order central-difference of inter-frame L2 distances (Eq.8). Metric reported: AP (real-class); AUROC in supplementary. Hardware RTX 4090. (paper Sec 4.1 'Implementation Details')",
-  "synthscope_encoder": "CLIP ViT-B/16 (openai/clip-vit-base-patch16, per-frame pooler_output). XCLIP intentionally removed from the SynthScope port (HF XCLIPVisionModel does cross-frame message-token attention, violating D3's per-frame premise). See models/video/d3/README.md.",
+  "synthscope_encoder": "X-CLIP-B/16 (microsoft/xclip-base-patch16), as in the paper. SynthScope's D3 gives the same score as the official D3_model on the same frames (max |diff| 0, repro check 2026-10-11).",
   "benchmarks": [
     {
       "name": "GenVideo (DeMamba GenVideo-Val, Table 1)",
@@ -45,26 +45,38 @@
       "official_eval_protocol": "XCLIP-B/16 frozen, 8 fps over <=2 s, JPEG, 10% longer-edge crop, resize 224x224, L2 first-order, std of 2nd-order central diff; AP computed real-class (positive=real, score=+std), max_len=1000 per class (official eval.py).",
       "our_status": "reproduced",
       "our_number": {
-        "auroc": 95.95,
-        "acc": 91.71,
-        "map": 63.93,
-        "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 SynthScope's GenVideo pool pairs 10000 shared reals against as few as 56 fakes/generator (Sora), so AP is dominated by a handful of high-scoring reals (89.0->63.93 is imbalance noise, not a model regression). AUROC/acc are the comparison; AUROC ~96 ~ paper-quality."
+        "map": 99.14,
+        "auroc": 98.46,
+        "acc": 96.15,
+        "official_code_map": 97.93,
+        "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord cannot read start at 0 instead of a random offset). The old 63.93 compared 10,000 reals with as few as 56 fakes and used AP with fake as positive."
       },
       "our_per_generator_ap": {
-        "Crafter": 94.26,
-        "Gen2": 94.15,
-        "HotShot": 54.94,
-        "Lavie": 91.69,
-        "ModelScope": 91.94,
-        "MoonValley": 94.92,
-        "MorphStudio": 93.01,
-        "Show-1": 94.02,
-        "Sora": 85.56,
-        "WildScrape": 95.49
+        "Crafter": 99.14,
+        "Gen2": 99.42,
+        "HotShot": 99.21,
+        "Lavie": 98.73,
+        "ModelScope": 98.63,
+        "MoonValley": 99.54,
+        "MorphStudio": 99.27,
+        "Show_1": 99.37,
+        "Sora": 99.91,
+        "WildScrape": 98.21
       },
-      "gap_cause": "Closed on the robust metrics: the two levers were the X-CLIP-B/16 encoder (was CLIP) and the 10% edge-crop preprocessing (was a direct resize). The residual paper-mAP gap is a benchmark-harness artifact (extreme real:fake imbalance), not a model gap.",
       "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val (14 GB; downloaded from ModelScope cccnju/Gen-Video GenVideo-Val.zip). The real source is MSR-VTT.",
-      "xclip_weights_downloadable": "YES \u2014 microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights."
+      "xclip_weights_downloadable": "YES \u2014 microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights.",
+      "official_code_per_generator_ap": {
+        "Crafter": 98.28,
+        "Gen2": 99.24,
+        "HotShot": 98.33,
+        "Lavie": 97.23,
+        "ModelScope": 96.99,
+        "MoonValley": 99.36,
+        "MorphStudio": 98.51,
+        "Show_1": 98.97,
+        "Sora": 99.86,
+        "WildScrape": 92.5
+      }
     },
     {
       "name": "EvalCrafter (Table 2, 14 generators, fake-only)",
@@ -109,17 +121,50 @@
       },
       "paper_per_generator_note": "D3 (XCLIP-B/16) AP from paper Table 2. CLIP-B/16 EvalCrafter mAP = 97.63 (L2) in Table-7 ablation.",
       "official_eval_protocol": "Same XCLIP-B/16 protocol as GenVideo. EvalCrafter is fake-only; AP is scored by pairing each generator's fakes against a shared real pool (SynthScope reuses the GenVideo-Val MSR-VTT reals; real_acc=81.33 across all rows).",
-      "our_status": "below",
+      "our_status": "reproduced",
       "our_number": {
-        "mAP": 91.19,
-        "mAUROC": 95.41,
-        "acc": 87.67
+        "map": 99.3,
+        "auroc": 98.62,
+        "acc": 96.59,
+        "official_code_map": 98.7,
+        "note": "D3 protocol, paired with the first 1000 GenVideo-Val MSR-VTT reals. SynthScope engine 99.30 (AUROC 98.62, acc 96.59; tag d3_evalcrafter, job 252292). Official D3 code: 98.70 (tag d3_official_evalcrafter, job 252293), every generator within 0.25 of the paper."
       },
-      "gap_cause": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 92.9-95.1. Recoverable with XCLIP + edge-crop + 1 s HotShot window.",
-      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/EvalCrafter/test/1_fake (19 GB; HF RaphaelLiu/EvalCrafter_T2V_Dataset). Fake-only; reals borrowed from GenVideo-Val."
+      "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/EvalCrafter/test/1_fake (19 GB; HF RaphaelLiu/EvalCrafter_T2V_Dataset). Fake-only; reals borrowed from GenVideo-Val.",
+      "our_per_generator_ap": {
+        "MoonValley": 99.54,
+        "floor33": 99.27,
+        "gen2": 99.5,
+        "gen2_december": 99.56,
+        "hotshot": 99.21,
+        "lavie-base": 98.93,
+        "lavie-interpolation": 99.18,
+        "mix-sr": 99.39,
+        "modelscope": 98.63,
+        "pika": 99.51,
+        "pika_v1_december_1": 99.51,
+        "show_1": 99.37,
+        "videocrafter-v1.0": 99.29,
+        "zeroscope": 99.36
+      },
+      "official_code_per_generator_ap": {
+        "MoonValley": 99.36,
+        "floor33": 98.51,
+        "gen2": 99.25,
+        "gen2_december": 99.56,
+        "hotshot": 98.33,
+        "lavie-base": 97.61,
+        "lavie-interpolation": 98.29,
+        "mix-sr": 98.99,
+        "modelscope": 96.99,
+        "pika": 99.22,
+        "pika_v1_december_1": 99.37,
+        "show_1": 98.97,
+        "videocrafter-v1.0": 98.61,
+        "zeroscope": 98.71
+      }
     },
     {
-      "name": "VideoPhy (Table 3, 10 generators)",
+      "name": "VideoPhy (Table 3; 8 of 10 generators still downloadable)",
       "datasets": [
         "VideoPhy"
       ],
@@ -152,13 +197,38 @@
         "ZeroScope": 99.38
       },
       "official_eval_protocol": "Same XCLIP-B/16 protocol. VideoPhy = Bansal et al. arXiv:2406.03520.",
-      "our_status": "missing",
-      "our_number": null,
-      "gap_cause": "Not evaluated in SynthScope \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the SynthScope encoder.",
-      "dataset_source": "github/HF: VideoPhy (Bansal et al., arXiv:2406.03520; github.com/Hritikbansal/videophy). Needs download."
+      "our_status": "reproduced",
+      "our_number": {
+        "map": 99.45,
+        "auroc": 98.09,
+        "acc": 95.19,
+        "official_code_map": 98.84,
+        "note": "Only 8 of the 10 generators can still be downloaded (both CogVideoX sets are offline); the paper's values for those 8 average 99.22. SynthScope engine 99.45 (AUROC 98.09, acc 95.19; tag d3_videophy, job 252250). Official D3 code: 98.84 (tag d3_official_videophy, job 252251)."
+      },
+      "dataset_source": "github/HF: VideoPhy (Bansal et al., arXiv:2406.03520; github.com/Hritikbansal/videophy). Needs download.",
+      "our_per_generator_ap": {
+        "Dream-Machine": 99.64,
+        "Gen-2": 99.75,
+        "LaVie": 99.35,
+        "OpenSora": 99.4,
+        "Pika": 99.71,
+        "SVD": 98.52,
+        "VideoCrafter2": 99.64,
+        "ZeroScope": 99.61
+      },
+      "official_code_per_generator_ap": {
+        "Dream-Machine": 99.32,
+        "Gen-2": 99.73,
+        "LaVie": 98.2,
+        "OpenSora": 98.23,
+        "Pika": 99.51,
+        "SVD": 97.4,
+        "VideoCrafter2": 99.23,
+        "ZeroScope": 99.12
+      }
     },
     {
-      "name": "VidProM (Table 4, 6 generators)",
+      "name": "VidProM (Table 4; 4 of 6 generators, first 1000 clips each)",
       "datasets": [
         "VidProM"
       ],
@@ -184,17 +254,31 @@
       },
       "paper_per_generator_note": "Text2Video-Zero (T2VZ) AP=45.11 is a known D3 failure mode (low-quality, semantically-incoherent generation looks 'chaotic'/high-volatility like real). CLIP-B/16 VidProM mAP = 84.79 (Table 7).",
       "official_eval_protocol": "Same XCLIP-B/16 protocol. VidProM = Wang & Yang, NeurIPS'24.",
-      "our_status": "missing",
-      "our_number": null,
-      "gap_cause": "Not evaluated in SynthScope \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)",
-      "dataset_source": "HF: VidProM (Wang & Yang, openreview pYNl76onJL; huggingface VidProM). Needs download."
+      "our_status": "reference",
+      "our_number": {
+        "map": 92.15,
+        "auroc": 90.86,
+        "acc": 84.86,
+        "official_code_map": 84.91,
+        "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28: without the official JPEG frame round-trip D3 ranks these low-quality clips better; tag d3_vidprom, job 252256)."
+      },
+      "dataset_source": "HF: VidProM (Wang & Yang, openreview pYNl76onJL; huggingface VidProM). Needs download.",
+      "our_per_generator_ap": {
+        "ModelScope": 98.76,
+        "Pika": 99.36,
+        "Text2Video-Zero": 71.28,
+        "VideoCrafter2": 99.2
+      },
+      "official_code_per_generator_ap": {
+        "ModelScope": 96.3,
+        "Pika": 98.79,
+        "Text2Video-Zero": 46.36,
+        "VideoCrafter2": 98.21
+      }
     }
   ],
   "summary": {
     "n_benchmarks_reported": 4,
-    "n_reproduced_in_synthscope": 0,
-    "n_below": 2,
-    "n_missing": 2,
-    "key_finding": "D3 GenVideo 89.0 (SynthScope) vs 98.46 (paper) gap is CONFIRMED to be (a) CLIP-B/16 vs the paper's XCLIP-B/16 encoder and (b) missing 10%-edge-crop + per-duration (1 s) frame sampling, NOT a method bug. X-CLIP-B/16 weights ARE downloadable (microsoft/xclip-base-patch16, not gated), so the gap is closable. A standalone CLIP-B/16 run with full official preprocessing already reaches 95.6 AP_real (d3_repro). VideoPhy and VidProM are reported in the paper but not yet run in SynthScope (datasets not downloaded)."
+    "key_finding": "Since 2026-10-11 SynthScope's D3 follows the official preprocessing (16 frames at 8 fps, 8 for clips under 2 s; BGR; 10% crop of the longer side; ImageNet normalization) and is scored with D3's protocol (first 1000 clips per class, AP with real as the positive class). The official D3 code run end to end on the same data (repro/official_evals/d3_official_eval.py) reproduces GenVideo 97.93, EvalCrafter 98.70, VideoPhy 98.84 (8 of 10 generators) and VidProM 84.91 (4 of 6 generators, paper 84.95 on those 4); SynthScope's engine gives 99.14 / 99.30 / 99.45 / 92.15. The remaining engine-vs-official difference is only the official JPEG frame round-trip."
   }
 }

@@ -62,12 +62,12 @@ Implemented in `models/video/d3/d3.py` as `SynthScopeD3Model`.
 | Component | Setting |
 |---|---|
 | Visual encoder | frozen, run under `torch.no_grad()` |
-| `backbone_name` | `clip` (default) / `dinov2` / `resnet18` |
+| `backbone_name` | `xclip` (the paper's encoder; what SynthScope serves) / `clip` (config default for training-style runs) / `dinov2` / `resnet18` |
 | First-order `dist` | `l2` (default) or `cos` |
 | Score | `std` of second-order central-difference features over time (Eq. 8) |
 | `threshold` (`tau`) | decision threshold for argmax accuracy only (default `0.0`) |
 | `dt` | sampling-interval scale (default `1.0`; constant — does not change the std ranking) |
-| Normalization | done by the **dataset transform pipeline** (`normalize_clip` for CLIP, `normalize_dinov2` for DINOv2/ResNet) — **not** inside the model |
+| Normalization | done outside the model: the served D3 (registry, web app, `bench_eval_video.py`) uses the official ImageNet statistics on BGR frames; Hydra dataset configs use `normalize_clip` / `normalize_dinov2` |
 | Trainable params | one dummy `_noop` scalar (no-op) |
 | Output | `stack([s − tau, tau − s], dim=1)` (col 0 real, col 1 fake) |
 
@@ -86,11 +86,10 @@ D3 is encoder-agnostic; every backbone is used as a **frozen, per-frame** featur
 All transformer backbones use the HF `pooler_output` (the global pooled per-frame vector), exactly
 as the official `models/D3_model.py` does — **not** dense/patch tokens.
 
-> **Why not XCLIP?** The paper's headline encoder is XCLIP-B/16 (≈0.7–1 mAP above CLIP-B/16),
-> but `transformers`' `XCLIPVisionModel` is a *video* encoder: its cross-frame "message-token"
-> attention (tied to `config.num_frames = 8`) mixes frames together, which contradicts D3's
-> independent-per-frame premise and also errors unless `B·T` is a multiple of 8. We therefore use
-> the clean per-frame **CLIP ViT-B/16** instead (XCLIP's spatial tower is CLIP-initialized anyway).
+> **X-CLIP-B/16** (`backbone_name=xclip`, HF `microsoft/xclip-base-patch16`) is the paper's encoder and what SynthScope
+> serves. It is used exactly as the official `models/D3_model.py` uses it (frames flattened to `B·T` images, per-frame
+> `pooler_output`); on the same input frames SynthScope's scores equal the official model's (max |diff| 0). Clip lengths
+> of 8 or 16 frames satisfy X-CLIP's 8-frame message-token grouping.
 
 ## Input normalization
 
@@ -98,7 +97,8 @@ D3 does **not** normalize internally — it expects frames already normalized by
 transform pipeline, matched to the chosen backbone (consistent with the image CLIP/DINO
 detectors). Use `normalize_clip` for the `clip` backbone and `normalize_dinov2`
 (ImageNet stats) for `dinov2`/`resnet18`, set via `DatasetConfig.*_transform_list` in the
-experiment script. The frozen encoder silently degrades on un-normalized or mismatched
+experiment script. The served X-CLIP D3 (registry `d3`) follows the official code instead: ImageNet statistics on frames
+in BGR order (see "Differences" below). The frozen encoder silently degrades on un-normalized or mismatched
 frames. `AIGITransformations` wraps each `[T, 3, H, W]` clip as `torchvision.tv_tensors.Video`,
 so the normalization (and any spatial transform) applies consistently across all frames.
 
@@ -141,53 +141,59 @@ at ~8 fps over up to 2 s (`num_frames: 16`, `fps: 8` in the dataset config).
 
 ## Reproduced benchmark results
 
-All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
+The paper's protocol (official `eval.py`): the first 1000 clips per class per generator, and AP with **real videos as the
+positive class** (`average_precision_score(1 - y, std)`). Fake-only sets (EvalCrafter, VideoPhy, VidProM) are paired with
+GenVideo-Val's MSR-VTT reals, as the official README does. Two columns: **SynthScope** is this implementation
+(`benchmark/bench_eval_video.py --model d3 --dataset NAME --limit 1000`), **official code** is the D3 repository's own
+frame extraction, reader and model run end to end on the same data (`repro/official_evals/d3_official_eval.py`).
 
-> **Faithful protocol (training-free):** D3 now runs the official setup — **X-CLIP-B/16** per-frame
-> features + a **10% center edge-crop** before resize (registry `backbone_name=xclip, edge_crop=0.1`).
-> On GenVideo this lifts the robust metrics **AUROC 93.87→95.95, acc 86.04→91.71** (`d3_xclip_genvideo`).
-> Note D3 is training-free and SynthScope's GenVideo **mAP is degenerate** — the pool pairs **10,000 shared
-> reals against as few as 56 fakes** per generator (Sora), so AP is dominated by a few high-scoring
-> reals (the 89.0→63.93 "drop" is imbalance noise). **AUROC/acc are the metrics to compare** (~96 ≈ paper-quality).
+| Benchmark (AP, real positive) | Paper | Official code, our data | SynthScope | Status |
+|---|---:|---:|---:|---|
+| GenVideo-Val (Table 1, 10 generators) | 98.46 | 97.93 | **99.14** | reproduced |
+| EvalCrafter (Table 2, 14 generators) | 98.87 | 98.70 | **99.30** | reproduced |
+| VideoPhy (Table 3; 8 of 10 generators still downloadable) | 99.16 (8 shown: 99.22) | 98.84 | **99.45** | reproduced |
+| VidProM (Table 4; 4 of 6 generators, first 1000 clips each) | 88.46 (those 4: 84.95) | 84.91 | 92.15 | reference (subsample) |
 
-| Benchmark | Paper | SynthScope (training-free, XCLIP+edge-crop) | Status |
-|---|---|---|---|
-| GenVideo (DeMamba GenVideo-Val, Table 1) | mAP=98.46 | AUROC=95.95 / acc=91.71 | reproduced (AUROC) |
-| EvalCrafter (Table 2, 14 generators) | mAP=98.87 | AUROC=95.41 / acc=87.67 | below |
-| VideoPhy (Table 3, 10 generators) | mAP=99.16 | — | missing |
-| VidProM (Table 4, 6 generators) | mAP=88.46 | — | missing |
-
-**reproduced (AUROC)** = SynthScope matches the paper on the robust ranking metric (mAP unreliable here due to extreme real:fake imbalance) · **below** = gap remains · **missing** = not yet evaluated.
+- **The official code reproduces the paper on our data**: 9 of 10 GenVideo generators and all 14 EvalCrafter generators
+  are within 0.25 AP; VidProM's four generators average 84.91 vs 84.95 (Text2Video-Zero 46.36 vs 45.11, the paper's
+  noted failure case). The one outlier is GenVideo's WildScrape (92.50 vs 96.49): its 282 GIFs cannot be timed by
+  decord, so their frames start at 0 instead of the official random offset.
+- **SynthScope's D3 is the official model**: on the frames the official code extracts it returns identical scores
+  (max |diff| 0). Its numbers differ from the official column only because the official pipeline writes frames to JPEG
+  with ffmpeg and reads them back; SynthScope decodes frames directly. That matters most for low-quality clips
+  (VidProM Text2Video-Zero: 71.28 in SynthScope vs 46.36 with the official JPEG round-trip).
+- AUROC and balanced accuracy (at the calibrated threshold) for SynthScope: GenVideo 98.46 / 96.15, EvalCrafter
+  98.62 / 96.59, VideoPhy 98.09 / 95.19, VidProM 90.86 / 84.86. Per-generator numbers are in
+  `repro/benchmark_specs/d3.json` and `repro/bench_results/d3_*.json`.
 
 ## Differences from the paper / official code
 
 | Difference | Reason |
 |---|---|
-| **Default encoder is CLIP ViT-B/16, not XCLIP-B/16** | The paper's best encoder is XCLIP-B/16, but HF `XCLIPVisionModel` does cross-frame message-token attention (tied to `num_frames`), which violates D3's independent-per-frame premise and crashes unless `B·T % num_frames == 0`. CLIP-B/16 is a clean per-frame encoder ≈0.7–1 mAP behind; XCLIP is intentionally not included. |
-| Default frame sampling is `num_frames=16` at `fps=8` over 2 s (configurable) | Matches the paper's "up to 2 s at 8 fps"; SynthScope fixes `T` per dataset so clips can be batch-collated. |
-| Frames are decoded with **decord** and resized to `224×224` | The paper crops 10% of the longer edge before resizing; SynthScope's generic video loader resizes directly. This preprocessing detail does not change the second-order std signal materially. |
-| Metrics via SynthScope's `AIGIMetrics` (per-generator AP/AUROC) | Keeps evaluation/logging consistent with the rest of the project; the paper also reports per-subset AP/AUROC. |
+| Frames are decoded directly (decord), not written to JPEG by ffmpeg and read back | Avoids a lossy round-trip and an ffmpeg dependency; it is the only remaining difference from the official pipeline (see above). |
+| Clips longer than 3 s start at 0 | The official extraction picks a random start in a multiprocessing pool, so its frames are not reproducible anyway. |
+| Metrics via SynthScope's evaluators | `bench_eval_video.py` reports per-generator AP (both positive classes), AUROC and accuracy. |
 | One dummy `_noop` parameter | Required so the SynthScope `AdamW` trainer does not crash on a training-free model; it has zero effect. |
 
-These are integration/preprocessing differences, not conceptual changes: the detector is still the
-frozen-encoder → first-order → second-order-central-difference → std pipeline of the paper.
+Matched to the official code (2026-10-11): X-CLIP-B/16 per-frame features with L2 first-order distances; 16 frames at 8 fps,
+or 8 frames for clips under 2 s (earlier versions repeated frames up to 16, which broke 1 s generators such as HotShot);
+frames taken at multiples of 1/8 s like ffmpeg's `fps` filter; 10% cropped from each end of the longer side; resize to
+224; ImageNet normalization; and BGR channel order, because the official reader loads frames with `cv2.imread` and never
+converts them to RGB.
 
 ## Summary
 
-D3 in SynthScope is a faithful, method-level reproduction of Zheng et al.'s ICCV 2025 training-free
-detector. A frozen visual encoder (CLIP ViT-B/16 by default) turns each frame into a feature; the L2
-distance between consecutive frames gives first-order features; their central difference gives
-second-order features; and the standard deviation of those second-order features is the detection
-score. Real videos are volatile (high std), AI-generated videos are flat (low std). The score is
-mapped to two-class outputs so SynthScope's AP/AUROC metrics rank fakes by low std. There is nothing to
-train — a single no-op parameter only keeps the optimizer happy.
+D3 in SynthScope is the official training-free detector of Zheng et al. (ICCV 2025): a frozen X-CLIP-B/16 turns each frame
+into a feature, the L2 distance between consecutive frames gives first-order features, their central difference gives
+second-order features, and the standard deviation of those is the score. Real videos are volatile (high std),
+AI-generated ones are flat (low std). There is nothing to train.
 
 ## Probability calibration (`d3_calibration.json`)
 
 D3 is training-free and outputs a raw score: the volatility of second-order frame-feature differences (real videos
-average about 9.2, generated ones about 2.1 on GenVideo-Val). Turning that score into P(fake) needs a threshold and a
-scale, which ship with the model in `d3_calibration.json` (fitted by `interface/scripts/calibrate_d3.py` on 200 real +
-200 fake GenVideo-Val clips; balanced accuracy 87.8%). Without it every video would get P(fake) of about 0.01, i.e. be
+average about 11.3, generated ones about 1.8 on GenVideo-Val). Turning that score into P(fake) needs a threshold and a
+scale, which ship with the model in `d3_calibration.json` (fitted by `interface/scripts/calibrate_d3.py`, through the same
+preprocessing the engine uses, on 200 real + 200 fake GenVideo-Val clips; balanced accuracy 94.8%). Without it every video would get P(fake) of about 0.01, i.e. be
 called "real"; AP/AUROC are unaffected because they depend only on the ranking. A `d3_calibration.json` in
 `$SYNTHSCOPE_CKPT_DIR` overrides the shipped one.
 

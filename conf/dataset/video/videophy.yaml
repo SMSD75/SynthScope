@@ -1,8 +1,7 @@
 name: videophy
-# VideoPhy benchmark (Bansal et al. 2024), used by D3. Lay out videos as
-# <root>/<split>/<generator>/{0_real,1_fake}/*.mp4.
+# VideoPhy test set (Bansal et al. 2024), D3 Table 3: 10 text-to-video generators, released as URLs (MIT).
+# VideoPhyDataset fetches the clips (dead links skipped) and pairs them with GenVideo-Val's MSR-VTT reals, as D3 does.
 root_dir: /hddstore/ssalehi/SynthScope/VideoPhy
-# Set to a Hugging Face dataset repo to enable the download stub; null = manual placement.
 hf_repo_id: null
 num_frames: 16
 fps: 8
@@ -14,7 +13,7 @@ test_batch_size: 8
 num_workers: 4
 persistent_workers: true
 pin_memory: true
-prefetch: false
+prefetch: true
 # Normalization happens HERE (not in the model). normalize_clip matches D3's default
 # XCLIP/CLIP backbone; switch to normalize_dinov2 for a DINOv2/ResNet backbone.
 train_transform_list:
