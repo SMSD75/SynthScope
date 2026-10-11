@@ -1,6 +1,6 @@
 # 📈 What's Trending — AI-generated content detection
 
-*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-10.*
+*High-quality recent papers for image & video AIGC detection. High-quality = (1) a solid public GitHub repository, and (2) strong results versus previous methods. Auto-refreshed daily. Last updated: 2026-10-11.*
 
 Entries marked _in SynthScope_ are integrated in this repo; the rest are tracked, with the reason an integration is pending noted in their _Results_ line. See [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) for how a paper is integrated and reproduced.
 
