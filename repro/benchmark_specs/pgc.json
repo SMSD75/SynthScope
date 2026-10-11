@@ -2,7 +2,7 @@
   "model": "pgc",
   "paper": "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection (Zhou, Fei, Yu, Xie, Cheng, Xia — ICML 2026 / arXiv 2026)",
   "arxiv_id": "2605.21207",
-  "official_repo": "https://github.com/xiaoyuzhou68/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
+  "official_repo": "https://github.com/xiaoyu6868/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
   "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (4-class CNNDet/UniversalFakeDetect train) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
   "benchmarks": [
     {
