@@ -244,41 +244,41 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, Table 1)",
       "metric": "AP",
       "paper": "mAP=98.46",
-      "ours": "mAP=63.93 / acc=91.71 / AUROC=95.95",
-      "ours_synthscope": "mAP=63.93 / acc=91.71 / AUROC=95.95",
-      "ours_official": "",
-      "status": "below",
-      "note": "FAITHFUL protocol (X-CLIP-B/16 encoder + 10% center edge-crop, per the official D3). Robust metrics improved: AUROC 93.87->95.95, acc 86.04->91.71 (tag d3_xclip_genvideo). NB: the mAP here is DEGENERATE \u2014 SynthScope's GenVideo pool pairs 10000 shared reals against as few as 56 fakes/generator (Sora), so AP is dominated by a handful of high-scoring reals (89.0->63.93 is imbalance noise, not a model"
+      "ours": "SynthScope mAP=99.14 / acc=96.15 / AUROC=98.46 \u00b7 official mAP=97.93 / AUROC=97.04",
+      "ours_synthscope": "mAP=99.14 / acc=96.15 / AUROC=98.46",
+      "ours_official": "mAP=97.93 / AUROC=97.04",
+      "status": "reproduced",
+      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only",
       "metric": "AP",
       "paper": "mAP=98.87",
-      "ours": "mAP=91.19 / acc=87.67 / AUROC=95.41",
-      "ours_synthscope": "mAP=91.19 / acc=87.67 / AUROC=95.41",
-      "ours_official": "",
-      "status": "below",
-      "note": "Same as GenVideo: CLIP-vs-XCLIP encoder substitution + no 10% edge-crop + no per-duration sampling. HotShot again the outlier (AP 53.7, AUROC 62.1) \u2014 a 1 s generator scored in a 2 s window. Excluding HotShot the other 13 generators are AP 92.9-95.1. Recoverable with XCLIP + edge-crop + 1 s HotShot window."
+      "ours": "SynthScope mAP=99.3 / acc=96.59 / AUROC=98.62 \u00b7 official mAP=98.7 / AUROC=97.81",
+      "ours_synthscope": "mAP=99.3 / acc=96.59 / AUROC=98.62",
+      "ours_official": "mAP=98.7 / AUROC=97.81",
+      "status": "reproduced",
+      "note": "D3 protocol, paired with the first 1000 GenVideo-Val MSR-VTT reals. SynthScope engine 99.30 (AUROC 98.62, acc 96.59; tag d3_evalcrafter, job 252292). Official D3 code: 98.70 (tag d3_official_evalcrafter, job 252293), every generator within 0.25 of the paper."
     },
     {
-      "benchmark": "VideoPhy (Table 3, 10 generators)",
+      "benchmark": "VideoPhy (Table 3; 8 of 10 generators still do",
       "metric": "AP",
       "paper": "mAP=99.16",
-      "ours": "",
-      "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Not evaluated in SynthScope \u2014 VideoPhy dataset not downloaded. No bench_results entry. The paper reports CLIP-B/16 VideoPhy mAP = 97.01 (Table 7) as the achievable target with the SynthScope encoder."
+      "ours": "SynthScope mAP=99.45 / acc=95.19 / AUROC=98.09 \u00b7 official mAP=98.84 / AUROC=96.28",
+      "ours_synthscope": "mAP=99.45 / acc=95.19 / AUROC=98.09",
+      "ours_official": "mAP=98.84 / AUROC=96.28",
+      "status": "reproduced",
+      "note": "Only 8 of the 10 generators can still be downloaded (both CogVideoX sets are offline); the paper's values for those 8 average 99.22. SynthScope engine 99.45 (AUROC 98.09, acc 95.19; tag d3_videophy, job 252250). Official D3 code: 98.84 (tag d3_official_videophy, job 252251)."
     },
     {
-      "benchmark": "VidProM (Table 4, 6 generators)",
+      "benchmark": "VidProM (Table 4; 4 of 6 generators, first 100",
       "metric": "AP",
       "paper": "mAP=88.46",
-      "ours": "",
-      "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Not evaluated in SynthScope \u2014 VidProM not downloaded for D3. No bench_results entry. (Note: ReStraV uses VidProM as its MAIN training+test benchmark; the VidProM-from-the-D3-table subset differs.)"
+      "ours": "SynthScope mAP=92.15 / acc=84.86 / AUROC=90.86 \u00b7 official mAP=84.91 / AUROC=82.83",
+      "ours_synthscope": "mAP=92.15 / acc=84.86 / AUROC=90.86",
+      "ours_official": "mAP=84.91 / AUROC=82.83",
+      "status": "reference",
+      "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28: without"
     }
   ],
   "fat_former": [

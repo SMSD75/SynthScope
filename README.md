@@ -275,7 +275,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
-| D3 (video) | GenVideo-Val | 98.5 | 95.95 AUROC | ⚠️ mAP not comparable: our test pool is far more imbalanced |
+| D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
 | SPAI | GenImage | not reported | 94.22 (official) | ⚠️ the paper's own test set is not in SynthScope yet |
 | VIB-Net | GenImage SD-v1.4 | 95.5 | 83.94 | ❌ below the paper (no official weights to compare) |
 

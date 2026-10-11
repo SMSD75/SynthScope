@@ -1,0 +1,114 @@
+{
+  "tag": "d3_official_evalcrafter",
+  "model": "d3",
+  "ckpt": "official D3 code (XCLIP-16, l2)",
+  "benchmark": "video:official-d3",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalCrafter/test/1_fake",
+  "n_generators": 14,
+  "means": {
+    "map_real": 98.7,
+    "map": 95.37,
+    "mauroc": 97.81
+  },
+  "per_generator": {
+    "MoonValley": {
+      "ap_real": 99.36,
+      "ap": 97.49,
+      "auroc": 98.8,
+      "n_real": 1000,
+      "n_fake": 626
+    },
+    "floor33": {
+      "ap_real": 98.51,
+      "ap": 94.21,
+      "auroc": 97.34,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "gen2": {
+      "ap_real": 99.25,
+      "ap": 96.45,
+      "auroc": 98.61,
+      "n_real": 1000,
+      "n_fake": 681
+    },
+    "gen2_december": {
+      "ap_real": 99.56,
+      "ap": 98.28,
+      "auroc": 99.19,
+      "n_real": 1000,
+      "n_fake": 699
+    },
+    "hotshot": {
+      "ap_real": 98.33,
+      "ap": 94.32,
+      "auroc": 97.2,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "lavie-base": {
+      "ap_real": 97.61,
+      "ap": 93.13,
+      "auroc": 96.35,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "lavie-interpolation": {
+      "ap_real": 98.29,
+      "ap": 94.66,
+      "auroc": 97.3,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "mix-sr": {
+      "ap_real": 98.99,
+      "ap": 96.69,
+      "auroc": 98.27,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "modelscope": {
+      "ap_real": 96.99,
+      "ap": 92.07,
+      "auroc": 95.59,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "pika": {
+      "ap_real": 99.22,
+      "ap": 96.89,
+      "auroc": 98.61,
+      "n_real": 1000,
+      "n_fake": 697
+    },
+    "pika_v1_december_1": {
+      "ap_real": 99.37,
+      "ap": 97.8,
+      "auroc": 98.89,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "show_1": {
+      "ap_real": 98.97,
+      "ap": 95.58,
+      "auroc": 98.14,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "videocrafter-v1.0": {
+      "ap_real": 98.61,
+      "ap": 96.25,
+      "auroc": 97.78,
+      "n_real": 1000,
+      "n_fake": 700
+    },
+    "zeroscope": {
+      "ap_real": 98.71,
+      "ap": 91.36,
+      "auroc": 97.25,
+      "n_real": 1000,
+      "n_fake": 598
+    }
+  },
+  "date": "2026-10-11T18:50:30"
+}

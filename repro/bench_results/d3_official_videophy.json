@@ -1,0 +1,72 @@
+{
+  "tag": "d3_official_videophy",
+  "model": "d3",
+  "ckpt": "official D3 code (XCLIP-16, l2)",
+  "benchmark": "video:official-d3",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VideoPhy/test",
+  "n_generators": 8,
+  "means": {
+    "map_real": 98.84,
+    "map": 84.3,
+    "mauroc": 96.28
+  },
+  "per_generator": {
+    "Dream-Machine": {
+      "ap_real": 99.32,
+      "ap": 89.24,
+      "auroc": 97.74,
+      "n_real": 1000,
+      "n_fake": 339
+    },
+    "Gen-2": {
+      "ap_real": 99.73,
+      "ap": 94.4,
+      "auroc": 99.03,
+      "n_real": 1000,
+      "n_fake": 312
+    },
+    "LaVie": {
+      "ap_real": 98.2,
+      "ap": 79.64,
+      "auroc": 94.49,
+      "n_real": 1000,
+      "n_fake": 343
+    },
+    "OpenSora": {
+      "ap_real": 98.23,
+      "ap": 77.32,
+      "auroc": 94.33,
+      "n_real": 1000,
+      "n_fake": 344
+    },
+    "Pika": {
+      "ap_real": 99.51,
+      "ap": 90.55,
+      "auroc": 98.22,
+      "n_real": 1000,
+      "n_fake": 304
+    },
+    "SVD": {
+      "ap_real": 97.4,
+      "ap": 69.78,
+      "auroc": 91.84,
+      "n_real": 1000,
+      "n_fake": 344
+    },
+    "VideoCrafter2": {
+      "ap_real": 99.23,
+      "ap": 88.1,
+      "auroc": 97.5,
+      "n_real": 1000,
+      "n_fake": 344
+    },
+    "ZeroScope": {
+      "ap_real": 99.12,
+      "ap": 85.38,
+      "auroc": 97.07,
+      "n_real": 1000,
+      "n_fake": 344
+    }
+  },
+  "date": "2026-10-11T17:58:15"
+}

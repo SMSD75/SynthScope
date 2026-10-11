@@ -45,9 +45,14 @@ def videos(d: Path) -> list[Path]:
 
 
 def duration(path: Path) -> float:
+    """Clip length in seconds (the official code uses moviepy); 0 when decord cannot measure it (e.g. some GIFs),
+    which makes the frame extraction start at 0, as it does for every clip up to 3 s."""
     from decord import VideoReader, cpu
-    vr = VideoReader(str(path), ctx=cpu(0))
-    return len(vr) / (float(vr.get_avg_fps()) or 30.0)
+    try:
+        vr = VideoReader(str(path), ctx=cpu(0))
+        return len(vr) / (float(vr.get_avg_fps()) or 30.0)
+    except Exception:  # noqa: BLE001
+        return 0.0
 
 
 def extract(path: Path, out: Path, ffmpeg: str) -> Path:
@@ -90,6 +95,7 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, default=1000, help="clips per class per generator (official max_len=1000)")
     ap.add_argument("--encoder", default="XCLIP-16")
     ap.add_argument("--loss", default="l2")
+    ap.add_argument("--select", default=None, help="comma list: only these generators")
     ap.add_argument("--tag", default=None)
     args = ap.parse_args(argv)
 
@@ -103,7 +109,8 @@ def main(argv=None) -> int:
     trans = set_preprocessing(None, None)
     root, frames_root = Path(args.dataset_root), Path(args.frames)
     tag = args.tag or f"d3_official_{args.name}"
-    gens = sorted(p for p in root.iterdir() if p.is_dir())
+    gens = sorted(p for p in root.iterdir() if p.is_dir()
+                  and (not args.select or p.name in args.select.split(",")))
     print(f"=== d3_official_eval {tag} | {len(gens)} generators | {args.encoder}/{args.loss} | device={device} ===",
           flush=True)
 

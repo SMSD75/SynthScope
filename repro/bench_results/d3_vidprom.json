@@ -1,0 +1,50 @@
+{
+  "tag": "d3_vidprom",
+  "model": "d3",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 84.86,
+    "map": 86.87,
+    "map_real": 92.15,
+    "mauroc": 90.86
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 94.5,
+      "ap_real": 98.76,
+      "auroc": 98.06,
+      "real_acc": 94.3,
+      "fake_acc": 97.3,
+      "acc": 95.8
+    },
+    "Pika": {
+      "ap": 97.17,
+      "ap_real": 99.36,
+      "auroc": 98.93,
+      "real_acc": 94.3,
+      "fake_acc": 99.9,
+      "acc": 97.1
+    },
+    "Text2Video-Zero": {
+      "ap": 59.73,
+      "ap_real": 71.28,
+      "auroc": 67.76,
+      "real_acc": 94.3,
+      "fake_acc": 5.4,
+      "acc": 49.85
+    },
+    "VideoCrafter2": {
+      "ap": 96.07,
+      "ap_real": 99.2,
+      "auroc": 98.68,
+      "real_acc": 94.3,
+      "fake_acc": 99.1,
+      "acc": 96.7
+    }
+  },
+  "date": "2026-10-11T18:19:09",
+  "synthscope_version": "video"
+}
