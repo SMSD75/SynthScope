@@ -1,0 +1,38 @@
+{
+  "tag": "clip_rrdataset",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 52.66,
+    "map": 56.71,
+    "mauroc": 54.67
+  },
+  "per_generator": {
+    "original": {
+      "ap": 60.22,
+      "auroc": 57.15,
+      "real_acc": 97.24,
+      "fake_acc": 10.2,
+      "acc": 53.72
+    },
+    "redigital": {
+      "ap": 55.45,
+      "auroc": 53.81,
+      "real_acc": 91.6,
+      "fake_acc": 13.52,
+      "acc": 52.56
+    },
+    "transfer": {
+      "ap": 54.47,
+      "auroc": 53.06,
+      "real_acc": 96.36,
+      "fake_acc": 7.01,
+      "acc": 51.69
+    }
+  },
+  "date": "2026-10-11T03:10:24",
+  "synthscope_version": "0.1.0"
+}

@@ -75,7 +75,7 @@ have no automatic source: get them from their official sites and place them in t
 | `universialfakedetection` | UnivFD test sets (LDM, Glide, DALL-E, guided) | Google Drive |
 | `genimage`, `genimage_full` | GenImage, 8 generators | Hugging Face `jzousz/GenImage` (Google Drive is quota-limited) |
 | `aigibench` | AIGIBench | Hugging Face `HorizonTEL/AIGIBench` |
-| `aigcdetect` | AIGCDetectBenchmark, 16 generators | ModelScope `aemilia/AIGCDetectionBenchmark` |
+| `aigcdetect` | AIGCDetectBenchmark, 17 generators, full test data (76.3k real / 76.3k fake, 34 GB) | ModelScope `aemilia/AIGCDetectionBenchmark` |
 | `cospy` | Co-Spy-Bench | Hugging Face `ruojiruoli/Co-Spy-Bench` |
 | `synthbuster` | Synthbuster | Zenodo record `10066460` |
 | `ditfake`, `commgen15` | DiTFake, CommGen15 | Hugging Face (`lioooox/DiTFake`, `xiaoyuzhou68/CommGen15`) |

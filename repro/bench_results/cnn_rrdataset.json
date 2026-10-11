@@ -1,0 +1,38 @@
+{
+  "tag": "cnn_rrdataset",
+  "model": "cnn",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "n_generators": 3,
+  "means": {
+    "acc": 50.48,
+    "map": 48.86,
+    "mauroc": 44.58
+  },
+  "per_generator": {
+    "original": {
+      "ap": 49.19,
+      "auroc": 44.18,
+      "real_acc": 99.4,
+      "fake_acc": 2.35,
+      "acc": 50.88
+    },
+    "redigital": {
+      "ap": 45.24,
+      "auroc": 43.34,
+      "real_acc": 98.8,
+      "fake_acc": 0.74,
+      "acc": 49.77
+    },
+    "transfer": {
+      "ap": 52.15,
+      "auroc": 46.22,
+      "real_acc": 99.81,
+      "fake_acc": 1.76,
+      "acc": 50.79
+    }
+  },
+  "date": "2026-10-11T03:22:48",
+  "synthscope_version": "0.1.0"
+}

@@ -49,7 +49,7 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
 | ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | — | reference |
 | GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | — | reference |
-| AIGCDetectBenchmark | acc=89.3 | — | — | missing |
+| AIGCDetectBenchmark (17 generators, full data, 76.3k real / 76.3k fake) | acc=89.3 / AUC=98.0 | mAP=98.08 / acc=89.30 / AUROC=98.02 | — | **reproduced** |
 | RealChain (7 generators, 7000 real / 7000 fake, full data) | acc=79.7 | mAP=87.39 / acc=79.69 / AUROC=85.47 | — | **reproduced** |
 | EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | — | **reproduced** (our real pool; see below) |
 | SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | — | **reproduced** (on the images still online) |
@@ -73,7 +73,7 @@ SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealCha
 | **AIGIBench — the paper's 20 full-image-synthesis subsets, FULL test data** (168,002 images) | 20 | **92.85** | 97.00 | 97.48 | **92.8** (AUC 97.5) | **reproduced** (mean abs diff 0.03; max 0.10) |
 | same 20 subsets, `--limit 1500`/class (earlier run) | 20 | 93.13 | 97.14 | 97.59 | 92.8 | within 2.1 pt per subset; the cap caused the residual |
 | AIGIBench, all 25 test generators (adds 5 face-swap subsets the paper excludes) | 25 | 85.95 | 90.72 | 91.43 | – | not the paper's protocol |
-| AIGCDetect (17 gens) | 17 | *not run* | | | 89.3 | data lives only on cn023 (its GPUs/CPUs were fully booked) |
+| **AIGCDetect** (`--dataset aigcdetect`, all 17 generators, full data) | 17 | **89.30** | 98.08 | 98.02 | **89.3** (AUC 98.0) | **reproduced** |
 | **RealChain** (`--dataset realchain`, full data) | 7 | **79.69** | 87.39 | 85.47 | **79.7** | **reproduced** |
 | **EvalGEN** (`--dataset evalgen`, full data, MSCOCO val2017 reals) | 5 | **98.14** | 99.86 | 99.66 | **98.1** | **reproduced** |
 | **SynthWildX** (`--dataset synthwildx`; 1713/2000 images still on X) | 3 | **92.69** | 95.61 | 96.50 | **92.7** | **reproduced** |
@@ -121,9 +121,14 @@ test split (BlendFace, FaceSwap, InSwap, SimSwap, E4S; mean 57.2) are excluded b
 what produced my first, misleading 85.95. (Paper values were read from the arXiv
 HTML Table 2 via a text extraction, not from the PDF.)
 
-**Still NOT confirmed:** only 3 of the paper's 10 benchmarks exist in SynthScope. UnivFD: the paper's aggregation is not
-specified (SynthScope's UFD-8 and ForenSynths-13 splits give 93.9 and 82.0, the 16-generator union 89.3, vs 82.0).
-AIGCDetect was not run (its data lives only on cn023, fully booked). The other 7 benchmarks are not available here.
+**AIGCDetectBenchmark is reproduced** (job 251523): 89.30 balanced acc and 98.02 AUROC on all 17 generators with the
+full test data (76,299 real / 76,299 fake), vs 89.3 / 98.0. Per generator: ADM 71.13, DALLE2 82.45, Glide 88.07,
+Midjourney 82.62, VQDM 89.32, BigGAN 93.55, CycleGAN 70.36, GauGAN 94.23, ProGAN 95.20, SD-XL 99.45, SD-v1.4 99.77,
+SD-v1.5 99.73, StarGAN 92.82, StyleGAN 87.12, StyleGAN2 79.11, WhichFaceIsReal 93.50, Wukong 99.65.
+
+**Still NOT confirmed:** UnivFD, whose aggregation the paper does not specify (SynthScope's UFD-8 and ForenSynths-13
+splits give 93.9 and 82.0, the 16-generator union 89.3, vs 82.0), and Chameleon, which is released by request only.
+The other 8 of the paper's 10 benchmarks are reproduced above (BFree-Online only on the images still online).
 
 Per-generator tables (balanced acc / AP / AUROC / real-acc / fake-acc), from `repro/bench_results/cure_repro_*.json`:
 

@@ -159,14 +159,14 @@
       "note": "SD-v1.4 99.73, SD-v1.5 99.80, Wukong 99.87; weaker on ADM/BigGAN/VQDM at the fixed 0.5 threshold."
     },
     {
-      "benchmark": "AIGCDetectBenchmark",
+      "benchmark": "AIGCDetectBenchmark (17 generators, full data)",
       "metric": "balanced accuracy",
-      "paper": "acc=89.3",
-      "ours": "",
+      "paper": "acc=89.3 / auroc=98.0",
+      "ours": "mAP=98.08 / acc=89.3 / AUROC=98.02 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
+      "ours_official": "mAP=98.08 / acc=89.3 / AUROC=98.02",
+      "status": "official",
+      "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523)."
     },
     {
       "benchmark": "EvalGEN (5 generators, full data)",

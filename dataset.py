@@ -2273,8 +2273,9 @@ class Diffusion1kStepDataset(_TestOnlyImageDataset):
 
 
 class AIGCDetectBenchmarkDataset(_TestOnlyImageDataset):
-    """AIGCDetectBenchmark 16-generator test set — used by Co-Spy (ProGAN/AIGCDetect table) and
-    AIDE. Sourced from the ModelScope dataset ``aemilia/AIGCDetectionBenchmark`` (test_set.zip)."""
+    """AIGCDetectBenchmark test set (16-17 GAN and diffusion generators) — used by Co-Spy (ProGAN/AIGCDetect table),
+    AIDE and CuRe. Sourced from the ModelScope dataset ``aemilia/AIGCDetectionBenchmark`` (test_set.zip). The full
+    test data is kept (the papers evaluate all of it, about 76k real / 76k fake)."""
     modelscope_url = ("https://modelscope.cn/api/v1/datasets/aemilia/AIGCDetectionBenchmark/"
                       "repo?Revision=master&FilePath=AIGCDetectionBenchMark%2Ftest_set.zip")
 
@@ -2288,7 +2289,10 @@ class AIGCDetectBenchmarkDataset(_TestOnlyImageDataset):
         subprocess.run(["curl", "-L", "--fail", "-C", "-", "-o", str(zip_path), cls.modelscope_url],
                        check=True)
         staging = _extract_archives_into(dl, root_dir / "_staging")
-        _restructure_image_pergen(staging, dest, cap=1000)
+        inner = staging
+        while len(subdirs := [p for p in inner.iterdir() if p.is_dir()]) == 1:   # step into wrapper folders
+            inner = subdirs[0]
+        _restructure_image_pergen(inner, dest)
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 

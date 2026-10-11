@@ -64,18 +64,19 @@
       }
     },
     {
-      "name": "AIGCDetectBenchmark",
+      "name": "AIGCDetectBenchmark (17 generators, full data)",
       "datasets": [
         "AIGCDetectBenchmark"
       ],
       "metric": "balanced accuracy",
       "paper_number": {
         "acc": 89.3,
-        "note": "Paper table."
+        "auroc": 98.0,
+        "note": "Paper Table 6: unweighted mean over the 17 generators; 76.3k real / 76.3k fake."
       },
-      "our_status": "missing",
+      "our_status": "official",
       "our_number": {
-        "note": "Not run: the data is only staged on one node. See docs/BENCHMARKS.md to run it."
+        "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523)."
       }
     },
     {

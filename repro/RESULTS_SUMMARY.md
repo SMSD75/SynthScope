@@ -115,9 +115,9 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | WildRF (`--dataset wildrf`; full test split, 1251/1252) | **95.89** | 99.13 | **95.8** | **reproduced** (AUROC 99.14) |
 | BFree-Online (`--dataset bfree_online`; 807 of ~1400 images still online) | 91.64 | 99.06 | 90.9 | close, not like-for-like: 269 real / 538 fake survive (AUROC 98.08) |
 | RRDataset (`--dataset rrdataset`; public test archive, 25.5k/25.5k) | **82.04** | 90.40 | **81.5** | **reproduced** within 0.6 pt (AUROC 88.88; original 91.1, transfer 85.5, redigital 69.5) |
-| AIGCDetect | not run | | 89.3 | data only on cn023 (booked) |
+| AIGCDetectBenchmark (`--dataset aigcdetect`; all 17 generators, full data, 76.3k/76.3k) | **89.30** | 98.08 | **89.3** | **reproduced** (AUROC 98.02 vs 98.0) |
 
-**Verdict: faithful port (identical to the official model); AIGIBench (92.85 vs 92.8), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7) and WildRF (95.89 vs 95.8) reproduced.** Still unconfirmed: UnivFD (aggregation unspecified), AIGCDetect (data only on cn023, booked), BFree-Online (91.64 vs 90.9, but only 807 of about 1400 images are still online), RRDataset reproduced within 0.6 pt (82.04 vs 81.5), and Chameleon is not in SynthScope (released by email request only).
+**Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
