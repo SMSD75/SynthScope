@@ -87,6 +87,9 @@ VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 # How many models to keep resident at once (LRU). Big backbones (ConvNeXt-XXL, SigLIP+VAE)
 # are several GB each, so we evict rather than risk OOM on a shared GPU.
 MAX_RESIDENT_MODELS = int(os.environ.get("SYNTHSCOPE_MAX_RESIDENT_MODELS", "2"))
+# SYNTHSCOPE_DEMO=1 marks the hosted online demo (the Hugging Face Space): the page then explains which features are
+# limited there and that a local install has them all.
+DEMO = os.environ.get("SYNTHSCOPE_DEMO", "") not in ("", "0", "false", "False")
 
 
 def device() -> str:

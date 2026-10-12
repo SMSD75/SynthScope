@@ -325,3 +325,13 @@ def resolve_media(key: str, rel: str) -> Path:
     if not target.is_file():            # follows the symlink to the real video/image
         raise FileNotFoundError(str(target))
     return target
+
+
+# Hydra dataset configs that are training sets, not benchmarks (excluded from the benchmark count shown on the page).
+_TRAINING_ONLY = {"cospy_subset", "spai_ldm"}
+
+
+def supported_counts() -> dict:
+    """How many benchmark datasets SynthScope can download and lay out (one Hydra config each)."""
+    conf = Path(__file__).resolve().parents[2] / "conf" / "dataset"
+    return {m: sum(1 for p in (conf / m).glob("*.yaml") if p.stem not in _TRAINING_ONLY) for m in ("image", "video")}

@@ -166,6 +166,12 @@ button.go:disabled, button.sm:disabled, button.primary:disabled { opacity: .4; c
   background: var(--panel2); border: 1px solid var(--line-strong); color: var(--muted); margin-left: 8px;
 }
 .empty { color: var(--muted2); text-align: center; padding: 48px 0; font-size: 14px; }
+.notice { border-left: 3px solid var(--accent, #7c9cff); }
+.notice h3 { margin: 0 0 8px; font-size: 16px; }
+.notice p { margin: 8px 0; line-height: 1.55; color: var(--muted); }
+.notice b, .notice i { color: inherit; }
+.notice.slim { padding: 10px 14px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.notice a { color: var(--accent, #7c9cff); }
 
 /* ---- tabs -----------------------------------------------------------------*/
 .tabs { display: flex; gap: 4px; margin-top: 26px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
@@ -552,6 +558,22 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
 
     // SOTA generator vs detector: pick/upload a real image -> a generator makes a new image ONCE -> any number of
     // detectors score the pair. Ticking another detector only scores it (no regeneration).
+    const SETUP_URL = "https://github.com/SMSD75/SynthScope#readme";
+
+    // Shown instead of "Test a generator" when no generator can run on this server (no GPU and no API key).
+    function GeneratorOff({ demo }) {
+      return html`<div class="card notice">
+        <h3>${demo ? "Switched off in this online demo" : "No image generator can run here"}</h3>
+        <p>Testing a generator means creating new images. That needs a GPU, for the open models (FLUX.2 [klein],
+          FLUX.1 Kontext, Qwen-Image), or your own API key, for the hosted ones (Nano Banana, GPT Image, Grok, FLUX via
+          fal.ai). ${demo ? "This online demo has neither, so the tab is off here." : "This machine has neither."}</p>
+        <p><b>Run SynthScope on your own computer to use it</b>: install it, add a GPU or an API key, and this tab
+          generates an image from yours and scores it with every detector. See the <a href=${SETUP_URL} target="_blank"
+          rel="noopener">setup guide</a>. Results we already ran for FLUX.2 [klein] and Qwen-Image are in the
+          <i>Generator benchmarks</i> tab.</p>
+      </div>`;
+    }
+
     function SotaView({ models }) {
       const [gens, setGens] = useState([]);
       const [genDevice, setGenDevice] = useState("");
@@ -930,11 +952,14 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const [threshold, setThreshold] = useState(0.5);
       const [error, setError] = useState("");
       const [hasData, setHasData] = useState(true);       // hide "Browse datasets" when no dataset is installed (e.g. a public Space)
-      const [hasGen, setHasGen] = useState(true);         // hide "Test a generator" when no generator can run here
+      const [hasGen, setHasGen] = useState(true);         // "Test a generator" shows a notice when no generator can run here
+      const [demo, setDemo] = useState(false);            // hosted online demo (SYNTHSCOPE_DEMO=1, e.g. the Hugging Face Space)
 
       useEffect(() => {
         fetch(API("/api/datasets")).then(r => r.json()).then(d => setHasData((d.datasets || []).length > 0)).catch(() => {});
-        fetch(API("/api/sota/generators")).then(r => r.json()).then(d => setHasGen((d.generators || []).some(g => g.available))).catch(() => {});
+        fetch(API("/api/sota/generators")).then(r => r.json()).then(d => {
+          setHasGen((d.generators || []).some(g => g.available)); setDemo(!!d.demo);
+        }).catch(() => {});
         fetch(API("/api/models")).then(r => r.json()).then(d => {
           setModels(d.models || []);
           setDevice(d.device || "");
@@ -954,12 +979,12 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             ${device && html`<span class="pill" title="Where the detectors run">${device}</span>`}
           </header>
           <div class="tabs">
-            ${TABS.filter(([k]) => (k !== "explore" || hasData) && (k !== "sota" || hasGen)).map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
+            ${TABS.filter(([k]) => k !== "explore" || hasData).map(([k, label]) => html`<button key=${k} class=${"tab" + (tab === k ? " active" : "")} onClick=${() => setTab(k)}>${label}</button>`)}
           </div>
           ${error && html`<div class="err">${error}</div>`}
           ${tab === "detect" ? html`<${DetectView} ...${shared} />`
             : tab === "explore" ? html`<${ExploreView} ...${shared} />`
-            : tab === "sota" ? html`<${SotaView} models=${models} />`
+            : tab === "sota" ? (hasGen ? html`<${SotaView} models=${models} />` : html`<${GeneratorOff} demo=${demo} />`)
             : tab === "leaderboard" ? html`<${LeaderboardView} />`
             : html`<${TopGeneratorsView} />`}
         </div>`;
@@ -1052,6 +1077,8 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const [preds, setPreds] = useState({});      // rel -> {fake_probability, ground_truth, ...}
       const [scoring, setScoring] = useState(false);
       const [fpr, setFpr] = useState(5);
+      const [demo, setDemo] = useState(false);
+      const [supported, setSupported] = useState(null);   // {image: n, video: n} datasets a local install can fetch
       const batchN = 24;
 
       const curDs = datasets.find(d => d.key === dataset);
@@ -1060,6 +1087,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       useEffect(() => {
         fetch(API("/api/datasets")).then(r => r.json()).then(d => {
           setDatasets(d.datasets || []); setTrainMap(d.model_train || {});
+          setDemo(!!d.demo); setSupported(d.supported || null);
           if ((d.datasets || []).length) {
             const first = d.datasets[0];
             setDataset(first.key); setSplit(first.splits[first.splits.length - 1] || ".");
@@ -1137,6 +1165,12 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
 
       return html`
         <div class="explore">
+          ${demo && html`<div class="card notice slim">
+            <b>Demo subset.</b> To keep this online demo light it includes only ${datasets.map(d => d.name).join(" and ")}.
+            ${" "}Run SynthScope on your own computer and it downloads and browses every supported benchmark
+            ${supported ? ` (${supported.image} image and ${supported.video} video datasets)` : ""}, each with one command;
+            see the <a href=${SETUP_URL} target="_blank" rel="noopener">setup guide</a>.
+          </div>`}
           <div class="card detbar2">
             <div class="detsel">
               <label>Detector</label>

@@ -9,7 +9,7 @@ RUN useradd -m -u 1000 user
 USER user
 ENV HOME=/home/user PATH=/home/user/.local/bin:$PATH PYTHONUNBUFFERED=1 \
     SYNTHSCOPE_CKPT_DIR=/home/user/ckpts SYNTHSCOPE_CACHE_DIR=/home/user/cache HF_HOME=/home/user/cache/hf \
-    SYNTHSCOPE_MAX_UPLOAD_MB=20 SYNTHSCOPE_MAX_RESIDENT_MODELS=2 XFORMERS_DISABLED=1
+    SYNTHSCOPE_MAX_UPLOAD_MB=20 SYNTHSCOPE_MAX_RESIDENT_MODELS=2 XFORMERS_DISABLED=1 SYNTHSCOPE_DEMO=1
 WORKDIR /home/user/app
 
 # CPU-only PyTorch first (much smaller than the CUDA build), then SynthScope with the web extras
