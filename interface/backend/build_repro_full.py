@@ -73,10 +73,8 @@ VAL = {
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
-    ("vib_net", "Diffusion-source (SDv1.4-trained), AP"):  {"synthscope": {"map": 83.94, "acc": 77.57}},
-    ("vib_net", "Diffusion-source (SDv1.4-trained), ACC"): {"synthscope": {"map": 83.94, "acc": 77.57}},
-    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), AP"):  {"synthscope": {"map": 61.71, "acc": 57.91}},
-    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained), ACC"): {"synthscope": {"map": 61.71, "acc": 57.91}},
+    ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 83.94, "acc": 77.57}},
+    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained)"):  {"synthscope": {"map": 61.71, "acc": 57.91}},
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
 
@@ -202,7 +200,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         else:
             note = (b.get("gap_cause") or b.get("dataset_source") or "")
         rows.append({
-            "benchmark": name[:46],
+            "benchmark": name,
             "metric": b.get("metric", ""),
             "paper": fmt_paper(paper),
             "ours": combined(synthscope, official),

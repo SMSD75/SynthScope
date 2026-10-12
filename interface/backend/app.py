@@ -10,6 +10,7 @@ standalone page in ``static/index.html`` (works without Node).
 """
 import asyncio
 import json
+import re
 import tempfile
 import threading
 from pathlib import Path
@@ -290,6 +291,7 @@ _METHOD_NAMES = {
 _FAMILY = [  # (substring -> benchmark family label); first match wins
     ("genimage", "GenImage"), ("forensynth", "ForenSynths"), ("universalfakedetect", "UniversalFakeDetect"),
     ("ojha", "UniversalFakeDetect"), ("ufd", "UniversalFakeDetect"), ("aigcdetect", "AIGCDetect"),
+    ("co-spy-bench in-the-wild", "In-the-wild"),  # before "co-spy-bench": a different benchmark
     ("co-spy-bench", "Co-Spy-Bench"), ("aigibench", "AIGIBench"), ("aigi", "AIGIBench"),
     ("commgen", "CommGen15"), ("genvideo", "GenVideo"), ("evalcrafter", "EvalCrafter"),
     ("videophy", "VideoPhy"), ("vidprom", "VidProM"), ("genvidbench", "GenVidBench"),
@@ -311,6 +313,22 @@ def _family(name: str) -> str:
     return (name.split("(")[0].strip() or name)[:28]
 
 
+def _variant(name: str, family: str) -> str:
+    """The row's own setting, shown under the method name, so two rows of one method in a group are told apart
+    (e.g. "In-the-wild (Co-Spy-Bench in-the-wild)" -> "Co-Spy-Bench in-the-wild"). Empty when the name is just the
+    family name."""
+    name = (name or "").strip()
+    if name.lower() == family.lower():
+        return ""
+    if name.lower().startswith(family.lower()):
+        name = name[len(family):].strip(" -—:,")
+    if name.startswith("(") and ")" in name:                  # "(SDv1.4-trained), AP and ACC" -> "SDv1.4-trained, AP and ACC"
+        j = name.index(")")
+        rest = name[j + 1:].strip(" ,")
+        name = name[1:j] + (f", {rest}" if rest else "")
+    return re.sub(r"[\s,]*[-—]+\s*HEADLINE\b", "", name).strip(" ,")      # drop the specs' internal marker
+
+
 def _lead_num(s: str) -> float:
     import re as _re
     m = _re.search(r"(\d+\.?\d*)", s or "")
@@ -327,7 +345,7 @@ def leaderboard():
             fam = _family(r["benchmark"])
             groups.setdefault(fam, []).append({
                 "method": _METHOD_NAMES.get(key, key), "key": key,
-                "benchmark": r["benchmark"], "paper": r["paper"],
+                "benchmark": r["benchmark"], "variant": _variant(r["benchmark"], fam), "paper": r["paper"],
                 "synthscope": r.get("ours_synthscope", ""), "official": r.get("ours_official", ""),
                 "status": r["status"],
                 "_sort": max(_lead_num(r.get("ours_synthscope")), _lead_num(r.get("ours_official"))),
