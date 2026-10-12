@@ -1,7 +1,7 @@
 {
   "aide": [
     {
-      "benchmark": "AIGCDetectBenchmark (B1, Setting-I, ProGAN-tra",
+      "benchmark": "AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained)",
       "metric": "acc",
       "paper": "acc=92.77",
       "ours": "mAP=97.94 / acc=91.89 (official wts)",
@@ -33,7 +33,7 @@
   ],
   "clip": [
     {
-      "benchmark": "ForenSynths GAN/low-level test (11 of the pape",
+      "benchmark": "ForenSynths GAN/low-level test (11 of the paper's 19 models; from Wang et al.)",
       "metric": "AP (Table 2) and acc@0.5 (Table 3); paper also reports best-threshold acc",
       "paper": "\u2014",
       "ours": "SynthScope mAP=97.22 / acc=88.28 \u00b7 official mAP=96.95",
@@ -43,7 +43,7 @@
       "note": "SynthScope ForenSynths-8 mAP 97.22 (official-weights-in-SynthScope 96.95); ForenSynths-13 92.99 (official 93.14). SynthScope-trained head matches the official fc_weights.pth."
     },
     {
-      "benchmark": "UniversalFakeDetect diffusion/autoregressive t",
+      "benchmark": "UniversalFakeDetect diffusion/autoregressive test (the other 8 of the 19 models)",
       "metric": "AP and acc@0.5",
       "paper": "map=95.0",
       "ours": "SynthScope mAP=96.44 / acc=87.23 \u00b7 official mAP=95.66",
@@ -55,7 +55,7 @@
   ],
   "cnn": [
     {
-      "benchmark": "ForenSynths test set (CVPR paper Table 2 = 11 ",
+      "benchmark": "ForenSynths test set (CVPR paper Table 2 = 11 generators; released repo set = 13)",
       "metric": "AP and acc@0.5",
       "paper": "map=90.8",
       "ours": "SynthScope mAP=94.42 / acc=76.36 \u00b7 official mAP=92.67",
@@ -119,7 +119,7 @@
   ],
   "cure": [
     {
-      "benchmark": "AIGIBench (20 full-image-synthesis subsets, fu",
+      "benchmark": "AIGIBench (20 full-image-synthesis subsets, full test data)",
       "metric": "balanced accuracy / AUROC",
       "paper": "acc=92.8 / auroc=97.5",
       "ours": "mAP=97.0 / acc=92.85 / AUROC=97.48 (official wts)",
@@ -129,7 +129,7 @@
       "note": "Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC)."
     },
     {
-      "benchmark": "UniversalFakeDetect (UFD-8, diffusion and DALL",
+      "benchmark": "UniversalFakeDetect (UFD-8, diffusion and DALL-E half)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
       "ours": "mAP=99.19 / acc=93.94 (official wts)",
@@ -149,7 +149,7 @@
       "note": "Mean balanced accuracy 81.95 (low scores are fake-recall; AP/AUROC are 95-99 on those generators)."
     },
     {
-      "benchmark": "GenImage-8 (CuRe's training set, in-distributi",
+      "benchmark": "GenImage-8 (CuRe's training set, in-distribution sanity check)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
       "ours": "mAP=97.3 / acc=85.18 (official wts)",
@@ -179,7 +179,7 @@
       "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
     },
     {
-      "benchmark": "SynthWildX (3 generators, images still online ",
+      "benchmark": "SynthWildX (3 generators, images still online on X)",
       "metric": "balanced accuracy",
       "paper": "acc=92.7",
       "ours": "mAP=95.61 / acc=92.69 / AUROC=96.5 (official wts)",
@@ -251,7 +251,7 @@
       "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord"
     },
     {
-      "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only",
+      "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only)",
       "metric": "AP",
       "paper": "mAP=98.87",
       "ours": "SynthScope mAP=99.3 / acc=96.59 / AUROC=98.62 \u00b7 official mAP=98.7 / AUROC=97.81",
@@ -261,7 +261,7 @@
       "note": "D3 protocol, paired with the first 1000 GenVideo-Val MSR-VTT reals. SynthScope engine 99.30 (AUROC 98.62, acc 96.59; tag d3_evalcrafter, job 252292). Official D3 code: 98.70 (tag d3_official_evalcrafter, job 252293), every generator within 0.25 of the paper."
     },
     {
-      "benchmark": "VideoPhy (Table 3; 8 of 10 generators still do",
+      "benchmark": "VideoPhy (Table 3; 8 of 10 generators still downloadable)",
       "metric": "AP",
       "paper": "mAP=99.16",
       "ours": "SynthScope mAP=99.45 / acc=95.19 / AUROC=98.09 \u00b7 official mAP=98.84 / AUROC=96.28",
@@ -271,7 +271,7 @@
       "note": "Only 8 of the 10 generators can still be downloaded (both CogVideoX sets are offline); the paper's values for those 8 average 99.22. SynthScope engine 99.45 (AUROC 98.09, acc 95.19; tag d3_videophy, job 252250). Official D3 code: 98.84 (tag d3_official_videophy, job 252251)."
     },
     {
-      "benchmark": "VidProM (Table 4; 4 of 6 generators, first 100",
+      "benchmark": "VidProM (Table 4; 4 of 6 generators, first 1000 clips each)",
       "metric": "AP",
       "paper": "mAP=88.46",
       "ours": "SynthScope mAP=92.15 / acc=84.86 / AUROC=90.86 \u00b7 official mAP=84.91 / AUROC=82.83",
@@ -283,7 +283,7 @@
   ],
   "fat_former": [
     {
-      "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervis",
+      "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervision) \u2014 HEADLINE",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.7 / acc=98.4",
       "ours": "mAP=99.7 / acc=98.39 (official wts)",
@@ -293,7 +293,7 @@
       "note": "SynthScope class + official weights = 99.70 mAP / 98.39 acc \u2014 EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."
     },
     {
-      "benchmark": "GANs dataset \u2014 8 GANs (2-class ProGAN supervis",
+      "benchmark": "GANs dataset \u2014 8 GANs (2-class ProGAN supervision)",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.2 / acc=95.8",
       "ours": "",
@@ -303,7 +303,7 @@
       "note": "Not evaluated: only the 4-class official checkpoint is available; reproducing the 2-class row needs a from-scratch 2-class ProGAN training run (4-GPU, the paper recipe). Not attempted in this campaign (the 4-class headline already matches exactly)."
     },
     {
-      "benchmark": "Diffusion-model (DMs) dataset \u2014 10 subsets (4-",
+      "benchmark": "Diffusion-model (DMs) dataset \u2014 10 subsets (4-class ProGAN supervision)",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=98.8 / acc=95.0",
       "ours": "mAP=98.6 / acc=93.72 (official wts)",
@@ -315,7 +315,7 @@
   ],
   "npr": [
     {
-      "benchmark": "Table 1 \u2014 ForenSynths / Cross-GAN-Sources (8 G",
+      "benchmark": "Table 1 \u2014 ForenSynths / Cross-GAN-Sources (8 GANs) \u2014 HEADLINE",
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.1 / acc=92.5",
       "ours": "mAP=94.22 / acc=92.3 (official wts)",
@@ -325,7 +325,7 @@
       "note": "Our npr_official_forensynths.json logs the full 13-gen mean 79.45 mAP; the 8-GAN subset {progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake} computes to 92.81 mAP / 91.83 acc."
     },
     {
-      "benchmark": "Table 2 \u2014 GANGen-Detection / Self-Synthesis 9 ",
+      "benchmark": "Table 2 \u2014 GANGen-Detection / Self-Synthesis 9 GANs",
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.6 / acc=93.2",
       "ours": "mAP=96.49 / acc=94.81 (official wts)",
@@ -355,7 +355,7 @@
       "note": "n/a \u2014 96.69 mAP / 93.94 acc, close to paper acc 95.2."
     },
     {
-      "benchmark": "Table 5 \u2014 Diffusion1kStep / Self-Synthesis Dif",
+      "benchmark": "Table 5 \u2014 Diffusion1kStep / Self-Synthesis Diffusion (1000 steps)",
       "metric": "AP (and acc@0.5)",
       "paper": "acc=80.1",
       "ours": "mAP=83.47 / acc=79.13 (official wts)",
@@ -429,7 +429,7 @@
       "note": "Not run as the VidProM-vs-image protocol in SynthScope. SynthScope only evaluated GenVidBench (Table 4a) + a GenVideo-Val cross-dataset stress test. The VidProM benchmark dataset is not downloaded for restrav."
     },
     {
-      "benchmark": "B) VidProM vs VideoSwin \u2014 seen/unseen/future (",
+      "benchmark": "B) VidProM vs VideoSwin \u2014 seen/unseen/future (Table 3)",
       "metric": "acc",
       "paper": "\u2014",
       "ours": "",
@@ -439,7 +439,7 @@
       "note": "Not run in SynthScope (VidProM not downloaded). SynthScope's restrav README footnote notes a leave-one-generator-out re-run of the official recipe reaches AUROC ~1.00 per held-out generator incl. Sora, consistent with these seen/unseen numbers, but this was not logged into bench_results."
     },
     {
-      "benchmark": "B) GenVidBench vs SoTA video detectors \u2014 Main ",
+      "benchmark": "B) GenVidBench vs SoTA video detectors \u2014 Main (M) + Plants (P) (Table 4)",
       "metric": "acc",
       "paper": "Main_M_avg=93.01 / Plants_P_avg=96.96",
       "ours": "mAP=92.7 / acc=86.87 / AUROC=95.9",
@@ -449,7 +449,7 @@
       "note": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the pa"
     },
     {
-      "benchmark": "C) DeMamba one-to-many generalization (Table 5",
+      "benchmark": "C) DeMamba one-to-many generalization (Table 5)",
       "metric": "AP",
       "paper": "\u2014",
       "ours": "",
@@ -469,7 +469,7 @@
       "note": "Not run in SynthScope. Veo3 videos are GATED \u2014 Google Veo3 is a closed model; the paper authors' 200-clip Veo3 set is not in their public repo. Note: STALL's ComGenVid benchmark DOES include a VEO3 split (on-disk, see stall.json) generated/collected independently, so a Veo3 evaluation is possible via that data even though ReStraV's own 200-clip set is not released."
     },
     {
-      "benchmark": "E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E,",
+      "benchmark": "E) Physics-IQ 2AFC vs Gemini 1.5 Pro (Sec 7-E, Fig 7)",
       "metric": "acc (2AFC)",
       "paper": "Pika=97.5 / Runway=94.9 / Sora=99.0",
       "ours": "",
@@ -491,7 +491,7 @@
       "note": "SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / safe_full_v2 model_38, full 40-epoch crop recipe). On the paper's 8-GAN subset it reproduces: 97.79 mAP / 95.1 acc (vs paper 98.78/96.2; official weights 98.78/96.2). Full-13 ForenSynths = 87.31 mAP, which BEATS the official checkpoint's own 85.74 on that protocol."
     },
     {
-      "benchmark": "Self-Synthesis / GANGen (Table 2, intra-archit",
+      "benchmark": "Self-Synthesis / GANGen (Table 2, intra-architecture GANs)",
       "metric": "acc/AP",
       "paper": "map=99.8 / acc=99.0",
       "ours": "mAP=99.85 / acc=99.0 (official wts)",
@@ -501,7 +501,7 @@
       "note": "official weights = 99.85 mAP/99.0 acc (tag=safe_official_freqnet) = MATCH paper 99.8/99.0. The synthscope_trained retrain v2 (model_38) was NOT re-evaluated on GANGen \u2014 the GANGen/freqnet data is not present on the cn023 eval node for this run."
     },
     {
-      "benchmark": "Ojha / UniversalFakeDetect (Table 3, cross-arc",
+      "benchmark": "Ojha / UniversalFakeDetect (Table 3, cross-architecture DMs)",
       "metric": "acc/AP",
       "paper": "map=99.1 / acc=95.7",
       "ours": "SynthScope mAP=98.44 / acc=94.0 \u00b7 official mAP=99.1 / acc=95.71",
@@ -511,7 +511,7 @@
       "note": "synthscope_trained retrain v2 (model_38) = 98.44 mAP / 94.0 acc (tag=safe_v2_ufd), reproducing paper 99.1/95.7 (official weights 99.10/95.71). SAFE now serves this SynthScope-trained checkpoint."
     },
     {
-      "benchmark": "GenImage (Table 4, cross-architecture DM+GAN) ",
+      "benchmark": "GenImage (Table 4, cross-architecture DM+GAN) -- HEADLINE residual target",
       "metric": "acc/AP",
       "paper": "map=99.3 / acc=95.6",
       "ours": "SynthScope mAP=99.51 / acc=95.9 \u00b7 official mAP=99.32 / acc=95.62",
@@ -533,7 +533,7 @@
   ],
   "spai": [
     {
-      "benchmark": "SPAI main eval set (13 generators x 5 real sou",
+      "benchmark": "SPAI main eval set (13 generators x 5 real sources) \u2014 the paper's headline",
       "metric": "AUROC",
       "paper": "auroc=91.0",
       "ours": "",
@@ -565,7 +565,7 @@
   ],
   "stall": [
     {
-      "benchmark": "GenVideo (DeMamba GenVideo-Val, 10 generators ",
+      "benchmark": "GenVideo (DeMamba GenVideo-Val, 10 generators + MSR-VTT)",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.8 / avg_AP=0.8 / per_gen_AUC_range=0.72-0.85 / per_gen_AP_range=0.75-0.84",
       "ours": "mAP=82.38 / acc=56.88 / AUROC=83.51",
@@ -575,7 +575,7 @@
       "note": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and SynthScope decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported pe"
     },
     {
-      "benchmark": "VideoFeedback (TIGER-Lab, 11 generators + DiDe",
+      "benchmark": "VideoFeedback (TIGER-Lab, 11 generators + DiDeMo + Panda70M)",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.83 / avg_AP=0.85 / per_gen_AUC_range=0.78-0.93 / per_gen_AP_range=0.80-0.94",
       "ours": "mAP=83.07 / acc=62.12 / AUROC=85.1",
@@ -585,7 +585,7 @@
       "note": "REPRODUCED: SynthScope mAUROC 85.10 / mAP 83.07 vs paper avg AUC 0.83 / AP 0.85 (within ~0-2 pts). SynthScope uses all clips (no dynamic-degree level 3-4 filtering) and a fixed 16-frame window; the paper notes the dynamic-degree filter does not matter much. Per-gen AUROC 78-93 sits inside the paper's reported 0.78-0.93 range."
     },
     {
-      "benchmark": "ComGenVid (paper's new benchmark \u2014 Sora + VEO3",
+      "benchmark": "ComGenVid (paper's new benchmark \u2014 Sora + VEO3 vs MSVD)",
       "metric": "AUC/AP",
       "paper": "avg_AUC=0.852 / avg_AP=0.858",
       "ours": "mAP=82.59 / acc=57.34 / AUROC=84.0",
@@ -597,9 +597,9 @@
   ],
   "vib_net": [
     {
-      "benchmark": "Diffusion-source (SDv1.4-trained), AP -- HEADL",
-      "metric": "AP",
-      "paper": "map=95.53",
+      "benchmark": "Diffusion-source (SDv1.4-trained), AP and ACC -- HEADLINE",
+      "metric": "AP / acc",
+      "paper": "map=95.53 / acc=85.83",
       "ours": "mAP=83.94 / acc=77.57",
       "ours_synthscope": "mAP=83.94 / acc=77.57",
       "ours_official": "",
@@ -607,34 +607,14 @@
       "note": "SynthScope GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 models incl easy GAN columns; SynthScope 83.94 is over the harder GenImage-8 (adm/vqdm/midjourney heavy)."
     },
     {
-      "benchmark": "Diffusion-source (SDv1.4-trained), ACC",
-      "metric": "acc",
-      "paper": "acc=85.83",
-      "ours": "mAP=83.94 / acc=77.57",
-      "ours_synthscope": "mAP=83.94 / acc=77.57",
-      "ours_official": "",
-      "status": "below",
-      "note": "GenImage-8 subset only; see Table 1 entry. acc 77.57."
-    },
-    {
-      "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP",
-      "metric": "AP",
-      "paper": "map=93.14",
+      "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP and ACC",
+      "metric": "AP / acc",
+      "paper": "map=93.14 / acc=82.5",
       "ours": "mAP=61.71 / acc=57.91",
       "ours_synthscope": "mAP=61.71 / acc=57.91",
       "ours_official": "",
       "status": "below",
       "note": "SynthScope ForenSynths-13 with the GenImage-SDv1.4-trained SynthScope VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: SynthScope only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is GenImage->GAN transfer, whereas the paper's 93.14 is a ProGAN-TRAINED model. Not a like-for-like comparison."
-    },
-    {
-      "benchmark": "GAN-source (ForenSynths/ProGAN-trained), ACC",
-      "metric": "acc",
-      "paper": "acc=82.5",
-      "ours": "mAP=61.71 / acc=57.91",
-      "ours_synthscope": "mAP=61.71 / acc=57.91",
-      "ours_official": "",
-      "status": "below",
-      "note": "No ProGAN-trained SynthScope VIB checkpoint and no official ProGAN weights loaded; SynthScope only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cross-domain). No like-for-like acc number was produced."
     }
   ]
 }
