@@ -559,6 +559,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
     // SOTA generator vs detector: pick/upload a real image -> a generator makes a new image ONCE -> any number of
     // detectors score the pair. Ticking another detector only scores it (no regeneration).
     const SETUP_URL = "https://github.com/SMSD75/SynthScope#readme";
+    const listNames = xs => xs.length < 2 ? (xs[0] || "") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
 
     // Shown instead of "Test a generator" when no generator can run on this server (no GPU and no API key).
     function GeneratorOff({ demo }) {
@@ -1166,7 +1167,8 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       return html`
         <div class="explore">
           ${demo && html`<div class="card notice slim">
-            <b>Demo subset.</b> To keep this online demo light it includes only ${datasets.map(d => d.name).join(" and ")}.
+            <b>Demo subset.</b> To keep this online demo light it includes a few files per generator from
+            ${" "}${listNames(datasets.map(d => d.name.split(" (")[0]))}.
             ${" "}Run SynthScope on your own computer and it downloads and browses every supported benchmark
             ${supported ? ` (${supported.image} image and ${supported.video} video datasets)` : ""}, each with one command;
             see the <a href=${SETUP_URL} target="_blank" rel="noopener">setup guide</a>.
