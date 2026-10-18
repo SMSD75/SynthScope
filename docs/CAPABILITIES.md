@@ -139,13 +139,10 @@ adding a branch in `engine._interpret_map` that produces a 2-D saliency tensor.
 
 ---
 
-## 8. Trending pipeline & repo hygiene
+## 8. New detectors & repo hygiene
 
-`repro/fetch_arxiv_trending.py` → `repro/generate_trending_readme.py` keep a curated
-`interface/backend/trending.json` (image+video) and `TRENDING.md` (full list) + a short teaser in the README `<!-- TRENDING -->` block + a web tab.
-Daily rule: new detectors are integrated **on a `trending/<key>` branch and pushed for review — never
-auto-merged to `main`**; only `trending.json`/`TRENDING.md`/README docs go to `main` from the pipeline. Never commit
-weights (`*.pth`), `.env`, or caches.
+New detectors are integrated **on a `detector/<key>` branch and pushed for review — never auto-merged to `main`**
+(see [ADD_DETECTOR.md](ADD_DETECTOR.md)). Never commit weights (`*.pth`), `.env`, or caches.
 
 ---
 
@@ -164,8 +161,8 @@ weights (`*.pth`), `.env`, or caches.
 
 ## 10. Starting a new method — TL;DR
 
-1. Confirm it passes both trending rules (public repo + strong results). Read `ADD_DETECTOR.md`.
-2. `git checkout -b trending/<key>`; add the 5 files (model, conf, trainer dispatch, registry ModelSpec, README) + smoke test.
+1. Confirm it passes both rules (public repo + strong results). Read `ADD_DETECTOR.md`.
+2. `git checkout -b detector/<key>`; add the 5 files (model, conf, trainer dispatch, registry ModelSpec, README) + smoke test.
 3. **Match the official eval transform exactly** in the `ModelSpec` (resize vs crop, norm) — this is the #1 silent-failure source.
 4. Reproduce on the paper's benchmark with official weights via `bench_eval.py --ckpt`; fix `remap_<k>` for key mismatches; record per-gen AP/AUROC in the Paper/SynthScope_official/SynthScope_train schema.
 5. (Optional) add an interpretability map. Push the branch; do **not** merge to `main`.

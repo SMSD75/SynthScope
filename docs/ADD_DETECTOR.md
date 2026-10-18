@@ -1,14 +1,14 @@
 # Adding a detector to SynthScope (the repo rules)
 
-This is the checklist the **What's-Trending daily agent** (and humans) follow to incorporate a new
+This is the checklist to follow (for people and for the daily arXiv agent) to incorporate a new
 AI-generated-content detector cleanly and verify that SynthScope reproduces the paper's results. Keep the
 code style and structure consistent with the existing detectors (PGC, SAFE, Co-Spy, AIDE, …).
 
 ## When to integrate
-Only integrate a paper that satisfies **both** trending rules: (1) a solid public GitHub repo, and
+Only integrate a paper that satisfies **both** rules: (1) a solid public GitHub repo, and
 (2) solid results vs previous methods. If the architecture is unclear, weights aren't released, or
-the benchmark data can't be obtained, **do not** commit broken code — record an "integration pending:
-<reason>" note in the paper's `trending.json` entry and stop.
+the benchmark data can't be obtained, **do not** commit broken code — note "integration pending: <reason>"
+for the maintainers and stop.
 
 ## Files to add (one detector = key `<k>`, e.g. `pgc`)
 1. **`models/<modality>/<k>/<k>.py`** — `class SynthScope<Name>Model(nn.Module)`:
@@ -42,7 +42,7 @@ python benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|p
   the repo README table, and the per-model README — all in the Paper / SynthScope_official / SynthScope_train schema.
 
 ## Git workflow (keep main clean)
-- Do the integration on a branch: `git checkout -b trending/<k>`. Commit the model + conf + registry +
+- Do the integration on a branch: `git checkout -b detector/<k>`. Commit the model + conf + registry +
   README + repro results. **Push the branch and surface it for review — do NOT auto-merge to `main`.**
 - End commit messages with the repo's `Co-Authored-By` trailer.
 - Never commit weights (`*.pth`), `.env`, or caches (already gitignored).
