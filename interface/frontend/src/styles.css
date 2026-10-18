@@ -266,22 +266,6 @@ table.repro-full.lb-gen td:nth-child(2) { white-space: normal; }
 .wtag-synthscope_trained { background: rgba(46, 93, 125, .22); border-color: #2e5d7d; color: #8ec6e0; }
 .wtag-training_free { background: rgba(125, 102, 46, .22); border-color: #7d662e; color: #e0cf8e; }
 
-/* ---- What's Trending ------------------------------------------------------*/
-.trending h3 { margin: 22px 0 10px; font-size: 15px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.trend-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
-.trend-card {
-  border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px 16px;
-  background: var(--panel); box-shadow: var(--shadow); transition: transform .15s, border-color .15s;
-}
-.trend-card:hover { transform: translateY(-3px); border-color: var(--line-strong); }
-.trend-head { display: flex; gap: 8px; align-items: baseline; justify-content: space-between; }
-.trend-head a { font-weight: 700; color: var(--text); text-decoration: none; }
-.trend-head a:hover { color: var(--accent2); }
-.trend-links { margin-top: 10px; display: flex; gap: 14px; font-size: 12px; }
-.trend-links a { color: var(--accent); text-decoration: none; }
-.trend-links a:hover { text-decoration: underline; }
-.trend-landscape li { margin: 5px 0; }
-
 /* links + scrollbars --------------------------------------------------------*/
 a { color: var(--accent); }
 ::-webkit-scrollbar { width: 10px; height: 10px; }

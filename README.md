@@ -15,7 +15,6 @@ Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' r
   <a href="#-detectors">🔍 Detectors</a> ·
   <a href="#-benchmarks">📊 Benchmarks</a> ·
   <a href="#-train-your-own">🏋️ Train</a> ·
-  <a href="#-whats-trending">📈 Trending</a> ·
   <a href="#-contributing-and-license">🤝 Contributing</a>
 </p>
 
@@ -296,14 +295,6 @@ Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and 
 common `<generator>/{0_real,1_fake}` layout; transforms are named pipelines in [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) to add a detector.
-
----
-
-<!-- TRENDING:START -->
-## 📈 What's Trending
-
-A curated, daily-refreshed list of recent image & video AIGC-detection papers with public code: **15 image · 6 video** tracked (13 already integrated in SynthScope), last updated **2026-10-18**. → **[TRENDING.md](TRENDING.md)**.
-<!-- TRENDING:END -->
 
 ---
 

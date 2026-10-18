@@ -100,7 +100,7 @@ SPAI now SERVES official weights remapped into the SynthScope class at NATIVE re
 | GenImage-8 (diffusion) | 95.5 AP | 83.94 (77.6) |
 | ForenSynths-13 (GAN) | 93.1 AP | 61.71 (57.9) |
 
-### CuRe (official adapter; branch `trending/cure`, under review)
+### CuRe (official adapter)
 Fidelity: SynthScope's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
 
 | Benchmark (SynthScope protocol) | acc (mean per-gen balanced) | mAP | Paper | Note |

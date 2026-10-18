@@ -42,19 +42,6 @@ def health():
             "checkpoints_dir": str(config.CHECKPOINTS_DIR)}
 
 
-_TRENDING_PATH = Path(__file__).resolve().parent / "trending.json"
-
-
-@app.get("/api/trending")
-def trending():
-    """High-quality trending AIGC-detection papers (image + video). Refreshed daily by a
-    scheduled task that updates trending.json; TRENDING.md and the README teaser are regenerated from the same file."""
-    try:
-        return json.loads(_TRENDING_PATH.read_text())
-    except FileNotFoundError:
-        return {"updated": None, "image": [], "video": [], "landscape": [], "criteria": ""}
-
-
 @app.get("/api/models")
 def models():
     engine = get_engine()

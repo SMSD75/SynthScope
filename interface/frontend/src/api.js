@@ -113,11 +113,6 @@ export async function fetchGeneratorBenchmarks() {
   if (!r.ok) throw new Error(`generator benchmarks: HTTP ${r.status}`);
   return r.json();
 }
-export async function fetchTrending() {
-  const r = await fetch(`${BASE}/api/trending`);
-  if (!r.ok) throw new Error(`trending: HTTP ${r.status}`);
-  return r.json();
-}
 export async function sotaCompare(file, generator, detectors, prompt) {
   const fd = new FormData();
   fd.append("file", file);

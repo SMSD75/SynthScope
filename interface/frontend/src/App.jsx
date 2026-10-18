@@ -3,7 +3,6 @@ import {
   fetchModels, predict, fetchDatasets, sampleDataset, datasetMediaUrl,
   predictDataset, scoreBatch, verdictAt, autoCalibrate, targetFprThreshold, batchStats,
   sotaGenerators, sotaRealImage, sotaCompare, fetchLeaderboard, fetchGeneratorBenchmarks,
-  fetchTrending,
 } from "./api.js";
 
 // Which weights back the default inference checkpoint for each detector (shown in the UI).
@@ -21,49 +20,6 @@ const REPRO_LEGEND = (
     remains · <b>reference</b> = paper reports no comparable number · <b>missing</b> = not yet evaluated.
   </div>
 );
-
-function TrendingView() {
-  const [data, setData] = useState(null);
-  const [err, setErr] = useState("");
-  useEffect(() => { fetchTrending().then(setData).catch((e) => setErr(e.message)); }, []);
-  if (err) return <div className="err">{err}</div>;
-  if (!data) return <p className="muted">Loading…</p>;
-  const card = (e, i) => {
-    const link = e.github || e.arxiv || "";
-    const venue = [e.authors, e.venue, e.year].filter(Boolean).join(" · ");
-    return (
-      <div className="trend-card" key={i}>
-        <div className="trend-head">
-          {link ? <a href={link} target="_blank" rel="noreferrer">{e.title}</a> : <b>{e.title}</b>}
-          {e.synthscope && <span className="wtag wtag-synthscope_trained">in SynthScope: {e.synthscope}</span>}
-        </div>
-        {venue && <div className="muted" style={{ fontSize: 12 }}>{venue}</div>}
-        {e.summary && <div style={{ margin: "4px 0", fontSize: 13 }}>{e.summary}</div>}
-        {e.result && <div className="muted" style={{ fontSize: 12 }}><i>Results: {e.result}</i></div>}
-        <div className="trend-links">
-          {e.github && <a href={e.github} target="_blank" rel="noreferrer">code ↗</a>}
-          {e.arxiv && <a href={e.arxiv} target="_blank" rel="noreferrer">arXiv ↗</a>}
-        </div>
-      </div>
-    );
-  };
-  return (
-    <div className="trending">
-      <h2>📈 What's Trending — AIGC detection</h2>
-      <p className="muted">{data.criteria}{data.updated ? ` Last updated: ${data.updated}.` : ""}</p>
-      <h3>Image detectors</h3>
-      <div className="trend-grid">{(data.image || []).map(card)}</div>
-      <h3>Video detectors</h3>
-      <div className="trend-grid">{(data.video || []).map(card)}</div>
-      <h3>Benchmarks &amp; curated lists</h3>
-      <ul className="trend-landscape">
-        {(data.landscape || []).map((e, i) => (
-          <li key={i}><a href={e.github} target="_blank" rel="noreferrer">{e.title}</a> — {e.summary}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
 
 function LeaderboardView() {
   const [groups, setGroups] = useState([]);
@@ -361,7 +317,6 @@ export default function App() {
         <button className={"tab" + (tab === "sota" ? " active" : "")} onClick={() => setTab("sota")}>SOTA vs Detectors</button>
         <button className={"tab" + (tab === "leaderboard" ? " active" : "")} onClick={() => setTab("leaderboard")}>Leaderboard</button>
         <button className={"tab" + (tab === "topgen" ? " active" : "")} onClick={() => setTab("topgen")}>Top Generators</button>
-        <button className={"tab" + (tab === "trending" ? " active" : "")} onClick={() => setTab("trending")}>What's Trending</button>
       </div>
       {error && <div className="err">{error}</div>}
       {tab === "detect" && <DetectView {...shared} />}
@@ -369,7 +324,6 @@ export default function App() {
       {tab === "sota" && <SotaView models={models} />}
       {tab === "leaderboard" && <LeaderboardView />}
       {tab === "topgen" && <TopGeneratorsView />}
-      {tab === "trending" && <TrendingView />}
     </div>
   );
 }
