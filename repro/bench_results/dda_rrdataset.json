@@ -1,0 +1,39 @@
+{
+  "tag": "dda_rrdataset",
+  "model": "dda",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 75.99,
+    "map": 85.18,
+    "mauroc": 81.74
+  },
+  "per_generator": {
+    "original": {
+      "ap": 97.81,
+      "auroc": 97.46,
+      "real_acc": 94.24,
+      "fake_acc": 89.44,
+      "acc": 91.84
+    },
+    "redigital": {
+      "ap": 75.84,
+      "auroc": 71.74,
+      "real_acc": 96.07,
+      "fake_acc": 29.68,
+      "acc": 62.88
+    },
+    "transfer": {
+      "ap": 81.88,
+      "auroc": 76.03,
+      "real_acc": 93.32,
+      "fake_acc": 53.21,
+      "acc": 73.26
+    }
+  },
+  "date": "2026-10-25T17:35:25",
+  "synthscope_version": "0.1.0"
+}

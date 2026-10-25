@@ -38,6 +38,17 @@ VAL = {
     ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}},
     ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}},
     ("cure", "AIGCDetect"):              {"official": {"map": 98.08, "acc": 89.3, "auroc": 98.02}},
+    # DDA: only the official checkpoint is evaluated (no SynthScope-trained number).
+    ("dda", "SynthWildX"):               {"official": {"map": 96.47, "acc": 90.8, "auroc": 96.4}},
+    ("dda", "WildRF"):                   {"official": {"map": 96.76, "acc": 90.2, "auroc": 96.14}},
+    ("dda", "BFree-Online"):             {"official": {"map": 99.41, "acc": 94.98, "auroc": 98.86}},
+    ("dda", "GenImage"):                 {"official": {"map": 97.74, "acc": 89.37, "auroc": 98.21}},   # fakes JPEG q96
+    ("dda", "ForenSynths"):              {"official": {"map": 91.13, "acc": 81.43, "auroc": 92.11}},   # fakes JPEG q96
+    ("dda", "AIGCDetect"):               {"official": {"map": 96.35, "acc": 87.84, "auroc": 96.65}},   # fakes JPEG q96
+    # EvalGEN: acc = mean FAKE accuracy (the paper's metric); mAP/AUROC are against the MSCOCO val2017 reals.
+    ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}},
+    ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}},
+    ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},

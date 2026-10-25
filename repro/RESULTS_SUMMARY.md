@@ -20,6 +20,7 @@
 | PGC | GenImage | 100 AP | 100.0 | 97.62 | ✅ near |
 | VIB-Net | GenImage (SD-v1.4) | 95.5 AP | *none released* | 83.26 | ⚠️ recipe/arch gap |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
+| DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 acc | — | ✅ official match (GenImage 2.3 pt below) |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 99.14 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -118,6 +119,23 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | AIGCDetectBenchmark (`--dataset aigcdetect`; all 17 generators, full data, 76.3k/76.3k) | **89.30** | 98.08 | **89.3** | **reproduced** (AUROC 98.02 vs 98.0) |
 
 **Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
+
+### DDA (official checkpoint)
+Fidelity: SynthScope's class == the official `DINOv2ModelWithLoRA` (537/537 state-dict tensors identical, transform and logits identical on 40 images, 0 verdict flips; job 264307). Paper: 90.7 avg accuracy over 11 benchmarks (trained on DDA-aligned MSCOCO only). Accuracy = mean per-subset balanced accuracy at 0.5, ± = sample std over subsets.
+
+| Benchmark (SynthScope protocol) | acc | mAP | Paper | Note |
+|---|---:|---:|---|---|
+| SynthWildX (`--dataset synthwildx`; 1713 of 2000 still online) | **90.80 ± 3.13** | 96.47 | **90.9 ± 3.1** | **reproduced** (AUROC 96.40) |
+| WildRF (`--dataset wildrf`; full test split, 1251/1252) | **90.20 ± 3.45** | 96.76 | **90.3 ± 3.5** | **reproduced** (AUROC 96.14) |
+| BFree-Online (`--dataset bfree_online`; 807 of 1111 listed images still online) | 94.98 | 99.41 | 95.1 | close, not like-for-like (AUROC 98.86) |
+| AIGCDetect (`--dataset aigcdetect --jpeg-fakes 96`; 17 generators, full data) | **87.84 ± 12.56** | 96.35 | **87.8 ± 12.6** | **reproduced** to the printed digit (AUROC 96.65; 85.35 without the JPEG step) |
+| ForenSynths (`--dataset cnndetection --jpeg-fakes 96`; all 13 test sets) | **81.43 ± 13.84** | 91.13 | **81.4 ± 13.9** ("11G") | **reproduced** with all 13 sets; our UFD-11 guess gives 83.30 (79.71 without the JPEG step) |
+| EvalGEN (`--dataset evalgen`; all 55,298 fakes; paper metric = accuracy on the fakes) | **96.86 ± 4.62** | 99.93 | **97.2 ± 4.2** | **reproduced** (balanced acc with MSCOCO val2017 reals 97.92, AUROC 99.85) |
+| GenImage-8 (`--dataset genimage_full --jpeg-fakes 96`) | 89.37 ± 11.08 | 97.74 | 91.7 ± 7.8 | **below** by 2.3 pt: VQDM 67.0, BigGAN 82.8; likely a data difference, not resolved (86.27 without the JPEG step) |
+| RealChain (`--dataset realchain`) | 67.23 | 76.46 | — | new measurement (AUROC 74.97) |
+| RRDataset (`--dataset rrdataset`) | 75.99 | 85.18 | — | new measurement (original 91.8, transfer 73.3, redigital 62.9) |
+
+**Verdict: faithful port (identical to the official model); 5 of the 7 paper benchmarks we can run are reproduced** (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF), BFree-Online is close on the images still online, and GenImage is 2.3 pt below. Not run: DRCT-2M and DDA-COCO (not in SynthScope yet), Synthbuster (RAISE-1k reals not downloaded), Chameleon (request only).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
