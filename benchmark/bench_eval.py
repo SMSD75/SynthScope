@@ -21,11 +21,14 @@ Benchmark profiles encode each dataset's correct generator grouping + real-pairi
   pool         GenImage/single-pool one group from <root>/{real,fake} or {0_real,1_fake}
 
 Use --ckpt to override the checkpoint (official vs SynthScope-trained, for side-by-side runs).
+Use --jpeg-fakes Q for protocols that JPEG-compress only the synthetic images (DDA: Q=96 on GenImage,
+ForenSynths and AIGCDetect, to remove the PNG-fake/JPEG-real format bias).
 """
 from __future__ import annotations
 
 import argparse
 import datetime
+import io
 import json
 from pathlib import Path
 
@@ -151,8 +154,20 @@ def _open_rgb(path: Path) -> Image.Image:
     return image
 
 
-def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> tuple[torch.Tensor, list[int]]:
-    """Fake probabilities for the images that could be read, and the indices (into ``paths``) they belong to."""
+def _jpeg(image: Image.Image, quality: int) -> Image.Image:
+    """In-memory JPEG round trip, as DDA's ``JPEG_Compression`` (Training/data/custom_transforms.py)."""
+    buf = io.BytesIO()
+    image.save(buf, format="jpeg", quality=quality)
+    buf.seek(0)
+    out = Image.open(buf).convert("RGB")
+    out.info[SRC_FORMAT_KEY] = "JPEG"
+    return out
+
+
+def score(det, model, spec, paths: list[Path], bs: int, transform=None,
+          jpeg_q: int | None = None, jpeg_from: int = 0) -> tuple[torch.Tensor, list[int]]:
+    """Fake probabilities for the images that could be read, and the indices (into ``paths``) they belong to.
+    With ``jpeg_q``, images from index ``jpeg_from`` on (the fakes) are JPEG-compressed at that quality first."""
     device = det._engine.device
     tf = transform if transform is not None else spec.transform
     # Native-resolution specs (SPAI any-res) produce variable-size tensors that cannot be stacked,
@@ -164,7 +179,10 @@ def score(det, model, spec, paths: list[Path], bs: int, transform=None) -> tuple
         batch = []
         for j, p in enumerate(paths[i:i + bs], start=i):
             try:
-                batch.append(tf(_open_rgb(p)))
+                image = _open_rgb(p)
+                if jpeg_q is not None and j >= jpeg_from and jpeg_q < 100:
+                    image = _jpeg(image, jpeg_q)
+                batch.append(tf(image))
                 kept.append(j)
             except Exception as e:  # noqa: BLE001
                 print(f"    bad image {p}: {e}")
@@ -208,6 +226,8 @@ def main(argv=None) -> int:
     ap.add_argument("--native-res", action="store_true",
                     help="score at native resolution (strip up-scaling Resize/CenterCrop); "
                          "for artifact-based methods like NPR on low-res GAN sets (freqnet)")
+    ap.add_argument("--jpeg-fakes", type=int, default=None, metavar="Q",
+                    help="JPEG-compress only the fake images at quality Q before scoring (DDA protocol: 96)")
     ap.add_argument("--device", default=None)
     ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
     ap.add_argument("--out", default=None)
@@ -247,7 +267,8 @@ def main(argv=None) -> int:
         return 1
 
     print(f"=== bench_eval {args.tag} | model={args.model} ckpt={args.ckpt or 'registry-default'} "
-          f"| {args.benchmark} | {len(gens)} generators | device={det._engine.device} ===", flush=True)
+          f"| {args.benchmark} | {len(gens)} generators | device={det._engine.device}"
+          + (f" | fakes JPEG q{args.jpeg_fakes}" if args.jpeg_fakes else "") + " ===", flush=True)
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
     for name, reals, fakes in gens:
@@ -255,7 +276,8 @@ def main(argv=None) -> int:
             reals, fakes = reals[:args.limit], fakes[:args.limit]
         labels = torch.tensor([0] * len(reals) + [1] * len(fakes))
         print(f"  {name}: {len(reals)} real + {len(fakes)} fake ...", flush=True)
-        probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform)
+        probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform,
+                            jpeg_q=args.jpeg_fakes, jpeg_from=len(reals))
         if len(kept) != labels.numel():     # unreadable images are skipped: keep each score paired with its own label
             print(f"    {labels.numel() - len(kept)} unreadable image(s) left out of {name}", flush=True)
             labels = labels[kept]
@@ -283,6 +305,7 @@ def main(argv=None) -> int:
         "ckpt": args.ckpt or "registry-default",
         "benchmark": args.benchmark,
         "data_root": str(root),
+        "jpeg_fakes": args.jpeg_fakes,
         "n_generators": len(per_gen),
         "means": means,
         "per_generator": per_gen,

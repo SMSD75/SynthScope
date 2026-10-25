@@ -104,6 +104,9 @@ def _build_model(cfg):
     if model_type == "cure":
         from models.image.cure.cure import SynthScopeCuReModel
         return SynthScopeCuReModel(cfg)
+    if model_type == "dda":
+        from models.image.dda.dda import SynthScopeDDAModel
+        return SynthScopeDDAModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)

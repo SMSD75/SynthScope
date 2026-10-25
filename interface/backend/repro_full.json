@@ -281,6 +281,118 @@
       "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28: without"
     }
   ],
+  "dda": [
+    {
+      "benchmark": "GenImage (1G + 7D, fakes JPEG q96)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=91.7",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Queued (bench_eval --dataset genimage_full --jpeg-fakes 96, job 264311)."
+    },
+    {
+      "benchmark": "DRCT-2M (16D)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=98.1",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "DRCT-2M is not in SynthScope yet."
+    },
+    {
+      "benchmark": "DDA-COCO (5D)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=92.2",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "DDA-COCO is not in SynthScope yet."
+    },
+    {
+      "benchmark": "EvalGEN (3D + 2AR, fake-only accuracy)",
+      "metric": "accuracy on the fakes (mean over generators)",
+      "paper": "acc=97.2",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Queued (bench_eval --dataset evalgen, job 264311); the paper's number is compared with the mean fake accuracy."
+    },
+    {
+      "benchmark": "Synthbuster (9D)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=90.1",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not run yet: the RAISE-1k reals are a separate download."
+    },
+    {
+      "benchmark": "ForenSynths (11G, fakes JPEG q96)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=81.4",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Queued (bench_eval --dataset cnndetection --jpeg-fakes 96, job 264312)."
+    },
+    {
+      "benchmark": "AIGCDetectBenchmark (7G + 10D, fakes JPEG q96)",
+      "metric": "accuracy (mean over subsets)",
+      "paper": "acc=87.8",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Queued (bench_eval --dataset aigcdetect --jpeg-fakes 96, job 264312)."
+    },
+    {
+      "benchmark": "Chameleon",
+      "metric": "accuracy",
+      "paper": "acc=82.4",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Chameleon is released by email request only."
+    },
+    {
+      "benchmark": "SynthWildX (3D, images still online on X)",
+      "metric": "balanced accuracy (mean over subsets)",
+      "paper": "acc=90.9",
+      "ours": "mAP=96.47 / acc=90.8 / AUROC=96.4 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=96.47 / acc=90.8 / AUROC=96.4",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope: 90.80 +- 3.13 (mAP 96.47, AUROC 96.40) on the 1713 of 2000 images still online (413 real; DALL-E 3 92.28, Firefly 87.21, Midjourney v5 92.92) (tag dda_synthwildx, job 264310)."
+    },
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
+      "metric": "balanced accuracy (mean over subsets)",
+      "paper": "acc=90.3",
+      "ours": "mAP=96.76 / acc=90.2 / AUROC=96.14 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=96.76 / acc=90.2 / AUROC=96.14",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope: 90.20 +- 3.45 (mAP 96.76, AUROC 96.14) on the full test split, 1251 real / 1252 fake (Facebook 93.13, Reddit 86.40, Twitter 91.07) (tag dda_wildrf, job 264310)."
+    },
+    {
+      "benchmark": "BFree-Online (viral images still online)",
+      "metric": "balanced accuracy",
+      "paper": "acc=95.1",
+      "ours": "mAP=99.41 / acc=94.98 / AUROC=98.86 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.41 / acc=94.98 / AUROC=98.86",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 94.98 (mAP 99.41, AUROC 98.86; real acc 96.65, fake acc 93.31) on the 807 of 1111 listed images still online (269 real / 538 fake), so not the paper's full set (tag dda_bfree_online, job 264310)."
+    }
+  ],
   "fat_former": [
     {
       "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervision) \u2014 HEADLINE",

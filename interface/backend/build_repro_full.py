@@ -38,6 +38,10 @@ VAL = {
     ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}},
     ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}},
     ("cure", "AIGCDetect"):              {"official": {"map": 98.08, "acc": 89.3, "auroc": 98.02}},
+    # DDA: only the official checkpoint is evaluated (no SynthScope-trained number).
+    ("dda", "SynthWildX"):               {"official": {"map": 96.47, "acc": 90.8, "auroc": 96.4}},
+    ("dda", "WildRF"):                   {"official": {"map": 96.76, "acc": 90.2, "auroc": 96.14}},
+    ("dda", "BFree-Online"):             {"official": {"map": 99.41, "acc": 94.98, "auroc": 98.86}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},

@@ -12,6 +12,7 @@ from models.image.vib_net.vib_net import SynthScopeVIBNetModel
 from models.image.npr.npr import NPR
 from models.image.pgc.pgc import SynthScopePGCModel
 from models.image.cure.cure import SynthScopeCuReModel
+from models.image.dda.dda import SynthScopeDDAModel
 from models.video.d3.d3 import SynthScopeD3Model
 from models.video.restrav.restrav import SynthScopeReStraVModel
 from models.video.stall.stall import SynthScopeSTALLModel
@@ -86,6 +87,8 @@ class SynthScopeModelTrainer:
             return SynthScopePGCModel(config)
         if model_type == "cure":
             return SynthScopeCuReModel(config)
+        if model_type == "dda":
+            return SynthScopeDDAModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
         if model_type == "restrav":

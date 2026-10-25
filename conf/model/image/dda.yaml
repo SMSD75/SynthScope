@@ -1,0 +1,14 @@
+defaults:
+  - /model/default
+  - _self_
+
+# DDA (Dual Data Alignment, NeurIPS 2025 Spotlight): DINOv2 ViT-L/14 + LoRA (rank 8, alpha 1) on attn.qkv/proj and
+# mlp.fc1/fc2 + a linear head on the CLS token; P(fake) = sigmoid(logit). The official DDA_ckpt.pth (HF
+# Junwei-Xi/Dual-Data-Alignment, Apache-2.0) holds the full model and loads key-for-key as dda.pth.
+model_type: dda
+backbone_name: dinov2_vitl14
+pretrained_backbone: true      # fetch DINOv2 weights (needed for training; the released checkpoint already has them)
+lora_rank: 8
+lora_alpha: 1.0
+lora_targets: [attn.qkv, attn.proj, mlp.fc1, mlp.fc2]
+freeze_backbone: true

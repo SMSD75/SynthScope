@@ -326,6 +326,17 @@ _add(ModelSpec(
           "image a JPEG q70 pass), so use the registered transform — see models/image/cure/README.md.",
 ))
 _add(ModelSpec(
+    key="dda", name="DDA", paper="Chen et al., NeurIPS'25 Spotlight",
+    modality="image", predict_kind="bce", checkpoint="dda.pth", ckpt_kind="official_dda", weights="official",
+    # dda.pth = the official DDA_ckpt.pth unchanged (HF Junwei-Xi/Dual-Data-Alignment); it holds the full model,
+    # so the DINOv2 weights are not fetched separately.
+    overrides=["model@ModelConfig=image/dda", "ModelConfig.pretrained_backbone=false"],
+    transform=tf_crop(336, CLIP_MEAN, CLIP_STD),  # official Inference/inference.py: CenterCrop(336), ToTensor, CLIP norm
+    notes="DINOv2 ViT-L/14 + LoRA (rank 8) + linear head, trained on DDA's pixel- and frequency-aligned "
+          "VAE-reconstructed fakes. Uses the OFFICIAL released checkpoint. The official test transform is a 336 "
+          "center crop with no resize (smaller images are zero-padded), so large images are judged on their center.",
+))
+_add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
     modality="image", predict_kind="bce_npr", checkpoint="npr.pth",
     ckpt_kind="official_npr", remap=remap_npr, weights="official",
@@ -391,6 +402,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
              "exceeds 1024 px."),
     "aide": ("Original resolution, 5 views", "Builds five 256×256 views, shown side by side: four patches cut from the "
              "original pixels (picked by their frequency content) plus one resized view of the whole image."),
+    "dda": ("Center-crop 336, no resize", "The central 336×336 pixels are used exactly as they are - no scaling. Smaller "
+            "images are padded with black; the rest of a larger image is not seen."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
