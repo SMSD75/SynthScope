@@ -31,6 +31,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `safe` | SAFE (KDD'25) | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `cure` | CuRe (arXiv 2609.14316) | manic-cui/CuRe | Apache-2.0 (repo `LICENSE`) | **official** 25 MB adapter (`cure_adapter.pt`, loads as `cure.pth`) | Apache-2.0 (shipped in the repo; verify before redistributing) |
+| `dda` | DDA (NeurIPS'25) | roy-ch/Dual-Data-Alignment | Apache-2.0 (repo `LICENSE`); `official_arch.py` vendors its `lora.py` — see its header | **official** checkpoint (`DDA_ckpt.pth` from HF `Junwei-Xi/Dual-Data-Alignment`, loads as `dda.pth`) | Apache-2.0 (HF model card license tag) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
@@ -44,7 +45,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | --- | --- | --- |
 | OpenAI CLIP (ViT-L/14) | `clip`, `fat_former`, `d3` | MIT (verify) |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
-| DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav` | Apache-2.0 (verify) |
+| DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
 | DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** — DINOv3 License (non-commercial; accept upstream) |
 | SigLIP | `co_spy` | Apache-2.0 (verify) |
 | MFM ViT-B/16 | `spai` | ⚠ verify |
