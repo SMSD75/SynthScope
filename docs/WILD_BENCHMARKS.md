@@ -13,6 +13,7 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
 | Detector | RealChain | EvalGEN | SynthWildX | WildRF | BFree-Online | RRDataset | Mean acc |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | CuRe | **79.7 / 85.5** | **98.1 / 99.7** | **92.7 / 96.5** | **95.9 / 99.1** | **91.6 / 98.1** | **82.0 / 88.9** | 90.0 |
+| DDA | 67.2 / 75.0 | **97.9 / 99.8** | **90.8 / 96.4** | **90.2 / 96.1** | **95.0 / 98.9** | **76.0 / 81.7** | 86.2 |
 | SPAI | 61.6 / 69.0 | **93.8 / 98.7** | **76.2 / 84.6** | **80.6 / 88.4** | 59.8 / 60.2 | 64.8 / 72.0 | 72.8 |
 | Co-Spy | 71.0 / 76.5 | **96.7 / 99.5** | 64.3 / 69.5 | 61.6 / 71.2 | 56.3 / 73.3 | 66.8 / 73.9 | 69.4 |
 | VIB-Net | 65.8 / 74.3 | **94.8 / 99.7** | 58.5 / 73.6 | 56.1 / 71.3 | 51.9 / 53.6 | 60.0 / 66.4 | 64.5 |
@@ -40,10 +41,15 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
 
 ## Reading the table
 
-- Only CuRe's paper reports these benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs
+- CuRe's paper reports all six benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs
   98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, RRDataset 82.04 vs 81.5, BFree-Online 91.64 vs 90.9 (fewer images; see
-  [the CuRe README](../models/image/cure/README.md)). The other detectors were never evaluated on these sets by
-  their authors, so their rows are new measurements, not reproductions.
+  [the CuRe README](../models/image/cure/README.md)).
+- DDA's paper reports four of them, and DDA reproduces it: SynthWildX 90.80 vs 90.9, WildRF 90.20 vs 90.3, BFree-Online
+  94.98 vs 95.1 (fewer images) and EvalGEN 96.86 vs 97.2 in the paper's metric, the accuracy on the fakes alone (the
+  table shows balanced accuracy; see [the DDA README](../models/image/dda/README.md)). Its RealChain and RRDataset rows
+  are new measurements.
+- The other detectors were never evaluated on these sets by their authors, so their rows are new measurements, not
+  reproductions.
 - Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50
   separates real from fake but is miscalibrated for this data (it calls nearly everything one class).
 - An AUROC well below 50 means the detector ranks real images as more fake than the generated ones. We traced

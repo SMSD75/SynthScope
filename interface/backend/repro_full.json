@@ -286,11 +286,11 @@
       "benchmark": "GenImage (1G + 7D, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=91.7",
-      "ours": "",
+      "ours": "mAP=97.74 / acc=89.37 / AUROC=98.21 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Queued (bench_eval --dataset genimage_full --jpeg-fakes 96, job 264311)."
+      "ours_official": "mAP=97.74 / acc=89.37 / AUROC=98.21",
+      "status": "below",
+      "note": "Official checkpoint through SynthScope, fakes JPEG q96 (bench_eval --dataset genimage_full --jpeg-fakes 96): 89.37 +- 11.08 (mAP 97.74, AUROC 98.21), 2.3 pt below the paper; ADM 85.40, BigGAN 82.77, GLIDE 88.17, Midjourney 95.17, SD-v1.4 98.72, SD-v1.5 98.87, VQDM 67.03, Wukong 98.80. VQDM and BigGAN are the weak subsets. The same JPEG step reproduces AIGCDetect and ForenSynths exactly, so the gap"
     },
     {
       "benchmark": "DRCT-2M (16D)",
@@ -316,11 +316,11 @@
       "benchmark": "EvalGEN (3D + 2AR, fake-only accuracy)",
       "metric": "accuracy on the fakes (mean over generators)",
       "paper": "acc=97.2",
-      "ours": "",
+      "ours": "mAP=99.93 / acc=96.86 / AUROC=99.85 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Queued (bench_eval --dataset evalgen, job 264311); the paper's number is compared with the mean fake accuracy."
+      "ours_official": "mAP=99.93 / acc=96.86 / AUROC=99.85",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope: mean fake accuracy 96.86 +- 4.62 on all 55,298 fakes (Flux 88.68, GoT 99.14, Infinity 97.73, NOVA 99.53, OmniGen 99.20), the paper's metric. With the MSCOCO val2017 reals (real acc 98.98): balanced acc 97.92, mAP 99.93, AUROC 99.85 (tag dda_evalgen, job 264311)."
     },
     {
       "benchmark": "Synthbuster (9D)",
@@ -333,24 +333,24 @@
       "note": "Not run yet: the RAISE-1k reals are a separate download."
     },
     {
-      "benchmark": "ForenSynths (11G, fakes JPEG q96)",
+      "benchmark": "ForenSynths (paper: 11G; all 13 CNNDetection test sets match, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=81.4",
-      "ours": "",
+      "ours": "mAP=91.13 / acc=81.43 / AUROC=92.11 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Queued (bench_eval --dataset cnndetection --jpeg-fakes 96, job 264312)."
+      "ours_official": "mAP=91.13 / acc=81.43 / AUROC=92.11",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope, fakes JPEG q96: 81.43 +- 13.84 (mAP 91.13, AUROC 92.11) over all 13 CNNDetection test generators, matching the paper's 81.4 +- 13.9, so the paper's '11G' most likely covers the same 13 sets. Our guess of the 11 UnivFD GAN subsets (without StyleGAN2 and WhichFaceIsReal) gives 83.30 +- 11.51 instead. Without the JPEG step: 79.71 (tags dda_cnndetection_jpeg96, "
     },
     {
       "benchmark": "AIGCDetectBenchmark (7G + 10D, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=87.8",
-      "ours": "",
+      "ours": "mAP=96.35 / acc=87.84 / AUROC=96.65 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "",
-      "status": "missing",
-      "note": "Queued (bench_eval --dataset aigcdetect --jpeg-fakes 96, job 264312)."
+      "ours_official": "mAP=96.35 / acc=87.84 / AUROC=96.65",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope, fakes JPEG q96: 87.84 +- 12.56 (mAP 96.35, AUROC 96.65) over all 17 generators, full test data, matching the paper's 87.8 +- 12.6. Without the JPEG step: 85.35 (tags dda_aigcdetect_jpeg96, dda_aigcdetect, job 264312)."
     },
     {
       "benchmark": "Chameleon",
@@ -391,6 +391,26 @@
       "ours_official": "mAP=99.41 / acc=94.98 / AUROC=98.86",
       "status": "reference",
       "note": "Official checkpoint through SynthScope: 94.98 (mAP 99.41, AUROC 98.86; real acc 96.65, fake acc 93.31) on the 807 of 1111 listed images still online (269 real / 538 fake), so not the paper's full set (tag dda_bfree_online, job 264310)."
+    },
+    {
+      "benchmark": "RealChain (7 generators, full data)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=76.46 / acc=67.23 / AUROC=74.97 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=76.46 / acc=67.23 / AUROC=74.97",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 67.23 (mAP 76.46, AUROC 74.97); Flux1 58.60, Hunyuan3 59.80, NanoBanana 57.55, QwenImage 74.60, SDv3.5 70.05, Seedream4 75.00, i2i 75.00 (tag dda_realchain, job 264323)."
+    },
+    {
+      "benchmark": "RRDataset (original / transfer / redigital)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=85.18 / acc=75.99 / AUROC=81.74 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=85.18 / acc=75.99 / AUROC=81.74",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 75.99 (mAP 85.18, AUROC 81.74); original 91.84, transfer 73.26, redigital 62.88 (tag dda_rrdataset, job 264323)."
     }
   ],
   "fat_former": [

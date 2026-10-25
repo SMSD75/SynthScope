@@ -28,7 +28,7 @@ DATASETS = [  # (config name, column title, what the set is, caveat)
 ]
 
 # Display names, in the order of the README's detector table.
-DETECTORS = [("cure", "CuRe"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
+DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
              ("vib_net", "VIB-Net"), ("pgc", "PGC"), ("npr", "NPR"), ("safe", "SAFE"), ("fat_former", "FatFormer"),
              ("clip", "UnivFD / CLIP"), ("cnn", "CNNDetection"), ("dinov2", "DINOv2 probe"),
              ("adapted_dino", "Adapted DINOv2")]
@@ -85,10 +85,15 @@ def main():
         "",
         "## Reading the table",
         "",
-        "- Only CuRe's paper reports these benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs",
+        "- CuRe's paper reports all six benchmarks, and CuRe reproduces it: RealChain 79.69 vs 79.7, EvalGEN 98.14 vs",
         "  98.1, SynthWildX 92.69 vs 92.7, WildRF 95.89 vs 95.8, RRDataset 82.04 vs 81.5, BFree-Online 91.64 vs 90.9 (fewer images; see",
-        "  [the CuRe README](../models/image/cure/README.md)). The other detectors were never evaluated on these sets by",
-        "  their authors, so their rows are new measurements, not reproductions.",
+        "  [the CuRe README](../models/image/cure/README.md)).",
+        "- DDA's paper reports four of them, and DDA reproduces it: SynthWildX 90.80 vs 90.9, WildRF 90.20 vs 90.3, BFree-Online",
+        "  94.98 vs 95.1 (fewer images) and EvalGEN 96.86 vs 97.2 in the paper's metric, the accuracy on the fakes alone (the",
+        "  table shows balanced accuracy; see [the DDA README](../models/image/dda/README.md)). Its RealChain and RRDataset rows",
+        "  are new measurements.",
+        "- The other detectors were never evaluated on these sets by their authors, so their rows are new measurements, not",
+        "  reproductions.",
         "- Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50",
         "  separates real from fake but is miscalibrated for this data (it calls nearly everything one class).",
         "- An AUROC well below 50 means the detector ranks real images as more fake than the generated ones. We traced",

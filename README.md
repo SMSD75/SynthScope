@@ -273,7 +273,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
-| DDA | SynthWildX · WildRF (more of its 11 benchmarks running) | 90.9 · 90.3 acc | 90.80 · 90.20 acc (official) | ✅ official weights match |
+| DDA | 5 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 acc (official) | ✅ official weights match (GenImage 2.3 pt below) |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
