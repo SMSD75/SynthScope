@@ -28,7 +28,7 @@ DATASETS = [  # (config name, column title, what the set is, caveat)
 ]
 
 # Display names, in the order of the README's detector table.
-DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
+DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("d3qe", "D3QE"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
              ("vib_net", "VIB-Net"), ("pgc", "PGC"), ("npr", "NPR"), ("safe", "SAFE"), ("fat_former", "FatFormer"),
              ("clip", "UnivFD / CLIP"), ("cnn", "CNNDetection"), ("dinov2", "DINOv2 probe"),
              ("adapted_dino", "Adapted DINOv2")]
@@ -92,6 +92,8 @@ def main():
         "  94.98 vs 95.1 (fewer images) and EvalGEN 96.86 vs 97.2 in the paper's metric, the accuracy on the fakes alone (the",
         "  table shows balanced accuracy; see [the DDA README](../models/image/dda/README.md)). Its RealChain and RRDataset rows",
         "  are new measurements.",
+        "- D3QE is trained on LlamaGen vs ImageNet only and targets autoregressive generators; on these sets it calls almost",
+        "  every fake real (fake recall mostly under 15%), a new measurement that its paper does not report.",
         "- The other detectors were never evaluated on these sets by their authors, so their rows are new measurements, not",
         "  reproductions.",
         "- Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50",

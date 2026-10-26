@@ -2621,6 +2621,35 @@ class RRDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
+class ARForensicsDataset(_TestOnlyImageDataset):
+    """ARForensics (D3QE, ICCV 2025) — images from 7 visual autoregressive generators (LlamaGen, VAR, Infinity,
+    Janus-Pro, RAR, Switti, Open-MAGVIT2), 6000 fakes and 6000 ImageNet reals each, laid out as
+    ``ARForensics/test/<generator>/{0_real,1_fake}``. Sourced from the HF dataset ``Yanran21/ARForensics`` (MIT): the
+    corrected test release (MAR replaced by Switti) in four independent zips, ARForensics_updated_test_part00{1..4}.zip
+    (21 GB); a generator can span two zips, so all four are extracted into one folder."""
+    hf_repo_id = "Yanran21/ARForensics"
+    hf_pattern = "ARForensics_updated_test_part*.zip"
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl), allow_patterns=[cls.hf_pattern])
+        staging = root_dir / "_staging"
+        for archive in sorted(dl.glob(cls.hf_pattern)):
+            _safe_extract_zip(archive, staging)
+        inner = staging / "ARForensics" / "test"
+        if not inner.is_dir():
+            raise RuntimeError(f"ARForensics: expected ARForensics/test/ inside the archives, found {list(staging.iterdir())}")
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.move(str(inner), str(dest))
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2692,6 +2721,10 @@ class BFreeOnlineDatasetModule(_TestOnlyImageModule):
 
 class RRDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = RRDataset
+
+
+class ARForensicsDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = ARForensicsDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -2920,6 +2953,7 @@ SynthScopeModuleDict = {
     "wildrf": WildRFDatasetModule,
     "bfree_online": BFreeOnlineDatasetModule,
     "rrdataset": RRDatasetModule,
+    "arforensics": ARForensicsDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

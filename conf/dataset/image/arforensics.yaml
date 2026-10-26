@@ -1,0 +1,15 @@
+name: arforensics
+# ARForensics (D3QE, ICCV 2025) — 7 visual autoregressive generators (LlamaGen, VAR, Infinity, Janus-Pro, RAR, Switti,
+# Open-MAGVIT2), 6000 fakes + 6000 ImageNet reals each. (HF Yanran21/ARForensics, corrected test release, 21 GB, MIT)
+root_dir: /hddstore/ssalehi/SynthScope/ARForensics
+hf_repo_id: Yanran21/ARForensics
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

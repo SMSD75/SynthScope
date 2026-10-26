@@ -1,0 +1,10 @@
+defaults:
+  - /model/default
+  - _self_
+
+# D3QE (ICCV 2025): frozen LlamaGen VQ-16 quantization error -> D3AT transformer, fused with frozen CLIP ViT-L/14
+# features; P(fake) = sigmoid(logit). The official model_epoch_best.pth (HF Yanran21/D3QE, MIT) holds the trained part
+# and loads key-for-key as d3qe.pth; CLIP ViT-L/14 (OpenAI) and the VQ tokenizer (HF FoundationVision/LlamaGen
+# vq_ds16_c2i.pt) are fetched from their own releases, as in the official code.
+model_type: d3qe
+vq_checkpoint: null    # local vq_ds16_c2i.pt; null -> $SYNTHSCOPE_LLAMAGEN_VQ, else download from the Hugging Face Hub

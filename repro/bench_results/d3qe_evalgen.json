@@ -1,0 +1,53 @@
+{
+  "tag": "d3qe_evalgen",
+  "model": "d3qe",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 62.21,
+    "map": 91.48,
+    "mauroc": 83.94
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 87.66,
+      "auroc": 77.33,
+      "real_acc": 98.3,
+      "fake_acc": 13.03,
+      "acc": 55.66
+    },
+    "GoT": {
+      "ap": 93.41,
+      "auroc": 86.92,
+      "real_acc": 98.3,
+      "fake_acc": 29.14,
+      "acc": 63.72
+    },
+    "Infinity": {
+      "ap": 87.59,
+      "auroc": 76.76,
+      "real_acc": 98.3,
+      "fake_acc": 14.51,
+      "acc": 56.41
+    },
+    "NOVA": {
+      "ap": 96.91,
+      "auroc": 93.77,
+      "real_acc": 98.3,
+      "fake_acc": 51.53,
+      "acc": 74.92
+    },
+    "OmniGen": {
+      "ap": 91.82,
+      "auroc": 84.91,
+      "real_acc": 98.3,
+      "fake_acc": 22.35,
+      "acc": 60.33
+    }
+  },
+  "date": "2026-10-26T09:42:14",
+  "synthscope_version": "0.1.0"
+}

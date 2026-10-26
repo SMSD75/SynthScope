@@ -1,0 +1,39 @@
+{
+  "tag": "d3qe_wildrf",
+  "model": "d3qe",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 53.03,
+    "map": 63.65,
+    "mauroc": 63.89
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 59.58,
+      "auroc": 60.23,
+      "real_acc": 98.12,
+      "fake_acc": 3.75,
+      "acc": 50.94
+    },
+    "reddit": {
+      "ap": 64.28,
+      "auroc": 64.96,
+      "real_acc": 92.27,
+      "fake_acc": 19.33,
+      "acc": 55.8
+    },
+    "twitter": {
+      "ap": 67.08,
+      "auroc": 66.47,
+      "real_acc": 98.24,
+      "fake_acc": 6.43,
+      "acc": 52.34
+    }
+  },
+  "date": "2026-10-26T08:45:24",
+  "synthscope_version": "0.1.0"
+}
