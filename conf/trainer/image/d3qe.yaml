@@ -1,0 +1,24 @@
+# D3QE's official training recipe (train.py + options.TrainOptions defaults; train.sh only sets the augmentation):
+# AdamW lr 8e-5, betas (0.9, 0.999), weight decay 0.01, batch 32 on one GPU, 10 epochs, no warmup. Validation after
+# every epoch keeps the best-accuracy checkpoint; EarlyStopping (patience 5, delta 0.001, then 0.002 after a drop)
+# divides the learning rate by 10, stopping below 1e-6. The released checkpoint has total_steps 62500 = 10 epochs.
+epochs: 10
+lr: 0.00008
+weight_decay: 0.01
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: true
+save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/d3qe
+seed: 42
+warmup:
+  mode: "off"            # quoted: a bare off is YAML boolean False, which the trainer reads as "on"
+  warmup_ratio: 0.0
+  lr_scheduler: linear
+plateau:
+  patience: 5
+  delta: 0.001
+  delta_after_drop: 0.002
+  factor: 10
+  min_lr: 0.000001

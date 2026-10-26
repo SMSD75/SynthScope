@@ -46,6 +46,7 @@ dependencies = [
     "pytorch_wavelets>=1.3",
     "PyWavelets>=1.9",
     "opencv-python-headless",     # CuRe preprocessing (JPEG round-trips, resizing)
+    "scipy",                      # CNNDetection-style blur augmentation (transformations.CNNDetAugment)
     "setuptools<81",              # pytorch_wavelets (SAFE) still imports pkg_resources, removed in setuptools 81
 ]
 

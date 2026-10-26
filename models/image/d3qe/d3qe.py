@@ -26,6 +26,7 @@ Input contract: ``forward`` takes the tensor of the official test transform — 
 import os
 from pathlib import Path
 
+import torch
 import torch.nn as nn
 from omegaconf import DictConfig
 
@@ -58,6 +59,7 @@ class SynthScopeD3QEModel(D3QE):
         # Official objective (networks/trainer.py): BCE on the single logit; passing the labels lets the forward pass
         # update the codebook-frequency statistics during training, as in the official code.
         images, labels, _folder_ids = batch
-        outputs = self(images, labels)
-        loss = self.criterion(outputs.squeeze(1), labels.float())
-        return {"loss": loss, "outputs": outputs}
+        logits = self(images, labels).squeeze(1)
+        loss = self.criterion(logits, labels.float())
+        # Two-column [-logit, logit] so the trainer's metrics (argmax / softmax[:, 1]) read the single logit right.
+        return {"loss": loss, "outputs": torch.stack([-logits, logits], dim=1)}
