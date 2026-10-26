@@ -22,6 +22,7 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
 | FatFormer | 48.9 / 38.7 | 62.1 / 62.7 | 53.5 / 58.6 | 59.5 / 72.8 | 50.0 / 52.7 | 53.0 / 53.4 | 54.5 |
 | SAFE | 49.8 / 53.7 | 50.8 / 60.0 | 50.0 / 51.1 | 58.5 / 58.5 | 50.2 / 48.7 | 62.9 / 65.7 | 53.7 |
 | NPR | 47.2 / 51.7 | 52.6 / 50.6 | 50.4 / 51.7 | 65.0 / 70.9 | 44.1 / 32.2 | 61.1 / 64.1 | 53.4 |
+| D3QE | 49.5 / 43.5 | 62.2 / 83.9 | 49.6 / 45.5 | 53.0 / 63.9 | 47.0 / 64.0 | 55.0 / 55.1 | 52.7 |
 | PGC | 49.9 / 36.0 | 50.2 / 77.7 | 50.9 / 56.3 | 60.1 / 76.8 | 50.0 / 46.5 | 52.3 / 57.8 | 52.2 |
 | DINOv2 probe | 47.9 / 38.8 | 52.6 / 57.6 | 51.1 / 49.6 | 58.9 / 63.6 | 50.0 / 19.4 | 50.6 / 43.0 | 51.8 |
 | UnivFD / CLIP | 49.2 / 40.9 | 51.8 / 55.9 | 49.3 / 48.1 | 53.4 / 64.8 | 50.4 / 43.9 | 52.7 / 54.7 | 51.1 |
@@ -48,6 +49,8 @@ Each number comes from `repro/bench_results/<model>_<dataset>.json`; regenerate 
   94.98 vs 95.1 (fewer images) and EvalGEN 96.86 vs 97.2 in the paper's metric, the accuracy on the fakes alone (the
   table shows balanced accuracy; see [the DDA README](../models/image/dda/README.md)). Its RealChain and RRDataset rows
   are new measurements.
+- D3QE is trained on LlamaGen vs ImageNet only and targets autoregressive generators; on these sets it calls almost
+  every fake real (fake recall mostly under 15%), a new measurement that its paper does not report.
 - The other detectors were never evaluated on these sets by their authors, so their rows are new measurements, not
   reproductions.
 - Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50

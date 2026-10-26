@@ -1,0 +1,25 @@
+{
+  "tag": "d3qe_bfree_online",
+  "model": "d3qe",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 47.03,
+    "map": 68.77,
+    "mauroc": 64.0
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 68.77,
+      "auroc": 64.0,
+      "real_acc": 92.19,
+      "fake_acc": 1.86,
+      "acc": 47.03
+    }
+  },
+  "date": "2026-10-26T08:46:09",
+  "synthscope_version": "0.1.0"
+}

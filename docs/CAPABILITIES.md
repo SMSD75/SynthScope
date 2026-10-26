@@ -29,6 +29,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `co_spy` | image | bce | synthscope* | – | Semantic + artifact fusion (SigLIP + SD-VAE) |
 | `pgc` | image | bce | official | pgc_peak | LoRA-DINOv2 + YCbCr residual, peak-guided |
 | `cure` | image | ce | official | – | Frozen PE-Core L/14 + Q/V LoRA + source-response subspace (mixing-ratio regression) |
+| `d3qe` | image | bce | official | – | LlamaGen VQ quantization error + codebook-aware transformer + CLIP ViT-L/14 (autoregressive images) |
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck (FLAVA) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |

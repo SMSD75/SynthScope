@@ -13,6 +13,7 @@ from models.image.npr.npr import NPR
 from models.image.pgc.pgc import SynthScopePGCModel
 from models.image.cure.cure import SynthScopeCuReModel
 from models.image.dda.dda import SynthScopeDDAModel
+from models.image.d3qe.d3qe import SynthScopeD3QEModel
 from models.video.d3.d3 import SynthScopeD3Model
 from models.video.restrav.restrav import SynthScopeReStraVModel
 from models.video.stall.stall import SynthScopeSTALLModel
@@ -89,6 +90,8 @@ class SynthScopeModelTrainer:
             return SynthScopeCuReModel(config)
         if model_type == "dda":
             return SynthScopeDDAModel(config)
+        if model_type == "d3qe":
+            return SynthScopeD3QEModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
         if model_type == "restrav":

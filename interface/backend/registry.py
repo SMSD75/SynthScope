@@ -337,6 +337,17 @@ _add(ModelSpec(
           "center crop with no resize (smaller images are zero-padded), so large images are judged on their center.",
 ))
 _add(ModelSpec(
+    key="d3qe", name="D3QE", paper="Zhang et al., ICCV'25",
+    modality="image", predict_kind="bce", checkpoint="d3qe.pth", ckpt_kind="official_d3qe", weights="official",
+    # d3qe.pth = the official model_epoch_best.pth unchanged (HF Yanran21/D3QE); the frozen CLIP ViT-L/14 and LlamaGen
+    # VQ-16 are fetched from their own releases (the model's pretrained_prefixes), all other keys load strictly.
+    overrides=["model@ModelConfig=image/d3qe"],
+    transform=tf_resize_crop(256, 256),  # official test path: Resize(256) short side, CenterCrop(256), ToTensor, no norm
+    notes="Detector for autoregressive (token-based) image generators: the quantization error of a frozen LlamaGen VQ "
+          "tokenizer, read by a small transformer, fused with frozen CLIP ViT-L/14 features. Trained on LlamaGen vs "
+          "ImageNet only. Uses the OFFICIAL released checkpoint.",
+))
+_add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
     modality="image", predict_kind="bce_npr", checkpoint="npr.pth",
     ckpt_kind="official_npr", remap=remap_npr, weights="official",
@@ -404,6 +415,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
              "original pixels (picked by their frequency content) plus one resized view of the whole image."),
     "dda": ("Center-crop 336, no resize", "The central 336×336 pixels are used exactly as they are - no scaling. Smaller "
             "images are padded with black; the rest of a larger image is not seen."),
+    "d3qe": ("Resized to 256, center crop", "The shorter side is scaled to 256 and the central 256×256 square is used; "
+             "its CLIP branch looks at the central 224×224 of that square."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }

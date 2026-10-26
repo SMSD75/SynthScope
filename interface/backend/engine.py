@@ -107,6 +107,9 @@ def _build_model(cfg):
     if model_type == "dda":
         from models.image.dda.dda import SynthScopeDDAModel
         return SynthScopeDDAModel(cfg)
+    if model_type == "d3qe":
+        from models.image.d3qe.d3qe import SynthScopeD3QEModel
+        return SynthScopeD3QEModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
@@ -148,10 +151,13 @@ def _load_checkpoint(model, spec: ModelSpec):
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
     benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
+    # Frozen pretrained parts that a model loads from their own release in __init__ and that its official
+    # checkpoint therefore does not contain (e.g. D3QE's CLIP and VQ tokenizer); everything else stays strict.
+    pretrained = tuple(getattr(model, "pretrained_prefixes", ()))
     real_missing = [
         k for k in missing
         if not k.startswith("criterion") and not k.startswith("dwt_filter.")
-        and k.split(".")[-1] not in benign
+        and k.split(".")[-1] not in benign and not (pretrained and k.startswith(pretrained))
     ]
     if spec.ckpt_kind.startswith("official"):
         # Official-weights loads are verified to be exact; flag any genuine mismatch loudly.

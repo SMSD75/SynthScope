@@ -281,6 +281,98 @@
       "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28: without"
     }
   ],
+  "d3qe": [
+    {
+      "benchmark": "ARForensics (7 autoregressive generators, full test set)",
+      "metric": "accuracy / AP (mean over generators)",
+      "paper": "acc=82.11 / map=92.07",
+      "ours": "mAP=92.22 / acc=81.74 / AUROC=91.91 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=92.22 / acc=81.74 / AUROC=91.91",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope: 81.74 acc / 92.22 AP (AUROC 91.91) on all 84,000 images; LlamaGen 97.16/99.58, VAR 84.46/95.16, Infinity 63.06/80.26, Janus-Pro 92.39/97.85, RAR 91.70/97.88, Switti 74.23/88.71, Open-MAGVIT2 69.21/86.12, every generator within 1.1 pt acc (tag d3qe_arforensics, job 264795)."
+    },
+    {
+      "benchmark": "ForenSynths (paper's 7 GANs, cross-paradigm)",
+      "metric": "accuracy / AP (mean over generators)",
+      "paper": "acc=83.73 / map=92.23",
+      "ours": "mAP=92.23 / acc=83.45 / AUROC=90.65 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=92.23 / acc=83.45 / AUROC=90.65",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope (bench_eval --dataset cnndetection --select the 7 GANs): 83.45 acc / 92.23 AP (AUROC 90.65); ProGAN 95.10, StyleGAN 76.21, StyleGAN2 75.08, BigGAN 86.07, CycleGAN 83.27, StarGAN 73.64, GauGAN 94.76, every GAN within 1.5 pt (tag d3qe_cnndetection, job 264795)."
+    },
+    {
+      "benchmark": "GenImage (paper's 6 diffusion subsets, cross-paradigm)",
+      "metric": "accuracy / AP (mean over generators)",
+      "paper": "acc=78.61 / map=89.6",
+      "ours": "mAP=90.94 / acc=79.44 / AUROC=90.49 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=90.94 / acc=79.44 / AUROC=90.49",
+      "status": "official",
+      "note": "Official checkpoint through SynthScope (bench_eval --dataset genimage_full --select the 6 subsets): 79.44 acc / 90.94 AP (AUROC 90.49), the mean within 0.9 pt; per subset the gaps are larger (ADM 63.67, -6.8; GLIDE 91.13; Midjourney 63.80; SD-v1.4 82.21; SD-v1.5 85.10; Wukong 90.73, +6.3), so the paper's GenImage test sample probably differs from ours (tag d3qe_genimage_full, job 264795)."
+    },
+    {
+      "benchmark": "SynthWildX (3 generators, images still online on X)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=49.3 / acc=49.58 / AUROC=45.47 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=49.3 / acc=49.58 / AUROC=45.47",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 49.58 (mAP 49.30, AUROC 45.47); fake recall 2-10% (tag d3qe_synthwildx, job 264796)."
+    },
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=63.65 / acc=53.03 / AUROC=63.89 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=63.65 / acc=53.03 / AUROC=63.89",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 53.03 (mAP 63.65, AUROC 63.89) (tag d3qe_wildrf, job 264796)."
+    },
+    {
+      "benchmark": "BFree-Online (viral images still online)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=68.77 / acc=47.03 / AUROC=64.0 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=68.77 / acc=47.03 / AUROC=64.0",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 47.03 (mAP 68.77, AUROC 64.00); fake recall 1.9% (tag d3qe_bfree_online, job 264796)."
+    },
+    {
+      "benchmark": "RealChain (7 generators, full data)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=47.24 / acc=49.49 / AUROC=43.49 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=47.24 / acc=49.49 / AUROC=43.49",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 49.49 (mAP 47.24, AUROC 43.49) (tag d3qe_realchain, job 264796)."
+    },
+    {
+      "benchmark": "EvalGEN (5 generators, MSCOCO val2017 reals)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=91.48 / acc=62.21 / AUROC=83.94 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=91.48 / acc=62.21 / AUROC=83.94",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 62.21 balanced acc (mAP 91.48, AUROC 83.94); mean fake recall 26.1% (tag d3qe_evalgen, job 264796)."
+    },
+    {
+      "benchmark": "RRDataset (original / transfer / redigital)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=59.25 / acc=54.95 / AUROC=55.11 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=59.25 / acc=54.95 / AUROC=55.11",
+      "status": "reference",
+      "note": "Official checkpoint through SynthScope: 54.95 (mAP 59.25, AUROC 55.11) (tag d3qe_rrdataset, job 264796)."
+    }
+  ],
   "dda": [
     {
       "benchmark": "GenImage (1G + 7D, fakes JPEG q96)",
