@@ -903,7 +903,8 @@ class CNNDetectionDataset(Dataset):
         "test": ("cnn_synth_testset", "test"),
     }
 
-    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False):
+    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False,
+                 classes: list[str] | None = None):
         super().__init__()
         self.root_dir = Path(root_dir)
         self.split = split
@@ -914,6 +915,12 @@ class CNNDetectionDataset(Dataset):
             print(f"Downloading {self.split} split from Google Drive...")
             self._download_data()
         self.images, self.labels, self.folder_names = self._load_data()
+        if classes:   # e.g. the 4-class ProGAN setting (car, cat, chair, horse) of CNNDetection/NPR/FatFormer
+            keep = [i for i, f in enumerate(self.folder_names) if f in set(classes)]
+            if not keep:
+                raise ValueError(f"CNNDetection {split}: none of the classes {list(classes)} found")
+            self.images = [self.images[i] for i in keep]; self.labels = [self.labels[i] for i in keep]
+            self.folder_names = [self.folder_names[i] for i in keep]
         self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
 
     @classmethod
@@ -1081,8 +1088,10 @@ class CNNDetectionDatasetModule:
         self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
         self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
-        self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
-        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
+        classes = config.DatasetConfig.get("train_classes", None)   # ProGAN classes for train/val (None: all 20)
+        classes = list(classes) if classes else None
+        self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch, classes=classes)
+        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch, classes=classes)
         self.test_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
 
     def train_dataloader(self):

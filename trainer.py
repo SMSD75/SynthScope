@@ -276,10 +276,39 @@ class SynthScopeModelTrainer:
             best, bad, delta = None, 0, float(plateau.get("delta_after_drop", plateau.delta))
         self.logger.finish()
 
+    def _train_with_lr_step(self, step):
+        """A fixed step schedule as in NPR's train.py (``delr_freq``): after epoch ``e`` (0-based) with
+        ``e % every == 0 and e != 0`` the learning rate is multiplied by ``factor``; validation after every epoch is
+        logged (plus ``model_best.pth`` by validation accuracy), and the final model is ``model_last.pth``, which is
+        the checkpoint the official code releases."""
+        cfg = self.config.TrainerConfig
+        best = None
+        for epoch in range(cfg.epochs):
+            train_loss, train_metrics_dict = self.train_epoch()
+            self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
+            self.logger.log_metrics({"train/loss": train_loss, **{f"train/{m}": v for m, v in train_metrics_dict.items()}}, self.global_step)
+            if epoch % int(step.every) == 0 and epoch != 0:
+                for group in self.optimizer.param_groups:
+                    group["lr"] *= float(step.factor)
+                self.accelerator.print(f"Epoch {epoch}: learning rate -> {self.optimizer.param_groups[0]['lr']:.3e}")
+            val_loss, val_metrics_dict = self.val()
+            acc = self._val_accuracy(val_metrics_dict)
+            self.accelerator.print(f"Epoch {epoch}, Val accuracy {acc:.4f} (lr {self.optimizer.param_groups[0]['lr']:.3e}, step {self.global_step})")
+            self.logger.log_metrics({"val/accuracy": acc, "lr": self.optimizer.param_groups[0]["lr"]}, self.global_step)
+            if cfg.save:
+                self._save_model("last", cfg.save_path)
+                if best is None or acc > best:
+                    best = acc
+                    self._save_model("best", cfg.save_path)
+        self.logger.finish()
+
     def train(self):
         plateau = self.config.TrainerConfig.get("plateau", None)
         if plateau is not None:
             return self._train_with_plateau(plateau)
+        lr_step = self.config.TrainerConfig.get("lr_step", None)
+        if lr_step is not None:
+            return self._train_with_lr_step(lr_step)
         for epoch in range(self.config.TrainerConfig.epochs):
             if epoch % self.config.TrainerConfig.val_interval == 0:
                 val_loss, val_metrics_dict = self.val()

@@ -85,6 +85,8 @@ class AIGITransformations:
     def _create_transform(self, transform_name: str):
         if transform_name == "resize_224":
             return v2.Resize((224, 224))
+        elif transform_name == "resize_256":               # square, as NPR/FatFormer/CNNDetection-style training (Resize((256, 256)))
+            return v2.Resize((256, 256))
         elif transform_name == "resize_short_256":
             return v2.Resize(256)
         elif transform_name == "resize_short_384":
