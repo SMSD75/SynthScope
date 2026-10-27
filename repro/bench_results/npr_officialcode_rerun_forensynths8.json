@@ -1,0 +1,74 @@
+{
+  "tag": "npr_officialcode_rerun_forensynths8",
+  "model": "npr",
+  "ckpt": "/ssdstore/ssalehi/SynthScope/models/npr_official_rerun/4class-resnet-car-cat-chair-horse2026_10_27_03_27_09/model_epoch_last.pth",
+  "benchmark": "forensynths",
+  "data_root": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 81.47,
+    "map": 92.72,
+    "mauroc": 93.97
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 90.16,
+      "auroc": 91.79,
+      "real_acc": 91.95,
+      "fake_acc": 65.2,
+      "acc": 78.58
+    },
+    "cyclegan": {
+      "ap": 97.81,
+      "auroc": 98.64,
+      "real_acc": 99.24,
+      "fake_acc": 45.19,
+      "acc": 72.22
+    },
+    "deepfake": {
+      "ap": 73.75,
+      "auroc": 75.52,
+      "real_acc": 95.57,
+      "fake_acc": 20.53,
+      "acc": 58.05
+    },
+    "gaugan": {
+      "ap": 80.85,
+      "auroc": 86.74,
+      "real_acc": 90.64,
+      "fake_acc": 42.6,
+      "acc": 66.62
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.87,
+      "acc": 99.94
+    },
+    "stargan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 100.0,
+      "fake_acc": 81.54,
+      "acc": 90.77
+    },
+    "stylegan": {
+      "ap": 99.34,
+      "auroc": 99.23,
+      "real_acc": 99.98,
+      "fake_acc": 83.07,
+      "acc": 91.53
+    },
+    "stylegan2": {
+      "ap": 99.89,
+      "auroc": 99.87,
+      "real_acc": 99.99,
+      "fake_acc": 88.17,
+      "acc": 94.08
+    }
+  },
+  "date": "2026-10-27T13:08:53",
+  "synthscope_version": "0.1.0"
+}

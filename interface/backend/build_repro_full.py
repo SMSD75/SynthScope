@@ -62,10 +62,11 @@ VAL = {
     ("d3qe", "RRDataset"):               {"official": {"map": 59.25, "acc": 54.95, "auroc": 55.11}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
-    ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}},
+    # synthscope = trained in SynthScope with the official recipe (experiments/image/npr.sh; job 265720, eval 265808).
+    ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}, "synthscope": {"map": 93.83, "acc": 84.09, "auroc": 94.94}},
     ("npr", "Table 2"):                  {"official": {"map": 96.49, "acc": 94.81}},
     ("npr", "Table 3"):                  {"official": {"map": 99.4, "acc": 95.03}},
-    ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}},
+    ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}, "synthscope": {"map": 97.49, "acc": 88.91, "auroc": 97.23}},
     ("npr", "Table 5"):                  {"official": {"map": 83.47, "acc": 79.13}},
     # SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / model_38), which reproduces the paper.
     ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "synthscope": {"map": 97.79, "acc": 95.1}},

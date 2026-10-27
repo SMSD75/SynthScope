@@ -542,8 +542,8 @@
       "benchmark": "Table 1 \u2014 ForenSynths / Cross-GAN-Sources (8 GANs) \u2014 HEADLINE",
       "metric": "AP (and acc@0.5)",
       "paper": "map=96.1 / acc=92.5",
-      "ours": "mAP=94.22 / acc=92.3 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=93.83 / acc=84.09 / AUROC=94.94 \u00b7 official mAP=94.22 / acc=92.3",
+      "ours_synthscope": "mAP=93.83 / acc=84.09 / AUROC=94.94",
       "ours_official": "mAP=94.22 / acc=92.3",
       "status": "official",
       "note": "Our npr_official_forensynths.json logs the full 13-gen mean 79.45 mAP; the 8-GAN subset {progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake} computes to 92.81 mAP / 91.83 acc."
@@ -572,8 +572,8 @@
       "benchmark": "Table 4 \u2014 UniversalFakeDetect / Ojha",
       "metric": "AP (and acc@0.5)",
       "paper": "acc=95.2",
-      "ours": "mAP=96.69 / acc=93.94 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=97.49 / acc=88.91 / AUROC=97.23 \u00b7 official mAP=96.69 / acc=93.94",
+      "ours_synthscope": "mAP=97.49 / acc=88.91 / AUROC=97.23",
       "ours_official": "mAP=96.69 / acc=93.94",
       "status": "official",
       "note": "n/a \u2014 96.69 mAP / 93.94 acc, close to paper acc 95.2."

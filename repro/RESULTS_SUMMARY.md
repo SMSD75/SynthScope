@@ -11,7 +11,7 @@
 | Method | Headline benchmark | Paper | SynthScope_official | SynthScope_train | Verdict |
 |---|---|---:|---:|---:|---|
 | FatFormer | ForenSynths-8 | 99.7 | 99.70 | — | ✅ official match |
-| NPR | ForenSynths-8 / GANGen | 96.1 / 96.6 | 94.22 / 96.49 | — | ✅ official match |
+| NPR | ForenSynths-8 / GANGen | 96.1 / 96.6 | 94.22 / 96.49 | 93.83 / — | ✅ official match; trained (official recipe): AP close, acc 84.1 — the official train.py rerun here gets 81.5 |
 | CLIP/UnivFD | ForenSynths | — | 93.14 | 92.99 | ✅ match |
 | CNNDetection | ForenSynths | 90.8 | 91.15 | 91.05 | ✅ match |
 | SAFE | GenImage | 99.3 | 99.32 | 99.51 | ✅ retrain reproduces |
