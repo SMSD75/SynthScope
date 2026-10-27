@@ -1,0 +1,39 @@
+{
+  "tag": "omniaid_synthwildx",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 86.02,
+    "map": 95.52,
+    "mauroc": 95.31
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 98.74,
+      "auroc": 98.93,
+      "real_acc": 95.88,
+      "fake_acc": 93.88,
+      "acc": 94.88
+    },
+    "firefly": {
+      "ap": 91.41,
+      "auroc": 90.46,
+      "real_acc": 95.88,
+      "fake_acc": 56.45,
+      "acc": 76.17
+    },
+    "midjourney_v5": {
+      "ap": 96.42,
+      "auroc": 96.55,
+      "real_acc": 95.88,
+      "fake_acc": 78.16,
+      "acc": 87.02
+    }
+  },
+  "date": "2026-10-27T08:37:18",
+  "synthscope_version": "0.1.0"
+}

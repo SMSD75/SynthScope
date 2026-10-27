@@ -33,6 +33,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `cure` | CuRe (arXiv 2609.14316) | manic-cui/CuRe | Apache-2.0 (repo `LICENSE`) | **official** 25 MB adapter (`cure_adapter.pt`, loads as `cure.pth`) | Apache-2.0 (shipped in the repo; verify before redistributing) |
 | `d3qe` | D3QE (ICCV'25) | Zhangyr2022/D3QE | MIT (repo `LICENSE`); `official/` vendors its network code — see the file headers | **official** checkpoint (`model_epoch_best.pth` from HF `Yanran21/D3QE`, loads as `d3qe.pth`) | MIT (HF model card license tag) |
 | `dda` | DDA (NeurIPS'25) | roy-ch/Dual-Data-Alignment | Apache-2.0 (repo `LICENSE`); `official_arch.py` vendors its `lora.py` — see its header | **official** checkpoint (`DDA_ckpt.pth` from HF `Junwei-Xi/Dual-Data-Alignment`, loads as `dda.pth`) | Apache-2.0 (HF model card license tag) |
+| `omniaid`, `omniaid_v1`, `omniaid_genimage` | OmniAID (arXiv 2511.08423) | yunncheng/OmniAID | MIT (README badge; no LICENSE file in the repo); `official_arch.py` vendors `models/OmniAID.py` — see its header | **official** checkpoints (`ckpt/checkpoint_omniaid_{v2,v1,genimage_sd14}.pth` from HF `Yunncheng/OmniAID`, loaded as `<key>.pth`) | MIT (HF model card license tag) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
@@ -45,6 +46,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | Backbone | Used by | License |
 | --- | --- | --- |
 | OpenAI CLIP (ViT-L/14) | `clip`, `fat_former`, `d3`, `d3qe` | MIT (verify) |
+| OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
 | DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** — DINOv3 License (non-commercial; accept upstream) |

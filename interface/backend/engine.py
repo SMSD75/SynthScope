@@ -107,6 +107,9 @@ def _build_model(cfg):
     if model_type == "dda":
         from models.image.dda.dda import SynthScopeDDAModel
         return SynthScopeDDAModel(cfg)
+    if model_type == "omniaid":
+        from models.image.omniaid.omniaid import SynthScopeOmniAIDModel
+        return SynthScopeOmniAIDModel(cfg)
     if model_type == "d3qe":
         from models.image.d3qe.d3qe import SynthScopeD3QEModel
         return SynthScopeD3QEModel(cfg)

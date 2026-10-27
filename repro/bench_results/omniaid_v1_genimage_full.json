@@ -1,0 +1,74 @@
+{
+  "tag": "omniaid_v1_genimage_full",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenImage_full/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 97.16,
+    "map": 99.2,
+    "mauroc": 99.12
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 95.77,
+      "auroc": 94.37,
+      "real_acc": 97.4,
+      "fake_acc": 80.4,
+      "acc": 88.9
+    },
+    "biggan": {
+      "ap": 99.43,
+      "auroc": 99.61,
+      "real_acc": 97.07,
+      "fake_acc": 98.67,
+      "acc": 97.87
+    },
+    "glide": {
+      "ap": 99.19,
+      "auroc": 99.66,
+      "real_acc": 96.73,
+      "fake_acc": 99.67,
+      "acc": 98.2
+    },
+    "midjourney": {
+      "ap": 99.66,
+      "auroc": 99.7,
+      "real_acc": 97.2,
+      "fake_acc": 99.2,
+      "acc": 98.2
+    },
+    "sdv1.4": {
+      "ap": 99.94,
+      "auroc": 99.96,
+      "real_acc": 97.38,
+      "fake_acc": 100.0,
+      "acc": 98.69
+    },
+    "sdv1.5": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 97.27,
+      "fake_acc": 100.0,
+      "acc": 98.63
+    },
+    "vqdm": {
+      "ap": 99.67,
+      "auroc": 99.76,
+      "real_acc": 97.27,
+      "fake_acc": 99.53,
+      "acc": 98.4
+    },
+    "wukong": {
+      "ap": 99.95,
+      "auroc": 99.95,
+      "real_acc": 97.07,
+      "fake_acc": 99.8,
+      "acc": 98.43
+    }
+  },
+  "date": "2026-10-27T09:22:13",
+  "synthscope_version": "0.1.0"
+}

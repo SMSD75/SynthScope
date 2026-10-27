@@ -347,6 +347,26 @@ _add(ModelSpec(
           "tokenizer, read by a small transformer, fused with frozen CLIP ViT-L/14 features. Trained on LlamaGen vs "
           "ImageNet only. Uses the OFFICIAL released checkpoint.",
 ))
+# OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
+# double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
+omniaid_v1_transform = T.Compose([T.Resize((512, 512)), T.Resize((336, 336)), T.ToTensor(), _norm(CLIP_MEAN, CLIP_STD)])
+for _key, _name, _ckpt, _tf, _note in [
+    ("omniaid", "OmniAID", "omniaid.pth", tf_square_resize(336, None, CLIP_MEAN, CLIP_STD),
+     "the recommended v2 release, trained on Mirage-Train (the authors' modern in-the-wild dataset)"),
+    ("omniaid_v1", "OmniAID (v1)", "omniaid_v1.pth", omniaid_v1_transform,
+     "the v1 release trained on Mirage-Train, the paper's OmniAID-Mirage"),
+    ("omniaid_genimage", "OmniAID (GenImage)", "omniaid_genimage.pth", omniaid_v1_transform,
+     "the release trained on GenImage SD v1.4 only, for the paper's academic GenImage protocol"),
+]:
+    _add(ModelSpec(
+        key=_key, name=_name, paper="Guo et al., arXiv 2511.08423",
+        modality="image", predict_kind="ce", checkpoint=_ckpt, ckpt_kind="official_omniaid", weights="official",
+        # <key>.pth = the official ckpt/checkpoint_omniaid_*.pth unchanged (HF Yunncheng/OmniAID); full model, strict load.
+        overrides=[f"model@ModelConfig=image/{_key}"],
+        transform=_tf,
+        notes="Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, "
+              "scene, ...) and an always-on artifact expert sees every image. Uses the OFFICIAL checkpoint: " + _note + ".",
+    ))
 _add(ModelSpec(
     key="npr", name="NPR", paper="Tan et al., CVPR'24",
     modality="image", predict_kind="bce_npr", checkpoint="npr.pth",
@@ -417,6 +437,9 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
             "images are padded with black; the rest of a larger image is not seen."),
     "d3qe": ("Resized to 256, center crop", "The shorter side is scaled to 256 and the central 256×256 square is used; "
              "its CLIP branch looks at the central 224×224 of that square."),
+    "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
+    "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
+    "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
