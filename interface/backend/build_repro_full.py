@@ -50,9 +50,10 @@ VAL = {
     ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}},
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}},
     # D3QE: only the official checkpoint is evaluated (no SynthScope-trained number). acc = plain = balanced (balanced subsets).
-    ("d3qe", "ARForensics"):             {"official": {"map": 92.22, "acc": 81.74, "auroc": 91.91}},
-    ("d3qe", "ForenSynths"):             {"official": {"map": 92.23, "acc": 83.45, "auroc": 90.65}},
-    ("d3qe", "GenImage"):                {"official": {"map": 90.94, "acc": 79.44, "auroc": 90.49}},
+    # synthscope = trained in SynthScope with the official recipe (experiments/image/d3qe.sh; job 265064, eval 265826).
+    ("d3qe", "ARForensics"):             {"official": {"map": 92.22, "acc": 81.74, "auroc": 91.91}, "synthscope": {"map": 91.73, "acc": 79.83, "auroc": 91.49}},
+    ("d3qe", "ForenSynths"):             {"official": {"map": 92.23, "acc": 83.45, "auroc": 90.65}, "synthscope": {"map": 91.35, "acc": 82.14, "auroc": 90.29}},
+    ("d3qe", "GenImage"):                {"official": {"map": 90.94, "acc": 79.44, "auroc": 90.49}, "synthscope": {"map": 90.11, "acc": 77.01, "auroc": 89.63}},
     ("d3qe", "SynthWildX"):              {"official": {"map": 49.3, "acc": 49.58, "auroc": 45.47}},
     ("d3qe", "WildRF"):                  {"official": {"map": 63.65, "acc": 53.03, "auroc": 63.89}},
     ("d3qe", "BFree-Online"):            {"official": {"map": 68.77, "acc": 47.03, "auroc": 64.0}},

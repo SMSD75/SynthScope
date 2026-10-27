@@ -21,7 +21,7 @@
 | VIB-Net | GenImage (SD-v1.4) | 95.5 AP | *none released* | 83.26 | ⚠️ recipe/arch gap |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 acc | — | ✅ official match (GenImage 2.3 pt below) |
-| D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | — | ✅ official match |
+| D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 99.14 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -148,7 +148,7 @@ Fidelity: SynthScope's class == the official `D3QE` (871/871 state-dict tensors 
 | GenImage, the paper's 6 subsets (`--dataset genimage_full --select ...`) | **79.44** | 90.94 | **78.61 / 89.60** | mean reproduced; per subset up to 6.8 pt off in both directions (ADM 63.7 vs 70.4, Wukong 90.7 vs 84.4), likely a different test sample |
 | In the wild: SynthWildX / WildRF / BFree-Online / RealChain / EvalGEN / RRDataset | 49.6 / 53.0 / 47.0 / 49.5 / 62.2 / 55.0 | – | — | new measurements: it calls nearly every recent fake real (AR-only training) |
 
-**Verdict: faithful port (identical to the official model); all 3 paper tables reproduced on the mean** (ARForensics and ForenSynths per generator too). Note: in the released code the codebook-frequency bias is zero at inference (`freq_log_counter` is not saved), so the reported scores come from the quantization-error and CLIP branches.
+**Verdict: faithful port (identical to the official model); all 3 paper tables reproduced on the mean** (ARForensics and ForenSynths per generator too). **Trained in SynthScope with the official recipe** (`experiments/image/d3qe.sh`, job 265064): 79.83 / 91.73, 82.14 / 91.35, 77.01 / 90.11 (acc / AP) — AP within 0.9 pt of the paper everywhere, accuracy 1.6-2.3 pt lower (a slightly more conservative threshold, not a weaker ranking). Note: in the released code the codebook-frequency bias is zero at inference (`freq_log_counter` is not saved), so the reported scores come from the quantization-error and CLIP branches.
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

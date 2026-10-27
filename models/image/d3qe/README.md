@@ -32,7 +32,7 @@ is downloaded to `~/.cache/clip` (or `$SYNTHSCOPE_CLIP_DIR`) and the LlamaGen VQ
 | `official/` = the official `networks/D3QE.py`, `vq_model.py` and `clip/model.py`, **byte-identical bodies** | `SynthScopeD3QEModel` subclasses the official `D3QE`, so the checkpoint loads key-for-key; MIT attribution in the headers. |
 | `official/clip/clip.py` reduced to the official `load()` path D3QE uses (CPU, non-JIT) | The text tokenizer is not needed; `from pkg_resources import packaging`, which current setuptools no longer provides, became `import packaging.version`. |
 | `pretrained_prefixes = ("clip_model.", "vq_model.")` | The checkpoint does not contain the frozen CLIP and VQ weights (the official `eval.py` falls back to `strict=False`). The engine accepts missing keys only under these prefixes; every trained tensor still loads strictly. |
-| `compute_loss` = BCE on the logit, labels passed to `forward` | The official objective; the forward pass updates the codebook statistics during training as in the official code. ARForensics training is not reproduced here. |
+| `compute_loss` = BCE on the logit, labels passed to `forward` | The official objective; the forward pass updates the codebook statistics during training as in the official code. The full official recipe is `experiments/image/d3qe.sh` (see *Training in SynthScope* below). |
 
 Two properties of the released code are kept on purpose, because they decide the released scores:
 * the VQ tokenizer sees the [0, 1] image: `forward` builds a [-1, 1] copy but encodes the unnormalized one;
@@ -55,9 +55,9 @@ accuracy equals SynthScope's balanced accuracy.
 
 | Benchmark | Paper (acc / AP) | SynthScope_official (acc / AP) | SynthScope_train | Status |
 |---|---|---|---|---|
-| **ARForensics** (7 AR generators, all 84,000 test images) | 82.11 / 92.07 | **81.74 / 92.22** (AUROC 91.91) | — | **reproduced** |
-| **ForenSynths** (the paper's 7 GANs) | 83.73 / 92.23 | **83.45 / 92.23** (AUROC 90.65) | — | **reproduced** |
-| **GenImage** (the paper's 6 subsets) | 78.61 / 89.60 | **79.44 / 90.94** (AUROC 90.49) | — | **reproduced** on the mean; per-subset gaps up to 6.8 pt |
+| **ARForensics** (7 AR generators, all 84,000 test images) | 82.11 / 92.07 | **81.74 / 92.22** (AUROC 91.91) | 79.83 / 91.73 | official **reproduced**; trained: AP matches, acc 2.3 below |
+| **ForenSynths** (the paper's 7 GANs) | 83.73 / 92.23 | **83.45 / 92.23** (AUROC 90.65) | **82.14 / 91.35** | **reproduced** (official and trained) |
+| **GenImage** (the paper's 6 subsets) | 78.61 / 89.60 | **79.44 / 90.94** (AUROC 90.49) | **77.01 / 90.11** | **reproduced** on the mean (official and trained); per-subset gaps up to 6.8 pt |
 
 Per generator (SynthScope vs paper, accuracy):
 
@@ -77,6 +77,23 @@ BFree-Online 47.03, RealChain 49.49, EvalGEN 62.21 (balanced; AUROC 83.94), RRDa
 
 Runs: jobs 264795 (ARForensics, ForenSynths, GenImage) and 264796 (in-the-wild sets); results in
 `repro/bench_results/d3qe_*.json`.
+
+## Training in SynthScope
+
+`experiments/image/d3qe.sh` runs the official recipe (`train.py` and its `TrainOptions` defaults) through SynthScope's
+trainer: ARForensics train (100k LlamaGen vs 100k ImageNet) and val; short side 256, then the CNNDetection blur/JPEG
+augmentation (p 0.1 each; `CNNDetAugment`, identical to the official `data_augment` over 300 seeded draws), RandomCrop
+256, flip, no normalization; AdamW lr 8e-5, weight decay 0.01, batch 32 on one GPU, 10 epochs; the best-validation
+checkpoint is kept and the learning rate is divided by 10 after 5 epochs without improvement (trainer `plateau`). It runs
+as a plain single process, not through the repo's DeepSpeed accelerate config, whose gradient clipping the official
+recipe does not have.
+
+Our run (job 265064, 15 h on one A5000) improved its validation accuracy every epoch (88.5 → 94.8), so, as in the
+released checkpoint (62,500 steps), the last epoch is the best and the learning rate never dropped. Against the paper it
+gives 79.83 / 91.73 (ARForensics), 82.14 / 91.35 (ForenSynths-7) and 77.01 / 90.11 (GenImage-6): AP reproduces everywhere
+(within 0.9 pt), accuracy is 1.6 to 2.3 pt lower. Per generator the trained model matches the official one closely
+(LlamaGen 97.49 vs 97.16) but calls a few more unseen-generator fakes real (real accuracy 97.4 vs 96.4), which moves the
+fixed-threshold accuracy, not the ranking. Results: `repro/bench_results/d3qe_trained_*.json` (job 265826).
 
 ## Usage
 
