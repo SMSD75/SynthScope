@@ -304,6 +304,43 @@ class SynthScopeModelTrainer:
                     self._save_model("best", cfg.save_path)
         self.logger.finish()
 
+    def _train_with_step_budget(self, budget):
+        """A fixed budget of micro-batches, as in PGC's train.py: the loss of each micro-batch is divided by
+        ``grad_accum_steps`` and the optimizer steps every ``grad_accum_steps`` micro-batches, after clipping the gradient
+        norm to ``max_grad_norm`` (0: no clipping); ``model_step<N>.pth`` is saved every ``save_every`` micro-batches, up
+        to ``max_steps``. For detectors whose transfer peaks early (PGC's released checkpoint is ~400 steps in), the
+        saved curve is evaluated rather than only the last model."""
+        accum = int(budget.get("grad_accum_steps", 1))
+        clip = float(budget.get("max_grad_norm", 0.0))
+        max_steps, save_every = int(budget.max_steps), int(budget.save_every)
+        save_path = self.config.TrainerConfig.save_path
+        step, running = 0, 0.0
+        self.model.train()
+        self.optimizer.zero_grad()
+        while step < max_steps:
+            for batch in tqdm(self.train_loader, desc="Training"):
+                loss = self.train_step(batch)
+                self.accelerator.backward(loss / accum)
+                running += loss.detach().item()
+                step += 1
+                if step % accum == 0:
+                    if clip > 0:
+                        self.accelerator.clip_grad_norm_(self.model.parameters(), clip)
+                    self.optimizer.step()
+                    if self.scheduler is not None:
+                        self.scheduler.step()
+                    self.optimizer.zero_grad()
+                    self.global_step += 1
+                if step % save_every == 0:
+                    self.accelerator.print(f"step {step} (optimizer step {self.global_step}): mean loss {running / save_every:.4f}, "
+                                           f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
+                    self.logger.log_metrics({"train/loss": running / save_every}, step)
+                    running = 0.0
+                    self._save_model(f"step{step}", save_path)
+                if step >= max_steps:
+                    break
+        self.logger.finish()
+
     def train(self):
         plateau = self.config.TrainerConfig.get("plateau", None)
         if plateau is not None:
@@ -311,6 +348,9 @@ class SynthScopeModelTrainer:
         lr_step = self.config.TrainerConfig.get("lr_step", None)
         if lr_step is not None:
             return self._train_with_lr_step(lr_step)
+        budget = self.config.TrainerConfig.get("step_budget", None)
+        if budget is not None:
+            return self._train_with_step_budget(budget)
         for epoch in range(self.config.TrainerConfig.epochs):
             if epoch % self.config.TrainerConfig.val_interval == 0:
                 val_loss, val_metrics_dict = self.val()
