@@ -49,7 +49,9 @@ class SynthScopeModelTrainer:
         self.use_metrics = len(config.metrics) > 0
         self.scheduler = None
         warmup = config.TrainerConfig.warmup
-        if warmup.mode != "off":
+        # A bare `mode: off` in YAML is the boolean False (and `on` is True), so compare the string form: before this, an
+        # unquoted `off` (conf/trainer/default.yaml, aide, restrav, ...) silently enabled a schedule annealing the LR to 0.
+        if str(warmup.mode).lower() not in ("off", "false", "none"):
             num_training_steps = config.TrainerConfig.epochs * (len(self.train_loader) // self.accelerator.gradient_accumulation_steps)
             self.scheduler = get_scheduler(warmup.lr_scheduler, optimizer=self.optimizer, num_warmup_steps=int(warmup.warmup_ratio * num_training_steps), num_training_steps=num_training_steps)
         self.model, self.optimizer, self.scheduler, self.train_loader, self.val_loader, self.test_loader = self.accelerator.prepare(
