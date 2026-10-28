@@ -76,8 +76,9 @@ VAL = {
     ("safe", "DiTFake"):                 {"synthscope": {"map": 99.96, "acc": 99.2}},
     ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
     ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "synthscope": {"map": 99.01}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 89.03}},
+    # synthscope UFD / ForenSynths = the official recipe in SynthScope, step 500 (experiments/image/pgc.sh; jobs 266276, 266282, 266660).
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
     # SPAI now SERVES official weights remapped into the SynthScope class, scored at NATIVE resolution

@@ -1,74 +1,149 @@
 {
-  "model": "pgc",
-  "paper": "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection (Zhou, Fei, Yu, Xie, Cheng, Xia — ICML 2026 / arXiv 2026)",
-  "arxiv_id": "2605.21207",
-  "official_repo": "https://github.com/xiaoyu6868/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
-  "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (4-class CNNDet/UniversalFakeDetect train) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
-  "benchmarks": [
-    {
-      "name": "GenImage",
-      "datasets": ["GenImage test"],
-      "subsets_or_generators": ["8 generators: ADM/adm, BigGAN/biggan, glide, Midjourney, SD-v1.4, SD-v1.5, VQDM/vqdm, wukong"],
-      "metric": "AP",
-      "paper_number": {"map": 100.0, "acc": 98.3, "note": "Paper Table 2 (SD-v1.4 checkpoint). +2.1% over prior SOTA. Mean acc ~98.3, mean AP ~100.0."},
-      "paper_per_generator": {"note": "Table 2 per-generator acc/AP; SynthScope official-weights run reproduces near-saturated AP=100 on all 8 generators (per_generator all 100.0)."},
-      "official_eval_protocol": "PGC_train_sdv1_4_ckpt.pth; DINOv2-Large + LoRA. data/eval_dataset.py reads 0_real/1_fake; transform = PadCenterCrop to 224 (data/transforms.py build_eval_transform, NO global resize -> preserves forensic residual) + DINOv2 normalize (mean .485/.456/.406, std .229/.224/.225). Metric = sklearn average_precision_score / accuracy_score / roc_auc_score (utils/metrics.py). test.py --name test_GenImage.",
-      "our_status": "reproduced",
-      "our_number": {"map_official_wts": 100.0, "acc_official_wts": 99.49, "map_synthscope_retrain": 97.62, "acc_synthscope_retrain": 78.60, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth; ckpt_synthscope: checkpoints/_train/pgc_genimage/model_0.pth (registry-default)", "tags": "pgc_official_genimage8 / pgc_retrain_genimage8 (pgc_long_g8)"},
-      "gap_cause": "Official-weights-in-SynthScope reproduces exactly (mAP 100.0). SynthScope from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the SynthScope LoRA-DINOv2 retrain is less calibrated than the released checkpoint; longer training gave no gain (recipe-bound, residual cross-generator). Counts as reproduced on the AP headline.",
-      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (and test_full). Origin: github.com/GenImage-Dataset/GenImage."
-    },
-    {
-      "name": "UniversalFakeDetect (UFD)",
-      "datasets": ["UniversalFakeDetect test"],
-      "subsets_or_generators": ["~14 test domains (paper Table 5: GANs, deepfakes, low-level-vision, perceptual-loss, guided/LDM/Glide/DALL-E diffusion). SynthScope materializes 8 cells."],
-      "metric": "AP",
-      "paper_number": {"map": 98.0, "acc": null, "note": "Paper Table 5 (ProGAN checkpoint). Mean AP ~98.0; +1.7% over prior SOTA."},
-      "paper_per_generator": {},
-      "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP. test.py --name test_UniversalFakeDetect.",
-      "our_status": "reproduced",
-      "our_number": {"map_official_wts": 99.34, "acc_official_wts": 94.16, "map_synthscope_retrain": 99.01, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth", "tags": "pgc_official_ufd / pgc_retrain_ufd"},
-      "gap_cause": "Reproduced (official-wts 99.34, SynthScope retrain 99.01) >= paper 98.0; no gap.",
-      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/universialfakedetection/test. Origin: github.com/WisconsinAIVision/UniversalFakeDetect."
-    },
-    {
-      "name": "ForenSynths (CNNDetection test)",
-      "datasets": ["CNNDetection / ForenSynths test"],
-      "subsets_or_generators": ["13-generator CNNDetection test (paper-relevant 8-GAN subset: progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake)"],
-      "metric": "AP",
-      "paper_number": {"map": null, "note": "ForenSynths is reported as a generalization/cross-dataset comparison alongside UFD (often folded into the UniversalFakeDetect table); no separate standalone PGC headline mAP. Listed here as an SynthScope cross-reference."},
-      "paper_per_generator": {},
-      "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP.",
-      "our_status": "reproduced",
-      "our_number": {"map_official_wts": 96.25, "acc_official_wts": 83.73, "map_synthscope_retrain": 89.03, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth", "tags": "pgc_official_forensynths / pgc_retrain_forensynths"},
-      "gap_cause": "Official-weights-in-SynthScope reproduces (96.25 mAP). SynthScope retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect.",
-      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test. Origin: github.com/PeterWang512/CNNDetection."
-    },
-    {
-      "name": "AIGIBench (AIGI)",
-      "datasets": ["AIGIBench test (HorizonTEL/AIGIBench)"],
-      "subsets_or_generators": ["25 generators on disk (e.g. DALLE-3, FLUX1-dev, GLIDE, Imagen3, Midjourney, PhotoMaker, InstantID, IP-Adapter, BlendFace, FaceSwap, E4S, InSwap, Infinite-ID, BLIP, CommunityAI ... — spans GAN/diffusion/face-swap/personalization)"],
-      "metric": "AP",
-      "paper_number": {"map": 95.0, "acc": 86.6, "note": "Paper Table 4 (joint ProGAN+SD-v1.4 checkpoint). Mean acc ~86.6, mean AP ~95.0; +3.5% over prior SOTA."},
-      "paper_per_generator": {},
-      "official_eval_protocol": "PGC_train_progan_sdv1_4_ckpt.pth (joint); PadCenterCrop 224 + DINOv2 norm; AP/acc. test.py --name test_AIGI --test_root AIGI/test.",
-      "our_status": "reproduced",
-      "our_number": {"map_official_wts": 95.36, "acc_official_wts": 88.33, "map_synthscope_retrain": 86.88, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_sdv1_4_ckpt.pth", "tags": "pgc_official_aigibench25 / pgc_retrain_aigibench"},
-      "gap_cause": "Official-weights-in-SynthScope reproduces (95.36 vs paper 95.0). SynthScope retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it.",
-      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/AIGIBench/test (25 generator dirs). Origin: github.com/HorizonTEL/AIGIBench."
-    },
-    {
-      "name": "CommGen15 (commercial in-the-wild)",
-      "datasets": ["CommGen15 (this paper's released benchmark)"],
-      "subsets_or_generators": ["15 commercial generative models (e.g. Sora, Kling, Google Imagen, Flux, and other commercial T2I/T2V services)"],
-      "metric": "AP",
-      "paper_number": {"map": null, "acc": 97.9, "note": "Paper Table 3 (SD-v1.4 checkpoint). Mean acc ~97.9; +12.3% over best baseline — the headline gain. CommGen15 = the paper's own challenging commercial benchmark."},
-      "paper_per_generator": {},
-      "official_eval_protocol": "PGC_train_sdv1_4_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP/acc. test.py --name test_CommGen15 --test_root CommGen15.",
-      "our_status": "reproduced",
-      "our_number": {"map_official_wts": 99.26, "acc_official_wts": 97.39, "map_synthscope_retrain": 98.61, "acc_synthscope_retrain": 66.66, "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth", "tags": "pgc_official_commgen15 / pgc_retrain_commgen15"},
-      "gap_cause": "Official-weights-in-SynthScope reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. SynthScope retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-guided calibration is what the paper headline relies on.",
-      "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CommGen15/test. Origin: ModelScope datasets/xiaoyuzhou68/CommGen15 and HF datasets/xiaoyuzhou68/CommGen15 (officially released by the paper)."
-    }
-  ]
+ "model": "pgc",
+ "paper": "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection (Zhou, Fei, Yu, Xie, Cheng, Xia \u2014 ICML 2026 / arXiv 2026)",
+ "arxiv_id": "2605.21207",
+ "official_repo": "https://github.com/xiaoyu6868/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
+ "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (4-class CNNDet/UniversalFakeDetect train) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
+ "benchmarks": [
+  {
+   "name": "GenImage",
+   "datasets": [
+    "GenImage test"
+   ],
+   "subsets_or_generators": [
+    "8 generators: ADM/adm, BigGAN/biggan, glide, Midjourney, SD-v1.4, SD-v1.5, VQDM/vqdm, wukong"
+   ],
+   "metric": "AP",
+   "paper_number": {
+    "map": 100.0,
+    "acc": 98.3,
+    "note": "Paper Table 2 (SD-v1.4 checkpoint). +2.1% over prior SOTA. Mean acc ~98.3, mean AP ~100.0."
+   },
+   "paper_per_generator": {
+    "note": "Table 2 per-generator acc/AP; SynthScope official-weights run reproduces near-saturated AP=100 on all 8 generators (per_generator all 100.0)."
+   },
+   "official_eval_protocol": "PGC_train_sdv1_4_ckpt.pth; DINOv2-Large + LoRA. data/eval_dataset.py reads 0_real/1_fake; transform = PadCenterCrop to 224 (data/transforms.py build_eval_transform, NO global resize -> preserves forensic residual) + DINOv2 normalize (mean .485/.456/.406, std .229/.224/.225). Metric = sklearn average_precision_score / accuracy_score / roc_auc_score (utils/metrics.py). test.py --name test_GenImage.",
+   "our_status": "reproduced",
+   "our_number": {
+    "map_official_wts": 100.0,
+    "acc_official_wts": 99.49,
+    "map_synthscope_retrain": 97.62,
+    "acc_synthscope_retrain": 78.6,
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth; ckpt_synthscope: checkpoints/_train/pgc_genimage/model_0.pth (registry-default)",
+    "tags": "pgc_official_genimage8 / pgc_retrain_genimage8 (pgc_long_g8)"
+   },
+   "gap_cause": "Official-weights-in-SynthScope reproduces exactly (mAP 100.0). SynthScope from-scratch retrain reaches 97.62 mAP (within ~2.4 of saturated 100) but acc lags (78.60) because the SynthScope LoRA-DINOv2 retrain is less calibrated than the released checkpoint; longer training gave no gain (recipe-bound, residual cross-generator). Counts as reproduced on the AP headline.",
+   "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (and test_full). Origin: github.com/GenImage-Dataset/GenImage."
+  },
+  {
+   "name": "UniversalFakeDetect (UFD)",
+   "datasets": [
+    "UniversalFakeDetect test"
+   ],
+   "subsets_or_generators": [
+    "~14 test domains (paper Table 5: GANs, deepfakes, low-level-vision, perceptual-loss, guided/LDM/Glide/DALL-E diffusion). SynthScope materializes 8 cells."
+   ],
+   "metric": "AP",
+   "paper_number": {
+    "map": 98.0,
+    "acc": null,
+    "note": "Paper Table 5 (ProGAN checkpoint). Mean AP ~98.0; +1.7% over prior SOTA."
+   },
+   "paper_per_generator": {},
+   "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP. test.py --name test_UniversalFakeDetect.",
+   "our_status": "reproduced",
+   "our_number": {
+    "map_official_wts": 99.34,
+    "acc_official_wts": 94.16,
+    "map_synthscope_retrain": 98.99,
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+    "tags": "pgc_official_ufd / pgc_trained_step500_ufd8 (official recipe in SynthScope, experiments/image/pgc.sh)",
+    "acc_synthscope_retrain": 91.96
+   },
+   "gap_cause": "Reproduced (official weights 99.34; the official recipe trained in SynthScope, step 500: 98.99) >= paper 98.0.",
+   "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/universialfakedetection/test. Origin: github.com/WisconsinAIVision/UniversalFakeDetect."
+  },
+  {
+   "name": "ForenSynths (CNNDetection test)",
+   "datasets": [
+    "CNNDetection / ForenSynths test"
+   ],
+   "subsets_or_generators": [
+    "13-generator CNNDetection test (paper-relevant 8-GAN subset: progan,cyclegan,biggan,gaugan,stargan,stylegan,stylegan2,deepfake)"
+   ],
+   "metric": "AP",
+   "paper_number": {
+    "map": null,
+    "note": "ForenSynths is reported as a generalization/cross-dataset comparison alongside UFD (often folded into the UniversalFakeDetect table); no separate standalone PGC headline mAP. Listed here as an SynthScope cross-reference."
+   },
+   "paper_per_generator": {},
+   "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP.",
+   "our_status": "reproduced",
+   "our_number": {
+    "map_official_wts": 96.25,
+    "acc_official_wts": 83.73,
+    "map_synthscope_retrain": 97.41,
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
+    "tags": "pgc_official_forensynths / pgc_trained_step500_forensynths13 (FS-8 subset of the 13)",
+    "acc_synthscope_retrain": 85.89
+   },
+   "gap_cause": "Not a paper number. The official recipe trained in SynthScope (step 500) gives FS-8 97.41 mAP, above the official checkpoint (96.41 on the same evaluation); the earlier 89.03 retrain overshot the early transfer peak.",
+   "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test. Origin: github.com/PeterWang512/CNNDetection."
+  },
+  {
+   "name": "AIGIBench (AIGI)",
+   "datasets": [
+    "AIGIBench test (HorizonTEL/AIGIBench)"
+   ],
+   "subsets_or_generators": [
+    "25 generators on disk (e.g. DALLE-3, FLUX1-dev, GLIDE, Imagen3, Midjourney, PhotoMaker, InstantID, IP-Adapter, BlendFace, FaceSwap, E4S, InSwap, Infinite-ID, BLIP, CommunityAI ... \u2014 spans GAN/diffusion/face-swap/personalization)"
+   ],
+   "metric": "AP",
+   "paper_number": {
+    "map": 95.0,
+    "acc": 86.6,
+    "note": "Paper Table 4 (joint ProGAN+SD-v1.4 checkpoint). Mean acc ~86.6, mean AP ~95.0; +3.5% over prior SOTA."
+   },
+   "paper_per_generator": {},
+   "official_eval_protocol": "PGC_train_progan_sdv1_4_ckpt.pth (joint); PadCenterCrop 224 + DINOv2 norm; AP/acc. test.py --name test_AIGI --test_root AIGI/test.",
+   "our_status": "reproduced",
+   "our_number": {
+    "map_official_wts": 95.36,
+    "acc_official_wts": 88.33,
+    "map_synthscope_retrain": 86.88,
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_sdv1_4_ckpt.pth",
+    "tags": "pgc_official_aigibench25 / pgc_retrain_aigibench"
+   },
+   "gap_cause": "Official-weights-in-SynthScope reproduces (95.36 vs paper 95.0). SynthScope retrain (86.88) is the SD-v1.4-only checkpoint (not the joint one), so it trails on the GAN/face-swap subsets; running the joint checkpoint closes it.",
+   "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/AIGIBench/test (25 generator dirs). Origin: github.com/HorizonTEL/AIGIBench."
+  },
+  {
+   "name": "CommGen15 (commercial in-the-wild)",
+   "datasets": [
+    "CommGen15 (this paper's released benchmark)"
+   ],
+   "subsets_or_generators": [
+    "15 commercial generative models (e.g. Sora, Kling, Google Imagen, Flux, and other commercial T2I/T2V services)"
+   ],
+   "metric": "AP",
+   "paper_number": {
+    "map": null,
+    "acc": 97.9,
+    "note": "Paper Table 3 (SD-v1.4 checkpoint). Mean acc ~97.9; +12.3% over best baseline \u2014 the headline gain. CommGen15 = the paper's own challenging commercial benchmark."
+   },
+   "paper_per_generator": {},
+   "official_eval_protocol": "PGC_train_sdv1_4_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP/acc. test.py --name test_CommGen15 --test_root CommGen15.",
+   "our_status": "reproduced",
+   "our_number": {
+    "map_official_wts": 99.26,
+    "acc_official_wts": 97.39,
+    "map_synthscope_retrain": 98.61,
+    "acc_synthscope_retrain": 66.66,
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_sdv1_4_ckpt.pth",
+    "tags": "pgc_official_commgen15 / pgc_retrain_commgen15"
+   },
+   "gap_cause": "Official-weights-in-SynthScope reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. SynthScope retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-guided calibration is what the paper headline relies on.",
+   "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CommGen15/test. Origin: ModelScope datasets/xiaoyuzhou68/CommGen15 and HF datasets/xiaoyuzhou68/CommGen15 (officially released by the paper)."
+  }
+ ]
 }

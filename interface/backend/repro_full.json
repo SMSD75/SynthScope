@@ -604,8 +604,8 @@
       "benchmark": "UniversalFakeDetect (UFD)",
       "metric": "AP",
       "paper": "map=98.0",
-      "ours": "SynthScope mAP=99.01 \u00b7 official mAP=99.34 / acc=94.16",
-      "ours_synthscope": "mAP=99.01",
+      "ours": "SynthScope mAP=98.99 / acc=91.96 / AUROC=98.92 \u00b7 official mAP=99.34 / acc=94.16",
+      "ours_synthscope": "mAP=98.99 / acc=91.96 / AUROC=98.92",
       "ours_official": "mAP=99.34 / acc=94.16",
       "status": "reproduced",
       "note": "Reproduced (official-wts 99.34, SynthScope retrain 99.01) >= paper 98.0; no gap."
@@ -614,8 +614,8 @@
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "SynthScope mAP=89.03 \u00b7 official mAP=96.25 / acc=83.73",
-      "ours_synthscope": "mAP=89.03",
+      "ours": "SynthScope mAP=97.41 / acc=85.89 / AUROC=97.63 \u00b7 official mAP=96.25 / acc=83.73",
+      "ours_synthscope": "mAP=97.41 / acc=85.89 / AUROC=97.63",
       "ours_official": "mAP=96.25 / acc=83.73",
       "status": "reference",
       "note": "Official-weights-in-SynthScope reproduces (96.25 mAP). SynthScope retrain (89.03) below on the GAN generators (ProGAN-trained LoRA-DINOv2 transfers less to cyclegan/gaugan); residual cross-generator gap, not a code defect."

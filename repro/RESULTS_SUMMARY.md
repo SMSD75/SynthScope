@@ -17,7 +17,7 @@
 | SAFE | GenImage | 99.3 | 99.32 | 99.51 | ✅ retrain reproduces |
 | AIDE | GenImage (SD-v1.4) | 86.9 acc | 97.12 | 96.42 | ✅ reproduced (native-res retrain) |
 | SPAI | GenImage | ~91 AUC | 94.22 | 88.80 | ✅ served native-res (beats vendored 91.33) |
-| PGC | GenImage | 100 AP | 100.0 | 97.62 | ✅ near |
+| PGC | GenImage / ForenSynths-8 / UFD | 100 / — / 98.0 AP | 100.0 / 96.41 / 99.17 | 97.62 / **97.41** / **98.99** | ✅ UFD reproduced by the official recipe in SynthScope (step 500); ForenSynths (not in the paper) above the official checkpoint |
 | VIB-Net | GenImage (SD-v1.4) | 95.5 AP | *none released* | 83.26 | ⚠️ recipe/arch gap |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 acc | — | ✅ official match (GenImage 2.3 pt below) |
@@ -46,12 +46,12 @@ SPAI now SERVES official weights remapped into the SynthScope class at NATIVE re
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---:|---:|---:|
 | GenImage-8 | 100 AP | 100.0 (99.5) | **97.62 (78.6)** |
-| UniversalFakeDetect-8 | — | 99.34 (94.2) | 99.01 |
-| ForenSynths-13 | — | 96.25 (83.7) | 94.57 (83.4) — see hard-3 caveat |
+| UniversalFakeDetect-8 | 98.0 AP | 99.34 (94.2) | **98.99 (92.0)** |
+| ForenSynths-13 | — | 96.25 (83.7) | **95.78** (FS-8 97.41 / 85.9) |
 | AIGIBench-25 | — | 95.36 (88.3) | 86.88 |
 | CommGen15-15 | — | 99.26 (97.4) | **98.61 (66.7)** |
 
-*PGC ForenSynths caveat:* the 13-gen SynthScope_train mean (94.57) is close to official (96.25), but only because the 10 easy generators (~99) dominate. On the three hard generators (deepfake/san/seeingdark) SynthScope_train is **75.87 mAUROC vs 94.35** official. Running the authors' `train.py` verbatim reproduces the same plateau → the released checkpoint is not reproducible from the published recipe+data. See `repro/investigate/pgc_gap_investigation.md`.
+*PGC training:* the released ProGAN checkpoint is only ~400 steps in (the authors, on our issue), and DINOv2's prior overfits ProGAN within the first epoch, so the earlier epoch-level retrains (GenImage, AIGIBench, CommGen15 rows above, and the old 94.57 / hard-3 75.87 ForenSynths entry) overshot the transfer peak. The official recipe run in SynthScope with a 2000-micro-batch budget (`experiments/image/pgc.sh`, checkpoint every 100) matches or exceeds the official checkpoint at every step from 300 on: step 500 (the saved step nearest ~400) gives FS-8 97.41 mAP and hard-3 AUROC 93.93 (official 96.41 / 90.87 on the same evaluation) and UFD 98.99 (paper 98.0); transfer peaks around steps 500-900 and erodes after. GenImage, AIGIBench and CommGen15 have not been rerun with this recipe. See `repro/investigate/pgc_gap_investigation.md` and `models/image/pgc/README.md`.
 
 ### Co-Spy
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
