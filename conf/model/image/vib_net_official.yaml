@@ -1,0 +1,19 @@
+defaults:
+  - /model/default
+  - _self_
+
+# VIB-Net exactly as the official model (oceanzhf/VIBAIGCDetect models/clip_models.py): frozen fp32 OpenAI CLIP
+# ViT-L/14 image features -> dropout 0.5 -> 768-1024-1024-512 MLP -> mu and softplus(x - 5) std (K = 256) -> one sample
+# (also at inference, as the official model) -> linear decode. Loads the released checkpoints with `model.` -> `backbone.`.
+model_type: vib_net
+backbone_name: CLIP:ViT-L/14
+vib_hidden_dim: 1024
+vib_latent_dim: 256
+dropout: 0.5
+std_shift: 5.0
+freeze_backbone: true
+feat_norm: false
+std_floor: 0.0
+clip_fp32: true
+# The paper's trade-off parameter is not reported; 1e-3 is the standard VIB value (Alemi et al.).
+vib_beta: 0.001

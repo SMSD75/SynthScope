@@ -8,7 +8,9 @@ import zipfile
 import tarfile
 import shutil
 import subprocess
+import copy
 import csv
+import random
 import time
 import urllib.error
 import urllib.parse
@@ -1104,6 +1106,28 @@ class CNNDetectionDatasetModule:
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
+def _split_train_subset(dataset, per_class, val_per_class, eval_transform, seed=0):
+    """Keep a seeded ``per_class`` images per label of ``dataset`` for training and return a disjoint ``val_per_class``
+    per label as a validation copy with ``eval_transform``: for recipes trained on part of a train split, validated on
+    held-out training images (GenImage's ``val`` alias is its test split, which must not select the model)."""
+    rng = random.Random(seed)
+    train_idx, val_idx = [], []
+    for label in sorted(set(dataset.labels)):
+        idx = [i for i, l in enumerate(dataset.labels) if l == label]
+        rng.shuffle(idx)
+        if len(idx) < per_class + val_per_class:
+            raise ValueError(f"label {label}: {len(idx)} images, fewer than {per_class} + {val_per_class}")
+        train_idx += idx[:per_class]
+        val_idx += idx[per_class:per_class + val_per_class]
+    val = copy.copy(dataset)
+    for ds, keep in ((val, sorted(val_idx)), (dataset, sorted(train_idx))):
+        ds.images = [dataset.images[i] for i in keep]
+        ds.labels = [dataset.labels[i] for i in keep]
+        ds.folder_names = [dataset.folder_names[i] for i in keep]
+    val.transform = eval_transform
+    return val
+
+
 class GenImageDatasetModule:
     def __init__(self, config):
         self.config = config
@@ -1117,8 +1141,13 @@ class GenImageDatasetModule:
         GenImageDataset.hf_repo_id = config.DatasetConfig.get("hf_repo_id", None)
         GenImageDataset.hf_subdir = config.DatasetConfig.get("hf_subdir", None)
         self.train_dataset = GenImageDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
-        self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
         self.test_dataset = GenImageDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
+        per_class = config.DatasetConfig.get("train_per_class", None)   # e.g. VIB-Net: 16k real + 16k SD v1.4
+        if per_class:
+            self.val_dataset = _split_train_subset(self.train_dataset, int(per_class),
+                                                   int(config.DatasetConfig.get("val_per_class", 1000)), self.eval_transform)
+        else:
+            self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
