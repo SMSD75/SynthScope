@@ -2672,6 +2672,46 @@ class ARForensicsDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
 
 
+class MirageTestDataset(_TestOnlyImageDataset):
+    """Mirage-Test (OmniAID, arXiv 2511.08423) — real and fake images from recent generators tuned for realism, in five
+    content categories laid out as ``<category>/{0_real,1_fake}`` (Human, Animal, Object, Scene, Anime). Sourced from the
+    HF dataset ``Yunncheng/Mirage-Test`` (MIT). Anime ships fakes only ("due to copyright considerations") and the paper
+    scores it by its fake accuracy, so the loader pairs Anime with the reals of the other four categories: its
+    ``fake_acc`` is the paper's Anime number, and the other categories' balanced accuracy is the paper's "Overall"."""
+    hf_repo_id = "Yunncheng/Mirage-Test"
+    categories = ("Human", "Animal", "Object", "Scene", "Anime")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl),
+                          allow_patterns=[f"{c}/*" for c in cls.categories])
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.mkdir(parents=True)
+        for c in cls.categories:
+            shutil.move(str(dl / c), str(dest / c))
+        reals = sorted(p for c in cls.categories if c != "Anime"
+                       for p in (dest / c / "0_real").rglob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)
+        _link_images(reals, dest / "Anime" / "0_real")
+        shutil.rmtree(dl, ignore_errors=True)
+
+    def _load_data(self):
+        # Fakes are nested one level deeper, by generator (``Human/1_fake/<generator>/*.jpg``): the label comes from the
+        # 0_real/1_fake ancestor and the group from the category folder.
+        images, labels, folder_names = [], [], []
+        for filepath in _iter_images_follow(self.destination_dir):
+            parts = filepath.relative_to(self.destination_dir).parts
+            images.append(filepath)
+            labels.append(1 if "1_fake" in parts else 0)
+            folder_names.append(parts[0])
+        return images, labels, folder_names
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2771,6 +2811,10 @@ class ARForensicsDatasetModule(_TestOnlyImageModule):
 
     def val_dataloader(self):
         return None if self.val_dataset is None else self._loader(self.val_dataset, self.config.DatasetConfig.val_batch_size, False)
+
+
+class MirageTestDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = MirageTestDataset
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
@@ -3000,6 +3044,7 @@ SynthScopeModuleDict = {
     "bfree_online": BFreeOnlineDatasetModule,
     "rrdataset": RRDatasetModule,
     "arforensics": ARForensicsDatasetModule,
+    "mirage_test": MirageTestDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

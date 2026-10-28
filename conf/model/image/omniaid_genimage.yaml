@@ -1,0 +1,18 @@
+defaults:
+  - /model/default
+  - _self_
+
+# OmniAID GenImage-SD v1.4 (the paper's GenImage/Mirage/AIGCDetect tables). Expert configuration of the released checkpoint_omniaid_genimage_sd14.pth (config_omniaid_genimage_paper.json);
+# read from the checkpoint's shapes (experts, rank, router width; top-k from the official config).
+model_type: omniaid
+CLIP_path: openai/clip-vit-large-patch14-336
+num_experts: 3
+rank_per_expert: 4
+moe_router_hidden_dim: 64
+moe_top_k: 1
+moe_lambda_orth: 0.01
+moe_lambda_balance: 0.1
+moe_lambda_gating_cls: 0.1
+dropout: 0.0
+gradient_checkpointing_enable: false
+is_hybrid: true

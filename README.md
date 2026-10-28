@@ -164,6 +164,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `vib_net` | **VIB-Net** (Zhang, CVPR'25) | Variational information bottleneck on frozen CLIP features. |
 | `pgc` | **PGC** (Zhou, 2026) | LoRA-tuned DINOv2 + YCbCr-residual CNN, peak-guided calibration. |
 | `cure` | **CuRe** (manic-cui, 2026) | Frozen Perception-Encoder Core L/14 + Q/V LoRA + source-response subspace, trained by regressing real↔generated mixing ratios on SD‑v1.4 only (official adapter). |
+| `omniaid` | **OmniAID** (Guo, 2025) | Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, scene) and an always-on artifact expert sees every image. Official weights; `omniaid_genimage` is the GenImage-SD v1.4 release used for the paper's academic tables. |
 | `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a codebook-aware transformer and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
 | `dda` | **DDA** (Chen, NeurIPS'25 Spotlight) | DINOv2 ViT-L/14 + LoRA, trained only on MSCOCO with VAE-reconstructed fakes aligned to their reals in pixel and frequency space (official weights). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
@@ -275,6 +276,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
 | DDA | 5 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 acc (official) | ✅ official weights match (GenImage 2.3 pt below) |
+| OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |

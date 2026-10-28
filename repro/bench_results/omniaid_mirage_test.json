@@ -1,0 +1,53 @@
+{
+  "tag": "omniaid_mirage_test",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/MirageTest/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 80.37,
+    "map": 96.48,
+    "mauroc": 96.65
+  },
+  "per_generator": {
+    "Animal": {
+      "ap": 95.65,
+      "auroc": 95.51,
+      "real_acc": 98.86,
+      "fake_acc": 55.54,
+      "acc": 77.2
+    },
+    "Anime": {
+      "ap": 97.03,
+      "auroc": 98.86,
+      "real_acc": 99.41,
+      "fake_acc": 80.28,
+      "acc": 89.85
+    },
+    "Human": {
+      "ap": 99.15,
+      "auroc": 99.08,
+      "real_acc": 99.67,
+      "fake_acc": 77.98,
+      "acc": 88.82
+    },
+    "Object": {
+      "ap": 95.54,
+      "auroc": 95.33,
+      "real_acc": 99.07,
+      "fake_acc": 51.12,
+      "acc": 75.09
+    },
+    "Scene": {
+      "ap": 95.05,
+      "auroc": 94.49,
+      "real_acc": 99.82,
+      "fake_acc": 41.97,
+      "acc": 70.89
+    }
+  },
+  "date": "2026-10-27T16:20:10",
+  "synthscope_version": "0.1.0"
+}

@@ -22,6 +22,7 @@
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 acc | — | ✅ official match (GenImage 2.3 pt below) |
 | D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
+| OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 99.14 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -149,6 +150,21 @@ Fidelity: SynthScope's class == the official `D3QE` (871/871 state-dict tensors 
 | In the wild: SynthWildX / WildRF / BFree-Online / RealChain / EvalGEN / RRDataset | 49.6 / 53.0 / 47.0 / 49.5 / 62.2 / 55.0 | – | — | new measurements: it calls nearly every recent fake real (AR-only training) |
 
 **Verdict: faithful port (identical to the official model); all 3 paper tables reproduced on the mean** (ARForensics and ForenSynths per generator too). **Trained in SynthScope with the official recipe** (`experiments/image/d3qe.sh`, job 265064): 79.83 / 91.73, 82.14 / 91.35, 77.01 / 90.11 (acc / AP) — AP within 0.9 pt of the paper everywhere, accuracy 1.6-2.3 pt lower (a slightly more conservative threshold, not a weaker ranking). Note: in the released code the codebook-frequency bias is zero at inference (`freq_log_counter` is not saved), so the reported scores come from the quantization-error and CLIP branches.
+
+### OmniAID (official checkpoints)
+Fidelity: SynthScope's class == the official `OmniAID` for all three releases (state dicts identical, logits identical on 24 GenImage images, 0 verdict flips; job 265851). Accuracy at 0.5, mean over subsets; Mirage-Test mean = 4 balanced categories + Anime fake accuracy (the paper's Table 3).
+
+| Benchmark | release | acc | mAP | Paper | Note |
+|---|---|---:|---:|---|---|
+| GenImage, 8 subsets (`--dataset genimage_full`) | `omniaid_genimage` | **95.82** | 99.02 | **95.94** | **reproduced**, every subset within 1.5 pt; confirms the v1-era 512 -> 336 preprocessing |
+| AIGCDetect, 17 (`--dataset aigcdetect`) | `omniaid_genimage` | **88.87** | 97.88 | **88.87** | **reproduced** exactly |
+| Mirage-Test, 5 categories (`--dataset mirage_test`) | `omniaid_genimage` | **51.10** | — | **51.10** | **reproduced** exactly, every category |
+| GenImage, 8 subsets | `omniaid_v1` | **97.16** | 99.20 | **97.24** | **reproduced**, every subset within 0.6 pt |
+| AIGCDetect, 17 | `omniaid_v1` | **92.88** | 98.93 | **92.88** | **reproduced** exactly |
+| Mirage-Test, 5 categories | `omniaid_v1` | **88.39** | — | **88.39** | **reproduced** exactly |
+| Mirage-Test / SynthWildX / WildRF / BFree-Online / RealChain / EvalGEN / RRDataset | `omniaid` (v2, served) | 78.46 / 86.02 / 88.36 / 70.26 / 61.71 / 74.14 / 71.75 | — | — | new measurements |
+
+**Verdict: faithful port; every paper number SynthScope can run is reproduced** (Chameleon and DRCT-2M are not available).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
