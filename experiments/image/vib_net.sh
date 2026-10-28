@@ -34,4 +34,5 @@ SAVE=${SAVE:-/nvmestore/ssalehi/SynthScope/models/vib_net}
     "metrics=[real_accuracy,fake_accuracy]" \
     logger.name=vib_net \
     logger.mode=offline \
-    "logger.tags=[SynthScope,VIBNet,genimage_sd14]"
+    "logger.tags=[SynthScope,VIBNet,genimage_sd14]" \
+    "$@"
