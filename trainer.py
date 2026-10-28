@@ -362,15 +362,25 @@ class SynthScopeModelTrainer:
         step. ``grad_accum_steps`` splits each official batch into micro-batches (loss divided accordingly) and the
         schedule counts official steps, so a smaller GPU follows the same LR curve. Validation after every epoch; as in
         the official code, a checkpoint is kept whenever the validation loss improves (``model_<epoch>.pth``, the
-        selected one also as ``model_best.pth``), plus ``model_last.pth``; the losses go to ``val_losses.json``."""
+        selected one also as ``model_best.pth``), plus ``model_last.pth``; the losses go to ``val_losses.json``. After
+        every epoch the full training state (model, optimizer, loss scaler, RNGs) is saved to ``<save_path>/train_state``,
+        and a rerun with the same ``save_path`` resumes after the last finished epoch (runs longer than a job limit)."""
         cfg = self.config.TrainerConfig
         accum = int(sched.get("grad_accum_steps", 1))
         n_iter = len(self.train_loader) // accum
         scheduler = CosineLRScheduler(getattr(self.optimizer, "optimizer", self.optimizer), t_initial=int(cfg.epochs * n_iter),
                                       lr_min=float(sched.min_lr), warmup_lr_init=float(sched.warmup_lr),
                                       warmup_t=int(float(sched.warmup_epochs) * n_iter), cycle_limit=1, t_in_epochs=False)
-        best, history = float("inf"), []
-        for epoch in range(cfg.epochs):
+        best, history, start = float("inf"), [], 0
+        state_dir, log_path = f"{cfg.save_path}/train_state", f"{cfg.save_path}/val_losses.json"
+        if cfg.save and os.path.isfile(f"{state_dir}/progress.json"):
+            with open(f"{state_dir}/progress.json") as f:
+                progress = json.load(f)
+            self.accelerator.load_state(state_dir)
+            history, start = progress["val_loss"], progress["epoch"] + 1
+            best, self.global_step = min(history), start * n_iter
+            self.accelerator.print(f"Resuming after epoch {progress['epoch']} (best val loss {best:.4f})")
+        for epoch in range(start, cfg.epochs):
             self.model.train()
             self.optimizer.zero_grad()
             total, k = 0.0, 0
@@ -401,8 +411,12 @@ class SynthScopeModelTrainer:
                     self._save_model(epoch, cfg.save_path)
                     self._save_model("best", cfg.save_path)
                 if self.accelerator.is_main_process:
-                    with open(f"{cfg.save_path}/val_losses.json", "w") as f:
+                    with open(log_path, "w") as f:
                         json.dump({"val_loss": history, "best_epoch": history.index(min(history))}, f, indent=1)
+                self.accelerator.save_state(state_dir)
+                if self.accelerator.is_main_process:
+                    with open(f"{state_dir}/progress.json", "w") as f:
+                        json.dump({"epoch": epoch, "val_loss": history}, f)
         self.logger.finish()
 
     def train(self):
