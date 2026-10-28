@@ -23,7 +23,7 @@ from decord import VideoReader, cpu
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
-from PIL import Image
+from PIL import Image, ImageFile
 from config_utils import compose_config
 from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_STD, build_item as dda_build_item, \
     create_train_transforms as dda_train_transforms
@@ -2691,6 +2691,9 @@ class DDATrainDataset(Dataset):
     def __init__(self, root_dir, crop_size=336, p_pixelmix=0.2, r_pixelmix=0.8, p_freqmix=0.2, r_freqmix=0.8,
                  vae_dir="sd2.0", prefetch=False):
         super().__init__()
+        # As the official datasets.py (module level): PIL then also skips an oversized PNG text chunk instead of raising
+        # (one of the SD-2.0 reconstructions has one); set here so it only applies to DDA training processes.
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
         self.root_dir = Path(root_dir)
         dest = self.root_dir / "train"
         if prefetch and not _has_images(dest / "real"):
