@@ -54,14 +54,14 @@ dependencies = [
 # FastAPI + React web demo (interface/). Not imported by `import synthscope`.
 web = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
 # Training + dataset auto-download stack.
-train = ["wandb>=0.16", "gdown>=5"]
+train = ["wandb>=0.16", "gdown>=5", "albumentations==1.4.14", "albucore==0.0.16"]   # albumentations: SPAI's official augmentations
 # Gradio demo (demo/app.py, Hugging Face Spaces).
 demo = ["gradio>=4"]
 # Tooling for contributors / CI.
 dev = ["ruff>=0.4", "pytest>=7", "build>=1", "twine>=5"]
 all = [
     "fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9",
-    "wandb>=0.16", "gdown>=5", "gradio>=4",
+    "wandb>=0.16", "gdown>=5", "albumentations==1.4.14", "albucore==0.0.16", "gradio>=4",
 ]
 
 [project.urls]

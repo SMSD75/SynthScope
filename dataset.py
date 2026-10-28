@@ -9,6 +9,7 @@ import tarfile
 import shutil
 import subprocess
 import csv
+import random
 import time
 import urllib.error
 import urllib.parse
@@ -22,6 +23,7 @@ from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
 from PIL import Image
+from tqdm import tqdm
 from config_utils import compose_config
 
 
@@ -2712,6 +2714,123 @@ class MirageTestDataset(_TestOnlyImageDataset):
         return images, labels, folder_names
 
 
+class SPAITrainDataset(Dataset):
+    """SPAI's training data (Karageorgiou et al., CVPR 2025), built as the official
+    ``spai/tools/create_dmid_ldm_train_val_csv.py`` builds its CSV: GRIP's latent-diffusion training set (Corvi et al.,
+    ICASSP 2023; 180k ``train`` / 20k ``valid`` LDM images, label 1) plus the reals it lists (label 0): ``real_coco.txt``
+    from COCO train2017 and ``real_lsun.txt`` (``<class>_<file>``) from CNNDetection's ``train/<class>/0_real`` (90k +
+    90k for train, 10k + 10k for valid). ``coco_ext`` maps the listed ``.jpg`` names onto a lossless copy of the decoded
+    JPEGs; the default reads the original train2017 JPEGs.
+
+    ``train``: an item is ``views`` (4) independent draws of the official albumentations transform, concatenated side by
+    side into one ``[3, 224, views * 224]`` image, as the official CSVDataset in RESOLUTION_MODE arbitrary; the model
+    tiles it into ``views`` patches for its Spectral Context Attention. ``val``: the official validation set is the
+    ``valid`` split augmented once, offline (``spai/tools/augment_dataset.py``: one draw of the same transform, saved
+    as an 8-bit PNG); :meth:`augment_val` writes it under ``<root>/ldm_valid_augm`` with a fixed seed."""
+    zip_url = "https://www.grip.unina.it/download/prog/DMimageDetection/latent_diffusion_trainingset.zip"
+    ldm_dir = "latent_diffusion_trainingset"
+    val_augm_dir = "ldm_valid_augm"
+
+    def __init__(self, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg", views=4, prefetch=False):
+        super().__init__()
+        from models.image.spai.official_train_transforms import SPAI_CONFIG, build_transform  # optional dep (albumentations)
+        self.root_dir, self.split, self.views = Path(root_dir), split, int(views)
+        if prefetch and not (self.root_dir / self.ldm_dir / "train").is_dir():
+            self.prepare_split(self.root_dir)
+        self.transform = build_transform(True, SPAI_CONFIG)
+        if split == "train":
+            self.samples = self.entries(self.root_dir, "train", coco_dir, cnndetection_dir, coco_ext)
+        elif split == "val":
+            manifest = self.root_dir / self.val_augm_dir / "manifest.csv"
+            if not manifest.exists():
+                if not prefetch:
+                    raise FileNotFoundError(f"SPAI validation set not built: run SPAITrainDataset.augment_val (missing {manifest})")
+                self.augment_val(self.root_dir, coco_dir, cnndetection_dir, coco_ext)
+            with open(manifest) as f:
+                self.samples = [(manifest.parent / r["image"], int(r["class"])) for r in csv.DictReader(f)]
+        else:
+            raise ValueError(f"SPAI training data has no '{split}' split")
+
+    @classmethod
+    def entries(cls, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg"):
+        """``(path, label)`` for one split (``train`` or ``valid`` in GRIP's naming), in the official CSV's order."""
+        split_dir = Path(root_dir) / cls.ldm_dir / ("train" if split == "train" else "valid")
+        samples = [(p, 1) for p in sorted(split_dir.rglob("*.png"))]
+        for line in (split_dir / "real_coco.txt").read_text().split():
+            samples.append((Path(coco_dir) / Path(line).with_suffix(coco_ext), 0))
+        for line in (split_dir / "real_lsun.txt").read_text().split():
+            category, filename = line.split("_", 1)
+            samples.append((Path(cnndetection_dir) / "train" / category / "0_real" / filename, 0))
+        missing = [p for p, _ in samples if not p.exists()]
+        if missing:
+            raise FileNotFoundError(f"SPAI {split}: {len(missing)} of {len(samples)} images missing, e.g. {missing[0]}")
+        return samples
+
+    @classmethod
+    def prepare_split(cls, root_dir):
+        """Download and extract GRIP's LDM training set (22 GB). The reals (COCO train2017, CNNDetection) are separate."""
+        root_dir = Path(root_dir); dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / "latent_diffusion_trainingset.zip"
+        if not archive.exists():
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(archive), cls.zip_url], check=True)
+        _safe_extract_zip(archive, root_dir)
+
+    @classmethod
+    def augment_val(cls, root_dir, coco_dir, cnndetection_dir, coco_ext=".jpg", seed=0):
+        """The official validation set: every ``valid`` image passed once through the training transform and saved as
+        an 8-bit PNG (``augment_dataset.py``), plus ``manifest.csv`` (image, class). Seeded, so it is reproducible."""
+        from models.image.spai.official_train_transforms import SPAI_CONFIG, build_transform  # optional dep (albumentations)
+        transform = build_transform(True, SPAI_CONFIG)
+        out = Path(root_dir) / cls.val_augm_dir
+        random.seed(seed); np.random.seed(seed)
+        rows = []
+        for i, (path, label) in enumerate(tqdm(cls.entries(root_dir, "valid", coco_dir, cnndetection_dir, coco_ext), desc="Augmenting SPAI val")):
+            img = transform(image=np.array(Image.open(path).convert("RGB")))["image"]
+            name = f"{label}_real/{i:06d}.png" if label == 0 else f"{label}_fake/{i:06d}.png"
+            (out / name).parent.mkdir(parents=True, exist_ok=True)
+            Image.fromarray((img.permute(1, 2, 0).numpy() * 255).astype(np.uint8)).save(out / name)
+            rows.append({"image": name, "class": label, "source": str(path)})
+        with open(out / "manifest.csv", "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=["image", "class", "source"]); writer.writeheader(); writer.writerows(rows)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        path, label = self.samples[idx]
+        img = np.array(Image.open(path).convert("RGB"))
+        if self.split == "train":
+            image = torch.cat([self.transform(image=img)["image"] for _ in range(self.views)], dim=-1)
+        else:                                                   # already augmented: only [0, 1] scaling
+            image = torch.from_numpy(img).permute(2, 0, 1).float() / 255.0
+        return image, torch.tensor(label), torch.tensor(0)
+
+
+class SPAITrainDatasetModule:
+    """SPAI's training (4-view items) and validation (pre-augmented) data for SynthScope's trainer."""
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        kw = dict(coco_dir=cfg.coco_dir, cnndetection_dir=cfg.cnndetection_dir, coco_ext=cfg.get("coco_ext", ".jpg"),
+                  prefetch=bool(cfg.get("prefetch", False)))
+        self.train_dataset = SPAITrainDataset(cfg.root_dir, "train", views=int(cfg.get("views", 4)), **kw)
+        self.val_dataset = SPAITrainDataset(cfg.root_dir, "val", **kw)
+
+    def train_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.train_dataset, batch_size=cfg.train_batch_size, shuffle=True, num_workers=cfg.num_workers,
+                          pin_memory=True, drop_last=True, persistent_workers=cfg.num_workers > 0)
+
+    def val_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.val_dataset, batch_size=cfg.val_batch_size, shuffle=False, num_workers=cfg.num_workers,
+                          pin_memory=True, persistent_workers=cfg.num_workers > 0)
+
+    def test_dataloader(self):
+        return None
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -3045,6 +3164,8 @@ SynthScopeModuleDict = {
     "rrdataset": RRDatasetModule,
     "arforensics": ARForensicsDatasetModule,
     "mirage_test": MirageTestDatasetModule,
+    # Training sets of detectors trained in SynthScope with their official recipe.
+    "spai_train": SPAITrainDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

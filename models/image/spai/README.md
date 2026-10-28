@@ -13,7 +13,7 @@ Official repo: https://github.com/mever-team/spai
 Project page: https://mever-team.github.io/spai/
 Paper: https://openaccess.thecvf.com/content/CVPR2025/papers/Karageorgiou_Any-Resolution_AI-Generated_Image_Detection_by_Spectral_Learning_CVPR_2025_paper.pdf
 
-> **Scope of this implementation.** SynthScope implements the **fixed-resolution** variant of SPAI (the official `MFViT` path): a single `224 x 224` crop, SRS + Spectral Context Vector + classifier. The any-resolution **Spectral Context Attention** wrapper (`PatchBasedMFViT`) is intentionally **not** included. Everything else matches the paper, and the implementation is verified numerically identical to the official model (see *Equivalence with the official model* below).
+> **Scope of this implementation.** SynthScope implements the official **any-resolution** model (`PatchBasedMFViT`): the image is tiled into 224 x 224 patches at its native resolution (a five-crop when fewer than 4 patches fit), each patch gets the SRS + Spectral Context Vector descriptor below, and the **Spectral Context Attention** aggregates the patches before the classifier. With `use_sca: false` it reduces to the fixed-resolution `MFViT` path described in the pipeline. The released weights load into this class and reproduce the paper's protocol (see *Reproduced benchmark results*), and the official training recipe is available too (see *Training setup*).
 
 ## Pipeline
 
@@ -83,33 +83,24 @@ Trainable parameters: the 12 per-block projectors, the spectral-context module, 
 
 ## Training setup
 
-The SPAI configs live in:
+`experiments/image/spai.sh` trains SPAI with its released recipe (`configs/spai.yaml` and the README's `train` command in
+github.com/mever-team/spai), ported faithfully:
 
-```bash
-conf/model/spai.yaml
-conf/trainer/spai.yaml
-```
+| | Official | SynthScope |
+|---|---|---|
+| Data | GRIP's latent-diffusion training set (Corvi et al., ICASSP 2023): 180k LDM fakes + 90k COCO train2017 + 90k LSUN reals (CNNDetection's ProGAN-train reals), as listed by `real_coco.txt` / `real_lsun.txt`; validation = its `valid` split (20k + 20k) | the same lists, `SPAITrainDataset` (`conf/dataset/image/spai_train.yaml`, dataset `spai_train`) |
+| Training input | 4 independent draws of the albumentations transform (RandomResizedCrop 224 scale 0.2-1, flips, rotation +-90 p0.5, Gaussian blur p0.5, Gaussian noise p0.5, JPEG 50-100 p0.5) concatenated side by side (`AUGMENTED_VIEWS 4`, arbitrary-resolution mode): the SCA sees them as 4 patches | `build_transform` vendored unchanged (`official_train_transforms.py`, albumentations 1.4.14 as pinned) |
+| Validation | the `valid` split augmented once offline (`tools/augment_dataset.py`) | `SPAITrainDataset.augment_val` (seed 0) |
+| Model | frozen MFM ViT-B/16 (stochastic depth 0.1 in training), dropout 0.5 in the projectors, the SCA and the head | `freeze_backbone`, `drop_path_rate: 0.1`, `sca_dropout: 0.5` |
+| Optimizer | AdamW 5e-4, weight decay 0.05 (none on biases / 1-D), layer decay 0.8 (backbone only, so inactive), no clipping | `no_weight_decay_1d: true` |
+| Schedule | 35 epochs, timm cosine stepped per iteration: warmup from 2.5e-7 over 5 epochs, floor 2.5e-7 | trainer mode `timm_cosine` |
+| Batch / precision | 72, APEX AMP O2 (fp16) | 72 (`GRAD_ACCUM=2`: 2 x 36 on a 24 GB GPU, same schedule), fp16 autocast |
+| Selection | the epoch with the lowest validation loss | `model_best.pth` (each improving epoch is kept as `model_<epoch>.pth`; losses in `val_losses.json`) |
 
-The model config:
-
-| Setting | Value |
-|---|---:|
-| `model_type` | `spai` |
-| `backbone_name` | `ViT-B/16` |
-| `input_size` | `224` |
-| `mask_radius` | `16` |
-| `projection_dim` | `1024` |
-| `freeze_backbone` | `true` |
-
-The trainer config follows the paper's regime: AdamW with `lr = 5e-4`, weight decay `0.05`, a cosine schedule with a ~5-epoch warmup, `35` epochs.
-
-A launcher is provided at:
-
-```bash
-experiments/spai.sh
-```
-
-It uses the default dataset (`genimage`). **The transform lists end in `to_dtype` only and contain no `normalize_*` transform**, because SPAI normalizes internally; feeding pre-normalized images would corrupt the frequency split. Dataset-side augmentations are `resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype` (eval: `resize_short_256, center_crop_224, to_dtype`).
+The released checkpoint's backbone equals the MFM initialization up to fp16 rounding (largest difference 1e-3), which
+confirms the backbone stays frozen (weight decay never reaches it). The dataset needs `pip install
+"albumentations==1.4.14" "albucore==0.0.16"` (the `train` extra). **Images must reach the model in [0, 1]**: SPAI
+normalizes internally, and a pre-normalized input would corrupt the frequency split.
 
 ## Reproduced benchmark results
 
@@ -140,8 +131,8 @@ The SPAI model is called through the shared `compute_loss(batch)` interface used
 
 | Difference | Reason |
 |---|---|
-| No any-resolution Spectral Context Attention (`PatchBasedMFViT`) | We implement only the fixed-resolution `MFViT` path; a single `224 x 224` crop is used instead of patch-based attention over arbitrary-resolution images. |
-| No multi-view (`AUGMENTED_VIEWS`) training | The upstream training samples several augmented patches per image; SynthScope trains on one crop per image. |
+| fp16 autocast instead of APEX O2 | APEX is not a dependency; both run the forward in fp16 with fp32 master weights and dynamic loss scaling. |
+| COCO reals read from the original train2017 JPEGs | as the official script; the validation set is re-augmented with a fixed seed (the official one is not released). |
 | Only `vision_transformer.py` and `filters.py` are vendored | The rest of the pipeline is re-implemented crisply and verified bit-identical to upstream `MFViT`, so vendoring the full `sid.py` would just duplicate unused code (ONNX/attention export, any-resolution). |
 | Uses Hydra configs, Accelerate, and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
 
@@ -163,4 +154,4 @@ A learnable softmax importance map weights the per-block `[mean; std]` statistic
 
 ## Summary
 
-SPAI in SynthScope is a method-level reproduction of Karageorgiou et al.'s CVPR 2025 paper, restricted to its fixed-resolution variant. A frozen MFM-pretrained ViT-B/16 supplies multi-block patch features for an image and its low/high-frequency components; Spectral Reconstruction Similarity measures their cross-view coherence, a learnable Spectral Context Vector summarizes the per-block statistics, and a small MLP reads the combined representation to produce a real/fake logit. The backbone (`vision_transformer.py`) and frequency split (`filters.py`) are vendored verbatim from the official repo so the MFM checkpoint loads exactly; the rest is re-implemented and verified numerically identical to the official `MFViT`. The any-resolution Spectral Context Attention is deliberately omitted.
+SPAI in SynthScope is a method-level reproduction of Karageorgiou et al.'s CVPR 2025 paper, A frozen MFM-pretrained ViT-B/16 supplies multi-block patch features for an image and its low/high-frequency components; Spectral Reconstruction Similarity measures their cross-view coherence, a learnable Spectral Context Vector summarizes the per-block statistics, and a small MLP reads the combined representation to produce a real/fake logit. The backbone (`vision_transformer.py`) and frequency split (`filters.py`) are vendored verbatim from the official repo so the MFM checkpoint loads exactly; the rest is re-implemented and verified numerically identical to the official `MFViT`. The any-resolution Spectral Context Attention aggregates the per-patch descriptors, and the official training recipe is ported with its data, augmentations and schedule.

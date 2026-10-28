@@ -120,7 +120,9 @@ class SPAI(nn.Module):
         super().__init__()
         cfg = config.ModelConfig
         self.frozen = cfg.freeze_backbone
-        self.backbone = self._build_backbone()
+        # Stochastic depth in the frozen backbone: active only in training mode, as in the official model
+        # (MODEL.DROP_PATH_RATE 0.1); it does not change inference.
+        self.backbone = self._build_backbone(float(cfg.get("drop_path_rate", 0.0)))
         if self.frozen:
             self.backbone.requires_grad_(False)
 
@@ -157,10 +159,10 @@ class SPAI(nn.Module):
         self.norm = Normalize(IMAGENET_MEAN, IMAGENET_STD)
         self.criterion = nn.BCEWithLogitsLoss()
 
-    def _build_backbone(self):
+    def _build_backbone(self, drop_path_rate=0.0):
         vit = VisionTransformer(
             img_size=224, patch_size=16, embed_dim=768, depth=12, num_heads=12,
-            mlp_ratio=4, qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6),
+            mlp_ratio=4, qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), drop_path_rate=drop_path_rate,
             use_abs_pos_emb=True, use_mean_pooling=True, use_intermediate_layers=True,
             intermediate_layers=tuple(range(12)), return_features=True,
         )

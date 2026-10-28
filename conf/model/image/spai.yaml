@@ -16,3 +16,8 @@ patch_size: 224
 patch_stride: 224
 num_heads: 12
 attn_embed_dim: 1536
+minimum_patches: 4
+# Training-only regularisation of the official model (inactive at inference): SID_DROPOUT 0.5 also applies to the
+# Spectral Context Attention, and the frozen backbone uses stochastic depth (DROP_PATH_RATE 0.1) in training mode.
+sca_dropout: 0.5
+drop_path_rate: 0.1

@@ -1,0 +1,12 @@
+name: spai_train
+# SPAI's training set, as the official create_dmid_ldm_train_val_csv.py builds it: GRIP's latent-diffusion training set
+# (latent_diffusion_trainingset.zip, 22 GB, extracted under root_dir; 180k train / 20k valid LDM images) + the reals it
+# lists: COCO train2017 (real_coco.txt) and CNNDetection's ProGAN-train LSUN reals (real_lsun.txt).
+root_dir: /nvmestore/ssalehi/SynthScope/spai_train
+coco_dir: /nvmestore/ssalehi/SynthScope/COCO/train2017   # the original JPEGs (images.cocodataset.org/zips/train2017.zip)
+cnndetection_dir: /nvmestore/ssalehi/SynthScope/CNNDetection
+views: 4                   # DATA.AUGMENTED_VIEWS: four 224 views side by side per training image
+train_batch_size: 72       # the official --batch-size
+val_batch_size: 256        # DATA.VAL_BATCH_SIZE
+num_workers: 8
+prefetch: false
