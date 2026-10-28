@@ -2824,8 +2824,9 @@ class SPAITrainDatasetModule:
 
     def val_dataloader(self):
         cfg = self.config.DatasetConfig
+        # not persistent: idle validation workers would hold host memory through every training epoch
         return DataLoader(self.val_dataset, batch_size=cfg.val_batch_size, shuffle=False, num_workers=cfg.num_workers,
-                          pin_memory=True, persistent_workers=cfg.num_workers > 0)
+                          pin_memory=True)
 
     def test_dataloader(self):
         return None
