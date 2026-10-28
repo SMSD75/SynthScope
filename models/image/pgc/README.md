@@ -58,15 +58,46 @@ The residual is resolution-sensitive, so the experiment uses **crop-only** trans
 ## Training setup
 
 ```bash
-conf/model/image/pgc.yaml     # model_type: pgc, backbone_name, lora_*, tau_rgb/res
-conf/trainer/image/pgc.yaml   # Adam, lr 5e-5, weight_decay 0.05
-experiments/image/pgc.sh      # trains on ProGAN (CNNDetection); swap dataset for GenImage SDv1.4
+conf/model/image/pgc.yaml     # model_type: pgc, backbone_name, lora_*, tau_rgb/res, label smoothing 0.1
+conf/trainer/image/pgc.yaml   # AdamW 5e-5, wd 0.05, 32 x 4 accumulation, clip 1.0, step budget (checkpoint every 100)
+experiments/image/pgc.sh      # the official ProGAN recipe (all 20 classes); see "Training in SynthScope" below
 ```
 
 Registered in `trainer.py` under `model_type == "pgc"`. Trainable params: LoRA adapters + residual
 stream + PGCM + classifier (DINOv2 backbone frozen). The paper's benchmarks are CommGen15, GenImage,
 AIGI, and UniversalFakeDetect; CommGen15 (the paper's new dataset) is optional — the SynthScope integration
 trains on the existing ProGAN/GenImage data.
+
+## Training in SynthScope
+
+`experiments/image/pgc.sh` runs the official ProGAN recipe (`train.py` + `engine/trainer.py`, README 3.2) through
+SynthScope's trainer: all 20 ProGAN classes (720k images, = the UniversalFakeDetect train set); flip → ColorJitter
+(0.15, 0.15, 0.15, 0.05) p 0.2 → pad + RandomCrop 224 → ImageNet normalization, residual computed in the model; AdamW
+5e-5, weight decay 0.05, label smoothing 0.1, micro-batch 32 × 4 accumulation, gradient clipping 1.0, seed 42, one GPU.
+The authors' released checkpoint is only **~400 steps** in, because DINOv2's prior overfits ProGAN within the first
+epoch, so the run is a budget of 2000 micro-batches (trainer `step_budget`) with a checkpoint every 100, and the early
+curve is evaluated. (The official cosine schedule spans 100 epochs and is stepped per optimizer step, so the learning
+rate stays at 5e-5 here.) The run takes 38 minutes on one A5000 (job 266276).
+
+ForenSynths with the same `bench_eval` command for every checkpoint (job 266282; FS-8 = the paper's 8 GANs, hard-3 =
+deepfake, SAN, SeeingDark):
+
+| checkpoint | FS-8 mAP | FS-8 acc | hard-3 AUROC | FS-13 mAP |
+|---|---|---|---|---|
+| official `PGC_train_progan_ckpt.pth` | 96.41 | 76.34 | 90.87 | 93.80 |
+| step 300 | 97.60 | 90.82 | 92.88 | 95.07 |
+| **step 500** | **97.41** | **85.89** | **93.93** | **95.78** |
+| step 900 | 97.82 | 85.71 | 93.88 | 97.12 |
+| step 1300 | 97.63 | 85.61 | 92.76 | 97.03 |
+| step 1700 | 97.21 | 84.06 | 91.03 | 96.69 |
+| step 1900 | — | 74.49 (FS-13) | — | 95.97 |
+
+The paper reports no standalone ForenSynths number, so the reference is the official checkpoint: every checkpoint from
+step 300 on matches or exceeds it on ForenSynths-8 mAP (96.41 on this evaluation); transfer to the hard generators peaks around steps 500-900 and then erodes, as the authors
+describe. **Step 500**, the saved checkpoint nearest the authors' ~400 steps (picked by that rule, not by test score),
+is the SynthScope-trained number in the table below; on UniversalFakeDetect, which the paper does report, it gives 98.99 mAP / 91.96 acc (paper
+98.0 — reproduced; official 99.17 / 83.57 on the same run, job 266660). The GenImage, AIGIBench and CommGen15 SynthScope_train entries are
+from an earlier SynthScope recipe (2 GPUs, full cosine over epochs) and have not been rerun with this one.
 
 ## Reproduced benchmark results
 
@@ -75,14 +106,14 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 | mAP=97.62 / acc=78.6 | official |
-| UniversalFakeDetect (UFD) | map=98.0 | mAP=99.34 / acc=94.16 | mAP=99.01 | reproduced |
-| ForenSynths-8 (CNNDetection test) | mAP=96.25 | mAP=96.39 / acc=76.29 | mAP=96.05 / acc=71.12 | reproduced |
+| UniversalFakeDetect (UFD) | map=98.0 | mAP=99.34 / acc=94.16 | **mAP=98.99 / acc=91.96** | **reproduced** (step 500) |
+| ForenSynths-8 (CNNDetection test) | — (not reported separately; official checkpoint 96.25) | mAP=96.39 / acc=76.29 | **mAP=97.41 / acc=85.89** | matches/exceeds the official checkpoint (step 500) |
 | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
 | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
 
 > **ForenSynths hard generators — reproduced via early-stopping (resolved 2026-06-19).** The released ProGAN checkpoint is trained for only **~400 steps (< 1 epoch)** — confirmed by the authors on our issue. DINOv2's strong priors overfit ProGAN within a few epochs (loss → floor), which keeps easy generators high but **erodes hard-generator transfer**; our earlier epoch-level checkpoints (ep10+) all overshot the peak. Re-running the official `train.py` verbatim with fine-grained eval shows the hard-3 (deepfake/san/seeingdark) **mean AUROC climb to 94.56 at step ~900 ≈ official 94.35**, then decay with longer training. So PGC **does** reproduce from the published recipe+data with early-stopping inside the first epoch. (Served PGC uses the official weights.) See `repro/investigate/pgc_gap_investigation.md`.
 
-> **Eval transform — `PadCenterCrop(224)`, no resize (verified 2026-06-19).** PGC's YCbCr residual is resolution-sensitive, so the eval transform is center-crop-224 with **no resize** (= the official `PadCenterCrop`; byte-identical to the genuine repo's). The earlier `Resize→CenterCrop` registry transform wiped the forensic signal on super-res/low-light generators (san 73.3, seeingdark 72.5 — same eval-transform family as the SAFE/AIDE/SPAI fixes). With the fix, SynthScope `bench_eval` reproduces ForenSynths-8 (96.39 mAP official / 96.05 from-scratch vs paper 96.25) and san recovers to 98.65 AUROC. One generator, **seeingdark**, stays ~10 pt below the genuine repo (77.9 vs 87.49) on identical images/weights with now-bit-exact preprocessing — isolated to the model forward, not the transform; it is not part of the reported ForenSynths-8.
+> **Eval transform — `PadCenterCrop(224)`, no resize (verified 2026-06-19).** PGC's YCbCr residual is resolution-sensitive, so the eval transform is center-crop-224 with **no resize** (= the official `PadCenterCrop`; byte-identical to the genuine repo's). The earlier `Resize→CenterCrop` registry transform wiped the forensic signal on super-res/low-light generators (san 73.3, seeingdark 72.5 — same eval-transform family as the SAFE/AIDE/SPAI fixes). With the fix, SynthScope `bench_eval` gives ForenSynths-8 96.39 mAP with the official weights and 96.05 with the official code retrained (the paper reports no ForenSynths number; 96.25 was the earlier official-weights measurement) and san recovers to 98.65 AUROC. One generator, **seeingdark**, stays ~10 pt below the genuine repo (77.9 vs 87.49) on identical images/weights with now-bit-exact preprocessing — isolated to the model forward, not the transform; it is not part of the reported ForenSynths-8.
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
@@ -92,4 +123,4 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 |---|---|
 | Residual built in-model (not in the dataset transform) | Keeps the SynthScope dataset/transform pipeline standard (3-channel in). Same residual math (BT.601 quantization, Eq. 1) — `_quantization_residual` snaps `round(x01*255)` to the uint8 grid so the residual is **bit-exact** to the official 6-channel transform despite the in-model ImageNet de-normalization (verified zero-diff, `repro/_residual_path_diff.py`). |
 | DINOv2-Large loaded via HF name | No local-checkpoint requirement; LoRA targets use the HF DINOv2 module names. |
-| Reduced training schedule for the bundled checkpoint | The shipped checkpoint is trained for turnaround on a ProGAN subset; raise epochs / use GenImage for a full reproduction. |
+| Training budget | The official checkpoint is ~400 steps in; `experiments/image/pgc.sh` saves every 100 micro-batches up to 2000 instead of training 100 epochs, which overfits ProGAN. |

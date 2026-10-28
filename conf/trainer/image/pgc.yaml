@@ -2,11 +2,15 @@ defaults:
   - /trainer/default
   - _self_
 
-# PGC trains LoRA adapters + the residual stream + PGCM + classifier (DINO backbone frozen).
-# Official recipe (xiaoyu6868/PGC): AdamW, lr 5e-5, weight_decay 0.05, 100 epochs (--niter 100),
-# CosineAnnealingLR over all steps, label smoothing 0.1, effective batch 128.
+# PGC's official training recipe (xiaoyu6868/PGC train.py + engine/trainer.py, README 3.2): AdamW lr 5e-5, weight
+# decay 0.05, betas (0.9, 0.999), label smoothing 0.1 (in the model's compute_loss), micro-batch 32 x 4 accumulation
+# = 128, gradient-norm clipping 1.0, seed 42. The released ProGAN checkpoint is only ~400 steps in (the authors:
+# DINOv2's prior overfits ProGAN within the first epoch), so the run is a fixed budget of micro-batches with a
+# checkpoint every 100, and the early curve is evaluated. Official cosine schedule: T_max = 100 epochs of
+# micro-batches but stepped once per optimizer step, so over the first 2000 micro-batches the LR stays at 5e-5
+# (>99.99%); it is run here at constant 5e-5.
 trainer_type: pgc
-epochs: 100
+epochs: 1
 lr: 5.0e-5
 weight_decay: 0.05
 label_smoothing: 0.1
@@ -15,7 +19,14 @@ test_interval: 1
 save_interval: 1
 save: true
 save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/pgc
+seed: 42
 warmup:
-  mode: on
-  warmup_ratio: 0.05
+  mode: "off"              # quoted: a bare off is YAML boolean False
+  warmup_ratio: 0.0
   lr_scheduler: cosine
+step_budget:
+  max_steps: 2000          # micro-batches
+  save_every: 100
+  grad_accum_steps: 4
+  max_grad_norm: 1.0

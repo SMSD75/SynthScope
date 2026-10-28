@@ -39,6 +39,13 @@ class NPR(nn.Module):
         )
         self.head = nn.Linear(layer2_ch, 1)
         self.criterion = torch.nn.BCEWithLogitsLoss()
+        # Official initialization (networks/resnet.py ResNet.__init__); only matters when training from scratch.
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
     
 
     def NPR_transform(self, x: torch.Tensor) -> torch.Tensor:

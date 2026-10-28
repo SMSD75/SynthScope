@@ -3,6 +3,8 @@ name: arforensics
 # Open-MAGVIT2), 6000 fakes + 6000 ImageNet reals each. (HF Yanran21/ARForensics, corrected test release, 21 GB, MIT)
 root_dir: /hddstore/ssalehi/SynthScope/ARForensics
 hf_repo_id: Yanran21/ARForensics
+train_batch_size: 32       # D3QE's training data (train/val splits) is fetched only when a train_transform_list is set
+val_batch_size: 64
 test_batch_size: 512
 num_workers: 8
 persistent_workers: true

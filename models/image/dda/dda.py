@@ -62,6 +62,7 @@ class SynthScopeDDAModel(nn.Module):
 
     def compute_loss(self, batch):
         images, labels, _folder_ids = batch
-        outputs = self.forward(images)
-        loss = self.criterion(outputs.squeeze(1), labels.float())
-        return {"loss": loss, "outputs": outputs}
+        logits = self.forward(images).squeeze(1)
+        loss = self.criterion(logits, labels.float())
+        # Two-column [-logit, logit] so the trainer's metrics (argmax / softmax[:, 1]) read the single logit right.
+        return {"loss": loss, "outputs": torch.stack([-logits, logits], dim=1)}

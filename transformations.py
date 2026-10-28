@@ -1,8 +1,53 @@
+from io import BytesIO
 from typing import Callable
+import cv2
+import numpy as np
 import torchvision.transforms.v2 as v2
+from PIL import Image
+from scipy.ndimage import gaussian_filter
 from torchvision import tv_tensors
 import torch
 import random
+
+
+class CNNDetAugment:
+    """The blur + JPEG augmentation of the CNNDetection code base (``data_augment``), which CNNDetection, D3QE and other
+    detectors built on it train with: with probability ``blur_prob`` a Gaussian blur (scipy, sigma drawn from
+    ``blur_sig``, in place per channel), then with probability ``jpg_prob`` a JPEG round trip (cv2 or PIL, quality drawn
+    from ``jpg_qual``). Ops copied from D3QE's data/process.py; takes and returns a uint8 [3, H, W] tensor."""
+
+    def __init__(self, blur_prob, blur_sig, jpg_prob, jpg_method, jpg_qual):
+        self.blur_prob, self.blur_sig = blur_prob, list(blur_sig)
+        self.jpg_prob, self.jpg_method, self.jpg_qual = jpg_prob, list(jpg_method), list(jpg_qual)
+
+    @staticmethod
+    def _sample_continuous(s):
+        return s[0] if len(s) == 1 else random.random() * (s[1] - s[0]) + s[0]
+
+    @staticmethod
+    def _cv2_jpg(img, quality):
+        _, encimg = cv2.imencode(".jpg", img[:, :, ::-1], [int(cv2.IMWRITE_JPEG_QUALITY), quality])
+        return cv2.imdecode(encimg, 1)[:, :, ::-1]
+
+    @staticmethod
+    def _pil_jpg(img, quality):
+        out = BytesIO()
+        Image.fromarray(img).save(out, format="jpeg", quality=quality)
+        img = np.array(Image.open(out))
+        out.close()
+        return img
+
+    def __call__(self, image):
+        img = np.ascontiguousarray(image.permute(1, 2, 0).numpy() if isinstance(image, torch.Tensor) else np.array(image))
+        if random.random() < self.blur_prob:
+            sig = self._sample_continuous(self.blur_sig)
+            for c in range(3):
+                gaussian_filter(img[:, :, c], output=img[:, :, c], sigma=sig)
+        if random.random() < self.jpg_prob:
+            method = random.choice(self.jpg_method)
+            quality = random.choice(self.jpg_qual)
+            img = self._cv2_jpg(img, quality) if method == "cv2" else self._pil_jpg(img, quality)
+        return torch.from_numpy(np.ascontiguousarray(img)).permute(2, 0, 1).contiguous()
 
 
 class RandomMask:
@@ -40,6 +85,8 @@ class AIGITransformations:
     def _create_transform(self, transform_name: str):
         if transform_name == "resize_224":
             return v2.Resize((224, 224))
+        elif transform_name == "resize_256":               # square, as NPR/FatFormer/CNNDetection-style training (Resize((256, 256)))
+            return v2.Resize((256, 256))
         elif transform_name == "resize_short_256":
             return v2.Resize(256)
         elif transform_name == "resize_short_384":
@@ -66,6 +113,10 @@ class AIGITransformations:
             return v2.RandomHorizontalFlip(p=0.5)
         elif transform_name == "random_vertical_flip":
             return v2.RandomVerticalFlip(p=0.5)
+        elif transform_name == "blur_jpeg_cnndet":         # CNNDetection/D3QE training: blur 0.1 (sigma 0-3), JPEG 0.1 (cv2/pil, q30-100)
+            return CNNDetAugment(0.1, (0.0, 3.0), 0.1, ("cv2", "pil"), range(30, 101))
+        elif transform_name == "blur_jpeg_cnndet_val":     # the same on the validation split, fixed: sigma 1.5, PIL q65
+            return CNNDetAugment(0.1, (1.5,), 0.1, ("pil",), (65,))
         elif transform_name == "jpeg_compression":
             return v2.RandomApply([v2.JPEG(quality=(30, 100))], p=0.5)
         elif transform_name == "random_crop_224":

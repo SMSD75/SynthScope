@@ -49,7 +49,9 @@ class SynthScopeModelTrainer:
         self.use_metrics = len(config.metrics) > 0
         self.scheduler = None
         warmup = config.TrainerConfig.warmup
-        if warmup.mode != "off":
+        # A bare `mode: off` in YAML is the boolean False (and `on` is True), so compare the string form: before this, an
+        # unquoted `off` (conf/trainer/default.yaml, aide, restrav, ...) silently enabled a schedule annealing the LR to 0.
+        if str(warmup.mode).lower() not in ("off", "false", "none"):
             num_training_steps = config.TrainerConfig.epochs * (len(self.train_loader) // self.accelerator.gradient_accumulation_steps)
             self.scheduler = get_scheduler(warmup.lr_scheduler, optimizer=self.optimizer, num_warmup_steps=int(warmup.warmup_ratio * num_training_steps), num_training_steps=num_training_steps)
         self.model, self.optimizer, self.scheduler, self.train_loader, self.val_loader, self.test_loader = self.accelerator.prepare(
@@ -228,7 +230,127 @@ class SynthScopeModelTrainer:
                 self._save_model(epoch, self.config.TrainerConfig.save_path)
         self.accelerator.print(f"Epoch {epoch}, Model Saved")
 
+    @staticmethod
+    def _val_accuracy(metrics_dict):
+        """Mean of the real and fake accuracies over the validation folders (balanced accuracy; on a balanced
+        validation set it equals the plain accuracy the CNNDetection-family training scripts monitor)."""
+        real = [v for k, v in metrics_dict.items() if k.startswith("real_accuracy")]
+        fake = [v for k, v in metrics_dict.items() if k.startswith("fake_accuracy")]
+        if not real or not fake:
+            raise ValueError("the plateau schedule needs metrics=[real_accuracy,fake_accuracy]")
+        return (sum(real) / len(real) + sum(fake) / len(fake)) / 2
+
+    def _train_with_plateau(self, plateau):
+        """The CNNDetection-family schedule (CNNDetection, D3QE, ...; their EarlyStopping + adjust_learning_rate):
+        validate after every epoch and keep the checkpoint with the best validation accuracy (``model_best.pth``);
+        when it has not improved by at least ``delta`` for ``patience`` epochs, divide the learning rate by
+        ``factor`` and restart the tracker with ``delta_after_drop`` (so, as in the official code, the next epoch is
+        kept); stop once the learning rate falls below ``min_lr`` or after ``epochs`` epochs."""
+        cfg = self.config.TrainerConfig
+        best, bad, delta = None, 0, float(plateau.delta)
+        for epoch in range(cfg.epochs):
+            train_loss, train_metrics_dict = self.train_epoch()
+            self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
+            self.logger.log_metrics({"train/loss": train_loss, **{f"train/{m}": v for m, v in train_metrics_dict.items()}}, self.global_step)
+            val_loss, val_metrics_dict = self.val()
+            acc = self._val_accuracy(val_metrics_dict)
+            lr = self.optimizer.param_groups[0]["lr"]
+            self.accelerator.print(f"Epoch {epoch}, Val accuracy {acc:.4f} (lr {lr:.2e}, step {self.global_step})")
+            self.logger.log_metrics({"val/accuracy": acc, "lr": lr}, self.global_step)
+            if cfg.save:
+                self._save_model("last", cfg.save_path)
+            if best is None or acc >= best + delta:
+                best, bad = acc, 0
+                if cfg.save:
+                    self._save_model("best", cfg.save_path)
+                    self.accelerator.print(f"Epoch {epoch}: best validation accuracy {acc:.4f}, saved model_best.pth")
+                continue
+            bad += 1
+            if bad < int(plateau.patience):
+                continue
+            for group in self.optimizer.param_groups:
+                group["lr"] /= float(plateau.factor)
+            new_lr = self.optimizer.param_groups[0]["lr"]
+            if new_lr < float(plateau.min_lr):
+                self.accelerator.print(f"Epoch {epoch}: learning rate {new_lr:.2e} below min_lr, early stopping")
+                break
+            self.accelerator.print(f"Epoch {epoch}: no improvement for {bad} epochs, learning rate -> {new_lr:.2e}")
+            best, bad, delta = None, 0, float(plateau.get("delta_after_drop", plateau.delta))
+        self.logger.finish()
+
+    def _train_with_lr_step(self, step):
+        """A fixed step schedule as in NPR's train.py (``delr_freq``): after epoch ``e`` (0-based) with
+        ``e % every == 0 and e != 0`` the learning rate is multiplied by ``factor``; validation after every epoch is
+        logged (plus ``model_best.pth`` by validation accuracy), and the final model is ``model_last.pth``, which is
+        the checkpoint the official code releases."""
+        cfg = self.config.TrainerConfig
+        best = None
+        for epoch in range(cfg.epochs):
+            train_loss, train_metrics_dict = self.train_epoch()
+            self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
+            self.logger.log_metrics({"train/loss": train_loss, **{f"train/{m}": v for m, v in train_metrics_dict.items()}}, self.global_step)
+            if epoch % int(step.every) == 0 and epoch != 0:
+                for group in self.optimizer.param_groups:
+                    group["lr"] *= float(step.factor)
+                self.accelerator.print(f"Epoch {epoch}: learning rate -> {self.optimizer.param_groups[0]['lr']:.3e}")
+            val_loss, val_metrics_dict = self.val()
+            acc = self._val_accuracy(val_metrics_dict)
+            self.accelerator.print(f"Epoch {epoch}, Val accuracy {acc:.4f} (lr {self.optimizer.param_groups[0]['lr']:.3e}, step {self.global_step})")
+            self.logger.log_metrics({"val/accuracy": acc, "lr": self.optimizer.param_groups[0]["lr"]}, self.global_step)
+            if cfg.save:
+                self._save_model("last", cfg.save_path)
+                if best is None or acc > best:
+                    best = acc
+                    self._save_model("best", cfg.save_path)
+        self.logger.finish()
+
+    def _train_with_step_budget(self, budget):
+        """A fixed budget of micro-batches, as in PGC's train.py: the loss of each micro-batch is divided by
+        ``grad_accum_steps`` and the optimizer steps every ``grad_accum_steps`` micro-batches, after clipping the gradient
+        norm to ``max_grad_norm`` (0: no clipping); ``model_step<N>.pth`` is saved every ``save_every`` micro-batches, up
+        to ``max_steps``. For detectors whose transfer peaks early (PGC's released checkpoint is ~400 steps in), the
+        saved curve is evaluated rather than only the last model."""
+        accum = int(budget.get("grad_accum_steps", 1))
+        clip = float(budget.get("max_grad_norm", 0.0))
+        max_steps, save_every = int(budget.max_steps), int(budget.save_every)
+        save_path = self.config.TrainerConfig.save_path
+        step, running = 0, 0.0
+        self.model.train()
+        self.optimizer.zero_grad()
+        while step < max_steps:
+            for batch in tqdm(self.train_loader, desc="Training"):
+                loss = self.train_step(batch)
+                self.accelerator.backward(loss / accum)
+                running += loss.detach().item()
+                step += 1
+                if step % accum == 0:
+                    if clip > 0:
+                        self.accelerator.clip_grad_norm_(self.model.parameters(), clip)
+                    self.optimizer.step()
+                    if self.scheduler is not None:
+                        self.scheduler.step()
+                    self.optimizer.zero_grad()
+                    self.global_step += 1
+                if step % save_every == 0:
+                    self.accelerator.print(f"step {step} (optimizer step {self.global_step}): mean loss {running / save_every:.4f}, "
+                                           f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
+                    self.logger.log_metrics({"train/loss": running / save_every}, step)
+                    running = 0.0
+                    self._save_model(f"step{step}", save_path)
+                if step >= max_steps:
+                    break
+        self.logger.finish()
+
     def train(self):
+        plateau = self.config.TrainerConfig.get("plateau", None)
+        if plateau is not None:
+            return self._train_with_plateau(plateau)
+        lr_step = self.config.TrainerConfig.get("lr_step", None)
+        if lr_step is not None:
+            return self._train_with_lr_step(lr_step)
+        budget = self.config.TrainerConfig.get("step_budget", None)
+        if budget is not None:
+            return self._train_with_step_budget(budget)
         for epoch in range(self.config.TrainerConfig.epochs):
             if epoch % self.config.TrainerConfig.val_interval == 0:
                 val_loss, val_metrics_dict = self.val()

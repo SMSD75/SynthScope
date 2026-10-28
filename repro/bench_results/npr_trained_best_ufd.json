@@ -1,0 +1,74 @@
+{
+  "tag": "npr_trained_best_ufd",
+  "model": "npr",
+  "ckpt": "/ssdstore/ssalehi/SynthScope/models/npr_v1/model_best.pth",
+  "benchmark": "ufd",
+  "data_root": "/ssdstore/ssalehi/SynthScope/universialfakedetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 85.34,
+    "map": 95.56,
+    "mauroc": 95.3
+  },
+  "per_generator": {
+    "dalle": {
+      "ap": 92.85,
+      "auroc": 92.7,
+      "real_acc": 98.5,
+      "fake_acc": 44.5,
+      "acc": 71.5
+    },
+    "glide_100_10": {
+      "ap": 98.54,
+      "auroc": 98.22,
+      "real_acc": 98.5,
+      "fake_acc": 90.7,
+      "acc": 94.6
+    },
+    "glide_100_27": {
+      "ap": 97.85,
+      "auroc": 97.35,
+      "real_acc": 98.5,
+      "fake_acc": 86.0,
+      "acc": 92.25
+    },
+    "glide_50_27": {
+      "ap": 98.08,
+      "auroc": 97.6,
+      "real_acc": 98.5,
+      "fake_acc": 88.6,
+      "acc": 93.55
+    },
+    "guided": {
+      "ap": 84.94,
+      "auroc": 83.39,
+      "real_acc": 89.7,
+      "fake_acc": 58.6,
+      "acc": 74.15
+    },
+    "ldm_100": {
+      "ap": 97.13,
+      "auroc": 97.49,
+      "real_acc": 98.5,
+      "fake_acc": 69.3,
+      "acc": 83.9
+    },
+    "ldm_200": {
+      "ap": 97.01,
+      "auroc": 97.37,
+      "real_acc": 98.5,
+      "fake_acc": 67.6,
+      "acc": 83.05
+    },
+    "ldm_200_cfg": {
+      "ap": 98.09,
+      "auroc": 98.25,
+      "real_acc": 98.5,
+      "fake_acc": 80.9,
+      "acc": 89.7
+    }
+  },
+  "date": "2026-10-27T02:59:33",
+  "synthscope_version": "0.1.0"
+}

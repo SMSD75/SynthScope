@@ -69,17 +69,42 @@ The paper reports both accuracy and average precision, with the main result show
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us. For all NPR entries we did not train from scratch, so SynthScope_train is `—`.
+Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us with the official recipe (`experiments/image/npr.sh`; see *Training in SynthScope* below), evaluated so far on Tables 1 and 4.
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| Table 1 — ForenSynths / Cross-GAN (8) | 96.1 / 92.5 | 94.22 / 92.3 | — | official |
+| Table 1 — ForenSynths / Cross-GAN (8) | 96.1 / 92.5 | 94.22 / 92.3 | 93.83 / 84.09 | official; trained: AP close, acc below (as the official training code here) |
 | Table 2 — GANGen-Detection (9) | 96.6 / 93.2 | 96.49 / 94.81 | — | official |
 | Table 3 — DiffusionForensics / DIRE | 99.8 / 95.3 | 99.4 / 95.03 | — | official |
-| Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 96.69 / 93.94 | — | official |
+| Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 96.69 / 93.94 | 97.49 / 88.91 | official; trained: AP matches, acc below |
 | Table 5 — Diffusion1kStep | acc 80.1 | 83.47 / 79.13 | — | official |
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
+
+## Training in SynthScope
+
+`experiments/image/npr.sh` runs the official recipe (the README's `train.py` command and `networks/trainer.py`): ProGAN
+4-class (car, cat, chair, horse; 144,024 images), `Resize((256, 256))` → RandomCrop 224 → flip → ImageNet normalization
+(no blur/JPEG: the official `data_augment` call is commented out), Adam lr 2e-4 without weight decay, batch 32 on one
+GPU, 50 epochs, learning rate ×0.9 after epochs 10, 20, 30 and 40, last-epoch checkpoint, seed 100. The SynthScope NPR
+uses the official convolution initialization for this.
+
+To tell our pipeline apart from run-to-run variance, we also ran the **official `train.py`, unmodified**, on the same
+data and machine, and scored every checkpoint with the same `bench_eval` command (`mAP / acc`):
+
+| Checkpoint | Table 1 — ForenSynths (8 GANs) | Table 4 — UniversalFakeDetect |
+|---|---|---|
+| official `NPR.pth` (served as `npr.pth`) | 94.22 / 92.30 | 97.16 / 94.57 |
+| official `model_epoch_last_3090.pth` | 92.81 / 91.83 | 96.69 / 93.94 |
+| official `train.py` rerun here | 92.72 / 81.47 | 96.56 / 87.61 |
+| **SynthScope recipe (ours)** | **93.83 / 84.09** | **97.49 / 88.91** |
+
+Our recipe matches the official code's own rerun on every number (it is slightly better), so the SynthScope pipeline is
+faithful; neither run reaches the released checkpoints' accuracy. AP — how well real and fake are ranked — reproduces;
+the accuracy gap is a threshold shift (our models call more unseen-generator fakes real, e.g. CycleGAN fake recall 48 vs
+96 for `NPR.pth`), which the released checkpoints did not show and which this environment (PyTorch 2.11 instead of 1.8,
+another GPU) did not reproduce. Runs: training job 265720, official-code rerun 265815, evaluation 265808/265814/266028
+(`repro/bench_results/npr_{official_nprpth,official3090,officialcode_rerun,trained_last,trained_best}_*.json`).
 
 ## Model details
 

@@ -2,17 +2,25 @@ defaults:
   - /trainer/default
   - _self_
 
+# NPR's official training recipe (README: train.py --classes car,cat,chair,horse --batch_size 32 --delr_freq 10
+# --lr 0.0002 --niter 50; networks/trainer.py: Adam, betas (0.9, 0.999), no weight decay): 4-class ProGAN, 50 epochs,
+# learning rate x0.9 after epochs 10, 20, 30, 40; the released checkpoint is the last epoch's model.
 trainer_type: npr
-epochs: 10
+epochs: 50
 lr: 2.0e-4
-weight_decay: 0.0
+weight_decay: 0.0          # AdamW with weight decay 0 == the official Adam
 label_smoothing: 0.0
 val_interval: 1
 test_interval: 1
 save_interval: 1
-save: false
+save: true
 save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/npr
+seed: 100                  # the official seed_torch(100)
 warmup:
-  mode: off
-  warmup_ratio: 0.05
+  mode: "off"              # quoted: a bare off is YAML boolean False, which the trainer reads as "on"
+  warmup_ratio: 0.0
   lr_scheduler: linear
+lr_step:
+  every: 10
+  factor: 0.9

@@ -903,7 +903,8 @@ class CNNDetectionDataset(Dataset):
         "test": ("cnn_synth_testset", "test"),
     }
 
-    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False):
+    def __init__(self, root_dir: str | Path, split: Literal["train", "val", "test"], transform: AIGITransformations | None = None, prefetch: bool = False,
+                 classes: list[str] | None = None):
         super().__init__()
         self.root_dir = Path(root_dir)
         self.split = split
@@ -914,6 +915,12 @@ class CNNDetectionDataset(Dataset):
             print(f"Downloading {self.split} split from Google Drive...")
             self._download_data()
         self.images, self.labels, self.folder_names = self._load_data()
+        if classes:   # e.g. the 4-class ProGAN setting (car, cat, chair, horse) of CNNDetection/NPR/FatFormer
+            keep = [i for i, f in enumerate(self.folder_names) if f in set(classes)]
+            if not keep:
+                raise ValueError(f"CNNDetection {split}: none of the classes {list(classes)} found")
+            self.images = [self.images[i] for i in keep]; self.labels = [self.labels[i] for i in keep]
+            self.folder_names = [self.folder_names[i] for i in keep]
         self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
 
     @classmethod
@@ -1081,8 +1088,10 @@ class CNNDetectionDatasetModule:
         self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
         self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
-        self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
-        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
+        classes = config.DatasetConfig.get("train_classes", None)   # ProGAN classes for train/val (None: all 20)
+        classes = list(classes) if classes else None
+        self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch, classes=classes)
+        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch, classes=classes)
         self.test_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
 
     def train_dataloader(self):
@@ -2626,9 +2635,12 @@ class ARForensicsDataset(_TestOnlyImageDataset):
     Janus-Pro, RAR, Switti, Open-MAGVIT2), 6000 fakes and 6000 ImageNet reals each, laid out as
     ``ARForensics/test/<generator>/{0_real,1_fake}``. Sourced from the HF dataset ``Yanran21/ARForensics`` (MIT): the
     corrected test release (MAR replaced by Switti) in four independent zips, ARForensics_updated_test_part00{1..4}.zip
-    (21 GB); a generator can span two zips, so all four are extracted into one folder."""
+    (21 GB); a generator can span two zips, so all four are extracted into one folder. D3QE's training data is in the
+    same repo: ``train`` (100k LlamaGen fakes + 100k ImageNet reals; one zip split into 7 parts, 35 GB) and ``val``
+    (10k + 10k, 3.7 GB), each laid out as ``ARForensics/<split>/{0_real,1_fake}``."""
     hf_repo_id = "Yanran21/ARForensics"
-    hf_pattern = "ARForensics_updated_test_part*.zip"
+    hf_patterns = {"test": "ARForensics_updated_test_part*.zip", "val": "val/ARForensics_val.zip",
+                   "train": "train/ARForensics_train_split.zip.a?"}
 
     @classmethod
     def prepare_split(cls, root_dir, split="test", force=False):
@@ -2636,14 +2648,24 @@ class ARForensicsDataset(_TestOnlyImageDataset):
         if not force and _has_images(dest):
             return
         from huggingface_hub import snapshot_download
-        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
-        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl), allow_patterns=[cls.hf_pattern])
-        staging = root_dir / "_staging"
-        for archive in sorted(dl.glob(cls.hf_pattern)):
+        pattern = cls.hf_patterns[split]
+        dl = root_dir / f"_downloads_{split}"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl), allow_patterns=[pattern])
+        archives = sorted(dl.glob(pattern))
+        if split == "train":                          # a single zip split into parts: join them first
+            joined = dl / "train_joined.zip"
+            with open(joined, "wb") as out:
+                for part in archives:
+                    with open(part, "rb") as f:
+                        shutil.copyfileobj(f, out, 1 << 24)
+                    part.unlink()
+            archives = [joined]
+        staging = root_dir / f"_staging_{split}"
+        for archive in archives:
             _safe_extract_zip(archive, staging)
-        inner = staging / "ARForensics" / "test"
+        inner = staging / "ARForensics" / split
         if not inner.is_dir():
-            raise RuntimeError(f"ARForensics: expected ARForensics/test/ inside the archives, found {list(staging.iterdir())}")
+            raise RuntimeError(f"ARForensics: expected ARForensics/{split}/ inside the archives, found {list(staging.iterdir())}")
         if dest.exists():
             shutil.rmtree(dest)
         shutil.move(str(inner), str(dest))
@@ -2724,7 +2746,31 @@ class RRDatasetModule(_TestOnlyImageModule):
 
 
 class ARForensicsDatasetModule(_TestOnlyImageModule):
+    """The test split for benchmarking; with a ``train_transform_list`` in the config also the train and val splits
+    (D3QE's training data), validated with ``val_transform_list`` (default: ``eval_transform_list``)."""
     DATASET_CLASS = ARForensicsDataset
+
+    def __init__(self, config):
+        super().__init__(config)
+        cfg = config.DatasetConfig
+        train_list = list(cfg.get("train_transform_list", []))
+        self.train_dataset = self.val_dataset = None
+        if train_list:
+            prefetch = bool(cfg.get("prefetch", False))
+            val_list = list(cfg.get("val_transform_list", cfg.get("eval_transform_list", [])))
+            self.train_dataset = ARForensicsDataset(cfg.root_dir, "train", AIGITransformations(train_list), prefetch=prefetch)
+            self.val_dataset = ARForensicsDataset(cfg.root_dir, "val", AIGITransformations(val_list), prefetch=prefetch)
+
+    def _loader(self, dataset, batch_size, shuffle):
+        cfg = self.config.DatasetConfig
+        return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=cfg.num_workers,
+                          persistent_workers=cfg.persistent_workers, pin_memory=cfg.pin_memory)
+
+    def train_dataloader(self):
+        return None if self.train_dataset is None else self._loader(self.train_dataset, self.config.DatasetConfig.train_batch_size, True)
+
+    def val_dataloader(self):
+        return None if self.val_dataset is None else self._loader(self.val_dataset, self.config.DatasetConfig.val_batch_size, False)
 
 
 class VideoFeedbackDataset(VideoFolderDataset):
