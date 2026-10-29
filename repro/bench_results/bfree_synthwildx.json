@@ -1,0 +1,39 @@
+{
+  "tag": "bfree_synthwildx",
+  "model": "bfree",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 95.64,
+    "map": 99.02,
+    "mauroc": 98.93
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 99.4,
+      "auroc": 99.27,
+      "real_acc": 92.74,
+      "fake_acc": 98.72,
+      "acc": 95.73
+    },
+    "firefly": {
+      "ap": 98.57,
+      "auroc": 98.66,
+      "real_acc": 92.74,
+      "fake_acc": 98.52,
+      "acc": 95.63
+    },
+    "midjourney_v5": {
+      "ap": 99.08,
+      "auroc": 98.85,
+      "real_acc": 92.74,
+      "fake_acc": 98.39,
+      "acc": 95.56
+    }
+  },
+  "date": "2026-10-29T08:32:51",
+  "synthscope_version": "0.1.0"
+}

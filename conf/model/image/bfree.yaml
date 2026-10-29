@@ -1,0 +1,11 @@
+defaults:
+  - /model/default
+  - _self_
+
+# B-Free (grip-unina/B-Free, weights BFREE_dino2reg4): timm DINOv2 ViT-B/14 + 4 registers, one logit, evaluated on five
+# 504x504 crops of the native-resolution image (official Wrapper5crops). pretrained_backbone: true starts from the
+# DINOv2 weights (for training); the released checkpoint holds the full model.
+model_type: bfree
+timm_arch: vit_base_patch14_reg4_dinov2.lvd142m
+crop_size: 504
+pretrained_backbone: false

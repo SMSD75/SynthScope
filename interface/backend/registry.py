@@ -138,6 +138,21 @@ def remap_npr(sd: dict) -> dict:
     return out
 
 
+def remap_bfree(sd: dict) -> dict:
+    """Official B-Free checkpoint -> SynthScopeBFreeModel: the official wrapper keeps the patch embedding outside the
+    timm model (``patch_embed.*``) and stores the rest of the timm model without a prefix (``model.*`` here)."""
+    return {(k if k.startswith("patch_embed.") else "model." + k): v for k, v in sd.items()}
+
+
+def tf_native(mean=None, std=None) -> T.Compose:
+    """The image exactly at its native resolution: ToTensor, optional Normalize, nothing else. Variable-size tensors,
+    so the spec must set ``native_res=True`` (scored one image at a time)."""
+    steps = [T.ToTensor()]
+    if mean is not None:
+        steps.append(_norm(mean, std))
+    return T.Compose(steps)
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -296,6 +311,18 @@ _add(ModelSpec(
     notes="Variational information bottleneck on frozen CLIP features (trained on GenImage).",
 ))
 _add(ModelSpec(
+    key="bfree", name="B-Free", paper="Guillaro et al., CVPR'25",
+    modality="image", predict_kind="bce", checkpoint="bfree.pth", ckpt_kind="official_bfree", remap=remap_bfree,
+    weights="official",
+    # bfree.pth = the official BFREE_dino2reg4/model_epoch_best.pth unchanged (grip.unina.it); full model, strict load.
+    overrides=["model@ModelConfig=image/bfree"],
+    native_res=True,                # official main_bfree.py: one image at a time at its native resolution
+    transform=tf_native(IMAGENET_MEAN, IMAGENET_STD),   # official get_list_norm('resnet'): ToTensor + ImageNet norm
+    notes="DINOv2 ViT-B/14 with registers, trained end to end on bias-free data (inpainted fakes that share content "
+          "and format with their real images). Uses the OFFICIAL released checkpoint (GRIP license: nonprofit use). "
+          "Five 504x504 crops of the native-resolution image are scored and averaged, so nothing is resized.",
+))
+_add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
@@ -437,6 +464,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
             "images are padded with black; the rest of a larger image is not seen."),
     "d3qe": ("Resized to 256, center crop", "The shorter side is scaled to 256 and the central 256×256 square is used; "
              "its CLIP branch looks at the central 224×224 of that square."),
+    "bfree": ("Native size, five 504 crops", "The image is used at its own resolution: five 504×504 crops (center and "
+              "corners) are scored and averaged; a smaller image is tiled up to 504."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),
