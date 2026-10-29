@@ -315,8 +315,16 @@ class SynthScopeModelTrainer:
         saved curve is evaluated rather than only the last model."""
         accum = int(budget.get("grad_accum_steps", 1))
         clip = float(budget.get("max_grad_norm", 0.0))
-        max_steps, save_every = int(budget.max_steps), int(budget.save_every)
+        # max_steps null: `epochs` full passes over the training data
+        max_steps = int(budget.get("max_steps") or len(self.train_loader) * int(self.config.TrainerConfig.epochs))
+        save_every = int(budget.save_every)
         save_path = self.config.TrainerConfig.save_path
+        if budget.get("cosine_t_max"):
+            # torch CosineAnnealingLR stepped once per optimizer step (e.g. DDA: T_max=1000, eta_min=1e-3 x lr; it cycles)
+            opt = getattr(self.optimizer, "optimizer", self.optimizer)
+            self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+                opt, T_max=int(budget.cosine_t_max),
+                eta_min=float(self.config.TrainerConfig.lr) * float(budget.get("eta_min_ratio", 0.0)))
         step, running = 0, 0.0
         self.model.train()
         self.optimizer.zero_grad()
@@ -342,6 +350,12 @@ class SynthScopeModelTrainer:
                     self._save_model(f"step{step}", save_path)
                 if step >= max_steps:
                     break
+        if step % accum != 0:                     # a partial accumulation at the end (the official finalize_epoch)
+            if clip > 0:
+                self.accelerator.clip_grad_norm_(self.model.parameters(), clip)
+            self.optimizer.step()
+            self.optimizer.zero_grad()
+        self._save_model("final", save_path)
         self.logger.finish()
 
     def train(self):
