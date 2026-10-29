@@ -15,17 +15,39 @@ frequency space), not the architecture. ``SynthScopeDDAModel`` keeps the officia
 Input contract: ``forward`` takes the tensor produced by the official test transform (center-crop 336 with no
 resize, ToTensor, CLIP mean/std), i.e. registry ``tf_crop(336, CLIP_MEAN, CLIP_STD)``.
 
-Training: ``compute_loss`` is the official objective's form (BCE on the single logit) with the official trainable
-set (LoRA tensors + head); DDA's data construction is not part of this class.
+Training: ``compute_loss`` is the official objective (``Training/networks/trainer.py``): 0.5 x BCE on the logit +
+0.5 x a contrastive loss on the CLS features (pytorch_metric_learning ``ContrastiveLoss(pos_margin=0, neg_margin=1)``,
+reimplemented in :func:`contrastive_loss`), with the official trainable set (LoRA tensors + head). DDA's data
+construction is the ``dda_train`` dataset (``dataset.DDATrainDataset``); the recipe is ``experiments/image/dda.sh``.
 """
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from omegaconf import DictConfig
 
 from .official_arch import apply_lora_to_linear_layers
 
 CHANNELS = {"dinov2_vits14": 384, "dinov2_vitb14": 768, "dinov2_vitl14": 1024, "dinov2_vitg14": 1536}
 LORA_TARGETS = ["attn.qkv", "attn.proj", "mlp.fc1", "mlp.fc2"]
+
+
+def _avg_non_zero(losses):
+    nonzero = losses > 0
+    return losses[nonzero].mean() if nonzero.any() else losses.sum() * 0
+
+
+def contrastive_loss(features, labels, pos_margin=0.0, neg_margin=1.0):
+    """pytorch_metric_learning's ``ContrastiveLoss`` with its defaults, as DDA trains with it: L2 distance between
+    L2-normalized embeddings over all pairs in the batch; positives (same label, i != j) cost ``relu(d - pos_margin)``,
+    negatives ``relu(neg_margin - d)``; each is averaged over its non-zero terms (``AvgNonZeroReducer``) and the two are
+    summed."""
+    emb = F.normalize(features, p=2, dim=1)
+    dist = torch.cdist(emb, emb, p=2)
+    same = labels[:, None] == labels[None, :]
+    eye = torch.eye(len(labels), dtype=torch.bool, device=labels.device)
+    pos = F.relu(dist[same & ~eye] - pos_margin)
+    neg = F.relu(neg_margin - dist[~same])
+    return _avg_non_zero(pos) + _avg_non_zero(neg)
 
 
 class DDABase(nn.Module):
@@ -36,8 +58,9 @@ class DDABase(nn.Module):
         self.model = torch.hub.load("facebookresearch/dinov2", name, pretrained=pretrained)
         self.fc = nn.Linear(CHANNELS[name], num_classes)
 
-    def forward(self, x):
-        return self.fc(self.model.forward_features(x)["x_norm_clstoken"])
+    def forward(self, x, return_feature=False):
+        features = self.model.forward_features(x)["x_norm_clstoken"]
+        return (features, self.fc(features)) if return_feature else self.fc(features)
 
 
 class SynthScopeDDAModel(nn.Module):
@@ -62,7 +85,8 @@ class SynthScopeDDAModel(nn.Module):
 
     def compute_loss(self, batch):
         images, labels, _folder_ids = batch
-        logits = self.forward(images).squeeze(1)
-        loss = self.criterion(logits, labels.float())
+        features, logits = self.base_model(images, return_feature=True)
+        logits = logits.squeeze(1)
+        loss = 0.5 * self.criterion(logits, labels.float()) + 0.5 * contrastive_loss(features, labels)
         # Two-column [-logit, logit] so the trainer's metrics (argmax / softmax[:, 1]) read the single logit right.
         return {"loss": loss, "outputs": torch.stack([-logits, logits], dim=1)}

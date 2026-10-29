@@ -2,7 +2,9 @@ from torch.utils.data import Dataset
 from typing import Literal
 from pathlib import Path
 import hashlib
+import json
 import os
+import random
 import re
 import zipfile
 import tarfile
@@ -23,8 +25,11 @@ from decord import VideoReader, cpu
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
-from PIL import Image
+from PIL import Image, ImageFile
 from config_utils import compose_config
+from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_STD, build_item as dda_build_item, \
+    create_train_transforms as dda_train_transforms
+from models.image.dda.official_train_transforms import ComposedTransforms as DDAComposedTransforms
 
 
 def _decode_rgb(path) -> torch.Tensor:
@@ -2701,6 +2706,99 @@ class ARForensicsDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
 
 
+class DDATrainDataset(Dataset):
+    """DDA's training set (Dual Data Alignment, NeurIPS 2025): the 118,288 MSCOCO train2017 images (``real/``) paired by
+    file name with their SD-2.0 VAE reconstructions (``sd2.0/``). Sourced from the HF dataset ``Junwei-Xi/DDA-Training-Set``
+    (an 11-part split zip, 113 GB). Each item is built exactly as the official ``RealFakeDataset.__getitem__``: the fake is
+    JPEG-compressed at its real image's quality (p 0.5, ``mscoco_train2017_jpeg_quality.json``), pixel/frequency-blended
+    with it, both get a down- and an up-resized copy, and the official ``ComposedTransforms`` applies the SAME random
+    augmentation to all six images. ``__getitem__`` returns ``(images [6, 3, S, S], labels [6])`` in the official batch
+    order (real, real_resized x2, fake, fake_resized x2); :func:`dda_train_collate` flattens a batch of items."""
+    hf_repo_id = "Junwei-Xi/DDA-Training-Set"
+    quality_json = Path(__file__).resolve().parent / "models/image/dda/mscoco_train2017_jpeg_quality.json"
+
+    def __init__(self, root_dir, crop_size=336, p_pixelmix=0.2, r_pixelmix=0.8, p_freqmix=0.2, r_freqmix=0.8,
+                 vae_dir="sd2.0", prefetch=False):
+        super().__init__()
+        # As the official datasets.py (module level): PIL then also skips an oversized PNG text chunk instead of raising
+        # (one of the SD-2.0 reconstructions has one); set here so it only applies to DDA training processes.
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+        self.root_dir = Path(root_dir)
+        dest = self.root_dir / "train"
+        if prefetch and not _has_images(dest / "real"):
+            self.prepare_split(self.root_dir)
+        self.mix = dict(p_pixelmix=p_pixelmix, r_pixelmix=r_pixelmix, p_freqmix=p_freqmix, r_freqmix=r_freqmix)
+        quality = json.loads(self.quality_json.read_text())
+        self.samples = []
+        for real in sorted((dest / "real").iterdir()):        # official: sorted, then shuffled by the loader
+            fake = dest / vae_dir / (real.stem + ".png")
+            if fake.exists():
+                self.samples.append((real, fake, quality.get(real.name, 96)))
+        if not self.samples:
+            raise RuntimeError(f"DDA training set: no real/{vae_dir} pairs under {dest}")
+        self.transform = DDAComposedTransforms(dda_train_transforms(size=crop_size, mean=DDA_MEAN["clip"],
+                                                                    std=DDA_STD["clip"], is_crop=True))
+
+    @classmethod
+    def prepare_split(cls, root_dir, force=False):
+        root_dir = Path(root_dir); dest = root_dir / "train"
+        if not force and _has_images(dest / "real"):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl))
+        joined = dl / "DDA-Training-Set_joined.zip"
+        if not joined.exists():                              # a split zip: join the parts first
+            subprocess.run(["zip", "-q", "-s", "0", str(dl / "DDA-Training-Set_split.zip"), "--out", str(joined)], check=True)
+        staging = root_dir / "_staging"
+        _safe_extract_zip(joined, staging)
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.move(str(staging / "DDA-Training-Set"), str(dest))
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        real_path, fake_path, quality = self.samples[idx]
+        img_dict = dda_build_item(Image.open(real_path).convert("RGB"), Image.open(fake_path).convert("RGB"), quality, **self.mix)
+        out = self.transform(img_dict)
+        images = [out["real"], *out["real_resized"], out["fake"], *out["fake_resized"]]
+        labels = [0] * (1 + len(out["real_resized"])) + [1] * (1 + len(out["fake_resized"]))
+        return torch.stack(images), torch.tensor(labels)
+
+
+def dda_train_collate(batch):
+    """Flatten DDA items into one batch, in the official order (all reals, real_resized, fakes, fake_resized; the order
+    does not change the losses): ``(images [6B, 3, S, S], labels [6B], folder_ids [6B])``."""
+    images = torch.cat([b[0] for b in batch]); labels = torch.cat([b[1] for b in batch])
+    return images, labels, torch.zeros_like(labels)
+
+
+class DDATrainDatasetModule:
+    """DDA's training data for SynthScope's trainer (train split only; DDA is evaluated with bench_eval)."""
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        self.train_dataset = DDATrainDataset(cfg.root_dir, crop_size=int(cfg.get("crop_size", 336)),
+                                             p_pixelmix=float(cfg.get("p_pixelmix", 0.2)), r_pixelmix=float(cfg.get("r_pixelmix", 0.8)),
+                                             p_freqmix=float(cfg.get("p_freqmix", 0.2)), r_freqmix=float(cfg.get("r_freqmix", 0.8)),
+                                             prefetch=bool(cfg.get("prefetch", False)))
+
+    def train_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.train_dataset, batch_size=cfg.train_batch_size, shuffle=True, num_workers=cfg.num_workers,
+                          pin_memory=True, drop_last=True, collate_fn=dda_train_collate)
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        return None
+
+
 class MirageTestDataset(_TestOnlyImageDataset):
     """Mirage-Test (OmniAID, arXiv 2511.08423) — real and fake images from recent generators tuned for realism, in five
     content categories laid out as ``<category>/{0_real,1_fake}`` (Human, Animal, Object, Scene, Anime). Sourced from the
@@ -3051,6 +3149,7 @@ class VidProMDatasetModule(_TestOnlyVideoModule):
 
 
 SynthScopeModuleDict = {
+    "dda_train": DDATrainDatasetModule,
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
     "cospy": CoSpyDatasetModule,

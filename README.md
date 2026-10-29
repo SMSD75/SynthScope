@@ -275,7 +275,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
-| DDA | 5 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 acc (official) | ✅ official weights match (GenImage 2.3 pt below) |
+| DDA | 6 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF, GenImage) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 · 91.7 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 · 89.37 acc (official); 89.58 · 80.79 · 96.79 · 88.00 · 90.56 · 91.35 acc (trained in SynthScope) | ✅ official weights match 5; our training reproduces 6 of 7 incl. GenImage |
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |

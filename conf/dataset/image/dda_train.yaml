@@ -1,0 +1,13 @@
+name: dda_train
+# DDA's training set (Dual Data Alignment, NeurIPS 2025): MSCOCO train2017 reals + their SD-2.0 VAE reconstructions,
+# 118,288 pairs. (HF Junwei-Xi/DDA-Training-Set, 113 GB split zip.) Items follow the official RealFakeDataset: matched
+# JPEG, pixel/frequency blending, resized copies, one shared augmentation for the six images of a pair.
+root_dir: /hddstore/ssalehi/SynthScope/DDATrain
+train_batch_size: 2        # pairs per micro-batch: the official batch_size 16 // 6 (6 images per pair)
+num_workers: 8
+prefetch: true
+crop_size: 336
+p_pixelmix: 0.2
+r_pixelmix: 0.8
+p_freqmix: 0.2
+r_freqmix: 0.8

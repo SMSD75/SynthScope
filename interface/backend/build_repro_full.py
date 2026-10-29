@@ -38,17 +38,17 @@ VAL = {
     ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}},
     ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}},
     ("cure", "AIGCDetect"):              {"official": {"map": 98.08, "acc": 89.3, "auroc": 98.02}},
-    # DDA: only the official checkpoint is evaluated (no SynthScope-trained number).
-    ("dda", "SynthWildX"):               {"official": {"map": 96.47, "acc": 90.8, "auroc": 96.4}},
-    ("dda", "WildRF"):                   {"official": {"map": 96.76, "acc": 90.2, "auroc": 96.14}},
-    ("dda", "BFree-Online"):             {"official": {"map": 99.41, "acc": 94.98, "auroc": 98.86}},
-    ("dda", "GenImage"):                 {"official": {"map": 97.74, "acc": 89.37, "auroc": 98.21}},   # fakes JPEG q96
-    ("dda", "ForenSynths"):              {"official": {"map": 91.13, "acc": 81.43, "auroc": 92.11}},   # fakes JPEG q96
-    ("dda", "AIGCDetect"):               {"official": {"map": 96.35, "acc": 87.84, "auroc": 96.65}},   # fakes JPEG q96
+    # DDA: synthscope = trained in SynthScope with the official recipe (experiments/image/dda.sh; job 267042, eval 267832).
+    ("dda", "SynthWildX"):               {"official": {"map": 96.47, "acc": 90.8, "auroc": 96.4}, "synthscope": {"map": 96.99, "acc": 88.0, "auroc": 96.88}},
+    ("dda", "WildRF"):                   {"official": {"map": 96.76, "acc": 90.2, "auroc": 96.14}, "synthscope": {"map": 97.83, "acc": 90.56, "auroc": 97.62}},
+    ("dda", "BFree-Online"):             {"official": {"map": 99.41, "acc": 94.98, "auroc": 98.86}, "synthscope": {"map": 99.41, "acc": 94.05, "auroc": 98.82}},
+    ("dda", "GenImage"):                 {"official": {"map": 97.74, "acc": 89.37, "auroc": 98.21}, "synthscope": {"map": 98.07, "acc": 91.35, "auroc": 98.42}},   # fakes JPEG q96
+    ("dda", "ForenSynths"):              {"official": {"map": 91.13, "acc": 81.43, "auroc": 92.11}, "synthscope": {"map": 92.8, "acc": 80.79, "auroc": 93.7}},   # fakes JPEG q96
+    ("dda", "AIGCDetect"):               {"official": {"map": 96.35, "acc": 87.84, "auroc": 96.65}, "synthscope": {"map": 96.93, "acc": 89.58, "auroc": 96.95}},   # fakes JPEG q96
     # EvalGEN: acc = mean FAKE accuracy (the paper's metric); mAP/AUROC are against the MSCOCO val2017 reals.
-    ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}},
-    ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}},
-    ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}},
+    ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}, "synthscope": {"map": 99.89, "acc": 96.79, "auroc": 99.76}},
+    ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}, "synthscope": {"map": 74.72, "acc": 66.76, "auroc": 72.79}},
+    ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}, "synthscope": {"map": 85.81, "acc": 77.19, "auroc": 83.1}},
     # D3QE: only the official checkpoint is evaluated (no SynthScope-trained number). acc = plain = balanced (balanced subsets).
     # synthscope = trained in SynthScope with the official recipe (experiments/image/d3qe.sh; job 265064, eval 265826).
     ("d3qe", "ARForensics"):             {"official": {"map": 92.22, "acc": 81.74, "auroc": 91.91}, "synthscope": {"map": 91.73, "acc": 79.83, "auroc": 91.49}},
