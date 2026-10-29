@@ -4,8 +4,8 @@ defaults:
 
 # SPAI's released training recipe (configs/spai.yaml + the README's train command): AdamW 5e-4, weight decay 0.05 (none
 # on biases / 1-D parameters), 35 epochs, timm cosine schedule with a 5-epoch linear warmup from 2.5e-7 and a floor of
-# 2.5e-7, stepped per iteration; no gradient clipping (CLIP_GRAD None); seed 0. The checkpoint is selected by the
-# validation loss. LAYER_DECAY 0.8 only scales backbone blocks, and the backbone is frozen, so it changes nothing.
+# 2.5e-7, stepped per iteration; no gradient clipping (CLIP_GRAD None); seed 0. Every epoch is kept (the README's
+# --save-all; the released checkpoint is epoch 13 of 35) and selected on the validation split. LAYER_DECAY 0.8 only scales backbone blocks, and the backbone is frozen, so it changes nothing.
 trainer_type: spai
 epochs: 35
 lr: 5.0e-4
@@ -22,4 +22,5 @@ timm_cosine:
   warmup_epochs: 5
   warmup_lr: 2.5e-7
   min_lr: 2.5e-7
-  grad_accum_steps: 1      # 2 on a 24 GB GPU: two micro-batches of 36 per official batch of 72
+  grad_accum_steps: 1      # 3 on a 24 GB GPU: three micro-batches of 24 per official batch of 72
+  save_all: true

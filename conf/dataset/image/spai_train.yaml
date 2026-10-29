@@ -7,6 +7,6 @@ coco_dir: /nvmestore/ssalehi/SynthScope/COCO/train2017   # the original JPEGs (i
 cnndetection_dir: /nvmestore/ssalehi/SynthScope/CNNDetection
 views: 4                   # DATA.AUGMENTED_VIEWS: four 224 views side by side per training image
 train_batch_size: 72       # the official --batch-size
-val_batch_size: 256        # DATA.VAL_BATCH_SIZE
+val_batch_size: 1          # the valid images at their own sizes (the official loader batches them as a list)
 num_workers: 8
 prefetch: false

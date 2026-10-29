@@ -9,7 +9,6 @@ import tarfile
 import shutil
 import subprocess
 import csv
-import random
 import time
 import urllib.error
 import urllib.parse
@@ -23,7 +22,6 @@ from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
 from PIL import Image
-from tqdm import tqdm
 from config_utils import compose_config
 
 
@@ -2724,32 +2722,22 @@ class SPAITrainDataset(Dataset):
 
     ``train``: an item is ``views`` (4) independent draws of the official albumentations transform, concatenated side by
     side into one ``[3, 224, views * 224]`` image, as the official CSVDataset in RESOLUTION_MODE arbitrary; the model
-    tiles it into ``views`` patches for its Spectral Context Attention. ``val``: the official validation set is the
-    ``valid`` split augmented once, offline (``spai/tools/augment_dataset.py``: one draw of the same transform, saved
-    as an 8-bit PNG); :meth:`augment_val` writes it under ``<root>/ldm_valid_augm`` with a fixed seed."""
+    tiles it into ``views`` patches for its Spectral Context Attention. ``val``: the ``valid`` images themselves with the
+    official inference transform (TEST.ORIGINAL_RESOLUTION: padded to at least 224, [0, 1], no resize), scored at
+    their own size; the official run validates on these rows of the train/val CSV (variable sizes: batch size 1)."""
     zip_url = "https://www.grip.unina.it/download/prog/DMimageDetection/latent_diffusion_trainingset.zip"
     ldm_dir = "latent_diffusion_trainingset"
-    val_augm_dir = "ldm_valid_augm"
 
     def __init__(self, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg", views=4, prefetch=False):
         super().__init__()
         from models.image.spai.official_train_transforms import SPAI_CONFIG, build_transform  # optional dep (albumentations)
+        if split not in ("train", "val"):
+            raise ValueError(f"SPAI training data has no '{split}' split")
         self.root_dir, self.split, self.views = Path(root_dir), split, int(views)
         if prefetch and not (self.root_dir / self.ldm_dir / "train").is_dir():
             self.prepare_split(self.root_dir)
-        self.transform = build_transform(True, SPAI_CONFIG)
-        if split == "train":
-            self.samples = self.entries(self.root_dir, "train", coco_dir, cnndetection_dir, coco_ext)
-        elif split == "val":
-            manifest = self.root_dir / self.val_augm_dir / "manifest.csv"
-            if not manifest.exists():
-                if not prefetch:
-                    raise FileNotFoundError(f"SPAI validation set not built: run SPAITrainDataset.augment_val (missing {manifest})")
-                self.augment_val(self.root_dir, coco_dir, cnndetection_dir, coco_ext)
-            with open(manifest) as f:
-                self.samples = [(manifest.parent / r["image"], int(r["class"])) for r in csv.DictReader(f)]
-        else:
-            raise ValueError(f"SPAI training data has no '{split}' split")
+        self.transform = build_transform(split == "train", SPAI_CONFIG)
+        self.samples = self.entries(self.root_dir, "train" if split == "train" else "valid", coco_dir, cnndetection_dir, coco_ext)
 
     @classmethod
     def entries(cls, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg"):
@@ -2775,24 +2763,6 @@ class SPAITrainDataset(Dataset):
             subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(archive), cls.zip_url], check=True)
         _safe_extract_zip(archive, root_dir)
 
-    @classmethod
-    def augment_val(cls, root_dir, coco_dir, cnndetection_dir, coco_ext=".jpg", seed=0):
-        """The official validation set: every ``valid`` image passed once through the training transform and saved as
-        an 8-bit PNG (``augment_dataset.py``), plus ``manifest.csv`` (image, class). Seeded, so it is reproducible."""
-        from models.image.spai.official_train_transforms import SPAI_CONFIG, build_transform  # optional dep (albumentations)
-        transform = build_transform(True, SPAI_CONFIG)
-        out = Path(root_dir) / cls.val_augm_dir
-        random.seed(seed); np.random.seed(seed)
-        rows = []
-        for i, (path, label) in enumerate(tqdm(cls.entries(root_dir, "valid", coco_dir, cnndetection_dir, coco_ext), desc="Augmenting SPAI val")):
-            img = transform(image=np.array(Image.open(path).convert("RGB")))["image"]
-            name = f"{label}_real/{i:06d}.png" if label == 0 else f"{label}_fake/{i:06d}.png"
-            (out / name).parent.mkdir(parents=True, exist_ok=True)
-            Image.fromarray((img.permute(1, 2, 0).numpy() * 255).astype(np.uint8)).save(out / name)
-            rows.append({"image": name, "class": label, "source": str(path)})
-        with open(out / "manifest.csv", "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=["image", "class", "source"]); writer.writeheader(); writer.writerows(rows)
-
     def __len__(self):
         return len(self.samples)
 
@@ -2801,13 +2771,13 @@ class SPAITrainDataset(Dataset):
         img = np.array(Image.open(path).convert("RGB"))
         if self.split == "train":
             image = torch.cat([self.transform(image=img)["image"] for _ in range(self.views)], dim=-1)
-        else:                                                   # already augmented: only [0, 1] scaling
-            image = torch.from_numpy(img).permute(2, 0, 1).float() / 255.0
+        else:
+            image = self.transform(image=img)["image"]
         return image, torch.tensor(label), torch.tensor(0)
 
 
 class SPAITrainDatasetModule:
-    """SPAI's training (4-view items) and validation (pre-augmented) data for SynthScope's trainer."""
+    """SPAI's training (4-view items) and validation (native-resolution valid images) data for SynthScope's trainer."""
 
     def __init__(self, config):
         self.config = config
