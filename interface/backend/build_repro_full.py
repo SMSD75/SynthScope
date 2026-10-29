@@ -111,8 +111,9 @@ VAL = {
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
-    ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 83.94, "acc": 77.57}},
-    ("vib_net", "GAN-source (ForenSynths/ProGAN-trained)"):  {"synthscope": {"map": 61.71, "acc": 57.91}},
+    # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
+    # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
+    ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
 

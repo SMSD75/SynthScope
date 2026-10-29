@@ -138,6 +138,12 @@ def remap_npr(sd: dict) -> dict:
     return out
 
 
+def remap_vibnet(sd: dict) -> dict:
+    """Official VIB-Net checkpoint (CLIPModel: the OpenAI CLIP under ``model.``) -> SynthScopeVIBNetModel (``backbone.``);
+    already-SynthScope keys pass through."""
+    return {("backbone." + k[len("model."):] if k.startswith("model.") else k): v for k, v in sd.items()}
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -296,6 +302,16 @@ _add(ModelSpec(
     notes="Variational information bottleneck on frozen CLIP features (trained on GenImage).",
 ))
 _add(ModelSpec(
+    key="vib_net_official", name="VIB-Net (official model)", paper="Zhang et al., CVPR'25",
+    modality="image", predict_kind="vib", checkpoint="vib_net_official.pth", ckpt_kind="official_vibnet",
+    remap=remap_vibnet, weights="official",
+    overrides=["model@ModelConfig=image/vib_net_official"],
+    transform=tf_crop(224, CLIP_MEAN, CLIP_STD),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
+    notes="The official VIB-Net model (fp32 CLIP ViT-L/14, no feature BatchNorm; one latent sample per image as the "
+          "official code) with the official test transform. Loads the released checkpoints or a SynthScope-trained "
+          "one (experiments/image/vib_net.sh).",
+))
+_add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
@@ -425,6 +441,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "safe": ("Center-crop 256, no resize", "The central 256×256 pixels are used exactly as they are - no scaling, so fine "
              "pixel patterns are preserved. The rest of the image is not seen."),
     "pgc": ("Center-crop 224, no resize", "The central 224×224 pixels are used exactly as they are - no scaling, so fine "
+            "pixel patterns are preserved. The rest of the image is not seen."),
+    "vib_net_official": ("Center-crop 224, no resize", "The central 224×224 pixels are used exactly as they are - no scaling, so fine "
             "pixel patterns are preserved. The rest of the image is not seen."),
     "fat_former": ("Squashed to a square", "The whole image is stretched to 256×256 (the aspect ratio changes), then the "
                    "central 224×224 is used."),
