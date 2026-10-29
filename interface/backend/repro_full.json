@@ -966,21 +966,21 @@
       "benchmark": "Diffusion-source (SDv1.4-trained), AP and ACC -- HEADLINE",
       "metric": "AP / acc",
       "paper": "map=95.53 / acc=85.83",
-      "ours": "mAP=83.94 / acc=77.57",
-      "ours_synthscope": "mAP=83.94 / acc=77.57",
+      "ours": "mAP=94.08 / acc=85.22",
+      "ours_synthscope": "mAP=94.08 / acc=85.22",
       "ours_official": "",
-      "status": "below",
-      "note": "SynthScope GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 models incl easy GAN columns; SynthScope 83.94 is over the harder GenImage-8 (adm/vqdm/midjourney heavy)."
+      "status": "reproduced",
+      "note": "Trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh, job 267846), evaluated on the paper's 15 generators (7 GenImage + 8 ForenSynths GANs) with the official model and test transform (registry vib_net_official; tags vib_net_trained_noresize_genimage7 / _forensynths8, job 267928). The UniversalFakeDetect resize-256 pipeline gave 82.98 / 70.20 (job 2"
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP and ACC",
       "metric": "AP / acc",
       "paper": "map=93.14 / acc=82.5",
-      "ours": "mAP=61.71 / acc=57.91",
-      "ours_synthscope": "mAP=61.71 / acc=57.91",
+      "ours": "",
+      "ours_synthscope": "",
       "ours_official": "",
-      "status": "below",
-      "note": "SynthScope ForenSynths-13 with the GenImage-SDv1.4-trained SynthScope VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: SynthScope only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is GenImage->GAN transfer, whereas the paper's 93.14 is a ProGAN-TRAINED model. Not a like-for-like comparison."
+      "status": "missing",
+      "note": "Not trained on ProGAN yet. The earlier 61.71 / 57.91 was the SD v1.4-trained model tested on ForenSynths, not this benchmark."
     }
   ]
 }
