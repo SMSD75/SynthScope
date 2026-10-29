@@ -49,6 +49,13 @@ VAL = {
     ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}},
     ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}},
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}},
+    # B-Free: the official checkpoint (no SynthScope-trained number). acc = mean per-subset balanced accuracy at logit 0.
+    ("bfree", "SynthWildX"):             {"official": {"map": 99.02, "acc": 95.64, "auroc": 98.93}},
+    ("bfree", "WildRF"):                 {"official": {"map": 98.55, "acc": 93.15, "auroc": 98.23}},
+    ("bfree", "BFree-Online"):           {"official": {"map": 98.65, "acc": 91.54, "auroc": 96.93}},
+    ("bfree", "RealChain"):              {"official": {"map": 74.83, "acc": 67.59, "auroc": 70.07}},
+    ("bfree", "EvalGEN"):                {"official": {"map": 99.52, "acc": 95.18, "auroc": 98.94}},
+    ("bfree", "RRDataset"):              {"official": {"map": 80.34, "acc": 72.33, "auroc": 74.34}},
     # D3QE: only the official checkpoint is evaluated (no SynthScope-trained number). acc = plain = balanced (balanced subsets).
     # synthscope = trained in SynthScope with the official recipe (experiments/image/d3qe.sh; job 265064, eval 265826).
     ("d3qe", "ARForensics"):             {"official": {"map": 92.22, "acc": 81.74, "auroc": 91.91}, "synthscope": {"map": 91.73, "acc": 79.83, "auroc": 91.49}},

@@ -56,11 +56,13 @@ the official checkpoint, scored one image at a time at native resolution.
 | FakeInversion | 86.2 | — | — | missing (not in SynthScope yet) |
 | BFree-Online (viral images still online) | — | 91.54 (mAP 98.65, AUROC 96.93) | — | reference (the paper reports the viral set separately) |
 | RealChain (7 generators) | — | 67.59 (mAP 74.83, AUROC 70.07) | — | reference (not in the paper) |
-| EvalGEN | — | (running) | — | reference (not in the paper) |
-| RRDataset | — | (running) | — | reference (not in the paper) |
+| EvalGEN (5 generators; MSCOCO val2017 reals) | — | 95.18 (mAP 99.52, AUROC 98.94) | — | reference (not in the paper) |
+| RRDataset (original / transfer / redigital) | — | 72.33 (mAP 80.34, AUROC 74.34) | — | reference (not in the paper) |
 
 Both paper benchmarks we can run are reproduced: SynthWildX 95.64 vs 95.6 and WildRF 95.31 / 86.47 / 97.66 vs 95.6 /
-86.2 / 97.3. Results: `repro/bench_results/bfree_*.json` (job 267861).
+86.2 / 97.3. Outside the paper: EvalGEN Flux 78.50 (fake acc 57.92; GoT, Infinity, NOVA and OmniGen ≥ 98.8),
+RRDataset original 81.61 · transfer 73.84 · redigital 61.54. Results: `repro/bench_results/bfree_*.json` (jobs 267861,
+268052).
 
 ## Training
 
