@@ -1,0 +1,53 @@
+{
+  "tag": "omniaid_evalgen",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 74.14,
+    "map": 96.46,
+    "mauroc": 93.08
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 92.93,
+      "auroc": 86.17,
+      "real_acc": 98.22,
+      "fake_acc": 31.25,
+      "acc": 64.73
+    },
+    "GoT": {
+      "ap": 97.59,
+      "auroc": 95.55,
+      "real_acc": 98.22,
+      "fake_acc": 55.27,
+      "acc": 76.75
+    },
+    "Infinity": {
+      "ap": 97.4,
+      "auroc": 94.75,
+      "real_acc": 98.22,
+      "fake_acc": 56.64,
+      "acc": 77.43
+    },
+    "NOVA": {
+      "ap": 98.05,
+      "auroc": 96.14,
+      "real_acc": 98.22,
+      "fake_acc": 60.13,
+      "acc": 79.18
+    },
+    "OmniGen": {
+      "ap": 96.32,
+      "auroc": 92.77,
+      "real_acc": 98.22,
+      "fake_acc": 46.99,
+      "acc": 72.61
+    }
+  },
+  "date": "2026-10-27T11:05:31",
+  "synthscope_version": "0.1.0"
+}

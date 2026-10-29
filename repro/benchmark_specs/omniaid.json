@@ -1,0 +1,212 @@
+{
+ "model": "omniaid",
+ "paper": "OmniAID: Decoupling Semantics and Artifacts for Universal AI-Generated Image Detection in the Wild (arXiv 2511.08423)",
+ "arxiv_id": "2511.08423",
+ "official_repo": "https://github.com/yunncheng/OmniAID",
+ "training_set_in_paper": "Two releases matter for the paper: one trained on GenImage SD v1.4 (omniaid_genimage; the academic tables) and one on the authors' Mirage-Train (omniaid_v1 = OmniAID-Mirage). The served key omniaid is the later v2 Mirage-Train release. Only official checkpoints are evaluated; the two-stage training recipe is not reproduced.",
+ "benchmarks": [
+  {
+   "name": "GenImage (8 subsets) \u2014 GenImage-SD1.4 release",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "accuracy (mean over subsets)",
+   "paper_number": {
+    "acc": 95.94,
+    "note": "Paper Table 2 (OmniAID): MJ 85.7, SD1.4 98.9, SD1.5 98.8, ADM 91.4, GLIDE 98.7, Wukong 98.1, VQDM 97.3, BigGAN 98.7; mean 95.94 in Tables 6 and 13."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_genimage through SynthScope: 95.82 (mAP 99.02), every subset within 1.5 pt; v1-era 512->336 preprocessing (tag omniaid_genimage_genimage_full, job 265856)."
+   }
+  },
+  {
+   "name": "AIGCDetectBenchmark (17) \u2014 GenImage-SD1.4 release",
+   "datasets": [
+    "AIGCDetect"
+   ],
+   "metric": "accuracy (mean over subsets)",
+   "paper_number": {
+    "acc": 88.87,
+    "note": "Paper Table 6 (OmniAID, AIGCDetection)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_genimage through SynthScope: 88.87 (mAP 97.88), exactly the paper's number (tag omniaid_genimage_aigcdetect, job 265856)."
+   }
+  },
+  {
+   "name": "Mirage-Test (5 categories) \u2014 GenImage-SD1.4 release",
+   "datasets": [
+    "Mirage-Test"
+   ],
+   "metric": "accuracy (mean of Human/Animal/Object/Scene balanced + Anime fake accuracy)",
+   "paper_number": {
+    "acc": 51.1,
+    "note": "Paper Table 3 (OmniAID): Human 59.38, Animal 55.90, Object 49.02, Scene 46.53, Anime 44.67 (fake only)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_genimage through SynthScope: 51.10, every category equal to the paper (Scene 46.52) (tag omniaid_genimage_mirage_test, job 265935)."
+   }
+  },
+  {
+   "name": "GenImage (8 subsets) \u2014 Mirage-Train v1 release (OmniAID-Mirage)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "accuracy (mean over subsets)",
+   "paper_number": {
+    "acc": 97.24,
+    "note": "Paper Tables 2 and 6 (OmniAID-Mirage)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_v1 through SynthScope: 97.16 (mAP 99.20), every subset within 0.6 pt (tag omniaid_v1_genimage_full, job 265857)."
+   }
+  },
+  {
+   "name": "AIGCDetectBenchmark (17) \u2014 Mirage-Train v1 release (OmniAID-Mirage)",
+   "datasets": [
+    "AIGCDetect"
+   ],
+   "metric": "accuracy (mean over subsets)",
+   "paper_number": {
+    "acc": 92.88,
+    "note": "Paper Tables 6 and 7 (OmniAID-Mirage)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_v1 through SynthScope: 92.88 (mAP 98.93), exactly the paper's number (tag omniaid_v1_aigcdetect, job 265857)."
+   }
+  },
+  {
+   "name": "Mirage-Test (5 categories) \u2014 Mirage-Train v1 release (OmniAID-Mirage)",
+   "datasets": [
+    "Mirage-Test"
+   ],
+   "metric": "accuracy (mean of Human/Animal/Object/Scene balanced + Anime fake accuracy)",
+   "paper_number": {
+    "acc": 88.39,
+    "note": "Paper Table 3 (OmniAID-Mirage): Human 93.69, Animal 81.37, Object 84.92, Scene 87.07, Anime 94.92."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "omniaid_v1 through SynthScope: 88.39, every category equal to the paper (tag omniaid_v1_mirage_test, job 265936)."
+   }
+  },
+  {
+   "name": "Chameleon / DRCT-2M",
+   "datasets": [
+    "Chameleon"
+   ],
+   "metric": "accuracy",
+   "paper_number": {
+    "acc": 77.35,
+    "note": "Paper Table 6 (GenImage release): Chameleon 77.35, DRCT-2M 88.21."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Chameleon is released by request only; DRCT-2M is not in SynthScope yet."
+   }
+  },
+  {
+   "name": "Mirage-Test (v2 release, served)",
+   "datasets": [
+    "Mirage-Test"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 78.46 in the paper's metric (balanced acc 80.37, mAP 96.48) (tag omniaid_mirage_test, job 265937)."
+   }
+  },
+  {
+   "name": "SynthWildX (v2 release, served)",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 86.02 (mAP 95.52, AUROC 95.31) (tag omniaid_synthwildx, job 265858)."
+   }
+  },
+  {
+   "name": "WildRF (v2 release, served)",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 88.36 (mAP 97.28, AUROC 96.91) (tag omniaid_wildrf, job 265858)."
+   }
+  },
+  {
+   "name": "BFree-Online (v2 release, served)",
+   "datasets": [
+    "BFree-Online"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 70.26 (mAP 91.70, AUROC 87.18) (tag omniaid_bfree_online, job 265858)."
+   }
+  },
+  {
+   "name": "RealChain (v2 release, served)",
+   "datasets": [
+    "RealChain"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 61.71 (mAP 84.02, AUROC 83.63) (tag omniaid_realchain, job 265858)."
+   }
+  },
+  {
+   "name": "EvalGEN (v2 release, served)",
+   "datasets": [
+    "EvalGEN"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 74.14 (mAP 96.46, AUROC 93.08) (tag omniaid_evalgen, job 265858)."
+   }
+  },
+  {
+   "name": "RRDataset (v2 release, served)",
+   "datasets": [
+    "RRDataset"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "omniaid (v2) through SynthScope: 71.75 (mAP 84.19, AUROC 82.32) (tag omniaid_rrdataset, job 265858)."
+   }
+  }
+ ]
+}

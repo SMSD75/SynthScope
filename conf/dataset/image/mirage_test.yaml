@@ -1,0 +1,16 @@
+name: mirage_test
+# Mirage-Test (OmniAID, arXiv 2511.08423) — real/fake images from recent realism-tuned generators in five categories
+# (Human, Animal, Object, Scene, Anime; Anime is fakes only and is paired with the other categories' reals).
+# (HF Yunncheng/Mirage-Test, MIT)
+root_dir: /hddstore/ssalehi/SynthScope/MirageTest
+hf_repo_id: Yunncheng/Mirage-Test
+test_batch_size: 512
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip
