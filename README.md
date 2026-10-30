@@ -240,7 +240,7 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `physics_iq` | Physics-IQ | official site | Place by hand in the same layout |
 
 The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
-and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 14 image detectors on RealChain,
+and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 18 image detectors on RealChain,
 EvalGEN, SynthWildX, WildRF, BFree-Online and RRDataset.
 
 ### 🏁 Standardized leaderboard
