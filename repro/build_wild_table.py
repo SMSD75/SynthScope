@@ -28,7 +28,7 @@ DATASETS = [  # (config name, column title, what the set is, caveat)
 ]
 
 # Display names, in the order of the README's detector table.
-DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("bfree", "B-Free"), ("omniaid", "OmniAID (v2)"), ("d3qe", "D3QE"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
+DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("bfree", "B-Free"), ("effort", "Effort"), ("omniaid", "OmniAID (v2)"), ("d3qe", "D3QE"), ("spai", "SPAI"), ("dinov3", "DINOv3 probe"), ("co_spy", "Co-Spy"), ("aide", "AIDE"),
              ("vib_net", "VIB-Net"), ("pgc", "PGC"), ("npr", "NPR"), ("safe", "SAFE"), ("fat_former", "FatFormer"),
              ("clip", "UnivFD / CLIP"), ("cnn", "CNNDetection"), ("dinov2", "DINOv2 probe"),
              ("adapted_dino", "Adapted DINOv2")]

@@ -110,6 +110,9 @@ def _build_model(cfg):
     if model_type == "omniaid":
         from models.image.omniaid.omniaid import SynthScopeOmniAIDModel
         return SynthScopeOmniAIDModel(cfg)
+    if model_type == "effort":
+        from models.image.effort.effort import SynthScopeEffortModel
+        return SynthScopeEffortModel(cfg)
     if model_type == "bfree":
         from models.image.bfree.bfree import SynthScopeBFreeModel
         return SynthScopeBFreeModel(cfg)

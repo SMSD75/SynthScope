@@ -33,6 +33,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `omniaid` (+ `omniaid_v1`, `omniaid_genimage`) | image | ce | official | – | Hybrid MoE on CLIP ViT-L/14@336: routed semantic experts + an always-on artifact expert |
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
 | `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
+| `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |

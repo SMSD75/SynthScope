@@ -607,6 +607,88 @@
       "note": "Official checkpoint through SynthScope: 75.99 (mAP 85.18, AUROC 81.74); original 91.84, transfer 73.26, redigital 62.88 (tag dda_rrdataset, job 264323)."
     }
   ],
+  "effort": [
+    {
+      "benchmark": "GenImage (8 subsets)",
+      "metric": "accuracy at 0.5, mean over subsets",
+      "paper": "acc=91.1",
+      "ours": "mAP=99.37 / acc=89.83 / AUROC=99.48 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.37 / acc=89.83 / AUROC=99.48",
+      "status": "official",
+      "note": "89.83 (mAP 99.37) with the official checkpoint and DeepfakeBench's test transform (tag effort_genimage_full, job 269039)."
+    },
+    {
+      "benchmark": "UniversalFakeDetect (ProGAN-trained)",
+      "metric": "AP / acc",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Checkpoint not released."
+    },
+    {
+      "benchmark": "SynthWildX",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=61.2 / acc=56.69 / AUROC=63.57 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=61.2 / acc=56.69 / AUROC=63.57",
+      "status": "reference",
+      "note": "56.69 (mAP 61.20)."
+    },
+    {
+      "benchmark": "WildRF",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=81.11 / acc=71.36 / AUROC=78.64 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=81.11 / acc=71.36 / AUROC=78.64",
+      "status": "reference",
+      "note": "71.36 (mAP 81.11)."
+    },
+    {
+      "benchmark": "BFree-Online",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=96.45 / acc=67.75 / AUROC=94.79 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=96.45 / acc=67.75 / AUROC=94.79",
+      "status": "reference",
+      "note": "67.75 (mAP 96.45)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=99.55 / acc=92.16 / AUROC=99.16 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.55 / acc=92.16 / AUROC=99.16",
+      "status": "reference",
+      "note": "92.16 (mAP 99.55)."
+    },
+    {
+      "benchmark": "RealChain",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=60.38 / acc=50.56 / AUROC=64.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=60.38 / acc=50.56 / AUROC=64.22",
+      "status": "reference",
+      "note": "50.56 (mAP 60.38)."
+    },
+    {
+      "benchmark": "RRDataset",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=69.78 / acc=64.59 / AUROC=68.6 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=69.78 / acc=64.59 / AUROC=68.6",
+      "status": "reference",
+      "note": "64.59 (mAP 69.78)."
+    }
+  ],
   "fat_former": [
     {
       "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervision) \u2014 HEADLINE",
