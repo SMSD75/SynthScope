@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 14 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 15 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -161,12 +161,13 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `safe` | **SAFE** (Li, KDD'25) | Lightweight DWT high-frequency artifact detector + targeted augmentation. |
 | `co_spy` | **Co-Spy** (Cheng, CVPR'25) | Adaptive fusion of a SigLIP semantic stream and an SD-VAE artifact stream. |
 | `spai` | **SPAI** (Karageorgiou, CVPR'25) | Spectral reconstruction-similarity + context attention, any-resolution. |
-| `vib_net` | **VIB-Net** (Zhang, CVPR'25) | Variational information bottleneck on frozen CLIP features. |
+| `vib_net` | **VIB-Net** (Zhang, CVPR'25) | Variational information bottleneck on frozen CLIP ViT-L/14 features; trained in SynthScope with a recipe reconstructed from the paper, which it reproduces. |
 | `pgc` | **PGC** (Zhou, 2026) | LoRA-tuned DINOv2 + YCbCr-residual CNN, peak-guided calibration. |
 | `cure` | **CuRe** (manic-cui, 2026) | Frozen Perception-Encoder Core L/14 + Q/V LoRA + source-response subspace, trained by regressing real↔generated mixing ratios on SD‑v1.4 only (official adapter). |
 | `omniaid` | **OmniAID** (Guo, 2025) | Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, scene) and an always-on artifact expert sees every image. Official weights; `omniaid_genimage` is the GenImage-SD v1.4 release used for the paper's academic tables. |
 | `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a codebook-aware transformer and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
 | `dda` | **DDA** (Chen, NeurIPS'25 Spotlight) | DINOv2 ViT-L/14 + LoRA, trained only on MSCOCO with VAE-reconstructed fakes aligned to their reals in pixel and frequency space (official weights). |
+| `bfree` | **B-Free** (Guillaro, CVPR'25) | DINOv2 ViT-B/14 with registers, trained end to end on bias-free data: inpainted fakes that share content and format with their real images; five 504 crops at native resolution (official weights, nonprofit license). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
 ### 🎬 Video detectors
@@ -278,6 +279,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | DDA | 6 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF, GenImage) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 · 91.7 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 · 89.37 acc (official); 89.58 · 80.79 · 96.79 · 88.00 · 90.56 · 91.35 acc (trained in SynthScope) | ✅ official weights match 5; our training reproduces 6 of 7 incl. GenImage |
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
+| B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |

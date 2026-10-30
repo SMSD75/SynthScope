@@ -15,7 +15,8 @@ sys.path.insert(0, str(ROOT))
 
 # Detectors whose upstream licenses allow a free public demo. NPR's repository has no license; its first author gave
 # written permission (2026-10-11) to use NPR.pth in this free, non-commercial demo with credit (see LICENSES.md).
-DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "dda", "d3qe", "omniaid",
+# B-Free's GRIP license allows informational and nonprofit use, which this free demo is.
+DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "dda", "d3qe", "omniaid", "bfree",
            "vib_net", "dinov2", "adapted_dino", "restrav"]
 
 

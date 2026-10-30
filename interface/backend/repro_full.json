@@ -31,6 +31,108 @@
       "note": "GATED dataset \u2014 not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'academic research only, commercial use prohibited'. No HF/gdrive mirror; access is by author email request only. find over /hddstore and home dirs returned no chameleon path."
     }
   ],
+  "bfree": [
+    {
+      "benchmark": "SynthWildX (3 generators, images on X)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=95.6",
+      "ours": "mAP=99.02 / acc=95.64 / AUROC=98.93 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.02 / acc=95.64 / AUROC=98.93",
+      "status": "official",
+      "note": "95.64 (mAP 99.02) with the official checkpoint, one image at a time at native resolution (tag bfree_synthwildx, job 267861)."
+    },
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=93.0",
+      "ours": "mAP=98.55 / acc=93.15 / AUROC=98.23 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.55 / acc=93.15 / AUROC=98.23",
+      "status": "official",
+      "note": "95.31 / 86.47 / 97.66, mean 93.15 (tag bfree_wildrf, job 267861)."
+    },
+    {
+      "benchmark": "Synthbuster (Midjourney, SDXL, DALL-E 2, DALL-E 3, Firefly)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=98.58",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "RAISE-1k reals not downloaded yet."
+    },
+    {
+      "benchmark": "New generators (FLUX, SD 3.5)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=95.6",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "The paper's own images; not released as a benchmark."
+    },
+    {
+      "benchmark": "GenImage (unbiased)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=89.3",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Subset not released."
+    },
+    {
+      "benchmark": "FakeInversion",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=86.2",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not in SynthScope yet."
+    },
+    {
+      "benchmark": "BFree-Online (viral images still online)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=98.65 / acc=91.54 / AUROC=96.93 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.65 / acc=91.54 / AUROC=96.93",
+      "status": "reference",
+      "note": "91.54 (mAP 98.65; tag bfree_bfree_online)."
+    },
+    {
+      "benchmark": "RealChain (7 generators, full data)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=74.83 / acc=67.59 / AUROC=70.07 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=74.83 / acc=67.59 / AUROC=70.07",
+      "status": "reference",
+      "note": "67.59 (mAP 74.83; tag bfree_realchain)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=99.52 / acc=95.18 / AUROC=98.94 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.52 / acc=95.18 / AUROC=98.94",
+      "status": "reference",
+      "note": "95.18 (mAP 99.52; tag bfree_evalgen, job 268052)."
+    },
+    {
+      "benchmark": "RRDataset (original / transfer / redigital)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=80.34 / acc=72.33 / AUROC=74.34 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=80.34 / acc=72.33 / AUROC=74.34",
+      "status": "reference",
+      "note": "72.33 (mAP 80.34; tag bfree_rrdataset, job 267861)."
+    }
+  ],
   "clip": [
     {
       "benchmark": "ForenSynths GAN/low-level test (11 of the paper's 19 models; from Wang et al.)",

@@ -32,7 +32,8 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `d3qe` | image | bce | official | – | LlamaGen VQ quantization error + codebook-aware transformer + CLIP ViT-L/14 (autoregressive images) |
 | `omniaid` (+ `omniaid_v1`, `omniaid_genimage`) | image | ce | official | – | Hybrid MoE on CLIP ViT-L/14@336: routed semantic experts + an always-on artifact expert |
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
-| `vib_net` | image | vib | synthscope | – | Variational information bottleneck (FLAVA) |
+| `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
+| `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |

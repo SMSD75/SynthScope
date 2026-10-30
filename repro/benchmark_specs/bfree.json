@@ -1,0 +1,155 @@
+{
+ "model": "bfree",
+ "paper": "A Bias-Free Training Paradigm for More General AI-generated Image Detection (Guillaro et al., CVPR 2025)",
+ "arxiv_id": "2412.17671",
+ "official_repo": "https://github.com/grip-unina/B-Free",
+ "training_set_in_paper": "51k real COCO images and their Stable Diffusion 2.1 self-conditioned reconstructions and inpaintings (content-aligned, format-aligned), heavy augmentation; DINOv2 ViT-B/14 + registers fine-tuned end to end.",
+ "benchmarks": [
+  {
+   "name": "SynthWildX (3 generators, images on X)",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 95.6,
+    "note": "Paper Table 7 (bAcc/NLL 95.6 / 0.14)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "95.64 (mAP 99.02) with the official checkpoint, one image at a time at native resolution (tag bfree_synthwildx, job 267861)."
+   }
+  },
+  {
+   "name": "WildRF (Facebook, Reddit, Twitter)",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 93.0,
+    "note": "Paper Table 5: Facebook 95.6, Reddit 86.2, Twitter 97.3 (mean 93.03)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "95.31 / 86.47 / 97.66, mean 93.15 (tag bfree_wildrf, job 267861)."
+   }
+  },
+  {
+   "name": "Synthbuster (Midjourney, SDXL, DALL-E 2, DALL-E 3, Firefly)",
+   "datasets": [
+    "Synthbuster"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 98.58,
+    "note": "Paper Table 5: 99.6 / 99.8 / 95.6 / 98.2 / 99.7."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "RAISE-1k reals not downloaded yet."
+   }
+  },
+  {
+   "name": "New generators (FLUX, SD 3.5)",
+   "datasets": [
+    "paper's own"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 95.6,
+    "note": "Paper Table 5: FLUX 92.3, SD 3.5 98.9."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "The paper's own images; not released as a benchmark."
+   }
+  },
+  {
+   "name": "GenImage (unbiased)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 89.3,
+    "note": "Paper Table 7: a 5k + 5k subset with the fakes JPEG-compressed to the reals' quality; the subset is not released."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Subset not released."
+   }
+  },
+  {
+   "name": "FakeInversion",
+   "datasets": [
+    "FakeInversion"
+   ],
+   "metric": "balanced accuracy at logit 0",
+   "paper_number": {
+    "acc": 86.2,
+    "note": "Paper Table 7."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not in SynthScope yet."
+   }
+  },
+  {
+   "name": "BFree-Online (viral images still online)",
+   "datasets": [
+    "BFree-Online"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Reported separately in the paper; not compared."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "91.54 (mAP 98.65; tag bfree_bfree_online)."
+   }
+  },
+  {
+   "name": "RealChain (7 generators, full data)",
+   "datasets": [
+    "RealChain"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "67.59 (mAP 74.83; tag bfree_realchain)."
+   }
+  },
+  {
+   "name": "EvalGEN",
+   "datasets": [
+    "EvalGEN"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "95.18 (mAP 99.52; tag bfree_evalgen, job 268052)."
+   }
+  },
+  {
+   "name": "RRDataset (original / transfer / redigital)",
+   "datasets": [
+    "RRDataset"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "72.33 (mAP 80.34; tag bfree_rrdataset, job 267861)."
+   }
+  }
+ ]
+}

@@ -144,6 +144,21 @@ def remap_vibnet(sd: dict) -> dict:
     return {("backbone." + k[len("model."):] if k.startswith("model.") else k): v for k, v in sd.items()}
 
 
+def remap_bfree(sd: dict) -> dict:
+    """Official B-Free checkpoint -> SynthScopeBFreeModel: the official wrapper keeps the patch embedding outside the
+    timm model (``patch_embed.*``) and stores the rest of the timm model without a prefix (``model.*`` here)."""
+    return {(k if k.startswith("patch_embed.") else "model." + k): v for k, v in sd.items()}
+
+
+def tf_native(mean=None, std=None) -> T.Compose:
+    """The image exactly at its native resolution: ToTensor, optional Normalize, nothing else. Variable-size tensors,
+    so the spec must set ``native_res=True`` (scored one image at a time)."""
+    steps = [T.ToTensor()]
+    if mean is not None:
+        steps.append(_norm(mean, std))
+    return T.Compose(steps)
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -297,9 +312,14 @@ _add(ModelSpec(
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
     modality="image", predict_kind="vib", checkpoint="vib_net.pth", ckpt_kind="synthscope",
-    overrides=["model@ModelConfig=image/vib_net"],
-    transform=tf_resize_crop(256, 224, CLIP_MEAN, CLIP_STD),
-    notes="Variational information bottleneck on frozen CLIP features (trained on GenImage).",
+    weights="synthscope_trained",
+    # vib_net.pth = trained in SynthScope with the reconstructed recipe (experiments/image/vib_net.sh, job 267846);
+    # reproduces the paper (15 generators: 94.08 AP / 85.22 acc vs 95.53 / 85.83). Official model + test transform.
+    overrides=["model@ModelConfig=image/vib_net_official"],
+    transform=tf_crop(224, CLIP_MEAN, CLIP_STD),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
+    notes="Variational information bottleneck on frozen CLIP ViT-L/14 features, trained in SynthScope on GenImage "
+          "SD v1.4 with a recipe reconstructed from the paper (reproduces its 15-generator benchmark). The central "
+          "224x224 pixels are scored; one latent sample per image, as the official model.",
 ))
 _add(ModelSpec(
     key="vib_net_official", name="VIB-Net (official model)", paper="Zhang et al., CVPR'25",
@@ -310,6 +330,18 @@ _add(ModelSpec(
     notes="The official VIB-Net model (fp32 CLIP ViT-L/14, no feature BatchNorm; one latent sample per image as the "
           "official code) with the official test transform. Loads the released checkpoints or a SynthScope-trained "
           "one (experiments/image/vib_net.sh).",
+))
+_add(ModelSpec(
+    key="bfree", name="B-Free", paper="Guillaro et al., CVPR'25",
+    modality="image", predict_kind="bce", checkpoint="bfree.pth", ckpt_kind="official_bfree", remap=remap_bfree,
+    weights="official",
+    # bfree.pth = the official BFREE_dino2reg4/model_epoch_best.pth unchanged (grip.unina.it); full model, strict load.
+    overrides=["model@ModelConfig=image/bfree"],
+    native_res=True,                # official main_bfree.py: one image at a time at its native resolution
+    transform=tf_native(IMAGENET_MEAN, IMAGENET_STD),   # official get_list_norm('resnet'): ToTensor + ImageNet norm
+    notes="DINOv2 ViT-B/14 with registers, trained end to end on bias-free data (inpainted fakes that share content "
+          "and format with their real images). Uses the OFFICIAL released checkpoint (GRIP license: nonprofit use). "
+          "Five 504x504 crops of the native-resolution image are scored and averaged, so nothing is resized.",
 ))
 _add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
@@ -435,7 +467,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "cnn": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
     "dinov2": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
     "adapted_dino": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
-    "vib_net": (_CENTER[0] + " 224", _CENTER[1].format(r=256, c=224)),
+    "vib_net": ("Center-crop 224, no resize", "The central 224×224 pixels are used exactly as they are - no scaling, so fine "
+            "pixel patterns are preserved. The rest of the image is not seen."),
     "dinov3": (_CENTER[0] + " 256", _CENTER[1].format(r=256, c=256)),
     "co_spy": (_CENTER[0] + " 384", _CENTER[1].format(r=384, c=384)),
     "safe": ("Center-crop 256, no resize", "The central 256×256 pixels are used exactly as they are - no scaling, so fine "
@@ -455,6 +488,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
             "images are padded with black; the rest of a larger image is not seen."),
     "d3qe": ("Resized to 256, center crop", "The shorter side is scaled to 256 and the central 256×256 square is used; "
              "its CLIP branch looks at the central 224×224 of that square."),
+    "bfree": ("Native size, five 504 crops", "The image is used at its own resolution: five 504×504 crops (center and "
+              "corners) are scored and averaged; a smaller image is tiled up to 504."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),
