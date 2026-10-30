@@ -39,7 +39,7 @@ def main() -> None:
             hub.download(key, repo_id=repo, token=token)
             print(f"[weights] {key}: ok", flush=True)
         except Exception as e:                      # keep starting: the page marks the detector as unavailable
-            print(f"[weights] {key}: skipped ({type(e).__name__})", flush=True)
+            print(f"[weights] {key}: skipped ({type(e).__name__}: {str(e)[:400]})", flush=True)
 
 
 if __name__ == "__main__":
