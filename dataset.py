@@ -25,7 +25,7 @@ from decord import VideoReader, cpu
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
-from PIL import Image, ImageFile
+from PIL import Image, ImageFile, ImageSequence
 from config_utils import compose_config
 from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_STD, build_item as dda_build_item, \
     create_train_transforms as dda_train_transforms
@@ -71,6 +71,40 @@ def _has_videos(directory: Path) -> bool:
     return directory.is_dir() and any(_iter_videos(directory))
 
 
+class _PILFrames:
+    """The part of decord's ``VideoReader`` API that ``sample_video_frames`` uses, for animated images decord cannot open
+    (GIFs: decord fails with "broken metadata" on them). Every frame is composited to RGB at the canvas size, and the
+    frame rate is the frame count over the summed frame durations (100 ms per frame when a GIF stores none)."""
+
+    class _Array:
+        def __init__(self, a: np.ndarray):
+            self._a = a
+
+        def asnumpy(self) -> np.ndarray:
+            return self._a
+
+    def __init__(self, path):
+        with Image.open(path) as im:
+            frames, ms = [], 0.0
+            for f in ImageSequence.Iterator(im):
+                frames.append(np.asarray(f.convert("RGB")))
+                ms += float(f.info.get("duration") or 100)
+        self._frames = np.stack(frames)
+        self._fps = len(frames) / (ms / 1000.0)
+
+    def __len__(self) -> int:
+        return len(self._frames)
+
+    def get_avg_fps(self) -> float:
+        return self._fps
+
+    def get_batch(self, indices):
+        return self._Array(self._frames[indices])
+
+    def __getitem__(self, i):
+        return self._Array(self._frames[i])
+
+
 def sample_video_frames(
     path: str | Path,
     num_frames: int,
@@ -108,7 +142,11 @@ def sample_video_frames(
         reader = VideoReader(str(path), ctx=cpu(0))
         num_source = len(reader)
     except Exception:
-        return torch.zeros(num_frames, 3, size, size)
+        try:                                               # animated GIFs: decord cannot read them, PIL can
+            reader = _PILFrames(path)
+            num_source = len(reader)
+        except Exception:
+            return torch.zeros(num_frames, 3, size, size)
     if num_source == 0:
         return torch.zeros(num_frames, 3, size, size)
 
