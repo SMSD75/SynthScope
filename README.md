@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 15 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 16 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -168,6 +168,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a codebook-aware transformer and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
 | `dda` | **DDA** (Chen, NeurIPS'25 Spotlight) | DINOv2 ViT-L/14 + LoRA, trained only on MSCOCO with VAE-reconstructed fakes aligned to their reals in pixel and frequency space (official weights). |
 | `bfree` | **B-Free** (Guillaro, CVPR'25) | DINOv2 ViT-B/14 with registers, trained end to end on bias-free data: inpainted fakes that share content and format with their real images; five 504 crops at native resolution (official weights, nonprofit license). |
+| `effort` | **Effort** (Yan, ICML'25) | CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each attention projection (orthogonal subspace decomposition), keeping the pretrained principal subspace (official weights, GenImage SD v1.4; also `effort_chameleon`). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
 ### 🎬 Video detectors
@@ -240,7 +241,7 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `physics_iq` | Physics-IQ | official site | Place by hand in the same layout |
 
 The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
-and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 18 image detectors on RealChain,
+and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 19 image detectors on RealChain,
 EvalGEN, SynthWildX, WildRF, BFree-Online and RRDataset.
 
 ### 🏁 Standardized leaderboard
@@ -280,6 +281,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
 | B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
+| Effort | GenImage (8 subsets) | 91.1 acc | 89.83 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |

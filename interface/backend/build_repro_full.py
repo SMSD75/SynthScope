@@ -49,6 +49,14 @@ VAL = {
     ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}, "synthscope": {"map": 99.89, "acc": 96.79, "auroc": 99.76}},
     ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}, "synthscope": {"map": 74.72, "acc": 66.76, "auroc": 72.79}},
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}, "synthscope": {"map": 85.81, "acc": 77.19, "auroc": 83.1}},
+    # Effort: the official GenImage-SD1.4 checkpoint (no SynthScope-trained number). acc = mean per-subset balanced accuracy.
+    ("effort", "GenImage"):              {"official": {"map": 99.37, "acc": 89.83, "auroc": 99.48}},
+    ("effort", "SynthWildX"):            {"official": {"map": 61.2, "acc": 56.69, "auroc": 63.57}},
+    ("effort", "WildRF"):                {"official": {"map": 81.11, "acc": 71.36, "auroc": 78.64}},
+    ("effort", "BFree-Online"):          {"official": {"map": 96.45, "acc": 67.75, "auroc": 94.79}},
+    ("effort", "EvalGEN"):               {"official": {"map": 99.55, "acc": 92.16, "auroc": 99.16}},
+    ("effort", "RealChain"):             {"official": {"map": 60.38, "acc": 50.56, "auroc": 64.22}},
+    ("effort", "RRDataset"):             {"official": {"map": 69.78, "acc": 64.59, "auroc": 68.6}},
     # B-Free: the official checkpoint (no SynthScope-trained number). acc = mean per-subset balanced accuracy at logit 0.
     ("bfree", "SynthWildX"):             {"official": {"map": 99.02, "acc": 95.64, "auroc": 98.93}},
     ("bfree", "WildRF"):                 {"official": {"map": 98.55, "acc": 93.15, "auroc": 98.23}},

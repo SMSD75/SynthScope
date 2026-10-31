@@ -56,6 +56,8 @@ aide_five_view = AIDEFiveView()
 
 # CuRe's official eval preprocessing (PNG->JPEG96, 390 crop, 336 resize, JPEG70, mean/std 0.5), in cv2/PIL.
 from models.image.cure.preprocess import CuReTransform  # noqa: E402
+# Effort's official eval (DeepfakeBench load_rgb): cv2 bicubic squash to 224, then CLIP normalization.
+from models.image.effort.preprocess import Cv2SquareResize  # noqa: E402
 
 
 def _cap_long_side(im, max_side: int):
@@ -157,6 +159,12 @@ def tf_native(mean=None, std=None) -> T.Compose:
     if mean is not None:
         steps.append(_norm(mean, std))
     return T.Compose(steps)
+
+
+def remap_effort(sd: dict) -> dict:
+    """Official Effort checkpoint (saved from a DataParallel EffortDetector) -> SynthScopeEffortModel: drop ``module.``,
+    as the official demo does; the remaining ``backbone.*`` / ``head.*`` names are identical."""
+    return {(k[len("module."):] if k.startswith("module.") else k): v for k, v in sd.items()}
 
 
 def remap_safe(sd: dict) -> dict:
@@ -343,6 +351,22 @@ _add(ModelSpec(
           "and format with their real images). Uses the OFFICIAL released checkpoint (GRIP license: nonprofit use). "
           "Five 504x504 crops of the native-resolution image are scored and averaged, so nothing is resized.",
 ))
+effort_transform = T.Compose([Cv2SquareResize(224), T.ToTensor(), _norm(CLIP_MEAN, CLIP_STD)])
+for _key, _name, _ckpt, _note in [
+    ("effort", "Effort", "effort.pth", "trained on GenImage SD v1.4 (the paper's GenImage table)"),
+    ("effort_chameleon", "Effort (Chameleon)", "effort_chameleon.pth", "trained on Chameleon"),
+]:
+    _add(ModelSpec(
+        key=_key, name=_name, paper="Yan et al., ICML'25",
+        modality="image", predict_kind="ce", checkpoint=_ckpt, ckpt_kind="official_effort", remap=remap_effort,
+        weights="official",
+        # <key>.pth = the official effort_clip_L14_trainOn_{sdv14,chameleon}.pth unchanged (Google Drive, CC BY-NC 4.0).
+        overrides=["model@ModelConfig=image/effort"],
+        transform=effort_transform,
+        notes=f"Orthogonal subspace decomposition: CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each "
+              f"attention projection, keeping the pretrained principal subspace. Official checkpoint, {_note}. The "
+              f"whole image is squashed to 224x224 (cv2 bicubic), as the official DeepfakeBench test loader.",
+    ))
 _add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
@@ -490,6 +514,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
              "its CLIP branch looks at the central 224×224 of that square."),
     "bfree": ("Native size, five 504 crops", "The image is used at its own resolution: five 504×504 crops (center and "
               "corners) are scored and averaged; a smaller image is tiled up to 504."),
+    "effort": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
+    "effort_chameleon": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),

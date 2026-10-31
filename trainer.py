@@ -14,6 +14,7 @@ from models.image.pgc.pgc import SynthScopePGCModel
 from models.image.cure.cure import SynthScopeCuReModel
 from models.image.dda.dda import SynthScopeDDAModel
 from models.image.omniaid.omniaid import SynthScopeOmniAIDModel
+from models.image.effort.effort import SynthScopeEffortModel
 from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
 from models.video.d3.d3 import SynthScopeD3Model
@@ -96,6 +97,8 @@ class SynthScopeModelTrainer:
             return SynthScopeDDAModel(config)
         if model_type == "omniaid":
             return SynthScopeOmniAIDModel(config)
+        if model_type == "effort":
+            return SynthScopeEffortModel(config)
         if model_type == "bfree":
             return SynthScopeBFreeModel(config)
         if model_type == "d3qe":

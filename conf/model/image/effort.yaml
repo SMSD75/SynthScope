@@ -1,0 +1,9 @@
+defaults:
+  - /model/default
+  - _self_
+
+# Effort (YZY-stack/Effort-AIGI-Detection, DeepfakeBench EffortDetector): CLIP ViT-L/14 vision tower with SVD-residual
+# self-attention (principal rank 1023 frozen, the residual direction trainable) + Linear(1024, 2).
+model_type: effort
+clip_name: openai/clip-vit-large-patch14
+svd_rank: 1023
