@@ -4,35 +4,36 @@
   "ckpt": "registry-default",
   "benchmark": "pergen",
   "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
   "n_generators": 3,
   "means": {
-    "acc": 60.02,
-    "map": 65.55,
-    "mauroc": 66.4
+    "acc": 57.38,
+    "map": 61.75,
+    "mauroc": 60.1
   },
   "per_generator": {
     "original": {
-      "ap": 71.11,
-      "auroc": 71.62,
-      "real_acc": 41.44,
-      "fake_acc": 82.71,
-      "acc": 62.07
+      "ap": 76.18,
+      "auroc": 74.01,
+      "real_acc": 75.66,
+      "fake_acc": 59.42,
+      "acc": 67.54
     },
     "redigital": {
-      "ap": 60.54,
-      "auroc": 61.22,
-      "real_acc": 63.22,
-      "fake_acc": 52.39,
-      "acc": 57.8
+      "ap": 50.66,
+      "auroc": 51.06,
+      "real_acc": 57.87,
+      "fake_acc": 44.35,
+      "acc": 51.11
     },
     "transfer": {
-      "ap": 64.99,
-      "auroc": 66.36,
-      "real_acc": 43.91,
-      "fake_acc": 76.47,
-      "acc": 60.19
+      "ap": 58.4,
+      "auroc": 55.22,
+      "real_acc": 54.12,
+      "fake_acc": 52.88,
+      "acc": 53.5
     }
   },
-  "date": "2026-10-11T00:56:39",
+  "date": "2026-10-31T00:28:08",
   "synthscope_version": "0.1.0"
 }
