@@ -1,0 +1,49 @@
+{
+  "tag": "moejepa_sidset_3way",
+  "model": "moejepa",
+  "ckpt": "official moejepa_sidset.safetensors",
+  "benchmark": "sidset:3way",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SIDSet",
+  "n_images": {
+    "real": 20000,
+    "full_synthetic": 20000,
+    "tampered": 20000
+  },
+  "bf16": {
+    "real": {
+      "acc": 94.59,
+      "f1": 94.62
+    },
+    "full_synthetic": {
+      "acc": 99.95,
+      "f1": 99.74
+    },
+    "tampered": {
+      "acc": 94.58,
+      "f1": 94.74
+    },
+    "total": {
+      "acc": 96.37,
+      "f1": 96.37
+    }
+  },
+  "fp32": {
+    "real": {
+      "acc": 94.59,
+      "f1": 94.64
+    },
+    "full_synthetic": {
+      "acc": 99.97,
+      "f1": 99.73
+    },
+    "tampered": {
+      "acc": 94.58,
+      "f1": 94.76
+    },
+    "total": {
+      "acc": 96.38,
+      "f1": 96.38
+    }
+  },
+  "date": "2026-11-01T09:34:48"
+}

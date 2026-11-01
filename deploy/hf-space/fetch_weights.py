@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT))
 # 4.0 (STALL's and the DINOv3 probe's backbone is under the DINOv3 License); SPAI is Apache-2.0 but its MFM backbone is
 # under the S-Lab License (non-commercial use, which this free demo is).
 DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "dda", "d3qe", "omniaid", "omniaid_v1",
-           "omniaid_genimage", "bfree", "effort", "effort_chameleon", "vib_net", "dinov2", "dinov3", "adapted_dino", "spai",
+           "omniaid_genimage", "bfree", "effort", "effort_chameleon", "moejepa", "vib_net", "dinov2", "dinov3", "adapted_dino", "spai",
            "restrav", "stall"]
 DINOV3_FILE = "dinov3/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 # Backbones that are not a detector's own <key>.pth, fetched with their licenses when one of those detectors is served.
@@ -52,7 +52,7 @@ def main() -> None:
             print(f"[weights] backbone {name}: skipped ({type(e).__name__}: {str(e)[:400]})", flush=True)
     keys = [k for k in keys if k != "stall"]       # STALL is training-free: no <key>.pth of its own
     for key in keys:
-        if (ckpt_dir / f"{key}.pth").exists():
+        if (ckpt_dir / hub.repo_filename(key)).exists():
             continue
         try:
             hub.download(key, repo_id=repo, token=token)

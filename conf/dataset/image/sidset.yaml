@@ -1,0 +1,17 @@
+name: sidset
+# SID-Set (SIDA, CVPR 2025) — social-media images: real (OpenImages V7), fully synthetic and tampered; used by MoE-JEPA.
+# Test split only (60,000 images), from the authors' Google Drive test.zip (36.5 GB, CC BY 4.0); train/validation are on
+# HF saberzl/SID_Set. Laid out as test/{full_synthetic,tampered}/{0_real,1_fake}; the three-class tree is kept in
+# <root_dir>/_sidset_test.
+root_dir: /hddstore/ssalehi/SynthScope/SIDSet
+source_url: https://drive.google.com/file/d/1_ivsEV5e14efuv93tJgXjWOondYnEC2G
+test_batch_size: 64
+num_workers: 8
+persistent_workers: true
+pin_memory: true
+prefetch: true
+eval_transform_list:
+  - resize_short_256
+  - center_crop_224
+  - to_dtype
+  - normalize_clip

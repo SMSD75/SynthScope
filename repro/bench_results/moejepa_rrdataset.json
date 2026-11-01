@@ -1,0 +1,39 @@
+{
+  "tag": "moejepa_rrdataset",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 59.67,
+    "map": 65.09,
+    "mauroc": 64.17
+  },
+  "per_generator": {
+    "original": {
+      "ap": 82.23,
+      "auroc": 78.91,
+      "real_acc": 85.44,
+      "fake_acc": 59.33,
+      "acc": 72.38
+    },
+    "redigital": {
+      "ap": 51.12,
+      "auroc": 49.99,
+      "real_acc": 87.6,
+      "fake_acc": 13.98,
+      "acc": 50.79
+    },
+    "transfer": {
+      "ap": 61.91,
+      "auroc": 63.61,
+      "real_acc": 88.68,
+      "fake_acc": 22.98,
+      "acc": 55.83
+    }
+  },
+  "date": "2026-11-01T13:59:48",
+  "synthscope_version": "0.1.0"
+}
