@@ -59,6 +59,8 @@ aide_five_view = AIDEFiveView()
 from models.image.cure.preprocess import CuReTransform  # noqa: E402
 # Effort's official eval (DeepfakeBench load_rgb): cv2 bicubic squash to 224, then CLIP normalization.
 from models.image.effort.preprocess import Cv2SquareResize  # noqa: E402
+# MoE-JEPA's official eval: the V-JEPA 2 video processor (short side 292, center crop 256, ImageNet norm) on one frame.
+from models.image.moejepa.preprocess import VJEPA2ImageTransform  # noqa: E402
 
 
 def _cap_long_side(im, max_side: int):
@@ -369,6 +371,19 @@ for _key, _name, _ckpt, _note in [
               f"whole image is squashed to 224x224 (cv2 bicubic), as the official DeepfakeBench test loader.",
     ))
 _add(ModelSpec(
+    key="moejepa", name="MoE-JEPA", paper="Teglia & Amerini, ECCV'26 W",
+    modality="image", predict_kind="ce", checkpoint="moejepa.safetensors", ckpt_kind="official_moejepa",
+    weights="official",
+    # moejepa.safetensors = the official moejepa_sidset.safetensors (v1.0 GitHub release, MIT), unchanged; it holds only
+    # the trained tensors, the frozen V-JEPA 2 ViT-L comes from HF facebook/vjepa2-vitl-fpc64-256.
+    overrides=["model@ModelConfig=image/moejepa"],
+    transform=VJEPA2ImageTransform(),
+    notes="Frozen V-JEPA 2 ViT-L (the image as a static 4-frame clip) with a residual mixture of experts in its last "
+          "three blocks, gated-attention MIL pooling and a BayarConv noise branch fused by a learned gate. Official "
+          "checkpoint, trained on SID-Set (social-media images: real, fully synthetic, tampered); P(fake) = P(fully "
+          "synthetic) + P(tampered). Short side resized to 292, center crop 256.",
+))
+_add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
@@ -528,6 +543,7 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
              "its CLIP branch looks at the central 224×224 of that square."),
     "bfree": ("Native size, five 504 crops", "The image is used at its own resolution: five 504×504 crops (center and "
               "corners) are scored and averaged; a smaller image is tiled up to 504."),
+    "moejepa": ("Short side 292, center 256×256", "The short side is resized to 292 and the central 256×256 is kept."),
     "effort": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
     "effort_chameleon": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),

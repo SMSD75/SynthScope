@@ -721,6 +721,88 @@
       "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."
     }
   ],
+  "moejepa": [
+    {
+      "benchmark": "SID-Set (test, 3-way, Table 1)",
+      "metric": "3-way accuracy (overall) / macro F1",
+      "paper": "acc=95.54",
+      "ours": "mAP=99.47 / acc=96.37 / AUROC=99.41 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.47 / acc=96.37 / AUROC=99.41",
+      "status": "official",
+      "note": "96.37 accuracy / 96.37 macro F1 with the official checkpoint in bf16 as the official test (fp32: 96.38): Real 94.59/94.62, Fully synthetic 99.95/99.74, Tampered 94.58/94.74 (tag moejepa_sidset_3way, job 270455). Binary (1 - P(real)): mAP 99.47, AUROC 99.41, balanced acc 95.96 (tag moejepa_sidset)."
+    },
+    {
+      "benchmark": "RRDataset (Table 2, GenImage-pretrained + RRDataset-finetuned model)",
+      "metric": "accuracy",
+      "paper": "acc=84.11",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "That checkpoint is not released. The released SID-Set model gives 59.67 balanced acc (mAP 65.09) on the RRDataset test set: a different model, shown under RRDataset (released SID-Set model)."
+    },
+    {
+      "benchmark": "RRDataset (released SID-Set model)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=65.09 / acc=59.67 / AUROC=64.17 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=65.09 / acc=59.67 / AUROC=64.17",
+      "status": "reference",
+      "note": "59.67 (mAP 65.09): original 72.38, transfer 55.83, re-digitized 50.79."
+    },
+    {
+      "benchmark": "SynthWildX",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=83.81 / acc=73.66 / AUROC=80.35 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=83.81 / acc=73.66 / AUROC=80.35",
+      "status": "reference",
+      "note": "73.66 (mAP 83.81)."
+    },
+    {
+      "benchmark": "WildRF",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=77.06 / acc=68.19 / AUROC=73.5 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=77.06 / acc=68.19 / AUROC=73.5",
+      "status": "reference",
+      "note": "68.19 (mAP 77.06)."
+    },
+    {
+      "benchmark": "BFree-Online",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=91.79 / acc=57.99 / AUROC=85.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=91.79 / acc=57.99 / AUROC=85.22",
+      "status": "reference",
+      "note": "57.99 (mAP 91.79)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=92.77 / acc=70.85 / AUROC=86.43 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=92.77 / acc=70.85 / AUROC=86.43",
+      "status": "reference",
+      "note": "70.85 balanced with MSCOCO reals (mAP 92.77); mean fake accuracy 90.76."
+    },
+    {
+      "benchmark": "RealChain",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=71.74 / acc=66.39 / AUROC=73.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=71.74 / acc=66.39 / AUROC=73.22",
+      "status": "reference",
+      "note": "66.39 (mAP 71.74)."
+    }
+  ],
   "npr": [
     {
       "benchmark": "Table 1 \u2014 ForenSynths / Cross-GAN-Sources (8 GANs) \u2014 HEADLINE",

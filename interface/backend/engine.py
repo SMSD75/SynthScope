@@ -15,6 +15,7 @@ import numpy as np
 import torch
 import torchvision.transforms as T
 from PIL import Image
+from safetensors.torch import load_file as load_safetensors
 
 from . import config
 from .registry import ModelSpec, get_spec, input_note
@@ -113,6 +114,9 @@ def _build_model(cfg):
     if model_type == "effort":
         from models.image.effort.effort import SynthScopeEffortModel
         return SynthScopeEffortModel(cfg)
+    if model_type == "moejepa":
+        from models.image.moejepa.moejepa import SynthScopeMoEJEPAModel
+        return SynthScopeMoEJEPAModel(cfg)
     if model_type == "bfree":
         from models.image.bfree.bfree import SynthScopeBFreeModel
         return SynthScopeBFreeModel(cfg)
@@ -156,8 +160,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         raise FileNotFoundError(
             f"Checkpoint not found: {path}. Train or place the checkpoint, then retry."
         )
-    raw = torch.load(str(path), map_location="cpu", weights_only=False)
-    sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
+    if path.suffix == ".safetensors":                 # released as safetensors (e.g. MoE-JEPA): a flat state dict
+        sd = load_safetensors(str(path))
+    else:
+        raw = torch.load(str(path), map_location="cpu", weights_only=False)
+        sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
     if spec.remap is not None:
         sd = spec.remap(sd)
     missing, unexpected = model.load_state_dict(sd, strict=False)

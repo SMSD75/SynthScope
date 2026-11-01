@@ -1,0 +1,53 @@
+{
+  "tag": "moejepa_evalgen",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 70.85,
+    "map": 92.77,
+    "mauroc": 86.43
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 97.84,
+      "auroc": 95.37,
+      "real_acc": 50.94,
+      "fake_acc": 98.42,
+      "acc": 74.68
+    },
+    "GoT": {
+      "ap": 97.95,
+      "auroc": 95.65,
+      "real_acc": 50.94,
+      "fake_acc": 98.72,
+      "acc": 74.83
+    },
+    "Infinity": {
+      "ap": 84.47,
+      "auroc": 72.15,
+      "real_acc": 50.94,
+      "fake_acc": 79.04,
+      "acc": 64.99
+    },
+    "NOVA": {
+      "ap": 85.71,
+      "auroc": 73.32,
+      "real_acc": 50.94,
+      "fake_acc": 78.76,
+      "acc": 64.85
+    },
+    "OmniGen": {
+      "ap": 97.89,
+      "auroc": 95.66,
+      "real_acc": 50.94,
+      "fake_acc": 98.87,
+      "acc": 74.9
+    }
+  },
+  "date": "2026-11-01T12:38:06",
+  "synthscope_version": "0.1.0"
+}

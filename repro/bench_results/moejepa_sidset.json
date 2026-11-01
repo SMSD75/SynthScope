@@ -1,0 +1,32 @@
+{
+  "tag": "moejepa_sidset",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SIDSet/test",
+  "jpeg_fakes": null,
+  "n_generators": 2,
+  "means": {
+    "acc": 95.96,
+    "map": 99.47,
+    "mauroc": 99.41
+  },
+  "per_generator": {
+    "full_synthetic": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 94.56,
+      "fake_acc": 99.98,
+      "acc": 97.27
+    },
+    "tampered": {
+      "ap": 98.95,
+      "auroc": 98.83,
+      "real_acc": 94.56,
+      "fake_acc": 94.73,
+      "acc": 94.65
+    }
+  },
+  "date": "2026-11-01T11:07:29",
+  "synthscope_version": "0.1.0"
+}

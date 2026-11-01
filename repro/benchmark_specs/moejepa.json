@@ -1,0 +1,124 @@
+{
+  "model": "moejepa",
+  "paper": "Unifying Semantic Priors and High-Frequency Traces: Enhancing V-JEPA with Mixture-of-Experts for Robust Synthetic Image Forensics (Teglia & Amerini, AI4MFDD workshop @ ECCV 2026)",
+  "arxiv_id": "2609.16778",
+  "official_repo": "https://github.com/ALCOR-Lab-DIAG/MoE-JEPA",
+  "training_set_in_paper": "SID-Set train (210k: real / fully synthetic / tampered) for Table 1 (the released moejepa_sidset.safetensors); GenImage SD v1.4 + ImageNet pre-training then RRDataset train fine-tuning for Table 2 (not released).",
+  "benchmarks": [
+    {
+      "name": "SID-Set (test, 3-way, Table 1)",
+      "datasets": [
+        "SID-Set"
+      ],
+      "metric": "3-way accuracy (overall) / macro F1",
+      "paper_number": {
+        "acc": 95.54,
+        "note": "Paper Table 1: Real 91.61/93.06, Fully synthetic 99.98/99.67, Tampered 95.12/93.50, Total 95.54/94.21 (acc/F1)."
+      },
+      "our_status": "official",
+      "our_number": {
+        "note": "96.37 accuracy / 96.37 macro F1 with the official checkpoint in bf16 as the official test (fp32: 96.38): Real 94.59/94.62, Fully synthetic 99.95/99.74, Tampered 94.58/94.74 (tag moejepa_sidset_3way, job 270455). Binary (1 - P(real)): mAP 99.47, AUROC 99.41, balanced acc 95.96 (tag moejepa_sidset)."
+      }
+    },
+    {
+      "name": "RRDataset (Table 2, GenImage-pretrained + RRDataset-finetuned model)",
+      "datasets": [
+        "RRDataset"
+      ],
+      "metric": "accuracy",
+      "paper_number": {
+        "acc": 84.11,
+        "note": "Paper Table 2 overall, with a model pre-trained on GenImage SD v1.4 + ImageNet and fine-tuned on RRDataset's training split."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "That checkpoint is not released. The released SID-Set model gives 59.67 balanced acc (mAP 65.09) on the RRDataset test set: a different model, shown under RRDataset (released SID-Set model)."
+      }
+    },
+    {
+      "name": "RRDataset (released SID-Set model)",
+      "datasets": [
+        "RRDataset"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "59.67 (mAP 65.09): original 72.38, transfer 55.83, re-digitized 50.79."
+      }
+    },
+    {
+      "name": "SynthWildX",
+      "datasets": [
+        "SynthWildX"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "73.66 (mAP 83.81)."
+      }
+    },
+    {
+      "name": "WildRF",
+      "datasets": [
+        "WildRF"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "68.19 (mAP 77.06)."
+      }
+    },
+    {
+      "name": "BFree-Online",
+      "datasets": [
+        "BFree-Online"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "57.99 (mAP 91.79)."
+      }
+    },
+    {
+      "name": "EvalGEN",
+      "datasets": [
+        "EvalGEN"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "70.85 balanced with MSCOCO reals (mAP 92.77); mean fake accuracy 90.76."
+      }
+    },
+    {
+      "name": "RealChain",
+      "datasets": [
+        "RealChain"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "Not one of the paper's benchmarks."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "66.39 (mAP 71.74)."
+      }
+    }
+  ],
+  "summary": "Official weights, exact parity (703/703 tensors, identical 3-way logits). Reproduces the paper's SID-Set table (96.37 vs 95.54 overall accuracy). The RRDataset model is not released."
+}

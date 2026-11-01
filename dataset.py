@@ -2702,6 +2702,44 @@ class RRDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
+class SIDSetDataset(_TestOnlyImageDataset):
+    """SID-Set (SIDA, CVPR 2025; used by MoE-JEPA) — social-media images in three classes: real (OpenImages V7), fully
+    synthetic, and tampered (locally edited, with masks). Only the 60,000-image test split is laid out; the authors keep
+    it out of Hugging Face (which holds train/validation) and publish it as one Google Drive zip (36.5 GB, CC BY 4.0).
+    For binary detection each fake class becomes a "generator" against the same reals:
+    ``test/full_synthetic/{0_real,1_fake}`` and ``test/tampered/{0_real,1_fake}`` (the reals hard-linked into both).
+    ``<root>/_sidset_test/{real,full_synthetic,tampered}`` keeps the original three-class tree (masks dropped) for
+    three-way evaluation."""
+    gdrive_file_id = "1_ivsEV5e14efuv93tJgXjWOondYnEC2G"
+    classes = ("real", "full_synthetic", "tampered")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        if split != "test":
+            raise ValueError("SID-Set: only the test split is laid out here (train/validation are on HF saberzl/SID_Set)")
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / "test.zip"
+        if not archive.exists():
+            import gdown
+            gdown.download(id=cls.gdrive_file_id, output=str(archive), quiet=False, use_cookies=False, resume=True)
+        three = root_dir / "_sidset_test"
+        if not all((three / c).is_dir() for c in cls.classes):
+            staging = _extract_archives_into(dl, root_dir / "_staging")
+            for c in cls.classes:
+                src = next(p for p in sorted(staging.rglob(c)) if p.is_dir())
+                (three / c).parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(src), str(three / c))
+            shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+        reals = sorted(_iter_images_follow(three / "real"))
+        for fake in ("full_synthetic", "tampered"):
+            _link_images(reals, dest / fake / "0_real")
+            _link_images(sorted(_iter_images_follow(three / fake)), dest / fake / "1_fake")
+        shutil.rmtree(dl, ignore_errors=True)
+
+
 class ARForensicsDataset(_TestOnlyImageDataset):
     """ARForensics (D3QE, ICCV 2025) — images from 7 visual autoregressive generators (LlamaGen, VAR, Infinity,
     Janus-Pro, RAR, Switti, Open-MAGVIT2), 6000 fakes and 6000 ImageNet reals each, laid out as
@@ -2948,6 +2986,10 @@ class BFreeOnlineDatasetModule(_TestOnlyImageModule):
 
 class RRDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = RRDataset
+
+
+class SIDSetDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = SIDSetDataset
 
 
 class ARForensicsDatasetModule(_TestOnlyImageModule):
@@ -3209,6 +3251,7 @@ SynthScopeModuleDict = {
     "wildrf": WildRFDatasetModule,
     "bfree_online": BFreeOnlineDatasetModule,
     "rrdataset": RRDatasetModule,
+    "sidset": SIDSetDatasetModule,
     "arforensics": ARForensicsDatasetModule,
     "mirage_test": MirageTestDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
