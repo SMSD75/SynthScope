@@ -149,7 +149,7 @@ frame extraction, reader and model run end to end on the same data (`repro/offic
 
 | Benchmark (AP, real positive) | Paper | Official code, our data | SynthScope | Status |
 |---|---:|---:|---:|---|
-| GenVideo-Val (Table 1, 10 generators) | 98.46 | 97.93 | **99.14** | reproduced |
+| GenVideo-Val (Table 1, 10 generators) | 98.46 | 97.93 | **98.95** | reproduced |
 | EvalCrafter (Table 2, 14 generators) | 98.87 | 98.70 | **99.30** | reproduced |
 | VideoPhy (Table 3; 8 of 10 generators still downloadable) | 99.16 (8 shown: 99.22) | 98.84 | **99.45** | reproduced |
 | VidProM (Table 4; 4 of 6 generators, first 1000 clips each) | 88.46 (those 4: 84.95) | 84.91 | 92.15 | reference (subsample) |
@@ -158,11 +158,14 @@ frame extraction, reader and model run end to end on the same data (`repro/offic
   are within 0.25 AP; VidProM's four generators average 84.91 vs 84.95 (Text2Video-Zero 46.36 vs 45.11, the paper's
   noted failure case). The one outlier is GenVideo's WildScrape (92.50 vs 96.49): its 282 GIFs cannot be timed by
   decord, so their frames start at 0 instead of the official random offset.
+- **GIFs (2026-11-01):** decord cannot open GIFs at all, and SynthScope's decoder used to return a black clip for them, which
+  D3 (flat = generated) called fake for free. Decoded with PIL now, WildScrape is 96.33 AP (paper 96.49; it was 98.21 on
+  black clips) and GenVideo 98.95 (was 99.14); the other nine generators are unchanged (job 270428).
 - **SynthScope's D3 is the official model**: on the frames the official code extracts it returns identical scores
   (max |diff| 0). Its numbers differ from the official column only because the official pipeline writes frames to JPEG
   with ffmpeg and reads them back; SynthScope decodes frames directly. That matters most for low-quality clips
   (VidProM Text2Video-Zero: 71.28 in SynthScope vs 46.36 with the official JPEG round-trip).
-- AUROC and balanced accuracy (at the calibrated threshold) for SynthScope: GenVideo 98.46 / 96.15, EvalCrafter
+- AUROC and balanced accuracy (at the calibrated threshold) for SynthScope: GenVideo 98.23 / 95.68, EvalCrafter
   98.62 / 96.59, VideoPhy 98.09 / 95.19, VidProM 90.86 / 84.86. Per-generator numbers are in
   `repro/benchmark_specs/d3.json` and `repro/bench_results/d3_*.json`.
 

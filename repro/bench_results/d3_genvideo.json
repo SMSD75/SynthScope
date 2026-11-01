@@ -6,10 +6,20 @@
   "data_root": "/ssdstore/ssalehi/SynthScope/GenVideo/test",
   "n_generators": 10,
   "means": {
-    "acc": 96.15,
-    "map": 92.15,
-    "map_real": 99.14,
-    "mauroc": 98.46
+    "acc": 95.68,
+    "map": 91.6,
+    "map_real": 98.95,
+    "mauroc": 98.23,
+    "fake_recall_at_fpr": {
+      "0.1": 0.0,
+      "1": 33.77,
+      "5": 96.71
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 0.0,
+      "1": 35.2,
+      "5": 96.34
+    }
   },
   "per_generator": {
     "Crafter": {
@@ -18,7 +28,12 @@
       "auroc": 98.69,
       "real_acc": 94.3,
       "fake_acc": 98.8,
-      "acc": 96.55
+      "acc": 96.55,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 44.6,
+        "5": 98.5
+      }
     },
     "Gen2": {
       "ap": 97.01,
@@ -26,7 +41,12 @@
       "auroc": 98.99,
       "real_acc": 94.3,
       "fake_acc": 100.0,
-      "acc": 97.15
+      "acc": 97.15,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 56.4,
+        "5": 100.0
+      }
     },
     "HotShot": {
       "ap": 93.95,
@@ -34,7 +54,12 @@
       "auroc": 98.42,
       "real_acc": 94.3,
       "fake_acc": 98.71,
-      "acc": 96.51
+      "acc": 96.51,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 23.29,
+        "5": 98.43
+      }
     },
     "Lavie": {
       "ap": 96.21,
@@ -42,7 +67,12 @@
       "auroc": 98.32,
       "real_acc": 94.3,
       "fake_acc": 97.4,
-      "acc": 95.85
+      "acc": 95.85,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 36.3,
+        "5": 96.7
+      }
     },
     "ModelScope": {
       "ap": 92.89,
@@ -50,7 +80,12 @@
       "auroc": 97.7,
       "real_acc": 94.3,
       "fake_acc": 94.71,
-      "acc": 94.51
+      "acc": 94.51,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 19.57,
+        "5": 93.86
+      }
     },
     "MoonValley": {
       "ap": 96.08,
@@ -58,7 +93,12 @@
       "auroc": 98.98,
       "real_acc": 94.3,
       "fake_acc": 99.84,
-      "acc": 97.07
+      "acc": 97.07,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 59.58,
+        "5": 99.84
+      }
     },
     "MorphStudio": {
       "ap": 94.1,
@@ -66,7 +106,12 @@
       "auroc": 98.49,
       "real_acc": 94.3,
       "fake_acc": 99.14,
-      "acc": 96.72
+      "acc": 96.72,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 25.14,
+        "5": 99.0
+      }
     },
     "Show_1": {
       "ap": 94.62,
@@ -74,7 +119,12 @@
       "auroc": 98.72,
       "real_acc": 94.3,
       "fake_acc": 99.57,
-      "acc": 96.94
+      "acc": 96.94,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 38.71,
+        "5": 99.57
+      }
     },
     "Sora": {
       "ap": 62.39,
@@ -82,17 +132,27 @@
       "auroc": 98.45,
       "real_acc": 94.3,
       "fake_acc": 98.21,
-      "acc": 96.26
+      "acc": 96.26,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 23.21,
+        "5": 98.21
+      }
     },
     "WildScrape": {
-      "ap": 97.29,
-      "ap_real": 98.21,
-      "auroc": 97.83,
+      "ap": 91.88,
+      "ap_real": 96.33,
+      "auroc": 95.55,
       "real_acc": 94.3,
-      "fake_acc": 93.51,
-      "acc": 93.9
+      "fake_acc": 84.09,
+      "acc": 89.2,
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 10.93,
+        "5": 83.01
+      }
     }
   },
-  "date": "2026-10-11T18:03:10",
+  "date": "2026-11-01T00:56:39",
   "synthscope_version": "video"
 }

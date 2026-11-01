@@ -1,0 +1,12 @@
+defaults:
+  - /model/default
+  - _self_
+
+# SPLIT (mldljyh/SPLIT, ECCV 2026): training-free; frozen X-CLIP patch tokens -> two-step temporal roughness ** gamma
+# x spatial patch-level motion incoherence. Higher score = more likely generated.
+model_type: split
+encoder: xclip-16
+gamma: 8.0
+# Decision threshold on the raw score for argmax accuracy (the engine uses models/video/split/split_calibration.json).
+threshold: 0.0
+num_frames: 16

@@ -118,11 +118,14 @@ VAL = {
     # robust metrics (the mAP harness is degenerate: 10000 reals : as few as 56 fakes/generator).
     # D3 (training-free): "synthscope" = SynthScope's D3, "official" = the official D3 code end to end on the same data
     # (repro/official_evals/d3_official_eval.py). mAP = AP with real as the positive class, as the paper reports.
-    ("d3", "GenVideo"):                  {"synthscope": {"map": 99.14, "auroc": 98.46, "acc": 96.15}, "official": {"map": 97.93, "auroc": 97.04}},
+    ("d3", "GenVideo"):                  {"synthscope": {"map": 98.95, "auroc": 98.23, "acc": 95.68}, "official": {"map": 97.93, "auroc": 97.04}},
     ("d3", "EvalCrafter"):               {"synthscope": {"map": 99.3, "auroc": 98.62, "acc": 96.59}, "official": {"map": 98.7, "auroc": 97.81}},
     ("d3", "VideoPhy"):                  {"synthscope": {"map": 99.45, "auroc": 98.09, "acc": 95.19}, "official": {"map": 98.84, "auroc": 96.28}},
     ("d3", "VidProM"):                   {"synthscope": {"map": 92.15, "auroc": 90.86, "acc": 84.86}, "official": {"map": 84.91, "auroc": 82.83}},
-    ("restrav", "GenVidBench"):          {"synthscope": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
+    # SPLIT (training-free): the paper's metric is fake recall at fixed FPR (in the spec note); these are AP (fake positive) /
+    # AUROC / acc at the calibrated threshold. synthscope = job 270384, official = official code end to end (job 270323).
+    ("split", "GenVideo"):               {"synthscope": {"map": 99.79, "auroc": 99.97, "acc": 99.41}, "official": {"map": 96.12, "auroc": 99.16}},
+    ("restrav", "GenVidBench"):         {"synthscope": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},

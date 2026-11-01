@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 16 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 17 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -78,7 +78,7 @@ bash interface/run_backend.sh                      # serves http://localhost:800
 
 Each detector needs its weights as `<key>.pth` in `SYNTHSCOPE_CKPT_DIR` (for example `cure.pth`, `npr.pth`); every model's
 `README.md` under [models/](models/) says where the authors publish theirs. Detectors without weights are greyed out on the page,
-and the training-free ones (D3, STALL) need none. Setup details and the local-generator setup are in
+and the training-free ones (D3, SPLIT, STALL) need none. Setup details and the local-generator setup are in
 [interface/README.md](interface/README.md).
 Prefer something lighter? The [Colab quickstart](notebooks/synthscope_quickstart.ipynb) installs SynthScope, downloads the
 official CuRe weights and checks an image of yours in a few cells. There is also a small [Gradio demo](demo/)
@@ -125,7 +125,7 @@ synthscope detect clip.mp4  --model d3 --json    # machine-readable
 
 Weights are read from `$SYNTHSCOPE_CKPT_DIR/<key>.pth` (default `~/.cache/synthscope/checkpoints`); pass
 `synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
-(D3, STALL) need none.
+(D3, SPLIT, STALL) need none.
 
 ### 🤗 Model zoo (Hugging Face Hub)
 
@@ -176,6 +176,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `model_type` | Method | Idea |
 | --- | --- | --- |
 | `d3` | **D3** (Zheng, ICCV'25) | Training-free: second-order dynamics of frozen X-CLIP frame features (disentangled detail dynamics). |
+| `split` | **SPLIT** (Hyun, ECCV'26) | Training-free: two-step temporal roughness times spatial motion incoherence of frozen X-CLIP patch tokens. |
 | `restrav` | **ReStraV** (Internò, 2025) | Geometry of the frame-embedding trajectory in a frozen DINOv2 space, scored by a small MLP. |
 | `stall` | **STALL** (Ben Hayun, CVPR'26) | Training-free: spatio-temporal whitened log-likelihoods under real-video statistics (DINOv3). |
 
@@ -284,7 +285,8 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Effort | GenImage (8 subsets) | 91.1 acc | 89.83 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
-| D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
+| D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.0 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
+| SPLIT (video) | GenVideo-Val, MSR-VTT-calibrated (fake recall at FPR 0.1 / 1 / 5%) | 82.1 · 91.7 · 97.2 | 98.9 · 99.9 · 100.0 | ✅ reproduced (official code on our data: 82.2 · 90.2 · 96.9) |
 | SPAI | GenImage | not reported | 94.22 (official) | ⚠️ the paper's own test set is not in SynthScope yet |
 | VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP · 85.83 acc | 94.08 AP · 85.22 acc (trained in SynthScope) | ✅ reproduced by our training |
 

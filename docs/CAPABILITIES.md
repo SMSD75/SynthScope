@@ -36,6 +36,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
+| `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
 

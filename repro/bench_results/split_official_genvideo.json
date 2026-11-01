@@ -1,0 +1,156 @@
+{
+  "tag": "split_official_genvideo",
+  "model": "split",
+  "ckpt": "official SPLIT code (XCLIP-16), training-free",
+  "benchmark": "video:official-split",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenVideo/test",
+  "n_generators": 10,
+  "means": {
+    "overall_fake_recall_at_fpr": {
+      "0.1": 82.22,
+      "1": 90.17,
+      "5": 96.89
+    },
+    "mean_fake_recall_at_fpr": {
+      "0.1": 83.66,
+      "1": 91.21,
+      "5": 97.23
+    },
+    "map": 96.12
+  },
+  "overall": {
+    "fake_recall_at_fpr": {
+      "0.1": 82.22,
+      "1": 90.17,
+      "5": 96.89
+    },
+    "ap": 99.19,
+    "ap_real": 98.99,
+    "auroc": 99.08,
+    "n_real": 10000,
+    "n_fake": 8573
+  },
+  "per_generator": {
+    "Crafter": {
+      "fake_recall_at_fpr": {
+        "0.1": 89.99,
+        "1": 96.21,
+        "5": 99.64
+      },
+      "ap": 99.25,
+      "ap_real": 99.98,
+      "auroc": 99.88,
+      "n_real": 10000,
+      "n_fake": 1398
+    },
+    "Gen2": {
+      "fake_recall_at_fpr": {
+        "0.1": 56.16,
+        "1": 76.3,
+        "5": 94.64
+      },
+      "ap": 94.42,
+      "ap_real": 99.88,
+      "auroc": 99.1,
+      "n_real": 10000,
+      "n_fake": 1380
+    },
+    "HotShot": {
+      "fake_recall_at_fpr": {
+        "0.1": 99.86,
+        "1": 100.0,
+        "5": 100.0
+      },
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "Lavie": {
+      "fake_recall_at_fpr": {
+        "0.1": 93.21,
+        "1": 96.07,
+        "5": 98.71
+      },
+      "ap": 98.94,
+      "ap_real": 99.96,
+      "auroc": 99.73,
+      "n_real": 10000,
+      "n_fake": 1400
+    },
+    "ModelScope": {
+      "fake_recall_at_fpr": {
+        "0.1": 87.29,
+        "1": 93.14,
+        "5": 97.86
+      },
+      "ap": 97.2,
+      "ap_real": 99.97,
+      "auroc": 99.58,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "MoonValley": {
+      "fake_recall_at_fpr": {
+        "0.1": 52.88,
+        "1": 74.76,
+        "5": 95.37
+      },
+      "ap": 89.71,
+      "ap_real": 99.94,
+      "auroc": 99.11,
+      "n_real": 10000,
+      "n_fake": 626
+    },
+    "MorphStudio": {
+      "fake_recall_at_fpr": {
+        "0.1": 95.0,
+        "1": 98.0,
+        "5": 99.71
+      },
+      "ap": 99.39,
+      "ap_real": 100.0,
+      "auroc": 99.94,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "Show_1": {
+      "fake_recall_at_fpr": {
+        "0.1": 97.86,
+        "1": 99.71,
+        "5": 100.0
+      },
+      "ap": 99.85,
+      "ap_real": 100.0,
+      "auroc": 99.99,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "Sora": {
+      "fake_recall_at_fpr": {
+        "0.1": 91.07,
+        "1": 98.21,
+        "5": 100.0
+      },
+      "ap": 94.72,
+      "ap_real": 100.0,
+      "auroc": 99.91,
+      "n_real": 10000,
+      "n_fake": 56
+    },
+    "WildScrape": {
+      "fake_recall_at_fpr": {
+        "0.1": 73.27,
+        "1": 79.74,
+        "5": 86.42
+      },
+      "ap": 87.71,
+      "ap_real": 99.26,
+      "auroc": 94.31,
+      "n_real": 10000,
+      "n_fake": 913
+    }
+  },
+  "date": "2026-10-31T19:33:09"
+}

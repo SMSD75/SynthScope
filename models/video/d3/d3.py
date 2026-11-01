@@ -100,6 +100,8 @@ class _ResnetEncoder(nn.Module):
 class SynthScopeD3Model(nn.Module):
     """Training-free second-order video detector (D3)."""
 
+    higher_is_fake = False    # real videos have the larger second-order volatility
+
     def __init__(self, config: DictConfig):
         super().__init__()
         self.config = config
