@@ -27,6 +27,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "interface"))
@@ -103,20 +104,32 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor):
             "fake_acc": round(fake_acc, 2), "acc": round((real_acc + fake_acc) / 2, 2)}
 
 
+FPRS = (0.001, 0.01, 0.05)
+
+
 @torch.no_grad()
-def score_videos(engine, spec, paths):
+def score_videos(engine, spec, paths, raw=False):
+    """P(fake) per video; with ``raw`` (training-free detectors with a ``score``), the raw score oriented so that higher
+    means generated instead, which keeps the order at the extremes where probabilities saturate."""
     probs = []
     for p in paths:
         try:
-            probs.append(engine.predict_video_clip(spec, str(p))["fake_probability"])
+            probs.append(engine.video_raw_score(spec, str(p)) if raw else engine.predict_video_clip(spec, str(p))["fake_probability"])
         except Exception as e:  # noqa: BLE001
             print(f"    bad video {p.name}: {e}")
     return probs
 
 
+def fake_recall_at_fpr(real_scores, fake_scores):
+    """SPLIT's operating-point metric (official eval.py): the threshold is the (1 - FPR) quantile of the real scores
+    (numpy method "higher"); fake recall = share of fakes scoring at or above it. In percent, per FPR."""
+    real, fake = np.asarray(real_scores, dtype="float64"), np.asarray(fake_scores, dtype="float64")
+    return {f"{a * 100:g}": round(float((fake >= np.quantile(real, 1 - a, method="higher")).mean()) * 100, 2) for a in FPRS}
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("-m", "--model", required=True, choices=["d3", "restrav", "stall"])
+    ap.add_argument("-m", "--model", required=True, choices=["d3", "split", "restrav", "stall"])
     ap.add_argument("--benchmark", choices=["genvideo", "fakeonly", "pergen"], help="layout (not needed with --dataset)")
     ap.add_argument("--data", help="benchmark root (not needed with --dataset)")
     ap.add_argument("--dataset", help="a supported video dataset (genvideo, videophy, vidprom, evalcrafter, ...): downloads "
@@ -155,6 +168,8 @@ def main(argv=None) -> int:
           f"| device={engine.device} ===", flush=True)
 
     per_gen, agg = {}, {"ap": [], "ap_real": [], "auroc": [], "acc": []}
+    pooled_fake_raw = []                                 # every generator's fakes, for the pooled ("Overall") recall
+    raw = hasattr(engine._get_model(spec), "score")     # training-free detectors: also fake recall at fixed FPR
     # score the shared real pool once if it is identical across generators
     real_cache = {}
     for name, reals, fakes in gens:
@@ -169,11 +184,18 @@ def main(argv=None) -> int:
             rp = score_videos(engine, spec, reals)
             real_cache[key] = rp
         fp = score_videos(engine, spec, fakes)
+        if raw:
+            rraw = real_cache.setdefault(("raw",) + key, None) or score_videos(engine, spec, reals, raw=True)
+            real_cache[("raw",) + key] = rraw
+            fraw = score_videos(engine, spec, fakes, raw=True)
+            pooled_fake_raw += fraw
         probs = torch.tensor(rp + fp)
         labels = torch.tensor([0] * len(rp) + [1] * len(fp))
         m = metrics(probs, labels)
         if m is None:
             print(f"    skip {name}: one class"); continue
+        if raw:
+            m["fake_recall_at_fpr"] = fake_recall_at_fpr(rraw, fraw)
         per_gen[name] = m
         for k in agg:
             agg[k].append(m[k])
@@ -186,6 +208,12 @@ def main(argv=None) -> int:
         return round(sum(xs) / len(xs), 2)
     means = {"acc": mean(agg["acc"]), "map": mean(agg["ap"]), "map_real": mean(agg["ap_real"]),
              "mauroc": mean(agg["auroc"])}
+    if raw:
+        means["fake_recall_at_fpr"] = {k: mean([g["fake_recall_at_fpr"][k] for g in per_gen.values()])
+                                       for k in next(iter(per_gen.values()))["fake_recall_at_fpr"]}
+        # Overall: all fakes against the real pool(s) (each distinct pool once), as the SPLIT paper's "Overall" row
+        pooled_real_raw = [s for k, v in real_cache.items() if k[0] == "raw" for s in v]
+        means["overall_fake_recall_at_fpr"] = fake_recall_at_fpr(pooled_real_raw, pooled_fake_raw)
     result = {"tag": args.tag, "model": args.model, "ckpt": "registry-default",
               "benchmark": f"video:{args.benchmark}", "data_root": str(root),
               "n_generators": len(per_gen), "means": means, "per_generator": per_gen,

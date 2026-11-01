@@ -346,11 +346,11 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, Table 1)",
       "metric": "AP",
       "paper": "mAP=98.46",
-      "ours": "SynthScope mAP=99.14 / acc=96.15 / AUROC=98.46 \u00b7 official mAP=97.93 / AUROC=97.04",
-      "ours_synthscope": "mAP=99.14 / acc=96.15 / AUROC=98.46",
+      "ours": "SynthScope mAP=98.95 / acc=95.68 / AUROC=98.23 \u00b7 official mAP=97.93 / AUROC=97.04",
+      "ours_synthscope": "mAP=98.95 / acc=95.68 / AUROC=98.23",
       "ours_official": "mAP=97.93 / AUROC=97.04",
       "status": "reproduced",
-      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord"
+      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 98.95 AP (AUROC 98.23, balanced acc 95.68 at the refitted calibration; tag d3_genvideo, job 270428, after the GIF decode fix: WildScrape 96.33 vs paper 96.49, was 98.21 when GIFs decoded as black clips). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only)",
@@ -1111,6 +1111,38 @@
       "ours_official": "mAP=96.75 / AUROC=96.97",
       "status": "reference",
       "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+    }
+  ],
+  "split": [
+    {
+      "benchmark": "GenVideo (GenVideo-Val, MSR-VTT real calibration, supp. Table 18)",
+      "metric": "fake recall @ FPR 0.1/1/5% (Overall = all fakes pooled)",
+      "paper": "fake_recall_fpr0.1=82.13 / fake_recall_fpr1=91.69 / fake_recall_fpr5=97.2",
+      "ours": "SynthScope mAP=99.79 / acc=99.41 / AUROC=99.97 \u00b7 official mAP=96.12 / AUROC=99.16",
+      "ours_synthscope": "mAP=99.79 / acc=99.41 / AUROC=99.97",
+      "ours_official": "mAP=96.12 / AUROC=99.16",
+      "status": "reproduced",
+      "note": "Official code on our data (JPEG frame round-trip, job 270323) reproduces the paper: Overall fake recall 82.22/90.17/96.89 vs 82.13/91.69/97.20. SynthScope decodes frames directly (no JPEG) and reaches 98.87/99.86/99.98 (job 270384; mAP 99.79, AUROC 99.97, acc 99.41 at the calibrated threshold)."
+    },
+    {
+      "benchmark": "FakeParts (partial edits; Tables 1, 15-16)",
+      "metric": "fake recall @ FPR",
+      "paper": "fake_recall_fpr0.1=74.45",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "not in SynthScope yet"
+    },
+    {
+      "benchmark": "ViF-Bench (Tables 3, 19)",
+      "metric": "fake recall @ FPR",
+      "paper": "fake_recall_fpr0.1=84.52",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "not in SynthScope yet"
     }
   ],
   "stall": [

@@ -40,6 +40,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
 | `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
+| `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | no LICENSE file in the repo: **no code copied**; `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
 | `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `stall` | STALL (CVPR'26) | ⚠ verify (official repo) | ⚠ verify | training-free; needs DINOv3 backbone | gated (DINOv3) |
 
@@ -55,6 +56,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | SigLIP | `co_spy` | Apache-2.0 (verify) |
 | MFM ViT-B/16 | `spai` | ⚠ verify |
 | Stable Diffusion VAE | `co_spy` | CreativeML Open RAIL-M (verify) |
+| X-CLIP B/16 (`microsoft/xclip-base-patch16`) | `d3`, `split` | MIT (HF model card) |
 | LlamaGen VQ-16 tokenizer (`vq_ds16_c2i.pt`, HF `FoundationVision/LlamaGen`) | `d3qe` | MIT |
 | Perception Encoder Core L/14-336 (`facebook/PE-Core-L14-336`) | `cure` | Apache-2.0 (Meta); `official_arch.py` vendors the CuRe/Meta backbone code — see its header |
 

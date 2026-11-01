@@ -462,6 +462,17 @@ _add(ModelSpec(
           "2 s), BGR channels as cv2 reads them, 10% crop of the longer side, resize 224, ImageNet normalization.",
 ))
 _add(ModelSpec(
+    key="split", name="SPLIT (video)", paper="ECCV'26",
+    modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",
+    overrides=["model@ModelConfig=video/split"],
+    num_frames=16, fps=8.0, frame_size=224, video_norm=(IMAGENET_MEAN, IMAGENET_STD), edge_crop=0.1,
+    edge_crop_long_side=True, short_clip_frames=8, fps_nearest=True, bgr=True,
+    notes="Training-free: frozen X-CLIP-B/16 patch tokens; two-step temporal roughness (gamma 8) times spatial "
+          "patch-level motion incoherence is the score. Official preprocessing (the same video2frame / read_video as "
+          "D3): 16 frames at 8 fps (8 for clips under 2 s), BGR, 10% crop of the longer side, resize 224, ImageNet "
+          "normalization.",
+))
+_add(ModelSpec(
     key="restrav", name="ReStraV (video)", paper="2025",
     modality="video", predict_kind="video", checkpoint="restrav.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=video/restrav", "ModelConfig.backbone_name=dinov2_vits14"],

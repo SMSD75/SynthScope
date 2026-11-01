@@ -1,0 +1,233 @@
+{
+  "model": "split",
+  "paper": "SPLIT: Training-Free AI-Generated and Partially Edited Video Detection via Spatial Patch-Level Incoherence and Temporal Roughness (Hyun & Kim, ECCV 2026)",
+  "arxiv_id": "2607.02886",
+  "official_repo": "https://github.com/mldljyh/SPLIT",
+  "training_set_in_paper": "NONE - SPLIT is training-free (frozen encoder, real-only threshold calibration).",
+  "encoder_in_paper": "X-CLIP B/16 (microsoft/xclip-base-patch16) patch tokens; CLIP, DINO and CNN encoders are ablations.",
+  "paper_protocol": "Official video2frame.py: ffmpeg JPEG frames, 8 fps over 3 s (random start for longer clips); read_video: 16 frames (8 if fewer than 16), cv2 BGR, 10% crop of the longer side, resize 224, ImageNet normalization. Score = TTR**8 * LSMI. Metric: fake recall at FPR 0.1/1/5%, threshold = (1-FPR) quantile of the real scores (eval.py evaluate_split).",
+  "synthscope_encoder": "X-CLIP B/16, as in the paper. SynthScope's own implementation (the official repo has no license) returns the official SPLIT_model.forward_score on the same frames (relative difference <= 7e-6, job 269966).",
+  "benchmarks": [
+    {
+      "name": "GenVideo (GenVideo-Val, MSR-VTT real calibration, supp. Table 18)",
+      "datasets": [
+        "GenVideo-Val"
+      ],
+      "subsets_or_generators": [
+        "Crafter",
+        "Gen2",
+        "HotShot",
+        "Lavie",
+        "ModelScope",
+        "MoonValley",
+        "MorphStudio",
+        "Show_1",
+        "Sora",
+        "WildScrape"
+      ],
+      "metric": "fake recall @ FPR 0.1/1/5% (Overall = all fakes pooled)",
+      "paper_number": {
+        "fake_recall_fpr0.1": 82.13,
+        "fake_recall_fpr1": 91.69,
+        "fake_recall_fpr5": 97.2
+      },
+      "paper_per_generator": {
+        "Crafter": {
+          "fpr_0.1": 88.84,
+          "fpr_1": 96.78,
+          "fpr_5": 99.64
+        },
+        "Gen2": {
+          "fpr_0.1": 53.26,
+          "fpr_1": 77.61,
+          "fpr_5": 94.71
+        },
+        "HotShot": {
+          "fpr_0.1": 99.86,
+          "fpr_1": 100,
+          "fpr_5": 100
+        },
+        "Lavie": {
+          "fpr_0.1": 92.5,
+          "fpr_1": 96.36,
+          "fpr_5": 98.79
+        },
+        "ModelScope": {
+          "fpr_0.1": 86.71,
+          "fpr_1": 93.57,
+          "fpr_5": 97.86
+        },
+        "MoonValley": {
+          "fpr_0.1": 49.36,
+          "fpr_1": 76.36,
+          "fpr_5": 95.37
+        },
+        "MorphStudio": {
+          "fpr_0.1": 94.71,
+          "fpr_1": 98.43,
+          "fpr_5": 99.71
+        },
+        "Show_1": {
+          "fpr_0.1": 96.86,
+          "fpr_1": 99.86,
+          "fpr_5": 100
+        },
+        "Sora": {
+          "fpr_0.1": 87.5,
+          "fpr_1": 98.21,
+          "fpr_5": 100
+        },
+        "WildScrape": {
+          "fpr_0.1": 71.66,
+          "fpr_1": 79.76,
+          "fpr_5": 85.89
+        }
+      },
+      "official_eval_protocol": "All 10,000 MSR-VTT reals calibrate the threshold; all fakes of the 10 generators scored (official eval.py, no max_len).",
+      "our_status": "reproduced",
+      "our_number": {
+        "official_code_our_data": {
+          "fpr_0.1": 82.22,
+          "fpr_1": 90.17,
+          "fpr_5": 96.89
+        },
+        "synthscope": {
+          "fpr_0.1": 98.87,
+          "fpr_1": 99.86,
+          "fpr_5": 99.98
+        },
+        "note": "Official code on our data (JPEG frame round-trip, job 270323) reproduces the paper: Overall fake recall 82.22/90.17/96.89 vs 82.13/91.69/97.20. SynthScope decodes frames directly (no JPEG) and reaches 98.87/99.86/99.98 (job 270384; mAP 99.79, AUROC 99.97, acc 99.41 at the calibrated threshold)."
+      },
+      "official_code_per_generator": {
+        "Crafter": {
+          "fpr_0.1": 89.99,
+          "fpr_1": 96.21,
+          "fpr_5": 99.64
+        },
+        "Gen2": {
+          "fpr_0.1": 56.16,
+          "fpr_1": 76.3,
+          "fpr_5": 94.64
+        },
+        "HotShot": {
+          "fpr_0.1": 99.86,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "Lavie": {
+          "fpr_0.1": 93.21,
+          "fpr_1": 96.07,
+          "fpr_5": 98.71
+        },
+        "ModelScope": {
+          "fpr_0.1": 87.29,
+          "fpr_1": 93.14,
+          "fpr_5": 97.86
+        },
+        "MoonValley": {
+          "fpr_0.1": 52.88,
+          "fpr_1": 74.76,
+          "fpr_5": 95.37
+        },
+        "MorphStudio": {
+          "fpr_0.1": 95.0,
+          "fpr_1": 98.0,
+          "fpr_5": 99.71
+        },
+        "Show_1": {
+          "fpr_0.1": 97.86,
+          "fpr_1": 99.71,
+          "fpr_5": 100.0
+        },
+        "Sora": {
+          "fpr_0.1": 91.07,
+          "fpr_1": 98.21,
+          "fpr_5": 100.0
+        },
+        "WildScrape": {
+          "fpr_0.1": 73.27,
+          "fpr_1": 79.74,
+          "fpr_5": 86.42
+        }
+      },
+      "our_per_generator": {
+        "Crafter": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "Gen2": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "HotShot": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "Lavie": {
+          "fpr_0.1": 99.93,
+          "fpr_1": 99.93,
+          "fpr_5": 100.0
+        },
+        "ModelScope": {
+          "fpr_0.1": 99.57,
+          "fpr_1": 99.86,
+          "fpr_5": 100.0
+        },
+        "MoonValley": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "MorphStudio": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "Show_1": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "Sora": {
+          "fpr_0.1": 100.0,
+          "fpr_1": 100.0,
+          "fpr_5": 100.0
+        },
+        "WildScrape": {
+          "fpr_0.1": 89.94,
+          "fpr_1": 98.92,
+          "fpr_5": 99.78
+        }
+      },
+      "dataset_source": "genvideo loader (ModelScope cccnju/Gen-Video GenVideo-Val.zip); reals = MSR-VTT."
+    },
+    {
+      "name": "FakeParts (partial edits; Tables 1, 15-16)",
+      "datasets": [
+        "FakeParts"
+      ],
+      "metric": "fake recall @ FPR",
+      "paper_number": {
+        "fake_recall_fpr0.1": 74.45
+      },
+      "our_status": "missing",
+      "dataset_source": "not in SynthScope yet"
+    },
+    {
+      "name": "ViF-Bench (Tables 3, 19)",
+      "datasets": [
+        "ViF-Bench"
+      ],
+      "metric": "fake recall @ FPR",
+      "paper_number": {
+        "fake_recall_fpr0.1": 84.52
+      },
+      "our_status": "missing",
+      "dataset_source": "not in SynthScope yet"
+    }
+  ],
+  "summary": "Training-free; exact parity with the official model. The official pipeline on our GenVideo copy reproduces the paper's MSR-VTT-calibrated table; SynthScope's direct decoding (no JPEG round-trip) is much stronger at low FPR."
+}

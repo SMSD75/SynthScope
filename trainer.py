@@ -18,6 +18,7 @@ from models.image.effort.effort import SynthScopeEffortModel
 from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
 from models.video.d3.d3 import SynthScopeD3Model
+from models.video.split.split import SynthScopeSPLITModel
 from models.video.restrav.restrav import SynthScopeReStraVModel
 from models.video.stall.stall import SynthScopeSTALLModel
 from metrics import AIGIMetrics
@@ -105,6 +106,8 @@ class SynthScopeModelTrainer:
             return SynthScopeD3QEModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
+        if model_type == "split":
+            return SynthScopeSPLITModel(config)
         if model_type == "restrav":
             return SynthScopeReStraVModel(config)
         if model_type == "stall":
