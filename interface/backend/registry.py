@@ -11,6 +11,7 @@ For each detector we record:
 Label convention (dataset.py:_get_label): index 0 = real, index 1 = fake.
 """
 import functools
+import os
 from dataclasses import dataclass, field
 from typing import Callable, Optional
 
@@ -480,8 +481,10 @@ _add(ModelSpec(
     window_center=True, resize_interp="bicubic",
     notes="Frozen DINOv2 ViT-S/14 trajectory-geometry + standardized MLP. Raw [0,1], center window + BICUBIC (official ReStraV).",
 ))
-# DINOv3 ViT-L/16 gated weights (downloaded locally). STALL is training-free but needs them.
-DINOV3_WEIGHTS = "/hddstore/ssalehi/SynthScope/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
+# DINOv3 ViT-L/16 gated weights. STALL is training-free but needs them: $DINO_V3_WEIGHTS (the Space sets it to the copy
+# fetched from the weights repo), else the maintainers' local copy.
+DINOV3_WEIGHTS = os.environ.get("DINO_V3_WEIGHTS") or \
+    "/hddstore/ssalehi/SynthScope/dinov3_checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 _add(ModelSpec(
     key="stall", name="STALL (video)", paper="Ben Hayun et al., CVPR'26",
     modality="video", predict_kind="video", checkpoint=None, ckpt_kind="none", weights="training_free",

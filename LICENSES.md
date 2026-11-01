@@ -42,7 +42,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
 | `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | no LICENSE file in the repo: **no code copied**; `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
 | `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
-| `stall` | STALL (CVPR'26) | ⚠ verify (official repo) | ⚠ verify | training-free; needs DINOv3 backbone | gated (DINOv3) |
+| `stall` | STALL (CVPR'26) | OmerBenHayun/STALL | CC BY-NC 4.0 (`LICENSE.txt`) | training-free; needs the DINOv3 backbone (and ships the VATEX calibration `.npz`) | DINOv3 License (gated download) |
 
 ## Backbones / foundation models (downloaded on first use)
 
@@ -52,7 +52,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
-| DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** — DINOv3 License (non-commercial; accept upstream) |
+| DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** download — DINOv3 License (use and redistribution allowed with the license and attribution; trade-control restrictions) |
 | SigLIP | `co_spy` | Apache-2.0 (verify) |
 | MFM ViT-B/16 | `spai` | ⚠ verify |
 | Stable Diffusion VAE | `co_spy` | CreativeML Open RAIL-M (verify) |
