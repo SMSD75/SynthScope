@@ -1,0 +1,63 @@
+{
+  "method": "ReStraV",
+  "track": "genvideo-val",
+  "modality": "video",
+  "model_type": "restrav",
+  "paper": "Interno et al., 2025",
+  "url": "https://github.com/SMSD75/SynthScope",
+  "evaluation": "frozen-probe",
+  "metrics": {
+    "acc": 30.01,
+    "map": 33.6,
+    "ap": null,
+    "auroc": 43.06
+  },
+  "per_generator": {
+    "Crafter": {
+      "auroc": 89.15,
+      "ap": 68.75
+    },
+    "Gen2": {
+      "auroc": 2.76,
+      "ap": 6.37
+    },
+    "HotShot": {
+      "auroc": 0.1,
+      "ap": 3.35
+    },
+    "Lavie": {
+      "auroc": 34.51,
+      "ap": 25.86
+    },
+    "ModelScope": {
+      "auroc": 78.96,
+      "ap": 59.16
+    },
+    "MoonValley": {
+      "auroc": 2.07,
+      "ap": 3.02
+    },
+    "MorphStudio": {
+      "auroc": 92.58,
+      "ap": 74.66
+    },
+    "Show_1": {
+      "auroc": 91.56,
+      "ap": 66.49
+    },
+    "Sora": {
+      "auroc": 0.26,
+      "ap": 0.29
+    },
+    "WildScrape": {
+      "auroc": 38.7,
+      "ap": 28.08
+    }
+  },
+  "submitted_by": "SynthScope",
+  "date": "2026-11-02",
+  "verified": true,
+  "source": "repro/bench_results/restrav_genvideo_full.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
+  "protocol_notes": "Frozen DINOv2 trajectory geometry + MLP trained on GenVidBench; does not transfer to GenVideo-Val (AUROC below 50)",
+  "synthscope_version": "0.1.0"
+}
