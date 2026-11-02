@@ -26,7 +26,8 @@ TRACKS = {
         "title": "GenImage SD-v1.4 — image", "primary": "auroc", "modality": "image",
     },
     "genvideo-val": {
-        "title": "GenVideo-Val — video", "primary": "ap", "modality": "video",
+        "title": "GenVideo-Val — video (all 10,000 MSR-VTT reals vs every fake, per generator)", "primary": "auroc",
+        "modality": "video",
     },
 }
 METRIC_COLS = [("acc", "Acc"), ("map", "mAP"), ("ap", "AP"), ("auroc", "AUROC")]
