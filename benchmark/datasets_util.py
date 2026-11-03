@@ -21,8 +21,9 @@ PROFILE_OVERRIDE = {"cnndetection": "forensynths", "cospy_subset": "forensynths"
                     "universialfakedetection": "ufd"}
 
 
-def dataset_config(name: str, modality: str = "image", root: str | None = None):
-    """The composed Hydra config for ``conf/dataset/<modality>/<name>.yaml`` (``root`` overrides ``root_dir``)."""
+def dataset_config(name: str, modality: str = "image", root: str | None = None, overrides: list[str] | None = None):
+    """The composed Hydra config for ``conf/dataset/<modality>/<name>.yaml`` (``root`` overrides ``root_dir``; ``overrides``
+    are extra Hydra overrides, e.g. ``DatasetConfig.real_pool=DIR``)."""
     from config_utils import compose_config
     conf = ROOT / "conf" / "dataset"
     if not (conf / modality / f"{name}.yaml").is_file():
@@ -32,10 +33,10 @@ def dataset_config(name: str, modality: str = "image", root: str | None = None):
                              f"({'benchmark/bench_eval_video.py' if other[0] == 'video' else 'benchmark/bench_eval.py'})")
         known = sorted(p.stem for p in (conf / modality).glob("*.yaml"))
         raise SystemExit(f"unknown {modality} dataset '{name}'. Available: {', '.join(known)}")
-    overrides = [f"dataset@DatasetConfig={modality}/{name}"]
+    composed = [f"dataset@DatasetConfig={modality}/{name}"]
     if root:
-        overrides.append(f"DatasetConfig.root_dir={root}")
-    return compose_config(overrides)
+        composed.append(f"DatasetConfig.root_dir={root}")
+    return compose_config(composed + list(overrides or []))
 
 
 def has_images(root: Path, exts=IMAGE_EXT) -> bool:
@@ -49,10 +50,11 @@ def has_images(root: Path, exts=IMAGE_EXT) -> bool:
     return False
 
 
-def download_dataset(name: str, modality: str = "image", root: str | None = None) -> Path:
+def download_dataset(name: str, modality: str = "image", root: str | None = None,
+                     overrides: list[str] | None = None) -> Path:
     """Run the dataset's loader (download + restructure). Returns the root directory."""
     from dataset import AIGIDatasetModule
-    cfg = dataset_config(name, modality, root)
+    cfg = dataset_config(name, modality, root, overrides)
     AIGIDatasetModule(cfg)        # constructing the datasets runs the loader (prefetch: true downloads + restructures)
     return Path(cfg.DatasetConfig.root_dir)
 
@@ -68,9 +70,11 @@ def _loader_says_incomplete(cfg, path: Path) -> bool:
     return not check(path / "test")
 
 
-def ensure_dataset(name: str, modality: str = "image", root: str | None = None, download: bool = True) -> Path:
-    """The dataset's root directory, downloading it first when no images (or videos) are there yet."""
-    cfg = dataset_config(name, modality, root)
+def ensure_dataset(name: str, modality: str = "image", root: str | None = None, download: bool = True,
+                   overrides: list[str] | None = None) -> Path:
+    """The dataset's root directory, downloading it first when no images (or videos) are there yet (``overrides``: extra
+    Hydra overrides for the loader's config)."""
+    cfg = dataset_config(name, modality, root, overrides)
     path = Path(cfg.DatasetConfig.root_dir).expanduser()
     if has_images(path, VIDEO_EXT if modality == "video" else IMAGE_EXT):
         if _loader_says_incomplete(cfg, path):
@@ -78,12 +82,12 @@ def ensure_dataset(name: str, modality: str = "image", root: str | None = None, 
                 print(f"[dataset] {name}: the layout under {path} is incomplete (drop --no-download to repair it)", flush=True)
                 return path
             print(f"[dataset] {name}: the layout under {path} is incomplete, repairing it with the built-in loader ...", flush=True)
-            return download_dataset(name, modality, root)
+            return download_dataset(name, modality, root, overrides)
         return path
     if not download:
         raise SystemExit(f"{name}: no data under {path} (drop --no-download to fetch it, or pass --root)")
     print(f"[dataset] {name}: nothing under {path}, downloading with the built-in loader ...", flush=True)
-    return download_dataset(name, modality, root)
+    return download_dataset(name, modality, root, overrides)
 
 
 def _subdirs(d: Path) -> list[Path]:

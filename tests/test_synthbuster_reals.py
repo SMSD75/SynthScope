@@ -8,6 +8,8 @@ Synthbuster ships fakes only, so the loader pairs every generator with a pool of
 * a legacy fakes-only layout (generator folders with ``1_fake`` but no ``0_real``) is completed, not accepted,
 * a complete layout is left alone,
 * ``ensure_dataset`` (bench_eval ``--dataset``) repairs a fakes-only layout instead of returning it,
+* ``ensure_dataset(..., overrides=[real_pool=DIR])`` (bench_eval ``--dataset synthbuster --reals DIR``) completes a
+  fakes-only layout from that pool, with no sibling GenImage pool,
 * ``DatasetConfig.real_pool`` reaches ``prepare_split`` through ``SynthbusterDatasetModule``.
 """
 
@@ -153,6 +155,17 @@ def test_ensure_dataset_repairs_incomplete_layout() -> None:
         assert ensure_dataset("synthbuster", root=str(root)) == root      # complete now: nothing to do
 
 
+def test_ensure_dataset_override_pool() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        root = tmp / "Synthbuster"                     # no GenImage next to it
+        for gen in GENERATORS:
+            _image(root / "test" / gen / "1_fake" / "00000_a.png")
+        pool = _real_pool(tmp / "elsewhere" / "reals", 3)
+        assert ensure_dataset("synthbuster", root=str(root), overrides=[f"DatasetConfig.real_pool={pool}"]) == root
+        _assert_paired(root, n_fake=1, n_real=3)
+
+
 def test_config_reaches_the_loader() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -186,6 +199,8 @@ if __name__ == "__main__":
     print("complete layout untouched: ok")
     test_ensure_dataset_repairs_incomplete_layout()
     print("ensure_dataset repairs a fakes-only layout: ok")
+    test_ensure_dataset_override_pool()
+    print("ensure_dataset with an explicit real_pool override (no sibling pool): ok")
     test_config_reaches_the_loader()
     print("DatasetConfig.real_pool wired through the module: ok")
     print("Synthbuster real-pool checks passed")

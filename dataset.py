@@ -2537,8 +2537,8 @@ class SynthbusterDataset(_TestOnlyImageDataset):
             raise FileNotFoundError(
                 f"Synthbuster ships no reals, and no real images were found in '{pool}'. Point "
                 f"DatasetConfig.real_pool at a folder of real photos (e.g. GenImage's test/real), put GenImage next to "
-                f"the Synthbuster root as '{(root_dir / cls.sibling_pool).resolve()}', or evaluate with "
-                f"benchmark/bench_eval.py --reals DIR.")
+                f"the Synthbuster root as '{(root_dir / cls.sibling_pool).resolve()}', or pass "
+                f"--reals DIR to benchmark/bench_eval.py --dataset synthbuster.")
         return reals
 
     def _download_data(self, force: bool = False) -> None:
