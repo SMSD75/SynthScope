@@ -307,7 +307,8 @@ accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py
 
 Or use a method's ready-made recipe in [experiments/](experiments/) (e.g. `bash experiments/image/aide.sh`).
 Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and restructure into the
-common `<generator>/{0_real,1_fake}` layout; transforms are named pipelines in [transformations.py](transformations.py).
+common `<generator>/{0_real,1_fake}` layout; each model config lists its preprocessing (`eval_transform_list`,
+`train_transform_list`, ...) as named steps from [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) to add a detector.
 

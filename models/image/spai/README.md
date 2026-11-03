@@ -106,16 +106,16 @@ The trainer config follows the paper's regime: AdamW with `lr = 5e-4`, weight de
 A launcher is provided at:
 
 ```bash
-experiments/spai.sh
+experiments/image/spai.sh
 ```
 
-It uses the default dataset (`genimage`). **The transform lists end in `to_dtype` only and contain no `normalize_*` transform**, because SPAI normalizes internally; feeding pre-normalized images would corrupt the frequency split. Dataset-side augmentations are `resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype` (eval: `resize_short_256, center_crop_224, to_dtype`).
+It uses the default dataset (`genimage`) and the transform lists of `conf/model/image/spai.yaml`. **The transform lists end in `to_dtype` only and contain no `normalize_*` transform**, because SPAI normalizes internally; feeding pre-normalized images would corrupt the frequency split. Training augmentation is `resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype`; validation and the end-of-training test use `resize_short_256, center_crop_224, to_dtype`, while inference and benchmarks use the native-resolution eval list `cap_long_side_1024, to_dtype`.
 
 ## Reproduced benchmark results
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-> **Served checkpoint:** the web app / `synthscope.load("spai")` now serves the **official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `tf_native_cap(1024)`, `spai.pth → repro/ckpts/spai_official_synthscope.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
+> **Served checkpoint:** the web app / `synthscope.load("spai")` now serves the **official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `eval_transform_list: [cap_long_side_1024, to_dtype]`, `spai.pth → repro/ckpts/spai_official_synthscope.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
 
 | Benchmark | Paper | SynthScope_official (served, native-res) | SynthScope_train (retrain, superseded) | Status |
 |---|---|---|---|---|

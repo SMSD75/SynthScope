@@ -16,3 +16,6 @@ moe_lambda_gating_cls: 0.1
 dropout: 0.0
 gradient_checkpointing_enable: false
 is_hybrid: true
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_336, to_dtype, normalize_clip]

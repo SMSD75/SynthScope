@@ -17,8 +17,9 @@ echo "node=$(hostname) data=$DATA/GenImage real=$(ls $DATA/GenImage/train/real 2
 $CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29663 \
   main.py trainer@TrainerConfig=image/pgc model@ModelConfig=image/pgc ModelConfig.backbone_name=facebook/dinov2-large \
   dataset@DatasetConfig=image/genimage DatasetConfig.root_dir=$DATA/GenImage \
-  DatasetConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_dinov2]" \
-  DatasetConfig.eval_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_dinov2]" \
+  ModelConfig.train_transform_list="[resize_short_256,random_crop_224,random_horizontal_flip,to_dtype,normalize_dinov2]" \
+  +ModelConfig.val_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_dinov2]" \
+  +ModelConfig.test_transform_list="[resize_short_256,center_crop_224,to_dtype,normalize_dinov2]" \
   DatasetConfig.train_batch_size=32 DatasetConfig.val_batch_size=64 DatasetConfig.test_batch_size=64 DatasetConfig.num_workers=10 \
   ++TrainerConfig.epochs=25 ++TrainerConfig.save=true ++TrainerConfig.save_policy=max ++TrainerConfig.save_interval=1 ++TrainerConfig.save_path=$SAVE \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] logger.mode=offline logger.name=pgc_long 2>&1 | grep --line-buffered -vE "libpng (error|warning)"

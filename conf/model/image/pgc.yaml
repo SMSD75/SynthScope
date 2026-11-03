@@ -19,3 +19,8 @@ label_smoothing: 0.1
 tau_rgb: 0.5
 tau_res: 0.5
 num_classes: 1
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [center_crop_224, to_dtype, normalize_imagenet]
+# Training augmentation.
+train_transform_list: [random_horizontal_flip, color_jitter_pgc, pad_random_crop_224, to_dtype, normalize_imagenet]

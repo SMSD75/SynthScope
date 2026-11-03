@@ -72,10 +72,12 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
   with groups `model/`, `dataset/`, `trainer/`. Multi-GPU via 🤗 `accelerate` (`accelerate_config.yaml`).
 - **`dataset.py`** — image/video dataset loaders; `_decode_rgb` feeds uint8 `[3,H,W]` tensors;
   `sample_video_frames(..., edge_crop=)` for video.
-- **`transformations.py`** — composable named transforms / augmentations: `resize_224`,
-  `resize_short_{256,384,448}`, `center_crop_{224,256,384,448}`, `random_crop_*`, `pad_random_crop_224`
+- **`transformations.py`** — composable named transforms / augmentations: `resize_{224,256,336,512}`,
+  `resize_short_{256,384,448}`, `center_crop_{224,256,336,384,448}`, `random_crop_*`, `pad_random_crop_224`
   (PGC), `gaussian_blur`, `jpeg_compression`, `random_horizontal/vertical_flip`, `random_rotation_180`,
-  `color_jitter_safe`, `to_tensor`/`to_dtype`. **Eval-transform fidelity is critical** — artifact/
+  `color_jitter_safe`, `to_tensor`/`to_dtype`. Each model config names its pipelines (`eval_transform_list`,
+  `train_transform_list`, optional `val_transform_list` / `test_transform_list`); the web registry builds
+  `ModelSpec.transform` from `eval_transform_list`. **Eval-transform fidelity is critical** — artifact/
   low-level detectors (SAFE/AIDE/SPAI/PGC/NPR) are wrecked by a wrong resize; match the official eval
   exactly (see `repro/investigate/pgc_gap_investigation.md` and the SAFE crop-not-resize lesson).
 - **`metrics.py`** — torchmetrics binary `Accuracy` (real/fake), `AveragePrecision` (AP),
@@ -170,6 +172,6 @@ New detectors are integrated **on a `detector/<key>` branch and pushed for revie
 
 1. Confirm it passes both rules (public repo + strong results). Read `ADD_DETECTOR.md`.
 2. `git checkout -b detector/<key>`; add the 5 files (model, conf, trainer dispatch, registry ModelSpec, README) + smoke test.
-3. **Match the official eval transform exactly** in the `ModelSpec` (resize vs crop, norm) — this is the #1 silent-failure source.
+3. **Match the official eval transform exactly** in the model config's `eval_transform_list` (resize vs crop, norm) — this is the #1 silent-failure source.
 4. Reproduce on the paper's benchmark with official weights via `bench_eval.py --ckpt`; fix `remap_<k>` for key mismatches; record per-gen AP/AUROC in the Paper/SynthScope_official/SynthScope_train schema.
 5. (Optional) add an interpretability map. Push the branch; do **not** merge to `main`.

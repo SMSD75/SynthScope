@@ -144,8 +144,9 @@ def discover(benchmark: str, root: Path, shared_reals: Path | None, select: set[
 
 
 def native_res_transform(tf):
-    """Drop the up-scaling Resize/CenterCrop from a model's eval transform, keeping
-    ToTensor + Normalize, so images are scored at NATIVE resolution.
+    """Drop the up-scaling resize/center-crop steps from a model's eval transform, keeping
+    to_dtype + normalize, so images are scored at NATIVE resolution (ValueError for eval lists
+    whose own steps resize, see ``AIGITransformations.without_resize``).
 
     Some methods (e.g. NPR on GANGen-Detection/freqnet) detect up-sampling artifacts and
     MUST NOT be fed a bilinearly up-scaled image — resizing a 128x128 GAN crop to 256x256
@@ -153,11 +154,7 @@ def native_res_transform(tf):
     GANGen recipe runs with ``no_resize=True``; this reproduces it. Safe only when every
     image in a per-generator batch shares one resolution (true for freqnet's per-gen sets),
     since bench_eval stacks a batch into a single tensor."""
-    import torchvision.transforms as T
-    if not isinstance(tf, T.Compose):
-        return tf
-    kept = [t for t in tf.transforms if not isinstance(t, (T.Resize, T.CenterCrop))]
-    return T.Compose(kept)
+    return tf.without_resize()
 
 
 @torch.no_grad()

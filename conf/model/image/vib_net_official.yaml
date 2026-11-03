@@ -17,3 +17,10 @@ std_floor: 0.0
 clip_fp32: true
 # The paper's trade-off parameter is not reported; 1e-3 is the standard VIB value (Alemi et al.).
 vib_beta: 0.001
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [center_crop_224, to_dtype, normalize_clip]
+# Training augmentation.
+train_transform_list: [blur_jpeg_cnndet, pad_random_crop_224, random_horizontal_flip, to_dtype, normalize_clip]
+# Validation during training (differs from the test-time preprocessing above).
+val_transform_list: [blur_jpeg_cnndet_val, center_crop_224, to_dtype, normalize_clip]

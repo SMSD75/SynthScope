@@ -67,11 +67,11 @@ SAFE's main contribution is its image transformation recipe. The official traini
 | Random mask | ratio `(0.00, 0.75)`, patch size `16`, `p = 0.5` | `random_mask_safe` |
 | Normalization | None | None |
 
-The current SAFE experiment launcher uses:
+The model config (`conf/model/image/safe.yaml`) sets:
 
-```bash
-DatasetConfig.train_transform_list=[random_crop_256_pad,random_horizontal_flip,random_rotation_180,color_jitter_safe,to_dtype,random_mask_safe]
-DatasetConfig.eval_transform_list=[center_crop_256,to_dtype]
+```yaml
+eval_transform_list: [center_crop_256, to_dtype]
+train_transform_list: [random_crop_256_pad, random_horizontal_flip, random_rotation_180, color_jitter_safe, to_dtype, random_mask_safe]
 ```
 
 This matches the official transform order closely. `to_dtype` plays the same role as `ToTensor()` in the official code: it converts the loaded image tensor to `float32` and scales values to `[0, 1]`.

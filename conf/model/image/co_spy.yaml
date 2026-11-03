@@ -19,3 +19,8 @@ feat_interp_alpha: 0.2
 
 num_classes: 2
 freeze_backbone: true
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_short_384, center_crop_384, to_dtype]
+# Training augmentation.
+train_transform_list: [resize_short_384, gaussian_blur, jpeg_compression, random_crop_384, random_horizontal_flip, to_dtype]

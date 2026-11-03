@@ -13,3 +13,6 @@ num_experts: 6
 top_k: 2
 router_temperature: 0.5
 out_classes: 3
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [vjepa2_processor]

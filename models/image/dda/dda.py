@@ -13,7 +13,7 @@ frequency space), not the architecture. ``SynthScopeDDAModel`` keeps the officia
 ``Junwei-Xi/Dual-Data-Alignment``; full model, 307.5M parameters) loads key-for-key as ``dda.pth``.
 
 Input contract: ``forward`` takes the tensor produced by the official test transform (center-crop 336 with no
-resize, ToTensor, CLIP mean/std), i.e. registry ``tf_crop(336, CLIP_MEAN, CLIP_STD)``.
+resize, ToTensor, CLIP mean/std), i.e. ``eval_transform_list: [center_crop_336, to_dtype, normalize_clip]`` in conf/model/image/dda.yaml.
 
 Training: ``compute_loss`` is the official objective (``Training/networks/trainer.py``): 0.5 x BCE on the logit +
 0.5 x a contrastive loss on the CLS features (pytorch_metric_learning ``ContrastiveLoss(pos_margin=0, neg_margin=1)``,

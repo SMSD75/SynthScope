@@ -15,8 +15,9 @@ echo "=== cospy genimage retrain start $(date) node=$(hostname) gpu=$CUDA_VISIBL
   --config_file accelerate_config.yaml --num_processes 1 --main_process_port 29655 \
   main.py trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy dataset@DatasetConfig=image/genimage \
   DatasetConfig.root_dir=/hddstore/ssalehi/SynthScope/GenImage \
-  DatasetConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]" \
-  DatasetConfig.eval_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
+  ModelConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]" \
+  +ModelConfig.val_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
+  +ModelConfig.test_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
   DatasetConfig.train_batch_size=16 DatasetConfig.val_batch_size=32 DatasetConfig.test_batch_size=32 \
   DatasetConfig.num_workers=8 DatasetConfig.prefetch=false \
   ++TrainerConfig.epochs=3 ++TrainerConfig.save=true ++TrainerConfig.save_policy=min \

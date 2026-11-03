@@ -11,3 +11,12 @@ num_classes: 2
 classnames: [real, fake]
 freeze_backbone: true
 force_fp32: true
+
+# Official FatFormer (utils/dataset.py) normalizes with ImageNet mean/std, not CLIP's, despite the CLIP backbone (the
+# official-weights eval reproduces 98.39 acc / 99.70 mAP with it).
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_256, center_crop_224, to_dtype, normalize_imagenet]
+# Training augmentation.
+train_transform_list: [resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype, normalize_imagenet]
+# Validation during training (differs from the test-time preprocessing above).
+val_transform_list: [resize_short_256, center_crop_224, to_dtype, normalize_imagenet]
