@@ -57,11 +57,28 @@ def download_dataset(name: str, modality: str = "image", root: str | None = None
     return Path(cfg.DatasetConfig.root_dir)
 
 
+def _loader_says_incomplete(cfg, path: Path) -> bool:
+    """True when the dataset's loader has its own completeness check (``_is_prepared``, overriding the base class's
+    "any image under test/") and it rejects ``path/test`` although some images exist, e.g. a fakes-only layout."""
+    from dataset import SynthScopeModuleDict, _TestOnlyImageDataset
+    dataset_cls = getattr(SynthScopeModuleDict.get(cfg.DatasetConfig.name), "DATASET_CLASS", None)
+    check = getattr(dataset_cls, "_is_prepared", None)
+    if check is None or check.__func__ is _TestOnlyImageDataset._is_prepared.__func__:
+        return False
+    return not check(path / "test")
+
+
 def ensure_dataset(name: str, modality: str = "image", root: str | None = None, download: bool = True) -> Path:
     """The dataset's root directory, downloading it first when no images (or videos) are there yet."""
     cfg = dataset_config(name, modality, root)
     path = Path(cfg.DatasetConfig.root_dir).expanduser()
     if has_images(path, VIDEO_EXT if modality == "video" else IMAGE_EXT):
+        if _loader_says_incomplete(cfg, path):
+            if not download:
+                print(f"[dataset] {name}: the layout under {path} is incomplete (drop --no-download to repair it)", flush=True)
+                return path
+            print(f"[dataset] {name}: the layout under {path} is incomplete, repairing it with the built-in loader ...", flush=True)
+            return download_dataset(name, modality, root)
         return path
     if not download:
         raise SystemExit(f"{name}: no data under {path} (drop --no-download to fetch it, or pass --root)")

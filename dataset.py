@@ -2554,7 +2554,6 @@ class SynthbusterDataset(_TestOnlyImageDataset):
             for gen_dir in cls._gens_without_reals(dest):
                 _link_images(reals, gen_dir / "0_real")
             return
-        import urllib.request
         dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
         zpath = dl / cls.zenodo_file
         if not zpath.exists():

@@ -7,6 +7,7 @@ Synthbuster ships fakes only, so the loader pairs every generator with a pool of
 * otherwise it raises a clear error before downloading, instead of laying out fakes only,
 * a legacy fakes-only layout (generator folders with ``1_fake`` but no ``0_real``) is completed, not accepted,
 * a complete layout is left alone,
+* ``ensure_dataset`` (bench_eval ``--dataset``) repairs a fakes-only layout instead of returning it,
 * ``DatasetConfig.real_pool`` reaches ``prepare_split`` through ``SynthbusterDatasetModule``.
 """
 
@@ -24,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "interface"), str(ROOT / "benchmark")]
 
 from config_utils import compose_config
+from datasets_util import ensure_dataset
 from dataset import SynthbusterDataset, SynthbusterDatasetModule
 
 GENERATORS = ("dalle2", "sd14")
@@ -133,6 +135,24 @@ def test_complete_layout_is_left_alone() -> None:
         _assert_paired(root, n_fake=1, n_real=1)
 
 
+def test_ensure_dataset_repairs_incomplete_layout() -> None:
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        root = tmp / "Synthbuster"
+        for gen in GENERATORS:
+            _image(root / "test" / gen / "1_fake" / "00000_a.png")
+        try:                                           # no pool: the clear error, not a silent return
+            ensure_dataset("synthbuster", root=str(root))
+        except FileNotFoundError as e:
+            assert "real_pool" in str(e), e
+        else:
+            raise AssertionError("ensure_dataset returned a fakes-only layout")
+        _real_pool(tmp / "GenImage" / "test" / "real", 2)
+        assert ensure_dataset("synthbuster", root=str(root)) == root
+        _assert_paired(root, n_fake=1, n_real=2)
+        assert ensure_dataset("synthbuster", root=str(root)) == root      # complete now: nothing to do
+
+
 def test_config_reaches_the_loader() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -164,6 +184,8 @@ if __name__ == "__main__":
     print("legacy fakes-only layout completed: ok")
     test_complete_layout_is_left_alone()
     print("complete layout untouched: ok")
+    test_ensure_dataset_repairs_incomplete_layout()
+    print("ensure_dataset repairs a fakes-only layout: ok")
     test_config_reaches_the_loader()
     print("DatasetConfig.real_pool wired through the module: ok")
     print("Synthbuster real-pool checks passed")
