@@ -2349,11 +2349,16 @@ class _TestOnlyImageDataset(Dataset):
         self.split = split
         self.transform = transform
         self.destination_dir = self.root_dir / self.split
-        if prefetch and not _has_images(self.destination_dir):
+        if prefetch and not self._is_prepared(self.destination_dir):
             print(f"Downloading {type(self).__name__} {split} split...")
             self._download_data()
         self.images, self.labels, self.folder_names = self._load_data()
         self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def _is_prepared(cls, destination_dir: Path) -> bool:
+        """Whether ``destination_dir`` already holds the benchmark (loaders with extra completeness checks override)."""
+        return _has_images(destination_dir)
 
     @classmethod
     def prepare_split(cls, root_dir, split: str = "test", force: bool = False) -> None:
@@ -2502,15 +2507,52 @@ class SynthbusterDataset(_TestOnlyImageDataset):
     1000 fakes each. Used by SPAI (Table 1) and other detectors as a high-quality diffusion test set.
     Sourced from Zenodo record 10066460 (synthbuster.zip = <gen>/*.png, fakes only). Synthbuster ships
     NO reals (the originals are RAISE-1k, which require a separate request); this loader pairs each
-    generator's fakes against a shared clean-real pool (GenImage nature photos) as a documented proxy —
-    the detector keys on generative artifacts, so proxy reals give a valid per-generator AP/AUROC."""
+    generator's fakes against a shared clean-real pool as a documented proxy — the detector keys on
+    generative artifacts, so proxy reals give a valid per-generator AP/AUROC. The pool is
+    ``DatasetConfig.real_pool`` or, when unset, GenImage's nature reals at ``<root>/../GenImage/test/real``."""
     zenodo_record = "10066460"
     zenodo_file = "synthbuster.zip"
+    sibling_pool = Path("..") / "GenImage" / "test" / "real"
+
+    def __init__(self, root_dir, split: Literal["test"] = "test", transform: AIGITransformations | None = None,
+                 prefetch: bool = False, real_pool=None):
+        self.real_pool = real_pool            # read by _download_data, which the base constructor may call
+        super().__init__(root_dir, split, transform, prefetch)
+
+    @classmethod
+    def _gens_without_reals(cls, destination_dir: Path) -> list[Path]:
+        """Generator folders that have fakes but no reals (the fakes-only layout older versions wrote)."""
+        return [g for g in sorted(destination_dir.glob("*")) if _has_images(g / "1_fake") and not _has_images(g / "0_real")]
+
+    @classmethod
+    def _is_prepared(cls, destination_dir: Path) -> bool:
+        return _has_images(destination_dir) and not cls._gens_without_reals(destination_dir)
+
+    @classmethod
+    def _find_reals(cls, root_dir: Path, real_pool, cap: int) -> list[Path]:
+        """The first ``cap`` sorted images of the proxy real pool; raises when there is none (never fakes only)."""
+        pool = Path(real_pool).expanduser() if real_pool else (root_dir / cls.sibling_pool).resolve()
+        reals = sorted(p for p in pool.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
+        if not reals:
+            raise FileNotFoundError(
+                f"Synthbuster ships no reals, and no real images were found in '{pool}'. Point "
+                f"DatasetConfig.real_pool at a folder of real photos (e.g. GenImage's test/real), put GenImage next to "
+                f"the Synthbuster root as '{(root_dir / cls.sibling_pool).resolve()}', or evaluate with "
+                f"benchmark/bench_eval.py --reals DIR.")
+        return reals
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(self.root_dir, self.split, force=force, real_pool=self.real_pool)
 
     @classmethod
     def prepare_split(cls, root_dir, split="test", force=False, real_pool=None, cap=1000):
         root_dir = Path(root_dir); dest = root_dir / split
-        if not force and _has_images(dest):
+        if not force and cls._is_prepared(dest):
+            return
+        reals = cls._find_reals(root_dir, real_pool, cap)      # before the download: fail fast without a pool
+        if not force and _has_images(dest):                    # fakes-only layout: only add the reals
+            for gen_dir in cls._gens_without_reals(dest):
+                _link_images(reals, gen_dir / "0_real")
             return
         import urllib.request
         dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
@@ -2521,18 +2563,10 @@ class SynthbusterDataset(_TestOnlyImageDataset):
             urllib.request.urlretrieve(url, zpath)
         staging = _extract_archives_into(dl, root_dir / "_staging")
         inner = next((p for p in staging.rglob("synthbuster") if p.is_dir()), staging)
-        # proxy reals: a clean real-photo pool (GenImage nature by default)
-        pool = real_pool or "/hddstore/ssalehi/SynthScope/GenImage/test/real"
-        reals = sorted(p for p in Path(pool).glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
         for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
             fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
-            for label, imgs in (("1_fake", fakes), ("0_real", reals)):
-                out = dest / gen_dir.name / label; out.mkdir(parents=True, exist_ok=True)
-                for i, p in enumerate(imgs):
-                    tgt = out / f"{i:05d}_{p.name}"
-                    if not tgt.exists():
-                        try: os.link(p, tgt)
-                        except OSError: shutil.copy2(p, tgt)
+            _link_images(fakes, dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
         shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
@@ -3068,7 +3102,12 @@ class _TestOnlyImageModule:
         cfg = config.DatasetConfig
         self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         self.test_dataset = self.DATASET_CLASS(
-            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)))
+            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)),
+            **self._dataset_kwargs(cfg))
+
+    def _dataset_kwargs(self, cfg):
+        """Extra keyword arguments for ``DATASET_CLASS`` taken from DatasetConfig (none by default)."""
+        return {}
 
     def train_dataloader(self):
         return None
@@ -3105,6 +3144,9 @@ class GenImageFullDatasetModule(_TestOnlyImageModule):
 
 class SynthbusterDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = SynthbusterDataset
+
+    def _dataset_kwargs(self, cfg):
+        return {"real_pool": cfg.get("real_pool", None)}
 
 
 class RealChainDatasetModule(_TestOnlyImageModule):
