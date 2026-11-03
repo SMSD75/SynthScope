@@ -209,6 +209,16 @@ def combined(synthscope, official):
     return a
 
 
+NOTE_MAX = 400
+
+
+def clip_note(note, limit=NOTE_MAX):
+    """``note`` cut at a word boundary within ``limit`` characters, with an ellipsis (never ends mid-number)."""
+    if len(note) <= limit:
+        return note
+    return note[:limit - 1].rsplit(" ", 1)[0].rstrip(",;:( ") + "\u2026"
+
+
 def match_val(model, name):
     """Return (synthscope, official, matched_substr) for the best VAL hit. A prefix match wins over a
     mid-string match (so 'In-the-wild (Co-Spy-Bench ...)' matches the In-the-wild entry, not Co-Spy-Bench)."""
@@ -275,7 +285,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
             "ours_synthscope": fmt_ours(synthscope),
             "ours_official": fmt_ours(official),
             "status": status,
-            "note": note[:400],
+            "note": clip_note(note),
         })
         audit.append((model, name[:38], fmt_paper(paper)[:22],
                       (fmt_ours(synthscope) or "-")[:22], (fmt_ours(official) or "-")[:22],

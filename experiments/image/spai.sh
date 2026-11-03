@@ -10,8 +10,9 @@
 #   optimizer AdamW 5e-4, weight decay 0.05 (none on biases / 1-D), batch 72, 35 epochs, 5-epoch warmup from 2.5e-7,
 #             cosine to 2.5e-7 per step, fp16 mixed precision, seed 0; every epoch is saved (model_<epoch>.pth, the
 #             README's --save-all; the authors released epoch 13) and validated
-#   memory    batch 72 needs a 48 GB GPU; GRAD_ACCUM=2 runs two micro-batches of 36 on a 24 GB GPU with the same schedule
-# Evaluate:  python benchmark/bench_eval.py --model spai --ckpt <save_path>/model_best.pth --benchmark synthbuster --data <...>
+#   memory    batch 72 needs a 48 GB GPU; GRAD_ACCUM=3 runs three micro-batches of 24 per official batch of 72 on a 24 GB GPU
+#             with the same schedule (the retrain, job 267192; two of 36 run out of memory)
+# Evaluate:  python benchmark/bench_eval.py --model spai --dataset synthbuster --root <Synthbuster> --ckpt <save_path>/model_best.pth
 # Requires:  pip install "albumentations==1.4.14" "albucore==0.0.16" (the versions the official code pins)
 export TRITON_CACHE_DIR=${TRITON_CACHE_DIR:-/nvmestore/ssalehi/.triton}
 export HF_HOME=${HF_HOME:-/nvmestore/ssalehi/.cache/huggingface}

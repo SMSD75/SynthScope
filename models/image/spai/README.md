@@ -37,7 +37,7 @@ SPAI's backbone is a ViT-B/16 pre-trained with **Masked Frequency Modeling** (MF
 | `spai/models/vision_transformer.py` | The exact ViT architecture the MFM checkpoint was trained with, plus its `return_features` path that exposes all intermediate blocks' patch tokens | Vendored **verbatim** as `vision_transformer.py`; instantiated with `return_features=True`, `intermediate_layers = range(12)` |
 | `spai/models/filters.py` | The exact FFT high/low-frequency split and circular-mask convention | Vendored **verbatim** as `filters.py` |
 
-The remaining logic (projectors, SRS, SCV, classifier) is re-implemented crisply in `spai.py`; it is **not** a copy of the upstream `sid.py` (which also carries any-resolution, ONNX export, and attention-export code we don't need).
+The remaining logic (projectors, SRS, SCV, classifier) is re-implemented crisply in `spai.py`; it is **not** a copy of the upstream `sid.py` (which also carries ONNX-export and attention-export code we don't need; the any-resolution patch tiling and the Spectral Context Attention it contains are re-implemented in `spai.py` too).
 
 ## Equivalence with the official model
 
@@ -94,8 +94,8 @@ github.com/mever-team/spai), ported faithfully:
 | Model | frozen MFM ViT-B/16 (stochastic depth 0.1 in training), dropout 0.5 in the projectors, the SCA and the head | `freeze_backbone`, `drop_path_rate: 0.1`, `sca_dropout: 0.5` |
 | Optimizer | AdamW 5e-4, weight decay 0.05 (none on biases / 1-D), layer decay 0.8 (backbone only, so inactive), no clipping | `no_weight_decay_1d: true` |
 | Schedule | 35 epochs, timm cosine stepped per iteration: warmup from 2.5e-7 over 5 epochs, floor 2.5e-7 | trainer mode `timm_cosine` |
-| Batch / precision | 72, APEX AMP O2 (fp16) | 72 (`GRAD_ACCUM=2`: 2 x 36 on a 24 GB GPU, same schedule), fp16 autocast |
-| Selection | the epoch with the lowest validation loss | `model_best.pth` (each improving epoch is kept as `model_<epoch>.pth`; losses in `val_losses.json`) |
+| Batch / precision | 72, APEX AMP O2 (fp16) | 72 (`GRAD_ACCUM=3`: three micro-batches of 24 per official batch of 72 on a 24 GB GPU, same schedule; two of 36 run out of memory), fp16 autocast |
+| Selection | the epoch with the lowest validation loss | `model_best.pth` (`save_all: true` keeps every epoch as `model_<epoch>.pth`, like `--save-all`; losses in `val_losses.json`) |
 
 The released checkpoint's backbone equals the MFM initialization up to fp16 rounding (largest difference 1e-3), which
 confirms the backbone stays frozen (weight decay never reaches it). The dataset needs `pip install
@@ -116,7 +116,7 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | GenImage-8 (cross-dataset, SynthScope benchmark) | — | mAP=94.22 / AUROC=94.28 / acc=87.44 | mAP=94.67 / AUROC=94.77 / acc=87.25 | reproduced (+0.45 mAP vs the official weights) |
 | Synthbuster (9 gen) | — | mAP=96.75 / AUROC=96.97 / acc=89.53 | mAP=95.76 / AUROC=96.37 / acc=88.14 | reproduced (-0.99 mAP vs the official weights) |
 
-The served native-res path **reproduces and beats** the vendored-official number (91.33 mAP on GenImage) and lifts Synthbuster from 55.67 (fixed-448) to 96.75 mAP. **SynthScope_official** = authors' released weights run through the SynthScope class · **SynthScope_train** = SynthScope class trained with the official recipe by `experiments/image/spai.sh` · reference = no comparable paper number · missing = not yet evaluated.
+The served native-res path **reproduces and beats** the vendored-official number (91.33 mAP on GenImage) and lifts Synthbuster from 55.67 (fixed-448) to 96.75 mAP. **SynthScope_official** = authors' released weights run through the SynthScope class · **SynthScope_train** = SynthScope class trained with the official recipe by `experiments/image/spai.sh` · reproduced = SynthScope_train within about 1 point of SynthScope_official (SPAI's paper reports no number on these benchmarks) · reference = no comparable paper number · missing = not yet evaluated.
 
 ### Retrain with the official recipe
 
@@ -146,7 +146,7 @@ The SPAI model is called through the shared `compute_loss(batch)` interface used
 |---|---|
 | fp16 autocast instead of APEX O2 | APEX is not a dependency; both run the forward in fp16 with fp32 master weights and dynamic loss scaling. |
 | COCO reals read from the original train2017 JPEGs | as the official script. |
-| Only `vision_transformer.py` and `filters.py` are vendored | The rest of the pipeline is re-implemented crisply and verified bit-identical to upstream `MFViT`, so vendoring the full `sid.py` would just duplicate unused code (ONNX/attention export, any-resolution). |
+| Only `vision_transformer.py` and `filters.py` are vendored | The rest of the pipeline is re-implemented crisply and verified bit-identical to upstream `MFViT`, so vendoring the full `sid.py` would just duplicate unused code (ONNX/attention export); the any-resolution path is re-implemented in `spai.py` and is the one served. |
 | Uses Hydra configs, Accelerate, and SynthScope metrics | Keeps training, validation, testing, logging, and distributed support consistent with the rest of this project. |
 
 These are scope/integration differences rather than conceptual changes: the detector still uses the frozen MFM backbone, the same frequency split, the same per-block projection, the same SRS statistics, the same learnable spectral-context aggregation, and the same BCE objective.

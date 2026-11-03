@@ -350,7 +350,7 @@
       "ours_synthscope": "mAP=98.95 / acc=95.68 / AUROC=98.23",
       "ours_official": "mAP=97.93 / AUROC=97.04",
       "status": "reproduced",
-      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 98.95 AP (AUROC 98.23, balanced acc 95.68 at the refitted calibration; tag d3_genvideo, job 270428, after the GIF decode fix: WildScrape 96.33 vs paper 96.49, was 98.21 when GIFs decoded as black clips). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271"
+      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 98.95 AP (AUROC 98.23, balanced acc 95.68 at the refitted calibration; tag d3_genvideo, job 270428, after the GIF decode fix: WildScrape 96.33 vs paper 96.49, was 98.21 when GIFs decoded as black clips). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job\u2026"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only)",
@@ -380,7 +380,7 @@
       "ours_synthscope": "mAP=92.15 / acc=84.86 / AUROC=90.86",
       "ours_official": "mAP=84.91 / AUROC=82.83",
       "status": "reference",
-      "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28: without"
+      "note": "Subsample: the first 1000 clips of tar part 1 for the 4 generators on Hugging Face (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); OpenSora and StreamingT2V are not released there. The paper's values for those 4 average 84.95; the official D3 code gives 84.91 (MS 96.30, Pika 98.79, T2VZ 46.36, VC2 98.21; tag d3_official_vidprom, job 252291). SynthScope's engine gives 92.15 (T2VZ 71.28\u2026"
     }
   ],
   "d3qe": [
@@ -484,7 +484,7 @@
       "ours_synthscope": "mAP=98.07 / acc=91.35 / AUROC=98.42",
       "ours_official": "mAP=97.74 / acc=89.37 / AUROC=98.21",
       "status": "reproduced",
-      "note": "Official checkpoint through SynthScope, fakes JPEG q96 (bench_eval --dataset genimage_full --jpeg-fakes 96): 89.37 +- 11.08 (mAP 97.74, AUROC 98.21), 2.3 pt below the paper; ADM 85.40, BigGAN 82.77, GLIDE 88.17, Midjourney 95.17, SD-v1.4 98.72, SD-v1.5 98.87, VQDM 67.03, Wukong 98.80. VQDM and BigGAN are the weak subsets. The same JPEG step reproduces AIGCDetect and ForenSynths exactly, so the gap"
+      "note": "Official checkpoint through SynthScope, fakes JPEG q96 (bench_eval --dataset genimage_full --jpeg-fakes 96): 89.37 +- 11.08 (mAP 97.74, AUROC 98.21), 2.3 pt below the paper; ADM 85.40, BigGAN 82.77, GLIDE 88.17, Midjourney 95.17, SD-v1.4 98.72, SD-v1.5 98.87, VQDM 67.03, Wukong 98.80. VQDM and BigGAN are the weak subsets. The same JPEG step reproduces AIGCDetect and ForenSynths exactly, so the\u2026"
     },
     {
       "benchmark": "DRCT-2M (16D)",
@@ -534,7 +534,7 @@
       "ours_synthscope": "mAP=92.8 / acc=80.79 / AUROC=93.7",
       "ours_official": "mAP=91.13 / acc=81.43 / AUROC=92.11",
       "status": "reproduced",
-      "note": "Official checkpoint through SynthScope, fakes JPEG q96: 81.43 +- 13.84 (mAP 91.13, AUROC 92.11) over all 13 CNNDetection test generators, matching the paper's 81.4 +- 13.9, so the paper's '11G' most likely covers the same 13 sets. Our guess of the 11 UnivFD GAN subsets (without StyleGAN2 and WhichFaceIsReal) gives 83.30 +- 11.51 instead. Without the JPEG step: 79.71 (tags dda_cnndetection_jpeg96, "
+      "note": "Official checkpoint through SynthScope, fakes JPEG q96: 81.43 +- 13.84 (mAP 91.13, AUROC 92.11) over all 13 CNNDetection test generators, matching the paper's 81.4 +- 13.9, so the paper's '11G' most likely covers the same 13 sets. Our guess of the 11 UnivFD GAN subsets (without StyleGAN2 and WhichFaceIsReal) gives 83.30 +- 11.51 instead. Without the JPEG step: 79.71 (tags\u2026"
     },
     {
       "benchmark": "AIGCDetectBenchmark (7G + 10D, fakes JPEG q96)",
@@ -1078,7 +1078,7 @@
       "ours_synthscope": "mAP=92.7 / acc=86.87 / AUROC=95.9",
       "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the pa"
+      "note": "REPRODUCED: SynthScope mAP 92.70 vs paper Main-task avg-acc 93.01 (the paper's headline; near-exact). SynthScope's accuracy (86.87) is the uncalibrated argmax accuracy and the SynthScope test set spans 8 generators (cogvideo/mora/ms/musev/pika/svd/t2vz/vc2 from bitmind/GenVidBench) rather than the paper's exact 4-gen Main subset, so the means are not 1:1 comparable, but mAP/mAUROC reproduce the\u2026"
     },
     {
       "benchmark": "C) DeMamba one-to-many generalization (Table 5)",
@@ -1088,7 +1088,7 @@
       "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "Not run as the one-to-many DeMamba protocol in SynthScope. SynthScope DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 \u2014 this is NOT a paper protocol (it shifts the real-video source too) and is documented in the restrav README as a stress test, not a repro target. The proper one-tr"
+      "note": "Not run as the one-to-many DeMamba protocol in SynthScope. SynthScope DID run restrav on GenVideo-Val but as a cross-DATASET transfer (train on VidProM/DeMamba pool, test GenVideo-Val), scoring only acc 31.54 / mAP 59.16 / mAUROC 43.90 \u2014 this is NOT a paper protocol (it shifts the real-video source too) and is documented in the restrav README as a stress test, not a repro target. The proper\u2026"
     },
     {
       "benchmark": "D) Veo3 zero-shot generalization (Sec 7-D)",
@@ -1172,7 +1172,7 @@
       "ours_synthscope": "",
       "ours_official": "",
       "status": "missing",
-      "note": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) SynthScope cannot reproduce the protocol: SynthScope implements ONLY the FIXED-resolution MFViT variant and deliberately omits the any-resolution Spectral Context Attention wrapper (models/image/spai/README.md 'Scope "
+      "note": "Eval set not on disk: Synthbuster plus the SD3 / MJv6.1 / GigaGAN / Flux fakes (authors' GDrive) and the RAISE / FODB / OpenImages / ImageNet / COCO test reals are not staged. The served path follows the protocol (native-resolution any-res PatchBasedMFViT wrapper with Spectral Context Attention), but SynthScope reports mAP/acc, not the paper's AUC."
     },
     {
       "benchmark": "GenImage (cross-dataset, SynthScope benchmark)",
@@ -1182,7 +1182,7 @@
       "ours_synthscope": "mAP=94.67 / acc=87.25 / AUROC=94.77",
       "ours_official": "mAP=94.22 / AUROC=94.28",
       "status": "reference",
-      "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33. The official-recipe retrain in SynthScope (epoch 8) gets 94.67 mAP / 94.77 mAUROC / 87.25 acc on the same protocol, +0.4"
+      "note": "Served official weights (native-res, 300/gen): 94.22 mAP / 94.28 AUROC / 87.44 acc. Official-recipe retrain, epoch 8 (train job 267192; eval jobs 273444 / 273445): 94.67 / 94.77 / 87.25, +0.45 mAP vs the official weights. Epoch 17: 93.52 / 93.48 / 84.88."
     },
     {
       "benchmark": "Synthbuster",
@@ -1236,7 +1236,7 @@
       "ours_synthscope": "mAP=82.38 / acc=56.88 / AUROC=83.51",
       "ours_official": "",
       "status": "reproduced",
-      "note": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and SynthScope decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported pe"
+      "note": "REPRODUCED (slightly ABOVE paper): SynthScope mAUROC 83.51 / mAP 82.38 vs paper avg AUC 0.80 / AP 0.80 (+~2-3 pts). Difference attributable to SynthScope recomputing calibration on GenVideo reals (recompute_params=true) instead of shipped VATEX params, and SynthScope decoding all gens at a fixed 16-frame@8fps window (no per-duration 1 s split for HotShot/MoonValley). Within the paper's reported\u2026"
     },
     {
       "benchmark": "VideoFeedback (TIGER-Lab, 11 generators + DiDeMo + Panda70M)",
@@ -1256,7 +1256,7 @@
       "ours_synthscope": "mAP=82.59 / acc=57.34 / AUROC=84.0",
       "ours_official": "",
       "status": "below",
-      "note": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in ComGen"
+      "note": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in\u2026"
     }
   ],
   "vib_net": [
@@ -1268,7 +1268,7 @@
       "ours_synthscope": "mAP=94.08 / acc=85.22",
       "ours_official": "",
       "status": "reproduced",
-      "note": "Trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh, job 267846), evaluated on the paper's 15 generators (7 GenImage + 8 ForenSynths GANs) with the official model and test transform (registry vib_net_official; tags vib_net_trained_noresize_genimage7 / _forensynths8, job 267928). The UniversalFakeDetect resize-256 pipeline gave 82.98 / 70.20 (job 2"
+      "note": "Trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh, job 267846), evaluated on the paper's 15 generators (7 GenImage + 8 ForenSynths GANs) with the official model and test transform (registry vib_net_official; tags vib_net_trained_noresize_genimage7 / _forensynths8, job 267928). The UniversalFakeDetect resize-256 pipeline gave 82.98 / 70.20 (job\u2026"
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP and ACC",
