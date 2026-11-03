@@ -84,12 +84,15 @@ case "$MODEL" in
         ModelConfig.train_transform_list=$T_CLIP_TRAIN ModelConfig.val_transform_list=$T_CLIP_EVAL)
     EPOCHS=${EPOCHS_OVERRIDE:-3} ;;
   spai)
+    # The 448 GenImage-path (spai_ldm) recipe, not experiments/image/spai.sh's official spai_train recipe.
     OV=(trainer@TrainerConfig=image/spai model@ModelConfig=image/spai
         dataset@DatasetConfig=image/spai_ldm
         ++ModelConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]"
         ++ModelConfig.val_transform_list="[resize_short_448,center_crop_448,to_dtype]"
         ++ModelConfig.test_transform_list="[resize_short_448,center_crop_448,to_dtype]")  # 448 raw [0,1] -> 2x2 grid + SCA
-    EPOCHS=${EPOCHS_OVERRIDE:-5} ;;
+    EPOCHS=${EPOCHS_OVERRIDE:-5}
+    WARMUP=$(( (EPOCHS * 5 + 17) / 35 )); [ "$WARMUP" -ge 1 ] || WARMUP=1   # the official 5 warmup epochs of 35, scaled
+    OV+=(++TrainerConfig.timm_cosine.warmup_epochs=$WARMUP) ;;
   co_spy)
     OV=(trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy
         dataset@DatasetConfig=image/cospy_subset)
