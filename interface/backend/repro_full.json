@@ -1178,21 +1178,21 @@
       "benchmark": "GenImage (cross-dataset, SynthScope benchmark)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "SynthScope mAP=88.8 / acc=82.81 \u00b7 official mAP=94.22 / AUROC=94.28",
-      "ours_synthscope": "mAP=88.8 / acc=82.81",
+      "ours": "SynthScope mAP=94.67 / acc=87.25 / AUROC=94.77 \u00b7 official mAP=94.22 / AUROC=94.28",
+      "ours_synthscope": "mAP=94.67 / acc=87.25 / AUROC=94.77",
       "ours_official": "mAP=94.22 / AUROC=94.28",
       "status": "reference",
-      "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
+      "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33. The official-recipe retrain in SynthScope (epoch 8) gets 94.67 mAP / 94.77 mAUROC / 87.25 acc on the same protocol, +0.4"
     },
     {
       "benchmark": "Synthbuster",
       "metric": "AUROC",
       "paper": "\u2014",
-      "ours": "mAP=96.75 / AUROC=96.97 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=95.76 / acc=88.14 / AUROC=96.37 \u00b7 official mAP=96.75 / AUROC=96.97",
+      "ours_synthscope": "mAP=95.76 / acc=88.14 / AUROC=96.37",
       "ours_official": "mAP=96.75 / AUROC=96.97",
       "status": "reference",
-      "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+      "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path). The official-recipe retrain (epoch 8) gets 95.76 mAP / 96.37 mAUROC / 88.14 acc, -0.99 mAP vs the official weights."
     }
   ],
   "split": [

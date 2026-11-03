@@ -119,10 +119,12 @@ VAL = {
     ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
-    # SPAI now SERVES official weights remapped into the SynthScope class, scored at NATIVE resolution
-    # (the faithful any-res path). official = that served number; synthscope = the superseded from-scratch retrain.
-    ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "synthscope": {"map": 88.8, "acc": 82.81}},
-    ("spai", "Synthbuster"):             {"official": {"map": 96.75, "auroc": 96.97}},
+    # SPAI serves the official weights remapped into the SynthScope class, scored at NATIVE resolution (the faithful
+    # any-res path). official = that served number; synthscope = the official-recipe retrain in SynthScope, epoch 8
+    # (lowest validation loss; experiments/image/spai.sh job 267192; evals jobs 273445 / 273597). Synthbuster reals = a
+    # GenImage-nature proxy (200 per generator).
+    ("spai", "GenImage"):                {"official": {"map": 94.22, "auroc": 94.28}, "synthscope": {"map": 94.67, "auroc": 94.77, "acc": 87.25}},
+    ("spai", "Synthbuster"):             {"official": {"map": 96.75, "auroc": 96.97}, "synthscope": {"map": 95.76, "auroc": 96.37, "acc": 88.14}},
     # D3 now uses the faithful protocol (X-CLIP-B/16 + 10% edge-crop). On GenVideo, AUROC/acc are the
     # robust metrics (the mAP harness is degenerate: 10000 reals : as few as 56 fakes/generator).
     # D3 (training-free): "synthscope" = SynthScope's D3, "official" = the official D3 code end to end on the same data
