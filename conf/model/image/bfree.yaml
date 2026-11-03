@@ -9,3 +9,8 @@ model_type: bfree
 timm_arch: vit_base_patch14_reg4_dinov2.lvd142m
 crop_size: 504
 pretrained_backbone: false
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [to_dtype, normalize_imagenet]
+# Native resolution (variable size): an end-of-training test through the training loaders needs
+# DatasetConfig.test_batch_size=1 (no training recipe exists).

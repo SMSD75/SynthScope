@@ -38,83 +38,66 @@ export DINO_V3_WEIGHTS_DIR="${DINO_V3_WEIGHTS_DIR:-/hddstore/ssalehi/SynthScope/
 export CUDA_VISIBLE_DEVICES="$GPUS"
 NPROC=$(awk -F',' '{print NF}' <<< "$GPUS")
 
-# Common transform lists.
+# Transform lists come from each model config (conf/model/image/<key>.yaml); the overrides below are this
+# script's recipe where it differs from that config.
 T_CLIP_TRAIN="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip]"
 T_CLIP_EVAL="[resize_short_256,center_crop_224,to_dtype,normalize_clip]"
-T_IMNET_TRAIN="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype,normalize_dinov2]"
-T_IMNET_EVAL="[resize_short_256,center_crop_224,to_dtype,normalize_dinov2]"
-T_RAW_TRAIN="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype]"
-T_RAW_EVAL="[resize_short_256,center_crop_224,to_dtype]"
 
 OV=()  # Hydra overrides
 case "$MODEL" in
   clip)
-    OV=(ModelConfig.model_type=clip ModelConfig.backbone_name=CLIP:ViT-L/14
-        ModelConfig.use_adapter=false ModelConfig.bottleneck_dim=64 ModelConfig.freeze_backbone=true
-        dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_transform_list=$T_CLIP_TRAIN DatasetConfig.eval_transform_list=$T_CLIP_EVAL)
+    OV=(model@ModelConfig=image/clip
+        dataset@DatasetConfig=image/cnndetection)
     EPOCHS=${EPOCHS_OVERRIDE:-2} ;;
   dinov2)
-    OV=(ModelConfig.model_type=dinov2 ModelConfig.backbone_name=dinov2_vitl14
-        ModelConfig.use_adapter=false ModelConfig.bottleneck_dim=64 ModelConfig.freeze_backbone=true
-        dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_transform_list=$T_IMNET_TRAIN DatasetConfig.eval_transform_list=$T_IMNET_EVAL)
+    OV=(model@ModelConfig=image/dinov2
+        dataset@DatasetConfig=image/cnndetection)
     EPOCHS=${EPOCHS_OVERRIDE:-2} ;;
   dinov3)
     # Frozen DINOv3 ViT-L/16 probe (weights at $DINO_V3_WEIGHTS_DIR). DINOv3 normalization + 256 crops.
-    OV=(ModelConfig.model_type=dinov3 ModelConfig.backbone_name=dinov3_vitl16
-        ModelConfig.use_adapter=false ModelConfig.bottleneck_dim=64 ModelConfig.freeze_backbone=true
-        dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_transform_list="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_256,random_horizontal_flip,to_dtype,normalize_dinov3]"
-        DatasetConfig.eval_transform_list="[resize_short_256,center_crop_256,to_dtype,normalize_dinov3]")
+    OV=(model@ModelConfig=image/dinov3
+        dataset@DatasetConfig=image/cnndetection)
     EPOCHS=${EPOCHS_OVERRIDE:-2} ;;
   pgc)
     # LoRA-DINOv2-Large + residual stream. Train on the ~120K ProGAN subset for turnaround;
-    # crop-only (no resize) preserves the quantization residual; normalize_dinov2 = ImageNet.
+    # crop-only (no resize) preserves the quantization residual.
     OV=(trainer@TrainerConfig=image/pgc model@ModelConfig=image/pgc
         dataset@DatasetConfig=image/cospy_subset
         DatasetConfig.train_batch_size=32 DatasetConfig.val_batch_size=64 DatasetConfig.test_batch_size=64
-        DatasetConfig.train_transform_list="[random_crop_224,random_horizontal_flip,to_dtype,normalize_dinov2]"
-        DatasetConfig.eval_transform_list="[center_crop_224,to_dtype,normalize_dinov2]")
+        ModelConfig.train_transform_list="[random_crop_224,random_horizontal_flip,to_dtype,normalize_imagenet]")
     EPOCHS=${EPOCHS_OVERRIDE:-2} ;;
   adapted_dino)
     # Adapters at every block retain backbone activations for backprop -> small batch.
-    OV=(ModelConfig.model_type=adapted_dino ModelConfig.backbone_name=dinov2_vitl14
-        ModelConfig.use_adapter=true ModelConfig.bottleneck_dim=64 ModelConfig.freeze_backbone=true
+    OV=(model@ModelConfig=image/adapted_dino
         dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_batch_size=64 DatasetConfig.val_batch_size=256 DatasetConfig.test_batch_size=256
-        DatasetConfig.train_transform_list=$T_IMNET_TRAIN DatasetConfig.eval_transform_list=$T_IMNET_EVAL)
+        DatasetConfig.train_batch_size=64 DatasetConfig.val_batch_size=256 DatasetConfig.test_batch_size=256)
     EPOCHS=${EPOCHS_OVERRIDE:-2} ;;
   cnn)
     # Full ResNet-50 fine-tune (backbone trains) -> moderate batch.
-    OV=(ModelConfig.model_type=cnn ModelConfig.freeze_backbone=false
+    OV=(model@ModelConfig=image/cnn
         dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_batch_size=128 DatasetConfig.val_batch_size=512 DatasetConfig.test_batch_size=512
-        DatasetConfig.train_transform_list=$T_IMNET_TRAIN DatasetConfig.eval_transform_list=$T_IMNET_EVAL)
+        DatasetConfig.train_batch_size=128 DatasetConfig.val_batch_size=512 DatasetConfig.test_batch_size=512)
     EPOCHS=${EPOCHS_OVERRIDE:-3} ;;
   vib_net)
     OV=(trainer@TrainerConfig=image/vib_net model@ModelConfig=image/vib_net
         dataset@DatasetConfig=image/genimage
-        DatasetConfig.train_transform_list=$T_CLIP_TRAIN DatasetConfig.eval_transform_list=$T_CLIP_EVAL)
+        ModelConfig.train_transform_list=$T_CLIP_TRAIN ModelConfig.val_transform_list=$T_CLIP_EVAL)
     EPOCHS=${EPOCHS_OVERRIDE:-3} ;;
   spai)
     OV=(trainer@TrainerConfig=image/spai model@ModelConfig=image/spai
         dataset@DatasetConfig=image/spai_ldm
-        DatasetConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]"
-        DatasetConfig.eval_transform_list="[resize_short_448,center_crop_448,to_dtype]")  # 448 raw [0,1] -> 2x2 grid + SCA
+        ModelConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]"
+        ModelConfig.val_transform_list="[resize_short_448,center_crop_448,to_dtype]"
+        ModelConfig.test_transform_list="[resize_short_448,center_crop_448,to_dtype]")  # 448 raw [0,1] -> 2x2 grid + SCA
     EPOCHS=${EPOCHS_OVERRIDE:-5} ;;
   co_spy)
     OV=(trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy
-        dataset@DatasetConfig=image/cospy_subset
-        DatasetConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]"
-        DatasetConfig.eval_transform_list="[resize_short_384,center_crop_384,to_dtype]")
+        dataset@DatasetConfig=image/cospy_subset)
     EPOCHS=${EPOCHS_OVERRIDE:-3} ;;
   safe)
     # AIGIBench (the paper recipe) is not on this node; train SAFE from scratch on ProGAN instead.
-    OV=(trainer@TrainerConfig=image/safe ModelConfig.model_type=safe ModelConfig.freeze_backbone=false
-        dataset@DatasetConfig=image/cnndetection
-        DatasetConfig.train_transform_list="[random_crop_256_pad,random_horizontal_flip,random_rotation_180,color_jitter_safe,to_dtype,random_mask_safe]"
-        DatasetConfig.eval_transform_list="[center_crop_256,to_dtype]")
+    OV=(trainer@TrainerConfig=image/safe model@ModelConfig=image/safe
+        dataset@DatasetConfig=image/cnndetection)
     EPOCHS=${EPOCHS_OVERRIDE:-10} ;;
   restrav)
     OV=(trainer@TrainerConfig=video/restrav model@ModelConfig=video/restrav

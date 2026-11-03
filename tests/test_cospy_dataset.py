@@ -3,7 +3,7 @@
 Builds a fake staging tree that mimics the post-download CO-SPY-Bench
 layout, then exercises:
 
-* Hydra composition of ``conf/dataset/cospy.yaml``.
+* Hydra composition of ``conf/dataset/image/cospy.yaml``.
 * ``CoSpyDataset._restructure_to_cnndet_layout`` -- verifies the final
   on-disk tree is identical in shape to CNNDetection (``<class>/
   {0_real,1_fake}/*.png``), with hardlinked reals shared across all
@@ -71,10 +71,10 @@ def _populate_staging_tree(
 
 
 def test_hydra_compose() -> None:
-    print("[1] Composing conf/dataset/cospy.yaml ...")
+    print("[1] Composing conf/dataset/image/cospy.yaml ...")
     cfg = compose_config(
         overrides=[
-            "dataset@DatasetConfig=cospy",
+            "dataset@DatasetConfig=image/cospy",
             "DatasetConfig.root_dir=/tmp/__cospy_dummy__",
             "DatasetConfig.prefetch=false",
         ]
@@ -171,7 +171,7 @@ def test_restructure_and_load() -> None:
         print("[6] Building CoSpyDatasetModule and iterating one batch ...")
         cfg = compose_config(
             overrides=[
-                "dataset@DatasetConfig=cospy",
+                "dataset@DatasetConfig=image/cospy",
                 f"DatasetConfig.root_dir={root}",
                 "DatasetConfig.prefetch=false",
                 "DatasetConfig.test_batch_size=4",

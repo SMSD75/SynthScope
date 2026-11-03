@@ -20,8 +20,9 @@ $CONDA run --no-capture-output -n SynthScope accelerate launch --config_file acc
   --num_processes 4 --main_process_port 29670 \
   main.py trainer@TrainerConfig=image/aide model@ModelConfig=image/aide dataset@DatasetConfig=image/genimage \
   DatasetConfig.root_dir=$DATA/GenImage \
-  DatasetConfig.train_transform_list="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_256,random_horizontal_flip,to_dtype]" \
-  DatasetConfig.eval_transform_list="[resize_short_256,center_crop_256,to_dtype]" \
+  ModelConfig.train_transform_list="[resize_short_256,gaussian_blur,jpeg_compression,random_crop_256,random_horizontal_flip,to_dtype]" \
+  ModelConfig.val_transform_list="[resize_short_256,center_crop_256,to_dtype]" \
+  ModelConfig.test_transform_list="[resize_short_256,center_crop_256,to_dtype]" \
   DatasetConfig.train_batch_size=16 DatasetConfig.val_batch_size=32 DatasetConfig.test_batch_size=32 DatasetConfig.num_workers=12 \
   ++TrainerConfig.epochs=5 ++TrainerConfig.save=true ++TrainerConfig.save_policy=min ++TrainerConfig.save_interval=1 ++TrainerConfig.save_path=$SAVE \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] logger.mode=offline logger.name=aide_faithful \

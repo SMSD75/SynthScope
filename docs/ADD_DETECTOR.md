@@ -19,13 +19,28 @@ for the maintainers and stop.
    - Imports + helper classes at module top-level (repo rule: no nested defs/imports).
    - Add `models/<modality>/<k>/__init__.py` and a `README.md` (see structure below).
 2. **`conf/model/image/<k>.yaml`** (or `video/`): `defaults: [/model/default, _self_]`, then `model_type: <k>`
-   plus any model knobs. Add `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
+   plus any model knobs, and the model's preprocessing as named transform lists:
+   - `eval_transform_list` (required for image models): the **official** test-time preprocessing, used for
+     inference, benchmarks and the end-of-training test;
+   - `train_transform_list`: the training augmentation;
+   - `val_transform_list` (optional): validation during training, when it differs from the eval list;
+   - `test_transform_list` (optional): replaces the eval list for the end-of-training test only, e.g. a batchable
+     stand-in for SPAI's native-resolution eval, or AIDE's five views with the long side capped at 1024 to bound
+     dataloader-worker memory; benchmarks and inference still use `eval_transform_list`.
+
+   Each name is a step built by `AIGITransformations` in `transformations.py`; add new step names there.
+   The model's lists take precedence over the dataset's: the `train/eval/val_transform_list` of a
+   `conf/dataset/...` config are fallbacks, used only for models whose config sets none, and a warning is printed
+   when a dataset list is shadowed. Validation and test pipelines run on PIL images like inference, so an
+   end-of-training test with `eval_transform_list` preprocesses exactly as the benchmarks do.
+   Video models are out of scope for now: their preprocessing is the registry's video settings plus the dataset
+   lists. Add `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
 3. **Dispatch** — add a branch in `trainer.py` `_build_model` (the `if model_type == "<k>": return SynthScope<Name>Model(config)` chain, ~line 69+). The interface lazy-imports by `model_type` in `interface/backend/engine.py` — mirror it if needed.
 4. **Interface registry** — `interface/backend/registry.py` `_add(ModelSpec(...))`:
    - `key`, `name`, `paper`, `modality` (`image`|`video`), `overrides=["model@ModelConfig=image/<k>"]`,
    - `predict_kind`: `ce` (logits→`softmax[:,1]`), `bce` (`sigmoid`), `bce_npr`, `vib`, or `video`,
    - `checkpoint="<k>.pth"`, `ckpt_kind`: `synthscope` (our trained weights, strict load) **or** `official_<k>` + a `remap=remap_<k>` function (rename official keys → our module names) for the authors' released weights,
-   - `transform`: the eval preprocessing — match the **official** eval exactly (resize vs crop, norm vs none). Add a `tf_*` helper if needed. (Getting this wrong silently tanks results — see SAFE: a resize destroyed the high-freq signal.)
+   - `transform=model_transform("image/<k>")`: builds the eval preprocessing from the model config's `eval_transform_list` — match the **official** eval exactly there (resize vs crop, norm vs none). (Getting this wrong silently tanks results — see SAFE: a resize destroyed the high-freq signal.)
    - `weights`: `"official"` | `"synthscope_trained"` | `"training_free"` (shown in the web UI badge).
 5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 

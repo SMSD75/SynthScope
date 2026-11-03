@@ -1,13 +1,33 @@
+import random
+import re
 from io import BytesIO
-from typing import Callable
+
 import cv2
 import numpy as np
+import torch
+import torchvision.transforms.functional as TF
 import torchvision.transforms.v2 as v2
 from PIL import Image
 from scipy.ndimage import gaussian_filter
 from torchvision import tv_tensors
-import torch
-import random
+
+from models.image.aide.official_arch import AIDEFiveView
+from models.image.cure.preprocess import CuReTransform
+from models.image.effort.preprocess import Cv2SquareResize
+from models.image.moejepa.preprocess import VJEPA2ImageTransform
+
+IMAGENET_MEAN, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
+CLIP_MEAN, CLIP_STD = [0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]
+DINOV3_MEAN, DINOV3_STD = [0.430, 0.411, 0.296], [0.213, 0.156, 0.143]
+SQUARE_RESIZES = (224, 256, 336, 512)        # resize_<n>: both sides to n (aspect not kept)
+SHORT_RESIZES = (256, 384, 448)              # resize_short_<n>: shorter side to n
+CROPS = (224, 256, 336, 384, 448)            # center_crop_<n> (zero-padded when the image is smaller)
+# The sized resize / crop names and their allowed sizes.
+_SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)")
+_SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop": CROPS}
+# Name prefixes of steps that resize inside (whole official pipelines, SPAI's cap, aide_five_view*): an eval list holding
+# one has no native-resolution form.
+_RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "vjepa2_processor", "aide_five_view")
 
 
 class CNNDetAugment:
@@ -77,34 +97,70 @@ class RandomMask:
             mask[top:top + self.patch_size, left:left + self.patch_size] = 0
         return tensor * mask.expand_as(tensor)
 
+
+class ToFloat:
+    """``to_dtype``: an image as a float tensor in [0, 1]. A PIL image goes through ``ToTensor`` (what the inference
+    transforms always used, so their pixels are unchanged); a uint8 tensor (the training loaders) through
+    ``ToDtype(float32, scale=True)``."""
+
+    def __init__(self):
+        self._tensor = v2.ToDtype(torch.float32, scale=True)
+
+    def __call__(self, image):
+        return TF.to_tensor(image) if isinstance(image, Image.Image) else self._tensor(image)
+
+    def __repr__(self):
+        return "ToFloat()"
+
+
+class CapLongSide:
+    """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds ``max_side``; otherwise
+    leave it at native resolution (SPAI's any-resolution path)."""
+
+    def __init__(self, max_side: int):
+        self.max_side = max_side
+
+    def __call__(self, im):
+        w, h = im.size
+        if max(w, h) > self.max_side:
+            s = self.max_side / max(w, h)
+            im = im.resize((max(int(w * s), 224), max(int(h * s), 224)))
+        return im
+
+    def __repr__(self):
+        return f"CapLongSide({self.max_side})"
+
+
 class AIGITransformations:
-    def __init__(self, transform_list: list[Callable]):
+    """A named preprocessing pipeline. Each detector's lists live in its model config (``conf/model/.../<model>.yaml``:
+    ``eval_transform_list``, ``train_transform_list``, optional ``val_transform_list``); the same names build the
+    inference transform (PIL in) and the training transforms (uint8 tensors in).
+
+    With ``pil_input=True`` a uint8 ``[3, H, W]`` image tensor (what the training loaders decode) is converted to a PIL
+    image first, so the pipeline runs exactly the inference code; ``[T, C, H, W]`` video clips are left as they are."""
+
+    def __init__(self, transform_list: list[str], pil_input: bool = False):
         self.transform_list = transform_list
+        self.pil_input = pil_input
         self.transforms = [self._create_transform(transform) for transform in self.transform_list]
-    
+
     def _create_transform(self, transform_name: str):
-        if transform_name == "resize_224":
-            return v2.Resize((224, 224))
-        elif transform_name == "resize_256":               # square, as NPR/FatFormer/CNNDetection-style training (Resize((256, 256)))
-            return v2.Resize((256, 256))
-        elif transform_name == "resize_short_256":
-            return v2.Resize(256)
-        elif transform_name == "resize_short_384":
-            return v2.Resize(384)
-        elif transform_name == "resize_short_448":
-            return v2.Resize(448)
-        elif transform_name == "center_crop_224":
-            return v2.CenterCrop(224)
-        elif transform_name == "center_crop_256":
-            return v2.CenterCrop(256)
-        elif transform_name == "center_crop_384":
-            return v2.CenterCrop(384)
-        elif transform_name == "center_crop_448":
-            return v2.CenterCrop(448)
+        sized = _SIZED.fullmatch(transform_name)
+        if sized:
+            kind, n = sized.group(1), int(sized.group(2))
+            if n not in _SIZES[kind]:
+                raise ValueError(f"Invalid transform name: {transform_name}")
+            if kind == "resize_short":
+                return v2.Resize(n)
+            if kind == "resize":                           # square, e.g. NPR/FatFormer (Resize((256, 256))), OmniAID
+                return v2.Resize((n, n))
+            return v2.CenterCrop(n)
+        elif transform_name == "cap_long_side_1024":       # SPAI: native resolution, long side capped at 1024 (PIL)
+            return CapLongSide(1024)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":
-            return v2.ToDtype(torch.float32, scale=True)
+            return ToFloat()
         elif transform_name == "gaussian_blur":
             return v2.RandomApply(
                 [v2.GaussianBlur(kernel_size=11, sigma=(1e-3, 3.0))], p=0.5
@@ -144,31 +200,48 @@ class AIGITransformations:
         elif transform_name == "aide_five_view":
             # AIDE native-resolution 5-view preprocessing: PIL/tensor -> [5,3,256,256] (DCT patch
             # selection at native res, then resize the selected patches). Must be the LAST transform.
-            from models.image.aide.official_arch import AIDEFiveView
             return AIDEFiveView()
         elif transform_name == "aide_five_view_train":
             # Same, but caps the long side at 1024 before the DCT to bound dataloader-worker memory
             # on large reals (training only; inference uses the uncapped aide_five_view).
-            from models.image.aide.official_arch import AIDEFiveView
             return AIDEFiveView(max_side=1024)
-        elif transform_name == "normalize_dinov2":
-            return v2.Normalize(
-                mean=[0.485, 0.456, 0.406],
-                std=[0.229, 0.224, 0.225]
-            )
+        # normalize_dinov2: the earlier name of normalize_imagenet (DINOv2 uses ImageNet statistics), kept for old configs.
+        elif transform_name in ("normalize_imagenet", "normalize_dinov2"):
+            return v2.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD)
         elif transform_name == "normalize_clip":
-            return v2.Normalize(
-                mean=[0.48145466, 0.4578275, 0.40821073],
-                std=[0.26862954, 0.26130258, 0.27577711],
-            )
+            return v2.Normalize(mean=CLIP_MEAN, std=CLIP_STD)
         elif transform_name == "normalize_dinov3":
-            return v2.Normalize(
-                mean=(0.430, 0.411, 0.296),
-                std=(0.213, 0.156, 0.143),
-            )
+            return v2.Normalize(mean=DINOV3_MEAN, std=DINOV3_STD)
+        # Whole official eval pipelines that are not a chain of the steps above (PIL in, normalized tensor out).
+        elif transform_name == "effort_cv2_resize_224":    # Effort (DeepfakeBench load_rgb): cv2 bicubic squash, PIL out
+            return Cv2SquareResize(224)
+        elif transform_name == "cure_eval":                # CuRe: PNG->JPEG96, 390 crop, 336 resize, JPEG70, mean=std=0.5
+            return CuReTransform()
+        elif transform_name == "vjepa2_processor":         # MoE-JEPA: the V-JEPA 2 video processor on one frame
+            return VJEPA2ImageTransform()
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
-    
+
+    def geometric_steps(self) -> list:
+        """The ``resize_*`` / ``center_crop_*`` steps, in order (they take PIL images too: the web overlay's geometry)."""
+        return [t for name, t in zip(self.transform_list, self.transforms) if _SIZED.fullmatch(name)]
+
+    def normalize_step(self) -> v2.Normalize | None:
+        """The ``Normalize`` step, or None for pipelines that feed [0, 1] pixels (or normalize inside a custom step)."""
+        return next((t for t in self.transforms if isinstance(t, v2.Normalize)), None)
+
+    def without_resize(self) -> "AIGITransformations":
+        """The same pipeline without its ``resize_*`` / ``center_crop_*`` steps, to score images at native resolution.
+        Raises ValueError when a remaining step resizes by itself, as the result would then not be native."""
+        kept = [name for name in self.transform_list if not _SIZED.fullmatch(name)]
+        resizing = [name for name in kept if name.startswith(_RESIZING_STEPS)]
+        if resizing:
+            raise ValueError(f"{self}: {resizing} resize the image themselves, so it has no native-resolution form")
+        return AIGITransformations(kept, pil_input=self.pil_input)
+
+    def __repr__(self):
+        return f"AIGITransformations({self.transform_list})"
+
     def __call__(self, image):
         # A 4D [T, C, H, W] tensor is a video clip. Wrap it as tv_tensors.Video so the v2
         # transforms (crops, flips, normalize, ...) apply with the SAME sampled parameters to
@@ -176,6 +249,8 @@ class AIGITransformations:
         # batch. Single images ([C, H, W] tensors or PIL) pass through unchanged.
         if isinstance(image, torch.Tensor) and image.ndim == 4:
             image = tv_tensors.Video(image)
+        elif self.pil_input and isinstance(image, torch.Tensor) and image.ndim == 3 and image.dtype == torch.uint8:
+            image = TF.to_pil_image(image)
         for transform in self.transforms:
             image = transform(image)
         return image

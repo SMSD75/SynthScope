@@ -16,7 +16,8 @@ cd /ivi/zfs/s0/original_homes/ssalehi/SynthScope
   DatasetConfig.train_batch_size=128 \
   DatasetConfig.val_batch_size=256 \
   DatasetConfig.test_batch_size=256 \
-  DatasetConfig.train_transform_list=[pad_random_crop_224,random_horizontal_flip,color_jitter_pgc,to_dtype,normalize_dinov2] \
-  DatasetConfig.eval_transform_list=[center_crop_224,to_dtype,normalize_dinov2] \
+  ModelConfig.train_transform_list=[pad_random_crop_224,random_horizontal_flip,color_jitter_pgc,to_dtype,normalize_dinov2] \
+  +ModelConfig.val_transform_list=[center_crop_224,to_dtype,normalize_dinov2] \
+  +ModelConfig.test_transform_list=[center_crop_224,to_dtype,normalize_dinov2] \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] \
   logger.name=pgc_progan_fix logger.mode=offline

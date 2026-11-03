@@ -13,8 +13,9 @@ RS=(rsync -aL -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=no")
 echo "node=$(hostname) reals=$(ls $DATA/spai_train/dmid_real/train/ldm/0_real 2>/dev/null|wc -l) $(date)"
 $CONDA run --no-capture-output -n SynthScope accelerate launch --config_file accelerate_config.yaml --num_processes 4 --main_process_port 29672 \
   main.py trainer@TrainerConfig=image/spai model@ModelConfig=image/spai dataset@DatasetConfig=image/spai_ldm DatasetConfig.root_dir=$DATA/spai_train/dmid_real \
-  DatasetConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]" \
-  DatasetConfig.eval_transform_list="[resize_short_448,center_crop_448,to_dtype]" \
+  ModelConfig.train_transform_list="[resize_short_448,gaussian_blur,jpeg_compression,random_crop_448,random_horizontal_flip,to_dtype]" \
+  ModelConfig.val_transform_list="[resize_short_448,center_crop_448,to_dtype]" \
+  ModelConfig.test_transform_list="[resize_short_448,center_crop_448,to_dtype]" \
   DatasetConfig.train_batch_size=8 DatasetConfig.val_batch_size=8 DatasetConfig.test_batch_size=8 DatasetConfig.num_workers=12 \
   ++TrainerConfig.epochs=8 ++TrainerConfig.save=true ++TrainerConfig.save_policy=min ++TrainerConfig.save_interval=1 ++TrainerConfig.save_path=$SAVE \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] logger.mode=offline logger.name=spai_full 2>&1 | grep --line-buffered -vE "libpng (error|warning)"

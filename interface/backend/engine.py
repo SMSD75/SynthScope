@@ -13,7 +13,6 @@ from collections import OrderedDict
 
 import numpy as np
 import torch
-import torchvision.transforms as T
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
@@ -61,14 +60,12 @@ def _overlay_to_png_b64(sal: torch.Tensor, base: Image.Image, out_size: int = 28
 
 
 def _geometric_base(spec, pil: Image.Image) -> Image.Image:
-    """The model's input region in RGB (apply only the Resize/CenterCrop steps of the eval
-    transform, skipping ToTensor/Normalize) so the overlay aligns with the saliency. Custom
+    """The model's input region in RGB (apply only the resize/center-crop steps of the eval
+    transform, skipping to_dtype/normalize) so the overlay aligns with the saliency. Custom
     transforms (AIDE/SPAI native-res) fall back to the native image."""
-    import torchvision.transforms as T
     base = pil.convert("RGB")
-    for t in getattr(spec.transform, "transforms", []) or []:
-        if isinstance(t, (T.Resize, T.CenterCrop)):
-            base = t(base)
+    for t in spec.transform.geometric_steps():
+        base = t(base)
     return base
 
 
@@ -329,7 +326,10 @@ class Engine:
             elif kind == "aide_dct":       # AIDE: native-res DCT per-window energy (patch selection)
                 if pil is None:
                     return None
-                sal = spec.transform.dct_energy_map(pil)       # [nH,Wn]
+                five_view = next((t for t in spec.transform.transforms if hasattr(t, "dct_energy_map")), None)
+                if five_view is None:
+                    return None
+                sal = five_view.dct_energy_map(pil)            # [nH,Wn]
             elif kind == "spai_patch":     # SPAI: per-patch spectral fake-evidence over the 224-grid
                 sal = model.patch_fake_map(x)                  # [nH,nW] or None (five-crop/large grid)
                 if sal is None:
@@ -351,7 +351,7 @@ class Engine:
         t = x[0].detach().float().cpu()
         if t.dim() == 4:
             t = torch.cat(list(t), dim=2)
-        norm = next((s for s in getattr(spec.transform, "transforms", []) if isinstance(s, T.Normalize)), None)
+        norm = spec.transform.normalize_step()
         if norm is not None:
             t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5

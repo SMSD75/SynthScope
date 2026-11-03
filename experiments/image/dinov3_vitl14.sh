@@ -9,9 +9,7 @@ export OMP_NUM_THREADS=1
 # accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py
 
 accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py \
+    model@ModelConfig=image/dinov3 \
     ModelConfig.bottleneck_dim=64 \
-    ModelConfig.model_type=dinov3 \
     ModelConfig.use_adapter=false \
-    DatasetConfig.train_transform_list=[resize_short_256,gaussian_blur,jpeg_compression,random_crop_256,random_horizontal_flip,to_dtype,normalize_dinov3] \
-    DatasetConfig.eval_transform_list=[resize_short_256,center_crop_256,to_dtype,normalize_dinov3] \
     ModelConfig.backbone_name=dinov3_vitl16

@@ -6,3 +6,8 @@ defaults:
 # it does NOT use backbone_name. model_type=safe is dispatched before the CLIP fallback.
 model_type: safe
 freeze_backbone: false
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [center_crop_256, to_dtype]
+# Training augmentation.
+train_transform_list: [random_crop_256_pad, random_horizontal_flip, random_rotation_180, color_jitter_safe, to_dtype, random_mask_safe]

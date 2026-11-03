@@ -5,3 +5,10 @@ defaults:
 model_type: npr
 num_classes: 2
 freeze_backbone: false
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_256, to_dtype, normalize_imagenet]
+# Training augmentation.
+train_transform_list: [resize_256, random_crop_224, random_horizontal_flip, to_dtype, normalize_imagenet]
+# Validation during training (differs from the test-time preprocessing above).
+val_transform_list: [resize_256, center_crop_224, to_dtype, normalize_imagenet]

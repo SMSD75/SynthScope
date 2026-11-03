@@ -2,8 +2,8 @@
 
 For each detector we record:
   * how to compose its SynthScope config (Hydra overrides, exactly like ``main.py``),
-  * its evaluation preprocessing (matched to the training/eval recipe or the verified
-    official-weights eval script under repro/),
+  * its evaluation preprocessing (the ``eval_transform_list`` of its model config, matched to the
+    official eval script or the verified official-weights eval under repro/),
   * which checkpoint file backs it and how that checkpoint loads (strict SynthScope vs. an
     official-weights key remap), and
   * how to turn a forward pass into a fake-probability.
@@ -13,91 +13,22 @@ Label convention (dataset.py:_get_label): index 0 = real, index 1 = fake.
 import functools
 import os
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable, Optional
 
-import torchvision.transforms as T
+from omegaconf import OmegaConf
 
-# ---------------------------------------------------------------------------
-# Normalization constants (mirror transformations.py).
-# ---------------------------------------------------------------------------
-CLIP_MEAN = (0.48145466, 0.4578275, 0.40821073)
-CLIP_STD = (0.26862954, 0.26130258, 0.27577711)
-IMAGENET_MEAN = (0.485, 0.456, 0.406)  # == normalize_dinov2
-IMAGENET_STD = (0.229, 0.224, 0.225)
-DINOV3_MEAN = (0.430, 0.411, 0.296)
-DINOV3_STD = (0.213, 0.156, 0.143)
+from transformations import IMAGENET_MEAN, IMAGENET_STD, AIGITransformations   # IMAGENET_*: the video_norm below
+
+MODEL_CONF_DIR = Path(__file__).resolve().parents[2] / "conf" / "model"
 
 
-def _norm(mean, std):
-    return T.Normalize(mean=list(mean), std=list(std))
-
-
-def tf_resize_crop(resize: int, crop: int, mean=None, std=None) -> T.Compose:
-    """Resize shorter side -> ``resize``, center-crop ``crop``, ToTensor, optional Normalize."""
-    steps = [T.Resize(resize), T.CenterCrop(crop), T.ToTensor()]
-    if mean is not None:
-        steps.append(_norm(mean, std))
-    return T.Compose(steps)
-
-
-def tf_crop(crop: int, mean=None, std=None) -> T.Compose:
-    """Center-crop ``crop`` with NO resize, ToTensor, optional Normalize. Official SAFE
-    preprocessing (scripts/eval.sh: --input_size 256 --transform_mode 'crop', no normalization) —
-    a resize would alter the high-frequency signal SAFE keys on."""
-    steps = [T.CenterCrop(crop), T.ToTensor()]
-    if mean is not None:
-        steps.append(_norm(mean, std))
-    return T.Compose(steps)
-
-
-# AIDE's official native-resolution 5-view preprocessing (DCT patch selection on the native-size
-# image). Importing this is light (no open_clip at module level); the heavy net is built lazily.
-from models.image.aide.official_arch import AIDEFiveView  # noqa: E402
-aide_five_view = AIDEFiveView()
-
-# CuRe's official eval preprocessing (PNG->JPEG96, 390 crop, 336 resize, JPEG70, mean/std 0.5), in cv2/PIL.
-from models.image.cure.preprocess import CuReTransform  # noqa: E402
-# Effort's official eval (DeepfakeBench load_rgb): cv2 bicubic squash to 224, then CLIP normalization.
-from models.image.effort.preprocess import Cv2SquareResize  # noqa: E402
-# MoE-JEPA's official eval: the V-JEPA 2 video processor (short side 292, center crop 256, ImageNet norm) on one frame.
-from models.image.moejepa.preprocess import VJEPA2ImageTransform  # noqa: E402
-
-
-def _cap_long_side(im, max_side: int):
-    """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds
-    ``max_side`` — otherwise return it untouched at native resolution."""
-    w, h = im.size
-    if max(w, h) > max_side:
-        s = max_side / max(w, h)
-        im = im.resize((max(int(w * s), 224), max(int(h * s), 224)))
-    return im
-
-
-def tf_native_cap(max_side: int = 1024, mean=None, std=None) -> T.Compose:
-    """Native/arbitrary-resolution preprocessing: keep the image at its NATIVE size, only
-    downscaling (keeping aspect, min side 224) when the long side exceeds ``max_side`` to bound
-    memory. ToTensor (raw [0,1]), optional Normalize. This is SPAI's official any-resolution
-    path — a fixed Resize/CenterCrop would destroy the native-res spectral statistics it learns.
-    NB: produces variable-size tensors, so a ``native_res=True`` spec must be scored ONE image at
-    a time (bs=1); the web ``predict_image`` already does this, and bench_eval forces bs=1."""
-    steps = [T.Lambda(functools.partial(_cap_long_side, max_side=max_side)), T.ToTensor()]
-    if mean is not None:
-        steps.append(_norm(mean, std))
-    return T.Compose(steps)
-
-
-def tf_square_resize(resize: int, crop: Optional[int], mean=None, std=None) -> T.Compose:
-    """Square Resize((resize,resize)), optional center-crop, ToTensor, optional Normalize.
-
-    Matches the official FatFormer/NPR/AIDE eval preprocessing (a square resize, not a
-    shorter-side resize)."""
-    steps = [T.Resize((resize, resize))]
-    if crop is not None:
-        steps.append(T.CenterCrop(crop))
-    steps.append(T.ToTensor())
-    if mean is not None:
-        steps.append(_norm(mean, std))
-    return T.Compose(steps)
+@functools.lru_cache(maxsize=None)
+def model_transform(config_name: str) -> AIGITransformations:
+    """The test-time preprocessing of model config ``conf/model/<config_name>.yaml`` (its ``eval_transform_list``):
+    the detector's official evaluation transform, PIL image in, model input tensor out. Cached: specs share the
+    instance, so it must not be mutated."""
+    return AIGITransformations(list(OmegaConf.load(MODEL_CONF_DIR / f"{config_name}.yaml").eval_transform_list))
 
 
 # ---------------------------------------------------------------------------
@@ -155,15 +86,6 @@ def remap_bfree(sd: dict) -> dict:
     return {(k if k.startswith("patch_embed.") else "model." + k): v for k, v in sd.items()}
 
 
-def tf_native(mean=None, std=None) -> T.Compose:
-    """The image exactly at its native resolution: ToTensor, optional Normalize, nothing else. Variable-size tensors,
-    so the spec must set ``native_res=True`` (scored one image at a time)."""
-    steps = [T.ToTensor()]
-    if mean is not None:
-        steps.append(_norm(mean, std))
-    return T.Compose(steps)
-
-
 def remap_effort(sd: dict) -> dict:
     """Official Effort checkpoint (saved from a DataParallel EffortDetector) -> SynthScopeEffortModel: drop ``module.``,
     as the official demo does; the remaining ``backbone.*`` / ``head.*`` names are identical."""
@@ -190,7 +112,7 @@ class ModelSpec:
     predict_kind: str              # ce | bce | bce_npr | vib | video
     checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file)
     ckpt_kind: str                 # synthscope | official_fatformer | official_aide | official_npr | none
-    transform: Optional[T.Compose] = None  # image preprocessing (None for pure-video models)
+    transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video models)
     # Video-clip sampling (used when modality == "video").
     num_frames: int = 16
     fps: Optional[float] = None
@@ -232,44 +154,36 @@ def _add(spec: ModelSpec):
 _add(ModelSpec(
     key="clip", name="UnivFD / CLIP", paper="Ojha et al., CVPR'23",
     modality="image", predict_kind="ce", checkpoint="clip.pth", ckpt_kind="synthscope",
-    overrides=["ModelConfig.model_type=clip", "ModelConfig.backbone_name=CLIP:ViT-L/14",
-               "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
-               "ModelConfig.freeze_backbone=true"],
-    transform=tf_resize_crop(256, 224, CLIP_MEAN, CLIP_STD),
+    overrides=["model@ModelConfig=image/clip"],
+    transform=model_transform("image/clip"),
     notes="Frozen CLIP ViT-L/14 features + linear real/fake head (trained on ProGAN).",
 ))
 _add(ModelSpec(
     key="cnn", name="CNNDetection (ResNet-50)", paper="Wang et al., CVPR'20",
     modality="image", predict_kind="ce", checkpoint="cnn.pth", ckpt_kind="synthscope",
-    overrides=["ModelConfig.model_type=cnn", "ModelConfig.freeze_backbone=false"],
-    transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
+    overrides=["model@ModelConfig=image/cnn"],
+    transform=model_transform("image/cnn"),
     notes="ImageNet ResNet-50 fine-tuned as a real/fake classifier (trained on ProGAN).",
 ))
 _add(ModelSpec(
     key="dinov2", name="DINOv2 probe", paper="Oquab et al., 2023",
     modality="image", predict_kind="ce", checkpoint="dinov2.pth", ckpt_kind="synthscope",
-    overrides=["ModelConfig.model_type=dinov2", "ModelConfig.backbone_name=dinov2_vitl14",
-               "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
-               "ModelConfig.freeze_backbone=true"],
-    transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
+    overrides=["model@ModelConfig=image/dinov2"],
+    transform=model_transform("image/dinov2"),
     notes="Frozen DINOv2 ViT-L/14 + linear head (trained on ProGAN).",
 ))
 _add(ModelSpec(
     key="dinov3", name="DINOv3 probe", paper="Meta AI, 2025",
     modality="image", predict_kind="ce", checkpoint="dinov3.pth", ckpt_kind="synthscope",
-    overrides=["ModelConfig.model_type=dinov3", "ModelConfig.backbone_name=dinov3_vitl16",
-               "ModelConfig.use_adapter=false", "ModelConfig.bottleneck_dim=64",
-               "ModelConfig.freeze_backbone=true"],
-    transform=tf_resize_crop(256, 256, DINOV3_MEAN, DINOV3_STD),
+    overrides=["model@ModelConfig=image/dinov3"],
+    transform=model_transform("image/dinov3"),
     notes="Frozen DINOv3 ViT-L/16 + linear head. Requires DINOv3 backbone weights.",
 ))
 _add(ModelSpec(
     key="adapted_dino", name="Adapter-tuned DINOv2", paper="SynthScope",
     modality="image", predict_kind="ce", checkpoint="adapted_dino.pth", ckpt_kind="synthscope",
-    overrides=["ModelConfig.model_type=adapted_dino", "ModelConfig.backbone_name=dinov2_vitl14",
-               "ModelConfig.use_adapter=true", "ModelConfig.bottleneck_dim=64",
-               "ModelConfig.freeze_backbone=true"],
-    transform=tf_resize_crop(256, 224, IMAGENET_MEAN, IMAGENET_STD),
+    overrides=["model@ModelConfig=image/adapted_dino"],
+    transform=model_transform("image/adapted_dino"),
     notes="DINOv2 with per-block bottleneck adapters; backbone frozen.",
 ))
 _add(ModelSpec(
@@ -277,7 +191,7 @@ _add(ModelSpec(
     modality="image", predict_kind="ce", checkpoint="safe.pth",
     ckpt_kind="synthscope", remap=None, weights="synthscope_trained",
     overrides=["model@ModelConfig=image/safe"],
-    transform=tf_crop(256),
+    transform=model_transform("image/safe"),
     interpret="safe_hf",   # DWT HH-band high-frequency artifact map
     notes="High-frequency (DWT bior1.3 HH-band) artifact detector. Serves the SynthScope-TRAINED checkpoint "
           "(full 40-epoch SAFE crop recipe, safe_full_v2/model_38), which reproduces the paper "
@@ -291,7 +205,7 @@ _add(ModelSpec(
     ckpt_kind="official_fatformer", remap=remap_fatformer, weights="official",
     # The released checkpoint has FAA at blocks [7,15,23] => num_vit_adapter=3 (not the yaml's 8).
     overrides=["model@ModelConfig=image/fat_former", "ModelConfig.num_vit_adapter=3"],
-    transform=tf_square_resize(256, 224, IMAGENET_MEAN, IMAGENET_STD),
+    transform=model_transform("image/fat_former"),
     notes="Frozen CLIP + forgery-aware adapters + learnable prompts. Official ProGAN weights.",
 ))
 _add(ModelSpec(
@@ -301,7 +215,7 @@ _add(ModelSpec(
     # Genuine 5-view AIDE arch; the official checkpoint supplies the ConvNeXt trunk (build it random
     # via convnext_pretrained=null to skip the 4.8GB download, then load the ckpt strict).
     overrides=["model@ModelConfig=image/aide", "ModelConfig.convnext_pretrained=null"],
-    transform=aide_five_view,  # NATIVE-res DCT 5-view stack [5,3,256,256] (official preprocessing)
+    transform=model_transform("image/aide"),  # NATIVE-res DCT 5-view stack [5,3,256,256] (official preprocessing)
     interpret="aide_dct",   # native-res per-window DCT energy = the patch-selection saliency
     notes="ConvNeXt-XXL semantic + DCT/SRM low-level cues. The DCT patch selector runs at NATIVE "
           "resolution in preprocessing (resizing to 256 before the DCT costs ~12 mAP on the same "
@@ -312,7 +226,7 @@ _add(ModelSpec(
     modality="image", predict_kind="bce", checkpoint="spai.pth", ckpt_kind="synthscope",
     weights="official",  # shipped spai.pth = official SPAI weights remapped into the SynthScope class
     overrides=["model@ModelConfig=image/spai"],
-    transform=tf_native_cap(1024),  # NATIVE resolution (raw [0,1], cap long side 1024) — the faithful any-res path
+    transform=model_transform("image/spai"),  # NATIVE resolution (raw [0,1], cap long side 1024) — the faithful any-res path
     native_res=True,                # score one image at a time (variable patch count)
     interpret="spai_patch",   # per-patch spectral fake-evidence over the native 224-grid
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
@@ -327,7 +241,7 @@ _add(ModelSpec(
     # vib_net.pth = trained in SynthScope with the reconstructed recipe (experiments/image/vib_net.sh, job 267846);
     # reproduces the paper (15 generators: 94.08 AP / 85.22 acc vs 95.53 / 85.83). Official model + test transform.
     overrides=["model@ModelConfig=image/vib_net_official"],
-    transform=tf_crop(224, CLIP_MEAN, CLIP_STD),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
+    transform=model_transform("image/vib_net_official"),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
     notes="Variational information bottleneck on frozen CLIP ViT-L/14 features, trained in SynthScope on GenImage "
           "SD v1.4 with a recipe reconstructed from the paper (reproduces its 15-generator benchmark). The central "
           "224x224 pixels are scored; one latent sample per image, as the official model.",
@@ -337,7 +251,7 @@ _add(ModelSpec(
     modality="image", predict_kind="vib", checkpoint="vib_net_official.pth", ckpt_kind="official_vibnet",
     remap=remap_vibnet, weights="official",
     overrides=["model@ModelConfig=image/vib_net_official"],
-    transform=tf_crop(224, CLIP_MEAN, CLIP_STD),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
+    transform=model_transform("image/vib_net_official"),  # official main.py: CenterCrop(224), ToTensor, CLIP norm (no resize)
     notes="The official VIB-Net model (fp32 CLIP ViT-L/14, no feature BatchNorm; one latent sample per image as the "
           "official code) with the official test transform. Loads the released checkpoints or a SynthScope-trained "
           "one (experiments/image/vib_net.sh).",
@@ -349,12 +263,11 @@ _add(ModelSpec(
     # bfree.pth = the official BFREE_dino2reg4/model_epoch_best.pth unchanged (grip.unina.it); full model, strict load.
     overrides=["model@ModelConfig=image/bfree"],
     native_res=True,                # official main_bfree.py: one image at a time at its native resolution
-    transform=tf_native(IMAGENET_MEAN, IMAGENET_STD),   # official get_list_norm('resnet'): ToTensor + ImageNet norm
+    transform=model_transform("image/bfree"),   # official get_list_norm('resnet'): ToTensor + ImageNet norm
     notes="DINOv2 ViT-B/14 with registers, trained end to end on bias-free data (inpainted fakes that share content "
           "and format with their real images). Uses the OFFICIAL released checkpoint (GRIP license: nonprofit use). "
           "Five 504x504 crops of the native-resolution image are scored and averaged, so nothing is resized.",
 ))
-effort_transform = T.Compose([Cv2SquareResize(224), T.ToTensor(), _norm(CLIP_MEAN, CLIP_STD)])
 for _key, _name, _ckpt, _note in [
     ("effort", "Effort", "effort.pth", "trained on GenImage SD v1.4 (the paper's GenImage table)"),
     ("effort_chameleon", "Effort (Chameleon)", "effort_chameleon.pth", "trained on Chameleon"),
@@ -365,7 +278,7 @@ for _key, _name, _ckpt, _note in [
         weights="official",
         # <key>.pth = the official effort_clip_L14_trainOn_{sdv14,chameleon}.pth unchanged (Google Drive, CC BY-NC 4.0).
         overrides=["model@ModelConfig=image/effort"],
-        transform=effort_transform,
+        transform=model_transform("image/effort"),
         notes=f"Orthogonal subspace decomposition: CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each "
               f"attention projection, keeping the pretrained principal subspace. Official checkpoint, {_note}. The "
               f"whole image is squashed to 224x224 (cv2 bicubic), as the official DeepfakeBench test loader.",
@@ -377,7 +290,7 @@ _add(ModelSpec(
     # moejepa.safetensors = the official moejepa_sidset.safetensors (v1.0 GitHub release, MIT), unchanged; it holds only
     # the trained tensors, the frozen V-JEPA 2 ViT-L comes from HF facebook/vjepa2-vitl-fpc64-256.
     overrides=["model@ModelConfig=image/moejepa"],
-    transform=VJEPA2ImageTransform(),
+    transform=model_transform("image/moejepa"),
     notes="Frozen V-JEPA 2 ViT-L (the image as a static 4-frame clip) with a residual mixture of experts in its last "
           "three blocks, gated-attention MIL pooling and a BayarConv noise branch fused by a learned gate. Official "
           "checkpoint, trained on SID-Set (social-media images: real, fully synthetic, tampered); P(fake) = P(fully "
@@ -387,7 +300,7 @@ _add(ModelSpec(
     key="co_spy", name="CO-SPY", paper="Cheng et al., CVPR'25",
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
-    transform=tf_resize_crop(384, 384, None, None),  # raw [0,1]; per-branch norm inside the model
+    transform=model_transform("image/co_spy"),  # raw [0,1]; per-branch norm inside the model
     notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained on ProGAN).",
 ))
 _add(ModelSpec(
@@ -395,7 +308,7 @@ _add(ModelSpec(
     modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="synthscope",
     weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
     overrides=["model@ModelConfig=image/pgc"],
-    transform=tf_crop(224, IMAGENET_MEAN, IMAGENET_STD),  # official PGC eval = PadCenterCrop(224), NO resize
+    transform=model_transform("image/pgc"),  # official PGC eval = PadCenterCrop(224), NO resize
     interpret="pgc_peak",   # peak-guided residual fake-evidence map (per-location score)
     notes="LoRA-DINOv2 RGB + YCbCr-residual CNN, peak-guided calibration. Uses OFFICIAL released weights. "
           "Eval is center-crop-224 NO resize (official PadCenterCrop): the YCbCr residual is resolution-"
@@ -407,7 +320,7 @@ _add(ModelSpec(
     modality="image", predict_kind="ce", checkpoint="cure.pth", ckpt_kind="synthscope",
     weights="official",  # cure.pth = the official 25MB cure_adapter.pt unchanged; frozen PE-Core base fetched from HF
     overrides=["model@ModelConfig=image/cure"],
-    transform=CuReTransform(),  # official: PNG->JPEG96, SmallestMaxSize(390)+CenterCrop+Resize(336), JPEG70, mean=std=0.5
+    transform=model_transform("image/cure"),  # official: PNG->JPEG96, SmallestMaxSize(390)+CenterCrop+Resize(336), JPEG70, mean=std=0.5
     notes="Frozen Perception-Encoder Core L/14 @336 + Q/V LoRA + source-response subspace + linear head, "
           "trained by regressing real-generated mixing ratios on GenImage SD-v1.4. Uses the OFFICIAL released "
           "adapter. Eval preprocessing is part of the method (PNG sources get a JPEG q96 round-trip and every "
@@ -419,7 +332,7 @@ _add(ModelSpec(
     # dda.pth = the official DDA_ckpt.pth unchanged (HF Junwei-Xi/Dual-Data-Alignment); it holds the full model,
     # so the DINOv2 weights are not fetched separately.
     overrides=["model@ModelConfig=image/dda", "ModelConfig.pretrained_backbone=false"],
-    transform=tf_crop(336, CLIP_MEAN, CLIP_STD),  # official Inference/inference.py: CenterCrop(336), ToTensor, CLIP norm
+    transform=model_transform("image/dda"),  # official Inference/inference.py: CenterCrop(336), ToTensor, CLIP norm
     notes="DINOv2 ViT-L/14 + LoRA (rank 8) + linear head, trained on DDA's pixel- and frequency-aligned "
           "VAE-reconstructed fakes. Uses the OFFICIAL released checkpoint. The official test transform is a 336 "
           "center crop with no resize (smaller images are zero-padded), so large images are judged on their center.",
@@ -430,20 +343,19 @@ _add(ModelSpec(
     # d3qe.pth = the official model_epoch_best.pth unchanged (HF Yanran21/D3QE); the frozen CLIP ViT-L/14 and LlamaGen
     # VQ-16 are fetched from their own releases (the model's pretrained_prefixes), all other keys load strictly.
     overrides=["model@ModelConfig=image/d3qe"],
-    transform=tf_resize_crop(256, 256),  # official test path: Resize(256) short side, CenterCrop(256), ToTensor, no norm
+    transform=model_transform("image/d3qe"),  # official test path: Resize(256) short side, CenterCrop(256), ToTensor, no norm
     notes="Detector for autoregressive (token-based) image generators: the quantization error of a frozen LlamaGen VQ "
           "tokenizer, read by a small transformer, fused with frozen CLIP ViT-L/14 features. Trained on LlamaGen vs "
           "ImageNet only. Uses the OFFICIAL released checkpoint.",
 ))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
-omniaid_v1_transform = T.Compose([T.Resize((512, 512)), T.Resize((336, 336)), T.ToTensor(), _norm(CLIP_MEAN, CLIP_STD)])
-for _key, _name, _ckpt, _tf, _note in [
-    ("omniaid", "OmniAID", "omniaid.pth", tf_square_resize(336, None, CLIP_MEAN, CLIP_STD),
+for _key, _name, _ckpt, _note in [
+    ("omniaid", "OmniAID", "omniaid.pth",
      "the recommended v2 release, trained on Mirage-Train (the authors' modern in-the-wild dataset)"),
-    ("omniaid_v1", "OmniAID (v1)", "omniaid_v1.pth", omniaid_v1_transform,
+    ("omniaid_v1", "OmniAID (v1)", "omniaid_v1.pth",
      "the v1 release trained on Mirage-Train, the paper's OmniAID-Mirage"),
-    ("omniaid_genimage", "OmniAID (GenImage)", "omniaid_genimage.pth", omniaid_v1_transform,
+    ("omniaid_genimage", "OmniAID (GenImage)", "omniaid_genimage.pth",
      "the release trained on GenImage SD v1.4 only, for the paper's academic GenImage protocol"),
 ]:
     _add(ModelSpec(
@@ -451,7 +363,7 @@ for _key, _name, _ckpt, _tf, _note in [
         modality="image", predict_kind="ce", checkpoint=_ckpt, ckpt_kind="official_omniaid", weights="official",
         # <key>.pth = the official ckpt/checkpoint_omniaid_*.pth unchanged (HF Yunncheng/OmniAID); full model, strict load.
         overrides=[f"model@ModelConfig=image/{_key}"],
-        transform=_tf,
+        transform=model_transform(f"image/{_key}"),
         notes="Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, "
               "scene, ...) and an always-on artifact expert sees every image. Uses the OFFICIAL checkpoint: " + _note + ".",
     ))
@@ -460,7 +372,7 @@ _add(ModelSpec(
     modality="image", predict_kind="bce_npr", checkpoint="npr.pth",
     ckpt_kind="official_npr", remap=remap_npr, weights="official",
     overrides=["model@ModelConfig=image/npr"],
-    transform=tf_square_resize(256, None, IMAGENET_MEAN, IMAGENET_STD),
+    transform=model_transform("image/npr"),
     interpret="npr_residual",   # neighboring-pixel residual map (up-sampling artifacts)
     notes="Neighboring-pixel-residual ResNet. Official ProGAN weights.",
 ))
@@ -510,8 +422,9 @@ _add(ModelSpec(
 
 
 # ---------------------------------------------------------------------------
-# What each detector does to the input before scoring, shown in the UI as a short label + explanation. These mirror
-# the transforms above, which in turn mirror each paper's evaluation (changing them would break reproduction).
+# What each detector does to the input before scoring, shown in the UI as a short label + explanation. These describe
+# the eval_transform_list of each model config (conf/model/), which mirrors the paper's evaluation (changing it would
+# break reproduction).
 # ---------------------------------------------------------------------------
 _CENTER = ("Resize + center-crop", "The shorter side is scaled to {r} px and the central {c}×{c} square is used. "
            "The aspect ratio is kept; anything outside the square is not seen by the detector.")

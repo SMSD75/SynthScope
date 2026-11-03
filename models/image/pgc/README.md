@@ -47,7 +47,7 @@ The model is a pure `nn.Module` (`forward`/`compute_loss`) like every SynthScope
 adaptations vs the official code (both preserve the method):
 
 1. **Residual is computed inside the model.** The official builds the 6-channel input in the dataset
-   transform; here the dataset feeds a normal 3-channel ImageNet-normalized image (`normalize_dinov2`)
+   transform; here the dataset feeds a normal 3-channel ImageNet-normalized image (`normalize_imagenet`)
    and `forward` de-normalizes to `[0,1]`, computes the YCbCr residual, and concatenates — so the
    dataset/transform pipeline stays standard.
 2. **Backbone loads by Hugging Face name** (auto-download) instead of a local checkpoint path.

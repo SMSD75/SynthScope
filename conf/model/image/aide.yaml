@@ -19,3 +19,14 @@ dct:
   stride: 16
   output_size: 256
   grade_N: 6
+
+# Test-time preprocessing (official): inference and benchmarks.
+eval_transform_list: [aide_five_view]
+# Training augmentation: the five native-resolution views, long side capped at 1024 (the recipe of the SynthScope_train
+# checkpoint, repro/retrain_aide_native_v2.sbatch).
+train_transform_list: [random_horizontal_flip, aide_five_view_train]
+# Validation during training (differs from the test-time preprocessing above).
+val_transform_list: [aide_five_view_train]
+# Caps the long side at 1024 to bound dataloader-worker memory during the end-of-training test; inference and
+# benchmarks use the uncapped eval list.
+test_transform_list: [aide_five_view_train]

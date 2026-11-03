@@ -30,7 +30,7 @@ loaded strictly.
 | `official_arch.py` = the official `code/networks/wrapper5crops.py`, verbatim | The five-crop wrapper is the model. GRIP license (nonprofit use; notices kept). |
 | `SynthScopeBFreeModel` subclasses `Wrapper5crops` and restores `nn.Module.load_state_dict` | The official wrapper splits a checkpoint itself; SynthScope loads the standard state dict, and `registry.remap_bfree` prefixes the timm keys with `model.` (the patch embedding stays `patch_embed.*`). |
 | `forward` returns the logit squeezed to `[B]`; `compute_loss` = BCE | `predict_kind="bce"`: P(fake) = sigmoid(logit), so 0.5 is the official logit > 0. |
-| registry `native_res=True`, `tf_native(ImageNet)` | The official evaluation feeds each image at its own size, one at a time; any resize would change what the five crops see. |
+| registry `native_res=True`, `eval_transform_list: [to_dtype, normalize_imagenet]` | The official evaluation feeds each image at its own size, one at a time; any resize would change what the five crops see. |
 | `pretrained_backbone: false` | The released checkpoint holds the whole model; `true` starts from the DINOv2 weights for training. |
 
 ## Fidelity check (identical to the official model)

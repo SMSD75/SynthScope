@@ -222,7 +222,8 @@ the GPU). Models are downloaded once into the Hugging Face cache (tens of GB eac
 
 - **A detector**: follow [`docs/ADD_DETECTOR.md`](ADD_DETECTOR.md); then add it to the Leaderboard as in section 3.
 - **A dataset**: add `conf/dataset/image/<name>.yaml` with the source (`hf_repo_id`, `source_url`, ...), make it follow the
-  layout in section 2, and add a profile to `bench_eval.py` if its grouping is new.
+  layout in section 2, and add a profile to `bench_eval.py` if its grouping is new. Its transform lists are fallbacks,
+  used only for models whose config (`conf/model/...`) sets no lists of its own.
 - **A generator**: add a function `call(image_png | None, prompt, size=None) -> png bytes` and one entry in `GENERATORS` in
   `interface/backend/generators.py`. `image_png=None` means "create from the prompt alone". Then run section 4 with
   `--generator <your key>`.

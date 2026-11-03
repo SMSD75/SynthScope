@@ -7,3 +7,6 @@ defaults:
 model_type: effort
 clip_name: openai/clip-vit-large-patch14
 svd_rank: 1023
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [effort_cv2_resize_224, to_dtype, normalize_clip]
