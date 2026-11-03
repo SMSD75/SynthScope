@@ -34,12 +34,16 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `d3qe` | D3QE (ICCV'25) | Zhangyr2022/D3QE | MIT (repo `LICENSE`); `official/` vendors its network code — see the file headers | **official** checkpoint (`model_epoch_best.pth` from HF `Yanran21/D3QE`, loads as `d3qe.pth`) | MIT (HF model card license tag) |
 | `dda` | DDA (NeurIPS'25) | roy-ch/Dual-Data-Alignment | Apache-2.0 (repo `LICENSE`); `official_arch.py` vendors its `lora.py` — see its header | **official** checkpoint (`DDA_ckpt.pth` from HF `Junwei-Xi/Dual-Data-Alignment`, loads as `dda.pth`) | Apache-2.0 (HF model card license tag) |
 | `omniaid`, `omniaid_v1`, `omniaid_genimage` | OmniAID (arXiv 2511.08423) | yunncheng/OmniAID | MIT (README badge; no LICENSE file in the repo); `official_arch.py` vendors `models/OmniAID.py` — see its header | **official** checkpoints (`ckpt/checkpoint_omniaid_{v2,v1,genimage_sd14}.pth` from HF `Yunncheng/OmniAID`, loaded as `<key>.pth`) | MIT (HF model card license tag) |
+| `bfree` | B-Free (CVPR'25) | grip-unina/B-Free | GRIP-UNINA license: informational and **nonprofit use only** (notices kept); `official_arch.py` vendors `code/networks/wrapper5crops.py` — see its header | **official** checkpoint (`BFREE_dino2reg4/model_epoch_best.pth` from grip.unina.it, loaded as `bfree.pth`) | GRIP-UNINA license (nonprofit use only) |
+| `moejepa` | MoE-JEPA (ECCV'26 W) | ALCOR-Lab-DIAG/MoE-JEPA | MIT; `official_arch.py` vendors the blocks of `model/model.py` — see its header | **official** checkpoint (`moejepa_sidset.safetensors`, v1.0 GitHub release, loaded as `moejepa.safetensors`) | MIT |
+| `effort`, `effort_chameleon` | Effort (ICML'25) | YZY-stack/Effort-AIGI-Detection | CC BY-NC 4.0 (README badge); `official_arch.py` vendors the SVD-residual layers of `DeepfakeBench/training/detectors/effort_detector.py` — see its header | **official** checkpoints (`effort_clip_L14_trainOn_{sdv14,chameleon}.pth` from the authors' Google Drive, loaded as `<key>.pth`) | CC BY-NC 4.0 (non-commercial) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
 | `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
+| `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | no LICENSE file in the repo: **no code copied**; `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
 | `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
-| `stall` | STALL (CVPR'26) | ⚠ verify (official repo) | ⚠ verify | training-free; needs DINOv3 backbone | gated (DINOv3) |
+| `stall` | STALL (CVPR'26) | OmerBenHayun/STALL | CC BY-NC 4.0 (`LICENSE.txt`) | training-free; needs the DINOv3 backbone (and ships the VATEX calibration `.npz`) | DINOv3 License (gated download) |
 
 ## Backbones / foundation models (downloaded on first use)
 
@@ -49,10 +53,12 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
-| DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** — DINOv3 License (non-commercial; accept upstream) |
+| DINOv3 (ViT-L/16) | `dinov3`, `stall` | **gated** download — DINOv3 License (use and redistribution allowed with the license and attribution; trade-control restrictions) |
 | SigLIP | `co_spy` | Apache-2.0 (verify) |
 | MFM ViT-B/16 | `spai` | ⚠ verify |
 | Stable Diffusion VAE | `co_spy` | CreativeML Open RAIL-M (verify) |
+| V-JEPA 2 ViT-L (`facebook/vjepa2-vitl-fpc64-256`) | `moejepa` | MIT (HF model card) |
+| X-CLIP B/16 (`microsoft/xclip-base-patch16`) | `d3`, `split` | MIT (HF model card) |
 | LlamaGen VQ-16 tokenizer (`vq_ds16_c2i.pt`, HF `FoundationVision/LlamaGen`) | `d3qe` | MIT |
 | Perception Encoder Core L/14-336 (`facebook/PE-Core-L14-336`) | `cure` | Apache-2.0 (Meta); `official_arch.py` vendors the CuRe/Meta backbone code — see its header |
 

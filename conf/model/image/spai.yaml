@@ -21,3 +21,8 @@ minimum_patches: 4
 # Spectral Context Attention, and the frozen backbone uses stochastic depth (DROP_PATH_RATE 0.1) in training mode.
 sca_dropout: 0.5
 drop_path_rate: 0.1
+
+# Test-time preprocessing (official): inference and benchmarks. SPAI takes [0, 1] images (ImageNet normalization is
+# applied inside the model).
+eval_transform_list: [cap_long_side_1024, to_dtype]
+# No training lists: SPAI trains on dataset image/spai_train, which builds its own official transforms.

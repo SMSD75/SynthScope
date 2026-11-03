@@ -17,9 +17,9 @@ from the submission files in [`submissions/`](submissions/) — see [LEADERBOARD
 | --- | --- | --- | --- | --- |
 | `forensynths` | image | ForenSynths real/fake, scored **per generator** | ProGAN-trained (cross-generator generalization) | **mAP** (mean AP over generators) |
 | `genimage-sdv1.4` | image | GenImage SD-v1.4 real/fake | in-distribution diffusion | **AUROC** |
-| `genvideo-val` | video | GenVideo validation split | mixed | **AP** |
+| `genvideo-val` | video | GenVideo-Val: all 10,000 MSR-VTT reals against every fake, per generator | mixed | **AUROC** (AP with fake as positive is unstable here: as few as 56 fakes against 10,000 reals) |
 
-**These three tracks are only the start.** The repo supports 13 image and 8 video benchmark datasets (see the table in the
+**These three tracks are only the start.** The repo supports 20 image and 8 video benchmark datasets (see the table in the
 [README](../README.md#-benchmarks)), and the web page's Leaderboard tab already compares detectors on 30+ benchmark groups.
 A dataset becomes a standardized track once its protocol (test set, grouping, metric) is fixed, so results stay comparable;
 adding one means a schema entry, an `evaluate.py` track and verified submissions, described in

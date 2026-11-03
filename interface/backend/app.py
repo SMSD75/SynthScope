@@ -274,8 +274,19 @@ async def sota_compare(file: UploadFile = File(...), generator: str = Form(...),
 _METHOD_NAMES = {
     "clip": "CLIP / UnivFD", "cnn": "CNNDetection", "fat_former": "FatFormer", "npr": "NPR",
     "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
-    "pgc": "PGC", "cure": "CuRe", "d3": "D3", "restrav": "ReStraV", "stall": "STALL",
+    "pgc": "PGC", "cure": "CuRe", "d3": "D3", "restrav": "ReStraV", "stall": "STALL", "split": "SPLIT",
+    "dda": "DDA", "d3qe": "D3QE", "omniaid": "OmniAID", "bfree": "B-Free", "effort": "Effort", "moejepa": "MoE-JEPA",
 }
+
+
+def _registry_name(key: str) -> str:
+    """Display name for a detector without a _METHOD_NAMES entry: its registry name (without "(video)")."""
+    try:
+        return get_spec(key).name.replace(" (video)", "")
+    except KeyError:
+        return key
+
+
 _FAMILY = [  # (substring -> benchmark family label); first match wins
     ("genimage", "GenImage"), ("forensynth", "ForenSynths"), ("universalfakedetect", "UniversalFakeDetect"),
     ("ojha", "UniversalFakeDetect"), ("ufd", "UniversalFakeDetect"), ("aigcdetect", "AIGCDetect"),
@@ -332,7 +343,7 @@ def leaderboard():
         for r in rows:
             fam = _family(r["benchmark"])
             groups.setdefault(fam, []).append({
-                "method": _METHOD_NAMES.get(key, key), "key": key,
+                "method": _METHOD_NAMES.get(key) or _registry_name(key), "key": key,
                 "benchmark": r["benchmark"], "variant": _variant(r["benchmark"], fam), "paper": r["paper"],
                 "synthscope": r.get("ours_synthscope", ""), "official": r.get("ours_official", ""),
                 "status": r["status"],

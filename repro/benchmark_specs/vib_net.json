@@ -3,7 +3,7 @@
   "paper": "Towards Universal AI-Generated Image Detection by Variational Information Bottleneck Network (Zhang et al., CVPR 2025)",
   "arxiv_id": "none (CVPR 2025 Open Access; no arXiv id). PDF: openaccess.thecvf.com/content/CVPR2025/papers/Zhang_Towards_Universal_AI-Generated_Image_Detection_by_Variational_Information_Bottleneck_Network_CVPR_2025_paper.pdf",
   "official_repo": "https://github.com/(VIBAIGCDetect) (official_repos/VIBAIGCDetect)",
-  "training_set_in_paper": "Two training schemes. (A) GenImage SDv1.4: ImageNet reals + SDv1.4 fakes, ~32,000 images total. (B) ForenSynths: 20-class ProGAN (18,000 LSUN reals + 18,000 ProGAN fakes per class). Backbone = FROZEN CLIP ViT-L/14 image encoder (fix_backbone=True) + VIB head (fc 768->1024->1024->2k, reparametrize mu/std, decode->1 logit). Adam lr=2e-4, bs=256, on V100. Aug = Gaussian blur + JPEG compression (same as CNNSpot/UnivFD, p=0.1). Eval: loadSize=256, CenterCrop(cropSize=224), CLIP normalization (main.py:194-198).",
+  "training_set_in_paper": "Two training schemes. (A) GenImage SDv1.4: ImageNet reals + SDv1.4 fakes, ~32,000 images total. (B) ForenSynths: 20-class ProGAN (18,000 LSUN reals + 18,000 ProGAN fakes per class). Backbone = FROZEN CLIP ViT-L/14 image encoder (fix_backbone=True) + VIB head (fc 768->1024->1024->2k, reparametrize mu/std, decode->1 logit). Adam lr=2e-4, bs=256, on V100. Aug = Gaussian blur + JPEG compression (same as CNNSpot/UnivFD, p=0.1). Eval: CenterCrop(224) of the image at its own size (no resize), CLIP normalization (main.py RealFakeDataset transform).",
   "benchmarks": [
     {
       "name": "Diffusion-source (SDv1.4-trained), AP and ACC -- HEADLINE",
@@ -72,13 +72,13 @@
       },
       "paper_section": "AP: Table 1 (p.5). 'Ours' Average AP = 95.53. Trained on SDv1.4, tested on 15 models (7 DM + GANs/Others). This is the headline GenImage-trained transfer table. | ACC: Table 2 (p.5). 'Ours' Average ACC = 85.83, threshold fixed at 0.5.",
       "official_eval_protocol": "main.py: CLIPModel(ViT-L/14), CenterCrop(224)+ToTensor+Normalize(CLIP mean/std), model returns (mu,std),logit; logit.sigmoid(); AP=average_precision_score. data_mode='wang2020' (0_real/1_fake). NO OFFICIAL WEIGHTS were runnable in this campaign for the SynthScope side (see gap_cause). | ACC row: Same as Table 1; acc@0.5 (paper standardizes threshold=0.5 'no prior in real-world').",
-      "our_status": "below",
+      "our_status": "reproduced",
       "our_number": {
-        "map": 83.94,
-        "acc": 77.57,
-        "note": "SynthScope GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 models incl easy GAN columns; SynthScope 83.94 is over the harder GenImage-8 (adm/vqdm/midjourney heavy)."
+        "map": 94.08,
+        "acc": 85.22,
+        "note": "Trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh, job 267846), evaluated on the paper's 15 generators (7 GenImage + 8 ForenSynths GANs) with the official model and test transform (registry vib_net_official; tags vib_net_trained_noresize_genimage7 / _forensynths8, job 267928). The UniversalFakeDetect resize-256 pipeline gave 82.98 / 70.20 (job 267842)."
       },
-      "gap_cause": "No official VIB-Net weights were loaded into the SynthScope class for a faithful number (the released ckpts are on Baidu/GDrive and were not fetched/key-remapped in this campaign), so SynthScope has only its from-scratch CLIP-VIB re-impl. The 83.94 vs paper 95.53 gap is (1) different generator set: SynthScope averages GenImage-8 (8 hard DM+BigGAN gens) while the paper's 95.53 averages 15 models that include several near-100 GAN columns (ProGAN 96.6, CycleGAN 98.4 etc.) inflating the mean; (2) the SynthScope CLIP-VIB trained on SDv1.4 cannot transfer to adm/vqdm/midjourney (the ceiling noted in REPRODUCED_MODELS_BENCHMARKS.md). A FLAVA-backbone retrain was attempted and did NOT converge (val loss stayed at chance) \u2014 but note the paper's own backbone is CLIP ViT-L/14, not FLAVA (confirmed in models/clip_models.py:CLIPModel and models/__init__.py). | ACC row: Same as the AP table: no official weights loaded + GenImage-8 (hard subset) vs paper's 15-model mean + CLIP-VIB transfer ceiling on adm/vqdm.",
+      "gap_cause": "No official VIB-Net weights were loaded into the SynthScope class for a faithful number (the released ckpts are on Baidu/GDrive and were not fetched/key-remapped in this campaign), so SynthScope has only its from-scratch CLIP-VIB re-impl. The 83.94 vs paper 95.53 gap is (1) different generator set: SynthScope averages GenImage-8 (8 hard DM+BigGAN gens) while the paper's 95.53 averages 15 models that include several near-100 GAN columns (ProGAN 96.6, CycleGAN 98.4 etc.) inflating the mean; (2) the SynthScope CLIP-VIB trained on SDv1.4 cannot transfer to adm/vqdm/midjourney (the ceiling noted in REPRODUCED_MODELS_BENCHMARKS.md). A FLAVA-backbone retrain was attempted and did NOT converge (val loss stayed at chance) — but note the paper's own backbone is CLIP ViT-L/14, not FLAVA (confirmed in models/clip_models.py:CLIPModel and models/__init__.py). | ACC row: Same as the AP table: no official weights loaded + GenImage-8 (hard subset) vs paper's 15-model mean + CLIP-VIB transfer ceiling on adm/vqdm.",
       "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (8 gens). Full 15-model superset (SAN, Deepfake, StyleGAN etc.) partially on disk under AIGCDetectBenchmark/CNNDetection. | ACC row: on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test"
     },
     {
@@ -154,11 +154,9 @@
       },
       "paper_section": "AP: Table 3 (p.6). 'Ours' Average AP = 93.14. Trained on ProGAN (ForenSynths), tested on 17 models incl CRN/IMLE/SAN + 7 GenImage DMs. | ACC: Table 4 (p.6). 'Ours' Average ACC = 82.50, threshold=0.5.",
       "official_eval_protocol": "Same main.py CLIP-VIB CenterCrop(224)+CLIP-norm; 17-column ForenSynths-style benchmark (the classic UnivFD 19-model layout minus a couple). | ACC row: Same CLIP-VIB acc@0.5 over 17 generators, ProGAN-trained.",
-      "our_status": "below",
+      "our_status": "missing",
       "our_number": {
-        "map": 61.71,
-        "acc": 57.91,
-        "note": "SynthScope ForenSynths-13 with the GenImage-SDv1.4-trained SynthScope VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: SynthScope only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is GenImage->GAN transfer, whereas the paper's 93.14 is a ProGAN-TRAINED model. Not a like-for-like comparison."
+        "note": "Not trained on ProGAN yet. The earlier 61.71 / 57.91 was the SD v1.4-trained model tested on ForenSynths, not this benchmark."
       },
       "gap_cause": "SynthScope never trained a ProGAN/ForenSynths VIB checkpoint, so there is no faithful counterpart to the paper's GAN-source 93.14. The 61.71 is the SDv1.4-trained SynthScope VIB evaluated cross-domain on GAN test sets (expected to be low). To reproduce this table, SynthScope would need a ProGAN-trained CLIP-VIB run + the official ProGAN weights for a faithful number. Official ProGAN ckpt exists (Baidu/GDrive) but was not fetched. | ACC row: No ProGAN-trained SynthScope VIB checkpoint and no official ProGAN weights loaded; SynthScope only logged the SDv1.4-trained variant (see GAN-source AP entry, 57.91 acc cross-domain). No like-for-like acc number was produced.",
       "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test (13 gens incl CRN/IMLE/SAN) + GenImage_full/test | ACC row: on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test + GenImage_full/test"

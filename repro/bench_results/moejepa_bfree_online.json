@@ -1,0 +1,25 @@
+{
+  "tag": "moejepa_bfree_online",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 57.99,
+    "map": 91.79,
+    "mauroc": 85.22
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 91.79,
+      "auroc": 85.22,
+      "real_acc": 99.26,
+      "fake_acc": 16.73,
+      "acc": 57.99
+    }
+  },
+  "date": "2026-11-01T11:17:26",
+  "synthscope_version": "0.1.0"
+}

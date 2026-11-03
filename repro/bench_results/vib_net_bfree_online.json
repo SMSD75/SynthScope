@@ -4,21 +4,22 @@
   "ckpt": "registry-default",
   "benchmark": "pergen",
   "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
   "n_generators": 1,
   "means": {
-    "acc": 51.86,
-    "map": 70.27,
-    "mauroc": 53.61
+    "acc": 59.76,
+    "map": 78.76,
+    "mauroc": 66.06
   },
   "per_generator": {
     "viral": {
-      "ap": 70.27,
-      "auroc": 53.61,
-      "real_acc": 3.72,
-      "fake_acc": 100.0,
-      "acc": 51.86
+      "ap": 78.76,
+      "auroc": 66.06,
+      "real_acc": 40.52,
+      "fake_acc": 79.0,
+      "acc": 59.76
     }
   },
-  "date": "2026-10-10T22:32:50",
+  "date": "2026-10-30T23:24:12",
   "synthscope_version": "0.1.0"
 }

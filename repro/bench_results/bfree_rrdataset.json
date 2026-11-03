@@ -1,0 +1,39 @@
+{
+  "tag": "bfree_rrdataset",
+  "model": "bfree",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 72.33,
+    "map": 80.34,
+    "mauroc": 74.34
+  },
+  "per_generator": {
+    "original": {
+      "ap": 90.71,
+      "auroc": 87.57,
+      "real_acc": 96.48,
+      "fake_acc": 66.73,
+      "acc": 81.61
+    },
+    "redigital": {
+      "ap": 68.62,
+      "auroc": 61.09,
+      "real_acc": 95.72,
+      "fake_acc": 27.35,
+      "acc": 61.54
+    },
+    "transfer": {
+      "ap": 81.7,
+      "auroc": 74.36,
+      "real_acc": 93.98,
+      "fake_acc": 53.71,
+      "acc": 73.84
+    }
+  },
+  "date": "2026-10-29T11:56:04",
+  "synthscope_version": "0.1.0"
+}

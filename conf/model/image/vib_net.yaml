@@ -13,3 +13,10 @@ vib_latent_dim: 256
 dropout: 0.5
 std_shift: 5.0
 freeze_backbone: true
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [center_crop_224, to_dtype, normalize_clip]
+# Training augmentation.
+train_transform_list: [blur_jpeg_cnndet, pad_random_crop_224, random_horizontal_flip, to_dtype, normalize_clip]
+# Validation during training (differs from the test-time preprocessing above).
+val_transform_list: [blur_jpeg_cnndet_val, center_crop_224, to_dtype, normalize_clip]

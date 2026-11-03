@@ -102,11 +102,13 @@ confirms the backbone stays frozen (weight decay never reaches it). The dataset 
 "albumentations==1.4.14" "albucore==0.0.16"` (the `train` extra). **Images must reach the model in [0, 1]**: SPAI
 normalizes internally, and a pre-normalized input would corrupt the frequency split.
 
+Preprocessing lives in the model config: `eval_transform_list: [cap_long_side_1024, to_dtype]` is the official native-resolution test-time transform used by inference and benchmarks. Training does not use transform lists: the `spai_train` dataset builds the official transforms itself.
+
 ## Reproduced benchmark results
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-> **Served checkpoint:** the web app / `synthscope.load("spai")` now serves the **official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `tf_native_cap(1024)`, `spai.pth → repro/ckpts/spai_official_synthscope.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
+> **Served checkpoint:** the web app / `synthscope.load("spai")` now serves the **official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution** (registry `weights="official"`, `native_res=True`, `eval_transform_list: [cap_long_side_1024, to_dtype]`, `spai.pth → repro/ckpts/spai_official_synthscope.pth`). This is the faithful any-res path — a fixed 448→2×2 resize destroys the native-res spectral statistics. The from-scratch fixed-448 retrain (88.8) is superseded.
 
 | Benchmark | Paper | SynthScope_official (served, native-res) | SynthScope_train (retrain, superseded) | Status |
 |---|---|---|---|---|

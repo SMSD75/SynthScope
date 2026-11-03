@@ -4,35 +4,36 @@
   "ckpt": "registry-default",
   "benchmark": "pergen",
   "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
   "n_generators": 3,
   "means": {
-    "acc": 56.13,
-    "map": 71.33,
-    "mauroc": 71.27
+    "acc": 66.3,
+    "map": 73.21,
+    "mauroc": 71.69
   },
   "per_generator": {
     "facebook": {
-      "ap": 77.98,
-      "auroc": 77.41,
-      "real_acc": 13.75,
-      "fake_acc": 97.5,
-      "acc": 55.63
+      "ap": 72.41,
+      "auroc": 70.69,
+      "real_acc": 55.62,
+      "fake_acc": 72.5,
+      "acc": 64.06
     },
     "reddit": {
-      "ap": 64.48,
-      "auroc": 65.03,
-      "real_acc": 28.27,
-      "fake_acc": 86.67,
-      "acc": 57.47
+      "ap": 83.2,
+      "auroc": 81.29,
+      "real_acc": 74.53,
+      "fake_acc": 74.53,
+      "acc": 74.53
     },
     "twitter": {
-      "ap": 71.53,
-      "auroc": 71.38,
-      "real_acc": 16.13,
-      "fake_acc": 94.44,
-      "acc": 55.29
+      "ap": 64.02,
+      "auroc": 63.09,
+      "real_acc": 61.29,
+      "fake_acc": 59.36,
+      "acc": 60.32
     }
   },
-  "date": "2026-10-10T21:27:42",
+  "date": "2026-10-30T23:23:32",
   "synthscope_version": "0.1.0"
 }

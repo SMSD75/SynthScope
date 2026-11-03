@@ -1,14 +1,19 @@
 from torch.utils.data import Dataset
 from typing import Literal
 from pathlib import Path
+import functools
 import hashlib
+import json
 import os
+import random
 import re
 import zipfile
 import tarfile
 import shutil
 import subprocess
+import copy
 import csv
+import random
 import time
 import urllib.error
 import urllib.parse
@@ -18,11 +23,15 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from decord import VideoReader, cpu
+from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from transformations import AIGITransformations
 from torchvision.io import decode_image, ImageReadMode
-from PIL import Image
+from PIL import Image, ImageFile, ImageSequence
 from config_utils import compose_config
+from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_STD, build_item as dda_build_item, \
+    create_train_transforms as dda_train_transforms
+from models.image.dda.official_train_transforms import ComposedTransforms as DDAComposedTransforms
 
 
 def _decode_rgb(path) -> torch.Tensor:
@@ -64,6 +73,109 @@ def _has_videos(directory: Path) -> bool:
     return directory.is_dir() and any(_iter_videos(directory))
 
 
+def _config_list(section, name):
+    """``section.<name>`` as a list, or None when the section or the key is absent or null."""
+    value = None if section is None else section.get(name, None)
+    return None if value is None else list(value)
+
+
+DATASET_CONF_DIR = Path(__file__).resolve().parent / "conf" / "dataset"
+
+
+@functools.lru_cache(maxsize=None)
+def _dataset_yaml_lists(name: str) -> tuple[dict[str, list | None], ...]:
+    """The ``train`` / ``val`` / ``eval`` transform lists shipped in the dataset yaml files of dataset ``name`` (matched
+    by file stem or ``name:``; several files may share a name), i.e. what DatasetConfig holds unless overridden."""
+    found = []
+    for path in sorted(DATASET_CONF_DIR.rglob("*.yaml")):
+        cfg = OmegaConf.load(path)
+        if name in (path.stem, cfg.get("name", None)):
+            found.append({key: _config_list(cfg, f"{key}_transform_list") for key in ("train", "val", "eval")})
+    return tuple(found)
+
+
+def _overridden(data, key: str, value: list) -> bool:
+    """Whether DatasetConfig's ``<key>_transform_list`` was overridden (differs from its dataset yaml). False when the
+    yaml file or the key cannot be found."""
+    shipped = [lists[key] for lists in _dataset_yaml_lists(str(data.get("name", ""))) if lists[key] is not None]
+    return bool(shipped) and value not in shipped
+
+
+def _first_list(*candidates):
+    """The first candidate list that is set (not None), else None. An explicit ``[]`` counts as set: an empty list in
+    the model config intentionally stops the fallback to the dataset config (that split gets no transform)."""
+    return next((c for c in candidates if c is not None), None)
+
+
+def resolve_transforms(config) -> tuple[AIGITransformations | None, AIGITransformations | None, AIGITransformations | None]:
+    """The ``(train, val, test)`` transforms of a run. Each comes from ``ModelConfig`` (the detector's own preprocessing)
+    and falls back to ``DatasetConfig`` for models whose config sets none. Precedence (first list set wins):
+
+    * train: model ``train_transform_list``, dataset ``train_transform_list``
+    * val:   model ``val_transform_list``, model ``eval_transform_list``, dataset ``val_transform_list``, dataset
+      ``eval_transform_list``
+    * test:  model ``test_transform_list`` (a batchable stand-in for native-resolution eval lists), model
+      ``eval_transform_list``, dataset ``eval_transform_list``
+
+    A DatasetConfig list that was overridden (differs from its dataset yaml, e.g. an old
+    ``DatasetConfig.eval_transform_list=`` override) but loses to a model list is reported.
+    An empty list gives None."""
+    model = getattr(config, "ModelConfig", None)
+    data = getattr(config, "DatasetConfig", None)
+    model_train = _config_list(model, "train_transform_list")
+    model_val = _first_list(_config_list(model, "val_transform_list"), _config_list(model, "eval_transform_list"))
+    model_test = _first_list(_config_list(model, "test_transform_list"), _config_list(model, "eval_transform_list"))
+    data_lists = {key: _config_list(data, f"{key}_transform_list") for key in ("train", "val", "eval")}
+    for key, model_list in (("train", model_train), ("val", model_val), ("eval", model_test)):
+        if (data_lists[key] is not None and model_list is not None and data_lists[key] != model_list
+                and _overridden(data, key, data_lists[key])):
+            print(f"[transforms] DatasetConfig.{key}_transform_list is ignored: the model config's list is used "
+                  f"({model_list})", flush=True)
+    train = _first_list(model_train, data_lists["train"])
+    val = _first_list(model_val, data_lists["val"], data_lists["eval"])
+    test = _first_list(model_test, data_lists["eval"])
+    # Val and test convert the decoded uint8 tensors to PIL first, so they run the exact inference code (benchmarks
+    # and the web UI feed PIL; tensor resizes differ by 1-2/255, and some eval steps take PIL only). Train stays on
+    # tensors for speed.
+    return (AIGITransformations(train) if train else None,
+            AIGITransformations(val, pil_input=True) if val else None,
+            AIGITransformations(test, pil_input=True) if test else None)
+
+
+class _PILFrames:
+    """The part of decord's ``VideoReader`` API that ``sample_video_frames`` uses, for animated images decord cannot open
+    (GIFs: decord fails with "broken metadata" on them). Every frame is composited to RGB at the canvas size, and the
+    frame rate is the frame count over the summed frame durations (100 ms per frame when a GIF stores none)."""
+
+    class _Array:
+        def __init__(self, a: np.ndarray):
+            self._a = a
+
+        def asnumpy(self) -> np.ndarray:
+            return self._a
+
+    def __init__(self, path):
+        with Image.open(path) as im:
+            frames, ms = [], 0.0
+            for f in ImageSequence.Iterator(im):
+                frames.append(np.asarray(f.convert("RGB")))
+                ms += float(f.info.get("duration") or 100)
+        self._frames = np.stack(frames)
+        self._fps = len(frames) / (ms / 1000.0)
+
+    def __len__(self) -> int:
+        return len(self._frames)
+
+    def get_avg_fps(self) -> float:
+        return self._fps
+
+    def get_batch(self, indices):
+        return self._Array(self._frames[indices])
+
+    def __getitem__(self, i):
+        return self._Array(self._frames[i])
+
+
 def sample_video_frames(
     path: str | Path,
     num_frames: int,
@@ -101,7 +213,11 @@ def sample_video_frames(
         reader = VideoReader(str(path), ctx=cpu(0))
         num_source = len(reader)
     except Exception:
-        return torch.zeros(num_frames, 3, size, size)
+        try:                                               # animated GIFs: decord cannot read them, PIL can
+            reader = _PILFrames(path)
+            num_source = len(reader)
+        except Exception:
+            return torch.zeros(num_frames, 3, size, size)
     if num_source == 0:
         return torch.zeros(num_frames, 3, size, size)
 
@@ -1083,16 +1199,13 @@ class CNNDetectionDataset(Dataset):
 class CNNDetectionDatasetModule:
     def __init__(self, config):
         self.config = config
-        train_list = list(config.DatasetConfig.train_transform_list)
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         classes = config.DatasetConfig.get("train_classes", None)   # ProGAN classes for train/val (None: all 20)
         classes = list(classes) if classes else None
         self.train_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch, classes=classes)
-        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch, classes=classes)
-        self.test_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
+        self.val_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "val", self.val_transform, prefetch=prefetch, classes=classes)
+        self.test_dataset = CNNDetectionDataset(config.DatasetConfig.root_dir, "test", self.test_transform, prefetch=prefetch)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -1104,21 +1217,45 @@ class CNNDetectionDatasetModule:
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
 
 
+def _split_train_subset(dataset, per_class, val_per_class, val_transform, seed=0):
+    """Keep a seeded ``per_class`` images per label of ``dataset`` for training and return a disjoint ``val_per_class``
+    per label as a validation copy with ``val_transform``: for recipes trained on part of a train split, validated on
+    held-out training images (GenImage's ``val`` alias is its test split, which must not select the model)."""
+    rng = random.Random(seed)
+    train_idx, val_idx = [], []
+    for label in sorted(set(dataset.labels)):
+        idx = [i for i, l in enumerate(dataset.labels) if l == label]
+        rng.shuffle(idx)
+        if len(idx) < per_class + val_per_class:
+            raise ValueError(f"label {label}: {len(idx)} images, fewer than {per_class} + {val_per_class}")
+        train_idx += idx[:per_class]
+        val_idx += idx[per_class:per_class + val_per_class]
+    val = copy.copy(dataset)
+    for ds, keep in ((val, sorted(val_idx)), (dataset, sorted(train_idx))):
+        ds.images = [dataset.images[i] for i in keep]
+        ds.labels = [dataset.labels[i] for i in keep]
+        ds.folder_names = [dataset.folder_names[i] for i in keep]
+    val.transform = val_transform
+    return val
+
+
 class GenImageDatasetModule:
     def __init__(self, config):
         self.config = config
-        train_list = list(config.DatasetConfig.train_transform_list)
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         source_url = config.DatasetConfig.get("source_url", GenImageDataset.google_drive_folder_url)
         GenImageDataset.google_drive_folder_url = source_url
         GenImageDataset.hf_repo_id = config.DatasetConfig.get("hf_repo_id", None)
         GenImageDataset.hf_subdir = config.DatasetConfig.get("hf_subdir", None)
         self.train_dataset = GenImageDataset(config.DatasetConfig.root_dir, "train", self.train_transform, prefetch=prefetch)
-        self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.eval_transform, prefetch=prefetch)
-        self.test_dataset = GenImageDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch)
+        self.test_dataset = GenImageDataset(config.DatasetConfig.root_dir, "test", self.test_transform, prefetch=prefetch)
+        per_class = config.DatasetConfig.get("train_per_class", None)   # e.g. VIB-Net: 16k real + 16k SD v1.4
+        if per_class:
+            self.val_dataset = _split_train_subset(self.train_dataset, int(per_class),
+                                                   int(config.DatasetConfig.get("val_per_class", 1000)), self.val_transform)
+        else:
+            self.val_dataset = GenImageDataset(config.DatasetConfig.root_dir, "val", self.val_transform, prefetch=prefetch)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -1685,14 +1822,11 @@ class UniversialFakeDetectionDataset(Dataset):
 class AIGIBenchDatasetModule:
     def __init__(self, config):
         self.config = config
-        train_list = list(config.DatasetConfig.train_transform_list)
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         self.train_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "train", config.DatasetConfig.setting, self.train_transform, prefetch=prefetch)
-        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "val", config.DatasetConfig.setting, self.eval_transform, prefetch=prefetch)
-        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "test", config.DatasetConfig.setting, self.eval_transform, prefetch=prefetch)
+        self.val_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "val", config.DatasetConfig.setting, self.val_transform, prefetch=prefetch)
+        self.test_dataset = AIGIBenchDataset(config.DatasetConfig.root_dir, "test", config.DatasetConfig.setting, self.test_transform, prefetch=prefetch)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -1707,11 +1841,10 @@ class AIGIBenchDatasetModule:
 class DiTFakeDatasetModule:
     def __init__(self, config):
         self.config = config
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_transform = resolve_transforms(config)[2]
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         repo_id = config.DatasetConfig.get("repo_id", DiTFakeDataset.repo_id)
-        self.test_dataset = DiTFakeDataset(config.DatasetConfig.root_dir, "test", self.eval_transform, prefetch=prefetch, repo_id=repo_id)
+        self.test_dataset = DiTFakeDataset(config.DatasetConfig.root_dir, "test", self.test_transform, prefetch=prefetch, repo_id=repo_id)
 
     def test_dataloader(self):
         return DataLoader(self.test_dataset, batch_size=self.config.DatasetConfig.test_batch_size, shuffle=False, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -1720,14 +1853,13 @@ class DiTFakeDatasetModule:
 class FreqNetDetectionDatasetModule:
     def __init__(self, config):
         self.config = config
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_transform = resolve_transforms(config)[2]
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         source_url = config.DatasetConfig.get("source_url", FreqNetDetectionDataset.google_drive_folder_url)
         self.test_dataset = FreqNetDetectionDataset(
             config.DatasetConfig.root_dir,
             "test",
-            self.eval_transform,
+            self.test_transform,
             prefetch=prefetch,
             source_url=source_url,
         )
@@ -1745,14 +1877,13 @@ class FreqNetDetectionDatasetModule:
 class UniversialFakeDetectionDatasetModule:
     def __init__(self, config):
         self.config = config
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_transform = resolve_transforms(config)[2]
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         source_url = config.DatasetConfig.get("source_url", UniversialFakeDetectionDataset.source_url)
         self.test_dataset = UniversialFakeDetectionDataset(
             config.DatasetConfig.root_dir,
             "test",
-            self.eval_transform,
+            self.test_transform,
             prefetch=prefetch,
             source_url=source_url,
         )
@@ -1770,8 +1901,7 @@ class UniversialFakeDetectionDatasetModule:
 class CoSpyDatasetModule:
     def __init__(self, config):
         self.config = config
-        eval_list = list(config.DatasetConfig.eval_transform_list)
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_transform = resolve_transforms(config)[2]
         prefetch = getattr(config.DatasetConfig, "prefetch", False)
         source_datasets = config.DatasetConfig.get("source_datasets", None)
         generator_models = config.DatasetConfig.get("generator_models", None)
@@ -1782,7 +1912,7 @@ class CoSpyDatasetModule:
         self.test_dataset = CoSpyDataset(
             config.DatasetConfig.root_dir,
             "test",
-            self.eval_transform,
+            self.test_transform,
             prefetch=prefetch,
             source_datasets=list(source_datasets) if source_datasets else None,
             generator_models=list(generator_models) if generator_models else None,
@@ -1943,10 +2073,7 @@ class VideoFolderDatasetModule:
     def __init__(self, config):
         self.config = config
         cfg = config.DatasetConfig
-        train_list = list(cfg.get("train_transform_list", []))
-        eval_list = list(cfg.get("eval_transform_list", []))
-        self.train_transform = AIGITransformations(train_list) if len(train_list) > 0 else None
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         prefetch = bool(cfg.get("prefetch", False))
         common = dict(
             num_frames=cfg.get("num_frames", 16),
@@ -1958,8 +2085,8 @@ class VideoFolderDatasetModule:
             resize_interp=cfg.get("resize_interp", "bilinear"),
         )
         self.train_dataset = VideoFolderDataset(cfg.root_dir, "train", self.train_transform, prefetch=prefetch, **common)
-        self.val_dataset = VideoFolderDataset(cfg.root_dir, "val", self.eval_transform, prefetch=prefetch, **common)
-        self.test_dataset = VideoFolderDataset(cfg.root_dir, "test", self.eval_transform, prefetch=prefetch, **common)
+        self.val_dataset = VideoFolderDataset(cfg.root_dir, "val", self.val_transform, prefetch=prefetch, **common)
+        self.test_dataset = VideoFolderDataset(cfg.root_dir, "test", self.test_transform, prefetch=prefetch, **common)
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.config.DatasetConfig.train_batch_size, shuffle=True, num_workers=self.config.DatasetConfig.num_workers, persistent_workers=self.config.DatasetConfig.persistent_workers, pin_memory=self.config.DatasetConfig.pin_memory)
@@ -2076,10 +2203,9 @@ class _TestOnlyVideoModule:
     def __init__(self, config):
         self.config = config
         cfg = config.DatasetConfig
-        eval_list = list(cfg.get("eval_transform_list", []))
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.test_transform = resolve_transforms(config)[2]
         self.test_dataset = self.DATASET_CLASS(
-            cfg.root_dir, "test", self.eval_transform, prefetch=bool(cfg.get("prefetch", False)),
+            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)),
             num_frames=cfg.get("num_frames", 16), fps=cfg.get("fps", None),
             window_seconds=cfg.get("window_seconds", 2.0), frame_size=cfg.get("frame_size", 224),
             hf_repo_id=cfg.get("hf_repo_id", self.DATASET_CLASS.hf_repo_id),
@@ -2630,6 +2756,44 @@ class RRDataset(_TestOnlyImageDataset):
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
+class SIDSetDataset(_TestOnlyImageDataset):
+    """SID-Set (SIDA, CVPR 2025; used by MoE-JEPA) — social-media images in three classes: real (OpenImages V7), fully
+    synthetic, and tampered (locally edited, with masks). Only the 60,000-image test split is laid out; the authors keep
+    it out of Hugging Face (which holds train/validation) and publish it as one Google Drive zip (36.5 GB, CC BY 4.0).
+    For binary detection each fake class becomes a "generator" against the same reals:
+    ``test/full_synthetic/{0_real,1_fake}`` and ``test/tampered/{0_real,1_fake}`` (the reals hard-linked into both).
+    ``<root>/_sidset_test/{real,full_synthetic,tampered}`` keeps the original three-class tree (masks dropped) for
+    three-way evaluation."""
+    gdrive_file_id = "1_ivsEV5e14efuv93tJgXjWOondYnEC2G"
+    classes = ("real", "full_synthetic", "tampered")
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", force=False):
+        if split != "test":
+            raise ValueError("SID-Set: only the test split is laid out here (train/validation are on HF saberzl/SID_Set)")
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_images(dest):
+            return
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / "test.zip"
+        if not archive.exists():
+            import gdown
+            gdown.download(id=cls.gdrive_file_id, output=str(archive), quiet=False, use_cookies=False, resume=True)
+        three = root_dir / "_sidset_test"
+        if not all((three / c).is_dir() for c in cls.classes):
+            staging = _extract_archives_into(dl, root_dir / "_staging")
+            for c in cls.classes:
+                src = next(p for p in sorted(staging.rglob(c)) if p.is_dir())
+                (three / c).parent.mkdir(parents=True, exist_ok=True)
+                shutil.move(str(src), str(three / c))
+            shutil.rmtree(root_dir / "_staging", ignore_errors=True)
+        reals = sorted(_iter_images_follow(three / "real"))
+        for fake in ("full_synthetic", "tampered"):
+            _link_images(reals, dest / fake / "0_real")
+            _link_images(sorted(_iter_images_follow(three / fake)), dest / fake / "1_fake")
+        shutil.rmtree(dl, ignore_errors=True)
+
+
 class ARForensicsDataset(_TestOnlyImageDataset):
     """ARForensics (D3QE, ICCV 2025) — images from 7 visual autoregressive generators (LlamaGen, VAR, Infinity,
     Janus-Pro, RAR, Switti, Open-MAGVIT2), 6000 fakes and 6000 ImageNet reals each, laid out as
@@ -2670,6 +2834,99 @@ class ARForensicsDataset(_TestOnlyImageDataset):
             shutil.rmtree(dest)
         shutil.move(str(inner), str(dest))
         shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+
+class DDATrainDataset(Dataset):
+    """DDA's training set (Dual Data Alignment, NeurIPS 2025): the 118,288 MSCOCO train2017 images (``real/``) paired by
+    file name with their SD-2.0 VAE reconstructions (``sd2.0/``). Sourced from the HF dataset ``Junwei-Xi/DDA-Training-Set``
+    (an 11-part split zip, 113 GB). Each item is built exactly as the official ``RealFakeDataset.__getitem__``: the fake is
+    JPEG-compressed at its real image's quality (p 0.5, ``mscoco_train2017_jpeg_quality.json``), pixel/frequency-blended
+    with it, both get a down- and an up-resized copy, and the official ``ComposedTransforms`` applies the SAME random
+    augmentation to all six images. ``__getitem__`` returns ``(images [6, 3, S, S], labels [6])`` in the official batch
+    order (real, real_resized x2, fake, fake_resized x2); :func:`dda_train_collate` flattens a batch of items."""
+    hf_repo_id = "Junwei-Xi/DDA-Training-Set"
+    quality_json = Path(__file__).resolve().parent / "models/image/dda/mscoco_train2017_jpeg_quality.json"
+
+    def __init__(self, root_dir, crop_size=336, p_pixelmix=0.2, r_pixelmix=0.8, p_freqmix=0.2, r_freqmix=0.8,
+                 vae_dir="sd2.0", prefetch=False):
+        super().__init__()
+        # As the official datasets.py (module level): PIL then also skips an oversized PNG text chunk instead of raising
+        # (one of the SD-2.0 reconstructions has one); set here so it only applies to DDA training processes.
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+        self.root_dir = Path(root_dir)
+        dest = self.root_dir / "train"
+        if prefetch and not _has_images(dest / "real"):
+            self.prepare_split(self.root_dir)
+        self.mix = dict(p_pixelmix=p_pixelmix, r_pixelmix=r_pixelmix, p_freqmix=p_freqmix, r_freqmix=r_freqmix)
+        quality = json.loads(self.quality_json.read_text())
+        self.samples = []
+        for real in sorted((dest / "real").iterdir()):        # official: sorted, then shuffled by the loader
+            fake = dest / vae_dir / (real.stem + ".png")
+            if fake.exists():
+                self.samples.append((real, fake, quality.get(real.name, 96)))
+        if not self.samples:
+            raise RuntimeError(f"DDA training set: no real/{vae_dir} pairs under {dest}")
+        self.transform = DDAComposedTransforms(dda_train_transforms(size=crop_size, mean=DDA_MEAN["clip"],
+                                                                    std=DDA_STD["clip"], is_crop=True))
+
+    @classmethod
+    def prepare_split(cls, root_dir, force=False):
+        root_dir = Path(root_dir); dest = root_dir / "train"
+        if not force and _has_images(dest / "real"):
+            return
+        from huggingface_hub import snapshot_download
+        dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        snapshot_download(repo_id=cls.hf_repo_id, repo_type="dataset", local_dir=str(dl))
+        joined = dl / "DDA-Training-Set_joined.zip"
+        if not joined.exists():                              # a split zip: join the parts first
+            subprocess.run(["zip", "-q", "-s", "0", str(dl / "DDA-Training-Set_split.zip"), "--out", str(joined)], check=True)
+        staging = root_dir / "_staging"
+        _safe_extract_zip(joined, staging)
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.move(str(staging / "DDA-Training-Set"), str(dest))
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        real_path, fake_path, quality = self.samples[idx]
+        img_dict = dda_build_item(Image.open(real_path).convert("RGB"), Image.open(fake_path).convert("RGB"), quality, **self.mix)
+        out = self.transform(img_dict)
+        images = [out["real"], *out["real_resized"], out["fake"], *out["fake_resized"]]
+        labels = [0] * (1 + len(out["real_resized"])) + [1] * (1 + len(out["fake_resized"]))
+        return torch.stack(images), torch.tensor(labels)
+
+
+def dda_train_collate(batch):
+    """Flatten DDA items into one batch, in the official order (all reals, real_resized, fakes, fake_resized; the order
+    does not change the losses): ``(images [6B, 3, S, S], labels [6B], folder_ids [6B])``."""
+    images = torch.cat([b[0] for b in batch]); labels = torch.cat([b[1] for b in batch])
+    return images, labels, torch.zeros_like(labels)
+
+
+class DDATrainDatasetModule:
+    """DDA's training data for SynthScope's trainer (train split only; DDA is evaluated with bench_eval)."""
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        self.train_dataset = DDATrainDataset(cfg.root_dir, crop_size=int(cfg.get("crop_size", 336)),
+                                             p_pixelmix=float(cfg.get("p_pixelmix", 0.2)), r_pixelmix=float(cfg.get("r_pixelmix", 0.8)),
+                                             p_freqmix=float(cfg.get("p_freqmix", 0.2)), r_freqmix=float(cfg.get("r_freqmix", 0.8)),
+                                             prefetch=bool(cfg.get("prefetch", False)))
+
+    def train_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.train_dataset, batch_size=cfg.train_batch_size, shuffle=True, num_workers=cfg.num_workers,
+                          pin_memory=True, drop_last=True, collate_fn=dda_train_collate)
+
+    def val_dataloader(self):
+        return None
+
+    def test_dataloader(self):
+        return None
 
 
 class MirageTestDataset(_TestOnlyImageDataset):
@@ -2809,10 +3066,9 @@ class _TestOnlyImageModule:
     def __init__(self, config):
         self.config = config
         cfg = config.DatasetConfig
-        eval_list = list(cfg.get("eval_transform_list", []))
-        self.eval_transform = AIGITransformations(eval_list) if len(eval_list) > 0 else None
+        self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         self.test_dataset = self.DATASET_CLASS(
-            cfg.root_dir, "test", self.eval_transform, prefetch=bool(cfg.get("prefetch", False)))
+            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)))
 
     def train_dataloader(self):
         return None
@@ -2875,21 +3131,23 @@ class RRDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = RRDataset
 
 
+class SIDSetDatasetModule(_TestOnlyImageModule):
+    DATASET_CLASS = SIDSetDataset
+
+
 class ARForensicsDatasetModule(_TestOnlyImageModule):
-    """The test split for benchmarking; with a ``train_transform_list`` in the config also the train and val splits
-    (D3QE's training data), validated with ``val_transform_list`` (default: ``eval_transform_list``)."""
+    """The test split for benchmarking; with ``DatasetConfig.with_train_splits`` (default false) also the train and val
+    splits (D3QE's training data, 39 GB), with the run's train and val transforms (see ``resolve_transforms``)."""
     DATASET_CLASS = ARForensicsDataset
 
     def __init__(self, config):
         super().__init__(config)
         cfg = config.DatasetConfig
-        train_list = list(cfg.get("train_transform_list", []))
         self.train_dataset = self.val_dataset = None
-        if train_list:
+        if bool(cfg.get("with_train_splits", False)):
             prefetch = bool(cfg.get("prefetch", False))
-            val_list = list(cfg.get("val_transform_list", cfg.get("eval_transform_list", [])))
-            self.train_dataset = ARForensicsDataset(cfg.root_dir, "train", AIGITransformations(train_list), prefetch=prefetch)
-            self.val_dataset = ARForensicsDataset(cfg.root_dir, "val", AIGITransformations(val_list), prefetch=prefetch)
+            self.train_dataset = ARForensicsDataset(cfg.root_dir, "train", self.train_transform, prefetch=prefetch)
+            self.val_dataset = ARForensicsDataset(cfg.root_dir, "val", self.val_transform, prefetch=prefetch)
 
     def _loader(self, dataset, batch_size, shuffle):
         cfg = self.config.DatasetConfig
@@ -3112,6 +3370,7 @@ class VidProMDatasetModule(_TestOnlyVideoModule):
 
 
 SynthScopeModuleDict = {
+    "dda_train": DDATrainDatasetModule,
     "aigibench": AIGIBenchDatasetModule,
     "cnndetection": CNNDetectionDatasetModule,
     "cospy": CoSpyDatasetModule,
@@ -3133,6 +3392,7 @@ SynthScopeModuleDict = {
     "wildrf": WildRFDatasetModule,
     "bfree_online": BFreeOnlineDatasetModule,
     "rrdataset": RRDatasetModule,
+    "sidset": SIDSetDatasetModule,
     "arforensics": ARForensicsDatasetModule,
     "mirage_test": MirageTestDatasetModule,
     # Training sets of detectors trained in SynthScope with their official recipe.

@@ -4,35 +4,36 @@
   "ckpt": "registry-default",
   "benchmark": "pergen",
   "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "jpeg_fakes": null,
   "n_generators": 3,
   "means": {
-    "acc": 58.5,
-    "map": 71.58,
-    "mauroc": 73.57
+    "acc": 57.05,
+    "map": 59.6,
+    "mauroc": 58.74
   },
   "per_generator": {
     "dalle3": {
-      "ap": 67.45,
-      "auroc": 71.79,
-      "real_acc": 21.07,
-      "fake_acc": 93.62,
-      "acc": 57.34
+      "ap": 57.32,
+      "auroc": 60.79,
+      "real_acc": 61.5,
+      "fake_acc": 54.34,
+      "acc": 57.92
     },
     "firefly": {
-      "ap": 75.91,
-      "auroc": 76.83,
-      "real_acc": 21.31,
-      "fake_acc": 98.94,
-      "acc": 60.13
+      "ap": 58.79,
+      "auroc": 54.88,
+      "real_acc": 60.77,
+      "fake_acc": 46.72,
+      "acc": 53.75
     },
     "midjourney_v5": {
-      "ap": 71.38,
-      "auroc": 72.08,
-      "real_acc": 21.55,
-      "fake_acc": 94.48,
-      "acc": 58.02
+      "ap": 62.68,
+      "auroc": 60.56,
+      "real_acc": 61.02,
+      "fake_acc": 57.93,
+      "acc": 59.47
     }
   },
-  "date": "2026-10-10T21:23:32",
+  "date": "2026-10-30T23:21:07",
   "synthscope_version": "0.1.0"
 }

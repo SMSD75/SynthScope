@@ -1,0 +1,15 @@
+defaults:
+  - /model/default
+  - _self_
+
+# DINOv3 probe: frozen DINOv3 ViT-L/16 (gated weights) + a linear real/fake head.
+model_type: dinov3
+backbone_name: dinov3_vitl16
+use_adapter: false
+bottleneck_dim: 64
+freeze_backbone: true
+
+# Test-time preprocessing: inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_short_256, center_crop_256, to_dtype, normalize_dinov3]
+# Training augmentation.
+train_transform_list: [resize_short_256, gaussian_blur, jpeg_compression, random_crop_256, random_horizontal_flip, to_dtype, normalize_dinov3]

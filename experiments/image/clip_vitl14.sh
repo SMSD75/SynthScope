@@ -9,9 +9,7 @@ export OMP_NUM_THREADS=1
 # accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py
 
 accelerate launch --config_file accelerate_config.yaml --num_processes 4 main.py \
+    model@ModelConfig=image/clip \
     ModelConfig.bottleneck_dim=64 \
-    ModelConfig.model_type=clip \
     ModelConfig.use_adapter=false \
-    DatasetConfig.train_transform_list=[resize_short_256,gaussian_blur,jpeg_compression,random_crop_224,random_horizontal_flip,to_dtype,normalize_clip] \
-    DatasetConfig.eval_transform_list=[resize_short_256,center_crop_224,to_dtype,normalize_clip] \
     ModelConfig.backbone_name=CLIP:ViT-L/14

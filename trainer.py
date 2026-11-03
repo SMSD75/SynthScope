@@ -14,8 +14,12 @@ from models.image.pgc.pgc import SynthScopePGCModel
 from models.image.cure.cure import SynthScopeCuReModel
 from models.image.dda.dda import SynthScopeDDAModel
 from models.image.omniaid.omniaid import SynthScopeOmniAIDModel
+from models.image.effort.effort import SynthScopeEffortModel
+from models.image.moejepa.moejepa import SynthScopeMoEJEPAModel
+from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
 from models.video.d3.d3 import SynthScopeD3Model
+from models.video.split.split import SynthScopeSPLITModel
 from models.video.restrav.restrav import SynthScopeReStraVModel
 from models.video.stall.stall import SynthScopeSTALLModel
 from metrics import AIGIMetrics
@@ -97,10 +101,18 @@ class SynthScopeModelTrainer:
             return SynthScopeDDAModel(config)
         if model_type == "omniaid":
             return SynthScopeOmniAIDModel(config)
+        if model_type == "effort":
+            return SynthScopeEffortModel(config)
+        if model_type == "moejepa":
+            return SynthScopeMoEJEPAModel(config)
+        if model_type == "bfree":
+            return SynthScopeBFreeModel(config)
         if model_type == "d3qe":
             return SynthScopeD3QEModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
+        if model_type == "split":
+            return SynthScopeSPLITModel(config)
         if model_type == "restrav":
             return SynthScopeReStraVModel(config)
         if model_type == "stall":
@@ -327,8 +339,16 @@ class SynthScopeModelTrainer:
         saved curve is evaluated rather than only the last model."""
         accum = int(budget.get("grad_accum_steps", 1))
         clip = float(budget.get("max_grad_norm", 0.0))
-        max_steps, save_every = int(budget.max_steps), int(budget.save_every)
+        # max_steps null: `epochs` full passes over the training data
+        max_steps = int(budget.get("max_steps") or len(self.train_loader) * int(self.config.TrainerConfig.epochs))
+        save_every = int(budget.save_every)
         save_path = self.config.TrainerConfig.save_path
+        if budget.get("cosine_t_max"):
+            # torch CosineAnnealingLR stepped once per optimizer step (e.g. DDA: T_max=1000, eta_min=1e-3 x lr; it cycles)
+            opt = getattr(self.optimizer, "optimizer", self.optimizer)
+            self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+                opt, T_max=int(budget.cosine_t_max),
+                eta_min=float(self.config.TrainerConfig.lr) * float(budget.get("eta_min_ratio", 0.0)))
         step, running = 0, 0.0
         self.model.train()
         self.optimizer.zero_grad()
@@ -354,6 +374,12 @@ class SynthScopeModelTrainer:
                     self._save_model(f"step{step}", save_path)
                 if step >= max_steps:
                     break
+        if step % accum != 0:                     # a partial accumulation at the end (the official finalize_epoch)
+            if clip > 0:
+                self.accelerator.clip_grad_norm_(self.model.parameters(), clip)
+            self.optimizer.step()
+            self.optimizer.zero_grad()
+        self._save_model("final", save_path)
         self.logger.finish()
 
     def _train_with_timm_cosine(self, sched):

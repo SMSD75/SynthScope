@@ -1,0 +1,15 @@
+defaults:
+  - /model/default
+  - _self_
+
+# Adapter-tuned DINOv2: frozen DINOv2 ViT-L/14 with a trainable bottleneck adapter per block + a linear head.
+model_type: adapted_dino
+backbone_name: dinov2_vitl14
+use_adapter: true
+bottleneck_dim: 64
+freeze_backbone: true
+
+# Test-time preprocessing: inference, benchmarks and the end-of-training test.
+eval_transform_list: [resize_short_256, center_crop_224, to_dtype, normalize_imagenet]
+# Training augmentation.
+train_transform_list: [resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype, normalize_imagenet]

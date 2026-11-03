@@ -13,8 +13,8 @@ from collections import OrderedDict
 
 import numpy as np
 import torch
-import torchvision.transforms as T
 from PIL import Image
+from safetensors.torch import load_file as load_safetensors
 
 from . import config
 from .registry import ModelSpec, get_spec, input_note
@@ -60,14 +60,12 @@ def _overlay_to_png_b64(sal: torch.Tensor, base: Image.Image, out_size: int = 28
 
 
 def _geometric_base(spec, pil: Image.Image) -> Image.Image:
-    """The model's input region in RGB (apply only the Resize/CenterCrop steps of the eval
-    transform, skipping ToTensor/Normalize) so the overlay aligns with the saliency. Custom
+    """The model's input region in RGB (apply only the resize/center-crop steps of the eval
+    transform, skipping to_dtype/normalize) so the overlay aligns with the saliency. Custom
     transforms (AIDE/SPAI native-res) fall back to the native image."""
-    import torchvision.transforms as T
     base = pil.convert("RGB")
-    for t in getattr(spec.transform, "transforms", []) or []:
-        if isinstance(t, (T.Resize, T.CenterCrop)):
-            base = t(base)
+    for t in spec.transform.geometric_steps():
+        base = t(base)
     return base
 
 
@@ -110,6 +108,15 @@ def _build_model(cfg):
     if model_type == "omniaid":
         from models.image.omniaid.omniaid import SynthScopeOmniAIDModel
         return SynthScopeOmniAIDModel(cfg)
+    if model_type == "effort":
+        from models.image.effort.effort import SynthScopeEffortModel
+        return SynthScopeEffortModel(cfg)
+    if model_type == "moejepa":
+        from models.image.moejepa.moejepa import SynthScopeMoEJEPAModel
+        return SynthScopeMoEJEPAModel(cfg)
+    if model_type == "bfree":
+        from models.image.bfree.bfree import SynthScopeBFreeModel
+        return SynthScopeBFreeModel(cfg)
     if model_type == "d3qe":
         from models.image.d3qe.d3qe import SynthScopeD3QEModel
         return SynthScopeD3QEModel(cfg)
@@ -119,6 +126,9 @@ def _build_model(cfg):
     if model_type == "d3":
         from models.video.d3.d3 import SynthScopeD3Model
         return SynthScopeD3Model(cfg)
+    if model_type == "split":
+        from models.video.split.split import SynthScopeSPLITModel
+        return SynthScopeSPLITModel(cfg)
     if model_type == "restrav":
         from models.video.restrav.restrav import SynthScopeReStraVModel
         return SynthScopeReStraVModel(cfg)
@@ -147,8 +157,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         raise FileNotFoundError(
             f"Checkpoint not found: {path}. Train or place the checkpoint, then retry."
         )
-    raw = torch.load(str(path), map_location="cpu", weights_only=False)
-    sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
+    if path.suffix == ".safetensors":                 # released as safetensors (e.g. MoE-JEPA): a flat state dict
+        sd = load_safetensors(str(path))
+    else:
+        raw = torch.load(str(path), map_location="cpu", weights_only=False)
+        sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
     if spec.remap is not None:
         sd = spec.remap(sd)
     missing, unexpected = model.load_state_dict(sd, strict=False)
@@ -255,25 +268,29 @@ class Engine:
             return torch.sigmoid(logit.reshape(x.shape[0]))
         raise ValueError(f"Unexpected image predict_kind: {kind}")
 
-    def _d3_calibration(self):
-        """Load (and cache) the D3 score->probability calibration if present."""
-        if not hasattr(self, "_d3_cal"):
+    def _video_calibration(self, key: str):
+        """Load (and cache) a training-free video detector's raw score -> probability calibration, if it has one: a
+        ``<key>_calibration.json`` in the checkpoint folder overrides the one shipped in ``models/video/<key>/``."""
+        if not hasattr(self, "_video_cal"):
+            self._video_cal = {}
+        if key not in self._video_cal:
             import json
-            # A file in the checkpoint folder overrides the one shipped with the model (fitted on GenVideo-Val).
-            p = config.CHECKPOINTS_DIR / "d3_calibration.json"
+            p = config.CHECKPOINTS_DIR / f"{key}_calibration.json"
             if not p.exists():
-                p = config.REPO_ROOT / "models" / "video" / "d3" / "d3_calibration.json"
-            self._d3_cal = json.loads(p.read_text()) if p.exists() else None
-        return self._d3_cal
+                p = config.REPO_ROOT / "models" / "video" / key / f"{key}_calibration.json"
+            self._video_cal[key] = json.loads(p.read_text()) if p.exists() else None
+        return self._video_cal[key]
 
     @torch.no_grad()
     def _video_fake_prob(self, model, spec: ModelSpec, clip: torch.Tensor) -> torch.Tensor:
         """Return P(fake) for a single normalized clip tensor [T,3,H,W]."""
         frames = clip.unsqueeze(0).to(self.device)  # [1,T,3,H,W]
-        if spec.key == "d3":
-            cal = self._d3_calibration()
+        if spec.key in ("d3", "split"):
+            cal = self._video_calibration(spec.key)
             if cal is not None:
-                s = model.score(frames)  # [1] raw volatility score
+                s = model.score(frames)  # [1] raw score (D3 volatility, SPLIT roughness x incoherence)
+                if cal.get("log_score"):  # SPLIT's score spans many orders of magnitude: calibrated on its log
+                    s = s.clamp_min(1e-30).log()
                 z = (s - cal["threshold"]) / cal["scale"]
                 if not cal["higher_is_fake"]:
                     z = -z
@@ -309,7 +326,10 @@ class Engine:
             elif kind == "aide_dct":       # AIDE: native-res DCT per-window energy (patch selection)
                 if pil is None:
                     return None
-                sal = spec.transform.dct_energy_map(pil)       # [nH,Wn]
+                five_view = next((t for t in spec.transform.transforms if hasattr(t, "dct_energy_map")), None)
+                if five_view is None:
+                    return None
+                sal = five_view.dct_energy_map(pil)            # [nH,Wn]
             elif kind == "spai_patch":     # SPAI: per-patch spectral fake-evidence over the 224-grid
                 sal = model.patch_fake_map(x)                  # [nH,nW] or None (five-crop/large grid)
                 if sal is None:
@@ -331,7 +351,7 @@ class Engine:
         t = x[0].detach().float().cpu()
         if t.dim() == 4:
             t = torch.cat(list(t), dim=2)
-        norm = next((s for s in getattr(spec.transform, "transforms", []) if isinstance(s, T.Normalize)), None)
+        norm = spec.transform.normalize_step()
         if norm is not None:
             t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
@@ -401,6 +421,14 @@ class Engine:
         res = self._result(spec, p, time.time() - t0)
         res["num_frames"] = int(clip.shape[0])
         return res
+
+    @torch.no_grad()
+    def video_raw_score(self, spec: ModelSpec, path) -> float:
+        """A training-free video detector's raw score for one clip, oriented so that higher means more likely generated
+        (for fake recall at a fixed false-positive rate, where saturated probabilities would tie)."""
+        model = self._get_model(spec)
+        s = float(model.score(self.video_clip(spec, path).unsqueeze(0).to(self.device)).item())
+        return s if getattr(model, "higher_is_fake", True) else -s
 
     def _result(self, spec: ModelSpec, fake_prob: float, elapsed: float) -> dict:
         fake_prob = max(0.0, min(1.0, fake_prob))

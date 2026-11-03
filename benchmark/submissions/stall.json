@@ -1,0 +1,63 @@
+{
+  "method": "STALL",
+  "track": "genvideo-val",
+  "modality": "video",
+  "model_type": "stall",
+  "paper": "Ben Hayun et al., CVPR'26",
+  "url": "https://github.com/SMSD75/SynthScope",
+  "evaluation": "training-free",
+  "metrics": {
+    "acc": 56.89,
+    "map": 32.05,
+    "ap": null,
+    "auroc": 82.59
+  },
+  "per_generator": {
+    "Crafter": {
+      "auroc": 87.91,
+      "ap": 53.66
+    },
+    "Gen2": {
+      "auroc": 90.0,
+      "ap": 58.91
+    },
+    "HotShot": {
+      "auroc": 76.97,
+      "ap": 21.25
+    },
+    "Lavie": {
+      "auroc": 86.42,
+      "ap": 53.53
+    },
+    "ModelScope": {
+      "auroc": 78.21,
+      "ap": 20.92
+    },
+    "MoonValley": {
+      "auroc": 82.67,
+      "ap": 22.83
+    },
+    "MorphStudio": {
+      "auroc": 83.22,
+      "ap": 28.34
+    },
+    "Show_1": {
+      "auroc": 82.29,
+      "ap": 30.09
+    },
+    "Sora": {
+      "auroc": 80.73,
+      "ap": 2.8
+    },
+    "WildScrape": {
+      "auroc": 77.48,
+      "ap": 28.22
+    }
+  },
+  "submitted_by": "SynthScope",
+  "date": "2026-11-02",
+  "verified": true,
+  "source": "repro/bench_results/stall_genvideo_full.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
+  "protocol_notes": "Training-free DINOv3 spatio-temporal likelihood under VATEX real-video statistics",
+  "synthscope_version": "0.1.0"
+}

@@ -1,5 +1,16 @@
 [
   {
+    "detector": "vib_net",
+    "name": "VIB-Net",
+    "auroc": 99.8,
+    "ap": 99.81,
+    "acc": 97.5,
+    "fake_detect_rate": 99.0,
+    "real_false_pos": 4.0,
+    "mean_p_fake_on_fakes": 0.9414,
+    "mean_p_fake_on_reals": 0.0711
+  },
+  {
     "detector": "co_spy",
     "name": "CO-SPY",
     "auroc": 98.87,
@@ -22,17 +33,6 @@
     "mean_p_fake_on_reals": 0.2672
   },
   {
-    "detector": "vib_net",
-    "name": "VIB-Net",
-    "auroc": 98.35,
-    "ap": 98.51,
-    "acc": 91.5,
-    "fake_detect_rate": 98.0,
-    "real_false_pos": 15.0,
-    "mean_p_fake_on_fakes": 0.9181,
-    "mean_p_fake_on_reals": 0.2277
-  },
-  {
     "detector": "spai",
     "name": "SPAI",
     "auroc": 96.71,
@@ -53,6 +53,17 @@
     "real_false_pos": 0.0,
     "mean_p_fake_on_fakes": 0.6284,
     "mean_p_fake_on_reals": 0.0129
+  },
+  {
+    "detector": "dda",
+    "name": "DDA",
+    "auroc": 91.51,
+    "ap": 92.19,
+    "acc": 78.0,
+    "fake_detect_rate": 60.0,
+    "real_false_pos": 4.0,
+    "mean_p_fake_on_fakes": 0.5938,
+    "mean_p_fake_on_reals": 0.0934
   },
   {
     "detector": "safe",
@@ -88,6 +99,17 @@
     "mean_p_fake_on_reals": 0.1102
   },
   {
+    "detector": "omniaid",
+    "name": "OmniAID",
+    "auroc": 81.64,
+    "ap": 84.23,
+    "acc": 66.0,
+    "fake_detect_rate": 34.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.3836,
+    "mean_p_fake_on_reals": 0.1051
+  },
+  {
     "detector": "fat_former",
     "name": "FatFormer",
     "auroc": 76.74,
@@ -97,6 +119,28 @@
     "real_false_pos": 4.0,
     "mean_p_fake_on_fakes": 0.3841,
     "mean_p_fake_on_reals": 0.0412
+  },
+  {
+    "detector": "d3qe",
+    "name": "D3QE",
+    "auroc": 62.88,
+    "ap": 66.07,
+    "acc": 54.0,
+    "fake_detect_rate": 14.0,
+    "real_false_pos": 6.0,
+    "mean_p_fake_on_fakes": 0.1595,
+    "mean_p_fake_on_reals": 0.0542
+  },
+  {
+    "detector": "bfree",
+    "name": "B-Free",
+    "auroc": 55.38,
+    "ap": 60.74,
+    "acc": 55.5,
+    "fake_detect_rate": 12.0,
+    "real_false_pos": 1.0,
+    "mean_p_fake_on_fakes": 0.1381,
+    "mean_p_fake_on_reals": 0.0498
   },
   {
     "detector": "dinov3",

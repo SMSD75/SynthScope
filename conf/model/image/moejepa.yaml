@@ -1,0 +1,18 @@
+defaults:
+  - /model/default
+  - _self_
+
+# MoE-JEPA (ALCOR-Lab-DIAG/MoE-JEPA, MoEJEPADeepfakeDetector): frozen V-JEPA 2 ViT-L on a static 4-frame clip, residual
+# MoE (shared + top-2 of 6 routed experts) in the last 3 blocks, gated-attention MIL pooling, BayarConv noise branch,
+# gated fusion, 3-way head (real / fully synthetic / tampered). Values = the released SID-Set checkpoint's hparams.
+model_type: moejepa
+backbone: facebook/vjepa2-vitl-fpc64-256
+num_frames: 4
+moe_layers: 3
+num_experts: 6
+top_k: 2
+router_temperature: 0.5
+out_classes: 3
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [vjepa2_processor]

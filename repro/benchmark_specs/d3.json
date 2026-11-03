@@ -3,7 +3,7 @@
   "paper": "D3: Training-Free AI-Generated Video Detection Using Second-Order Features (Zheng et al., ICCV 2025)",
   "arxiv_id": "n/a (CVF Open Access ICCV 2025; code github.com/Zig-HS/D3)",
   "official_repo": "https://github.com/Zig-HS/D3",
-  "training_set_in_paper": "NONE \u2014 D3 is training-free (inference only). Baselines (re-implemented for comparison) were trained on real videos from Youku-mPLUG + Pika fakes, following DeMamba (paper Sec 4.1).",
+  "training_set_in_paper": "NONE — D3 is training-free (inference only). Baselines (re-implemented for comparison) were trained on real videos from Youku-mPLUG + Pika fakes, following DeMamba (paper Sec 4.1).",
   "encoder_in_paper": "XCLIP-B/16 (X-CLIP ViT-B/16, Ni et al. ECCV'22, paper ref [34]) as the frozen per-frame visual encoder; first-order = L2 distance. CLIP-B/16 is the ablation runner-up (~97 on GenVideo, Table 7).",
   "paper_protocol": "Extract up to a 2 s segment, sample frames at 8 fps, JPEG; crop 10% of the longer edge then resize to 224x224. Score = std of 2nd-order central-difference of inter-frame L2 distances (Eq.8). Metric reported: AP (real-class); AUROC in supplementary. Hardware RTX 4090. (paper Sec 4.1 'Implementation Details')",
   "synthscope_encoder": "X-CLIP-B/16 (microsoft/xclip-base-patch16), as in the paper. SynthScope's D3 gives the same score as the official D3_model on the same frames (max |diff| 0, repro check 2026-10-11).",
@@ -45,11 +45,11 @@
       "official_eval_protocol": "XCLIP-B/16 frozen, 8 fps over <=2 s, JPEG, 10% longer-edge crop, resize 224x224, L2 first-order, std of 2nd-order central diff; AP computed real-class (positive=real, score=+std), max_len=1000 per class (official eval.py).",
       "our_status": "reproduced",
       "our_number": {
-        "map": 99.14,
-        "auroc": 98.46,
-        "acc": 96.15,
+        "map": 98.95,
+        "auroc": 98.23,
+        "acc": 95.68,
         "official_code_map": 97.93,
-        "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord cannot read start at 0 instead of a random offset). The old 63.93 compared 10,000 reals with as few as 56 fakes and used AP with fake as positive."
+        "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 98.95 AP (AUROC 98.23, balanced acc 95.68 at the refitted calibration; tag d3_genvideo, job 270428, after the GIF decode fix: WildScrape 96.33 vs paper 96.49, was 98.21 when GIFs decoded as black clips). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord cannot read start at 0 instead of a random offset). The old 63.93 compared 10,000 reals with as few as 56 fakes and used AP with fake as positive."
       },
       "our_per_generator_ap": {
         "Crafter": 99.14,
@@ -61,10 +61,10 @@
         "MorphStudio": 99.27,
         "Show_1": 99.37,
         "Sora": 99.91,
-        "WildScrape": 98.21
+        "WildScrape": 96.33
       },
       "dataset_source": "on-disk: /hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val (14 GB; downloaded from ModelScope cccnju/Gen-Video GenVideo-Val.zip). The real source is MSR-VTT.",
-      "xclip_weights_downloadable": "YES \u2014 microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights.",
+      "xclip_weights_downloadable": "YES — microsoft/xclip-base-patch16 on HuggingFace (Kinetics-400 trained, NOT gated). Matches paper ref [34]. The gap-closing fix (swap CLIP->XCLIP) is unblocked by available weights.",
       "official_code_per_generator_ap": {
         "Crafter": 98.28,
         "Gen2": 99.24,

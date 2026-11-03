@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 14 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 21 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -78,7 +78,7 @@ bash interface/run_backend.sh                      # serves http://localhost:800
 
 Each detector needs its weights as `<key>.pth` in `SYNTHSCOPE_CKPT_DIR` (for example `cure.pth`, `npr.pth`); every model's
 `README.md` under [models/](models/) says where the authors publish theirs. Detectors without weights are greyed out on the page,
-and the training-free ones (D3, STALL) need none. Setup details and the local-generator setup are in
+and the training-free ones (D3, SPLIT, STALL) need none. Setup details and the local-generator setup are in
 [interface/README.md](interface/README.md).
 Prefer something lighter? The [Colab quickstart](notebooks/synthscope_quickstart.ipynb) installs SynthScope, downloads the
 official CuRe weights and checks an image of yours in a few cells. There is also a small [Gradio demo](demo/)
@@ -125,7 +125,7 @@ synthscope detect clip.mp4  --model d3 --json    # machine-readable
 
 Weights are read from `$SYNTHSCOPE_CKPT_DIR/<key>.pth` (default `~/.cache/synthscope/checkpoints`); pass
 `synthscope.load(..., checkpoint="/path/to.pth")` to use your own weights. Training-free detectors
-(D3, STALL) need none.
+(D3, SPLIT, STALL) need none.
 
 ### 🤗 Model zoo (Hugging Face Hub)
 
@@ -161,12 +161,15 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `safe` | **SAFE** (Li, KDD'25) | Lightweight DWT high-frequency artifact detector + targeted augmentation. |
 | `co_spy` | **Co-Spy** (Cheng, CVPR'25) | Adaptive fusion of a SigLIP semantic stream and an SD-VAE artifact stream. |
 | `spai` | **SPAI** (Karageorgiou, CVPR'25) | Spectral reconstruction-similarity + context attention, any-resolution. |
-| `vib_net` | **VIB-Net** (Zhang, CVPR'25) | Variational information bottleneck on frozen CLIP features. |
+| `vib_net` | **VIB-Net** (Zhang, CVPR'25) | Variational information bottleneck on frozen CLIP ViT-L/14 features; trained in SynthScope with a recipe reconstructed from the paper, which it reproduces. |
 | `pgc` | **PGC** (Zhou, 2026) | LoRA-tuned DINOv2 + YCbCr-residual CNN, peak-guided calibration. |
 | `cure` | **CuRe** (manic-cui, 2026) | Frozen Perception-Encoder Core L/14 + Q/V LoRA + source-response subspace, trained by regressing real↔generated mixing ratios on SD‑v1.4 only (official adapter). |
 | `omniaid` | **OmniAID** (Guo, 2025) | Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, scene) and an always-on artifact expert sees every image. Official weights; `omniaid_genimage` is the GenImage-SD v1.4 release used for the paper's academic tables. |
 | `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a codebook-aware transformer and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
 | `dda` | **DDA** (Chen, NeurIPS'25 Spotlight) | DINOv2 ViT-L/14 + LoRA, trained only on MSCOCO with VAE-reconstructed fakes aligned to their reals in pixel and frequency space (official weights). |
+| `bfree` | **B-Free** (Guillaro, CVPR'25) | DINOv2 ViT-B/14 with registers, trained end to end on bias-free data: inpainted fakes that share content and format with their real images; five 504 crops at native resolution (official weights, nonprofit license). |
+| `moejepa` | **MoE-JEPA** (Teglia, ECCV'26 W) | Frozen V-JEPA 2 ViT-L (the image as a static clip) with a residual mixture of experts in its last blocks, gated-attention MIL pooling and a BayarConv noise branch; real / fully synthetic / tampered (official weights, SID-Set). |
+| `effort` | **Effort** (Yan, ICML'25) | CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each attention projection (orthogonal subspace decomposition), keeping the pretrained principal subspace (official weights, GenImage SD v1.4; also `effort_chameleon`). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
 ### 🎬 Video detectors
@@ -174,6 +177,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `model_type` | Method | Idea |
 | --- | --- | --- |
 | `d3` | **D3** (Zheng, ICCV'25) | Training-free: second-order dynamics of frozen X-CLIP frame features (disentangled detail dynamics). |
+| `split` | **SPLIT** (Hyun, ECCV'26) | Training-free: two-step temporal roughness times spatial motion incoherence of frozen X-CLIP patch tokens. |
 | `restrav` | **ReStraV** (Internò, 2025) | Geometry of the frame-embedding trajectory in a frozen DINOv2 space, scored by a small MLP. |
 | `stall` | **STALL** (Ben Hayun, CVPR'26) | Training-free: spatio-temporal whitened log-likelihoods under real-video statistics (DINOv3). |
 
@@ -212,7 +216,7 @@ Training does the same on its own: a dataset config with `prefetch: true` fetche
 (`DatasetConfig.root_dir=...` chooses where). Some sets are large (for example AIGIBench is about 220 GB), so check your disk
 first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-paper-benchmarks).
 
-**Supported benchmark datasets** — 19 image and 8 video. *Auto* means the loader downloads and arranges it.
+**Supported benchmark datasets** — 20 image and 8 video. *Auto* means the loader downloads and arranges it.
 
 | Dataset (`config name`) | What it is | Source | Download |
 | --- | --- | --- | --- |
@@ -229,6 +233,7 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `synthwildx` | SynthWildX: DALL·E 3, Firefly, Midjourney images posted on X (posts deleted since release are skipped) | X, via the official URL list | Auto |
 | `wildrf` | WildRF: real and fake images from Facebook, Reddit and Twitter | Google Drive | Auto |
 | `bfree_online` | BFree-Online: viral real and fake images, several web copies each (dead links are skipped); nonprofit use only | the web, via the official URL list | Auto |
+| `sidset` | SID-Set (SIDA): social-media images, real vs fully synthetic and vs tampered (60k test images) | Google Drive | Auto |
 | `rrdataset` | RRDataset: real vs AI images as created, after sharing online, and after re-digitization (51k images) | Zenodo | Auto |
 | `diffusionforensics`, `diffusion1kstep` | DiffusionForensics, Diffusion-1kStep | Google Drive | Auto |
 | `freqnetdetection` | FreqNet GAN set | Google Drive | Auto |
@@ -239,7 +244,7 @@ first. Full details: [benchmark guide](docs/BENCHMARKS.md#2-datasets-for-the-pap
 | `physics_iq` | Physics-IQ | official site | Place by hand in the same layout |
 
 The **Leaderboard** tab covers 30+ benchmark groups across these datasets. 🌍 **How do the detectors hold up on recent
-and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 14 image detectors on RealChain,
+and in-the-wild images?** [docs/WILD_BENCHMARKS.md](docs/WILD_BENCHMARKS.md) scores all 20 image detectors on RealChain,
 EvalGEN, SynthWildX, WildRF, BFree-Online and RRDataset.
 
 ### 🏁 Standardized leaderboard
@@ -275,14 +280,18 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
-| DDA | 5 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 acc (official) | ✅ official weights match (GenImage 2.3 pt below) |
+| DDA | 6 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF, GenImage) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 · 91.7 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 · 89.37 acc (official); 89.58 · 80.79 · 96.79 · 88.00 · 90.56 · 91.35 acc (trained in SynthScope) | ✅ official weights match 5; our training reproduces 6 of 7 incl. GenImage |
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
+| B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
+| Effort | GenImage (8 subsets) | 91.1 acc | 89.83 acc (official) | ✅ official weights match |
+| MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
-| D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.1 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
+| D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.0 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
+| SPLIT (video) | GenVideo-Val, MSR-VTT-calibrated (fake recall at FPR 0.1 / 1 / 5%) | 82.1 · 91.7 · 97.2 | 98.9 · 99.9 · 100.0 | ✅ reproduced (official code on our data: 82.2 · 90.2 · 96.9) |
 | SPAI | GenImage | not reported | 94.22 (official) | ⚠️ the paper's own test set is not in SynthScope yet |
-| VIB-Net | GenImage SD-v1.4 | 95.5 | 83.94 | ❌ below the paper (no official weights to compare) |
+| VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP · 85.83 acc | 94.08 AP · 85.22 acc (trained in SynthScope) | ✅ reproduced by our training |
 
 ---
 
@@ -298,7 +307,8 @@ accelerate launch --config_file accelerate_config.yaml --num_processes 2 main.py
 
 Or use a method's ready-made recipe in [experiments/](experiments/) (e.g. `bash experiments/image/aide.sh`).
 Datasets (`dataset@DatasetConfig=<name>`) auto-download to their `root_dir` and restructure into the
-common `<generator>/{0_real,1_fake}` layout; transforms are named pipelines in [transformations.py](transformations.py).
+common `<generator>/{0_real,1_fake}` layout; each model config lists its preprocessing (`eval_transform_list`,
+`train_transform_list`, ...) as named steps from [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) to add a detector.
 

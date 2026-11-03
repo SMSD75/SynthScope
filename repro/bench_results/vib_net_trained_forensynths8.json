@@ -1,0 +1,74 @@
+{
+  "tag": "vib_net_trained_forensynths8",
+  "model": "vib_net_official",
+  "ckpt": "/ssdstore/ssalehi/SynthScope/models/vib_net_v1/model_best.pth",
+  "benchmark": "forensynths",
+  "data_root": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 66.25,
+    "map": 77.15,
+    "mauroc": 79.41
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 81.08,
+      "auroc": 83.39,
+      "real_acc": 93.55,
+      "fake_acc": 35.7,
+      "acc": 64.63
+    },
+    "cyclegan": {
+      "ap": 81.51,
+      "auroc": 84.45,
+      "real_acc": 92.66,
+      "fake_acc": 41.86,
+      "acc": 67.26
+    },
+    "deepfake": {
+      "ap": 64.01,
+      "auroc": 64.45,
+      "real_acc": 96.97,
+      "fake_acc": 8.71,
+      "acc": 52.84
+    },
+    "gaugan": {
+      "ap": 82.23,
+      "auroc": 87.35,
+      "real_acc": 97.16,
+      "fake_acc": 17.6,
+      "acc": 57.38
+    },
+    "progan": {
+      "ap": 68.79,
+      "auroc": 75.88,
+      "real_acc": 68.58,
+      "fake_acc": 70.53,
+      "acc": 69.55
+    },
+    "san": {
+      "ap": 94.17,
+      "auroc": 93.19,
+      "real_acc": 94.52,
+      "fake_acc": 75.34,
+      "acc": 84.93
+    },
+    "stargan": {
+      "ap": 81.23,
+      "auroc": 82.55,
+      "real_acc": 80.89,
+      "fake_acc": 68.03,
+      "acc": 74.46
+    },
+    "stylegan": {
+      "ap": 64.14,
+      "auroc": 64.0,
+      "real_acc": 81.64,
+      "fake_acc": 36.25,
+      "acc": 58.95
+    }
+  },
+  "date": "2026-10-29T05:45:42",
+  "synthscope_version": "0.1.0"
+}

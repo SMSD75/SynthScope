@@ -28,9 +28,11 @@ Metrics are percentages. **mAP** = mean AP over generators. Each track is ranked
 | 2 | SPAI (official weights) | official-weights | — | — | 94.01 | 98.45 | ✓ | GenImage SD-v1.4; vendored official architecture, fixed-res 2x2x224 |
 | 3 | SPAI (from scratch) | from-scratch | — | — | — | 97.66 | ✓ | DMID Latent-Diffusion vs COCO; SynthScope fixed-resolution variant |
 
-## GenVideo-Val — video
+## GenVideo-Val — video (all 10,000 MSR-VTT reals vs every fake, per generator)
 
-| Rank | Method | Eval | Acc | mAP | **AP** | AUROC | Verified | Notes |
+| Rank | Method | Eval | Acc | mAP | AP | **AUROC** | Verified | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | ReStraV | frozen-probe | — | — | 96.67 | 97.06 | ✓ | Frozen DINOv2 trajectory geometry + MLP |
-| 2 | D3 | training-free | — | — | 95.60 | 93.60 | ✓ | Training-free frozen CLIP 2nd-order trajectory |
+| 1 | SPLIT | training-free | 99.41 | 99.79 | — | 99.97 | ✓ | Training-free X-CLIP patch roughness x motion incoherence; Acc at the real-only FPR-1% calibration |
+| 2 | D3 | training-free | 95.53 | 68.84 | — | 98.45 | ✓ | Training-free X-CLIP 2nd-order feature volatility (official preprocessing) |
+| 3 | STALL | training-free | 56.89 | 32.05 | — | 82.59 | ✓ | Training-free DINOv3 spatio-temporal likelihood under VATEX real-video statistics |
+| 4 | ReStraV | frozen-probe | 30.01 | 33.60 | — | 43.06 | ✓ | Frozen DINOv2 trajectory geometry + MLP trained on GenVidBench; does not transfer to GenVideo-Val (AUROC below 50) |

@@ -17,12 +17,12 @@ for label, p in [("fake", FAKE), ("real", REAL)]:
     if not os.path.exists(p):
         print(f"  {label}: missing, skip"); continue
     pil = Image.open(p).convert("RGB")
-    # aide_dct branch uses spec.transform.dct_energy_map(pil); model is unused -> pass None.
+    # aide_dct branch uses the AIDEFiveView step's dct_energy_map(pil); model is unused -> pass None.
     amap = eng._interpret_map(None, spec, None, pil)
     if not amap:
         print(f"  {label}: interpret_map=None (FAIL)"); ok = False; continue
     raw = base64.b64decode(amap.split(",", 1)[1]); png = Image.open(io.BytesIO(raw)); png.load()
-    em = spec.transform.dct_energy_map(pil)
+    em = spec.transform.transforms[0].dct_energy_map(pil)
     out = os.path.join(OUT, f"aide_{label}.png"); png.save(out)
     print(f"  {label}: energy_map shape={tuple(em.shape)} -> PNG {png.size} {png.mode} {len(raw)}B -> {out}")
 print("ALL OK" if ok else "SOME FAILED")

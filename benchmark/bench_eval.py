@@ -27,6 +27,8 @@ ForenSynths and AIGCDetect, to remove the PNG-fake/JPEG-real format bias).
 from __future__ import annotations
 
 import argparse
+import ctypes
+import ctypes.util
 import datetime
 import io
 import json
@@ -41,6 +43,21 @@ from datasets_util import ensure_dataset, find_eval_root
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 Image.MAX_IMAGE_PIXELS = None   # benchmark data is trusted; some real photos (e.g. RealChain) exceed PIL's 179 MP bomb guard
+
+
+def _limit_heap_growth() -> None:
+    """Serve large allocations from mmap and give freed heap back to the OS (glibc ``mallopt``; the same as
+    ``MALLOC_MMAP_THRESHOLD_`` / ``MALLOC_TRIM_THRESHOLD_`` = 128 KiB). Scoring one native-resolution image after another
+    (B-Free, SPAI: a differently sized decode and tensor each time) otherwise fragments the heap and the process grows by
+    ~1 GB a minute until it is killed (B-Free on EvalGEN); with it the run stays flat and the scores are identical."""
+    libc = ctypes.util.find_library("c")
+    if libc:
+        mallopt = ctypes.CDLL(libc).mallopt
+        mallopt(-3, 128 * 1024)    # M_MMAP_THRESHOLD
+        mallopt(-1, 128 * 1024)    # M_TRIM_THRESHOLD
+
+
+_limit_heap_growth()
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".tif", ".tiff", ".JPEG"}
 REAL_DIRNAMES = ("0_real", "real", "reals")
@@ -127,8 +144,9 @@ def discover(benchmark: str, root: Path, shared_reals: Path | None, select: set[
 
 
 def native_res_transform(tf):
-    """Drop the up-scaling Resize/CenterCrop from a model's eval transform, keeping
-    ToTensor + Normalize, so images are scored at NATIVE resolution.
+    """Drop the up-scaling resize/center-crop steps from a model's eval transform, keeping
+    to_dtype + normalize, so images are scored at NATIVE resolution (ValueError for eval lists
+    whose own steps resize, see ``AIGITransformations.without_resize``).
 
     Some methods (e.g. NPR on GANGen-Detection/freqnet) detect up-sampling artifacts and
     MUST NOT be fed a bilinearly up-scaled image — resizing a 128x128 GAN crop to 256x256
@@ -136,11 +154,7 @@ def native_res_transform(tf):
     GANGen recipe runs with ``no_resize=True``; this reproduces it. Safe only when every
     image in a per-generator batch shares one resolution (true for freqnet's per-gen sets),
     since bench_eval stacks a batch into a single tensor."""
-    import torchvision.transforms as T
-    if not isinstance(tf, T.Compose):
-        return tf
-    kept = [t for t in tf.transforms if not isinstance(t, (T.Resize, T.CenterCrop))]
-    return T.Compose(kept)
+    return tf.without_resize()
 
 
 @torch.no_grad()

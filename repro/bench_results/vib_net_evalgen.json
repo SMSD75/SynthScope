@@ -4,49 +4,50 @@
   "ckpt": "registry-default",
   "benchmark": "pergen",
   "data_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+  "jpeg_fakes": null,
   "n_generators": 5,
   "means": {
-    "acc": 94.82,
-    "map": 99.87,
-    "mauroc": 99.73
+    "acc": 85.98,
+    "map": 99.32,
+    "mauroc": 98.74
   },
   "per_generator": {
     "Flux": {
-      "ap": 99.86,
-      "auroc": 99.7,
-      "real_acc": 90.04,
-      "fake_acc": 99.74,
-      "acc": 94.89
+      "ap": 99.0,
+      "auroc": 98.09,
+      "real_acc": 99.1,
+      "fake_acc": 64.79,
+      "acc": 81.95
     },
     "GoT": {
-      "ap": 99.96,
-      "auroc": 99.92,
-      "real_acc": 89.68,
-      "fake_acc": 99.98,
-      "acc": 94.83
+      "ap": 99.58,
+      "auroc": 99.28,
+      "real_acc": 99.08,
+      "fake_acc": 81.62,
+      "acc": 90.35
     },
     "Infinity": {
-      "ap": 99.93,
-      "auroc": 99.85,
-      "real_acc": 89.98,
-      "fake_acc": 99.95,
-      "acc": 94.97
+      "ap": 99.53,
+      "auroc": 99.13,
+      "real_acc": 99.06,
+      "fake_acc": 78.18,
+      "acc": 88.62
     },
     "NOVA": {
-      "ap": 99.69,
-      "auroc": 99.37,
-      "real_acc": 89.84,
-      "fake_acc": 99.22,
-      "acc": 94.53
+      "ap": 99.08,
+      "auroc": 98.26,
+      "real_acc": 99.06,
+      "fake_acc": 66.98,
+      "acc": 83.02
     },
     "OmniGen": {
-      "ap": 99.9,
-      "auroc": 99.79,
-      "real_acc": 89.88,
-      "fake_acc": 99.93,
-      "acc": 94.9
+      "ap": 99.4,
+      "auroc": 98.92,
+      "real_acc": 99.06,
+      "fake_acc": 72.85,
+      "acc": 85.96
     }
   },
-  "date": "2026-10-10T21:10:52",
+  "date": "2026-10-30T23:54:04",
   "synthscope_version": "0.1.0"
 }

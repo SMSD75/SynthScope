@@ -87,39 +87,43 @@ This SynthScope implementation reproduces the method-defining pieces of VIB-Net:
 
 The implementation is therefore best understood as a **paper-faithful SynthScope reproduction** of VIB-Net's architecture and objective, adapted to this repository's Hydra configuration, Accelerate trainer, dataset module, and metrics interface.
 
-## Training setup
+## Official model (`vib_net_official`)
 
-The VIB-Net config lives in:
+`conf/model/image/vib_net_official.yaml` (registry key `vib_net_official`) is the official model exactly as the released
+test code builds it (`models/clip_models.py`): CLIP ViT-L/14 loaded in fp32 (the official loader runs on the CPU and
+moves the model; `clip.load` on a GPU would give fp16), no feature normalization, `softplus(x - 5)` without a floor, one
+latent sample per image also at inference, and the official test transform (a 224 center crop of the image at its own
+size, no resize). The released checkpoints map onto it with `remap_vibnet` (`model.*` -> `backbone.*`). The older
+`vib_net` key keeps the earlier SynthScope variant (feature BatchNorm, std floor, resize 256), which the web demo serves.
 
-```bash
-conf/model/vib_net.yaml
-conf/trainer/vib_net.yaml
-```
+## Training in SynthScope
 
-The current model config sets:
+No training code is released (the official repository has the test code and the checkpoints only), so the recipe is
+reconstructed from three sources and documented in `experiments/image/vib_net.sh`:
 
-| Setting | Value |
-|---|---:|
-| `model_type` | `vib_net` |
-| `backbone_name` | `CLIP:ViT-L/14` |
-| `vib_hidden_dim` | `1024` |
-| `vib_latent_dim` | `256` |
-| `dropout` | `0.5` |
-| `std_shift` | `5.0` |
-| `freeze_backbone` | `true` |
+| Setting | Value | Source |
+|---|---|---|
+| Data | GenImage SD v1.4 train split, a seeded 16k real + 16k fake subset; validation 1k + 1k held out from the same split | paper ("32,000 real and generated images"); the GenImage val alias is its test split, so it is not used to select |
+| Augmentation | blur p 0.1 (sigma 0-3) + JPEG p 0.1 (cv2/PIL, q 30-100), random 224 crop, flip, CLIP normalization | released `options/base_options.py` values on UniversalFakeDetect's `data_augment` (`blur_jpeg_cnndet`) |
+| Scale | the image at its own size (no resize) | the official test is a 224 center crop without resize; UniversalFakeDetect's pipeline resizes to 256 first, which on GenImage's 512 px images trains at half scale |
+| Model | frozen fp32 CLIP ViT-L/14 + VIB head, K = 256, beta 1e-3 | paper Fig. 4 / released code; beta is not reported (1e-3 is the standard VIB value) |
+| Optimizer | Adam(W) lr 2e-4, no weight decay, batch 256 | paper implementation details; released options |
+| Schedule | validation accuracy every epoch; after 5 epochs without a 0.001 gain the learning rate is divided by 10, stopping below 1e-6 (at most 100 epochs) | UniversalFakeDetect `train.py` (trainer `plateau`) |
 
-The current trainer config uses AdamW through the SynthScope trainer:
+Two runs, evaluated on the paper's protocol (7 GenImage generators + 8 ForenSynths GANs, official test transform):
 
-| Setting | Value |
-|---|---:|
-| Epochs | `10` |
-| Learning rate | `0.0001` |
-| Weight decay | `0.05` |
-| Label smoothing | `0.1` |
-| Validation interval | `1` |
-| Test interval | `1` |
+| Run | best val acc | 15-generator AP / acc | GenImage-7 AP / acc | ForenSynths-8 AP / acc |
+|---|---|---|---|---|
+| resize 256 then crop (UniversalFakeDetect pipeline) | 95.5 | 82.98 / 70.20 | 89.64 / 74.76 | 77.15 / 66.25 |
+| **native-resolution crop** (default) | 98.3 | **94.08 / 85.22** | 97.18 / 87.16 | 91.37 / 83.52 |
 
-`label_smoothing` is part of the shared trainer configuration and is used by the cross-entropy models. VIB-Net uses `BCEWithLogitsLoss`, so label smoothing is not part of its current loss unless it is explicitly added to `SynthScopeVIBNetModel.compute_loss`.
+Per generator (native resolution, AP / acc; paper in brackets): SD v1.4 99.98 / 99.29 (100.0 / 99.55) · SD v1.5 99.98 /
+98.90 (99.97 / 99.20) · ADM 89.96 / 66.80 (95.49 / 73.85) · GLIDE 95.48 / 75.23 (97.13 / 74.25) · Midjourney 98.35 / 88.33
+(97.81 / 88.05) · Wukong 99.96 / 99.17 (99.93 / 98.25) · VQDM 96.56 / 82.37 (97.00 / 89.35) · ProGAN 97.09 / 90.83 (96.59 /
+89.70) · CycleGAN 98.90 / 91.90 (98.44 / 88.60) · BigGAN 96.96 / 91.17 (97.17 / 91.20) · StyleGAN 85.66 / 75.53 (84.31 /
+74.10) · StarGAN 96.81 / 84.74 (97.60 / 80.70) · GauGAN 98.05 / 91.62 (96.94 / 87.15) · Deepfake 68.46 / 60.61 (81.32 / 72.00)
+· SAN 89.00 / 81.74 (93.27 / 81.50). Runs: jobs 267625 / 267846 (training), 267842 / 267928 (evaluation); results in
+`repro/bench_results/vib_net_trained*.json`.
 
 ## Reproduced benchmark results
 
@@ -127,12 +131,16 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| Diffusion-source (SDv1.4-trained), AP -- HEADL | map=95.53 | *none released* | mAP=83.94 / acc=77.57 | below |
-| Diffusion-source (SDv1.4-trained), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
-| GAN-source (ForenSynths/ProGAN-trained), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |
-| GAN-source (ForenSynths/ProGAN-trained), ACC | acc=82.5 | *none released* | mAP=61.71 / acc=57.91 | below |
+| Diffusion-source (SDv1.4-trained), 15 generators, AP -- headline | map=95.53 | *not available* | **mAP=94.08** / acc=85.22 | **reproduced** (within 1.5 AP) |
+| Diffusion-source (SDv1.4-trained), 15 generators, ACC | acc=85.83 | *not available* | mAP=94.08 / **acc=85.22** | **reproduced** (within 0.7) |
+| GAN-source (ForenSynths/ProGAN-trained), AP | map=93.14 | *not available* | — | missing (not trained on ProGAN yet) |
+| GAN-source (ForenSynths/ProGAN-trained), ACC | acc=82.5 | *not available* | — | missing (not trained on ProGAN yet) |
 
-**SynthScope_official** = authors' released weights run through the SynthScope class/eval (VIB-Net has no official weights released, so this is *none released* on every row) · **SynthScope_train** = SynthScope class trained from scratch by us (single best run) · **Status:** reproduced = SynthScope_train matches paper/official · official = SynthScope_official matches (SynthScope_train may still lag) · below = gap remains · reference = paper reports no comparable number · missing = not yet evaluated.
+**SynthScope_official** = authors' released weights run through the SynthScope class (the checkpoints are on a
+restricted Google Drive; access has been requested) · **SynthScope_train** = trained in SynthScope with the recipe above
+· **Status:** reproduced = SynthScope_train matches the paper · missing = not yet evaluated. The earlier entry for the
+GAN-source rows (61.71 / 57.91) was the SD v1.4-trained model tested on ForenSynths, not a ProGAN-trained model, and has
+been removed.
 
 ## Integration notes
 

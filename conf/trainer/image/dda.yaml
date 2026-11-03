@@ -1,0 +1,33 @@
+defaults:
+  - /trainer/default
+  - _self_
+
+# DDA's official training recipe (Training/train.sh + networks/trainer.py + data/__init__.py): AdamW lr 1e-4, weight
+# decay 0, on the LoRA tensors + head; micro-batch = batch_size 16 // 6 = 2 pairs (12 images), 4 accumulation;
+# CosineAnnealingLR(T_max=1000, eta_min=1e-3 x lr) stepped per optimizer step (so it cycles over the epoch); no gradient
+# clipping; 1 epoch (NITER=1); a checkpoint every 5000 micro-batches as in the official loop. The official train.py
+# defines set_seed but never calls it, so the official run is unseeded; 42 here. Note: the released DDA_ckpt.pth records
+# total_steps=130000, more than this documented 1-epoch recipe gives (59,144), so the release used a longer setting.
+trainer_type: dda
+epochs: 1
+lr: 1.0e-4
+weight_decay: 0.0
+label_smoothing: 0.0
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: true
+save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/dda
+seed: 42
+warmup:
+  mode: "off"              # quoted: a bare off is YAML boolean False
+  warmup_ratio: 0.0
+  lr_scheduler: cosine
+step_budget:
+  max_steps: null          # one full epoch
+  save_every: 5000         # micro-batches
+  grad_accum_steps: 4
+  max_grad_norm: 0.0
+  cosine_t_max: 1000       # optimizer steps
+  eta_min_ratio: 0.001

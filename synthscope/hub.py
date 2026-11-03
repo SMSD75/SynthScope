@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 
 from interface.backend import config as _config
-from interface.backend.registry import list_specs
+from interface.backend.registry import get_spec, list_specs
 
 # Where the public zoo lives by default; override with $SYNTHSCOPE_HUB_REPO.
 DEFAULT_REPO = os.environ.get("SYNTHSCOPE_HUB_REPO", "SMSD75/synthscope-checkpoints")
@@ -34,8 +34,13 @@ def is_official(spec) -> bool:
 
 
 def repo_filename(key: str) -> str:
-    """Canonical name of a detector's checkpoint inside the Hub repo."""
-    return f"{key}.pth"
+    """Canonical name of a detector's checkpoint inside the Hub repo: the file its registry entry loads (``<key>.pth``,
+    or e.g. ``moejepa.safetensors`` for a release kept in its original format)."""
+    try:
+        checkpoint = get_spec(key).checkpoint
+    except KeyError:
+        checkpoint = None
+    return checkpoint or f"{key}.pth"
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,39 @@
+{
+  "tag": "dda_trained_rrdataset",
+  "model": "dda",
+  "ckpt": "/ssdstore/ssalehi/SynthScope/models/dda_v1/model_final.pth",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 77.19,
+    "map": 85.81,
+    "mauroc": 83.1
+  },
+  "per_generator": {
+    "original": {
+      "ap": 97.62,
+      "auroc": 97.35,
+      "real_acc": 91.54,
+      "fake_acc": 92.27,
+      "acc": 91.91
+    },
+    "redigital": {
+      "ap": 75.23,
+      "auroc": 71.36,
+      "real_acc": 91.39,
+      "fake_acc": 38.89,
+      "acc": 65.14
+    },
+    "transfer": {
+      "ap": 84.58,
+      "auroc": 80.6,
+      "real_acc": 92.79,
+      "fake_acc": 56.24,
+      "acc": 74.51
+    }
+  },
+  "date": "2026-10-29T09:54:52",
+  "synthscope_version": "0.1.0"
+}

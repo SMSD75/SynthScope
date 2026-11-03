@@ -8,7 +8,7 @@ export OMP_NUM_THREADS=1
 # STALL (Ben Hayun et al., CVPR'26) is training-free: a frozen DINOv3 ViT-L/16 extracts
 # per-frame features, which are scored against a VATEX real-video calibration via two whitened
 # isotropic-Gaussian likelihood branches (spatial + temporal). Frames are decoded square at 224
-# in [0,1] and normalized with ImageNet stats -- normalize_dinov2 here, because the official
+# in [0,1] and normalized with ImageNet stats -- normalize_imagenet here, because the official
 # DINOv3 transform uses ImageNet mean/std (NOT normalize_dinov3). AP/AUROC are the meaningful
 # metrics. The video benchmark must be present under DatasetConfig.root_dir.
 #
@@ -24,8 +24,8 @@ export DINO_V3_WEIGHTS=${DINO_V3_WEIGHTS:-/hddstore/ssalehi/SynthScope/dinov3_ch
     DatasetConfig.test_batch_size=8 \
     DatasetConfig.num_frames=16 \
     DatasetConfig.frame_size=224 \
-    DatasetConfig.train_transform_list=[normalize_dinov2] \
-    DatasetConfig.eval_transform_list=[normalize_dinov2] \
+    DatasetConfig.train_transform_list=[normalize_imagenet] \
+    DatasetConfig.eval_transform_list=[normalize_imagenet] \
     metrics=[real_accuracy,fake_accuracy,AP,AUC] \
     logger.name=stall \
     logger.mode=online \

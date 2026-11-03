@@ -12,3 +12,7 @@ lora_rank: 8
 lora_alpha: 1.0
 lora_targets: [attn.qkv, attn.proj, mlp.fc1, mlp.fc2]
 freeze_backbone: true
+
+# Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
+eval_transform_list: [center_crop_336, to_dtype, normalize_clip]
+# No training lists: DDA trains on dataset image/dda_train, which builds its own official paired transforms.

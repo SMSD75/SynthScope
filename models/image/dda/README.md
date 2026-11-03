@@ -29,7 +29,7 @@ image ─ CenterCrop(336) (no resize) → ToTensor → Normalize(CLIP mean/std)
 | `official_arch.py` = the official `Inference/models/lora.py`, verbatim | The checkpoint loads key-for-key; Apache-2.0 attribution in the header. |
 | `SynthScopeDDAModel` keeps the official `base_model.model.*` / `base_model.fc.*` names | Same state-dict layout as `DINOv2ModelWithLoRA`. |
 | `ModelConfig.pretrained_backbone=false` in the registry | The checkpoint holds the full backbone, so the DINOv2 weights are not fetched just to be overwritten. |
-| `compute_loss` = BCE on the single logit, LoRA + head trainable | The official trainable set. DDA's data construction (VAE reconstruction, frequency fusion, online JPEG) is not part of this class, so SynthScope does not reproduce DDA's training. |
+| `compute_loss` = 0.5 BCE + 0.5 contrastive loss, LoRA + head trainable | The official objective and trainable set. DDA's data construction (paired VAE reconstructions, matched JPEG, pixel/frequency mixing, resized copies, one shared augmentation per pair) lives in `DDATrainDataset` (`official_train_data.py`, `official_train_transforms.py`); see *Training in SynthScope*. |
 | `bench_eval --jpeg-fakes 96` | DDA's protocol JPEG-compresses only the synthetic images of GenImage, ForenSynths and AIGCDetect (quality 96) to remove the PNG-fake / JPEG-real format bias. The round trip matches the official `JPEG_Compression`. |
 
 ## Fidelity check (identical to the official model)
@@ -42,26 +42,29 @@ Reddit/Twitter, SynthWildX Firefly). Run on CPU (job 264307).
 ## Results
 
 Paper metric: accuracy at 0.5, mean ± std over each benchmark's subsets (official README table). SynthScope numbers
-are mean per-subset balanced accuracy with the official checkpoint; ± is the sample std over subsets.
+are mean per-subset balanced accuracy with the official checkpoint (SynthScope_official) and with the checkpoint trained
+in SynthScope with the official recipe (SynthScope_train); ± is the sample std over subsets.
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| GenImage (1G + 7D, fakes JPEG q96) | 91.7 ± 7.8 | 89.37 ± 11.08 (mAP 97.74, AUROC 98.21) | — | **below** by 2.3 pt (see below) |
+| **GenImage** (1G + 7D, fakes JPEG q96) | 91.7 ± 7.8 | 89.37 ± 11.08 (mAP 97.74, AUROC 98.21) | **91.35 ± 8.47** (mAP 98.07, AUROC 98.42) | **reproduced** by the trained model; official weights 2.3 pt below |
 | DRCT-2M (16D) | 98.1 ± 1.4 | — | — | missing (not in SynthScope yet) |
 | DDA-COCO (5D) | 92.2 ± 10.6 | — | — | missing (not in SynthScope yet) |
-| **EvalGEN** (3D + 2AR, all 55,298 fakes, fake-only accuracy) | 97.2 ± 4.2 | **96.86 ± 4.62** (mAP 99.93, AUROC 99.85) | — | **reproduced** |
+| **EvalGEN** (3D + 2AR, all 55,298 fakes, fake-only accuracy) | 97.2 ± 4.2 | **96.86 ± 4.62** (mAP 99.93, AUROC 99.85) | **96.79 ± 5.45** (mAP 99.89, AUROC 99.76) | **reproduced** (both) |
 | Synthbuster (9D) | 90.1 ± 5.6 | — | — | missing (RAISE-1k reals not downloaded yet) |
-| **ForenSynths** (all 13 test sets, fakes JPEG q96) | 81.4 ± 13.9 ("11G") | **81.43 ± 13.84** (mAP 91.13, AUROC 92.11) | — | **reproduced** |
-| **AIGCDetectBenchmark** (7G + 10D, full data, fakes JPEG q96) | 87.8 ± 12.6 | **87.84 ± 12.56** (mAP 96.35, AUROC 96.65) | — | **reproduced** |
+| **ForenSynths** (all 13 test sets, fakes JPEG q96) | 81.4 ± 13.9 ("11G") | **81.43 ± 13.84** (mAP 91.13, AUROC 92.11) | **80.79 ± 13.10** (mAP 92.80, AUROC 93.70) | **reproduced** (both) |
+| **AIGCDetectBenchmark** (7G + 10D, full data, fakes JPEG q96) | 87.8 ± 12.6 | **87.84 ± 12.56** (mAP 96.35, AUROC 96.65) | **89.58 ± 12.11** (mAP 96.93, AUROC 96.95) | **reproduced** (both; trained 1.8 pt above) |
 | Chameleon | 82.4 | — | — | missing (available by request only) |
-| **SynthWildX** (1713 of 2000 images still online on X) | 90.9 ± 3.1 | **90.80 ± 3.13** (mAP 96.47, AUROC 96.40) | — | **reproduced** |
-| **WildRF** (full test split, 1251 real / 1252 fake) | 90.3 ± 3.5 | **90.20 ± 3.45** (mAP 96.76, AUROC 96.14) | — | **reproduced** |
-| BFree-Online (807 of the 1111 listed images still online) | 95.1 | 94.98 (mAP 99.41, AUROC 98.86) | — | close (not the paper's full set) |
-| RealChain (7 generators, full data) | — | 67.23 (mAP 76.46, AUROC 74.97) | — | reference (not in the paper) |
-| RRDataset (original / transfer / redigital) | — | 75.99 (mAP 85.18, AUROC 81.74) | — | reference (not in the paper) |
+| **SynthWildX** (1713 of 2000 images still online on X) | 90.9 ± 3.1 | **90.80 ± 3.13** (mAP 96.47, AUROC 96.40) | 88.00 ± 2.46 (mAP 96.99, AUROC 96.88) | **reproduced** by the official weights; trained 2.9 pt below (see below) |
+| **WildRF** (full test split, 1251 real / 1252 fake) | 90.3 ± 3.5 | **90.20 ± 3.45** (mAP 96.76, AUROC 96.14) | **90.56 ± 2.04** (mAP 97.83, AUROC 97.62) | **reproduced** (both) |
+| BFree-Online (807 of the 1111 listed images still online) | 95.1 | 94.98 (mAP 99.41, AUROC 98.86) | 94.05 (mAP 99.41, AUROC 98.82) | close (not the paper's full set) |
+| RealChain (7 generators, full data) | — | 67.23 (mAP 76.46, AUROC 74.97) | 66.76 (mAP 74.72, AUROC 72.79) | reference (not in the paper) |
+| RRDataset (original / transfer / redigital) | — | 75.99 (mAP 85.18, AUROC 81.74) | 77.19 (mAP 85.81, AUROC 83.10) | reference (not in the paper) |
 
-Of the paper's 11 benchmarks we can run 7: **5 are reproduced** (EvalGEN, ForenSynths, AIGCDetect, SynthWildX,
-WildRF), BFree-Online is close on the images still online, and GenImage is 2.3 pt below. AIGCDetect and ForenSynths
+Of the paper's 11 benchmarks we can run 7. The official weights reproduce **5** (EvalGEN, ForenSynths, AIGCDetect,
+SynthWildX, WildRF), BFree-Online is close on the images still online, and GenImage is 2.3 pt below. The checkpoint
+trained in SynthScope reproduces **6** (GenImage, EvalGEN, ForenSynths, AIGCDetect, WildRF, and BFree-Online within
+1.1 pt) and is 2.9 pt below on SynthWildX. AIGCDetect and ForenSynths
 match the paper's mean *and* std to the printed digit. Not run: DRCT-2M and DDA-COCO (not in SynthScope yet),
 Synthbuster (its RAISE-1k reals are not downloaded yet) and Chameleon (by request only).
 
@@ -94,6 +97,26 @@ ForenSynths), 264323 (RealChain, RRDataset); results in `repro/bench_results/dda
 
 The authors note that results depend slightly on the JPEG decoder and recommend Pillow 12.3.0 with libjpeg-turbo
 3.1.4.1; these runs used Pillow 12.1.1 with libjpeg-turbo 3.1.3.
+
+## Training in SynthScope
+
+`experiments/image/dda.sh` runs the official recipe (`Training/train.py` and its configs) through SynthScope's trainer:
+the 118,288 MSCOCO train2017 images paired with their SD-2.0 VAE reconstructions (HF `Junwei-Xi/DDA-Training-Set`),
+each pair built exactly as the official `RealFakeDataset` (the fake JPEG-compressed at its real image's quality with
+p 0.5, pixel and frequency mixing at p 0.2 / ratio 0.8, a down- and an up-resized copy of both, one shared random
+augmentation for the six images, crop 336, CLIP normalization); 0.5 BCE + 0.5 contrastive loss (margins 0 / 1, as
+pytorch-metric-learning's `ContrastiveLoss`); LoRA rank 8 + head trainable on DINOv2 ViT-L/14; AdamW lr 1e-4, no weight
+decay, 2 pairs (12 images) per micro-batch with 4 accumulation steps, cosine annealing with a period of 1,000 steps
+(eta_min ratio 0.001) stepped per optimizer step, no gradient clipping, one epoch (59,144 micro-batches). The images are
+read as in the official dataset module, with `ImageFile.LOAD_TRUNCATED_IMAGES` (one reconstruction carries an oversized
+PNG text chunk). The run takes 17 h on one A5000 (job 267042); `model_final.pth` is evaluated.
+
+The trained checkpoint is at least as good as the released one on six of the seven paper benchmarks and closes the
+GenImage gap (91.35 vs paper 91.7; VQDM 78.03 and BigGAN 79.63 vs 67.03 and 82.77 for the official weights). SynthWildX
+is the exception: its ranking is slightly better (AP 96.99 vs 96.47) but it calls more of X's real images fake (real
+accuracy 79.42 vs 88.38: DALL-E 3 89.58, Firefly 85.16, Midjourney v5 89.25), which lowers the fixed-threshold accuracy.
+The released checkpoint has `total_steps` 130,000 while the documented recipe is one epoch, so the authors' run was
+longer than the recipe we follow. Results: `repro/bench_results/dda_trained_*.json` (job 267832).
 
 ## Usage
 

@@ -1,0 +1,63 @@
+{
+  "method": "SPLIT",
+  "track": "genvideo-val",
+  "modality": "video",
+  "model_type": "split",
+  "paper": "Hyun & Kim, ECCV'26",
+  "url": "https://github.com/SMSD75/SynthScope",
+  "evaluation": "training-free",
+  "metrics": {
+    "acc": 99.41,
+    "map": 99.79,
+    "ap": null,
+    "auroc": 99.97
+  },
+  "per_generator": {
+    "Crafter": {
+      "auroc": 100.0,
+      "ap": 99.98
+    },
+    "Gen2": {
+      "auroc": 99.98,
+      "ap": 99.84
+    },
+    "HotShot": {
+      "auroc": 100.0,
+      "ap": 100.0
+    },
+    "Lavie": {
+      "auroc": 99.99,
+      "ap": 99.96
+    },
+    "ModelScope": {
+      "auroc": 99.99,
+      "ap": 99.89
+    },
+    "MoonValley": {
+      "auroc": 99.98,
+      "ap": 99.62
+    },
+    "MorphStudio": {
+      "auroc": 100.0,
+      "ap": 99.97
+    },
+    "Show_1": {
+      "auroc": 100.0,
+      "ap": 99.96
+    },
+    "Sora": {
+      "auroc": 100.0,
+      "ap": 99.63
+    },
+    "WildScrape": {
+      "auroc": 99.79,
+      "ap": 99.09
+    }
+  },
+  "submitted_by": "SynthScope",
+  "date": "2026-10-31",
+  "verified": true,
+  "source": "repro/bench_results/split_genvideo_fpr.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
+  "protocol_notes": "Training-free X-CLIP patch roughness x motion incoherence; Acc at the real-only FPR-1% calibration",
+  "synthscope_version": "0.1.0"
+}

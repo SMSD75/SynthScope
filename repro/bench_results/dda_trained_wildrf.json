@@ -1,0 +1,39 @@
+{
+  "tag": "dda_trained_wildrf",
+  "model": "dda",
+  "ckpt": "/ssdstore/ssalehi/SynthScope/models/dda_v1/model_final.pth",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 90.56,
+    "map": 97.83,
+    "mauroc": 97.62
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 98.47,
+      "auroc": 98.35,
+      "real_acc": 88.13,
+      "fake_acc": 96.25,
+      "acc": 92.19
+    },
+    "reddit": {
+      "ap": 96.72,
+      "auroc": 96.43,
+      "real_acc": 82.0,
+      "fake_acc": 94.53,
+      "acc": 88.27
+    },
+    "twitter": {
+      "ap": 98.29,
+      "auroc": 98.08,
+      "real_acc": 84.75,
+      "fake_acc": 97.66,
+      "acc": 91.21
+    }
+  },
+  "date": "2026-10-29T04:27:16",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,98 @@
+{
+  "tag": "stall_genvideo_full",
+  "model": "stall",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenVideo/test",
+  "n_generators": 10,
+  "means": {
+    "acc": 56.89,
+    "map": 32.05,
+    "map_real": 98.09,
+    "mauroc": 82.59
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 53.66,
+      "ap_real": 97.83,
+      "auroc": 87.91,
+      "real_acc": 15.21,
+      "fake_acc": 99.07,
+      "acc": 57.14
+    },
+    "Gen2": {
+      "ap": 58.91,
+      "ap_real": 98.39,
+      "auroc": 90.0,
+      "real_acc": 15.21,
+      "fake_acc": 100.0,
+      "acc": 57.6
+    },
+    "HotShot": {
+      "ap": 21.25,
+      "ap_real": 97.58,
+      "auroc": 76.97,
+      "real_acc": 15.21,
+      "fake_acc": 97.43,
+      "acc": 56.32
+    },
+    "Lavie": {
+      "ap": 53.53,
+      "ap_real": 97.46,
+      "auroc": 86.42,
+      "real_acc": 15.21,
+      "fake_acc": 99.0,
+      "acc": 57.11
+    },
+    "ModelScope": {
+      "ap": 20.92,
+      "ap_real": 97.83,
+      "auroc": 78.21,
+      "real_acc": 15.21,
+      "fake_acc": 98.43,
+      "acc": 56.82
+    },
+    "MoonValley": {
+      "ap": 22.83,
+      "ap_real": 98.67,
+      "auroc": 82.67,
+      "real_acc": 15.21,
+      "fake_acc": 100.0,
+      "acc": 57.6
+    },
+    "MorphStudio": {
+      "ap": 28.34,
+      "ap_real": 98.45,
+      "auroc": 83.22,
+      "real_acc": 15.21,
+      "fake_acc": 99.14,
+      "acc": 57.18
+    },
+    "Show_1": {
+      "ap": 30.09,
+      "ap_real": 98.17,
+      "auroc": 82.29,
+      "real_acc": 15.21,
+      "fake_acc": 97.71,
+      "acc": 56.46
+    },
+    "Sora": {
+      "ap": 2.8,
+      "ap_real": 99.85,
+      "auroc": 80.73,
+      "real_acc": 15.21,
+      "fake_acc": 98.21,
+      "acc": 56.71
+    },
+    "WildScrape": {
+      "ap": 28.22,
+      "ap_real": 96.64,
+      "auroc": 77.48,
+      "real_acc": 15.21,
+      "fake_acc": 96.65,
+      "acc": 55.93
+    }
+  },
+  "date": "2026-11-02T20:31:58",
+  "synthscope_version": "video"
+}

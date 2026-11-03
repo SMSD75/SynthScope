@@ -1,0 +1,39 @@
+{
+  "tag": "moejepa_wildrf",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 68.19,
+    "map": 77.06,
+    "mauroc": 73.5
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 82.16,
+      "auroc": 80.49,
+      "real_acc": 84.38,
+      "fake_acc": 58.13,
+      "acc": 71.25
+    },
+    "reddit": {
+      "ap": 70.73,
+      "auroc": 65.73,
+      "real_acc": 86.27,
+      "fake_acc": 40.67,
+      "acc": 63.47
+    },
+    "twitter": {
+      "ap": 78.3,
+      "auroc": 74.29,
+      "real_acc": 81.82,
+      "fake_acc": 57.89,
+      "acc": 69.86
+    }
+  },
+  "date": "2026-11-01T11:16:18",
+  "synthscope_version": "0.1.0"
+}

@@ -1,16 +1,5 @@
 [
   {
-    "detector": "vib_net",
-    "name": "VIB-Net",
-    "auroc": 99.91,
-    "ap": 99.91,
-    "acc": 92.0,
-    "fake_detect_rate": 100.0,
-    "real_false_pos": 16.0,
-    "mean_p_fake_on_fakes": 0.9752,
-    "mean_p_fake_on_reals": 0.2301
-  },
-  {
     "detector": "co_spy",
     "name": "CO-SPY",
     "auroc": 99.31,
@@ -20,6 +9,17 @@
     "real_false_pos": 3.0,
     "mean_p_fake_on_fakes": 0.847,
     "mean_p_fake_on_reals": 0.116
+  },
+  {
+    "detector": "dda",
+    "name": "DDA",
+    "auroc": 99.19,
+    "ap": 99.2,
+    "acc": 93.0,
+    "fake_detect_rate": 90.0,
+    "real_false_pos": 4.0,
+    "mean_p_fake_on_fakes": 0.876,
+    "mean_p_fake_on_reals": 0.0934
   },
   {
     "detector": "cure",
@@ -42,6 +42,17 @@
     "real_false_pos": 0.0,
     "mean_p_fake_on_fakes": 0.438,
     "mean_p_fake_on_reals": 0.2672
+  },
+  {
+    "detector": "vib_net",
+    "name": "VIB-Net",
+    "auroc": 97.05,
+    "ap": 97.16,
+    "acc": 88.0,
+    "fake_detect_rate": 82.0,
+    "real_false_pos": 6.0,
+    "mean_p_fake_on_fakes": 0.7613,
+    "mean_p_fake_on_reals": 0.0771
   },
   {
     "detector": "aide",
@@ -77,6 +88,17 @@
     "mean_p_fake_on_reals": 0.4365
   },
   {
+    "detector": "omniaid",
+    "name": "OmniAID",
+    "auroc": 84.95,
+    "ap": 86.48,
+    "acc": 64.5,
+    "fake_detect_rate": 31.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.3963,
+    "mean_p_fake_on_reals": 0.1051
+  },
+  {
     "detector": "spai",
     "name": "SPAI",
     "auroc": 78.08,
@@ -86,6 +108,17 @@
     "real_false_pos": 8.0,
     "mean_p_fake_on_fakes": 0.368,
     "mean_p_fake_on_reals": 0.0778
+  },
+  {
+    "detector": "bfree",
+    "name": "B-Free",
+    "auroc": 74.6,
+    "ap": 79.06,
+    "acc": 62.5,
+    "fake_detect_rate": 26.0,
+    "real_false_pos": 1.0,
+    "mean_p_fake_on_fakes": 0.2996,
+    "mean_p_fake_on_reals": 0.0498
   },
   {
     "detector": "dinov3",
@@ -108,6 +141,17 @@
     "real_false_pos": 4.0,
     "mean_p_fake_on_fakes": 0.0523,
     "mean_p_fake_on_reals": 0.0412
+  },
+  {
+    "detector": "d3qe",
+    "name": "D3QE",
+    "auroc": 44.05,
+    "ap": 49.6,
+    "acc": 50.0,
+    "fake_detect_rate": 6.0,
+    "real_false_pos": 6.0,
+    "mean_p_fake_on_fakes": 0.0666,
+    "mean_p_fake_on_reals": 0.0542
   },
   {
     "detector": "adapted_dino",

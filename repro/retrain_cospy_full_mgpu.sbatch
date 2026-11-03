@@ -18,8 +18,9 @@ $CONDA run --no-capture-output -n SynthScope accelerate launch --config_file acc
   --num_processes 4 --main_process_port 29671 \
   main.py trainer@TrainerConfig=image/co_spy model@ModelConfig=image/co_spy dataset@DatasetConfig=image/genimage \
   DatasetConfig.root_dir=$DATA/GenImage \
-  DatasetConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]" \
-  DatasetConfig.eval_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
+  ModelConfig.train_transform_list="[resize_short_384,gaussian_blur,jpeg_compression,random_crop_384,random_horizontal_flip,to_dtype]" \
+  +ModelConfig.val_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
+  +ModelConfig.test_transform_list="[resize_short_384,center_crop_384,to_dtype]" \
   DatasetConfig.train_batch_size=16 DatasetConfig.val_batch_size=32 DatasetConfig.test_batch_size=32 DatasetConfig.num_workers=12 \
   ++TrainerConfig.epochs=4 ++TrainerConfig.save=true ++TrainerConfig.save_policy=min ++TrainerConfig.save_interval=1 ++TrainerConfig.save_path=$SAVE \
   metrics=[real_accuracy,fake_accuracy,AP,AUC] logger.mode=offline logger.name=cospy_full \

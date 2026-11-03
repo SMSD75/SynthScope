@@ -18,12 +18,12 @@
 | AIDE | GenImage (SD-v1.4) | 86.9 acc | 97.12 | 96.42 | ✅ reproduced (native-res retrain) |
 | SPAI | GenImage | ~91 AUC | 94.22 | 88.80 | ✅ served native-res (beats vendored 91.33) |
 | PGC | GenImage / ForenSynths-8 / UFD | 100 / — / 98.0 AP | 100.0 / 96.41 / 99.17 | 97.62 / **97.41** / **98.99** | ✅ UFD reproduced by the official recipe in SynthScope (step 500); ForenSynths (not in the paper) above the official checkpoint |
-| VIB-Net | GenImage (SD-v1.4) | 95.5 AP | *none released* | 83.26 | ⚠️ recipe/arch gap |
+| VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP / 85.83 acc | *not available* | **94.08 / 85.22** | ✅ reproduced by the reconstructed recipe (native-resolution training) |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
-| DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 acc | — | ✅ official match (GenImage 2.3 pt below) |
+| DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF / GenImage | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 / 91.7 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 / 89.37 acc | 89.58 / 80.79 / 96.79 / 88.00 / 90.56 / **91.35** acc | ✅ official match; trained in SynthScope reproduces 6 of 7 incl. GenImage (SynthWildX 2.9 below) |
 | D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
 | OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
-| D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 99.14 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
+| D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
 
@@ -97,11 +97,20 @@ SPAI now SERVES official weights remapped into the SynthScope class at NATIVE re
 | CLIP · UniversalFakeDetect-8 | 95.0 | 95.66 (82.2) | 96.44 (87.2) |
 | CNN · ForenSynths-13 | 90.8 | 91.15 (74.3) | 91.05 (72.2) |
 
-### VIB-Net (no official weights released)
+### VIB-Net (official weights on a restricted Google Drive; access requested)
+No training code is released; the recipe is reconstructed from the paper, the released options and the UniversalFakeDetect
+training loop the test code is built on (`experiments/image/vib_net.sh`, see the model README). Official model and test
+transform (`vib_net_official`: fp32 CLIP, no feature norm, 224 center crop without resize).
+
 | Benchmark | Paper | SynthScope_train |
 |---|---:|---:|
-| GenImage-8 (diffusion) | 95.5 AP | 83.94 (77.6) |
-| ForenSynths-13 (GAN) | 93.1 AP | 61.71 (57.9) |
+| 15 generators (7 GenImage + 8 ForenSynths GANs), SD v1.4-trained, AP / acc | 95.53 / 85.83 | **94.08 / 85.22** (GenImage-7 97.18 / 87.16, GAN-8 91.37 / 83.52) |
+| same, with UniversalFakeDetect's resize-256 training pipeline | 95.53 / 85.83 | 82.98 / 70.20 |
+| ProGAN-trained (GAN-source) | 93.14 / 82.5 | not trained yet |
+
+**Verdict: reproduced** once training sees the images at the scale the official test uses (no resize): the two runs
+differ only in that resize (82.98 -> 94.08 AP). The earlier 83.9 / 77.6 model also differed from the official one (fp16
+CLIP, an added feature BatchNorm); their separate effect was not measured.
 
 ### CuRe (official adapter)
 Fidelity: SynthScope's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
@@ -122,7 +131,7 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 
 **Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
 
-### DDA (official checkpoint)
+### DDA (official checkpoint and trained in SynthScope)
 Fidelity: SynthScope's class == the official `DINOv2ModelWithLoRA` (537/537 state-dict tensors identical, transform and logits identical on 40 images, 0 verdict flips; job 264307). Paper: 90.7 avg accuracy over 11 benchmarks (trained on DDA-aligned MSCOCO only). Accuracy = mean per-subset balanced accuracy at 0.5, ± = sample std over subsets.
 
 | Benchmark (SynthScope protocol) | acc | mAP | Paper | Note |
@@ -138,6 +147,13 @@ Fidelity: SynthScope's class == the official `DINOv2ModelWithLoRA` (537/537 stat
 | RRDataset (`--dataset rrdataset`) | 75.99 | 85.18 | — | new measurement (original 91.8, transfer 73.3, redigital 62.9) |
 
 **Verdict: faithful port (identical to the official model); 5 of the 7 paper benchmarks we can run are reproduced** (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF), BFree-Online is close on the images still online, and GenImage is 2.3 pt below. Not run: DRCT-2M and DDA-COCO (not in SynthScope yet), Synthbuster (RAISE-1k reals not downloaded), Chameleon (request only).
+
+**Trained in SynthScope** (official recipe, `experiments/image/dda.sh`: paired MSCOCO / SD-2.0 reconstructions, matched JPEG,
+pixel/frequency mixing, 0.5 BCE + 0.5 contrastive, one epoch; job 267042, eval 267832): GenImage **91.35 ± 8.47** (paper
+91.7; the released checkpoint 89.37), EvalGEN 96.79, ForenSynths 80.79, AIGCDetect 89.58, WildRF 90.56, BFree-Online 94.05,
+SynthWildX 88.00 (2.9 below: AP 96.99 is higher than the released checkpoint's, but X reals are called fake more often,
+real acc 79.4 vs 88.4); RealChain 66.76, RRDataset 77.19. **Verdict: the official recipe reproduces DDA in SynthScope on
+6 of the 7 runnable benchmarks**, closing the GenImage gap of the released weights.
 
 ### D3QE (official checkpoint)
 Fidelity: SynthScope's class == the official `D3QE` (871/871 state-dict tensors identical incl. the frozen CLIP ViT-L/14 and LlamaGen VQ-16, transform and logits identical on 56 ARForensics images, 0 verdict flips; job 264794). Trained on LlamaGen vs ImageNet only; the paper also applies it to GANs (Table 2) and diffusion (Table 3). Accuracy = plain = balanced (every subset is balanced).
@@ -169,7 +185,7 @@ Fidelity: SynthScope's class == the official `OmniAID` for all three releases (s
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
 |---|---:|---:|
-| D3 · GenVideo-Val-10 | 98.46 | 99.14 (96.15); official code 97.93 |
+| D3 · GenVideo-Val-10 | 98.46 | 98.95 (95.68); official code 97.93 |
 | D3 · EvalCrafter-14 | 98.87 | 99.30 (96.59); official code 98.70 |
 | D3 · VideoPhy (8 of 10 generators online) | 99.16 | 99.45 (95.19); official code 98.84 |
 | D3 · VidProM (4 of 6 generators, 1000-clip subsample) | 88.46 (84.95 on those 4) | 92.15 (84.86); official code 84.91 |
@@ -186,7 +202,7 @@ eval.py); "official code" runs the D3 repository's own frame extraction + reader
 1. **Architecture is faithful where we can check it.** Loading official weights into the SynthScope class reproduces the paper for CLIP, CNN, FatFormer, NPR, **PGC**, SAFE, Co-Spy. AIDE/SPAI needed a preprocessing/any-resolution port to make official weights load correctly (now done).
 2. **PGC hard-generator gap is on the authors' side.** The SynthScope class reproduces the released PGC checkpoint exactly; but training from scratch — *with our code and with the authors' `train.py` run verbatim* — does not regenerate the hard-generator numbers (deepfake/san/seeingdark stay ~71–81 AUROC vs ~94). The released checkpoint is not reproducible from the published recipe+data. (`repro/investigate/pgc_gap_investigation.md`)
 3. **Gaps closed by correcting training data/preprocessing:** SPAI (**native-res any-res path now wired into serving: official weights in the SynthScope class → GenImage 94.22 / Synthbuster 96.75 mAP, beating the vendored-official 91.33; the fixed-448 retrain 88.80 is superseded**), Co-Spy (right GenImage SD-v1.4 source, →96.60 beats official), **SAFE (crop-only eval + full 40-epoch retrain → reproduces the paper: ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96)**, **AIDE (native-res 5-view DCT now wired into both serving AND training: served official 96.83, and a from-scratch retrain reproduces at 96.42 ≈ official 97.12, up from the resize-256 92.47 — the DCT must run at native res, ~12 mAP on the same weights)**. The original SAFE "gap" was an eval-transform bug — a `Resize` destroyed the high-frequency signal SAFE keys on; crop-only preprocessing makes both the official weights and our retrain reproduce.
-4. **VIB-Net** has no released weights; its CLIP-backbone re-impl holds at 83.26 mAP on diffusion but collapses cross-GAN (61.71) — a recipe gap, not closeable without the authors' weights.
+4. **VIB-Net** (weights on a restricted Drive): reproduced by training in SynthScope with the reconstructed recipe at native resolution (94.08 AP / 85.22 acc vs 95.53 / 85.83 over the paper's 15 generators); the resize-256 training pipeline alone costs 11 AP points (82.98 with it); the earlier model also had an fp16 CLIP and an added BatchNorm.
 5. **Faithful reporting** — every number traces to a logged run; SynthScope_train shows the single best from-scratch checkpoint (older/weaker runs discarded, not stacked).
 
 ## Where everything lives

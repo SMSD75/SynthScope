@@ -10,7 +10,7 @@ export OMP_NUM_THREADS=1
 # 224x224 over a CENTER 2 s window (24 frames, BICUBIC) and fed to DINOv2 as RAW [0,1] with
 # *no* ImageNet normalization -- this matches the official ReStraV repo verbatim
 # (dinov2_features.preprocess = frames/255 + BICUBIC resize, no Normalize) and the deployed
-# serving spec (registry video_norm = identity). Do NOT add normalize_dinov2 here: the
+# serving spec (registry video_norm = identity). Do NOT add normalize_imagenet here: the
 # detector is served raw [0,1], so normalizing only at train time creates a train/serve
 # mismatch that collapses cross-generator transfer. Official optimizer is plain Adam (no
 # weight decay), 10 epochs -- matched below. The video benchmark must be present under

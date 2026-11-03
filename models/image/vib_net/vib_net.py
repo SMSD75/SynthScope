@@ -29,7 +29,7 @@ class SynthScopeVIBNetModel(nn.Module):
         self.config = config
 
         backbone_name = config.ModelConfig.backbone_name
-        self.backbone_kind, feat_dim = self._build_backbone(backbone_name)
+        self.backbone_kind, feat_dim = self._build_backbone(backbone_name, bool(config.ModelConfig.get("clip_fp32", False)))
         if config.ModelConfig.freeze_backbone:
             self._freeze_backbone()
 
@@ -37,13 +37,16 @@ class SynthScopeVIBNetModel(nn.Module):
         hidden_dim = config.ModelConfig.get("vib_hidden_dim", 1024)
         dropout = config.ModelConfig.get("dropout", 0.5)
         self.std_shift = config.ModelConfig.get("std_shift", 5.0)
+        # The official model (clip_models.CLIPModel) has neither the feature BatchNorm nor the std floor below, and runs
+        # CLIP in fp32: ``feat_norm: false``, ``std_floor: 0``, ``clip_fp32: true`` (conf/model/image/vib_net_official.yaml).
+        self.std_floor = float(config.ModelConfig.get("std_floor", 1e-4))
 
         # Per-dimension normalization of the frozen backbone feature before the VIB head.
         # Essential for FLAVA, whose pooler output is tanh-squashed to a small, per-dim-uneven scale
         # the deep ReLU head + dropout cannot learn from. Must be PER-DIM (BatchNorm), not per-sample
         # (LayerNorm): a head-only probe collapses on raw feats (AUC 0.52) and on LayerNorm, but
         # learns on per-dim-standardized feats (AUC 0.99). BatchNorm1d tracks running stats for eval.
-        self.feat_norm = nn.BatchNorm1d(feat_dim)
+        self.feat_norm = nn.BatchNorm1d(feat_dim) if config.ModelConfig.get("feat_norm", True) else nn.Identity()
         self.dropout = nn.Dropout(dropout)
         self.fc_1 = nn.Linear(feat_dim, hidden_dim)
         self.relu = nn.ReLU(True)
@@ -53,7 +56,7 @@ class SynthScopeVIBNetModel(nn.Module):
         self.loss_1 = nn.BCEWithLogitsLoss(reduction="mean")
         self.loss_2 = self._kl_to_standard_normal
 
-    def _build_backbone(self, backbone_name: str):
+    def _build_backbone(self, backbone_name: str, clip_fp32: bool = False):
         """Construct the frozen image encoder. Returns ``(kind, feature_dim)`` and sets ``self.backbone``."""
         if backbone_name.startswith("FLAVA:") or backbone_name.lower() == "flava":
             from transformers import FlavaImageModel
@@ -63,7 +66,8 @@ class SynthScopeVIBNetModel(nn.Module):
             return "flava", self.backbone.config.hidden_size
         # default / legacy: OpenAI CLIP visual encoder
         name = backbone_name.removeprefix("CLIP:") if backbone_name.startswith("CLIP:") else backbone_name
-        self.backbone, _ = clip.load(name)
+        # clip.load on a GPU machine returns an fp16 model; the official code loads it on the CPU (fp32), then moves it
+        self.backbone, _ = clip.load(name, device="cpu") if clip_fp32 else clip.load(name)
         return "clip", self.backbone.visual.output_dim
 
     def _encode(self, inputs: torch.Tensor) -> torch.Tensor:
@@ -113,7 +117,7 @@ class SynthScopeVIBNetModel(nn.Module):
         # Floor std away from 0: training can drive the pre-softplus input very negative,
         # collapsing std->0 -> var->0 -> KL's -log(var)->+inf -> NaN (caused a CUDA
         # device-side assert after the first epoch). 1e-4 floor keeps the VIB stable.
-        std = F.softplus(fc3_out[:, self.latent_dim:] - self.std_shift, beta=1).clamp(min=1e-4)
+        std = F.softplus(fc3_out[:, self.latent_dim:] - self.std_shift, beta=1).clamp(min=self.std_floor)
 
         encoding = self._reparameterize(mu, std, num_samples=1)
         logit = self.decode(encoding)

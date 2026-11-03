@@ -1,0 +1,122 @@
+{
+ "model": "effort",
+ "paper": "Orthogonal Subspace Decomposition for Generalizable AI-Generated Image Detection (Yan et al., ICML 2025)",
+ "arxiv_id": "2411.15633",
+ "official_repo": "https://github.com/YZY-stack/Effort-AIGI-Detection",
+ "training_set_in_paper": "GenImage SD v1.4 (Table 9, the released effort_clip_L14_trainOn_sdv14.pth); ProGAN for the UniversalFakeDetect tables (checkpoint not released); FF++ c23 for the face tables.",
+ "benchmarks": [
+  {
+   "name": "GenImage (8 subsets)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "accuracy at 0.5, mean over subsets",
+   "paper_number": {
+    "acc": 91.1,
+    "note": "Paper Table 9: MJ 82.4, SD1.4 99.8, SD1.5 99.8, ADM 78.7, GLIDE 93.3, Wukong 97.4, VQDM 91.7, BigGAN 77.6."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "89.83 (mAP 99.37) with the official checkpoint and DeepfakeBench's test transform (tag effort_genimage_full, job 269039)."
+   }
+  },
+  {
+   "name": "UniversalFakeDetect (ProGAN-trained)",
+   "datasets": [
+    "UniversalFakeDetect"
+   ],
+   "metric": "AP / acc",
+   "paper_number": {
+    "note": "Tables 2-3; the ProGAN checkpoint is not released."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Checkpoint not released."
+   }
+  },
+  {
+   "name": "SynthWildX",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "56.69 (mAP 61.20)."
+   }
+  },
+  {
+   "name": "WildRF",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "71.36 (mAP 81.11)."
+   }
+  },
+  {
+   "name": "BFree-Online",
+   "datasets": [
+    "BFree-Online"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "67.75 (mAP 96.45)."
+   }
+  },
+  {
+   "name": "EvalGEN",
+   "datasets": [
+    "EvalGEN"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "92.16 (mAP 99.55)."
+   }
+  },
+  {
+   "name": "RealChain",
+   "datasets": [
+    "RealChain"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "50.56 (mAP 60.38)."
+   }
+  },
+  {
+   "name": "RRDataset",
+   "datasets": [
+    "RRDataset"
+   ],
+   "metric": "balanced accuracy",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "64.59 (mAP 69.78)."
+   }
+  }
+ ]
+}

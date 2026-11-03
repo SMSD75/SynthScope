@@ -31,6 +31,108 @@
       "note": "GATED dataset \u2014 not on disk and not openly downloadable. README: 'If you need the Chameleon dataset, please send an email to tattoo.ysl@gmail.com'; license 'academic research only, commercial use prohibited'. No HF/gdrive mirror; access is by author email request only. find over /hddstore and home dirs returned no chameleon path."
     }
   ],
+  "bfree": [
+    {
+      "benchmark": "SynthWildX (3 generators, images on X)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=95.6",
+      "ours": "mAP=99.02 / acc=95.64 / AUROC=98.93 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.02 / acc=95.64 / AUROC=98.93",
+      "status": "official",
+      "note": "95.64 (mAP 99.02) with the official checkpoint, one image at a time at native resolution (tag bfree_synthwildx, job 267861)."
+    },
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=93.0",
+      "ours": "mAP=98.55 / acc=93.15 / AUROC=98.23 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.55 / acc=93.15 / AUROC=98.23",
+      "status": "official",
+      "note": "95.31 / 86.47 / 97.66, mean 93.15 (tag bfree_wildrf, job 267861)."
+    },
+    {
+      "benchmark": "Synthbuster (Midjourney, SDXL, DALL-E 2, DALL-E 3, Firefly)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=98.58",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "RAISE-1k reals not downloaded yet."
+    },
+    {
+      "benchmark": "New generators (FLUX, SD 3.5)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=95.6",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "The paper's own images; not released as a benchmark."
+    },
+    {
+      "benchmark": "GenImage (unbiased)",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=89.3",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Subset not released."
+    },
+    {
+      "benchmark": "FakeInversion",
+      "metric": "balanced accuracy at logit 0",
+      "paper": "acc=86.2",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not in SynthScope yet."
+    },
+    {
+      "benchmark": "BFree-Online (viral images still online)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=98.65 / acc=91.54 / AUROC=96.93 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.65 / acc=91.54 / AUROC=96.93",
+      "status": "reference",
+      "note": "91.54 (mAP 98.65; tag bfree_bfree_online)."
+    },
+    {
+      "benchmark": "RealChain (7 generators, full data)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=74.83 / acc=67.59 / AUROC=70.07 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=74.83 / acc=67.59 / AUROC=70.07",
+      "status": "reference",
+      "note": "67.59 (mAP 74.83; tag bfree_realchain)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=99.52 / acc=95.18 / AUROC=98.94 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.52 / acc=95.18 / AUROC=98.94",
+      "status": "reference",
+      "note": "95.18 (mAP 99.52; tag bfree_evalgen, job 268052)."
+    },
+    {
+      "benchmark": "RRDataset (original / transfer / redigital)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=80.34 / acc=72.33 / AUROC=74.34 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=80.34 / acc=72.33 / AUROC=74.34",
+      "status": "reference",
+      "note": "72.33 (mAP 80.34; tag bfree_rrdataset, job 267861)."
+    }
+  ],
   "clip": [
     {
       "benchmark": "ForenSynths GAN/low-level test (11 of the paper's 19 models; from Wang et al.)",
@@ -244,11 +346,11 @@
       "benchmark": "GenVideo (DeMamba GenVideo-Val, Table 1)",
       "metric": "AP",
       "paper": "mAP=98.46",
-      "ours": "SynthScope mAP=99.14 / acc=96.15 / AUROC=98.46 \u00b7 official mAP=97.93 / AUROC=97.04",
-      "ours_synthscope": "mAP=99.14 / acc=96.15 / AUROC=98.46",
+      "ours": "SynthScope mAP=98.95 / acc=95.68 / AUROC=98.23 \u00b7 official mAP=97.93 / AUROC=97.04",
+      "ours_synthscope": "mAP=98.95 / acc=95.68 / AUROC=98.23",
       "ours_official": "mAP=97.93 / AUROC=97.04",
       "status": "reproduced",
-      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 99.14 AP (AUROC 98.46, balanced acc 96.15 at the refitted calibration; tag d3_genvideo, job 252246). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271): 9 of 10 generators within 0.25 of the paper; WildScrape 92.50 vs 96.49 (282 GIFs whose length decord"
+      "note": "D3 protocol (--limit 1000: first 1000 clips per class per generator; AP with real as the positive class). SynthScope engine 98.95 AP (AUROC 98.23, balanced acc 95.68 at the refitted calibration; tag d3_genvideo, job 270428, after the GIF decode fix: WildScrape 96.33 vs paper 96.49, was 98.21 when GIFs decoded as black clips). Official D3 code end to end: 97.93 (tag d3_official_genvideo, job 252271"
     },
     {
       "benchmark": "EvalCrafter (Table 2, 14 generators, fake-only)",
@@ -378,10 +480,10 @@
       "benchmark": "GenImage (1G + 7D, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=91.7",
-      "ours": "mAP=97.74 / acc=89.37 / AUROC=98.21 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=98.07 / acc=91.35 / AUROC=98.42 \u00b7 official mAP=97.74 / acc=89.37 / AUROC=98.21",
+      "ours_synthscope": "mAP=98.07 / acc=91.35 / AUROC=98.42",
       "ours_official": "mAP=97.74 / acc=89.37 / AUROC=98.21",
-      "status": "below",
+      "status": "reproduced",
       "note": "Official checkpoint through SynthScope, fakes JPEG q96 (bench_eval --dataset genimage_full --jpeg-fakes 96): 89.37 +- 11.08 (mAP 97.74, AUROC 98.21), 2.3 pt below the paper; ADM 85.40, BigGAN 82.77, GLIDE 88.17, Midjourney 95.17, SD-v1.4 98.72, SD-v1.5 98.87, VQDM 67.03, Wukong 98.80. VQDM and BigGAN are the weak subsets. The same JPEG step reproduces AIGCDetect and ForenSynths exactly, so the gap"
     },
     {
@@ -408,10 +510,10 @@
       "benchmark": "EvalGEN (3D + 2AR, fake-only accuracy)",
       "metric": "accuracy on the fakes (mean over generators)",
       "paper": "acc=97.2",
-      "ours": "mAP=99.93 / acc=96.86 / AUROC=99.85 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=99.89 / acc=96.79 / AUROC=99.76 \u00b7 official mAP=99.93 / acc=96.86 / AUROC=99.85",
+      "ours_synthscope": "mAP=99.89 / acc=96.79 / AUROC=99.76",
       "ours_official": "mAP=99.93 / acc=96.86 / AUROC=99.85",
-      "status": "official",
+      "status": "reproduced",
       "note": "Official checkpoint through SynthScope: mean fake accuracy 96.86 +- 4.62 on all 55,298 fakes (Flux 88.68, GoT 99.14, Infinity 97.73, NOVA 99.53, OmniGen 99.20), the paper's metric. With the MSCOCO val2017 reals (real acc 98.98): balanced acc 97.92, mAP 99.93, AUROC 99.85 (tag dda_evalgen, job 264311)."
     },
     {
@@ -428,20 +530,20 @@
       "benchmark": "ForenSynths (paper: 11G; all 13 CNNDetection test sets match, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=81.4",
-      "ours": "mAP=91.13 / acc=81.43 / AUROC=92.11 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=92.8 / acc=80.79 / AUROC=93.7 \u00b7 official mAP=91.13 / acc=81.43 / AUROC=92.11",
+      "ours_synthscope": "mAP=92.8 / acc=80.79 / AUROC=93.7",
       "ours_official": "mAP=91.13 / acc=81.43 / AUROC=92.11",
-      "status": "official",
+      "status": "reproduced",
       "note": "Official checkpoint through SynthScope, fakes JPEG q96: 81.43 +- 13.84 (mAP 91.13, AUROC 92.11) over all 13 CNNDetection test generators, matching the paper's 81.4 +- 13.9, so the paper's '11G' most likely covers the same 13 sets. Our guess of the 11 UnivFD GAN subsets (without StyleGAN2 and WhichFaceIsReal) gives 83.30 +- 11.51 instead. Without the JPEG step: 79.71 (tags dda_cnndetection_jpeg96, "
     },
     {
       "benchmark": "AIGCDetectBenchmark (7G + 10D, fakes JPEG q96)",
       "metric": "accuracy (mean over subsets)",
       "paper": "acc=87.8",
-      "ours": "mAP=96.35 / acc=87.84 / AUROC=96.65 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=96.93 / acc=89.58 / AUROC=96.95 \u00b7 official mAP=96.35 / acc=87.84 / AUROC=96.65",
+      "ours_synthscope": "mAP=96.93 / acc=89.58 / AUROC=96.95",
       "ours_official": "mAP=96.35 / acc=87.84 / AUROC=96.65",
-      "status": "official",
+      "status": "reproduced",
       "note": "Official checkpoint through SynthScope, fakes JPEG q96: 87.84 +- 12.56 (mAP 96.35, AUROC 96.65) over all 17 generators, full test data, matching the paper's 87.8 +- 12.6. Without the JPEG step: 85.35 (tags dda_aigcdetect_jpeg96, dda_aigcdetect, job 264312)."
     },
     {
@@ -458,8 +560,8 @@
       "benchmark": "SynthWildX (3D, images still online on X)",
       "metric": "balanced accuracy (mean over subsets)",
       "paper": "acc=90.9",
-      "ours": "mAP=96.47 / acc=90.8 / AUROC=96.4 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=96.99 / acc=88.0 / AUROC=96.88 \u00b7 official mAP=96.47 / acc=90.8 / AUROC=96.4",
+      "ours_synthscope": "mAP=96.99 / acc=88.0 / AUROC=96.88",
       "ours_official": "mAP=96.47 / acc=90.8 / AUROC=96.4",
       "status": "official",
       "note": "Official checkpoint through SynthScope: 90.80 +- 3.13 (mAP 96.47, AUROC 96.40) on the 1713 of 2000 images still online (413 real; DALL-E 3 92.28, Firefly 87.21, Midjourney v5 92.92) (tag dda_synthwildx, job 264310)."
@@ -468,18 +570,18 @@
       "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
       "metric": "balanced accuracy (mean over subsets)",
       "paper": "acc=90.3",
-      "ours": "mAP=96.76 / acc=90.2 / AUROC=96.14 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=97.83 / acc=90.56 / AUROC=97.62 \u00b7 official mAP=96.76 / acc=90.2 / AUROC=96.14",
+      "ours_synthscope": "mAP=97.83 / acc=90.56 / AUROC=97.62",
       "ours_official": "mAP=96.76 / acc=90.2 / AUROC=96.14",
-      "status": "official",
+      "status": "reproduced",
       "note": "Official checkpoint through SynthScope: 90.20 +- 3.45 (mAP 96.76, AUROC 96.14) on the full test split, 1251 real / 1252 fake (Facebook 93.13, Reddit 86.40, Twitter 91.07) (tag dda_wildrf, job 264310)."
     },
     {
       "benchmark": "BFree-Online (viral images still online)",
       "metric": "balanced accuracy",
       "paper": "acc=95.1",
-      "ours": "mAP=99.41 / acc=94.98 / AUROC=98.86 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=99.41 / acc=94.05 / AUROC=98.82 \u00b7 official mAP=99.41 / acc=94.98 / AUROC=98.86",
+      "ours_synthscope": "mAP=99.41 / acc=94.05 / AUROC=98.82",
       "ours_official": "mAP=99.41 / acc=94.98 / AUROC=98.86",
       "status": "reference",
       "note": "Official checkpoint through SynthScope: 94.98 (mAP 99.41, AUROC 98.86; real acc 96.65, fake acc 93.31) on the 807 of 1111 listed images still online (269 real / 538 fake), so not the paper's full set (tag dda_bfree_online, job 264310)."
@@ -488,8 +590,8 @@
       "benchmark": "RealChain (7 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
-      "ours": "mAP=76.46 / acc=67.23 / AUROC=74.97 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=74.72 / acc=66.76 / AUROC=72.79 \u00b7 official mAP=76.46 / acc=67.23 / AUROC=74.97",
+      "ours_synthscope": "mAP=74.72 / acc=66.76 / AUROC=72.79",
       "ours_official": "mAP=76.46 / acc=67.23 / AUROC=74.97",
       "status": "reference",
       "note": "Official checkpoint through SynthScope: 67.23 (mAP 76.46, AUROC 74.97); Flux1 58.60, Hunyuan3 59.80, NanoBanana 57.55, QwenImage 74.60, SDv3.5 70.05, Seedream4 75.00, i2i 75.00 (tag dda_realchain, job 264323)."
@@ -498,11 +600,93 @@
       "benchmark": "RRDataset (original / transfer / redigital)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
-      "ours": "mAP=85.18 / acc=75.99 / AUROC=81.74 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=85.81 / acc=77.19 / AUROC=83.1 \u00b7 official mAP=85.18 / acc=75.99 / AUROC=81.74",
+      "ours_synthscope": "mAP=85.81 / acc=77.19 / AUROC=83.1",
       "ours_official": "mAP=85.18 / acc=75.99 / AUROC=81.74",
       "status": "reference",
       "note": "Official checkpoint through SynthScope: 75.99 (mAP 85.18, AUROC 81.74); original 91.84, transfer 73.26, redigital 62.88 (tag dda_rrdataset, job 264323)."
+    }
+  ],
+  "effort": [
+    {
+      "benchmark": "GenImage (8 subsets)",
+      "metric": "accuracy at 0.5, mean over subsets",
+      "paper": "acc=91.1",
+      "ours": "mAP=99.37 / acc=89.83 / AUROC=99.48 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.37 / acc=89.83 / AUROC=99.48",
+      "status": "official",
+      "note": "89.83 (mAP 99.37) with the official checkpoint and DeepfakeBench's test transform (tag effort_genimage_full, job 269039)."
+    },
+    {
+      "benchmark": "UniversalFakeDetect (ProGAN-trained)",
+      "metric": "AP / acc",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Checkpoint not released."
+    },
+    {
+      "benchmark": "SynthWildX",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=61.2 / acc=56.69 / AUROC=63.57 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=61.2 / acc=56.69 / AUROC=63.57",
+      "status": "reference",
+      "note": "56.69 (mAP 61.20)."
+    },
+    {
+      "benchmark": "WildRF",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=81.11 / acc=71.36 / AUROC=78.64 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=81.11 / acc=71.36 / AUROC=78.64",
+      "status": "reference",
+      "note": "71.36 (mAP 81.11)."
+    },
+    {
+      "benchmark": "BFree-Online",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=96.45 / acc=67.75 / AUROC=94.79 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=96.45 / acc=67.75 / AUROC=94.79",
+      "status": "reference",
+      "note": "67.75 (mAP 96.45)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=99.55 / acc=92.16 / AUROC=99.16 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.55 / acc=92.16 / AUROC=99.16",
+      "status": "reference",
+      "note": "92.16 (mAP 99.55)."
+    },
+    {
+      "benchmark": "RealChain",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=60.38 / acc=50.56 / AUROC=64.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=60.38 / acc=50.56 / AUROC=64.22",
+      "status": "reference",
+      "note": "50.56 (mAP 60.38)."
+    },
+    {
+      "benchmark": "RRDataset",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=69.78 / acc=64.59 / AUROC=68.6 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=69.78 / acc=64.59 / AUROC=68.6",
+      "status": "reference",
+      "note": "64.59 (mAP 69.78)."
     }
   ],
   "fat_former": [
@@ -535,6 +719,88 @@
       "ours_official": "mAP=98.6 / acc=93.72",
       "status": "official",
       "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."
+    }
+  ],
+  "moejepa": [
+    {
+      "benchmark": "SID-Set (test, 3-way, Table 1)",
+      "metric": "3-way accuracy (overall) / macro F1",
+      "paper": "acc=95.54",
+      "ours": "mAP=99.47 / acc=96.37 / AUROC=99.41 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.47 / acc=96.37 / AUROC=99.41",
+      "status": "official",
+      "note": "96.37 accuracy / 96.37 macro F1 with the official checkpoint in bf16 as the official test (fp32: 96.38): Real 94.59/94.62, Fully synthetic 99.95/99.74, Tampered 94.58/94.74 (tag moejepa_sidset_3way, job 270455). Binary (1 - P(real)): mAP 99.47, AUROC 99.41, balanced acc 95.96 (tag moejepa_sidset)."
+    },
+    {
+      "benchmark": "RRDataset (Table 2, GenImage-pretrained + RRDataset-finetuned model)",
+      "metric": "accuracy",
+      "paper": "acc=84.11",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "That checkpoint is not released. The released SID-Set model gives 59.67 balanced acc (mAP 65.09) on the RRDataset test set: a different model, shown under RRDataset (released SID-Set model)."
+    },
+    {
+      "benchmark": "RRDataset (released SID-Set model)",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=65.09 / acc=59.67 / AUROC=64.17 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=65.09 / acc=59.67 / AUROC=64.17",
+      "status": "reference",
+      "note": "59.67 (mAP 65.09): original 72.38, transfer 55.83, re-digitized 50.79."
+    },
+    {
+      "benchmark": "SynthWildX",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=83.81 / acc=73.66 / AUROC=80.35 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=83.81 / acc=73.66 / AUROC=80.35",
+      "status": "reference",
+      "note": "73.66 (mAP 83.81)."
+    },
+    {
+      "benchmark": "WildRF",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=77.06 / acc=68.19 / AUROC=73.5 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=77.06 / acc=68.19 / AUROC=73.5",
+      "status": "reference",
+      "note": "68.19 (mAP 77.06)."
+    },
+    {
+      "benchmark": "BFree-Online",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=91.79 / acc=57.99 / AUROC=85.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=91.79 / acc=57.99 / AUROC=85.22",
+      "status": "reference",
+      "note": "57.99 (mAP 91.79)."
+    },
+    {
+      "benchmark": "EvalGEN",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=92.77 / acc=70.85 / AUROC=86.43 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=92.77 / acc=70.85 / AUROC=86.43",
+      "status": "reference",
+      "note": "70.85 balanced with MSCOCO reals (mAP 92.77); mean fake accuracy 90.76."
+    },
+    {
+      "benchmark": "RealChain",
+      "metric": "balanced accuracy",
+      "paper": "\u2014",
+      "ours": "mAP=71.74 / acc=66.39 / AUROC=73.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=71.74 / acc=66.39 / AUROC=73.22",
+      "status": "reference",
+      "note": "66.39 (mAP 71.74)."
     }
   ],
   "npr": [
@@ -929,6 +1195,38 @@
       "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
     }
   ],
+  "split": [
+    {
+      "benchmark": "GenVideo (GenVideo-Val, MSR-VTT real calibration, supp. Table 18)",
+      "metric": "fake recall @ FPR 0.1/1/5% (Overall = all fakes pooled)",
+      "paper": "fake_recall_fpr0.1=82.13 / fake_recall_fpr1=91.69 / fake_recall_fpr5=97.2",
+      "ours": "SynthScope mAP=99.79 / acc=99.41 / AUROC=99.97 \u00b7 official mAP=96.12 / AUROC=99.16",
+      "ours_synthscope": "mAP=99.79 / acc=99.41 / AUROC=99.97",
+      "ours_official": "mAP=96.12 / AUROC=99.16",
+      "status": "reproduced",
+      "note": "Official code on our data (JPEG frame round-trip, job 270323) reproduces the paper: Overall fake recall 82.22/90.17/96.89 vs 82.13/91.69/97.20. SynthScope decodes frames directly (no JPEG) and reaches 98.87/99.86/99.98 (job 270384; mAP 99.79, AUROC 99.97, acc 99.41 at the calibrated threshold)."
+    },
+    {
+      "benchmark": "FakeParts (partial edits; Tables 1, 15-16)",
+      "metric": "fake recall @ FPR",
+      "paper": "fake_recall_fpr0.1=74.45",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "not in SynthScope yet"
+    },
+    {
+      "benchmark": "ViF-Bench (Tables 3, 19)",
+      "metric": "fake recall @ FPR",
+      "paper": "fake_recall_fpr0.1=84.52",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "not in SynthScope yet"
+    }
+  ],
   "stall": [
     {
       "benchmark": "GenVideo (DeMamba GenVideo-Val, 10 generators + MSR-VTT)",
@@ -966,21 +1264,21 @@
       "benchmark": "Diffusion-source (SDv1.4-trained), AP and ACC -- HEADLINE",
       "metric": "AP / acc",
       "paper": "map=95.53 / acc=85.83",
-      "ours": "mAP=83.94 / acc=77.57",
-      "ours_synthscope": "mAP=83.94 / acc=77.57",
+      "ours": "mAP=94.08 / acc=85.22",
+      "ours_synthscope": "mAP=94.08 / acc=85.22",
       "ours_official": "",
-      "status": "below",
-      "note": "SynthScope GenImage-8 subset (the 8 GenImage generators only, not the 15-model superset). registry default = 83.26-83.28 mAP/77.3 acc; gap-closing retrain model_9 = 83.94 mAP/77.6 acc (best, tag=vib_final_g8 2026-06-07). Paper 95.53 is over 15 models incl easy GAN columns; SynthScope 83.94 is over the harder GenImage-8 (adm/vqdm/midjourney heavy)."
+      "status": "reproduced",
+      "note": "Trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh, job 267846), evaluated on the paper's 15 generators (7 GenImage + 8 ForenSynths GANs) with the official model and test transform (registry vib_net_official; tags vib_net_trained_noresize_genimage7 / _forensynths8, job 267928). The UniversalFakeDetect resize-256 pipeline gave 82.98 / 70.20 (job 2"
     },
     {
       "benchmark": "GAN-source (ForenSynths/ProGAN-trained), AP and ACC",
       "metric": "AP / acc",
       "paper": "map=93.14 / acc=82.5",
-      "ours": "mAP=61.71 / acc=57.91",
-      "ours_synthscope": "mAP=61.71 / acc=57.91",
+      "ours": "",
+      "ours_synthscope": "",
       "ours_official": "",
-      "status": "below",
-      "note": "SynthScope ForenSynths-13 with the GenImage-SDv1.4-trained SynthScope VIB ckpt = 61.71 mAP/57.9 acc (tag=vibnet_retrain_forensynths). NOTE this is the WRONG-direction transfer: SynthScope only has an SDv1.4-trained VIB, not a ProGAN-trained one, so it is GenImage->GAN transfer, whereas the paper's 93.14 is a ProGAN-TRAINED model. Not a like-for-like comparison."
+      "status": "missing",
+      "note": "Not trained on ProGAN yet. The earlier 61.71 / 57.91 was the SD v1.4-trained model tested on ForenSynths, not this benchmark."
     }
   ]
 }

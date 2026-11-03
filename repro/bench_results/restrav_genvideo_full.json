@@ -1,0 +1,98 @@
+{
+  "tag": "restrav_genvideo_full",
+  "model": "restrav",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenVideo/test",
+  "n_generators": 10,
+  "means": {
+    "acc": 30.01,
+    "map": 33.6,
+    "map_real": 88.78,
+    "mauroc": 43.06
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 68.75,
+      "ap_real": 97.81,
+      "auroc": 89.15,
+      "real_acc": 0.88,
+      "fake_acc": 100.0,
+      "acc": 50.44
+    },
+    "Gen2": {
+      "ap": 6.37,
+      "ap_real": 71.5,
+      "auroc": 2.76,
+      "real_acc": 0.88,
+      "fake_acc": 36.23,
+      "acc": 18.56
+    },
+    "HotShot": {
+      "ap": 3.35,
+      "ap_real": 80.99,
+      "auroc": 0.1,
+      "real_acc": 0.88,
+      "fake_acc": 2.71,
+      "acc": 1.8
+    },
+    "Lavie": {
+      "ap": 25.86,
+      "ap_real": 77.99,
+      "auroc": 34.51,
+      "real_acc": 0.88,
+      "fake_acc": 48.86,
+      "acc": 24.87
+    },
+    "ModelScope": {
+      "ap": 59.16,
+      "ap_real": 96.96,
+      "auroc": 78.96,
+      "real_acc": 0.88,
+      "fake_acc": 99.29,
+      "acc": 50.08
+    },
+    "MoonValley": {
+      "ap": 3.02,
+      "ap_real": 82.75,
+      "auroc": 2.07,
+      "real_acc": 0.88,
+      "fake_acc": 30.83,
+      "acc": 15.86
+    },
+    "MorphStudio": {
+      "ap": 74.66,
+      "ap_real": 99.13,
+      "auroc": 92.58,
+      "real_acc": 0.88,
+      "fake_acc": 100.0,
+      "acc": 50.44
+    },
+    "Show_1": {
+      "ap": 66.49,
+      "ap_real": 99.11,
+      "auroc": 91.56,
+      "real_acc": 0.88,
+      "fake_acc": 100.0,
+      "acc": 50.44
+    },
+    "Sora": {
+      "ap": 0.29,
+      "ap_real": 97.16,
+      "auroc": 0.26,
+      "real_acc": 0.88,
+      "fake_acc": 8.93,
+      "acc": 4.9
+    },
+    "WildScrape": {
+      "ap": 28.08,
+      "ap_real": 84.39,
+      "auroc": 38.7,
+      "real_acc": 0.88,
+      "fake_acc": 64.5,
+      "acc": 32.69
+    }
+  },
+  "date": "2026-11-02T18:52:50",
+  "synthscope_version": "video"
+}

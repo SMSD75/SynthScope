@@ -3,20 +3,61 @@
   "track": "genvideo-val",
   "modality": "video",
   "model_type": "d3",
-  "paper": "ICCV'25",
+  "paper": "Zheng et al., ICCV'25",
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "training-free",
   "metrics": {
-    "acc": null,
-    "map": null,
-    "ap": 95.6,
-    "auroc": 93.6
+    "acc": 95.53,
+    "map": 68.84,
+    "ap": null,
+    "auroc": 98.45
   },
-  "per_generator": null,
+  "per_generator": {
+    "Crafter": {
+      "auroc": 98.9,
+      "ap": 84.96
+    },
+    "Gen2": {
+      "auroc": 99.17,
+      "ap": 85.37
+    },
+    "HotShot": {
+      "auroc": 98.65,
+      "ap": 69.37
+    },
+    "Lavie": {
+      "auroc": 98.52,
+      "ap": 82.22
+    },
+    "ModelScope": {
+      "auroc": 97.93,
+      "ap": 66.32
+    },
+    "MoonValley": {
+      "auroc": 99.15,
+      "ap": 76.11
+    },
+    "MorphStudio": {
+      "auroc": 98.71,
+      "ap": 69.42
+    },
+    "Show_1": {
+      "auroc": 98.93,
+      "ap": 72.83
+    },
+    "Sora": {
+      "auroc": 98.69,
+      "ap": 19.13
+    },
+    "WildScrape": {
+      "auroc": 95.82,
+      "ap": 62.68
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-10-31",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "Training-free frozen CLIP 2nd-order trajectory",
+  "source": "repro/bench_results/d3_genvideo_fpr.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
+  "protocol_notes": "Training-free X-CLIP 2nd-order feature volatility (official preprocessing)",
   "synthscope_version": "0.1.0"
 }
