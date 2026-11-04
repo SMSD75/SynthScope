@@ -11,6 +11,9 @@ clip_name: openai/clip-vit-large-patch14
 svd_rank: 1023
 # Official trainer: torch.nn.init.normal_(fc.weight, 0.0, init_gain=0.02) (models/trainer.py:18, options/base_options.py:67).
 head_init_std: 0.02
+# Official classifier is Linear(1024, 1) + BCEWithLogitsLoss: row 0 of our 2-logit head is pinned at zero (logits [0, z]), so the
+# cross-entropy equals BCEWithLogits(z) exactly and the checkpoint keeps the 2-logit format.
+head_single_logit: true
 
 # Test-time preprocessing of the UFD benchmark (validate.py RealFakeDataset): translate_duplicate (tiles an image whose
 # short side is < 256; a no-op on the 256-px ProGAN/GAN/diffusion test sets), CenterCrop 224, CLIP mean/std. No resize.
