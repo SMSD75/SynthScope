@@ -1,0 +1,37 @@
+defaults:
+  - /trainer/default
+  - _self_
+
+# Effort's official UniversalFakeDetect_Benchmark recipe (script/train_svd.sh + train.py + models/trainer.py): ProGAN
+# (CNNDetection, 20 classes, 720k images), batch 48, AdamW(lr 2e-4, betas (0.9, 0.999), weight decay 0), loss on the
+# classifier output only (the orthogonal / keep-singular-value losses are commented out), NO lr schedule
+# (adjust_learning_rate is never called: the 0.8x decay at train.py:77-78 is commented out), no gradient clipping,
+# seed 0, fp32. The official loop trains `niter` 100 epochs but saves model_iters_<N>.pth at fixed iteration counts
+# (train.py:73) and the benchmark test (script/test.sh) uses model_iters_18000.pth (~1.2 epochs of 15,000 iterations).
+# Here: a budget of 24,000 iterations with a checkpoint every 3,000 (model_step<N>.pth, N = iterations of batch 48).
+# Memory deviation: batch 48 in fp32 needs ~30 GB of activations (ViT-L/14 at 224, backward reaches layer 0), more than a
+# 24 GB A5000, so each batch of 48 is two micro-batches of 24 with gradient accumulation (loss / 2 each). The model has no
+# batch statistics (no BatchNorm; dropout is 0), so this is the same update as one batch of 48 up to float summation order.
+trainer_type: effort_ufd
+epochs: 1
+lr: 2.0e-4
+weight_decay: 0.0
+label_smoothing: 0.0
+val_interval: 1
+test_interval: 1
+save_interval: 1
+save: true
+save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/effort_ufd
+seed: 0
+warmup:
+  mode: "off"              # quoted: a bare off is YAML boolean False
+  warmup_ratio: 0.0
+  lr_scheduler: linear
+step_budget:
+  unit: optimizer_step     # max_steps / save_every / log_every count iterations of the effective batch of 48
+  max_steps: 24000         # the official run saves 18000, evaluated in script/test.sh
+  save_every: 3000
+  log_every: 500           # the official loss_freq
+  grad_accum_steps: 2      # 2 x 24 = 48
+  max_grad_norm: 0.0

@@ -19,6 +19,12 @@ class SynthScopeEffortModel(nn.Module):
         vision = CLIPVisionModel.from_pretrained(mc.get("clip_name", "openai/clip-vit-large-patch14")).vision_model
         self.backbone = apply_svd_residual_to_self_attn(vision, r=int(mc.get("svd_rank", 1023)))
         self.head = nn.Linear(1024, 2)
+        # Training recipe only (conf/model/image/effort_ufd.yaml): the official UniversalFakeDetect trainer re-draws the
+        # classifier weight from N(0, 0.02) (models/trainer.py ``torch.nn.init.normal_(self.model.fc.weight.data, 0.0,
+        # opt.init_gain)``); the bias keeps the nn.Linear default, as there. Unset (the served models): default init, and
+        # a loaded checkpoint overwrites the head either way.
+        if mc.get("head_init_std", None) is not None:
+            nn.init.normal_(self.head.weight, 0.0, float(mc.head_init_std))
         self.criterion = nn.CrossEntropyLoss()
         # The principal SVD factors (U_r, S_r, V_r of every projection) are recomputed here from the CLIP weights, as in the
         # official code, and only feed the orthogonality loss in training; the released checkpoints do not store them

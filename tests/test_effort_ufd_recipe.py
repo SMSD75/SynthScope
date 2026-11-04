@@ -1,0 +1,101 @@
+"""Checks of the Effort UFD/ProGAN training recipe (conf/*/image/effort_ufd.yaml, experiments/image/effort_ufd.sh) against the
+official UniversalFakeDetect_Benchmark code (data/datasets.py, models/trainer.py, script/train_svd.sh); no GPU, no download.
+
+* the train list on a 256x256 uint8 image is a 224 crop of the CLIP-normalised image, possibly mirrored, as the official
+  Compose [translate_duplicate(256), RandomCrop(224), RandomHorizontalFlip, ToTensor, Normalize(CLIP)] (all crop offsets and
+  both flips occur, no other pixel change, up to float rounding); the eval list is the official validate.py CenterCrop(224) pipeline exactly,
+* the trainer config holds the official numbers (lr 2e-4 constant, wd 0, no clipping, seed 0, step budget 24000 / 3000),
+* `effort.yaml` (the served model) is untouched: squash eval list, no head init,
+* the model builds, the trainable set is the SVD residual factors + the head, nothing else (needs the CLIP weights in the
+  HF cache; skipped otherwise).
+"""
+from __future__ import annotations
+
+import os
+import sys
+from pathlib import Path
+
+import numpy as np
+import torch
+import torchvision.transforms as T
+from huggingface_hub import try_to_load_from_cache
+from omegaconf import OmegaConf
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(ROOT)]
+
+from transformations import AIGITransformations, CLIP_MEAN, CLIP_STD   # noqa: E402
+
+CONF = ROOT / "conf"
+MODEL = OmegaConf.load(CONF / "model" / "image" / "effort_ufd.yaml")
+TRAINER = OmegaConf.load(CONF / "trainer" / "image" / "effort_ufd.yaml")
+
+
+def test_train_pipeline() -> None:
+    print("[A] train list == crop 224 (+ flip) of the CLIP-normalised image ...")
+    arr = np.random.default_rng(0).integers(0, 256, (256, 256, 3), dtype=np.uint8)
+    full = T.Compose([T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)])(Image.fromarray(arr, "RGB"))
+    tf = AIGITransformations(list(MODEL.train_transform_list))
+    img = torch.from_numpy(arr).permute(2, 0, 1).contiguous()
+    offsets, flips = set(), set()
+    for _ in range(400):
+        out = tf(img.clone())
+        assert out.shape == (3, 224, 224) and out.dtype == torch.float32
+        found = False
+        for flip in (False, True):
+            m = out.flip(-1) if flip else out        # the flip comes after the crop: mirror back to the crop window
+            for di, dj in torch.isclose(full, m[:, 0, 0].view(3, 1, 1), atol=1e-5, rtol=0).all(0).nonzero().tolist():   # noise: the first pixel locates it
+                if di + 224 <= 256 and dj + 224 <= 256 and torch.allclose(full[:, di:di + 224, dj:dj + 224], m, atol=1e-5, rtol=0):
+                    offsets.add((di, dj)); flips.add(flip); found = True
+                    break
+            if found:
+                break
+        assert found, "train output is not a (mirrored) 224 crop of the normalised image"
+    assert flips == {False, True}, flips
+    assert len(offsets) > 50, len(offsets)
+    pil = Image.fromarray(arr, "RGB")
+    ev = AIGITransformations(list(MODEL.eval_transform_list))(pil)
+    ref = T.Compose([T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)])(pil)
+    assert torch.allclose(ev, ref, atol=1e-6, rtol=0), "eval list != official CenterCrop(224) pipeline"
+    print(f"    400 samples: {len(offsets)} distinct crop offsets, both flips; eval == CenterCrop(224) (atol 1e-6)")
+
+
+def test_recipe_numbers() -> None:
+    print("[B] trainer config == script/train_svd.sh + models/trainer.py ...")
+    assert TRAINER.lr == 2e-4 and TRAINER.weight_decay == 0.0 and TRAINER.seed == 0
+    assert str(TRAINER.warmup.mode).lower() == "off", "a schedule would anneal the official constant lr"
+    b = TRAINER.step_budget
+    assert (b.unit, b.max_steps, b.save_every, b.grad_accum_steps, b.max_grad_norm) == ("optimizer_step", 24000, 3000, 2, 0.0)
+    assert b.max_steps % b.save_every == 0 and 18000 % b.save_every == 0 and "cosine_t_max" not in b
+    assert MODEL.head_init_std == 0.02 and MODEL.svd_rank == 1023 and MODEL.model_type == "effort"
+    served = OmegaConf.load(CONF / "model" / "image" / "effort.yaml")
+    assert list(served.eval_transform_list) == ["effort_cv2_resize_224", "to_dtype", "normalize_clip"]
+    assert "head_init_std" not in served and "train_transform_list" not in served
+    print("    lr 2e-4 constant, wd 0, no clipping, seed 0, 24000 iterations (2 x 24 accumulated) / ckpt 3000; effort.yaml unchanged")
+
+
+def test_trainable_set() -> None:
+    print("[C] trainable parameters: SVD residual factors + head ...")
+    clip = "openai/clip-vit-large-patch14"
+    if not isinstance(try_to_load_from_cache(clip, "config.json"), str):
+        print(f"    skipped ({clip} not in the HF cache)")
+        return
+    from models.image.effort.effort import SynthScopeEffortModel
+    torch.manual_seed(0)
+    model = SynthScopeEffortModel(OmegaConf.create({"ModelConfig": MODEL}))
+    names = [n for n, p in model.named_parameters() if p.requires_grad]
+    assert all(n.startswith("head.") or n.rsplit(".", 1)[-1] in ("S_residual", "U_residual", "V_residual") for n in names), names
+    assert sum(n.startswith("head.") for n in names) == 2 and len(names) == 24 * 4 * 3 + 2, len(names)
+    n = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    assert n == 96 * (1024 + 1 + 1024) + 1024 * 2 + 2, n
+    assert abs(model.head.weight.std().item() - 0.02) < 0.002
+    print(f"    {len(names)} tensors, {n:,} parameters; head weight std {model.head.weight.std().item():.4f}")
+
+
+if __name__ == "__main__":
+    os.chdir(ROOT)
+    test_train_pipeline()
+    test_recipe_numbers()
+    test_trainable_set()
+    print("Effort UFD recipe checks passed")
