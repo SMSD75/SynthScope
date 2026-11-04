@@ -24,7 +24,7 @@ video ─ 16 frames at 8 fps (8 for clips under 2 s), BGR, 10% crop of the longe
 
 | choice | reason |
 |---|---|
-| `SynthScopeSPLITModel` is SynthScope's own implementation of the paper's equations | The official repository has no license, so no code is copied. It returns the official `SPLIT_model.forward_score` on the same frames (relative difference ≤ 7e-6, job 269966). |
+| `SynthScopeSPLITModel` is SynthScope's own implementation of the paper's equations | Written while the official repository had no license (it is MIT since 2026-11-02), so no code is copied. It returns the official `SPLIT_model.forward_score` on the same frames (relative difference ≤ 7e-6, job 269966). |
 | Registry entry reuses D3's video preprocessing | SPLIT's released code reads frames exactly as D3 does (the same `video2frame` / `read_video`): 16 frames at 8 fps, BGR, 10% crop of the long side, resize 224, ImageNet normalization. |
 | Frames are decoded directly (decord; PIL for GIFs), not written to JPEG by ffmpeg and read back | The official pipeline's lossy JPEG round-trip is the one remaining difference from the official code, and it changes the numbers a lot (see Results). |
 | Clips longer than 3 s start at 0 | The official extraction picks a random start in a multiprocessing pool, so its frames are not reproducible anyway. |
@@ -91,5 +91,5 @@ generators) for training-free detectors that expose a raw `score`.
 
 ## License
 
-SynthScope's implementation is Apache-2.0. The official SPLIT repository has no license; no code from it is included.
+SynthScope's implementation is Apache-2.0. The official SPLIT repository is MIT-licensed (since 2026-11-02); no code from it is included.
 The X-CLIP weights (`microsoft/xclip-base-patch16`) are MIT.

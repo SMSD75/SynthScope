@@ -41,7 +41,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `dinov3` | DINOv3 probe | facebookresearch/dinov3 | DINOv3 License (gated) | DINOv3 backbone | **gated** — DINOv3 License |
 | `adapted_dino` | Adapter-tuned DINOv2 (SynthScope) | this repo | Apache-2.0 | — (SynthScope-trained) | n/a |
 | `d3` | D3 (ICCV'25) | ⚠ verify (official repo) | ⚠ verify | training-free (no weights) | n/a |
-| `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | no LICENSE file in the repo: **no code copied**; `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
+| `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | MIT (LICENSE added 2026-11-02); no code copied: `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
 | `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `stall` | STALL (CVPR'26) | OmerBenHayun/STALL | CC BY-NC 4.0 (`LICENSE.txt`) | training-free; needs the DINOv3 backbone (and ships the VATEX calibration `.npz`) | DINOv3 License (gated download) |
 

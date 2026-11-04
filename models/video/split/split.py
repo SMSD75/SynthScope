@@ -15,7 +15,7 @@ dropped). Two signals are computed on them:
 
 score = TTR ** gamma * incoherence (gamma = 8); higher means more likely generated.
 
-This is SynthScope's own implementation of the paper's equations (the official repository has no license); it is
+This is SynthScope's own implementation of the paper's equations (written before the official repository was MIT-licensed); it is
 checked against the official ``SPLIT_model`` on the same frames (repro/split parity script, identical scores).
 The released code reads frames exactly as D3 does (the same ``video2frame`` / ``read_video``), so the registry entry
 reuses D3's preprocessing: 16 frames at 8 fps, BGR, 10% crop of the long side, resize 224, ImageNet normalization.
