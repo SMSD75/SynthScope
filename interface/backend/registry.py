@@ -203,7 +203,7 @@ _add(ModelSpec(
     key="fat_former", name="FatFormer", paper="Liu et al., CVPR'24",
     modality="image", predict_kind="ce", checkpoint="fat_former.pth",
     ckpt_kind="official_fatformer", remap=remap_fatformer, weights="official",
-    # The released checkpoint has FAA at blocks [7,15,23] => num_vit_adapter=3 (not the yaml's 8).
+    # The released checkpoint has FAA at blocks [7,15,23] => num_vit_adapter=3 (also the yaml's value now; the official argparse default is 8).
     overrides=["model@ModelConfig=image/fat_former", "ModelConfig.num_vit_adapter=3"],
     transform=model_transform("image/fat_former"),
     notes="Frozen CLIP + forgery-aware adapters + learnable prompts. Official ProGAN weights.",

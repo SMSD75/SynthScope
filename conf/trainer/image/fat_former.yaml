@@ -2,17 +2,31 @@ defaults:
   - /trainer/default
   - _self_
 
+# FatFormer's training recipe as the paper states it (CVPR 2024, Sec. 4.1 "Implementation details"; the authors released no
+# training code): Adam (betas 0.9/0.999), initial learning rate 4e-4, 25 epochs, total batch size 256, learning rate x0.9
+# every 10 epochs. Adam without weight decay == AdamW with weight decay 0; no gradient clipping (so no DeepSpeed config).
+# The total batch is micro-batch x GPUs x grad_accum_steps (experiments/image/fat_former.sh: 32 x 4 x 2 by default).
+# The released checkpoint is taken as the last epoch's model (model_last.pth); model_best.pth (best validation accuracy) is kept
+# for reference.
 trainer_type: fat_former
 epochs: 25
-lr: 0.0001
-weight_decay: 0.0001
+lr: 4.0e-4
+weight_decay: 0.0
 label_smoothing: 0.0
 val_interval: 1
 test_interval: 1
 save_interval: 1
-save: false
+save: true
 save_policy: max
+save_path: /ssdstore/ssalehi/SynthScope/models/fat_former
+seed: 42                   # unspecified in the paper
 warmup:
-  mode: on
-  warmup_ratio: 0.05
-  lr_scheduler: cosine
+  mode: "off"              # quoted: a bare off is YAML boolean False
+  warmup_ratio: 0.0
+  lr_scheduler: linear
+lr_step:
+  every: 10
+  factor: 0.9
+  phase: 1                 # StepLR(step_size=10): epochs 1-10 at 4e-4, 11-20 at 3.6e-4, 21-25 at 3.24e-4 (1-based)
+  grad_accum_steps: 2
+  log_every: 100

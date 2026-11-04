@@ -75,7 +75,7 @@ The SynthScope model is implemented in `models/image/fat_former/fat_former.py` a
 | Default backbone | `CLIP:ViT-L/14` |
 | Backbone training | frozen by default; only the injected FAA modules remain trainable inside the CLIP backbone |
 | Trainable head modules | FAA layers, LGA (context vectors + patch enhancer + FFN), TGI (cross-attention + FFN), normalization layers |
-| Number of FAA blocks | `num_vit_adapter` (default `8`, must divide visual layers `24` for ViT-L/14) |
+| Number of FAA blocks | `num_vit_adapter` (config default `3` = the released checkpoint, blocks 7/15/23; the official argparse default is 8; must divide visual layers `24` for ViT-L/14) |
 | Number of context tokens | `num_context_embedding` (default `8`) |
 | Context initialization | random by default, or any text string via `init_context_embedding` |
 | Output | two-class real / fake logits (`logits + aug_logits`) |
@@ -109,22 +109,16 @@ The model config:
 |---|---:|
 | `model_type` | `fat_former` |
 | `backbone_name` | `CLIP:ViT-L/14` |
-| `num_vit_adapter` | `8` |
+| `num_vit_adapter` | `3` |
 | `num_context_embedding` | `8` |
 | `init_context_embedding` | `""` |
 | `num_classes` | `2` |
 | `freeze_backbone` | `true` |
 | `force_fp32` | `true` |
 
-The trainer config follows the paper's adapter-tuning setup: AdamW, lr `1e-4`, small weight decay, cosine schedule with short warmup, modest number of epochs. `force_fp32=true` makes the loaded CLIP backbone run in fp32 for stable Accelerate training (the upstream code keeps CLIP in fp16 on GPU). This can be disabled if you want to reproduce the upstream half-precision setup.
+The trainer config (`conf/trainer/image/fat_former.yaml`) follows the paper's recipe (Sec. 4.1; the authors released no training code): Adam (AdamW with weight decay 0), lr `4e-4`, 25 epochs, total batch 256, lr x0.9 every 10 epochs (`lr_step` schedule, no warmup, no gradient clipping), no augmentation beyond resize 256 / random crop 224 / horizontal flip. Training data is the released 4-class ProGAN setting (car, cat, chair, horse; 144k images). `force_fp32=true` keeps the loaded CLIP backbone in fp32 (the upstream code keeps CLIP in fp16 on GPU).
 
-A launcher is provided at:
-
-```bash
-experiments/fat_former.sh
-```
-
-It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `center_crop_224` / `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format.
+The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micro-batch x gradient accumulation; default 4 x 32 x 2 on 24 GB GPUs). It saves `model_last.pth` (taken as the released model) and `model_best.pth` (best validation accuracy, for reference).
 
 ## Reproduced benchmark results
 

@@ -1,0 +1,15 @@
+# Plain multi-GPU data parallel (DDP), fp32: no DeepSpeed, hence no gradient clipping. For the recipes whose official code
+# trains without clipping (e.g. experiments/image/fat_former.sh); accelerate_config.yaml is the DeepSpeed ZeRO-2 config
+# with clipping 1.0. num_processes is set by `accelerate launch --num_processes`.
+compute_environment: LOCAL_MACHINE
+distributed_type: MULTI_GPU
+mixed_precision: "no"
+num_machines: 1
+num_processes: 1
+machine_rank: 0
+main_training_function: main
+rdzv_backend: static
+same_network: true
+use_cpu: false
+downcast_bf16: "no"
+dynamo_backend: "NO"
