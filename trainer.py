@@ -182,12 +182,13 @@ class SynthScopeModelTrainer:
     def train_epoch(self, accum=1, log_every=0):
         """One pass over the training data. With ``accum`` > 1 (the ``lr_step`` schedule's ``grad_accum_steps``) each
         optimizer step uses ``accum`` micro-batches, the loss of each divided by ``accum``, so a step equals one batch of
-        ``accum`` x micro-batch (the last step of an epoch uses what remains): a 24 GB GPU can follow an official batch size
+        ``accum`` x micro-batch (the last step of an epoch averages over the micro-batches that remain): a 24 GB GPU can follow an official batch size
         it cannot hold. ``log_every`` > 0 prints the mean loss and the learning rate every that many optimizer steps."""
         self.model.train()
         total_loss = 0
         running, n_running = 0.0, 0
         n_batches = len(self.train_loader)
+        n_tail = n_batches % accum           # micro-batches of the last, shorter optimizer step (0: none)
         for idx, batch in enumerate(tqdm(self.train_loader, desc="Training")):
             if accum == 1:
                 self.optimizer.zero_grad()
@@ -204,7 +205,8 @@ class SynthScopeModelTrainer:
                 # the micro-batches that do not step skip the DDP gradient all-reduce
                 with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
                     loss = self.train_step(batch)
-                    self.accelerator.backward(loss / accum)
+                    # the mean over the micro-batches of THIS step, so the shorter last step is not under-weighted
+                    self.accelerator.backward(loss / (n_tail if n_tail and idx >= n_batches - n_tail else accum))
                 if at_step:
                     self.optimizer.step()
                     if self.scheduler is not None:

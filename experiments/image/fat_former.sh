@@ -23,6 +23,7 @@ TOTAL_BATCH=256
 if (( TOTAL_BATCH % (NGPU * MICRO) != 0 )); then echo "NGPU x MICRO must divide $TOTAL_BATCH" >&2; exit 1; fi
 ACCUM=$((TOTAL_BATCH / (NGPU * MICRO)))
 
+# PREFETCH=false: never download a missing split (a node with only staged classes and no test split must not trigger one).
 # Plain DDP (accelerate_config_ddp.yaml), not the repo's DeepSpeed accelerate_config.yaml: that one clips gradients at 1.0,
 # which the paper's recipe does not mention.
 if (( NGPU > 1 )); then
@@ -38,6 +39,7 @@ fi
     "+DatasetConfig.train_classes=[car,cat,chair,horse]" \
     DatasetConfig.train_batch_size=$MICRO \
     DatasetConfig.val_batch_size=64 \
+    DatasetConfig.prefetch=${PREFETCH:-false} \
     TrainerConfig.lr_step.grad_accum_steps=$ACCUM \
     TrainerConfig.save_path=$SAVE \
     "metrics=[real_accuracy,fake_accuracy]" \
