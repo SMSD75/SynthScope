@@ -297,6 +297,11 @@ class AIDE_Model(nn.Module):
         self.convnext_proj = nn.Sequential(nn.Linear(feat_dim, 256))
         for param in self.openclip_convnext_xxl.parameters():
             param.requires_grad = False
+        # The official forward computes ``convnext_proj`` inside ``torch.no_grad()`` (models/AIDE.py): the projection never
+        # receives gradients and keeps its random initialization, so the trained set is the two ResNets and ``fc``. Freeze
+        # it as well (checkpoints still carry its weights; outputs are unchanged).
+        for param in self.convnext_proj.parameters():
+            param.requires_grad = False
         # The ResNet ``fc`` heads are unused (the streams stop at avgpool); they exist only so the
         # official checkpoint loads strict. Freeze them so the optimizer never touches dead params.
         for stream in (self.model_min, self.model_max):
@@ -317,12 +322,12 @@ class AIDE_Model(nn.Module):
         tokens = x[:, 4]
 
         with torch.no_grad():
-            # FROZEN trunk only: re-normalize the ImageNet/DINOv2-normalized tokens into CLIP space.
+            # FROZEN trunk and projection (as the official forward): re-normalize the ImageNet/DINOv2-normalized tokens into CLIP space.
             local = self.openclip_convnext_xxl(
                 tokens * (self.dinov2_std / self.clip_std)
                 + (self.dinov2_mean - self.clip_mean) / self.clip_std)
             local = self.avgpool(local).view(tokens.size(0), -1)   # [B, feat_dim]
-        x_0 = self.convnext_proj(local)   # trainable projection (outside no_grad so it learns)
+            x_0 = self.convnext_proj(local)   # as the official forward: inside no_grad, a frozen random projection
 
         x_1 = (self.model_min(x_minmin) + self.model_max(x_maxmax)
                + self.model_min(x_minmin1) + self.model_max(x_maxmax1)) / 4

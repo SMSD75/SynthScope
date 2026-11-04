@@ -5,7 +5,7 @@
 **AIDE** (ICLR 2025, "A Sanity Check for AI-generated Image Detection") detects generated images by
 fusing a **semantic** branch and a **low-level artifact** branch:
 
-- **Semantic branch** — a frozen OpenCLIP **ConvNeXt-XXL** trunk, mean-pooled and projected to 256-d.
+- **Semantic branch** — a frozen OpenCLIP **ConvNeXt-XXL** trunk, mean-pooled and projected to 256-d by a linear layer that is frozen too (the official forward computes it under `torch.no_grad()`, so it keeps its random initialization; training updates only the two ResNet-50 streams and the MLP head).
 - **Artifact branch** — the image is resized to 256×256, then 32×32 patches are **DCT-scored** with `K=6`
   band-pass filters (weighted `2^k` over `log(|DCT|+1)`); the **2 highest- and 2 lowest-energy patches**
   are each upsampled to 256×256, passed through **30 fixed SRM high-pass kernels** and two ResNet-50

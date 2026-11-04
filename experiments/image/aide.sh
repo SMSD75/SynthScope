@@ -26,8 +26,12 @@ DATA=${DATA:-/nvmestore/ssalehi/SynthScope/GenImage}
 SAVE=${SAVE:-/nvmestore/ssalehi/SynthScope/models/aide}
 NUM_GPUS=${NUM_GPUS:-4}
 MICRO=${MICRO:-8}                                   # micro-batch per GPU
+if [ $((256 % (NUM_GPUS * MICRO))) -ne 0 ]; then
+    echo "NUM_GPUS x MICRO = $((NUM_GPUS * MICRO)) must divide the effective batch 256" >&2; exit 1
+fi
 ACCUM=$((256 / (NUM_GPUS * MICRO)))                 # effective batch 256
 WORKERS=${WORKERS:-5}
+# wandb runs offline by default (batch nodes have no login, like the other recipe scripts); LOGGER_MODE=online to sync.
 
 /home/ssalehi/miniconda3/bin/conda run --no-capture-output -n SynthScope accelerate launch --multi_gpu \
     --num_processes $NUM_GPUS --mixed_precision no main.py \
@@ -43,6 +47,6 @@ WORKERS=${WORKERS:-5}
     TrainerConfig.save_path=$SAVE \
     "metrics=[real_accuracy,fake_accuracy]" \
     logger.name=aide \
-    logger.mode=offline \
+    logger.mode=${LOGGER_MODE:-offline} \
     "logger.tags=[SynthScope,AIDE,genimage]" \
     "$@"

@@ -269,7 +269,7 @@ class SynthScopeModelTrainer:
         real = [v for k, v in metrics_dict.items() if k.startswith("real_accuracy")]
         fake = [v for k, v in metrics_dict.items() if k.startswith("fake_accuracy")]
         if not real or not fake:
-            raise ValueError("the plateau schedule needs metrics=[real_accuracy,fake_accuracy]")
+            raise ValueError("validation accuracy (the plateau schedule, timm_cosine select: accuracy) needs metrics=[real_accuracy,fake_accuracy]")
         return (sum(real) / len(real) + sum(fake) / len(fake)) / 2
 
     def _train_with_plateau(self, plateau):
@@ -408,9 +408,10 @@ class SynthScopeModelTrainer:
                                       warmup_t=int(float(sched.warmup_epochs) * n_iter), cycle_limit=1, t_in_epochs=False)
         save_all = bool(sched.get("save_all", False))
         log_every = int(sched.get("log_every", 100))      # optimizer steps between loss / lr lines
+        micro = self.train_loader.batch_sampler.batch_size     # DataLoaderShard.batch_size is None after prepare()
         self.accelerator.print(f"timm_cosine: {len(self.train_loader)} micro-batches per process and epoch -> {n_iter} optimizer steps per epoch "
-                               f"({self.accelerator.num_processes} processes x micro-batch {self.train_loader.batch_size} x accumulation {accum} "
-                               f"= effective batch {self.accelerator.num_processes * (self.train_loader.batch_size or 0) * accum}), "
+                               f"({self.accelerator.num_processes} processes x micro-batch {micro} x accumulation {accum} "
+                               f"= effective batch {self.accelerator.num_processes * micro * accum}), "
                                f"lr {cfg.lr} -> {sched.min_lr} over {cfg.epochs} epochs")
         history, start = [], 0          # validation loss per epoch; None where it was not measured on this validation set
         by_accuracy = str(sched.get("select", "loss")) == "accuracy"
