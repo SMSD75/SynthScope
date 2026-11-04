@@ -113,6 +113,44 @@ class ToFloat:
         return "ToFloat()"
 
 
+class AIDEPerturbation:
+    """AIDE's training perturbations (official ``data/datasets.py``): ``Perturbations = ImageSequential(RandomGaussianBlur(
+    (3, 3), sigma=(0.1, 3.0), p=0.1), RandomJPEG((30, 100), p=0.1))`` from kornia, applied to the ``ToTensor`` image at
+    NATIVE resolution before the DCT patch selection. ``kind`` is ``"blur"`` or ``"jpeg"``: the two steps are separate
+    transform names (``aide_blur``, ``aide_jpeg``), and in this order they draw the same random numbers as the
+    sequential container (tests/test_model_transforms.py checks it). Takes a PIL image or a uint8 / float ``[3, H, W]``
+    tensor and returns a float ``[3, H, W]`` tensor in [0, 1].
+
+    kornia's JPEG codec raises on a side that is not a multiple of 16, which most ImageNet reals are (500x375, ...): the
+    official code would crash on those images, so a selected image is edge-padded to a multiple of 16 and cropped back
+    after the codec (a JPEG encoder pads the same way), and an image whose sides are multiples of 16 is untouched.
+    kornia (the official ``kornia==0.7.2``) is imported when the step is built, so only AIDE training needs it."""
+
+    def __init__(self, kind: str):
+        if kind not in ("blur", "jpeg"):
+            raise ValueError(f"AIDEPerturbation kind must be 'blur' or 'jpeg', got {kind!r}")
+        import kornia.augmentation as K
+        self.kind = kind
+        self.aug = (K.RandomGaussianBlur(kernel_size=(3, 3), sigma=(0.1, 3.0), p=0.1) if kind == "blur"
+                    else K.RandomJPEG(jpeg_quality=(30, 100), p=0.1))
+
+    def __call__(self, image):
+        if isinstance(image, Image.Image):
+            x = TF.to_tensor(image)
+        else:                                              # uint8 tensor: exactly ToTensor's /255; float: unchanged
+            x = image.float().div(255) if image.dtype == torch.uint8 else image
+        if self.kind == "jpeg":
+            h, w = x.shape[-2:]
+            pad_h, pad_w = -h % 16, -w % 16
+            if pad_h or pad_w:
+                x = torch.nn.functional.pad(x[None], (0, pad_w, 0, pad_h), mode="replicate")[0]
+                return self.aug(x)[0, :, :h, :w].contiguous()
+        return self.aug(x)[0]
+
+    def __repr__(self):
+        return f"AIDEPerturbation({self.kind!r})"
+
+
 class CapLongSide:
     """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds ``max_side``; otherwise
     leave it at native resolution (SPAI's any-resolution path)."""
@@ -197,6 +235,10 @@ class AIGITransformations:
             return v2.RandomApply([v2.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=0.05)], p=0.2)
         elif transform_name == "random_mask_safe":
             return RandomMask(ratio=(0.0, 0.75), patch_size=16, p=0.5)
+        elif transform_name in ("aide_blur", "aide_jpeg"):
+            # AIDE training: kornia Gaussian blur (3x3, sigma 0.1-3, p 0.1) then JPEG (QF 30-100, p 0.1) at native
+            # resolution, as the official Perturbations; goes before aide_five_view_train.
+            return AIDEPerturbation(transform_name.removeprefix("aide_"))
         elif transform_name == "aide_five_view":
             # AIDE native-resolution 5-view preprocessing: PIL/tensor -> [5,3,256,256] (DCT patch
             # selection at native res, then resize the selected patches). Must be the LAST transform.

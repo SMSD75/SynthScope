@@ -10,7 +10,9 @@ freeze_convnext: true
 semantic_dim: 3072
 semantic_proj_dim: 256
 
-resnet_pretrained: true
+# Not read by any code: the two ResNet-50 streams start from random weights, as in the official run (its AIDE_Model builds
+# a pretrained state dict from --resnet_path but never calls load_state_dict, and conv1 takes 30 HPF channels anyway).
+resnet_pretrained: false
 head_hidden: 1024
 num_classes: 2
 
@@ -22,11 +24,13 @@ dct:
 
 # Test-time preprocessing (official): inference and benchmarks.
 eval_transform_list: [aide_five_view]
-# Training augmentation: the five native-resolution views, long side capped at 1024 (the recipe of the SynthScope_train
-# checkpoint, repro/retrain_aide_native_v2.sbatch).
-train_transform_list: [random_horizontal_flip, aide_five_view_train]
-# Validation during training (differs from the test-time preprocessing above).
-val_transform_list: [aide_five_view_train]
+# Training = the official TrainDataset (data/datasets.py): at native resolution Gaussian blur (3x3, sigma 0.1-3, p 0.1)
+# then JPEG (QF 30-100, p 0.1), then the five views; no flip, no crop. aide_five_view_train differs from the official
+# transform only in capping the long side at 1024 before the DCT (worker memory).
+train_transform_list: [aide_blur, aide_jpeg, aide_five_view_train]
+# Validation during training: the official run validates through the same TrainDataset, so the perturbations apply to the
+# validation images too.
+val_transform_list: [aide_blur, aide_jpeg, aide_five_view_train]
 # Caps the long side at 1024 to bound dataloader-worker memory during the end-of-training test; inference and
-# benchmarks use the uncapped eval list.
+# benchmarks use the uncapped eval list. No perturbations (the official TestDataset has none).
 test_transform_list: [aide_five_view_train]
