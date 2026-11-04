@@ -2349,11 +2349,16 @@ class _TestOnlyImageDataset(Dataset):
         self.split = split
         self.transform = transform
         self.destination_dir = self.root_dir / self.split
-        if prefetch and not _has_images(self.destination_dir):
+        if prefetch and not self._is_prepared(self.destination_dir):
             print(f"Downloading {type(self).__name__} {split} split...")
             self._download_data()
         self.images, self.labels, self.folder_names = self._load_data()
         self.unique_folder_names = sorted(set(self.folder_names)) or [self.split]
+
+    @classmethod
+    def _is_prepared(cls, destination_dir: Path) -> bool:
+        """Whether ``destination_dir`` already holds the benchmark (loaders with extra completeness checks override)."""
+        return _has_images(destination_dir)
 
     @classmethod
     def prepare_split(cls, root_dir, split: str = "test", force: bool = False) -> None:
@@ -2502,17 +2507,53 @@ class SynthbusterDataset(_TestOnlyImageDataset):
     1000 fakes each. Used by SPAI (Table 1) and other detectors as a high-quality diffusion test set.
     Sourced from Zenodo record 10066460 (synthbuster.zip = <gen>/*.png, fakes only). Synthbuster ships
     NO reals (the originals are RAISE-1k, which require a separate request); this loader pairs each
-    generator's fakes against a shared clean-real pool (GenImage nature photos) as a documented proxy —
-    the detector keys on generative artifacts, so proxy reals give a valid per-generator AP/AUROC."""
+    generator's fakes against a shared clean-real pool as a documented proxy — the detector keys on
+    generative artifacts, so proxy reals give a valid per-generator AP/AUROC. The pool is
+    ``DatasetConfig.real_pool`` or, when unset, GenImage's nature reals at ``<root>/../GenImage/test/real``."""
     zenodo_record = "10066460"
     zenodo_file = "synthbuster.zip"
+    sibling_pool = Path("..") / "GenImage" / "test" / "real"
+
+    def __init__(self, root_dir, split: Literal["test"] = "test", transform: AIGITransformations | None = None,
+                 prefetch: bool = False, real_pool=None):
+        self.real_pool = real_pool            # read by _download_data, which the base constructor may call
+        super().__init__(root_dir, split, transform, prefetch)
+
+    @classmethod
+    def _gens_without_reals(cls, destination_dir: Path) -> list[Path]:
+        """Generator folders that have fakes but no reals (the fakes-only layout older versions wrote)."""
+        return [g for g in sorted(destination_dir.glob("*")) if _has_images(g / "1_fake") and not _has_images(g / "0_real")]
+
+    @classmethod
+    def _is_prepared(cls, destination_dir: Path) -> bool:
+        return _has_images(destination_dir) and not cls._gens_without_reals(destination_dir)
+
+    @classmethod
+    def _find_reals(cls, root_dir: Path, real_pool, cap: int) -> list[Path]:
+        """The first ``cap`` sorted images of the proxy real pool; raises when there is none (never fakes only)."""
+        pool = Path(real_pool).expanduser() if real_pool else (root_dir / cls.sibling_pool).resolve()
+        reals = sorted(p for p in pool.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
+        if not reals:
+            raise FileNotFoundError(
+                f"Synthbuster ships no reals, and no real images were found in '{pool}'. Point "
+                f"DatasetConfig.real_pool at a folder of real photos (e.g. GenImage's test/real), put GenImage next to "
+                f"the Synthbuster root as '{(root_dir / cls.sibling_pool).resolve()}', or pass "
+                f"--reals DIR to benchmark/bench_eval.py --dataset synthbuster.")
+        return reals
+
+    def _download_data(self, force: bool = False) -> None:
+        self.prepare_split(self.root_dir, self.split, force=force, real_pool=self.real_pool)
 
     @classmethod
     def prepare_split(cls, root_dir, split="test", force=False, real_pool=None, cap=1000):
         root_dir = Path(root_dir); dest = root_dir / split
-        if not force and _has_images(dest):
+        if not force and cls._is_prepared(dest):
             return
-        import urllib.request
+        reals = cls._find_reals(root_dir, real_pool, cap)      # before the download: fail fast without a pool
+        if not force and _has_images(dest):                    # fakes-only layout: only add the reals
+            for gen_dir in cls._gens_without_reals(dest):
+                _link_images(reals, gen_dir / "0_real")
+            return
         dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
         zpath = dl / cls.zenodo_file
         if not zpath.exists():
@@ -2521,18 +2562,10 @@ class SynthbusterDataset(_TestOnlyImageDataset):
             urllib.request.urlretrieve(url, zpath)
         staging = _extract_archives_into(dl, root_dir / "_staging")
         inner = next((p for p in staging.rglob("synthbuster") if p.is_dir()), staging)
-        # proxy reals: a clean real-photo pool (GenImage nature by default)
-        pool = real_pool or "/hddstore/ssalehi/SynthScope/GenImage/test/real"
-        reals = sorted(p for p in Path(pool).glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
         for gen_dir in sorted(p for p in inner.iterdir() if p.is_dir()):
             fakes = sorted(p for p in gen_dir.glob("*") if p.suffix.lower() in IMAGE_EXTENSIONS)[:cap]
-            for label, imgs in (("1_fake", fakes), ("0_real", reals)):
-                out = dest / gen_dir.name / label; out.mkdir(parents=True, exist_ok=True)
-                for i, p in enumerate(imgs):
-                    tgt = out / f"{i:05d}_{p.name}"
-                    if not tgt.exists():
-                        try: os.link(p, tgt)
-                        except OSError: shutil.copy2(p, tgt)
+            _link_images(fakes, dest / gen_dir.name / "1_fake")
+            _link_images(reals, dest / gen_dir.name / "0_real")
         shutil.rmtree(root_dir / "_staging", ignore_errors=True)
 
 
@@ -2969,6 +3002,96 @@ class MirageTestDataset(_TestOnlyImageDataset):
         return images, labels, folder_names
 
 
+class SPAITrainDataset(Dataset):
+    """SPAI's training data (Karageorgiou et al., CVPR 2025), built as the official
+    ``spai/tools/create_dmid_ldm_train_val_csv.py`` builds its CSV: GRIP's latent-diffusion training set (Corvi et al.,
+    ICASSP 2023; 180k ``train`` / 20k ``valid`` LDM images, label 1) plus the reals it lists (label 0): ``real_coco.txt``
+    from COCO train2017 and ``real_lsun.txt`` (``<class>_<file>``) from CNNDetection's ``train/<class>/0_real`` (90k +
+    90k for train, 10k + 10k for valid). ``coco_ext`` maps the listed ``.jpg`` names onto a lossless copy of the decoded
+    JPEGs; the default reads the original train2017 JPEGs.
+
+    ``train``: an item is ``views`` (4) independent draws of the official albumentations transform, concatenated side by
+    side into one ``[3, 224, views * 224]`` image, as the official CSVDataset in RESOLUTION_MODE arbitrary; the model
+    tiles it into ``views`` patches for its Spectral Context Attention. ``val``: the ``valid`` images themselves with the
+    official inference transform (TEST.ORIGINAL_RESOLUTION: padded to at least 224, [0, 1], no resize), scored at
+    their own size; the official run validates on these rows of the train/val CSV (variable sizes: batch size 1)."""
+    zip_url = "https://www.grip.unina.it/download/prog/DMimageDetection/latent_diffusion_trainingset.zip"
+    ldm_dir = "latent_diffusion_trainingset"
+
+    def __init__(self, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg", views=4, prefetch=False):
+        super().__init__()
+        from models.image.spai.official_train_transforms import SPAI_CONFIG, build_transform  # optional dep (albumentations)
+        if split not in ("train", "val"):
+            raise ValueError(f"SPAI training data has no '{split}' split")
+        self.root_dir, self.split, self.views = Path(root_dir), split, int(views)
+        if prefetch and not (self.root_dir / self.ldm_dir / "train").is_dir():
+            self.prepare_split(self.root_dir)
+        self.transform = build_transform(split == "train", SPAI_CONFIG)
+        self.samples = self.entries(self.root_dir, "train" if split == "train" else "valid", coco_dir, cnndetection_dir, coco_ext)
+
+    @classmethod
+    def entries(cls, root_dir, split, coco_dir, cnndetection_dir, coco_ext=".jpg"):
+        """``(path, label)`` for one split (``train`` or ``valid`` in GRIP's naming), in the official CSV's order."""
+        split_dir = Path(root_dir) / cls.ldm_dir / ("train" if split == "train" else "valid")
+        samples = [(p, 1) for p in sorted(split_dir.rglob("*.png"))]
+        for line in (split_dir / "real_coco.txt").read_text().split():
+            samples.append((Path(coco_dir) / Path(line).with_suffix(coco_ext), 0))
+        for line in (split_dir / "real_lsun.txt").read_text().split():
+            category, filename = line.split("_", 1)
+            samples.append((Path(cnndetection_dir) / "train" / category / "0_real" / filename, 0))
+        missing = [p for p, _ in samples if not p.exists()]
+        if missing:
+            raise FileNotFoundError(f"SPAI {split}: {len(missing)} of {len(samples)} images missing, e.g. {missing[0]}")
+        return samples
+
+    @classmethod
+    def prepare_split(cls, root_dir):
+        """Download and extract GRIP's LDM training set (22 GB). The reals (COCO train2017, CNNDetection) are separate."""
+        root_dir = Path(root_dir); dl = root_dir / "_downloads"; dl.mkdir(parents=True, exist_ok=True)
+        archive = dl / "latent_diffusion_trainingset.zip"
+        if not archive.exists():
+            subprocess.run(["curl", "-L", "--fail", "-C", "-", "--retry", "5", "-o", str(archive), cls.zip_url], check=True)
+        _safe_extract_zip(archive, root_dir)
+
+    def __len__(self):
+        return len(self.samples)
+
+    def __getitem__(self, idx):
+        path, label = self.samples[idx]
+        img = np.array(Image.open(path).convert("RGB"))
+        if self.split == "train":
+            image = torch.cat([self.transform(image=img)["image"] for _ in range(self.views)], dim=-1)
+        else:
+            image = self.transform(image=img)["image"]
+        return image, torch.tensor(label), torch.tensor(0)
+
+
+class SPAITrainDatasetModule:
+    """SPAI's training (4-view items) and validation (native-resolution valid images) data for SynthScope's trainer."""
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        kw = dict(coco_dir=cfg.coco_dir, cnndetection_dir=cfg.cnndetection_dir, coco_ext=cfg.get("coco_ext", ".jpg"),
+                  prefetch=bool(cfg.get("prefetch", False)))
+        self.train_dataset = SPAITrainDataset(cfg.root_dir, "train", views=int(cfg.get("views", 4)), **kw)
+        self.val_dataset = SPAITrainDataset(cfg.root_dir, "val", **kw)
+
+    def train_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.train_dataset, batch_size=cfg.train_batch_size, shuffle=True, num_workers=cfg.num_workers,
+                          pin_memory=True, drop_last=True, persistent_workers=cfg.num_workers > 0)
+
+    def val_dataloader(self):
+        cfg = self.config.DatasetConfig
+        # not persistent: idle validation workers would hold host memory through every training epoch
+        return DataLoader(self.val_dataset, batch_size=cfg.val_batch_size, shuffle=False, num_workers=cfg.num_workers,
+                          pin_memory=True)
+
+    def test_dataloader(self):
+        return None
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -2978,7 +3101,12 @@ class _TestOnlyImageModule:
         cfg = config.DatasetConfig
         self.train_transform, self.val_transform, self.test_transform = resolve_transforms(config)
         self.test_dataset = self.DATASET_CLASS(
-            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)))
+            cfg.root_dir, "test", self.test_transform, prefetch=bool(cfg.get("prefetch", False)),
+            **self._dataset_kwargs(cfg))
+
+    def _dataset_kwargs(self, cfg):
+        """Extra keyword arguments for ``DATASET_CLASS`` taken from DatasetConfig (none by default)."""
+        return {}
 
     def train_dataloader(self):
         return None
@@ -3015,6 +3143,9 @@ class GenImageFullDatasetModule(_TestOnlyImageModule):
 
 class SynthbusterDatasetModule(_TestOnlyImageModule):
     DATASET_CLASS = SynthbusterDataset
+
+    def _dataset_kwargs(self, cfg):
+        return {"real_pool": cfg.get("real_pool", None)}
 
 
 class RealChainDatasetModule(_TestOnlyImageModule):
@@ -3305,6 +3436,8 @@ SynthScopeModuleDict = {
     "sidset": SIDSetDatasetModule,
     "arforensics": ARForensicsDatasetModule,
     "mirage_test": MirageTestDatasetModule,
+    # Training sets of detectors trained in SynthScope with their official recipe.
+    "spai_train": SPAITrainDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.

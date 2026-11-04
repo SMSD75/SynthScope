@@ -39,7 +39,7 @@ from PIL import Image, ImageFile
 
 import synthscope
 from models.image.cure.preprocess import SRC_FORMAT_KEY
-from datasets_util import ensure_dataset, find_eval_root
+from datasets_util import dataset_config, ensure_dataset, find_eval_root
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 Image.MAX_IMAGE_PIXELS = None   # benchmark data is trusted; some real photos (e.g. RealChain) exceed PIL's 179 MP bomb guard
@@ -232,7 +232,8 @@ def main(argv=None) -> int:
     ap.add_argument("--root", help="with --dataset: where the dataset lives / should be downloaded (default: root_dir in its yaml)")
     ap.add_argument("--no-download", action="store_true", help="with --dataset: fail instead of downloading missing data")
     ap.add_argument("--dry-run", action="store_true", help="with --dataset: only show the resolved folder and profile")
-    ap.add_argument("--reals", default=None, help="shared real dir (pergen/forensynths fallback)")
+    ap.add_argument("--reals", default=None, help="shared real dir (pergen/forensynths fallback; with --dataset also the real pool of loaders that ship "
+                    "fakes only, e.g. Synthbuster)")
     ap.add_argument("--ckpt", default=None, help="checkpoint override (official vs SynthScope weights)")
     ap.add_argument("--select", default=None, help="comma list: only these generators")
     ap.add_argument("--limit", type=int, default=None, help="cap images per class per generator")
@@ -248,7 +249,12 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     if args.dataset:
-        root = ensure_dataset(args.dataset, "image", args.root, download=not args.no_download and not args.dry_run)
+        overrides = []
+        if args.reals and "real_pool" in dataset_config(args.dataset, "image", args.root).DatasetConfig:
+            # loaders that ship fakes only (Synthbuster) pair them with this pool when building the layout
+            overrides.append(f"DatasetConfig.real_pool={Path(args.reals).expanduser().resolve()}")
+        root = ensure_dataset(args.dataset, "image", args.root, download=not args.no_download and not args.dry_run,
+                              overrides=overrides)
         eval_root, profile = find_eval_root(args.dataset, root)
         args.data = args.data or str(eval_root)
         args.benchmark = args.benchmark or profile

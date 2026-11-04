@@ -30,7 +30,7 @@
       "official_eval_protocol": "ANY-/NATIVE-RESOLUTION. configs/spai.yaml: RESOLUTION_MODE='arbitrary', TEST.ORIGINAL_RESOLUTION=True, MINIMUM_PATCHES=4, REQUIRED_NORMALIZATION='positive_0_1' (no ImageNet norm at dataset side), FEATURE_EXTRACTION_BATCH=400. Each test image is processed at its NATIVE resolution: spai/models/sid.py PatchBasedMFViT.forward_arbitrary_resolution_batch (sid.py:176-237) patchifies the full image into overlapping 224x224 patches (patchify_image, stride=PATCH_STRIDE), runs every patch through the MFM ViT, and aggregates with Spectral Context Attention (patches_attention). If an image yields < MINIMUM_PATCHES(4) patches it falls back to five_crop (sid.py:198-202). NO global resize to a fixed size. Metric = torchmetrics AUROC (spai/metrics.py:56,88-96). Run: `python -m spai test --cfg configs/spai.yaml --opt MODEL.PATCH_VIT.MINIMUM_PATCHES 4 --test-csv <csv>` with --model <epoch>.pth.",
       "our_status": "missing",
       "our_number": null,
-      "gap_cause": "(1) Eval set not on disk: Synthbuster + the GDrive SD3/MJv6.1/GigaGAN/Flux + RAISE/FODB/OpenImages/ImageNet/COCO test reals are not staged (only /hddstore/.../spai_train exists). (2) SynthScope cannot reproduce the protocol: SynthScope implements ONLY the FIXED-resolution MFViT variant and deliberately omits the any-resolution Spectral Context Attention wrapper (models/image/spai/README.md 'Scope of this implementation', line 180; conf/model/image/spai.yaml patch_size=patch_stride=224 feeding a fixed 448x448 -> 2x2=4-patch grid). SynthScope eval transform is resize_short_256 + center_crop_224 (README:112), discarding the native high-resolution spectral statistics the paper depends on. SynthScope also reports mAP/acc, not the paper's AUC.",
+      "gap_cause": "Eval set not on disk: Synthbuster plus the SD3 / MJv6.1 / GigaGAN / Flux fakes (authors' GDrive) and the RAISE / FODB / OpenImages / ImageNet / COCO test reals are not staged. The served path follows the protocol (native-resolution any-res PatchBasedMFViT wrapper with Spectral Context Attention), but SynthScope reports mAP/acc, not the paper's AUC.",
       "dataset_source": "gated/external. Synthbuster: Zenodo https://zenodo.org/records/10066460 (record 10066460). SD3/MJv6.1/GigaGAN/Flux: authors' GDrive https://drive.google.com/file/d/1no5T89h97TZvAKNCHKt2PQfKZ1UDtbI4/view . Real sources: RAISE-1k (loki.disi.unitn.it/RAISE), FODB (faui1-files.cs.fau.de/.../fodb), Open Images V7, COCO2017 test, ImageNet test (Kaggle ILSVRC). docs/data.md lists all; data/*.csv enumerate the exact files."
     },
     {
@@ -53,7 +53,12 @@
         "map": 94.22,
         "mauroc": 94.28,
         "acc": 87.44,
-        "note": "SERVED path: official SPAI weights remapped into the SynthScope class, scored at NATIVE resolution (tf_native_cap + native_res bs=1). bench_eval --model spai (tag spai_served_genimage8, limit 300/gen) = 94.22 mAP / 94.28 mAUROC \u2014 reproduces & exceeds the vendored-official 91.33 and the prior fixed-448 retrain (88.8). The from-scratch retrain (88.8) is superseded and no longer served."
+        "map_synthscope_retrain": 94.67,
+        "auroc_synthscope_retrain": 94.77,
+        "acc_synthscope_retrain": 87.25,
+        "ckpt_synthscope": "/ssdstore/ssalehi/SynthScope/models/spai_v1/model_8.pth on cn029 (epoch 8 of the 35-epoch official-recipe retrain, job 267192, chosen by validation loss; epoch 17 = 93.52 / 93.48 / 84.88 mAP / AUROC / acc)",
+        "tags": "spai_official_genimage8 / spai_ep8_genimage8 / spai_ep17_genimage8 (jobs 273444 / 273445 / 273446; experiments/image/spai.sh)",
+        "note": "Served official weights (native-res, 300/gen): 94.22 mAP / 94.28 AUROC / 87.44 acc. Official-recipe retrain, epoch 8 (train job 267192; eval jobs 273444 / 273445): 94.67 / 94.77 / 87.25, +0.45 mAP vs the official weights. Epoch 17: 93.52 / 93.48 / 84.88."
       },
       "gap_cause": "RESOLVED. The 88.8 gap was the fixed-448 2x2 approximation on a retrain; wiring the official any-res path into the registry (native resolution, sub-patch upscale) serves 94.22 mAP. Numbers on a 300/gen subset.",
       "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/GenImage_full/test (real source variant) and test_full. Origin: github.com/GenImage-Dataset/GenImage."
@@ -78,7 +83,12 @@
         "map": 96.75,
         "mauroc": 96.97,
         "acc": 89.53,
-        "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path)."
+        "map_synthscope_retrain": 95.76,
+        "auroc_synthscope_retrain": 96.37,
+        "acc_synthscope_retrain": 88.14,
+        "ckpt_synthscope": "/ssdstore/ssalehi/SynthScope/models/spai_v1/model_8.pth on cn029 (epoch 8, job 267192; epoch 17 = 94.57 / 95.85 / 86.31 mAP / AUROC / acc)",
+        "tags": "spai_official_synthbuster / spai_ep8_synthbuster / spai_ep17_synthbuster (job 273597; reals = first 200 sorted of the GenImage nature-real pool)",
+        "note": "SERVED native-res path (official weights in SynthScope class). bench_eval --model spai (tag spai_served_synthbuster, 9 gens, limit 200/gen) = 96.75 mAP / 96.97 mAUROC (was 55.67 via the old fixed-448 path). The official-recipe retrain (epoch 8) gets 95.76 mAP / 96.37 mAUROC / 88.14 acc, -0.99 mAP vs the official weights."
       },
       "gap_cause": "RESOLVED by the native-res serving path.",
       "dataset_source": "Zenodo https://zenodo.org/records/10066460 (record 10066460)."

@@ -290,7 +290,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.0 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
 | SPLIT (video) | GenVideo-Val, MSR-VTT-calibrated (fake recall at FPR 0.1 / 1 / 5%) | 82.1 · 91.7 · 97.2 | 98.9 · 99.9 · 100.0 | ✅ reproduced (official code on our data: 82.2 · 90.2 · 96.9) |
-| SPAI | GenImage | not reported | 94.22 (official) | ⚠️ the paper's own test set is not in SynthScope yet |
+| SPAI | GenImage | not reported | 94.22 (official) · 94.67 (trained in SynthScope) | ✅ our training reproduces the official weights (the paper's own test set is not in SynthScope yet) |
 | VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP · 85.83 acc | 94.08 AP · 85.22 acc (trained in SynthScope) | ✅ reproduced by our training |
 
 ---

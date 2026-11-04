@@ -27,6 +27,8 @@ from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
 from accelerate import Accelerator
 from transformers import get_scheduler
+from timm.scheduler.cosine_lr import CosineLRScheduler
+import json
 import os
 from logger import build_logger
 from tqdm import tqdm
@@ -35,7 +37,7 @@ class SynthScopeModelTrainer:
     def __init__(self, config: DictConfig, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
         self.optimizer = torch.optim.AdamW(
-            self._filter_trainable_parameters(),
+            self._param_groups(config),
             lr=config.TrainerConfig.lr,
             betas=(0.9, 0.999),
             weight_decay=config.TrainerConfig.get("weight_decay", 0.01),
@@ -131,6 +133,16 @@ class SynthScopeModelTrainer:
     
     def _filter_trainable_parameters(self):
         return [p for p in self.model.parameters() if p.requires_grad]
+
+    def _param_groups(self, config):
+        """The trainable parameters; with ``TrainerConfig.no_weight_decay_1d`` the biases and 1-D parameters (norms, ...)
+        get no weight decay, as in the BEiT/MFM-style fine-tuning optimizers (SPAI's ``get_finetune_param_groups``)."""
+        if not config.TrainerConfig.get("no_weight_decay_1d", False):
+            return self._filter_trainable_parameters()
+        named = [(n, p) for n, p in self.model.named_parameters() if p.requires_grad]
+        no_decay = lambda n, p: p.ndim <= 1 or n.endswith(".bias")
+        return [{"params": [p for n, p in named if not no_decay(n, p)]},
+                {"params": [p for n, p in named if no_decay(n, p)], "weight_decay": 0.0}]
 
     def train_step(self, batch):
         loss_dict = self.model.compute_loss(batch)
@@ -370,7 +382,79 @@ class SynthScopeModelTrainer:
         self._save_model("final", save_path)
         self.logger.finish()
 
+    def _train_with_timm_cosine(self, sched):
+        """SPAI's schedule (its lr_scheduler.py + train_one_epoch): timm's CosineLRScheduler stepped after every
+        optimizer step, a linear warmup from ``warmup_lr`` over ``warmup_epochs`` and a cosine to ``min_lr`` at the last
+        step. ``grad_accum_steps`` splits each official batch into micro-batches (loss divided accordingly) and the
+        schedule counts official steps, so a smaller GPU follows the same LR curve. Validation after every epoch; as in
+        the official code, a checkpoint is kept whenever the validation loss improves (``model_<epoch>.pth``, the
+        selected one also as ``model_best.pth``; ``save_all`` keeps every epoch, as the official ``--save-all``), plus
+        ``model_last.pth``; the losses go to ``val_losses.json``. After
+        every epoch the full training state (model, optimizer, loss scaler, RNGs) is saved to ``<save_path>/train_state``,
+        and a rerun with the same ``save_path`` resumes after the last finished epoch (runs longer than a job limit)."""
+        cfg = self.config.TrainerConfig
+        accum = int(sched.get("grad_accum_steps", 1))
+        n_iter = len(self.train_loader) // accum
+        scheduler = CosineLRScheduler(getattr(self.optimizer, "optimizer", self.optimizer), t_initial=int(cfg.epochs * n_iter),
+                                      lr_min=float(sched.min_lr), warmup_lr_init=float(sched.warmup_lr),
+                                      warmup_t=int(float(sched.warmup_epochs) * n_iter), cycle_limit=1, t_in_epochs=False)
+        save_all = bool(sched.get("save_all", False))
+        history, start = [], 0          # validation loss per epoch; None where it was not measured on this validation set
+        state_dir, log_path = f"{cfg.save_path}/train_state", f"{cfg.save_path}/val_losses.json"
+        if cfg.save and os.path.isfile(f"{state_dir}/progress.json"):
+            with open(f"{state_dir}/progress.json") as f:
+                progress = json.load(f)
+            self.accelerator.load_state(state_dir)
+            history, start = progress["val_loss"], progress["epoch"] + 1
+            self.global_step = start * n_iter
+            self.accelerator.print(f"Resuming after epoch {progress['epoch']}")
+        measured = lambda: [v for v in history if v is not None]
+        best = min(measured(), default=float("inf"))
+        for epoch in range(start, cfg.epochs):
+            self.model.train()
+            self.optimizer.zero_grad()
+            total, k = 0.0, 0
+            for idx, batch in enumerate(tqdm(self.train_loader, desc=f"Training epoch {epoch}")):
+                loss = self.train_step(batch)
+                self.accelerator.backward(loss / accum)
+                total += loss.detach().item()
+                if (idx + 1) % accum == 0:
+                    self.optimizer.step()
+                    self.optimizer.zero_grad()
+                    scheduler.step_update(epoch * n_iter + k)
+                    k += 1
+                    self.global_step += 1
+                    if k % 100 == 0:
+                        self.accelerator.print(f"epoch {epoch} step {k}/{n_iter}: loss {total / (idx + 1):.4f}, "
+                                               f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
+                    if k == n_iter:
+                        break
+            self.logger.log_metrics({"train/loss": total / max(1, k * accum), "lr": self.optimizer.param_groups[0]["lr"]}, self.global_step)
+            val_loss, val_metrics_dict = self.val()
+            history.append(val_loss)
+            best_epoch = history.index(min(measured()))
+            self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss:.4f} (best {history[best_epoch]:.4f} at epoch {best_epoch}), "
+                                   f"Val Metrics: {val_metrics_dict}")
+            if cfg.save:
+                self._save_model("last", cfg.save_path)
+                if save_all or val_loss < best:   # the official --save-all keeps every epoch
+                    self._save_model(epoch, cfg.save_path)
+                if val_loss < best:
+                    best = val_loss
+                    self._save_model("best", cfg.save_path)
+                if self.accelerator.is_main_process:
+                    with open(log_path, "w") as f:
+                        json.dump({"val_loss": history, "best_epoch": best_epoch}, f, indent=1)
+                self.accelerator.save_state(state_dir)
+                if self.accelerator.is_main_process:
+                    with open(f"{state_dir}/progress.json", "w") as f:
+                        json.dump({"epoch": epoch, "val_loss": history}, f)
+        self.logger.finish()
+
     def train(self):
+        timm_cosine = self.config.TrainerConfig.get("timm_cosine", None)
+        if timm_cosine is not None:
+            return self._train_with_timm_cosine(timm_cosine)
         plateau = self.config.TrainerConfig.get("plateau", None)
         if plateau is not None:
             return self._train_with_plateau(plateau)

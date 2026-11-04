@@ -16,7 +16,7 @@
 | CNNDetection | ForenSynths | 90.8 | 91.15 | 91.05 | ✅ match |
 | SAFE | GenImage | 99.3 | 99.32 | 99.51 | ✅ retrain reproduces |
 | AIDE | GenImage (SD-v1.4) | 86.9 acc | 97.12 | 96.42 | ✅ reproduced (native-res retrain) |
-| SPAI | GenImage | ~91 AUC | 94.22 | 88.80 | ✅ served native-res (beats vendored 91.33) |
+| SPAI | GenImage | ~91 AUC | 94.22 | 94.67 | ✅ served native-res (beats vendored 91.33); official-recipe retrain reproduces the official weights (+0.45 mAP; Synthbuster -0.99) |
 | PGC | GenImage / ForenSynths-8 / UFD | 100 / — / 98.0 AP | 100.0 / 96.41 / 99.17 | 97.62 / **97.41** / **98.99** | ✅ UFD reproduced by the official recipe in SynthScope (step 500); ForenSynths (not in the paper) above the official checkpoint |
 | VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP / 85.83 acc | *not available* | **94.08 / 85.22** | ✅ reproduced by the reconstructed recipe (native-resolution training) |
 | Co-Spy | Co-Spy-Bench-110 | 96.0 AP | 86.65 | 96.60 | ✅ beats official |
@@ -37,11 +37,11 @@
 | AIGCDetect-17 | 92.8 acc | 97.94 (91.9) | 72.25 (61.6) |
 
 ### SPAI
-SPAI now SERVES official weights remapped into the SynthScope class at NATIVE resolution (any-res spectral path). `SynthScope_official` = that served number; the from-scratch retrain (88.8, fixed-448) is superseded.
-| Benchmark | Paper | SynthScope_official (served, native-res) | vendored-official / retrain |
-|---|---:|---:|---:|
-| GenImage-8 | ~91 AUC | **94.22 / AUROC 94.28** | vendored 91.33 · retrain 88.80 |
-| Synthbuster (9 gen) | — | **96.75 / AUROC 96.97** | (was 55.67 via fixed-448) |
+SPAI SERVES official weights remapped into the SynthScope class at NATIVE resolution (any-res spectral path). `SynthScope_official` = that served number; `SynthScope_train` = the official-recipe retrain in SynthScope (35 epochs, job 267192), epoch 8 chosen by validation loss (epoch 17 as a note). It reproduces the official weights within about 1 point; the earlier from-scratch fixed-448 retrain (88.80) is superseded. Protocol: native resolution, GenImage-8 300 per class per generator, Synthbuster 200 with GenImage-nature proxy reals; eval jobs 273444-273446, 273597.
+| Benchmark | Paper | SynthScope_official (served, native-res) | SynthScope_train (epoch 8) | Epoch 17 |
+|---|---:|---:|---:|---:|
+| GenImage-8 | ~91 AUC | **94.22 / AUROC 94.28** (vendored 91.33) | **94.67 / AUROC 94.77** (acc 87.25) | 93.52 / 93.48 |
+| Synthbuster (9 gen) | — | **96.75 / AUROC 96.97** (was 55.67 via fixed-448) | **95.76 / AUROC 96.37** (acc 88.14) | 94.57 / 95.85 |
 
 ### PGC
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
@@ -201,7 +201,7 @@ eval.py); "official code" runs the D3 repository's own frame extraction + reader
 ## Key findings
 1. **Architecture is faithful where we can check it.** Loading official weights into the SynthScope class reproduces the paper for CLIP, CNN, FatFormer, NPR, **PGC**, SAFE, Co-Spy. AIDE/SPAI needed a preprocessing/any-resolution port to make official weights load correctly (now done).
 2. **PGC hard-generator gap is on the authors' side.** The SynthScope class reproduces the released PGC checkpoint exactly; but training from scratch — *with our code and with the authors' `train.py` run verbatim* — does not regenerate the hard-generator numbers (deepfake/san/seeingdark stay ~71–81 AUROC vs ~94). The released checkpoint is not reproducible from the published recipe+data. (`repro/investigate/pgc_gap_investigation.md`)
-3. **Gaps closed by correcting training data/preprocessing:** SPAI (**native-res any-res path now wired into serving: official weights in the SynthScope class → GenImage 94.22 / Synthbuster 96.75 mAP, beating the vendored-official 91.33; the fixed-448 retrain 88.80 is superseded**), Co-Spy (right GenImage SD-v1.4 source, →96.60 beats official), **SAFE (crop-only eval + full 40-epoch retrain → reproduces the paper: ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96)**, **AIDE (native-res 5-view DCT now wired into both serving AND training: served official 96.83, and a from-scratch retrain reproduces at 96.42 ≈ official 97.12, up from the resize-256 92.47 — the DCT must run at native res, ~12 mAP on the same weights)**. The original SAFE "gap" was an eval-transform bug — a `Resize` destroyed the high-frequency signal SAFE keys on; crop-only preprocessing makes both the official weights and our retrain reproduce.
+3. **Gaps closed by correcting training data/preprocessing:** SPAI (**native-res any-res path now wired into serving: official weights in the SynthScope class → GenImage 94.22 / Synthbuster 96.75 mAP, beating the vendored-official 91.33; the fixed-448 retrain 88.80 is superseded by the official-recipe retrain, 94.67 GenImage / 95.76 Synthbuster, within ~1 point of the official weights**), Co-Spy (right GenImage SD-v1.4 source, →96.60 beats official), **SAFE (crop-only eval + full 40-epoch retrain → reproduces the paper: ForenSynths-8 97.79 / UFD-8 98.44 / GenImage-8 99.51 / DiTFake 99.96)**, **AIDE (native-res 5-view DCT now wired into both serving AND training: served official 96.83, and a from-scratch retrain reproduces at 96.42 ≈ official 97.12, up from the resize-256 92.47 — the DCT must run at native res, ~12 mAP on the same weights)**. The original SAFE "gap" was an eval-transform bug — a `Resize` destroyed the high-frequency signal SAFE keys on; crop-only preprocessing makes both the official weights and our retrain reproduce.
 4. **VIB-Net** (weights on a restricted Drive): reproduced by training in SynthScope with the reconstructed recipe at native resolution (94.08 AP / 85.22 acc vs 95.53 / 85.83 over the paper's 15 generators); the resize-256 training pipeline alone costs 11 AP points (82.98 with it); the earlier model also had an fp16 CLIP and an added BatchNorm.
 5. **Faithful reporting** — every number traces to a logged run; SynthScope_train shows the single best from-scratch checkpoint (older/weaker runs discarded, not stacked).
 

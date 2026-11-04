@@ -1,6 +1,9 @@
 name: synthbuster
 root_dir: /hddstore/ssalehi/SynthScope/Synthbuster
 zenodo_record: "10066460"
+# Synthbuster ships no reals: folder of real photos to pair with every generator (first 1000 sorted). null = GenImage's
+# nature reals next to this root, <root>/../GenImage/test/real; without either the loader raises.
+real_pool: null
 test_batch_size: 32
 num_workers: 8
 prefetch: true
