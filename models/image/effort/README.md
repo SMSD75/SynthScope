@@ -48,7 +48,7 @@ The authors released no ProGAN checkpoint (their UFD Tables 2-3 model), only the
 | train transform | `RandomCrop(224)` of the 256 px image, `RandomHorizontalFlip`, CLIP mean/std (no resize; `--data_aug` is never applied) | the same (`resize_short_256` is the identity on 256 px images) |
 | trainable | SVD residual factors of every self-attention projection + `fc` | the same (290 tensors; 197,729 parameters that can move, as the official) |
 | optimizer | AdamW lr 2e-4 (constant: the decay call is commented out), betas (0.9, 0.999), weight decay 0 | the same |
-| batch / precision | 48, fp32, one GPU, seed 0, no gradient clipping | 2 x 24 accumulated (48 does not fit 24 GB), fp32, one GPU, seed 0, no clipping |
+| batch / precision | 48, fp32, one GPU, seed 0, no gradient clipping | 48, no accumulation (measured to fit 24 GB: peak 19.8 GiB, 1.22 s per step, smoke job 275708), fp32, one GPU, seed 0, no clipping |
 | loss / head | BCE on one logit, `fc = Linear(1024, 1)`, weight N(0, 0.02) | exactly the same: the 2-logit head's row 0 is pinned at zero (`head_single_logit`: zeroed, its gradient zeroed by hooks, so AdamW never moves it), the logits are [0, z] and cross-entropy equals `BCEWithLogits(z)`; row 1 weight N(0, 0.02). The checkpoint keeps the 2-logit format (the served loader reads it unchanged) |
 | checkpoints | `model_iters_<N>.pth` at fixed iterations; the test uses 18000 (~1.2 epochs) | `model_step<N>.pth` every 3000 iterations up to 24000 |
 | test preprocessing | tile if < 256 px, `CenterCrop(224)`, CLIP mean/std | `eval_transform_list` of `effort_ufd.yaml` (the same, without the tiling) |

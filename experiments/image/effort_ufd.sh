@@ -9,8 +9,8 @@
 #   loss      the official 1-logit BCE, exactly: row 0 of the 2-logit head is pinned at zero (head_single_logit), so the
 #             cross-entropy on the logits [0, z] equals BCEWithLogits(z); see the loss / head row of the table in
 #             models/image/effort/README.md (Training)
-#   optimizer AdamW lr 2e-4 constant, weight decay 0, betas (0.9, 0.999), batch 48 (2 x 24, accumulated) on ONE GPU, no clipping, seed 0, fp32
-#   budget    24,000 iterations of the effective batch of 48 (two micro-batches of 24: 48 does not fit 24 GB),
+#   optimizer AdamW lr 2e-4 constant, weight decay 0, betas (0.9, 0.999), batch 48 (no accumulation) on ONE GPU, no clipping, seed 0, fp32
+#   budget    24,000 iterations of the batch of 48 (measured to fit a 24 GB card: peak 19.8 GiB, smoke job 275708),
 #             a checkpoint every 3,000 iterations (model_step<N>.pth); the official test uses iteration 18000
 # Evaluate:  python benchmark/bench_eval.py --model effort --ckpt <save_path>/model_step18000.pth ...
 export TRITON_CACHE_DIR=${TRITON_CACHE_DIR:-/nvmestore/ssalehi/.triton}
@@ -28,7 +28,7 @@ SAVE=${SAVE:-/nvmestore/ssalehi/SynthScope/models/effort_ufd}
     model@ModelConfig=image/effort_ufd \
     dataset@DatasetConfig=image/cnndetection \
     DatasetConfig.root_dir=$DATA \
-    DatasetConfig.train_batch_size=24 \
+    DatasetConfig.train_batch_size=48 \
     DatasetConfig.val_batch_size=64 \
     TrainerConfig.save_path=$SAVE \
     "metrics=[real_accuracy,fake_accuracy]" \

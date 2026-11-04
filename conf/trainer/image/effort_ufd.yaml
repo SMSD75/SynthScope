@@ -9,9 +9,9 @@ defaults:
 # seed 0, fp32. The official loop trains `niter` 100 epochs but saves model_iters_<N>.pth at fixed iteration counts
 # (train.py:73) and the benchmark test (script/test.sh) uses model_iters_18000.pth (~1.2 epochs of 15,000 iterations).
 # Here: a budget of 24,000 iterations with a checkpoint every 3,000 (model_step<N>.pth, N = iterations of batch 48).
-# Memory deviation: batch 48 in fp32 needs ~30 GB of activations (ViT-L/14 at 224, backward reaches layer 0), more than a
-# 24 GB A5000, so each batch of 48 is two micro-batches of 24 with gradient accumulation (loss / 2 each). The model has no
-# batch statistics (no BatchNorm; dropout is 0), so this is the same update as one batch of 48 up to float summation order.
+# Batch 48 in fp32 fits a 24 GB card without accumulation: the real-data smoke (job 275708, RTX 3090) measured a peak of
+# 19.8 GiB for one forward + backward of 48 real images (1.22 s), so the official batch of 48 is one micro-batch and
+# grad_accum_steps is 1. (A batch of 24 x 2 accumulated would be the same update, the model has no batch statistics.)
 trainer_type: effort_ufd
 epochs: 1
 lr: 2.0e-4
@@ -33,5 +33,5 @@ step_budget:
   max_steps: 24000         # the official run saves 18000, evaluated in script/test.sh
   save_every: 3000
   log_every: 500           # the official loss_freq
-  grad_accum_steps: 2      # 2 x 24 = 48
+  grad_accum_steps: 1      # one micro-batch of 48 (no accumulation)
   max_grad_norm: 0.0

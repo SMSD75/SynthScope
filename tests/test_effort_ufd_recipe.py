@@ -69,13 +69,13 @@ def test_recipe_numbers() -> None:
     assert TRAINER.lr == 2e-4 and TRAINER.weight_decay == 0.0 and TRAINER.seed == 0
     assert str(TRAINER.warmup.mode).lower() == "off", "a schedule would anneal the official constant lr"
     b = TRAINER.step_budget
-    assert (b.unit, b.max_steps, b.save_every, b.grad_accum_steps, b.max_grad_norm) == ("optimizer_step", 24000, 3000, 2, 0.0)
+    assert (b.unit, b.max_steps, b.save_every, b.grad_accum_steps, b.max_grad_norm) == ("optimizer_step", 24000, 3000, 1, 0.0)
     assert b.max_steps % b.save_every == 0 and 18000 % b.save_every == 0 and "cosine_t_max" not in b
     assert MODEL.head_init_std == 0.02 and MODEL.svd_rank == 1023 and MODEL.model_type == "effort"
     served = OmegaConf.load(CONF / "model" / "image" / "effort.yaml")
     assert list(served.eval_transform_list) == ["effort_cv2_resize_224", "to_dtype", "normalize_clip"]
     assert "head_init_std" not in served and "train_transform_list" not in served
-    print("    lr 2e-4 constant, wd 0, no clipping, seed 0, 24000 iterations (2 x 24 accumulated) / ckpt 3000; effort.yaml unchanged")
+    print("    lr 2e-4 constant, wd 0, no clipping, seed 0, 24000 iterations (batch 48, no accumulation) / ckpt 3000; effort.yaml unchanged")
 
 
 def test_trainable_set_and_single_logit() -> None:
