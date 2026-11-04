@@ -34,4 +34,5 @@ SAVE=${SAVE:-/nvmestore/ssalehi/SynthScope/models/effort_ufd}
     "metrics=[real_accuracy,fake_accuracy]" \
     logger.name=effort_ufd \
     logger.mode=offline \
-    "logger.tags=[SynthScope,Effort,progan20]"
+    "logger.tags=[SynthScope,Effort,progan20]" \
+    "$@"      # extra Hydra overrides, e.g. DatasetConfig.prefetch=false
