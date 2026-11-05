@@ -33,3 +33,4 @@ timm_cosine:
   grad_accum_steps: 8
   save_all: true
   select: accuracy
+  log_every: 100           # optimizer steps between the loss / lr lines
