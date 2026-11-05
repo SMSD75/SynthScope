@@ -21,17 +21,19 @@
    }
   },
   {
-   "name": "UniversalFakeDetect (ProGAN-trained)",
+   "name": "UniversalFakeDetect (ProGAN-trained, 19 subsets)",
    "datasets": [
     "UniversalFakeDetect"
    ],
-   "metric": "AP / acc",
+   "metric": "mAP and mean accuracy at 0.5, mean over the 19 subsets",
    "paper_number": {
-    "note": "Tables 2-3; the ProGAN checkpoint is not released."
+    "map": 99.41,
+    "acc": 95.19,
+    "note": "Paper Tables 2-3 (19 subsets: 11 ForenSynths GAN sets + Guided, LDM x3, Glide x3, DALL-E); accuracy at the fixed threshold 0.5. The authors released no ProGAN checkpoint, only the training code."
    },
-   "our_status": "missing",
+   "our_status": "reproduced",
    "our_number": {
-    "note": "Checkpoint not released."
+    "note": "SynthScope_train: Effort trained in SynthScope with the official UniversalFakeDetect_Benchmark recipe (experiments/image/effort_ufd.sh, ProGAN 20 classes, 24000 iterations, job 276492), iteration 18000 (the official selection): mAP 99.23 / mAcc 94.81 over the 19 subsets (AUROC 99.06); every subset's accuracy is within 1.7 pt and its AP within 1.9 pt of the paper (bench_eval.py --model-config image/effort_ufd; tags effort_ufd_step18000_{gan11,ufd8,ufd19}, job 278422). Later iterations are lower: 21000 99.02 / 92.38, 24000 98.99 / 91.99 (fake recall falls on DeepFakes, SAN, Guided and Glide)."
    }
   },
   {
