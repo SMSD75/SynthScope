@@ -24,10 +24,12 @@ each); the official data pipeline (reconstruction pairs with a per-step tile sch
 
 import hashlib
 import os
+import shutil
 from pathlib import Path
 
 import clip
 import torch.nn.functional as F
+from huggingface_hub import hf_hub_download
 from omegaconf import DictConfig
 
 from .official.model import LTF
@@ -63,12 +65,24 @@ def resolve_backbone(path=None) -> Path:
         cached = Path(os.environ.get("SYNTHSCOPE_CLIP_DIR") or Path.home() / ".cache" / "clip") / "ViT-L-14.pt"
         if cached.is_file() and sha256(cached) == BACKBONE_SHA256:
             return cached
-        from huggingface_hub import hf_hub_download
         path = hf_hub_download(HUB_REPO, BACKBONE_FILENAME, revision=HUB_REVISION)
     path = Path(path).expanduser()
     if sha256(path) != BACKBONE_SHA256:
         raise ValueError(f"{path}: SHA-256 differs from the pinned LTF backbone {BACKBONE_SHA256}")
     return path
+
+
+def fetch_core(dest_dir) -> Path:
+    """Download the released checkpoint (HF ``MuskAI/LTF-v3.3`` ``weights/epoch_20.pth`` at the pinned revision), check
+    its SHA-256 and copy it, unchanged, to ``<dest_dir>/ltf.pth`` (the name the registry loads from $SYNTHSCOPE_CKPT_DIR).
+    The engine does not check the hash at load time, so stage the file with this."""
+    cached = Path(hf_hub_download(HUB_REPO, CORE_FILENAME, revision=HUB_REVISION))
+    if sha256(cached) != CORE_SHA256:
+        raise ValueError(f"{cached}: SHA-256 differs from the pinned LTF checkpoint {CORE_SHA256}")
+    dest = Path(dest_dir).expanduser() / "ltf.pth"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(cached, dest)
+    return dest
 
 
 class SynthScopeLTFModel(LTF):

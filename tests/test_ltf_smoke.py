@@ -16,6 +16,8 @@ from __future__ import annotations
 
 import os
 import sys
+import tempfile
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -26,6 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "interface"))
 
 from config_utils import compose_config                       # noqa: E402
+import models.image.ltf.ltf as ltf_module                     # noqa: E402
 from models.image.ltf.ltf import CORE_SHA256, SynthScopeLTFModel, sha256   # noqa: E402
 from models.image.ltf.preprocess import LTFViews              # noqa: E402
 from transformations import CLIP_MEAN, CLIP_STD               # noqa: E402
@@ -63,6 +66,39 @@ def test_tiling() -> None:
     assert torch.allclose(x[1, :, :, 200:], black.expand(3, 224, 24))
     assert not torch.allclose(x[0, :, 150:, :], black.expand(3, 74, 224))   # the global view is resized, not padded
     print("    starts(500) = [0, 224, 276]; view counts and padding as the official prepare_image")
+
+
+def test_fetch_core() -> None:
+    print("[A2] fetch_core: copies the checkpoint as ltf.pth only if the pinned SHA-256 matches ...")
+    real_download = ltf_module.hf_hub_download
+    with tempfile.TemporaryDirectory() as tmp:
+        bad = Path(tmp) / "bad.pth"
+        bad.write_bytes(b"not the checkpoint")
+        calls = []
+
+        def fake_download(repo, filename, revision=None):
+            calls.append((repo, filename, revision))
+            return str(bad)
+
+        ltf_module.hf_hub_download = fake_download
+        try:
+            try:
+                ltf_module.fetch_core(Path(tmp) / "out")
+                raise AssertionError("a file with another SHA-256 was accepted")
+            except ValueError:
+                pass
+            assert calls == [(ltf_module.HUB_REPO, ltf_module.CORE_FILENAME, ltf_module.HUB_REVISION)], calls
+            assert not (Path(tmp) / "out" / "ltf.pth").exists()
+            ckpt = backend_config.CHECKPOINTS_DIR / "ltf.pth"
+            if ckpt.is_file() and sha256(ckpt) == CORE_SHA256:       # the real file: accepted and copied byte for byte
+                ltf_module.hf_hub_download = lambda *a, **k: str(ckpt)
+                dest = ltf_module.fetch_core(Path(tmp) / "out")
+                assert dest.name == "ltf.pth" and sha256(dest) == CORE_SHA256
+                print("    wrong bytes refused; the pinned file copied as ltf.pth")
+            else:
+                print("    wrong bytes refused (no pinned ltf.pth present for the positive case)")
+        finally:
+            ltf_module.hf_hub_download = real_download
 
 
 def test_keys_and_frozen(model) -> None:
@@ -110,6 +146,7 @@ def test_forward_and_loss(model) -> None:
 
 if __name__ == "__main__":
     test_tiling()
+    test_fetch_core()
     m = build_model()
     test_keys_and_frozen(m)
     test_forward_and_loss(m)
