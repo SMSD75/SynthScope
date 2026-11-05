@@ -1,6 +1,7 @@
 from contextlib import nullcontext
 
 import torch
+from torch.nn.parallel import DistributedDataParallel
 from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
 from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
 from models.image.dino_detection.dino_detection import SynthScopeDINOModel, SynthScopeDINOv3Model
@@ -146,8 +147,36 @@ class SynthScopeModelTrainer:
         return [{"params": [p for n, p in named if not no_decay(n, p)]},
                 {"params": [p for n, p in named if no_decay(n, p)], "weight_decay": 0.0}]
 
+    def _compute_loss(self, batch):
+        """``model.compute_loss(batch)``. Under multi-GPU DDP the prepared model is a ``DistributedDataParallel``, which has
+        no ``compute_loss`` and whose gradient reducer is armed only by its own ``forward``: the loss must be computed
+        through the wrapper, so for the duration of the call the inner module's ``forward`` is a dispatcher that runs
+        ``compute_loss`` on the wrapper's call (DDP runs ``module(*inputs)``) and the real ``forward`` for the calls
+        ``compute_loss`` itself makes. Single-process and DeepSpeed runs (the engine forwards unknown attributes to the module)
+        keep the plain call."""
+        if not isinstance(self.model, DistributedDataParallel):
+            return self.model.compute_loss(batch)
+        inner = self.model.module
+        previous = inner.__dict__.get("forward")
+        original_forward, armed = inner.forward, [True]
+
+        def dispatch(*args, **kwargs):
+            if armed[0]:                       # DDP's call: run the loss ...
+                armed[0] = False
+                return inner.compute_loss(*args, **kwargs)
+            return original_forward(*args, **kwargs)   # ... and compute_loss's own self(...) / self.forward(...) calls
+
+        inner.forward = dispatch
+        try:
+            return self.model(batch)
+        finally:
+            if previous is None:
+                del inner.forward
+            else:
+                inner.forward = previous
+
     def train_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
@@ -158,7 +187,7 @@ class SynthScopeModelTrainer:
         return loss
 
     def val_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
@@ -169,7 +198,7 @@ class SynthScopeModelTrainer:
         return loss
     
     def test_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
