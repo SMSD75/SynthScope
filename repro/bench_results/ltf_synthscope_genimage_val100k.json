@@ -71,5 +71,6 @@
   },
   "run_with": "benchmark/bench_eval.py --model ltf",
   "slurm_jobs": "277066,277011(sdv1.4, identical 12,000 images),277068,277069,277070,277071,277072,277073",
-  "date": "2026-11-05T11:41:39"
+  "date": "2026-11-05T11:41:39",
+  "note": "The sdv1.4 row was run on GenImage_full/test/sdv1.4 (job 277011), which is identical to the val split GenImage_val_full/test/sdv1.4: 6000 + 6000 file names and sizes identical, and a 300-file byte sample per class equal (CPU diff job 277197)."
 }
