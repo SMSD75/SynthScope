@@ -104,7 +104,9 @@ of batch 48 on the 720k-image ProGAN set, job 276492, checkpoints every 3000 ite
 
 | iteration | mAP | mAcc (0.5) | AUROC |
 |---:|---:|---:|---:|
+| 3000 | 98.07 | 86.51 | 97.71 |
 | 6000 | 98.44 | 90.43 | 98.18 |
+| 9000 | 98.89 | 91.2 | 98.67 |
 | 12000 | 99.23 | 93.43 | 99.07 |
 | **18000** | **99.23** | **94.81** | 99.06 |
 | 21000 | 99.02 | 92.38 | 98.79 |
@@ -140,7 +142,7 @@ moves away from 0.5 while the ranking stays good. Per subset at iteration 18000 
 |**mean**| **99.23 / 99.41** | **94.81 / 95.19** | | | 91.99 |
 
 Results: `repro/bench_results/effort_ufd_<iteration>_{gan11,ufd8,ufd19}.json` (tags `effort_ufd_step<N>_*`, `effort_ufd_final_*`), logs
-`repro/logs/effuevl_<job>.out`. Eval jobs 278422 (6000, 18000, GenImage-8), 278423 (12000, 21000), 278424 (24000, final).
+`repro/logs/effuevl_<job>.out`. Eval jobs 278422 (6000, 18000, GenImage-8), 278423 (12000, 21000), 278424 (24000, final), 278550 (3000), 278551 (9000).
 The checkpoints (2.0 GB each) stay on the cluster's shared filesystem and are **not published**: Effort is CC BY-NC 4.0.
 
 **GenImage-8 for reference (not the paper's setting).** The same iteration-18000 checkpoint on the 8 GenImage subsets (`effort_ufd_step18000_genimage8`, job 278422):
