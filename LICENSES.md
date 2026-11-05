@@ -32,6 +32,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `pgc` | PGC | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a |
 | `cure` | CuRe (arXiv 2609.14316) | manic-cui/CuRe | Apache-2.0 (repo `LICENSE`) | **official** 25 MB adapter (`cure_adapter.pt`, loads as `cure.pth`) | Apache-2.0 (shipped in the repo; verify before redistributing) |
 | `d3qe` | D3QE (ICCV'25) | Zhangyr2022/D3QE | MIT (repo `LICENSE`); `official/` vendors its network code — see the file headers | **official** checkpoint (`model_epoch_best.pth` from HF `Yanran21/D3QE`, loads as `d3qe.pth`) | MIT (HF model card license tag) |
+| `ltf` | LTF (arXiv 2611.04529) | HuiGuanLab/LTF | MIT (repo `LICENSE`, `NOTICE`); `official/` vendors `ltf/model.py`, `ltf/token_ops.py`, `ltf/mil/*.py` and `ltf/data/images.py` with the license in `official/LICENSE` — see the file headers | **official** GenImage checkpoint (`weights/epoch_20.pth` from HF `MuskAI/LTF-v3.3` @ `a2a2e29c`, loads as `ltf.pth`) | no license tag on the HF model card (checked 2026-11-05); the code repo is MIT — confirm the weights terms before redistributing |
 | `dda` | DDA (NeurIPS'25) | roy-ch/Dual-Data-Alignment | Apache-2.0 (repo `LICENSE`); `official_arch.py` vendors its `lora.py` — see its header | **official** checkpoint (`DDA_ckpt.pth` from HF `Junwei-Xi/Dual-Data-Alignment`, loads as `dda.pth`) | Apache-2.0 (HF model card license tag) |
 | `omniaid`, `omniaid_v1`, `omniaid_genimage` | OmniAID (arXiv 2511.08423) | yunncheng/OmniAID | MIT (README badge; no LICENSE file in the repo); `official_arch.py` vendors `models/OmniAID.py` — see its header | **official** checkpoints (`ckpt/checkpoint_omniaid_{v2,v1,genimage_sd14}.pth` from HF `Yunncheng/OmniAID`, loaded as `<key>.pth`) | MIT (HF model card license tag) |
 | `bfree` | B-Free (CVPR'25) | grip-unina/B-Free | GRIP-UNINA license: informational and **nonprofit use only** (notices kept); `official_arch.py` vendors `code/networks/wrapper5crops.py` — see its header | **official** checkpoint (`BFREE_dino2reg4/model_epoch_best.pth` from grip.unina.it, loaded as `bfree.pth`) | GRIP-UNINA license (nonprofit use only) |
@@ -49,7 +50,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 
 | Backbone | Used by | License |
 | --- | --- | --- |
-| OpenAI CLIP (ViT-L/14) | `clip`, `fat_former`, `d3`, `d3qe` | MIT (verify) |
+| OpenAI CLIP (ViT-L/14) | `clip`, `fat_former`, `d3`, `d3qe`, `ltf` (the pinned `backbones/ViT-L-14.pt` of HF `MuskAI/LTF-v3.3`, the same file) | MIT (verify) |
 | OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
