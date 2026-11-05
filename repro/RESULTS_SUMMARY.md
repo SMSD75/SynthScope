@@ -192,11 +192,12 @@ Fidelity: SynthScope's class == the official `EffortDetector` for both releases 
 | 6000 | 98.44 | 90.43 | 98.18 | |
 | 9000 | 98.89 | 91.20 | 98.67 | |
 | 12000 | 99.23 | 93.43 | 99.07 | |
+| 15000 | 99.22 | 94.57 | 99.07 | |
 | **18000** | **99.23** | **94.81** | 99.06 | **the official selection (`script/test.sh`)**; paper 99.41 / 95.19 |
 | 21000 | 99.02 | 92.38 | 98.79 | |
 | 24000 (= final) | 98.99 | 91.99 | 98.76 | fake recall falls on DeepFakes, SAN, Guided, Glide |
 
-At iteration 18000 every subset's accuracy is within 1.7 pt (AP within 1.9 pt) of the paper: Guided 68.85 / 69.15, SAN 81.05 / 81.50, DeepFakes 86.45 / 87.60, SITD 90.83 / 92.50, StyleGAN 96.23 / 95.05; the rest are above 96. The official `validate.py` samples 1000 images per class (100 when a set has fewer, i.e. SAN and SITD); we score every image. Reference: this ProGAN-trained checkpoint on GenImage-8 gives 78.81 acc / 95.27 mAP (a different training set from the served SD v1.4 model's 89.83 / 99.37, so not a recipe check). Jobs 278422-278424, 278550-278551, results `repro/bench_results/effort_ufd_*.json`, details in `models/image/effort/README.md`. The checkpoints stay on the shared filesystem (Effort is CC BY-NC 4.0).
+At iteration 18000 every subset's accuracy is within 1.7 pt (AP within 1.9 pt) of the paper: Guided 68.85 / 69.15, SAN 81.05 / 81.50, DeepFakes 86.45 / 87.60, SITD 90.83 / 92.50, StyleGAN 96.23 / 95.05; the rest are above 96. The official `validate.py` samples 1000 images per class (100 when a set has fewer, i.e. SAN and SITD); we score every image. Reference: this ProGAN-trained checkpoint on GenImage-8 gives 78.81 acc / 95.27 mAP (a different training set from the served SD v1.4 model's 89.83 / 99.37, so not a recipe check). Jobs 278422-278424, 278550-278551, 278582, results `repro/bench_results/effort_ufd_*.json`, details in `models/image/effort/README.md`. The checkpoints stay on the shared filesystem (Effort is CC BY-NC 4.0).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
