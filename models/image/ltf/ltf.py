@@ -106,6 +106,11 @@ class SynthScopeLTFModel(LTF):
 
     def compute_loss(self, batch):
         images, labels, _folder_ids = batch
+        if images.dim() != 5:
+            raise NotImplementedError(
+                f"ltf expects [B, views, 3, 224, 224] tile bags and got {tuple(images.shape)}: training LTF is not ported "
+                "(the official crop / reconstruction data pipeline and tile schedule are missing); use the official "
+                "repository to train.")
         out = super().forward(images, labels=labels)
         loss = sum(F.cross_entropy(out["logits_" + b], labels) * self.loss_weights[b] for b in BRANCHES)
         return {"loss": loss, "outputs": out["logits_fusion"]}

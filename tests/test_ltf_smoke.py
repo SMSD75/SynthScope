@@ -9,11 +9,14 @@ Builds the real model, so it needs the pinned CLIP ViT-L/14 (``$SYNTHSCOPE_LTF_B
   strict official-weights load accepts,
 * only the frozen CLIP falls under ``pretrained_prefixes`` and it is frozen,
 * ``forward`` -> [B, 2] finite logits on a synthetic image in eval mode; ``compute_loss`` + backward reach the MIL head
-  and not CLIP.
+  and not CLIP; ``compute_loss`` refuses non-view (4-D) input with a clear error (training is not ported),
+* the web UI "model input" preview un-normalizes with the CLIP mean / std and wraps many views into a grid.
 """
 
 from __future__ import annotations
 
+import base64
+import io
 import os
 import sys
 import tempfile
@@ -33,7 +36,7 @@ from models.image.ltf.ltf import CORE_SHA256, SynthScopeLTFModel, sha256   # noq
 from models.image.ltf.preprocess import LTFViews              # noqa: E402
 from transformations import CLIP_MEAN, CLIP_STD               # noqa: E402
 from backend import config as backend_config                  # noqa: E402
-from backend.engine import _load_checkpoint                   # noqa: E402
+from backend.engine import Engine, _load_checkpoint                  # noqa: E402
 from backend.registry import get_spec, remap_ltf              # noqa: E402
 
 RELEASED_CORE = 37        # retained MIL / fusion tensors of the released checkpoint
@@ -142,6 +145,26 @@ def test_forward_and_loss(model) -> None:
     assert model.visual.conv1.weight.grad is None
     model.zero_grad(set_to_none=True)
     model.eval()
+    try:
+        model.compute_loss((x[:, 0], torch.tensor([0, 1]), torch.tensor([0, 0])))     # [B, 3, 224, 224]: no views
+    except NotImplementedError as e:
+        assert "not ported" in str(e), e
+    else:
+        raise AssertionError("compute_loss accepted 4-D input")
+
+
+def test_preview() -> None:
+    print("[D] web UI model-input preview ...")
+    spec, tf = get_spec("ltf"), get_spec("ltf").transform
+    gray = Image.new("RGB", (300, 200), (128, 128, 128))
+    png = Engine._model_input_data_url(spec, tf(gray).unsqueeze(0))
+    img = Image.open(io.BytesIO(base64.b64decode(png.split(",", 1)[1])))
+    assert img.size == (3 * 224, 224), img.size                                    # <= 5 views: one row
+    assert abs(np.asarray(img)[:, :224].mean() - 128) < 1.5, "global view is not shown with its real colours"
+    big = Engine._model_input_data_url(spec, tf(noise_pil(1300, 900)).unsqueeze(0))   # 31 views -> 6 x 6 grid
+    img = Image.open(io.BytesIO(base64.b64decode(big.split(",", 1)[1])))
+    assert max(img.size) <= 1280 and img.width == img.height, img.size
+    print(f"    3 views {(3 * 224, 224)}; 31 views wrapped to {img.size}")
 
 
 if __name__ == "__main__":
@@ -150,4 +173,5 @@ if __name__ == "__main__":
     m = build_model()
     test_keys_and_frozen(m)
     test_forward_and_loss(m)
+    test_preview()
     print("LTF smoke test passed")
