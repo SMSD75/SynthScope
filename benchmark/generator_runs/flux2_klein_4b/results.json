@@ -24,12 +24,12 @@
   {
     "detector": "cure",
     "name": "CuRe",
-    "auroc": 98.6,
-    "ap": 98.91,
-    "acc": 92.5,
-    "fake_detect_rate": 85.0,
+    "auroc": 98.62,
+    "ap": 98.92,
+    "acc": 93.0,
+    "fake_detect_rate": 86.0,
     "real_false_pos": 0.0,
-    "mean_p_fake_on_fakes": 0.8466,
+    "mean_p_fake_on_fakes": 0.848,
     "mean_p_fake_on_reals": 0.0129
   },
   {
@@ -46,13 +46,46 @@
   {
     "detector": "vib_net",
     "name": "VIB-Net",
-    "auroc": 97.05,
-    "ap": 97.16,
+    "auroc": 97.16,
+    "ap": 97.27,
     "acc": 88.0,
-    "fake_detect_rate": 82.0,
-    "real_false_pos": 6.0,
-    "mean_p_fake_on_fakes": 0.7613,
-    "mean_p_fake_on_reals": 0.0771
+    "fake_detect_rate": 81.0,
+    "real_false_pos": 5.0,
+    "mean_p_fake_on_fakes": 0.7648,
+    "mean_p_fake_on_reals": 0.0751
+  },
+  {
+    "detector": "omniaid_genimage",
+    "name": "OmniAID (GenImage)",
+    "auroc": 96.8,
+    "ap": 95.77,
+    "acc": 89.5,
+    "fake_detect_rate": 86.0,
+    "real_false_pos": 7.0,
+    "mean_p_fake_on_fakes": 0.6969,
+    "mean_p_fake_on_reals": 0.1224
+  },
+  {
+    "detector": "omniaid_v1",
+    "name": "OmniAID (v1)",
+    "auroc": 96.26,
+    "ap": 95.36,
+    "acc": 93.5,
+    "fake_detect_rate": 97.0,
+    "real_false_pos": 10.0,
+    "mean_p_fake_on_fakes": 0.8691,
+    "mean_p_fake_on_reals": 0.1514
+  },
+  {
+    "detector": "effort",
+    "name": "Effort",
+    "auroc": 96.08,
+    "ap": 95.31,
+    "acc": 85.5,
+    "fake_detect_rate": 81.0,
+    "real_false_pos": 10.0,
+    "mean_p_fake_on_fakes": 0.7661,
+    "mean_p_fake_on_reals": 0.0787
   },
   {
     "detector": "aide",
@@ -121,6 +154,28 @@
     "mean_p_fake_on_reals": 0.0498
   },
   {
+    "detector": "moejepa",
+    "name": "MoE-JEPA",
+    "auroc": 69.47,
+    "ap": 63.79,
+    "acc": 62.5,
+    "fake_detect_rate": 47.0,
+    "real_false_pos": 22.0,
+    "mean_p_fake_on_fakes": 0.465,
+    "mean_p_fake_on_reals": 0.2284
+  },
+  {
+    "detector": "effort_chameleon",
+    "name": "Effort (Chameleon)",
+    "auroc": 59.57,
+    "ap": 56.81,
+    "acc": 53.0,
+    "fake_detect_rate": 26.0,
+    "real_false_pos": 20.0,
+    "mean_p_fake_on_fakes": 0.3948,
+    "mean_p_fake_on_reals": 0.3395
+  },
+  {
     "detector": "dinov3",
     "name": "DINOv3 probe",
     "auroc": 51.06,
@@ -167,8 +222,8 @@
   {
     "detector": "cnn",
     "name": "CNNDetection (ResNet-50)",
-    "auroc": 40.84,
-    "ap": 45.42,
+    "auroc": 40.83,
+    "ap": 45.4,
     "acc": 50.5,
     "fake_detect_rate": 2.0,
     "real_false_pos": 1.0,
