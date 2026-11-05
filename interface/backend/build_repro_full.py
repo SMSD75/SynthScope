@@ -62,7 +62,7 @@ VAL = {
     ("moejepa", "BFree-Online"):         {"official": {"map": 91.79, "acc": 57.99, "auroc": 85.22}},
     ("moejepa", "EvalGEN"):              {"official": {"map": 92.77, "acc": 70.85, "auroc": 86.43}},
     ("moejepa", "RealChain"):            {"official": {"map": 71.74, "acc": 66.39, "auroc": 73.22}},
-    ("effort", "UniversalFakeDetect"):  {"synthscope": {"map": 99.23, "acc": 94.81, "auroc": 99.06}},
+    ("effort", "UniversalFakeDetect"):   {"synthscope": {"map": 99.23, "acc": 94.81, "auroc": 99.06}},
     ("effort", "GenImage"):              {"official": {"map": 99.37, "acc": 89.83, "auroc": 99.48}},
     ("effort", "SynthWildX"):            {"official": {"map": 61.2, "acc": 56.69, "auroc": 63.57}},
     ("effort", "WildRF"):                {"official": {"map": 81.11, "acc": 71.36, "auroc": 78.64}},

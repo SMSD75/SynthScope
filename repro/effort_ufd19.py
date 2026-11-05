@@ -24,7 +24,10 @@ def combine(tag: str) -> dict:
     gan, dif = (json.loads((RESULTS / f"{tag}_{part}.json").read_text()) for part in ("gan11", "ufd8"))
     pool = {**gan["per_generator"], **dif["per_generator"]}
     per = {key: pool[folder] for key, folder in SUBSETS.items()}
-    mean = lambda field: round(sum(v[field] for v in per.values()) / len(per), 2)  # noqa: E731
+
+    def mean(field: str) -> float:
+        return round(sum(v[field] for v in per.values()) / len(per), 2)
+
     return {"tag": f"{tag}_ufd19", "model": gan["model"], "ckpt": gan["ckpt"], "model_config": gan.get("model_config"),
             "benchmark": "ufd19", "data_root": f"{gan['data_root']} + {dif['data_root']}", "n_generators": len(per),
             "means": {"acc": mean("acc"), "map": mean("ap"), "mauroc": mean("auroc")}, "per_generator": per,
