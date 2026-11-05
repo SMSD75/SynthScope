@@ -24,7 +24,6 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from omegaconf import OmegaConf
 from PIL import Image
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

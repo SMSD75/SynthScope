@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import torch
 from PIL import Image
+from torchvision import transforms
 
 from models.image.ltf.official.images import crop_image_to_tiles, get_start_positions, transform_image
 
@@ -28,6 +29,7 @@ class LTFViews:
     def __init__(self, tile_size: int = TILE_SIZE):
         self.tile_size = tile_size
         self.transform = transform_image(tile_size)
+        self.normalize = next(op for op in self.transform.transforms if isinstance(op, transforms.Normalize))   # CLIP mean / std
 
     def __call__(self, image: Image.Image) -> torch.Tensor:
         image = image.convert("RGB")

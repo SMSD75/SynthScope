@@ -230,9 +230,15 @@ class AIGITransformations:
         """The ``resize_*`` / ``center_crop_*`` steps, in order (they take PIL images too: the web overlay's geometry)."""
         return [t for name, t in zip(self.transform_list, self.transforms) if _SIZED.fullmatch(name)]
 
-    def normalize_step(self) -> v2.Normalize | None:
-        """The ``Normalize`` step, or None for pipelines that feed [0, 1] pixels (or normalize inside a custom step)."""
-        return next((t for t in self.transforms if isinstance(t, v2.Normalize)), None)
+    def normalize_step(self):
+        """The ``Normalize`` step (its ``mean`` / ``std``; for ``ltf_views`` the one inside the step), or None for
+        pipelines that feed [0, 1] pixels (or normalize inside another custom step)."""
+        for t in self.transforms:
+            if isinstance(t, v2.Normalize):
+                return t
+            if isinstance(t, LTFViews):
+                return t.normalize
+        return None
 
     def without_resize(self) -> "AIGITransformations":
         """The same pipeline without its ``resize_*`` / ``center_crop_*`` steps, to score images at native resolution.

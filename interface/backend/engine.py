@@ -17,8 +17,6 @@ import torch
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
-from transformations import CLIP_MEAN, CLIP_STD
-
 from . import config
 from .registry import ModelSpec, get_spec, input_note
 from . import media
@@ -358,13 +356,7 @@ class Engine:
         t = x[0].detach().float().cpu()
         norm = spec.transform.normalize_step()
         if norm is not None:
-            mean, std = norm.mean, norm.std
-        elif spec.key == "ltf":                        # LTF normalizes inside its views step: CLIP mean / std
-            mean, std = CLIP_MEAN, CLIP_STD
-        else:
-            mean = std = None
-        if mean is not None:
-            t = t * torch.tensor(std)[:, None, None] + torch.tensor(mean)[:, None, None]
+            t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
             t = t * 0.5 + 0.5
         if t.dim() == 4:
