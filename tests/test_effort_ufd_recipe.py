@@ -3,7 +3,8 @@ official UniversalFakeDetect_Benchmark code (data/datasets.py, models/trainer.py
 
 * the train list on a 256x256 uint8 image is a 224 crop of the CLIP-normalised image, possibly mirrored, as the official
   Compose [translate_duplicate(256), RandomCrop(224), RandomHorizontalFlip, ToTensor, Normalize(CLIP)] (all crop offsets and
-  both flips occur, no other pixel change, up to float rounding); the eval list is the official validate.py CenterCrop(224) pipeline exactly,
+  both flips occur, no other pixel change, up to float rounding); the eval list is the official validate.py pipeline exactly (translate_duplicate(256) -> CenterCrop(224) -> CLIP norm, also on
+  images smaller than 256 px, which are tiled, not zero-padded),
 * the trainer config holds the official numbers (lr 2e-4 constant, wd 0, no clipping, seed 0, step budget 24000 / 3000),
 * `effort.yaml` (the served model) is untouched: squash eval list, no head init,
 * the model builds, the trainable set is the SVD residual factors + the head, nothing else (needs the CLIP weights in the
@@ -13,6 +14,7 @@ official UniversalFakeDetect_Benchmark code (data/datasets.py, models/trainer.py
 """
 from __future__ import annotations
 
+import math
 import os
 import sys
 from pathlib import Path
@@ -26,6 +28,20 @@ import torch.nn as nn
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def translate_duplicate(img, cropSize):
+    """UniversalFakeDetect_Benchmark validate.py / data/datasets.py, verbatim (independent of transformations.py)."""
+    if min(img.size) < cropSize:
+        width, height = img.size
+        new_width = width * math.ceil(cropSize / width)
+        new_height = height * math.ceil(cropSize / height)
+        new_img = Image.new('RGB', (new_width, new_height))
+        for i in range(0, new_width, width):
+            for j in range(0, new_height, height):
+                new_img.paste(img, (i, j))
+        return new_img
+    return img
 sys.path[:0] = [str(ROOT)]
 
 from transformations import AIGITransformations, CLIP_MEAN, CLIP_STD   # noqa: E402
@@ -59,9 +75,21 @@ def test_train_pipeline() -> None:
     assert len(offsets) > 50, len(offsets)
     pil = Image.fromarray(arr, "RGB")
     ev = AIGITransformations(list(MODEL.eval_transform_list))(pil)
-    ref = T.Compose([T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)])(pil)
-    assert torch.allclose(ev, ref, atol=1e-6, rtol=0), "eval list != official CenterCrop(224) pipeline"
-    print(f"    400 samples: {len(offsets)} distinct crop offsets, both flips; eval == CenterCrop(224) (atol 1e-6)")
+    ref = T.Compose([T.Lambda(lambda im: translate_duplicate(im, 256)), T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)])
+    assert torch.allclose(ev, ref(pil), atol=1e-6, rtol=0), "eval list != official translate_duplicate + CenterCrop(224) pipeline"
+    assert list(MODEL.eval_transform_list)[:2] == ["translate_duplicate_256", "center_crop_224"]
+    # Images shorter than 256 px (ImageNet reals of Guided, SAN, GenImage BigGAN 128 px) are tiled by the official reader, not zero-padded.
+    ev_tf = AIGITransformations(list(MODEL.eval_transform_list))
+    rng = np.random.default_rng(1)
+    for w, h in [(128, 128), (200, 300), (300, 200), (230, 400), (255, 255), (100, 500)]:
+        small = Image.fromarray(rng.integers(0, 256, (h, w, 3), dtype=np.uint8), "RGB")
+        got, want = ev_tf(small), ref(small)
+        assert torch.allclose(got, want, atol=1e-6, rtol=0), f"{w}x{h}: eval != official tiled pipeline"
+        padded = T.Compose([T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)])(small)
+        if min(w, h) < 224:
+            assert not torch.allclose(got, padded, atol=1e-6, rtol=0), f"{w}x{h}: tiling changes nothing, the test is vacuous"
+    print(f"    400 samples: {len(offsets)} distinct crop offsets, both flips; eval == translate_duplicate(256) + CenterCrop(224) "
+          "(atol 1e-6, also on images smaller than 256 px)")
 
 
 def test_recipe_numbers() -> None:

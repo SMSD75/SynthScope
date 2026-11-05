@@ -255,6 +255,8 @@ def main(argv=None) -> int:
     ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
+    if args.model_config and not args.ckpt:
+        ap.error("--model-config needs --ckpt")
 
     if args.dataset:
         overrides = []
@@ -279,10 +281,10 @@ def main(argv=None) -> int:
     if args.ckpt:
         load_kw["checkpoint"] = args.ckpt
     if args.model_config:
-        if not args.ckpt:
-            ap.error("--model-config needs --ckpt")
         spec = get_spec(args.model)
-        spec = dataclasses.replace(spec, overrides=[f"model@ModelConfig={args.model_config}"],
+        # only the model config changes; the spec's other overrides (e.g. backbone options) stay
+        overrides = [o for o in spec.overrides if not o.startswith("model@ModelConfig=")]
+        spec = dataclasses.replace(spec, overrides=overrides + [f"model@ModelConfig={args.model_config}"],
                                    transform=model_transform(args.model_config))
         det = Detector(spec, device=args.device, **load_kw)
     else:

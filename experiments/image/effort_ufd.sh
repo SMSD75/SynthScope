@@ -12,7 +12,7 @@
 #   optimizer AdamW lr 2e-4 constant, weight decay 0, betas (0.9, 0.999), batch 48 (no accumulation) on ONE GPU, no clipping, seed 0, fp32
 #   budget    24,000 iterations of the batch of 48 (measured to fit a 24 GB card: peak 19.8 GiB, smoke job 275708),
 #             a checkpoint every 3,000 iterations (model_step<N>.pth); the official test uses iteration 18000
-# Evaluate:  python benchmark/bench_eval.py --model effort --ckpt <save_path>/model_step18000.pth ...
+# Evaluate:  python benchmark/bench_eval.py --model effort --model-config image/effort_ufd --ckpt <save_path>/model_step18000.pth ...
 export TRITON_CACHE_DIR=${TRITON_CACHE_DIR:-/nvmestore/ssalehi/.triton}
 export HF_HOME=${HF_HOME:-/nvmestore/ssalehi/.cache/huggingface}
 export TORCH_HOME=${TORCH_HOME:-/nvmestore/ssalehi/.cache/torch}
