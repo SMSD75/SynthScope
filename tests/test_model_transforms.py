@@ -57,8 +57,9 @@ EXPECTED_SHAPES = {
     "adapted_dino": (3, 224, 224), "aide": (5, 3, 256, 256), "bfree": (3, 200, 300), "clip": (3, 224, 224),
     "cnn": (3, 224, 224), "co_spy": (3, 384, 384), "cure": (3, 336, 336), "d3qe": (3, 256, 256),
     "dda": (3, 336, 336), "dinov2": (3, 224, 224), "dinov3": (3, 256, 256), "effort": (3, 224, 224),
-    "fat_former": (3, 224, 224), "ltf": (3, 3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
-    "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224), "safe": (3, 256, 256),
+    "fat_former": (3, 224, 224), "ltf": (3, 3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256),
+    "omniaid": (3, 336, 336), "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224),
+    "safe": (3, 256, 256),
     "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224),
 }
 # The official eval code as torchvision v1 pipelines (PIL in).
