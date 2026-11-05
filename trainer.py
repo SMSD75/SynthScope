@@ -30,6 +30,7 @@ from accelerate import Accelerator
 from transformers import get_scheduler
 from timm.scheduler.cosine_lr import CosineLRScheduler
 import json
+from contextlib import nullcontext
 import os
 from logger import build_logger
 from tqdm import tqdm
@@ -388,8 +389,12 @@ class SynthScopeModelTrainer:
         self.optimizer.zero_grad()
         while step < max_steps:
             for batch in tqdm(self.train_loader, desc="Training"):
-                loss = self.train_step(batch)
-                self.accelerator.backward(loss / accum)
+                # the micro-batches that do not step skip the DDP gradient all-reduce (a null context off DDP); the last
+                # micro-batch of the budget syncs, so a final partial accumulation is reduced too
+                at_step = (step + 1) % accum == 0 or step + 1 >= max_steps
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    self.accelerator.backward(loss / accum)
                 running += loss.detach().item()
                 step += 1
                 if step % accum == 0:
@@ -462,10 +467,13 @@ class SynthScopeModelTrainer:
             self.optimizer.zero_grad()
             total, k = 0.0, 0
             for idx, batch in enumerate(tqdm(self.train_loader, desc=f"Training epoch {epoch}")):
-                loss = self.train_step(batch)
-                self.accelerator.backward(loss / accum)
+                at_step = (idx + 1) % accum == 0
+                # the micro-batches that do not step skip the DDP gradient all-reduce (a null context off DDP)
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    self.accelerator.backward(loss / accum)
                 total += loss.detach().item()
-                if (idx + 1) % accum == 0:
+                if at_step:
                     self.optimizer.step()
                     self.optimizer.zero_grad()
                     scheduler.step_update(epoch * n_iter + k)
