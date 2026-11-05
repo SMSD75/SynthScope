@@ -8,7 +8,15 @@ Official parts:   <official_out>/full_<subset>/summary.json (ltf_ref/evaluate.py
     python repro/ltf_genimage8_merge.py --official-out SynthScope_shared/ltf_off_out --suffix genimage8 \
         --parts-glob 'SynthScope_shared/ltf_parts/ltf_part_*.json' --jobs-sd 277009,277011,... --jobs-off 277010,...
 
-MASTER_RESULTS.jsonl gets one line per tag; a tag that is already there is skipped (the result JSON is still rewritten).
+Full val (100,000 images; SynthScope only, so no --official-out):
+
+    python repro/ltf_genimage8_merge.py --suffix genimage_val100k \
+        --parts-glob 'SynthScope_shared/ltf_fullparts/ltf_fullpart_*.json' \
+        --data-root /ssdstore/ssalehi/SynthScope/GenImage_val_full/test --jobs-sd 277066,277011,277068,...,277073 \
+        --note '...'
+
+MASTER_RESULTS.jsonl gets one line per tag; a tag that is already there is skipped (the result JSON is still rewritten),
+with a warning if its means differ from the existing line.
 """
 import argparse
 import datetime
@@ -31,10 +39,12 @@ def means_of(per_gen):
             "mauroc": mean([m["auroc"] for m in per_gen.values()])}
 
 
-def master_tags():
+def master_means():
+    """tag -> means of the lines already in MASTER_RESULTS.jsonl."""
     if not MASTER.is_file():
-        return set()
-    return {json.loads(line)["tag"] for line in MASTER.read_text().splitlines() if line.strip()}
+        return {}
+    lines = (json.loads(line) for line in MASTER.read_text().splitlines() if line.strip())
+    return {line["tag"]: line.get("means") for line in lines}
 
 
 def main():
@@ -71,6 +81,8 @@ def main():
                      args.jobs_off),
     }
     for kind, (per_gen, ckpt, how, jobs) in outputs.items():
+        if kind == "official" and not args.official_out:
+            continue                                       # omitted on purpose (no official run for this set)
         if set(per_gen) != set(SUBSETS):
             print(f"{kind}: missing {sorted(set(SUBSETS) - set(per_gen))}; not written")
             continue
@@ -85,8 +97,12 @@ def main():
             result["images_per_subset_real_fake"] = counts
         out = RESULTS / f"{result['tag']}.json"
         out.write_text(json.dumps(result, indent=2) + "\n")
-        if result["tag"] in master_tags():
+        existing = master_means()
+        if result["tag"] in existing:
             print(f"{result['tag']} is already in {MASTER.name}: not appended")
+            if existing[result["tag"]] != result["means"]:
+                print(f"WARNING: its means {existing[result['tag']]} differ from the new {result['means']}; "
+                      f"{MASTER.name} was not updated")
         else:
             with MASTER.open("a") as f:
                 f.write(json.dumps({k: result[k] for k in ("date", "tag", "model", "ckpt", "benchmark", "data_root",
