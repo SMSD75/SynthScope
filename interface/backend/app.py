@@ -276,6 +276,7 @@ _METHOD_NAMES = {
     "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
     "pgc": "PGC", "cure": "CuRe", "d3": "D3", "restrav": "ReStraV", "stall": "STALL", "split": "SPLIT",
     "dda": "DDA", "d3qe": "D3QE", "omniaid": "OmniAID", "bfree": "B-Free", "effort": "Effort", "moejepa": "MoE-JEPA",
+    "ltf": "LTF",
 }
 
 

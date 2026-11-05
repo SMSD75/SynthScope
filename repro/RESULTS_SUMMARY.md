@@ -23,6 +23,7 @@
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF / GenImage | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 / 91.7 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 / 89.37 acc | 89.58 / 80.79 / 96.79 / 88.00 / 90.56 / **91.35** acc | ✅ official match; trained in SynthScope reproduces 6 of 7 incl. GenImage (SynthWildX 2.9 below) |
 | D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
 | OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
+| LTF | GenImage (8 subsets, full val, 100,000 images) | 98.4 acc (Table 4: AUC 99.89 / AP 99.86) | 98.36 acc / 99.88 AUROC / 99.86 AP | — | ✅ official match (every subset within 0.10 pt; the official code equals SynthScope exactly on a 33k subset) |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -181,6 +182,19 @@ Fidelity: SynthScope's class == the official `OmniAID` for all three releases (s
 | Mirage-Test / SynthWildX / WildRF / BFree-Online / RealChain / EvalGEN / RRDataset | `omniaid` (v2, served) | 78.46 / 86.02 / 88.36 / 70.26 / 61.71 / 74.14 / 71.75 | — | — | new measurements |
 
 **Verdict: faithful port; every paper number SynthScope can run is reproduced** (Chameleon and DRCT-2M are not available).
+
+### LTF (official checkpoint)
+Fidelity: SynthScope's class == the official `LTF` (333/333 state-dict tensors identical incl. the frozen CLIP ViT-L/14, view tensors bit-identical, max |P(fake) diff| 0.0 on 27 images of 100x300 to 1500x1001 px). Accuracy at 0.5, mean of real and fake accuracy, macro over the 8 GenImage subsets; the tiling is the corrected official policy (the earlier overlapping tiling was not run, so this does not show whether it differed). The official code was run on the 33k `GenImage_full/test` set only.
+
+| Run | acc | real / fake acc | AUROC | AP | Paper | Note |
+|---|---:|---:|---:|---:|---|---|
+| Official `ltf_ref/evaluate.py`, GenImage_full/test (33,000 images) | 98.38 | 97.64 / 99.12 | 99.88 | 99.86 | — | jobs 277010, 277012, 277014, 277016 |
+| SynthScope, GenImage_full/test (33,000 images) | **98.38** | 97.64 / 99.12 | 99.88 | 99.86 | 98.4 (Table 1) | equal to the official code on all 8 subsets, to the second decimal |
+| SynthScope, full official val (100,000 images; `--benchmark pergen`) | **98.36** | 97.62 / 99.10 | 99.88 | 99.86 | **98.4** (98.375 recomputed); Table 4: 98.40, real 97.68 / fake 99.09, AUC 99.89, AP 99.86 | **reproduced**: every subset within 0.10 pt of Table 1; jobs 277066, 277068-277073 (SD v1.4 reuses 277011, identical data, CPU diff job 277197) |
+
+Per subset on the full val (Midjourney, SD v1.4, SD v1.5, ADM, GLIDE, Wukong, VQDM, BigGAN): 97.26, 98.80, 98.57, 98.44, 98.12, 98.89, 98.64, 98.15 against the paper's 97.3, 98.9, 98.6, 98.4, 98.1, 98.9, 98.7, 98.1.
+
+**Verdict: faithful port (identical to the official model); the GenImage table is reproduced.** The paper and the released code differ in two places (paper: weighted-sum fusion plus a linear classifier, checkpoint: gated concatenation plus an MLP; the paper's bag loss is not in the released training path); SynthScope follows the code. Only the GenImage checkpoint is released and training is not ported. The real false-positive rate of about 2 to 3% is a property of the released weights. The weights card has no license tag (only the code is MIT), so `ltf` is not served on the Space yet.
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |
