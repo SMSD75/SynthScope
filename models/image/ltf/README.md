@@ -26,7 +26,7 @@ image (RGB, native size)
 ```
 
 `ltf.pth` is the official `weights/epoch_20.pth` (Hugging Face `MuskAI/LTF-v3.3`, revision `a2a2e29c`, SHA-256
-`32e9fa2e…`), unchanged: the GenImage checkpoint, the only one released. It holds the MIL head only (64 tensors). The
+`32e9fa2e…`), unchanged: the GenImage checkpoint, the only one released. It holds the MIL head only: 64 tensors, the 37 used MIL/fusion tensors plus 27 unused baseline ones. The
 frozen CLIP is the pinned `backbones/ViT-L-14.pt` of the same revision (SHA-256 `b8cca3fd…`, byte-identical to OpenAI's
 `ViT-L-14.pt`), loaded with the OpenAI `clip` package as the official code does. `resolve_backbone` takes
 `ModelConfig.backbone_checkpoint`, else `$SYNTHSCOPE_LTF_BACKBONE`, else an existing OpenAI clip cache copy
@@ -92,7 +92,7 @@ Three runs, in `repro/bench_results/`:
 - `ltf_synthscope_genimage_val100k.json`: SynthScope on the full official val, 100,000 images. The official code was run on
   the 33k set only, not on the 100k set.
 
-| Subset | Paper acc | SynthScope_official, 33k | SynthScope, 33k | SynthScope, full val (100k) | full val real / fake acc | full val AP |
+| Subset | Paper acc | Official code (ltf_ref), 33k | SynthScope, 33k | SynthScope, full val (100k) | full val real / fake acc | full val AP |
 |---|---:|---:|---:|---:|---:|---:|
 | Midjourney | 97.3 | 97.67 | 97.67 | **97.26** | 97.90 / 96.62 | 99.52 |
 | SD v1.4 | 98.9 | 98.80 | 98.80 | **98.80** | 97.60 / 100.00 | 100.00 |
@@ -113,7 +113,7 @@ Paper Table 4 ("Full LTF") against our full-val macros:
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| **GenImage** (8 subsets, accuracy at 0.5) | 98.4 mAcc (Table 1; 98.40 in Table 4) | **98.38** (official code, 33k set) | **98.36** (SynthScope, full val); 98.38 on the 33k set, equal to the official code | **reproduced**; every subset within 0.10 point of Table 1 (mean absolute difference 0.04) |
+| **GenImage** (8 subsets, accuracy at 0.5) | 98.4 mAcc (Table 1; 98.40 in Table 4) | **98.36** (full val, 100k); 98.38 on the 33k set, equal to the official ltf_ref code | — | **reproduced**; every subset within 0.10 point of Table 1 (mean absolute difference 0.04) |
 
 - **Parity with the official code is exact.** On the same 33,000 files all 8 subsets agree with `ltf_ref/evaluate.py` to the
   second decimal on real accuracy, fake accuracy, accuracy, AP and AUROC. This matches the logit-level result in the
@@ -141,8 +141,9 @@ synthscope detect photo.png --model ltf     # needs ltf.pth (the official epoch_
 python benchmark/bench_eval.py --model ltf --benchmark pergen --data /data/GenImage_full/test --bs 1
 ```
 
-Scoring is one image at a time (`native_res`: the number of views depends on the size), about 2.7 images per second at
-1024 px (26 views) and 7.4 at 256 px on an RTX A5000.
+Scoring is one image at a time (`native_res`: the number of views depends on the size), about 2.7 images per second on the
+Midjourney subset (1024² fakes, ImageNet reals) and 7.4 on the BigGAN subset (128² fakes), official code including model
+load, on an RTX A5000 (job 277008).
 
 **Weights.** `ltf.pth` is not in the SynthScope weights zoo and the Space does not serve `ltf`: the Hugging Face weights card
 (`MuskAI/LTF-v3.3`) has no license tag; only the code (MIT) is licensed. Until the authors confirm the terms for the

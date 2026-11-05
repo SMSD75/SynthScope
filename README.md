@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 21 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 22 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -284,7 +284,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | DDA | 6 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF, GenImage) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 · 91.7 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 · 89.37 acc (official); 89.58 · 80.79 · 96.79 · 88.00 · 90.56 · 91.35 acc (trained in SynthScope) | ✅ official weights match 5; our training reproduces 6 of 7 incl. GenImage |
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
-| LTF | GenImage (8 subsets, full official val, 100,000 images) | 98.4 acc | 98.36 acc (official; the official code gives the same on a 33k subset) | ✅ official weights match |
+| LTF | GenImage (8 subsets, full official val, 100,000 images) | 98.4 acc | 98.36 acc (official weights, full 100k val); on a 33k subset the official code and SynthScope both give 98.38 | ✅ official weights match |
 | B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
 | Effort | GenImage (8 subsets) | 91.1 acc | 89.83 acc (official) | ✅ official weights match |
 | MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |
