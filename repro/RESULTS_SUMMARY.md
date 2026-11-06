@@ -23,7 +23,7 @@
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF / GenImage | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 / 91.7 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 / 89.37 acc | 89.58 / 80.79 / 96.79 / 88.00 / 90.56 / **91.35** acc | ✅ official match; trained in SynthScope reproduces 6 of 7 incl. GenImage (SynthWildX 2.9 below) |
 | D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
 | OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
-| Effort | GenImage / UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc / 99.41 mAP, 95.19 acc | 89.83 acc / — (no ProGAN checkpoint released) | — / **99.23 mAP, 94.81 acc** | ✅ official match on GenImage; trained in SynthScope with the official ProGAN recipe reproduces the UFD table (iteration 18000 = the official selection) |
+| Effort | GenImage / UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc / 99.41 mAP, 95.19 acc | 89.83 acc / — (no ProGAN checkpoint released) | — / **99.20 mAP, 94.81 acc** | ✅ official match on GenImage; trained in SynthScope with the official ProGAN recipe reproduces the UFD table (iteration 18000 = the official selection) |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -188,16 +188,16 @@ Fidelity: SynthScope's class == the official `EffortDetector` for both releases 
 
 | Iteration | mAP | mAcc (0.5) | AUROC | Note |
 |---:|---:|---:|---:|---|
-| 3000 | 98.07 | 86.51 | 97.71 | |
-| 6000 | 98.44 | 90.43 | 98.18 | |
-| 9000 | 98.89 | 91.20 | 98.67 | |
-| 12000 | 99.23 | 93.43 | 99.07 | |
-| 15000 | 99.22 | 94.57 | 99.07 | |
-| **18000** | **99.23** | **94.81** | 99.06 | **the official selection (`script/test.sh`)**; paper 99.41 / 95.19 |
-| 21000 | 99.02 | 92.38 | 98.79 | |
-| 24000 (= final) | 98.99 | 91.99 | 98.76 | fake recall falls on DeepFakes, SAN, Guided, Glide |
+| 3000 | 98.04 | 86.51 | 97.68 |  |
+| 6000 | 98.40 | 90.42 | 98.14 |  |
+| 9000 | 98.86 | 91.20 | 98.65 |  |
+| 12000 | 99.20 | 93.42 | 99.04 |  |
+| 15000 | 99.20 | 94.56 | 99.04 |  |
+| **18000** | **99.20** | **94.81** | 99.04 | **the official selection (`script/test.sh`)**; paper 99.41 / 95.19 |
+| 21000 | 98.99 | 92.38 | 98.78 |  |
+| 24000 (= final) | 98.97 | 91.98 | 98.74 | fake recall falls on DeepFakes, SAN, Guided, Glide |
 
-At iteration 18000 every subset's accuracy is within 1.7 pt (AP within 1.9 pt) of the paper: Guided 68.85 / 69.15, SAN 81.05 / 81.50, DeepFakes 86.45 / 87.60, SITD 90.83 / 92.50, StyleGAN 96.23 / 95.05; the rest are above 96. The official `validate.py` samples 1000 images per class (100 when a set has fewer, i.e. SAN and SITD); we score every image. Reference: this ProGAN-trained checkpoint on GenImage-8 gives 78.81 acc / 95.27 mAP (a different training set from the served SD v1.4 model's 89.83 / 99.37, so not a recipe check). Jobs 278422-278424, 278550-278551, 278582, results `repro/bench_results/effort_ufd_*.json`, details in `models/image/effort/README.md`. The checkpoints stay on the shared filesystem (Effort is CC BY-NC 4.0).
+At iteration 18000 every subset's accuracy is within 1.7 pt and its AP within 2.5 pt (Guided 92.91 vs 95.39, SAN 96.28 vs 97.53) of the paper: Guided 68.70 / 69.15, SAN 81.05 / 81.50, DeepFakes 86.45 / 87.60, SITD 90.83 / 92.50, StyleGAN 96.23 / 95.05; the rest are above 96. The test transform is the official one (`translate_duplicate(256)` tiling, then `CenterCrop(224)`). The official `validate.py` samples 1000 images per class (100 when a set has fewer, i.e. SAN and SITD) and reads png/jpg only (SAN holds 19 bmp reals); we score every image. Reference: this ProGAN-trained checkpoint on GenImage-8 gives 79.96 acc / 95.25 mAP (a different training set from the served SD v1.4 model's 89.83 / 99.37, so not a recipe check). Jobs 278691-278700 (code commit 8f86c4a), results `repro/bench_results/effort_ufd_*.json`, details in `models/image/effort/README.md`. The checkpoints stay on the shared filesystem (Effort is CC BY-NC 4.0).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

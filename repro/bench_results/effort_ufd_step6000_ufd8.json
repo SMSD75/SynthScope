@@ -8,9 +8,9 @@
   "jpeg_fakes": null,
   "n_generators": 8,
   "means": {
-    "acc": 89.21,
-    "map": 98.84,
-    "mauroc": 98.7
+    "acc": 89.19,
+    "map": 98.75,
+    "mauroc": 98.62
   },
   "per_generator": {
     "dalle": {
@@ -42,11 +42,11 @@
       "acc": 88.8
     },
     "guided": {
-      "ap": 91.7,
-      "auroc": 90.63,
-      "real_acc": 100.0,
+      "ap": 90.9,
+      "auroc": 89.96,
+      "real_acc": 99.7,
       "fake_acc": 26.2,
-      "acc": 63.1
+      "acc": 62.95
     },
     "ldm_100": {
       "ap": 99.99,
@@ -70,6 +70,6 @@
       "acc": 91.85
     }
   },
-  "date": "2026-11-05T18:47:07",
+  "date": "2026-11-06T01:51:31",
   "synthscope_version": "0.1.0"
 }

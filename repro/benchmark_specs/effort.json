@@ -33,7 +33,7 @@
    },
    "our_status": "reproduced",
    "our_number": {
-    "note": "SynthScope_train: Effort trained in SynthScope with the official UniversalFakeDetect_Benchmark recipe (experiments/image/effort_ufd.sh, ProGAN 20 classes, 24000 iterations, job 276492), iteration 18000 (the official selection): mAP 99.23 / mAcc 94.81 over the 19 subsets (AUROC 99.06); every subset's accuracy is within 1.7 pt and its AP within 1.9 pt of the paper (bench_eval.py --model-config image/effort_ufd; tags effort_ufd_step18000_{gan11,ufd8,ufd19}, job 278422). Later iterations are lower: 21000 99.02 / 92.38, 24000 98.99 / 91.99 (fake recall falls on DeepFakes, SAN, Guided and Glide)."
+    "note": "Not served (CC BY-NC weights, trained in SynthScope): the official UniversalFakeDetect_Benchmark recipe (experiments/image/effort_ufd.sh, ProGAN 20 classes, 24000 iterations, job 276492), iteration 18000 (the official selection): mAP 99.20 / mAcc 94.81 over the 19 subsets (AUROC 99.04); every subset's accuracy is within 1.7 pt and its AP within 2.5 pt of the paper (bench_eval.py --model-config image/effort_ufd, official translate_duplicate(256) + CenterCrop(224) test transform; tags effort_ufd_step18000_{gan11,ufd8,ufd19}, job 278691). Later iterations are lower: 21000 98.99 / 92.38, 24000 98.97 / 91.98 (fake recall falls on DeepFakes, SAN, Guided and Glide)."
    }
   },
   {

@@ -51,7 +51,7 @@ VAL = {
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}, "synthscope": {"map": 85.81, "acc": 77.19, "auroc": 83.1}},
     # Effort: GenImage and the in-the-wild sets = the official GenImage-SD1.4 checkpoint. acc = mean per-subset balanced accuracy.
     # UniversalFakeDetect (the paper's ProGAN-trained model; no checkpoint released): synthscope = trained in SynthScope with
-    # the official recipe (experiments/image/effort_ufd.sh; job 276492, iteration 18000 = the official selection; eval job 278422,
+    # the official recipe (experiments/image/effort_ufd.sh; job 276492, iteration 18000 = the official selection; eval job 278691,
     # tag effort_ufd_step18000_ufd19), 19 subsets, acc at 0.5.
     # MoE-JEPA: official SID-Set checkpoint (no SynthScope-trained number). SID-Set acc = 3-way accuracy (the paper's
     # metric, bf16 as the official test; job 270455) with the binary mAP/AUROC; the rest: balanced acc at 0.5.
@@ -62,7 +62,7 @@ VAL = {
     ("moejepa", "BFree-Online"):         {"official": {"map": 91.79, "acc": 57.99, "auroc": 85.22}},
     ("moejepa", "EvalGEN"):              {"official": {"map": 92.77, "acc": 70.85, "auroc": 86.43}},
     ("moejepa", "RealChain"):            {"official": {"map": 71.74, "acc": 66.39, "auroc": 73.22}},
-    ("effort", "UniversalFakeDetect"):   {"synthscope": {"map": 99.23, "acc": 94.81, "auroc": 99.06}},
+    ("effort", "UniversalFakeDetect"):   {"synthscope": {"map": 99.2, "acc": 94.81, "auroc": 99.04}},
     ("effort", "GenImage"):              {"official": {"map": 99.37, "acc": 89.83, "auroc": 99.48}},
     ("effort", "SynthWildX"):            {"official": {"map": 61.2, "acc": 56.69, "auroc": 63.57}},
     ("effort", "WildRF"):                {"official": {"map": 81.11, "acc": 71.36, "auroc": 78.64}},

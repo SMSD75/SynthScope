@@ -7,9 +7,9 @@
   "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test + /hddstore/ssalehi/SynthScope/universialfakedetection/test",
   "n_generators": 19,
   "means": {
-    "acc": 94.57,
-    "map": 99.22,
-    "mauroc": 99.07
+    "acc": 94.56,
+    "map": 99.2,
+    "mauroc": 99.04
   },
   "per_generator": {
     "progan": {
@@ -69,8 +69,8 @@
       "acc": 94.17
     },
     "san": {
-      "ap": 96.85,
-      "auroc": 96.29,
+      "ap": 96.91,
+      "auroc": 96.37,
       "real_acc": 100.0,
       "fake_acc": 60.73,
       "acc": 80.37
@@ -90,11 +90,11 @@
       "acc": 99.15
     },
     "guided": {
-      "ap": 93.2,
-      "auroc": 92.24,
-      "real_acc": 99.9,
+      "ap": 92.59,
+      "auroc": 91.75,
+      "real_acc": 99.7,
       "fake_acc": 32.9,
-      "acc": 66.4
+      "acc": 66.3
     },
     "ldm_200": {
       "ap": 99.98,
@@ -150,5 +150,5 @@
     "effort_ufd_step15000_gan11",
     "effort_ufd_step15000_ufd8"
   ],
-  "date": "2026-11-05T20:34:02"
+  "date": "2026-11-06T02:24:35"
 }

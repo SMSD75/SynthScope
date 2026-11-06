@@ -8,68 +8,68 @@
   "jpeg_fakes": null,
   "n_generators": 8,
   "means": {
-    "acc": 78.81,
-    "map": 95.27,
-    "mauroc": 94.68
+    "acc": 79.96,
+    "map": 95.25,
+    "mauroc": 94.64
   },
   "per_generator": {
     "adm": {
-      "ap": 90.3,
-      "auroc": 89.25,
-      "real_acc": 99.87,
+      "ap": 90.06,
+      "auroc": 89.02,
+      "real_acc": 99.73,
       "fake_acc": 36.07,
-      "acc": 67.97
+      "acc": 67.9
     },
     "biggan": {
-      "ap": 99.08,
-      "auroc": 99.06,
-      "real_acc": 100.0,
-      "fake_acc": 69.87,
-      "acc": 84.93
+      "ap": 99.82,
+      "auroc": 99.79,
+      "real_acc": 99.93,
+      "fake_acc": 88.67,
+      "acc": 94.3
     },
     "glide": {
-      "ap": 98.33,
-      "auroc": 97.86,
+      "ap": 98.26,
+      "auroc": 97.78,
       "real_acc": 99.93,
       "fake_acc": 79.13,
       "acc": 89.53
     },
     "midjourney": {
-      "ap": 81.77,
-      "auroc": 79.56,
+      "ap": 81.53,
+      "auroc": 79.27,
       "real_acc": 99.87,
       "fake_acc": 8.33,
       "acc": 54.1
     },
     "sdv1.4": {
-      "ap": 99.12,
-      "auroc": 98.96,
-      "real_acc": 99.88,
+      "ap": 99.08,
+      "auroc": 98.91,
+      "real_acc": 99.83,
       "fake_acc": 80.37,
-      "acc": 90.13
+      "acc": 90.1
     },
     "sdv1.5": {
-      "ap": 98.34,
-      "auroc": 97.98,
+      "ap": 98.28,
+      "auroc": 97.89,
       "real_acc": 99.93,
       "fake_acc": 70.33,
       "acc": 85.13
     },
     "vqdm": {
-      "ap": 97.41,
-      "auroc": 97.12,
+      "ap": 97.27,
+      "auroc": 96.98,
       "real_acc": 99.93,
       "fake_acc": 54.27,
       "acc": 77.1
     },
     "wukong": {
-      "ap": 97.84,
-      "auroc": 97.62,
-      "real_acc": 99.93,
+      "ap": 97.67,
+      "auroc": 97.49,
+      "real_acc": 99.8,
       "fake_acc": 63.2,
-      "acc": 81.57
+      "acc": 81.5
     }
   },
-  "date": "2026-11-05T18:16:20",
+  "date": "2026-11-06T02:36:53",
   "synthscope_version": "0.1.0"
 }
