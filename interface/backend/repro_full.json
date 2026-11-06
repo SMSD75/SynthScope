@@ -721,6 +721,18 @@
       "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."
     }
   ],
+  "ltf": [
+    {
+      "benchmark": "GenImage (8 subsets, full official val, 100,000 images)",
+      "metric": "accuracy at 0.5, mean over subsets",
+      "paper": "acc=98.4 / ap=99.86 / auc=99.89",
+      "ours": "mAP=99.86 / acc=98.36 / AUROC=99.88 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.86 / acc=98.36 / AUROC=99.88",
+      "status": "official",
+      "note": "98.36 mAcc (real 97.62, fake 99.10, AUROC 99.88, AP 99.86) on the full official val, every subset within 0.10 pt of Table 1; the official ltf_ref code and SynthScope agree exactly on the 33k GenImage_full/test set (98.38). Corrected tiling. Tags ltf_synthscope_genimage_val100k, ltf_official_genimage8."
+    }
+  ],
   "moejepa": [
     {
       "benchmark": "SID-Set (test, 3-way, Table 1)",

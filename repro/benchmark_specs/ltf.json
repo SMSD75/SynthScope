@@ -1,0 +1,47 @@
+{
+  "model": "ltf",
+  "paper": "Learning to Falsify: Hierarchical Multiple Instance Learning for High Resolution AI-Generated Image Detection (Chen, Gao, Li, Wang, Zhu, Cai, Dong; arXiv 2611.04529)",
+  "arxiv_id": "2611.04529",
+  "official_repo": "https://github.com/HuiGuanLab/LTF",
+  "training_set_in_paper": "GenImage SD v1.4 (all methods in Table 1 are trained on it). Only the GenImage checkpoint is released (HF MuskAI/LTF-v3.3, weights/epoch_20.pth). Training is not ported to SynthScope (the official crop / reconstruction data pipeline is not reproduced), so only the official checkpoint is evaluated and there is no SynthScope-trained number.",
+  "paper_protocol": "GenImage, 8 subsets, accuracy at threshold 0.5, mAcc = unweighted mean of the 8 subset accuracies (Table 1); Table 4 ('Full LTF'): mAcc 98.40, real 97.68, fake 99.09, AUC 99.89, AP 99.86. Native resolution: 224 tiles (starts 0, 224, 448, ... plus one boundary-aligned tile) plus one resized global view, CLIP ViT-L/14 block-24 tokens, fusion branch.",
+  "benchmarks": [
+    {
+      "name": "GenImage (8 subsets, full official val, 100,000 images)",
+      "datasets": [
+        "GenImage"
+      ],
+      "subsets_or_generators": [
+        "Midjourney",
+        "SD v1.4",
+        "SD v1.5",
+        "ADM",
+        "GLIDE",
+        "Wukong",
+        "VQDM",
+        "BigGAN"
+      ],
+      "metric": "accuracy at 0.5, mean over subsets",
+      "paper_number": {
+        "acc": 98.4,
+        "ap": 99.86,
+        "auc": 99.89,
+        "note": "Paper Table 1: MJ 97.3, SD1.4 98.9, SD1.5 98.6, ADM 98.4, GLIDE 98.1, Wukong 98.9, VQDM 98.7, BigGAN 98.1 (mean 98.375); Table 4 (Full LTF): mAcc 98.40, real 97.68, fake 99.09, AUC 99.89, AP 99.86."
+      },
+      "paper_per_generator": {
+        "Midjourney": 97.3,
+        "SD1.4": 98.9,
+        "SD1.5": 98.6,
+        "ADM": 98.4,
+        "GLIDE": 98.1,
+        "Wukong": 98.9,
+        "VQDM": 98.7,
+        "BigGAN": 98.1
+      },
+      "our_status": "official",
+      "our_number": {
+        "note": "98.36 mAcc (real 97.62, fake 99.10, AUROC 99.88, AP 99.86) on the full official val, every subset within 0.10 pt of Table 1; the official ltf_ref code and SynthScope agree exactly on the 33k GenImage_full/test set (98.38). Corrected tiling. Tags ltf_synthscope_genimage_val100k, ltf_official_genimage8."
+      }
+    }
+  ]
+}

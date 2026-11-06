@@ -102,6 +102,10 @@ VAL = {
     ("omniaid", "RealChain (v2"):                            {"official": {"map": 84.02, "acc": 61.71, "auroc": 83.63}},
     ("omniaid", "EvalGEN (v2"):                              {"official": {"map": 96.46, "acc": 74.14, "auroc": 93.08}},
     ("omniaid", "RRDataset (v2"):                            {"official": {"map": 84.19, "acc": 71.75, "auroc": 82.32}},
+    # LTF: official checkpoint only (training is not ported). The "official" slot is the SynthScope class on the full
+    # official GenImage val (100,000 images; ltf_synthscope_genimage_val100k). On the 33k set the official ltf_ref
+    # code gives 98.38, the same as SynthScope.
+    ("ltf", "GenImage"):                 {"official": {"map": 99.86, "acc": 98.36, "auroc": 99.88}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     # synthscope = trained in SynthScope with the official recipe (experiments/image/npr.sh; job 265720, eval 265808).

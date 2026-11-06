@@ -92,6 +92,22 @@ def remap_effort(sd: dict) -> dict:
     return {(k[len("module."):] if k.startswith("module.") else k): v for k, v in sd.items()}
 
 
+# Saved groups of the released LTF checkpoint that its forward path never reads (official ltf/checkpoint.py).
+LTF_UNUSED_PREFIXES = (
+    "baseline_core.cls_token",
+    "baseline_core.classifier.",
+    "baseline_core.jpeg_estimate.",
+    "baseline_core.patch_classifier.",
+    "baseline_core.tile_transformer.",
+)
+
+
+def remap_ltf(sd: dict) -> dict:
+    """Official LTF checkpoint (an ``LTFCore`` state dict) -> SynthScopeLTFModel: drop the 27 disconnected baseline
+    tensors, as the official ``load_core``, and put the 37 retained ones under ``core.`` (then checked strictly)."""
+    return {"core." + k: v for k, v in sd.items() if not k.startswith(LTF_UNUSED_PREFIXES)}
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -348,6 +364,19 @@ _add(ModelSpec(
           "tokenizer, read by a small transformer, fused with frozen CLIP ViT-L/14 features. Trained on LlamaGen vs "
           "ImageNet only. Uses the OFFICIAL released checkpoint.",
 ))
+_add(ModelSpec(
+    key="ltf", name="LTF", paper="Chen et al., arXiv 2611.04529",
+    modality="image", predict_kind="ce", checkpoint="ltf.pth", ckpt_kind="official_ltf", remap=remap_ltf,
+    weights="official",
+    # ltf.pth = the official weights/epoch_20.pth unchanged (HF MuskAI/LTF-v3.3 @ a2a2e29c; code MIT); the frozen CLIP
+    # ViT-L/14 is the pinned backbones/ViT-L-14.pt of the same revision, loaded by the model (pretrained_prefixes).
+    overrides=["model@ModelConfig=image/ltf"],
+    transform=model_transform("image/ltf"),   # official prepare_image: global view + native-res 224 tiles
+    native_res=True,                # the view count depends on the image size: score one image at a time
+    notes="Hierarchical multiple-instance learning on frozen CLIP ViT-L/14 tokens: the image is cut into 224x224 tiles "
+          "at its own resolution, plus one resized global view. Patch tokens are pooled within each tile, tiles and "
+          "views are pooled across the image, and a gated fusion head decides. Uses the OFFICIAL GenImage checkpoint.",
+))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
 for _key, _name, _ckpt, _note in [
@@ -462,6 +491,9 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),
+    "ltf": ("Native-res 224 tiles + global view", "The image is cut into 224×224 tiles at its own resolution (no "
+            "scaling; edge tiles are aligned to the border, a side under 224 px is padded with black), plus one view of "
+            "the whole image resized to 224 and center-cropped."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }

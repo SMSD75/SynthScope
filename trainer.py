@@ -18,6 +18,7 @@ from models.image.effort.effort import SynthScopeEffortModel
 from models.image.moejepa.moejepa import SynthScopeMoEJEPAModel
 from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
+from models.image.ltf.ltf import SynthScopeLTFModel
 from models.video.d3.d3 import SynthScopeD3Model
 from models.video.split.split import SynthScopeSPLITModel
 from models.video.restrav.restrav import SynthScopeReStraVModel
@@ -112,6 +113,8 @@ class SynthScopeModelTrainer:
             return SynthScopeBFreeModel(config)
         if model_type == "d3qe":
             return SynthScopeD3QEModel(config)
+        if model_type == "ltf":
+            return SynthScopeLTFModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
         if model_type == "split":

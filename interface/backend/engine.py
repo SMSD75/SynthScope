@@ -7,6 +7,7 @@ and kept in a small LRU so a shared GPU is not exhausted. All forward passes hap
 import base64
 import gc
 import io
+import math
 import threading
 import time
 from collections import OrderedDict
@@ -120,6 +121,9 @@ def _build_model(cfg):
     if model_type == "d3qe":
         from models.image.d3qe.d3qe import SynthScopeD3QEModel
         return SynthScopeD3QEModel(cfg)
+    if model_type == "ltf":
+        from models.image.ltf.ltf import SynthScopeLTFModel
+        return SynthScopeLTFModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
@@ -347,15 +351,20 @@ class Engine:
     @staticmethod
     def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280) -> str:
         """The image exactly as the network receives it (after this detector's preprocessing), as a PNG data URL.
-        Normalization is undone for display; multi-view inputs (AIDE) are laid out side by side."""
+        Normalization is undone for display; multi-view inputs are laid out side by side (up to 5 views, e.g. AIDE)
+        or in a near-square grid (LTF has one view per tile, up to dozens)."""
         t = x[0].detach().float().cpu()
-        if t.dim() == 4:
-            t = torch.cat(list(t), dim=2)
         norm = spec.transform.normalize_step()
         if norm is not None:
             t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
             t = t * 0.5 + 0.5
+        if t.dim() == 4:
+            cols = len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t)))
+            pad = -len(t) % cols
+            if pad:
+                t = torch.cat([t, torch.zeros(pad, *t.shape[1:])])
+            t = torch.cat([torch.cat(list(row), dim=2) for row in t.view(-1, cols, *t.shape[1:])], dim=1)
         if t.min() < 0 or t.max() > 1:                 # unknown scaling: stretch for display only
             t = (t - t.min()) / (t.max() - t.min() + 1e-8)
         img = Image.fromarray((t.clamp(0, 1) * 255).round().byte().permute(1, 2, 0).numpy())
