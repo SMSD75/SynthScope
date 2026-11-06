@@ -18,7 +18,12 @@ from collections.abc import Mapping
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from transformers import AutoModel, DINOv3ViTConfig
+from transformers import AutoModel
+
+try:                                    # DINOv3 is in transformers >= 4.56; older versions can still import SynthScope
+    from transformers import DINOv3ViTConfig
+except ImportError:
+    DINOv3ViTConfig = None
 
 # config.json of facebook/dinov3-vith16plus-pretrain-lvd1689m (revision c807c9eeea853df70aec4069e6f56b28ddc82acc), the
 # official `--backbone_path dinov3-huge`; attention runs as SDPA, what from_pretrained selects in the official env.
@@ -99,6 +104,8 @@ def get_peft_model(model: nn.Module, config: LoraConfig) -> PeftModel:
 def _load_backbone(dinov3_path):
     """`AutoModel.from_pretrained(path)` for a directory / hub id; a config dict builds the same model untrained."""
     if isinstance(dinov3_path, Mapping):
+        if DINOv3ViTConfig is None:
+            raise ImportError("MIRROR needs transformers >= 4.56 (DINOv3); upgrade transformers")
         return AutoModel.from_config(DINOv3ViTConfig(**dinov3_path), attn_implementation="sdpa")
     return AutoModel.from_pretrained(dinov3_path, weights_only=False)
 

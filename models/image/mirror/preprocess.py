@@ -14,10 +14,12 @@ then ``CenterCrop(224)``, then the "format-aligned input" step, then ``ToTensor`
      the fake training images were JPEG q96 round-tripped, so lossless inputs are aligned to that format,
   4. ToTensor (the ``to_dtype`` step after this one).
 
-Step 3 depends on the file name, which a decoded PIL image has lost. SynthScope's loaders record the decoded format in
-``img.info["synthscope_src_format"]`` (``SRC_FORMAT_KEY``; bench_eval._open_rgb, the web UI and the synthscope API do);
-PNG / BMP / TIFF there take the JPEG step, anything else (or no hint) does not. This is the official extension test
-for every correctly named file (the official loader only reads .png/.jpg/.jpeg/.bmp/.webp).
+Step 3 depends on the file name, which a decoded PIL image has lost. SynthScope's image loaders record the decoded format
+in ``img.info["synthscope_src_format"]`` (``SRC_FORMAT_KEY``): ``bench_eval._open_rgb`` and ``interface/backend/media``
+(``to_rgb`` / ``decode_image`` / ``open_rgb``, used by the web UI, the synthscope API for paths, bytes and PIL images,
+``benchmark/evaluate.py`` and ``benchmark/generator_bench.py``). PNG / BMP there take the JPEG step; anything else, or
+an image without the hint (e.g. the training loaders' tensors), does not. For correctly named files this is the official
+extension test.
 """
 import io
 
@@ -30,7 +32,9 @@ from models.image.cure.preprocess import SRC_FORMAT_KEY
 CROP_SIZE = 224
 EVAL_RESIZE_SHORT = 512
 ALIGN_JPEG_QUALITY = 96
-ALIGNED_FORMATS = ("PNG", "BMP", "TIFF")   # official: path.lower().endswith(('.png', '.bmp', '.tiff', '.PNG'))
+# Official: path.lower().endswith(('.png', '.bmp', '.tiff', '.PNG')). TIFF is kept for completeness, but the official
+# TestDataset never loads .tif/.tiff files (it lists .png/.jpg/.jpeg/.bmp/.webp only), so no official number involves it.
+ALIGNED_FORMATS = ("PNG", "BMP", "TIFF")
 
 
 def compress_image(img_pil, quality=75):

@@ -20,8 +20,9 @@ memory_path=None; see the README.)
 
 Input contract: ``forward`` takes [0, 1] pixels from the official eval transform (``mirror_eval`` + ``to_dtype``: short
 side > 512 resized to 512, center crop 224, JPEG q96 for PNG/BMP/TIFF sources) and normalizes inside, like the official
-model. ``use_amp`` (default true, the README's ``--use_amp`` inference command) runs the forward under CUDA fp16 autocast
-exactly as the official ``evaluate``; it has no effect on CPU, where the official code also runs fp32.
+model. It runs fp32 by default, the official default (``inference.py --use_amp`` is opt-in, ``eval.sh`` does not set it,
+and the released checkpoint was trained with ``use_amp=False``). ``use_amp: true`` runs inference under CUDA fp16 autocast
+exactly as the official ``evaluate --use_amp``; it never applies on CPU or in training mode.
 
 Training: ``compute_loss`` is the official phase-2 loss (timm LabelSmoothingCrossEntropy, smoothing 0.1 =
 CrossEntropyLoss(label_smoothing=0.1)) on the logits; the phase-1 memory-bank training (mmbank.py) and the official
@@ -44,12 +45,13 @@ class SynthScopeMIRRORModel(MIRROR_Detector):
         backbone_config = dict(DINOV3_VITH16PLUS, **dict(mc.get("backbone_config") or {}))
         super().__init__(dino_path=str(backbone_path) if backbone_path else backbone_config,
                          memory_path=mc.get("memory_path"))
-        self.use_amp = bool(mc.get("use_amp", True))
+        self.use_amp = bool(mc.get("use_amp", False))
         self.criterion = nn.CrossEntropyLoss(label_smoothing=float(mc.get("label_smoothing", 0.1)))
 
     def forward(self, images):
         """[B, 3, 224, 224] pixels in [0, 1] -> 2-class logits [B, 2] (index 1 = fake)."""
-        with torch.amp.autocast(device_type=images.device.type, enabled=self.use_amp and images.is_cuda):
+        amp = self.use_amp and images.is_cuda and not self.training     # inference-only autocast, as the official evaluate
+        with torch.amp.autocast(device_type=images.device.type, enabled=amp):
             logits, _, _ = super().forward(images)
         return logits.float()
 

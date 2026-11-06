@@ -10,15 +10,17 @@ Checks:
   prefix (transformers 4 ``dino.layer`` / 5 ``dino.model.layer``) load strictly through ``load_state_dict`` and the
   official ``load_detector_checkpoint`` with identical outputs, ``compute_loss`` + backward reach only LoRA and head,
 * the full-size model (built on the meta device) has exactly the keys and shapes of the released checkpoint, if
-  ``$SYNTHSCOPE_CKPT_DIR/mirror.pth`` exists (skipped otherwise).
+  ``$SYNTHSCOPE_CKPT_DIR/mirror.pth`` exists (skipped otherwise),
+* the source-format hint survives every image entry point (media.decode_image / open_rgb / to_rgb, and the synthscope
+  API for a path, bytes and a PIL image), so a PNG gets the official JPEG q96 step there too.
 """
 
 from __future__ import annotations
 
-import importlib.util
 import io
 import os
 import sys
+import tempfile
 
 import torch
 import torch.nn as nn
@@ -27,10 +29,17 @@ from PIL import Image
 from torchvision.transforms import InterpolationMode
 from torchvision.transforms import functional as TF
 
+try:                                     # optional: compare the LoRA layer with peft itself when peft is installed
+    from peft import LoraConfig as PeftLoraConfig, get_peft_model
+except ImportError:
+    PeftLoraConfig = get_peft_model = None
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
 
+from backend import media                                                   # noqa: E402
 from backend.registry import get_spec                                       # noqa: E402
+from synthscope.api import Detector                                         # noqa: E402
 from models.image.cure.preprocess import SRC_FORMAT_KEY                     # noqa: E402
 from models.image.mirror.mirror import SynthScopeMIRRORModel                # noqa: E402
 from models.image.mirror.official_arch import (LoraConfig, LoraLinear,     # noqa: E402
@@ -63,7 +72,7 @@ def official_eval(img: Image.Image, aligned: bool) -> torch.Tensor:
 
 
 def tiny_model() -> SynthScopeMIRRORModel:
-    cfg = OmegaConf.create({"ModelConfig": {"model_type": "mirror", "backbone_config": TINY, "use_amp": True}})
+    cfg = OmegaConf.create({"ModelConfig": {"model_type": "mirror", "backbone_config": TINY}})
     return SynthScopeMIRRORModel(cfg)
 
 
@@ -100,8 +109,7 @@ def test_lora() -> None:
     assert torch.equal(layer(x), want)
     assert set(layer.state_dict()) == {"base_layer.weight", "base_layer.bias", "lora_A.default.weight",
                                        "lora_B.default.weight"}
-    if importlib.util.find_spec("peft") is not None:
-        from peft import LoraConfig as PeftLoraConfig, get_peft_model
+    if get_peft_model is not None:
         wrapped = get_peft_model(nn.Sequential(nn.Linear(16, 24)), PeftLoraConfig(r=8, lora_alpha=16,
                                                                                     target_modules=["0"]))
         ours = LoraLinear(nn.Linear(16, 24), LoraConfig(r=8, lora_alpha=16))
@@ -130,6 +138,7 @@ def test_model_and_loader() -> None:
     with torch.no_grad():
         logits = model(images)
     assert logits.shape == (2, 2) and logits.dtype == torch.float32 and torch.isfinite(logits).all()
+    assert model.use_amp is False, "the official default precision is fp32"
 
     other = "backbone.dino.layer." if blocks != "backbone.dino.layer." else "backbone.dino.model.layer."
     for prefix in (blocks, other):
@@ -154,12 +163,34 @@ def test_model_and_loader() -> None:
     print(f"    {len(sd)} tensors, logits {tuple(logits.shape)}, strict loads with both prefixes, grads on LoRA + head")
 
 
+def test_format_hint_entry_points() -> None:
+    print("[D] the PNG source-format hint survives every image entry point ...")
+    tf = get_spec("mirror").transform
+    with tempfile.TemporaryDirectory() as tmp:
+        png, jpg = os.path.join(tmp, "x.png"), os.path.join(tmp, "x.jpg")
+        noise_image((300, 200)).save(png)
+        noise_image((300, 200)).save(jpg, quality=95)
+        for path, fmt in ((png, "PNG"), (jpg, "JPEG")):
+            data = open(path, "rb").read()
+            with Image.open(path) as pil:
+                pil.load()
+                api = Detector.__new__(Detector)
+                images = {"media.decode_image": media.decode_image(data), "media.open_rgb": media.open_rgb(path),
+                          "media.to_rgb": media.to_rgb(pil), "api(path)": api._classify(path)[1],
+                          "api(bytes)": api._classify(data)[1], "api(PIL)": api._classify(pil)[1]}
+            want = official_eval(media.open_rgb(path), aligned=fmt == "PNG")
+            for name, image in images.items():
+                assert image.mode == "RGB" and image.info.get(SRC_FORMAT_KEY) == fmt, (name, fmt, image.info)
+                assert torch.equal(tf(image), want), (name, fmt)
+    print("    PNG and JPEG keep their format on 6 entry points; MIRROR inputs equal the official ones")
+
+
 def test_released_layout() -> None:
     ckpt = os.path.join(os.environ.get("SYNTHSCOPE_CKPT_DIR", ""), "mirror.pth")
     if not os.path.isfile(ckpt):
-        print("[D] released checkpoint layout: skipped ($SYNTHSCOPE_CKPT_DIR/mirror.pth not found)")
+        print("[E] released checkpoint layout: skipped ($SYNTHSCOPE_CKPT_DIR/mirror.pth not found)")
         return
-    print("[D] full-size model (meta device) vs the released checkpoint ...")
+    print("[E] full-size model (meta device) vs the released checkpoint ...")
     with torch.device("meta"):
         model = SynthScopeMIRRORModel(OmegaConf.create({"ModelConfig": {"model_type": "mirror"}}))
     ours = {k.replace("backbone.dino.model.layer.", "backbone.dino.layer."): tuple(v.shape)
@@ -173,5 +204,6 @@ if __name__ == "__main__":
     test_transform()
     test_lora()
     test_model_and_loader()
+    test_format_hint_entry_points()
     test_released_layout()
     print("MIRROR smoke test passed")

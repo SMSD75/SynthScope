@@ -38,13 +38,26 @@ def media_kind(filename: str, content_type: str | None = None) -> str:
     raise ValueError(f"Unsupported file type: {filename!r} (content_type={content_type})")
 
 
-def decode_image(data: bytes) -> Image.Image:
-    """Decode raw bytes into an RGB PIL image."""
-    source = Image.open(io.BytesIO(data))
-    source_format = source.format
+def to_rgb(source: Image.Image) -> Image.Image:
+    """``source.convert("RGB")`` that records the source file format (PNG, JPEG, ...) in ``info[SRC_FORMAT_KEY]``, so
+    format-aware eval transforms (CuRe, MIRROR: PNG sources get a JPEG round trip) see what the official loaders see.
+    A hint already present (an image that was converted before) is kept; the caller's image is not modified."""
+    source_format = source.info.get(SRC_FORMAT_KEY) or source.format
     image = source.convert("RGB")
-    image.info[SRC_FORMAT_KEY] = source_format  # lets format-aware transforms (CuRe) see PNG vs JPEG
+    if source_format:
+        image.info[SRC_FORMAT_KEY] = source_format
     return image
+
+
+def decode_image(data: bytes) -> Image.Image:
+    """Decode raw bytes into an RGB PIL image (with the source-format hint, see ``to_rgb``)."""
+    return to_rgb(Image.open(io.BytesIO(data)))
+
+
+def open_rgb(path: str | Path) -> Image.Image:
+    """Open an image file as RGB (with the source-format hint, see ``to_rgb``)."""
+    with Image.open(path) as source:
+        return to_rgb(source)
 
 
 def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:

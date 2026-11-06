@@ -21,8 +21,11 @@ image ─ short side > 512 ? resize short side to 512 (bicubic) : keep
       → logits [B, 2];  P(fake) = softmax(logits)[:, 1]          (official inference.py)
 ```
 
-The official inference command runs under CUDA fp16 autocast (`--use_amp`); SynthScope does the same on GPU
-(`use_amp: true` in `conf/model/image/mirror.yaml`) and runs fp32 on CPU, as the official code does.
+Precision: SynthScope runs fp32, the official default: `inference.py`'s `--use_amp` is an opt-in flag, `scripts/eval.sh`
+and `main_finetune.py --eval` leave it off, and the released checkpoint was trained with `use_amp=False`. The README's
+quick-start command does pass `--use_amp`; `use_amp: true` in `conf/model/image/mirror.yaml` reproduces that (CUDA fp16
+autocast at inference, never in training). On the parity images the two precisions differ by at most 8.5e-4 in P(fake)
+with no flipped verdict; the benchmark reproduction checks one benchmark under AMP as well.
 
 Weights: the phase-2 checkpoint `checkpoint-h-cur.pth` (authors' Google Drive, 3.45 GB) holds the full model, the
 frozen DINOv3 weights included, and loads key-for-key as `mirror.pth`. Neither the gated DINOv3 download nor the
@@ -40,12 +43,18 @@ but the strict phase-2 load overwrites every one of its tensors.
 | JPEG q96 step decided by the decoded file format, not the file extension | a decoded PIL image has no file name; SynthScope's loaders record the format (`synthscope_src_format`). It equals the official extension test for every correctly named file. |
 | `compute_loss` = cross-entropy with label smoothing 0.1 | the official phase-2 loss (timm `LabelSmoothingCrossEntropy`); phase-1 memory-bank training (`mmbank.py`) and the official training data pipeline are not reproduced. |
 
-**Note on the released memory bank.** The memory bank inside `checkpoint-h-cur.pth` is not the one in
-`mirror_phase1.pth` (cosine similarity of the two `memory` tensors: −0.0007). Its statistics are those of the default
-initialization (`memory` mean 0.0004, std 0.9999, as `torch.randn`; projection weights within the kaiming-uniform bound
-1/√1280 = 0.0280, std 0.01614 against 0.0280/√3 = 0.01617), and the checkpoint's saved training arguments have
-`memory_path=None`. So the released detector appears to use an untrained, randomly initialized memory bank. SynthScope
-reproduces the released checkpoint as it is.
+**Note on the released files.** Observations about the released checkpoint, for anyone comparing it with the paper's
+two-phase description:
+* The memory bank and its projections in `checkpoint-h-cur.pth` are bit-identical (max |diff| 0.0 on all 6 tensors) to
+  the official code's default initialization: `seed_everything(0)` followed by `build_mirror(memory_path=None)`.
+* The checkpoint's optimizer state covers 202 tensors: the 192 LoRA tensors and the 10 head tensors. The memory bank
+  has `requires_grad=False` in phase 2, so it is not in it.
+* The saved training arguments have `memory_path=None`. The current `main_finetune.py` refuses a new phase-2 run without
+  `--memory_path`, so this run came from an earlier version of the script without that check.
+* `mirror_phase1.pth` is an epoch-2 checkpoint (the README trains phase 1 for 100 epochs), and its memory bank is a
+  different one (cosine similarity of the `memory` tensors −0.0007).
+
+SynthScope reproduces the released checkpoint as it is. Scripts and logs: `SynthScope_shared/mirror_provenance/`.
 
 ## Fidelity check (identical to the official code)
 
