@@ -148,8 +148,8 @@ moves away from 0.5 while the ranking stays good. Per subset at iteration 18000 
 
 Results: `repro/bench_results/effort_ufd_<iteration>_{gan11,ufd8,ufd19}.json` (tags `effort_ufd_step<N>_*`, `effort_ufd_final_*`), logs
 `repro/logs/effuevl_<job>.out`. Eval jobs 278691 (18000), 278692 (15000), 278693 (12000), 278694 (21000), 278695 (24000), 278696 (6000),
-278697 (9000), 278698 (3000), 278699 (final), 278700 (GenImage-8, 18000), all run with the code of commit 8f86c4a (scoring code and
-configs unchanged afterwards). An earlier evaluation pass (jobs 278422-278582) lacked the `translate_duplicate` step and ran with
+278697 (9000), 278698 (3000), 278699 (final), 278700 (GenImage-8, 18000), run with commit 8f86c4a (18000, 15000) or 072cc0a (the
+rest; style-only on top of 8f86c4a, scoring code and configs identical). An earlier evaluation pass (jobs 278422-278582) lacked the `translate_duplicate` step and ran with
 uncommitted scoring code; it is superseded and no number of it is kept here.
 The checkpoints (2.0 GB each) stay on the cluster's shared filesystem and are **not published**: Effort is CC BY-NC 4.0.
 
