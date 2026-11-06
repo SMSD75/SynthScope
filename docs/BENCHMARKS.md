@@ -121,7 +121,9 @@ With `--dataset` the grouping below is chosen for you; with `--data` you pick `-
 | `pergen` | one `<generator>/{0_real,1_fake}` folder each, optional shared `--reals` | AIGIBench, FreqNet, Co-Spy-Bench |
 | `pool` | one group: `<root>/{real,fake}` | GenImage (per subset) |
 
-Useful flags: `--ckpt FILE` to score a different checkpoint (official vs SynthScope-trained side by side), `--select a,b` to
+Useful flags: `--ckpt FILE` to score a different checkpoint (official vs SynthScope-trained side by side), `--model-config NAME` (with `--ckpt`) to score a
+checkpoint with another model config of the same detector (e.g. `image/effort_ufd`, a recipe whose test preprocessing differs from the served model's),
+`--select a,b` to
 limit the generators, `--limit N` to cap images per class (quick checks), `--native-res` to score at the original resolution,
 `--bs` for the batch size. Video: `python benchmark/bench_eval_video.py --model d3 --dataset genvideo --root /data/GenVideo --limit 1000` downloads
 the dataset if needed and evaluates it (`--limit 1000` is D3's official protocol: at most 1000 videos per class per generator;

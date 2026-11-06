@@ -36,6 +36,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `mirror` | image | ce | official | – | Frozen DINOv3 ViT-H+/16 + LoRA + real-image memory bank: reconstruction of an "ideal reference" (center-crop 224, JPEG q96 for PNG/BMP/TIFF) |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
+| `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
@@ -92,6 +93,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
 - **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
+- `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
 - Results live in `repro/`: `RESULTS_SUMMARY.md` (read first), `AGGREGATED_BENCHMARK.md`,
   `BENCHMARK_COVERAGE_MATRIX.md`, `REPRODUCED_MODELS_BENCHMARKS.md`, `repro/bench_results/*.json`,

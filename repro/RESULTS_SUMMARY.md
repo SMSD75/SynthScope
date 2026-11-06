@@ -23,6 +23,8 @@
 | DDA | AIGCDetect / ForenSynths / EvalGEN / SynthWildX / WildRF / GenImage | 87.8 / 81.4 / 97.2 / 90.9 / 90.3 / 91.7 acc | 87.84 / 81.43 / 96.86 / 90.80 / 90.20 / 89.37 acc | 89.58 / 80.79 / 96.79 / 88.00 / 90.56 / **91.35** acc | ✅ official match; trained in SynthScope reproduces 6 of 7 incl. GenImage (SynthWildX 2.9 below) |
 | D3QE | ARForensics / ForenSynths-7 / GenImage-6 | 82.11 / 83.73 / 78.61 acc | 81.74 / 83.45 / 79.44 acc | 79.83 / 82.14 / 77.01 acc | ✅ official match; trained in SynthScope: AP matches, acc 1.6-2.3 below |
 | OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
+| Effort | GenImage / UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc / 99.41 mAP, 95.19 acc | 89.83 acc / — (no ProGAN checkpoint released) | — / **99.20 mAP, 94.81 acc** | ✅ official match on GenImage; trained in SynthScope with the official ProGAN recipe reproduces the UFD table (iteration 18000 = the official selection) |
+| LTF | GenImage (8 subsets, full val, 100,000 images) | 98.4 acc (Table 4: AUC 99.89 / AP 99.86) | 98.36 acc / 99.88 AUROC / 99.86 AP | — | ✅ official match (every subset within 0.10 pt; the official code equals SynthScope exactly on a 33k subset) |
 | MIRROR | AIGCDetect / GenImage / UnivFakeDetect / Synthbuster / EvalGEN / SynthWildX / WildRF / AIGIBench / BFree-Online / RRDataset | 97.3 / 99.8 / 92.4 / 99.2 / 99.8 / 95.1 / 97.8 / 94.9 / 97.6 / 88.3 B.Acc (README, DINOv3-H+) | 97.39 / 99.78 / 92.44 / 99.28 / 99.85 / 95.08 / 97.88 / 94.98 / 97.40 / 86.91 B.Acc | — | ✅ official match on 9 of 10 held (RRDataset 1.4 short); DRCT-2M, Chameleon, CO-SPY in-the-wild, Human-AIGI not run |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
@@ -182,6 +184,35 @@ Fidelity: SynthScope's class == the official `OmniAID` for all three releases (s
 | Mirage-Test / SynthWildX / WildRF / BFree-Online / RealChain / EvalGEN / RRDataset | `omniaid` (v2, served) | 78.46 / 86.02 / 88.36 / 70.26 / 61.71 / 74.14 / 71.75 | — | — | new measurements |
 
 **Verdict: faithful port; every paper number SynthScope can run is reproduced** (Chameleon and DRCT-2M are not available).
+
+### Effort (official GenImage checkpoint; trained in SynthScope on ProGAN)
+Fidelity: SynthScope's class == the official `EffortDetector` for both releases (969/969 state-dict tensors identical, transform and P(fake) identical on 7 GenImage images; job 269032). The released GenImage-SD1.4 checkpoint gives **89.83 acc / 99.37 mAP** on the 8 GenImage subsets (paper 91.1; job 269039). The paper's UniversalFakeDetect tables (Tables 2-3) use a ProGAN-trained model whose checkpoint was never released, so we trained it with the official `UniversalFakeDetect_Benchmark` recipe (`experiments/image/effort_ufd.sh`: ProGAN 20 classes, AdamW lr 2e-4 constant, batch 48, BCE on one logit, 24000 iterations; job 276492) and score it with `bench_eval.py --model effort --model-config image/effort_ufd --ckpt ...` on the paper's protocol: accuracy at the fixed threshold 0.5, 19 subsets (11 ForenSynths GAN sets + Guided, LDM x3, Glide x3, DALL-E).
+
+| Iteration | mAP | mAcc (0.5) | AUROC | Note |
+|---:|---:|---:|---:|---|
+| 3000 | 98.04 | 86.51 | 97.68 |  |
+| 6000 | 98.40 | 90.42 | 98.14 |  |
+| 9000 | 98.86 | 91.20 | 98.65 |  |
+| 12000 | 99.20 | 93.42 | 99.04 |  |
+| 15000 | 99.20 | 94.56 | 99.04 |  |
+| **18000** | **99.20** | **94.81** | 99.04 | **the official selection (`script/test.sh`)**; paper 99.41 / 95.19 |
+| 21000 | 98.99 | 92.38 | 98.78 |  |
+| 24000 (= final) | 98.97 | 91.98 | 98.74 | fake recall falls on DeepFakes, SAN, Guided, Glide |
+
+At iteration 18000 every subset's accuracy is within 1.7 pt and its AP within 2.5 pt (Guided 92.91 vs 95.39, SAN 96.28 vs 97.53) of the paper: Guided 68.70 / 69.15, SAN 81.05 / 81.50, DeepFakes 86.45 / 87.60, SITD 90.83 / 92.50, StyleGAN 96.23 / 95.05; the rest are above 96. The test transform is the official one (`translate_duplicate(256)` tiling, then `CenterCrop(224)`). The official `validate.py` samples 1000 images per class (100 when a set has fewer, i.e. SAN and SITD) and reads png/jpg only (SAN holds 19 bmp reals); we score every image. Reference: this ProGAN-trained checkpoint on GenImage-8 gives 79.96 acc / 95.25 mAP (a different training set from the served SD v1.4 model's 89.83 / 99.37, so not a recipe check). Jobs 278691-278700 (code commit 8f86c4a), results `repro/bench_results/effort_ufd_*.json`, details in `models/image/effort/README.md`. The checkpoints stay on the shared filesystem (Effort is CC BY-NC 4.0).
+
+### LTF (official checkpoint)
+Fidelity: SynthScope's class == the official `LTF` (333/333 state-dict tensors identical incl. the frozen CLIP ViT-L/14, view tensors bit-identical, max |P(fake) diff| 0.0 on 27 images of 100x300 to 1500x1001 px). Accuracy at 0.5, mean of real and fake accuracy, macro over the 8 GenImage subsets; the tiling is the corrected official policy (the earlier overlapping tiling was not run, so this does not show whether it differed). The official code was run on the 33k `GenImage_full/test` set only.
+
+| Run | acc | real / fake acc | AUROC | AP | Paper | Note |
+|---|---:|---:|---:|---:|---|---|
+| Official `ltf_ref/evaluate.py`, GenImage_full/test (33,000 images) | 98.38 | 97.64 / 99.12 | 99.88 | 99.86 | — | jobs 277010, 277012, 277014, 277016 |
+| SynthScope, GenImage_full/test (33,000 images) | **98.38** | 97.64 / 99.12 | 99.88 | 99.86 | 98.4 (Table 1) | equal to the official code on all 8 subsets, to the second decimal |
+| SynthScope, full official val (100,000 images; `--benchmark pergen`) | **98.36** | 97.62 / 99.10 | 99.88 | 99.86 | **98.4** (98.375 recomputed); Table 4: 98.40, real 97.68 / fake 99.09, AUC 99.89, AP 99.86 | **reproduced**: every subset within 0.10 pt of Table 1; jobs 277066, 277068-277073 (SD v1.4 reuses 277011, identical data, CPU diff job 277197) |
+
+Per subset on the full val (Midjourney, SD v1.4, SD v1.5, ADM, GLIDE, Wukong, VQDM, BigGAN): 97.26, 98.80, 98.57, 98.44, 98.12, 98.89, 98.64, 98.15 against the paper's 97.3, 98.9, 98.6, 98.4, 98.1, 98.9, 98.7, 98.1.
+
+**Verdict: faithful port (identical to the official model); the GenImage table is reproduced.** The paper and the released code differ in two places (paper: weighted-sum fusion plus a linear classifier, checkpoint: gated concatenation plus an MLP; the paper's bag loss is not in the released training path); SynthScope follows the code. Only the GenImage checkpoint is released and training is not ported. The real false-positive rate of about 2 to 3% is a property of the released weights. The weights card has no license tag (only the code is MIT), so `ltf` is not served on the Space yet.
 
 ### MIRROR (official checkpoint)
 Fidelity: SynthScope's class == the official `MIRROR_Detector` (825/825 state-dict tensors identical, model inputs and logits identical on 24 images, 0 verdict flips, fp32 and fp16 autocast; GPU job 279415). The checkpoint is DINOv3 ViT-H+; the paper's per-subset tables are DINOv3-L, so the target is the official README's DINOv3-H+ column. Balanced accuracy at 0.5, mean over subsets; Synthbuster and EvalGEN (fakes only) are scored against the MSCOCO val2017 reals as in the paper.

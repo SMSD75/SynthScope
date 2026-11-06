@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 22 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 23 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -170,6 +170,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `bfree` | **B-Free** (Guillaro, CVPR'25) | DINOv2 ViT-B/14 with registers, trained end to end on bias-free data: inpainted fakes that share content and format with their real images; five 504 crops at native resolution (official weights, nonprofit license). |
 | `moejepa` | **MoE-JEPA** (Teglia, ECCV'26 W) | Frozen V-JEPA 2 ViT-L (the image as a static clip) with a residual mixture of experts in its last blocks, gated-attention MIL pooling and a BayarConv noise branch; real / fully synthetic / tampered (official weights, SID-Set). |
 | `effort` | **Effort** (Yan, ICML'25) | CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each attention projection (orthogonal subspace decomposition), keeping the pretrained principal subspace (official weights, GenImage SD v1.4; also `effort_chameleon`). |
+| `ltf` | **LTF** (Chen, 2026) | Learning to Falsify: keeps the image at native resolution as a bag of 224 tiles plus a global view, reads each with frozen CLIP ViT-L/14, and pools them with hierarchical multiple instance learning (patch tokens inside a tile, then views) and a gated fusion head (official GenImage weights; evaluation only, training is not ported). |
 | `mirror` | **MIRROR** (NeurIPS'26) | Frozen DINOv3 ViT-H+/16 + LoRA; a memory bank of real-image prototypes rebuilds an "ideal reference" of the input's features by sparse attention, and the gap to it (plus the retrieval uncertainty and the CLS token) gives the score (official weights; licence unclear, so not redistributed). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
@@ -285,8 +286,9 @@ released weights run through SynthScope; otherwise the number is from our own re
 | MIRROR | 10 of its README's benchmarks (AIGCDetect, GenImage, UnivFakeDetect, Synthbuster, EvalGEN, SynthWildX, WildRF, AIGIBench, BFree-Online, RRDataset) | 97.3 · 99.8 · 92.4 · 99.2 · 99.8 · 95.1 · 97.8 · 94.9 · 97.6 · 88.3 bAcc (DINOv3-H+) | 97.39 · 99.78 · 92.44 · 99.28 · 99.85 · 95.08 · 97.88 · 94.98 · 97.40 · 86.91 bAcc (official) | ✅ official weights match 9 of 10 (RRDataset 1.4 short); DRCT-2M, Chameleon, CO-SPY in-the-wild not run |
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
+| LTF | GenImage (8 subsets, full official val, 100,000 images) | 98.4 acc | 98.36 acc (official weights, full 100k val); on a 33k subset the official code and SynthScope both give 98.38 | ✅ official weights match |
 | B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
-| Effort | GenImage (8 subsets) | 91.1 acc | 89.83 acc (official) | ✅ official weights match |
+| Effort | GenImage (8 subsets) · UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc · 99.41 mAP / 95.19 acc | 89.83 acc (official) · 99.20 mAP / 94.81 acc (trained in SynthScope) | ✅ official weights match; our training reproduces the UFD table (the authors released no ProGAN checkpoint) |
 | MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |

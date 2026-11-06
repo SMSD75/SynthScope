@@ -21,6 +21,8 @@ Benchmark profiles encode each dataset's correct generator grouping + real-pairi
   pool         GenImage/single-pool one group from <root>/{real,fake} or {0_real,1_fake}
 
 Use --ckpt to override the checkpoint (official vs SynthScope-trained, for side-by-side runs).
+Use --model-config NAME with --ckpt for a checkpoint trained by a recipe whose model config (conf/model/NAME.yaml) has its own
+test preprocessing, e.g. Effort's UFD/ProGAN recipe (image/effort_ufd: center crop 224, not the served model's squash).
 Use --jpeg-fakes Q for protocols that JPEG-compress only the synthetic images (DDA: Q=96 on GenImage,
 ForenSynths and AIGCDetect, to remove the PNG-fake/JPEG-real format bias).
 """
@@ -29,6 +31,7 @@ from __future__ import annotations
 import argparse
 import ctypes
 import ctypes.util
+import dataclasses
 import datetime
 import io
 import json
@@ -38,6 +41,8 @@ import torch
 from PIL import Image, ImageFile
 
 import synthscope
+from interface.backend.registry import get_spec, model_transform
+from synthscope.api import Detector
 from models.image.cure.preprocess import SRC_FORMAT_KEY
 from datasets_util import dataset_config, ensure_dataset, find_eval_root
 
@@ -235,6 +240,9 @@ def main(argv=None) -> int:
     ap.add_argument("--reals", default=None, help="shared real dir (pergen/forensynths fallback; with --dataset also the real pool of loaders that ship "
                     "fakes only, e.g. Synthbuster)")
     ap.add_argument("--ckpt", default=None, help="checkpoint override (official vs SynthScope weights)")
+    ap.add_argument("--model-config", default=None, metavar="NAME",
+                    help="score --ckpt with another model config of the same detector (conf/model/NAME.yaml, e.g. image/effort_ufd: "
+                         "a training recipe whose own test preprocessing differs from the served model's); needs --ckpt")
     ap.add_argument("--select", default=None, help="comma list: only these generators")
     ap.add_argument("--limit", type=int, default=None, help="cap images per class per generator")
     ap.add_argument("--bs", type=int, default=32)
@@ -247,6 +255,8 @@ def main(argv=None) -> int:
     ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
+    if args.model_config and not args.ckpt:
+        ap.error("--model-config needs --ckpt")
 
     if args.dataset:
         overrides = []
@@ -270,7 +280,15 @@ def main(argv=None) -> int:
     load_kw = {}
     if args.ckpt:
         load_kw["checkpoint"] = args.ckpt
-    det = synthscope.load(args.model, device=args.device, **load_kw)
+    if args.model_config:
+        spec = get_spec(args.model)
+        # only the model config changes; the spec's other overrides (e.g. backbone options) stay
+        overrides = [o for o in spec.overrides if not o.startswith("model@ModelConfig=")]
+        spec = dataclasses.replace(spec, overrides=overrides + [f"model@ModelConfig={args.model_config}"],
+                                   transform=model_transform(args.model_config))
+        det = Detector(spec, device=args.device, **load_kw)
+    else:
+        det = synthscope.load(args.model, device=args.device, **load_kw)
     det._ensure_weights()
     spec = det.spec
     model = det._engine._get_model(spec)
@@ -323,6 +341,7 @@ def main(argv=None) -> int:
         "tag": args.tag,
         "model": args.model,
         "ckpt": args.ckpt or "registry-default",
+        "model_config": args.model_config,
         "benchmark": args.benchmark,
         "data_root": str(root),
         "jpeg_fakes": args.jpeg_fakes,
@@ -341,7 +360,7 @@ def main(argv=None) -> int:
     with RESULTS_LOG.open("a") as f:
         f.write(json.dumps({k: result[k] for k in
                             ("date", "tag", "model", "ckpt", "benchmark", "data_root",
-                             "n_generators", "means")}) + "\n")
+                             "n_generators", "means") + (("model_config",) if args.model_config else ())}) + "\n")
 
     print(f"\n=== RESULT {args.tag}: mAP={means['map']} mAUROC={means['mauroc']} acc={means['acc']} "
           f"over {len(per_gen)} generators -> {out} ===", flush=True)

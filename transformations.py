@@ -1,3 +1,4 @@
+import math
 import random
 import re
 from io import BytesIO
@@ -14,6 +15,7 @@ from torchvision import tv_tensors
 from models.image.aide.official_arch import AIDEFiveView
 from models.image.cure.preprocess import CuReTransform
 from models.image.effort.preprocess import Cv2SquareResize
+from models.image.ltf.preprocess import LTFViews
 from models.image.mirror.preprocess import MirrorEvalTransform
 from models.image.moejepa.preprocess import VJEPA2ImageTransform
 
@@ -29,7 +31,7 @@ _SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop"
 # Name prefixes of steps that resize inside (whole official pipelines, SPAI's cap, aide_five_view*): an eval list holding
 # one has no native-resolution form.
 _RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "mirror_eval", "vjepa2_processor",
-                   "aide_five_view")
+                   "aide_five_view", "translate_duplicate", "ltf_views")
 
 
 class CNNDetAugment:
@@ -115,6 +117,31 @@ class ToFloat:
         return "ToFloat()"
 
 
+class TranslateDuplicate:
+    """``translate_duplicate_<n>``: a PIL image whose shorter side is below ``size`` is tiled with copies of itself until both
+    sides reach ``size`` (ceil(size / side) copies per axis, pasted from the top-left corner); larger images pass unchanged.
+    Verbatim from the Effort UniversalFakeDetect_Benchmark ``validate.py`` / ``data/datasets.py`` ``translate_duplicate``
+    (YZY-stack/Effort-AIGI-Detection), called there as ``translate_duplicate(img, 256)`` before ``CenterCrop(224)``."""
+
+    def __init__(self, size: int):
+        self.size = size
+
+    def __call__(self, img):
+        if min(img.size) < self.size:
+            width, height = img.size
+            new_width = width * math.ceil(self.size / width)
+            new_height = height * math.ceil(self.size / height)
+            new_img = Image.new("RGB", (new_width, new_height))
+            for i in range(0, new_width, width):
+                for j in range(0, new_height, height):
+                    new_img.paste(img, (i, j))
+            return new_img
+        return img
+
+    def __repr__(self):
+        return f"TranslateDuplicate({self.size})"
+
+
 class CapLongSide:
     """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds ``max_side``; otherwise
     leave it at native resolution (SPAI's any-resolution path)."""
@@ -159,6 +186,8 @@ class AIGITransformations:
             return v2.CenterCrop(n)
         elif transform_name == "cap_long_side_1024":       # SPAI: native resolution, long side capped at 1024 (PIL)
             return CapLongSide(1024)
+        elif transform_name == "translate_duplicate_256":  # Effort UFD benchmark: tile an image shorter than 256 (PIL)
+            return TranslateDuplicate(256)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":
@@ -223,6 +252,8 @@ class AIGITransformations:
             return MirrorEvalTransform()
         elif transform_name == "vjepa2_processor":         # MoE-JEPA: the V-JEPA 2 video processor on one frame
             return VJEPA2ImageTransform()
+        elif transform_name == "ltf_views":                # LTF: global view + native-res 224 tiles, [1 + tiles, 3, 224, 224]
+            return LTFViews()
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
 
@@ -230,9 +261,15 @@ class AIGITransformations:
         """The ``resize_*`` / ``center_crop_*`` steps, in order (they take PIL images too: the web overlay's geometry)."""
         return [t for name, t in zip(self.transform_list, self.transforms) if _SIZED.fullmatch(name)]
 
-    def normalize_step(self) -> v2.Normalize | None:
-        """The ``Normalize`` step, or None for pipelines that feed [0, 1] pixels (or normalize inside a custom step)."""
-        return next((t for t in self.transforms if isinstance(t, v2.Normalize)), None)
+    def normalize_step(self):
+        """The ``Normalize`` step (its ``mean`` / ``std``; for ``ltf_views`` the one inside the step), or None for
+        pipelines that feed [0, 1] pixels (or normalize inside another custom step)."""
+        for t in self.transforms:
+            if isinstance(t, v2.Normalize):
+                return t
+            if isinstance(t, LTFViews):
+                return t.normalize
+        return None
 
     def without_resize(self) -> "AIGITransformations":
         """The same pipeline without its ``resize_*`` / ``center_crop_*`` steps, to score images at native resolution.

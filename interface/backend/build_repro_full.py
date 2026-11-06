@@ -49,7 +49,10 @@ VAL = {
     ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}, "synthscope": {"map": 99.89, "acc": 96.79, "auroc": 99.76}},
     ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}, "synthscope": {"map": 74.72, "acc": 66.76, "auroc": 72.79}},
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}, "synthscope": {"map": 85.81, "acc": 77.19, "auroc": 83.1}},
-    # Effort: the official GenImage-SD1.4 checkpoint (no SynthScope-trained number). acc = mean per-subset balanced accuracy.
+    # Effort: GenImage and the in-the-wild sets = the official GenImage-SD1.4 checkpoint. acc = mean per-subset balanced accuracy.
+    # UniversalFakeDetect (the paper's ProGAN-trained model; no checkpoint released): synthscope = trained in SynthScope with
+    # the official recipe (experiments/image/effort_ufd.sh; job 276492, iteration 18000 = the official selection; eval job 278691,
+    # tag effort_ufd_step18000_ufd19), 19 subsets, acc at 0.5.
     # MoE-JEPA: official SID-Set checkpoint (no SynthScope-trained number). SID-Set acc = 3-way accuracy (the paper's
     # metric, bf16 as the official test; job 270455) with the binary mAP/AUROC; the rest: balanced acc at 0.5.
     ("moejepa", "SID-Set"):              {"official": {"map": 99.47, "acc": 96.37, "auroc": 99.41}},
@@ -59,6 +62,7 @@ VAL = {
     ("moejepa", "BFree-Online"):         {"official": {"map": 91.79, "acc": 57.99, "auroc": 85.22}},
     ("moejepa", "EvalGEN"):              {"official": {"map": 92.77, "acc": 70.85, "auroc": 86.43}},
     ("moejepa", "RealChain"):            {"official": {"map": 71.74, "acc": 66.39, "auroc": 73.22}},
+    ("effort", "UniversalFakeDetect"):   {"synthscope": {"map": 99.2, "acc": 94.81, "auroc": 99.04}},
     ("effort", "GenImage"):              {"official": {"map": 99.37, "acc": 89.83, "auroc": 99.48}},
     ("effort", "SynthWildX"):            {"official": {"map": 61.2, "acc": 56.69, "auroc": 63.57}},
     ("effort", "WildRF"):                {"official": {"map": 81.11, "acc": 71.36, "auroc": 78.64}},
@@ -98,6 +102,10 @@ VAL = {
     ("omniaid", "RealChain (v2"):                            {"official": {"map": 84.02, "acc": 61.71, "auroc": 83.63}},
     ("omniaid", "EvalGEN (v2"):                              {"official": {"map": 96.46, "acc": 74.14, "auroc": 93.08}},
     ("omniaid", "RRDataset (v2"):                            {"official": {"map": 84.19, "acc": 71.75, "auroc": 82.32}},
+    # LTF: official checkpoint only (training is not ported). The "official" slot is the SynthScope class on the full
+    # official GenImage val (100,000 images; ltf_synthscope_genimage_val100k). On the 33k set the official ltf_ref
+    # code gives 98.38, the same as SynthScope.
+    ("ltf", "GenImage"):                 {"official": {"map": 99.86, "acc": 98.36, "auroc": 99.88}},
     ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
     ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
     # synthscope = trained in SynthScope with the official recipe (experiments/image/npr.sh; job 265720, eval 265808).

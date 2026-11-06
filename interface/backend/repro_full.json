@@ -619,14 +619,14 @@
       "note": "89.83 (mAP 99.37) with the official checkpoint and DeepfakeBench's test transform (tag effort_genimage_full, job 269039)."
     },
     {
-      "benchmark": "UniversalFakeDetect (ProGAN-trained)",
-      "metric": "AP / acc",
-      "paper": "\u2014",
-      "ours": "",
-      "ours_synthscope": "",
+      "benchmark": "UniversalFakeDetect (ProGAN-trained, 19 subsets)",
+      "metric": "mAP and mean accuracy at 0.5, mean over the 19 subsets",
+      "paper": "map=99.41 / acc=95.19",
+      "ours": "mAP=99.2 / acc=94.81 / AUROC=99.04",
+      "ours_synthscope": "mAP=99.2 / acc=94.81 / AUROC=99.04",
       "ours_official": "",
-      "status": "missing",
-      "note": "Checkpoint not released."
+      "status": "reproduced",
+      "note": "Not served (CC BY-NC weights, trained in SynthScope): the official UniversalFakeDetect_Benchmark recipe (experiments/image/effort_ufd.sh, ProGAN 20 classes, 24000 iterations, job 276492), iteration 18000 (the official selection): mAP 99.20 / mAcc 94.81 over the 19 subsets (AUROC 99.04); every subset's accuracy is within 1.7 pt and its AP within 2.5 pt of the paper (bench_eval.py --model-config\u2026"
     },
     {
       "benchmark": "SynthWildX",
@@ -719,6 +719,18 @@
       "ours_official": "mAP=98.6 / acc=93.72",
       "status": "official",
       "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."
+    }
+  ],
+  "ltf": [
+    {
+      "benchmark": "GenImage (8 subsets, full official val, 100,000 images)",
+      "metric": "accuracy at 0.5, mean over subsets",
+      "paper": "acc=98.4 / ap=99.86 / auc=99.89",
+      "ours": "mAP=99.86 / acc=98.36 / AUROC=99.88 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.86 / acc=98.36 / AUROC=99.88",
+      "status": "official",
+      "note": "98.36 mAcc (real 97.62, fake 99.10, AUROC 99.88, AP 99.86) on the full official val, every subset within 0.10 pt of Table 1; the official ltf_ref code and SynthScope agree exactly on the 33k GenImage_full/test set (98.38). Corrected tiling. Tags ltf_synthscope_genimage_val100k, ltf_official_genimage8."
     }
   ],
   "mirror": [

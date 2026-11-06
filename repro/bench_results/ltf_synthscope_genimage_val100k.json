@@ -1,0 +1,76 @@
+{
+  "tag": "ltf_synthscope_genimage_val100k",
+  "model": "ltf",
+  "ckpt": "registry-default (ltf.pth = official weights/epoch_20.pth)",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenImage_val_full/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 98.36,
+    "map": 99.86,
+    "mauroc": 99.88
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 99.86,
+      "auroc": 99.88,
+      "real_acc": 97.67,
+      "fake_acc": 99.22,
+      "acc": 98.44
+    },
+    "biggan": {
+      "ap": 99.78,
+      "auroc": 99.8,
+      "real_acc": 97.65,
+      "fake_acc": 98.65,
+      "acc": 98.15
+    },
+    "glide": {
+      "ap": 99.77,
+      "auroc": 99.81,
+      "real_acc": 97.6,
+      "fake_acc": 98.63,
+      "acc": 98.12
+    },
+    "midjourney": {
+      "ap": 99.52,
+      "auroc": 99.62,
+      "real_acc": 97.9,
+      "fake_acc": 96.62,
+      "acc": 97.26
+    },
+    "sdv1.4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 97.6,
+      "fake_acc": 100.0,
+      "acc": 98.8
+    },
+    "sdv1.5": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 97.25,
+      "fake_acc": 99.89,
+      "acc": 98.57
+    },
+    "vqdm": {
+      "ap": 99.97,
+      "auroc": 99.97,
+      "real_acc": 97.48,
+      "fake_acc": 99.8,
+      "acc": 98.64
+    },
+    "wukong": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 97.78,
+      "fake_acc": 100.0,
+      "acc": 98.89
+    }
+  },
+  "run_with": "benchmark/bench_eval.py --model ltf",
+  "slurm_jobs": "277066,277011(sdv1.4, identical 12,000 images),277068,277069,277070,277071,277072,277073",
+  "date": "2026-11-05T11:41:39",
+  "note": "The sdv1.4 row was run on GenImage_full/test/sdv1.4 (job 277011), which is identical to the val split GenImage_val_full/test/sdv1.4: 6000 + 6000 file names and sizes identical, and a 300-file byte sample per class equal (CPU diff job 277197)."
+}
