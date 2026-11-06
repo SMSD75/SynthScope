@@ -68,10 +68,12 @@ model with `mirror.pth` loaded by the engine) on 24 real and fake images: PNG, J
 * P(fake): **max |diff| 0.0, 0 flips**, in fp32 on CPU and on an RTX 3090, and under fp16 autocast on the RTX 3090.
 
 The official fp32 and fp16-autocast outputs differ from each other by at most 8.5e-4 in P(fake) on these images
-(0 flips). Runs: job 279405 (GPU), `repro/logs/mirrorpar_cpu_*_20261106.log` (CPU).
+(0 flips). Runs: GPU job 279415 on commit b53e5ec (RTX 3090; log `repro/logs/mirrorpar_279415.out`), CPU logs
+`repro/logs/mirrorpar_cpu_ours_4d7f84e.log` and `mirrorpar_cpu_*_20261106.log`.
 
-Memory and speed (RTX 3090, 224×224 input, the parity job): fp16 autocast 3.40 GiB peak at batch 1 (19.3 img/s),
-6.59 GiB at batch 32 (90.1 img/s); fp32 3.42 GiB at batch 1 (25.7 img/s), 7.88 GiB at batch 32 (34.4 img/s).
+Memory and speed (job 279415, RTX 3090, 224×224 input, peak allocated): fp32 (served) 3.42 GiB at batch 1 (25.7
+img/s), 7.88 GiB at batch 32 (34.6 img/s); fp16 autocast 3.40 GiB at batch 1 (19.0 img/s), 6.59 GiB at batch 32
+(90.1 img/s).
 
 ## Results
 
