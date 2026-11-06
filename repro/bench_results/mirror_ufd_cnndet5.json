@@ -1,0 +1,53 @@
+{
+  "tag": "mirror_ufd_cnndet5",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/SynthScope_stage029/CNNDetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 83.69,
+    "map": 92.79,
+    "mauroc": 93.02
+  },
+  "per_generator": {
+    "crn": {
+      "ap": 99.61,
+      "auroc": 99.57,
+      "real_acc": 99.78,
+      "fake_acc": 87.2,
+      "acc": 93.49
+    },
+    "deepfake": {
+      "ap": 85.4,
+      "auroc": 85.44,
+      "real_acc": 67.71,
+      "fake_acc": 84.47,
+      "acc": 76.09
+    },
+    "imle": {
+      "ap": 99.78,
+      "auroc": 99.77,
+      "real_acc": 99.78,
+      "fake_acc": 90.25,
+      "acc": 95.02
+    },
+    "san": {
+      "ap": 98.14,
+      "auroc": 97.51,
+      "real_acc": 97.72,
+      "fake_acc": 87.21,
+      "acc": 92.47
+    },
+    "seeingdark": {
+      "ap": 81.01,
+      "auroc": 82.81,
+      "real_acc": 98.33,
+      "fake_acc": 24.44,
+      "acc": 61.39
+    }
+  },
+  "date": "2026-11-06T12:34:24",
+  "synthscope_version": "0.1.0"
+}

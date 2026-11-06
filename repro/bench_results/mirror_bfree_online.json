@@ -1,0 +1,25 @@
+{
+  "tag": "mirror_bfree_online",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope_stage029/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 97.4,
+    "map": 99.78,
+    "mauroc": 99.5
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 99.78,
+      "auroc": 99.5,
+      "real_acc": 98.14,
+      "fake_acc": 96.65,
+      "acc": 97.4
+    }
+  },
+  "date": "2026-11-06T12:04:34",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,39 @@
+{
+  "tag": "mirror_wildrf_nojfif",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/tmp/ssalehi_mirror_279513/layouts/WildRF_nojfif",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 97.88,
+    "map": 99.8,
+    "mauroc": 99.74
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 99.79,
+      "auroc": 99.79,
+      "real_acc": 96.25,
+      "fake_acc": 98.75,
+      "acc": 97.5
+    },
+    "reddit": {
+      "ap": 99.63,
+      "auroc": 99.5,
+      "real_acc": 97.87,
+      "fake_acc": 97.2,
+      "acc": 97.53
+    },
+    "twitter": {
+      "ap": 99.97,
+      "auroc": 99.93,
+      "real_acc": 97.92,
+      "fake_acc": 99.28,
+      "acc": 98.6
+    }
+  },
+  "date": "2026-11-06T12:33:22",
+  "synthscope_version": "0.1.0"
+}

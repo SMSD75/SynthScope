@@ -1,0 +1,28 @@
+{
+  "tag": "mirror_synthbuster_coco_firefly_extrule",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/tmp/ssalehi_mirror_279527/layouts/Synthbuster_coco",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 94.29,
+    "map": 99.29,
+    "mauroc": 99.63
+  },
+  "per_generator": {
+    "firefly": {
+      "ap": 99.29,
+      "auroc": 99.63,
+      "real_acc": 99.98,
+      "fake_acc": 88.6,
+      "acc": 94.29
+    }
+  },
+  "date": "2026-11-06T12:42:57",
+  "synthscope_version": "0.1.0",
+  "variant": {
+    "src_format_from": "extension"
+  }
+}
