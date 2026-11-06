@@ -772,7 +772,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=99.92 / acc=99.28 / AUROC=99.96",
       "status": "official",
-      "note": "99.28 (mAP 99.92, AUROC 99.96) with the official extension-based JPEG-q96 rule, +0.08 (firefly is 1000 JPEGs named .png: 94.29 under the official rule, 95.64 under the served decoded-format rule, which gives a mean of 99.43). Fakes-only set scored against the MSCOCO val2017 reals as in the paper (tags mirror_synthbuster_coco, mirror_synthbuster_coco_firefly_extrule, job 279527). An official-code\u2026"
+      "note": "99.28 (mAP 99.92, AUROC 99.96) with the official extension-based JPEG-q96 rule, +0.08 (firefly is 1000 JPEGs named .png: 94.29 under the official rule, 95.64 under the served decoded-format rule, which gives a mean of 99.43). Fakes-only set scored against the MSCOCO val2017 reals as in the paper (tags mirror_synthbuster_coco, mirror_synthbuster_coco_firefly_extrule, job 279527). The unmodified\u2026"
     },
     {
       "benchmark": "EvalGEN (5 generators vs MSCOCO reals)",
@@ -862,7 +862,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=99.78 / acc=97.4 / AUROC=99.5",
       "status": "official",
-      "note": "97.40 (mAP 99.78, AUROC 99.50), -0.20, on the 807 of about 1400 images still online (real acc 98.14, fake acc 96.65; tag mirror_bfree_online, job 279513). An official-code run is pending (jobs 279825, 279857)."
+      "note": "97.40 (mAP 99.78, AUROC 99.50), -0.20, on the 807 of about 1400 images still online (real acc 98.14, fake acc 96.65; tag mirror_bfree_online, job 279513). The unmodified official inference.py (job 279857; 279825 was a cancelled duplicate) gives the same numbers: B.Acc 97.40 (real 98.14, fake 96.65, AP 99.78, AUROC 99.50)."
     },
     {
       "benchmark": "Human-AIGI (fake accuracy)",
