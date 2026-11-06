@@ -384,7 +384,8 @@ _add(ModelSpec(
     # (DINOv3 ViT-H+ backbone, LoRA, memory bank, head), so neither the gated DINOv3 weights nor mirror_phase1.pth are
     # needed at inference. Strict load; the ViT block prefix is renamed for transformers 4/5 (official_arch.py).
     overrides=["model@ModelConfig=image/mirror"],
-    transform=model_transform("image/mirror"),  # official data/datasets.py eval: short side >512 -> 512, center 224, PNG/BMP -> JPEG q96
+    # official data/datasets.py eval: short side >512 -> 512, center 224, PNG/BMP -> JPEG q96
+    transform=model_transform("image/mirror"),
     notes="Reference-comparison detector: a frozen memory bank of real-image prototypes reconstructs an 'ideal "
           "reference' of the DINOv3 ViT-H+/16 (+ LoRA) features; the residual, the retrieval uncertainty and the CLS "
           "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "

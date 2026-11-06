@@ -99,7 +99,7 @@ released checkpoint run through SynthScope's `bench_eval` (SynthScope_official);
 | **WildRF** (official file set, no `.jfif`) | 97.8 | **97.88** (mAP 99.80, AUROC 99.74) | — | **reproduced** (+0.08); all files 97.86 |
 | **AIGIBench** (SocialRF + CommunityAI) | 94.9 | **94.98** (mAP 98.06, AUROC 98.66) | — | **reproduced** (+0.08) |
 | CO-SPY in-the-wild | 97.4 | — | — | missing (not held; `cospy` is the synthetic Co-Spy-Bench) |
-| RRDataset (pooled folder) | 88.3 | 86.91 (mAP 93.86, AUROC 91.98) | — | **short** by 1.39 (see below) |
+| RRDataset (pooled folder) | 88.3 | 86.91 (mAP 93.86, AUROC 91.98: means of the 3 scenarios) | — | **short** by 1.39 (see below) |
 | **BFree-Online** (807 of about 1400 images still online) | 97.6 | **97.40** (mAP 99.78, AUROC 99.50) | — | **reproduced** (-0.20) on the images still online |
 | RealChain (7 generators, not in the paper) | — | 81.71 (mAP 91.76, AUROC 89.96) | — | reference |
 
@@ -144,8 +144,9 @@ The aggregates use 99.28 for Synthbuster and the official `UnivFD` list for UFD.
   them (its extension list has no `.jfif`); `bench_eval` scores them. The headline uses the official file set, the
   other detectors in this repository use all files: 97.86 (twitter 98.54 against 98.60).
 * **RRDataset** (`original`, `redigital`, `transfer`, about 8500 + 8500 images each) is scored pooled, as the official code
-  does for a benchmark without a config entry. Pooled and the mean of the three scenarios agree (86.91), because
-  the classes are balanced.
+  does for a benchmark without a config entry. Pooled B.Acc and the mean of the three scenarios agree (86.91),
+  because the per-scenario class counts are nearly equal (8500, 8499 and 8500 per class); the mAP and AUROC in the
+  table are the mean over the three scenarios, not pooled.
 * **Runs.** `benchmark/bench_eval.py --model mirror --bs 32`, fp32, the released checkpoint as `mirror.pth`,
   code at commit bbe6597 (0 uncommitted files, shown in every log header). The tables are built by
   `repro/mirror_task2_table.py` from `repro/bench_results/mirror_*.json`; logs

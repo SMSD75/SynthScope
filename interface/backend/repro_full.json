@@ -851,8 +851,8 @@
       "ours": "mAP=93.86 / acc=86.91 / AUROC=91.98 (official wts)",
       "ours_synthscope": "",
       "ours_official": "mAP=93.86 / acc=86.91 / AUROC=91.98",
-      "status": "official",
-      "note": "86.91 (mAP 93.86, AUROC 91.98), -1.39: original 98.06, transfer 88.38, redigital 74.30 (fake acc 53.20). Pooled and 3-scenario mean agree. The causes are unresolved: a dataset copy or split difference, or a checkpoint difference (tag mirror_rrdataset, job 279554)."
+      "status": "below",
+      "note": "86.91 (mAP 93.86 and AUROC 91.98 are means of the 3 scenarios), -1.39: original 98.06, transfer 88.38, redigital 74.30 (fake acc 53.20). Pooled B.Acc and the 3-scenario mean agree because the per-scenario class counts are nearly equal (8500/8499/8500). The causes are unresolved: a dataset copy or split difference, or a checkpoint difference (tag mirror_rrdataset, job 279554)."
     },
     {
       "benchmark": "BFree-Online (viral images still online)",

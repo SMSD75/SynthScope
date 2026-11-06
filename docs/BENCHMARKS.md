@@ -192,6 +192,10 @@ The run writes `manifest.json`, `results.json` and `RESULTS.md` (commit these) p
 (git-ignored). The Generator benchmarks tab picks up every folder under `benchmark/generator_runs/` automatically; reload
 the page after a run.
 
+**Rescore note (CuRe).** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were scored
+before the scorers passed the source-format hint, so CuRe's official PNG to JPEG q96 step was skipped for the PNG inputs;
+those rows will change on a rescore (the scorers now use it; no other detector is affected).
+
 **What the numbers mean.** AUROC is threshold-free (50 is chance, 100 perfect). *Fakes caught* and *Reals flagged* use the
 detectors' 0.5 threshold, which is not tuned per generator, so accuracy can look poor even when AUROC is high. Real photos
 are JPEG-origin and of varying size, while the generated images are 1024x1024 PNGs, which can help size- or

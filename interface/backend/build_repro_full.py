@@ -169,6 +169,12 @@ VAL = {
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
 
+# Narrow label overrides applied after status_for (which stays unchanged for every other detector):
+# (model, exact benchmark label) -> status.
+# MIRROR RRDataset: 86.91 vs the README's 88.3 is 1.39 short, about 6x MIRROR's other deviations (all within 0.25), but
+# inside the generic +-2.0 tolerance, which would label it "official". Every doc calls it short, so the site does too.
+STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below"}
+
 # Tolerance (percentage points) for calling a number a reproduction of the paper.
 TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}
 
@@ -294,6 +300,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         spec_status = b.get("our_status", "")
         synthscope, official, sub = match_val(model, name)
         status = status_for(name, paper, synthscope, official, spec_status)
+        status = STATUS_OVERRIDE.get((model, name), status)
         on = b.get("our_number")
         note = ""
         if isinstance(on, dict) and on.get("note"):

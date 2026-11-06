@@ -1,5 +1,6 @@
-"""MIRROR's test-time preprocessing; ``compress_image`` and the resize rule are vendored from github.com/handsome-rich/MIRROR
-(commit 7f108fd, ``data/datasets.py``; licence unclear: README badge MIT, no LICENSE file - see LICENSES.md).
+"""MIRROR's test-time preprocessing; ``compress_image`` and the resize rule are vendored from
+github.com/handsome-rich/MIRROR (commit 7f108fd, ``data/datasets.py``; licence unclear: README badge MIT, no LICENSE
+file - see LICENSES.md).
 
 The eval path of the official ``data/datasets.py`` (``Get_Transforms(mode='preprocess')`` eval branch and
 ``TestDataset.__getitem__``), PIL image in, the 224x224 RGB PIL crop out; the eval list then
@@ -14,12 +15,12 @@ then ``CenterCrop(224)``, then the "format-aligned input" step, then ``ToTensor`
      the fake training images were JPEG q96 round-tripped, so lossless inputs are aligned to that format,
   4. ToTensor (the ``to_dtype`` step after this one).
 
-Step 3 depends on the file name, which a decoded PIL image has lost. SynthScope's image loaders record the decoded format
-in ``img.info["synthscope_src_format"]`` (``SRC_FORMAT_KEY``): ``bench_eval._open_rgb`` and ``interface/backend/media``
-(``to_rgb`` / ``decode_image`` / ``open_rgb``, used by the web UI, the synthscope API for paths, bytes and PIL images,
-``benchmark/evaluate.py`` and ``benchmark/generator_bench.py``). PNG / BMP there take the JPEG step; anything else, or
-an image without the hint (e.g. the training loaders' tensors), does not. For correctly named files this is the official
-extension test.
+Step 3 depends on the file name, which a decoded PIL image has lost. SynthScope's image loaders record the decoded
+format in ``img.info["synthscope_src_format"]`` (``SRC_FORMAT_KEY``): ``bench_eval._open_rgb`` and
+``interface/backend/media`` (``to_rgb`` / ``decode_image`` / ``open_rgb``, used by the web UI, the synthscope API
+for paths, bytes and PIL images, ``benchmark/evaluate.py`` and ``benchmark/generator_bench.py``). PNG / BMP there
+take the JPEG step; anything else, or an image without the hint (e.g. the training loaders' tensors), does not. For
+correctly named files this is the official extension test.
 """
 import io
 
@@ -33,7 +34,8 @@ CROP_SIZE = 224
 EVAL_RESIZE_SHORT = 512
 ALIGN_JPEG_QUALITY = 96
 # Official: path.lower().endswith(('.png', '.bmp', '.tiff', '.PNG')). TIFF is kept for completeness, but the official
-# TestDataset never loads .tif/.tiff files (it lists .png/.jpg/.jpeg/.bmp/.webp only), so no official number involves it.
+# TestDataset never loads .tif/.tiff files (it lists .png/.jpg/.jpeg/.bmp/.webp only), so no official number
+# involves it.
 ALIGNED_FORMATS = ("PNG", "BMP", "TIFF")
 
 

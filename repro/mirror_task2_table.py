@@ -19,7 +19,8 @@ PAPER_H = {"AIGCDetect": 97.3, "GenImage": 99.8, "UFD": 92.4, "Synthbuster": 99.
            "Chameleon": 94.6, "SynthWildX": 95.1, "WildRF": 97.8, "AIGIBench": 94.9, "CO-SPY": 97.4, "RRDataset": 88.3,
            "BFree-Online": 97.6}
 # README DINOv3-L column (= paper Tables 1/2 DINOv3 rows)
-PAPER_L_MEAN = {"AIGCDetect": 91.7, "GenImage": 94.2, "UFD": 88.2, "Synthbuster": 98.1, "EvalGEN": 99.0, "DRCT-2M": 93.0,
+PAPER_L_MEAN = {"AIGCDetect": 91.7, "GenImage": 94.2, "UFD": 88.2, "Synthbuster": 98.1, "EvalGEN": 99.0,
+                "DRCT-2M": 93.0,
                 "Chameleon": 90.7, "SynthWildX": 93.1, "WildRF": 96.7, "AIGIBench": 90.5, "CO-SPY": 91.3,
                 "RRDataset": 78.9, "BFree-Online": 83.0}
 # paper per-subset tables (DINOv3-L only): Table 5 (AIGCDetect), 7 (UFD), 8 (Synthbuster), 9 (EvalGEN), 2 (in the wild)
@@ -39,7 +40,8 @@ PAPER_L = {
     "WildRF": {"facebook": 97.1, "reddit": 96.6, "twitter": 96.4},
     "AIGIBench": {"SocialRF": 87.6, "CommunityAI": 93.4},
 }
-# UniversalFakeDetect subset lists: paper Table 7 (12), official inference.py DATASET_CONFIGS 'UnivFD' (13) and 'ojha' (12)
+# UniversalFakeDetect subset lists: paper Table 7 (12), official inference.py DATASET_CONFIGS 'UnivFD' (13) and
+# 'ojha' (12)
 UFD_LISTS = {
     "paper Table 7 (12)": ["seeingdark", "san", "crn", "imle", "guided", "ldm_200", "ldm_200_cfg", "ldm_100",
                            "glide_100_27", "glide_50_27", "glide_100_10", "dalle"],
@@ -75,7 +77,8 @@ def official_csvs():
     for f in sorted(glob.glob(str(OFFICIAL_DIR / "*" / "*.csv"))):
         bench = Path(f).name.rsplit("_", 2)[0]
         with open(f) as fh:
-            rows = {r["Dataset"]: {k: float(v) * 100 for k, v in r.items() if k != "Dataset"} for r in csv.DictReader(fh)}
+            rows = {r["Dataset"]: {k: float(v) * 100 for k, v in r.items() if k != "Dataset"}
+                    for r in csv.DictReader(fh)}
         out.setdefault(bench, {}).update(rows)
     return out
 
@@ -193,8 +196,9 @@ def aggregates(used):
     paper10 = sum(PAPER_H[k] * n for k, n in w.items()) / 10
     w16 = dict(w, Chameleon=1, **{"CO-SPY": 5})
     paper16 = sum(PAPER_H[k] * n for k, n in w16.items()) / 16
-    print(f"* In-the-wild 16-column score: paper H+ {paper16:.2f} (derived from the README per-benchmark means weighted "
-          f"by their column counts; L: Table 2 91.2). We hold 10 of 16 columns (no Chameleon, no CO-SPY in-the-wild x5): "
+    print(f"* In-the-wild 16-column score: paper H+ {paper16:.2f} (derived from the README per-benchmark means "
+          f"weighted by their column counts; L: Table 2 91.2). We hold 10 of 16 columns (no Chameleon, no CO-SPY "
+          f"in-the-wild x5): "
           f"SynthScope {fmt(mean(list(cols.values())))} vs paper H+ on the same 10 columns {paper10:.2f}.")
     print("  * columns: " + ", ".join(f"{k} {fmt(v)}" for k, v in cols.items()))
     rrp, ra, fa = rr_pooled()
@@ -237,7 +241,8 @@ def main():
             ("EvalGEN", "mirror_evalgen", None, None), ("SynthWildX", "mirror_synthwildx", "Synthwildx", None),
             ("WildRF", "mirror_wildrf", None, None), ("WildRF", "mirror_wildrf_nojfif", "WildRF", None),
             ("WildRF", "mirror_wildrf_amp", None, None), ("AIGIBench", "mirror_aigibench", None, None),
-            ("RRDataset", "mirror_rrdataset", None, None), ("RRDataset", "mirror_rrdataset_original_extrule", None, None),
+            ("RRDataset", "mirror_rrdataset", None, None),
+            ("RRDataset", "mirror_rrdataset_original_extrule", None, None),
             ("BFree-Online", "mirror_bfree_online", "B-Free", {"viral": "ALL"}),
             ("RealChain", "mirror_realchain", None, None)]:
         per_subset(bench, tag, oname, rmap)

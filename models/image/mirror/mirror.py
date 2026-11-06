@@ -20,9 +20,9 @@ memory_path=None; see the README.)
 
 Input contract: ``forward`` takes [0, 1] pixels from the official eval transform (``mirror_eval`` + ``to_dtype``: short
 side > 512 resized to 512, center crop 224, JPEG q96 for PNG/BMP/TIFF sources) and normalizes inside, like the official
-model. It runs fp32 by default, the official default (``inference.py --use_amp`` is opt-in, ``eval.sh`` does not set it,
-and the released checkpoint was trained with ``use_amp=False``). ``use_amp: true`` runs inference under CUDA fp16 autocast
-exactly as the official ``evaluate --use_amp``; it never applies on CPU or in training mode.
+model. It runs fp32 by default, the official default (``inference.py --use_amp`` is opt-in, ``eval.sh`` does not set
+it, and the released checkpoint was trained with ``use_amp=False``). ``use_amp: true`` runs inference under CUDA fp16
+autocast exactly as the official ``evaluate --use_amp``; it never applies on CPU or in training mode.
 
 Training: ``compute_loss`` is the official phase-2 loss (timm LabelSmoothingCrossEntropy, smoothing 0.1 =
 CrossEntropyLoss(label_smoothing=0.1)) on the logits; the phase-1 memory-bank training (mmbank.py) and the official
@@ -40,7 +40,8 @@ class SynthScopeMIRRORModel(MIRROR_Detector):
 
     def __init__(self, config: DictConfig):
         mc = config.ModelConfig
-        backbone_path = mc.get("backbone_path")       # null: build DINOv3 ViT-H+ from its config (weights from mirror.pth)
+        # backbone_path null: build DINOv3 ViT-H+ from its config (the weights come from mirror.pth)
+        backbone_path = mc.get("backbone_path")
         # backbone_config: overrides of the ViT-H+ config fields (e.g. a tiny backbone for the smoke test).
         backbone_config = dict(DINOV3_VITH16PLUS, **dict(mc.get("backbone_config") or {}))
         super().__init__(dino_path=str(backbone_path) if backbone_path else backbone_config,
@@ -50,7 +51,8 @@ class SynthScopeMIRRORModel(MIRROR_Detector):
 
     def forward(self, images):
         """[B, 3, 224, 224] pixels in [0, 1] -> 2-class logits [B, 2] (index 1 = fake)."""
-        amp = self.use_amp and images.is_cuda and not self.training     # inference-only autocast, as the official evaluate
+        # inference-only autocast, as the official evaluate
+        amp = self.use_amp and images.is_cuda and not self.training
         with torch.amp.autocast(device_type=images.device.type, enabled=amp):
             logits, _, _ = super().forward(images)
         return logits.float()
