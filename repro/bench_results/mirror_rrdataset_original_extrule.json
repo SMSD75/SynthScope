@@ -1,0 +1,28 @@
+{
+  "tag": "mirror_rrdataset_original_extrule",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope_stage029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 98.06,
+    "map": 99.66,
+    "mauroc": 99.72
+  },
+  "per_generator": {
+    "original": {
+      "ap": 99.66,
+      "auroc": 99.72,
+      "real_acc": 98.09,
+      "fake_acc": 98.02,
+      "acc": 98.06
+    }
+  },
+  "date": "2026-11-06T14:04:30",
+  "synthscope_version": "0.1.0",
+  "variant": {
+    "src_format_from": "extension"
+  }
+}

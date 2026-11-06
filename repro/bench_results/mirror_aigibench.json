@@ -1,0 +1,32 @@
+{
+  "tag": "mirror_aigibench",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope_stage029/AIGIBench/test",
+  "jpeg_fakes": null,
+  "n_generators": 2,
+  "means": {
+    "acc": 94.98,
+    "map": 98.06,
+    "mauroc": 98.66
+  },
+  "per_generator": {
+    "CommunityAI": {
+      "ap": 99.56,
+      "auroc": 99.53,
+      "real_acc": 97.45,
+      "fake_acc": 96.33,
+      "acc": 96.89
+    },
+    "SocialRF": {
+      "ap": 96.57,
+      "auroc": 97.8,
+      "real_acc": 88.63,
+      "fake_acc": 97.53,
+      "acc": 93.08
+    }
+  },
+  "date": "2026-11-06T14:32:06",
+  "synthscope_version": "0.1.0"
+}

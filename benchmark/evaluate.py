@@ -22,9 +22,10 @@ import json
 from pathlib import Path
 
 import torch
-from PIL import Image, ImageFile
+from PIL import ImageFile
 
 import synthscope
+from interface.backend import media
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -74,7 +75,7 @@ def score(det: "synthscope.Detector", paths: list[Path], batch_size: int) -> tor
     for i in range(0, len(paths), batch_size):
         batch = []
         for p in paths[i:i + batch_size]:
-            batch.append(spec.transform(Image.open(p).convert("RGB")))
+            batch.append(spec.transform(media.open_rgb(p)))   # keeps the source-format hint (CuRe, MIRROR)
         x = torch.stack(batch).to(device)
         probs.append(det._engine._fake_prob(model, spec, x).detach().float().cpu())
     return torch.cat(probs) if probs else torch.empty(0)

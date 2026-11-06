@@ -33,6 +33,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `omniaid` (+ `omniaid_v1`, `omniaid_genimage`) | image | ce | official | – | Hybrid MoE on CLIP ViT-L/14@336: routed semantic experts + an always-on artifact expert |
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
 | `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
+| `mirror` | image | ce | official | – | Frozen DINOv3 ViT-H+/16 + LoRA + real-image memory bank: reconstruction of an "ideal reference" (center-crop 224, JPEG q96 for PNG/BMP/TIFF) |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |

@@ -733,6 +733,158 @@
       "note": "98.36 mAcc (real 97.62, fake 99.10, AUROC 99.88, AP 99.86) on the full official val, every subset within 0.10 pt of Table 1; the official ltf_ref code and SynthScope agree exactly on the 33k GenImage_full/test set (98.38). Corrected tiling. Tags ltf_synthscope_genimage_val100k, ltf_official_genimage8."
     }
   ],
+  "mirror": [
+    {
+      "benchmark": "AIGCDetectBenchmark (17 subsets, full data)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=97.3",
+      "ours": "mAP=99.49 / acc=97.39 / AUROC=99.51 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.49 / acc=97.39 / AUROC=99.51",
+      "status": "official",
+      "note": "Released checkpoint through SynthScope: 97.39 (mAP 99.49, AUROC 99.51), +0.09. Weakest: cyclegan 83.65, whichfaceisreal 87.10, stargan 93.67 (tag mirror_aigcdetect, job 279555)."
+    },
+    {
+      "benchmark": "GenImage (8 subsets, full val)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=99.8",
+      "ours": "mAP=100.0 / acc=99.78 / AUROC=100.0 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=100.0 / acc=99.78 / AUROC=100.0",
+      "status": "official",
+      "note": "99.78 (mAP 100.00, AUROC 100.00) on the full val split (100k images), -0.02; the test release gives 99.79 (tags mirror_genimage_val100k, mirror_genimage_full, jobs 279552, 279553)."
+    },
+    {
+      "benchmark": "UnivFakeDetect (official code's 13-subset UnivFD list)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=92.4",
+      "ours": "mAP=97.04 / acc=92.44 / AUROC=97.24 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=97.04 / acc=92.44 / AUROC=97.24",
+      "status": "official",
+      "note": "92.44 (mAP 97.04, AUROC 97.24) on the official code's UnivFD list (13 subsets), +0.04. The paper's Table 7 list (12 subsets, no deepfake) gives 93.81 and the official ojha list (12) gives 95.03. Weak: seeingdark 61.39, deepfake 76.09 (tags mirror_ufd_diffusion8, mirror_ufd_cnndet5, job 279550)."
+    },
+    {
+      "benchmark": "Synthbuster (9 generators vs 5000 MSCOCO reals)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=99.2",
+      "ours": "mAP=99.92 / acc=99.28 / AUROC=99.96 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.92 / acc=99.28 / AUROC=99.96",
+      "status": "official",
+      "note": "99.28 (mAP 99.92, AUROC 99.96) with the official extension-based JPEG-q96 rule, +0.08 (firefly is 1000 JPEGs named .png: 94.29 under the official rule, 95.64 under the served decoded-format rule, which gives a mean of 99.43). Fakes-only set scored against the MSCOCO val2017 reals as in the paper (tags mirror_synthbuster_coco, mirror_synthbuster_coco_firefly_extrule, job 279527). An official-code\u2026"
+    },
+    {
+      "benchmark": "EvalGEN (5 generators vs MSCOCO reals)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=99.8",
+      "ours": "mAP=100.0 / acc=99.85 / AUROC=99.99 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=100.0 / acc=99.85 / AUROC=99.99",
+      "status": "official",
+      "note": "99.85 (mAP 100.00, AUROC 99.99), +0.05 (tag mirror_evalgen, job 279551)."
+    },
+    {
+      "benchmark": "DRCT-2M",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=93.0",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "DRCT-2M is not in SynthScope."
+    },
+    {
+      "benchmark": "Chameleon",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=94.6",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Chameleon is available by request only; not held."
+    },
+    {
+      "benchmark": "SynthWildX (3 generators, images on X)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=95.1",
+      "ours": "mAP=97.71 / acc=95.08 / AUROC=98.33 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=97.71 / acc=95.08 / AUROC=98.33",
+      "status": "official",
+      "note": "95.08 (mAP 97.71, AUROC 98.33), -0.02, on the 1713 of 2000 images still online. The unmodified official inference.py gives the same B.Acc on every subset (dalle3 97.44, firefly 90.21, midjourney_v5 97.59; tag mirror_synthwildx, job 279513)."
+    },
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=97.8",
+      "ours": "mAP=99.8 / acc=97.88 / AUROC=99.74 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.8 / acc=97.88 / AUROC=99.74",
+      "status": "official",
+      "note": "97.88 (mAP 99.80, AUROC 99.74), +0.08, on the official file set (without the 262 .jfif files its loader skips); all files 97.86. The official inference.py gives the same B.Acc on every subset (facebook 97.50, reddit 97.53, twitter 98.60; tags mirror_wildrf_nojfif, mirror_wildrf, job 279513)."
+    },
+    {
+      "benchmark": "AIGIBench (SocialRF + CommunityAI)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "acc=94.9",
+      "ours": "mAP=98.06 / acc=94.98 / AUROC=98.66 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.06 / acc=94.98 / AUROC=98.66",
+      "status": "official",
+      "note": "94.98 (mAP 98.06, AUROC 98.66), +0.08 (SocialRF 93.08, CommunityAI 96.89; tag mirror_aigibench, job 279554)."
+    },
+    {
+      "benchmark": "CO-SPY in-the-wild (fake accuracy)",
+      "metric": "fake accuracy",
+      "paper": "acc=97.4",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "The in-the-wild part of CO-SPY is not held (SynthScope's cospy loader is the synthetic Co-Spy-Bench)."
+    },
+    {
+      "benchmark": "RRDataset (pooled folder)",
+      "metric": "balanced accuracy at 0.5 (pooled folder)",
+      "paper": "acc=88.3",
+      "ours": "mAP=93.86 / acc=86.91 / AUROC=91.98 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=93.86 / acc=86.91 / AUROC=91.98",
+      "status": "below",
+      "note": "86.91 (mAP 93.86 and AUROC 91.98 are means of the 3 scenarios), -1.39: original 98.06, transfer 88.38, redigital 74.30 (fake acc 53.20). Pooled B.Acc and the 3-scenario mean agree because the per-scenario class counts are nearly equal (8500/8499/8500). The causes are unresolved: a dataset copy or split difference, or a checkpoint difference (tag mirror_rrdataset, job 279554)."
+    },
+    {
+      "benchmark": "BFree-Online (viral images still online)",
+      "metric": "balanced accuracy at 0.5 (pooled folder)",
+      "paper": "acc=97.6",
+      "ours": "mAP=99.78 / acc=97.4 / AUROC=99.5 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.78 / acc=97.4 / AUROC=99.5",
+      "status": "official",
+      "note": "97.40 (mAP 99.78, AUROC 99.50), -0.20, on the 807 of about 1400 images still online (real acc 98.14, fake acc 96.65; tag mirror_bfree_online, job 279513). An official-code run is pending (jobs 279825, 279857)."
+    },
+    {
+      "benchmark": "Human-AIGI (fake accuracy)",
+      "metric": "fake accuracy",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Human-AIGI is not in SynthScope (not released); the README table has no value for it."
+    },
+    {
+      "benchmark": "RealChain (7 generators, full data)",
+      "metric": "balanced accuracy at 0.5 (mean over subsets)",
+      "paper": "\u2014",
+      "ours": "mAP=91.76 / acc=81.71 / AUROC=89.96 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=91.76 / acc=81.71 / AUROC=89.96",
+      "status": "reference",
+      "note": "81.71 (mAP 91.76, AUROC 89.96); Flux1 96.60, Hunyuan3 90.90, QwenImage 90.50, SDv3.5 80.05, NanoBanana 78.75, Seedream4 69.25, i2i 65.90 (tag mirror_realchain, job 279513)."
+    }
+  ],
   "moejepa": [
     {
       "benchmark": "SID-Set (test, 3-way, Table 1)",

@@ -15,9 +15,9 @@ from pathlib import Path
 
 import numpy as np
 import torch
-from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from backend import media                  # noqa: E402
 from backend.engine import get_engine     # noqa: E402
 from backend.registry import get_spec     # noqa: E402
 
@@ -72,7 +72,7 @@ def main():
     probs, labels = [], []
     for i in range(0, len(items), args.bs):
         chunk = items[i:i + args.bs]
-        batch = torch.stack([spec.transform(Image.open(p).convert("RGB")) for p, _ in chunk]).to(engine.device)
+        batch = torch.stack([spec.transform(media.open_rgb(p)) for p, _ in chunk]).to(engine.device)
         probs += engine._fake_prob(model, spec, batch).float().cpu().tolist()
         labels += [l for _, l in chunk]
 

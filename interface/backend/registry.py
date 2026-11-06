@@ -377,6 +377,20 @@ _add(ModelSpec(
           "at its own resolution, plus one resized global view. Patch tokens are pooled within each tile, tiles and "
           "views are pooled across the image, and a gated fusion head decides. Uses the OFFICIAL GenImage checkpoint.",
 ))
+_add(ModelSpec(
+    key="mirror", name="MIRROR", paper="Liu et al., NeurIPS'26",
+    modality="image", predict_kind="ce", checkpoint="mirror.pth", ckpt_kind="official_mirror", weights="official",
+    # mirror.pth = the official phase-2 checkpoint-h-cur.pth unchanged (authors' Google Drive); it holds the full model
+    # (DINOv3 ViT-H+ backbone, LoRA, memory bank, head), so neither the gated DINOv3 weights nor mirror_phase1.pth are
+    # needed at inference. Strict load; the ViT block prefix is renamed for transformers 4/5 (official_arch.py).
+    overrides=["model@ModelConfig=image/mirror"],
+    # official data/datasets.py eval: short side >512 -> 512, center 224, PNG/BMP -> JPEG q96
+    transform=model_transform("image/mirror"),
+    notes="Reference-comparison detector: a frozen memory bank of real-image prototypes reconstructs an 'ideal "
+          "reference' of the DINOv3 ViT-H+/16 (+ LoRA) features; the residual, the retrieval uncertainty and the CLS "
+          "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "
+          "format-aligned inputs), so use the registered transform. Runs fp32, the official default.",
+))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
 for _key, _name, _ckpt, _note in [
@@ -488,6 +502,9 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "moejepa": ("Short side 292, center 256×256", "The short side is resized to 292 and the central 256×256 is kept."),
     "effort": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
     "effort_chameleon": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
+    "mirror": ("Center-crop 224 (short side ≤ 512)", "If the shorter side exceeds 512 px it is scaled to 512, then "
+               "the central 224×224 is used (smaller images are padded with black). For PNG/BMP files that 224×224 "
+               "crop is then re-saved as JPEG (quality 96), as in the paper's format-aligned evaluation."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),

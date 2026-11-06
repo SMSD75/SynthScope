@@ -25,6 +25,7 @@
 | OmniAID | GenImage / AIGCDetect / Mirage-Test (GenImage release) | 95.94 / 88.87 / 51.10 acc | 95.82 / 88.87 / 51.10 acc | — | ✅ official match (v1 release too: 97.16 / 92.88 / 88.39 vs 97.24 / 92.88 / 88.39) |
 | Effort | GenImage / UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc / 99.41 mAP, 95.19 acc | 89.83 acc / — (no ProGAN checkpoint released) | — / **99.20 mAP, 94.81 acc** | ✅ official match on GenImage; trained in SynthScope with the official ProGAN recipe reproduces the UFD table (iteration 18000 = the official selection) |
 | LTF | GenImage (8 subsets, full val, 100,000 images) | 98.4 acc (Table 4: AUC 99.89 / AP 99.86) | 98.36 acc / 99.88 AUROC / 99.86 AP | — | ✅ official match (every subset within 0.10 pt; the official code equals SynthScope exactly on a 33k subset) |
+| MIRROR | AIGCDetect / GenImage / UnivFakeDetect / Synthbuster / EvalGEN / SynthWildX / WildRF / AIGIBench / BFree-Online / RRDataset | 97.3 / 99.8 / 92.4 / 99.2 / 99.8 / 95.1 / 97.8 / 94.9 / 97.6 / 88.3 B.Acc (README, DINOv3-H+) | 97.39 / 99.78 / 92.44 / 99.28 / 99.85 / 95.08 / 97.88 / 94.98 / 97.40 / 86.91 B.Acc | — | ✅ official match on 9 of 10 held (RRDataset 1.4 short); DRCT-2M, Chameleon, CO-SPY in-the-wild, Human-AIGI not run |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench | 93.0 | — | 92.70 | ✅ match |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC | ✅ match |
@@ -212,6 +213,25 @@ Fidelity: SynthScope's class == the official `LTF` (333/333 state-dict tensors i
 Per subset on the full val (Midjourney, SD v1.4, SD v1.5, ADM, GLIDE, Wukong, VQDM, BigGAN): 97.26, 98.80, 98.57, 98.44, 98.12, 98.89, 98.64, 98.15 against the paper's 97.3, 98.9, 98.6, 98.4, 98.1, 98.9, 98.7, 98.1.
 
 **Verdict: faithful port (identical to the official model); the GenImage table is reproduced.** The paper and the released code differ in two places (paper: weighted-sum fusion plus a linear classifier, checkpoint: gated concatenation plus an MLP; the paper's bag loss is not in the released training path); SynthScope follows the code. Only the GenImage checkpoint is released and training is not ported. The real false-positive rate of about 2 to 3% is a property of the released weights. The weights card has no license tag (only the code is MIT), so `ltf` is not served on the Space yet.
+
+### MIRROR (official checkpoint)
+Fidelity: SynthScope's class == the official `MIRROR_Detector` (825/825 state-dict tensors identical, model inputs and logits identical on 24 images, 0 verdict flips, fp32 and fp16 autocast; GPU job 279415). The checkpoint is DINOv3 ViT-H+; the paper's per-subset tables are DINOv3-L, so the target is the official README's DINOv3-H+ column. Balanced accuracy at 0.5, mean over subsets; Synthbuster and EvalGEN (fakes only) are scored against the MSCOCO val2017 reals as in the paper.
+
+| Benchmark (SynthScope protocol) | B.Acc | mAP | Paper (README H+) | Note |
+|---|---:|---:|---|---|
+| AIGCDetectBenchmark (`--dataset aigcdetect`; 17 subsets, full data) | **97.39** | 99.49 | **97.3** | **reproduced** (AUROC 99.51) |
+| GenImage (full val split, 100k; `--benchmark pergen --data GenImage_val_full/test`) | **99.78** | 100.00 | **99.8** | **reproduced** (test release 99.79) |
+| UnivFakeDetect (the official code's 13-subset `UnivFD` list) | **92.44** | 97.04 | **92.4** | **reproduced**; the paper's Table 7 list (12 subsets) gives 93.81 |
+| Synthbuster (9 generators vs 5000 MSCOCO reals) | **99.28** | 99.92 | **99.2** | **reproduced** with the official extension-based JPEG-q96 rule (served decoded-format rule: 99.43; firefly is 1000 JPEGs named .png) |
+| EvalGEN (`--dataset evalgen`; 5 generators vs MSCOCO) | **99.85** | 100.00 | **99.8** | **reproduced** |
+| SynthWildX (`--dataset synthwildx`; 1713 of 2000 still online) | **95.08** | 97.71 | **95.1** | **reproduced**; the official `inference.py` gives the same B.Acc on every subset |
+| WildRF (`--dataset wildrf`; official file set, no .jfif) | **97.88** | 99.80 | **97.8** | **reproduced** (all files 97.86); the official code gives the same B.Acc on every subset |
+| AIGIBench (`--dataset aigibench`; SocialRF + CommunityAI) | **94.98** | 98.06 | **94.9** | **reproduced** |
+| BFree-Online (`--dataset bfree_online`; 807 of ~1400 still online) | **97.40** | 99.78 | **97.6** | **reproduced** on the images still online |
+| RRDataset (`--dataset rrdataset`; pooled folder) | 86.91 | 93.86 | 88.3 | **short** by 1.39: original 98.06, transfer 88.38, redigital 74.30 (fake acc 53.20); causes unresolved |
+| RealChain (`--dataset realchain`) | 81.71 | 91.76 | — | new measurement (AUROC 89.96) |
+
+**Verdict: faithful port (identical to the official model); the README H+ numbers reproduce on 9 of the 10 benchmarks we hold, each within 0.25.** On the held subset, the standard average (5 of 6, no DRCT-2M) is 97.75 against the README's 97.70, and the in-the-wild score (10 of 16 columns) is 95.32 against 95.44. Not run: DRCT-2M (not in SynthScope), Chameleon (request only), CO-SPY in-the-wild (not held), Human-AIGI (not released). Official-code reference runs on Synthbuster firefly and BFree-Online are pending (jobs 279825, 279857). Jobs 279513, 279527, 279550-279555; tags `mirror_*`; table built by `repro/mirror_task2_table.py`. Licence unclear, so the checkpoint is not redistributed (the zoo and the Space do not carry it). The released memory bank has the default initialisation statistics; the checkpoint nevertheless reproduces 9 of 10 held numbers (details in `models/image/mirror/README.md`).
 
 ### Video detectors (no official weights released)
 | Method · Benchmark | Paper | SynthScope_train |

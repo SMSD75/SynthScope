@@ -16,6 +16,7 @@ from models.image.aide.official_arch import AIDEFiveView
 from models.image.cure.preprocess import CuReTransform
 from models.image.effort.preprocess import Cv2SquareResize
 from models.image.ltf.preprocess import LTFViews
+from models.image.mirror.preprocess import MirrorEvalTransform
 from models.image.moejepa.preprocess import VJEPA2ImageTransform
 
 IMAGENET_MEAN, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
@@ -29,8 +30,8 @@ _SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)")
 _SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop": CROPS}
 # Name prefixes of steps that resize inside (whole official pipelines, SPAI's cap, aide_five_view*): an eval list holding
 # one has no native-resolution form.
-_RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "vjepa2_processor", "aide_five_view",
-                   "translate_duplicate", "ltf_views")
+_RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "mirror_eval", "vjepa2_processor",
+                   "aide_five_view", "translate_duplicate", "ltf_views")
 
 
 class CNNDetAugment:
@@ -247,6 +248,8 @@ class AIGITransformations:
             return Cv2SquareResize(224)
         elif transform_name == "cure_eval":                # CuRe: PNG->JPEG96, 390 crop, 336 resize, JPEG70, mean=std=0.5
             return CuReTransform()
+        elif transform_name == "mirror_eval":              # MIRROR: short side >512 -> 512, center 224, PNG/BMP->JPEG96 (PIL out)
+            return MirrorEvalTransform()
         elif transform_name == "vjepa2_processor":         # MoE-JEPA: the V-JEPA 2 video processor on one frame
             return VJEPA2ImageTransform()
         elif transform_name == "ltf_views":                # LTF: global view + native-res 224 tiles, [1 + tiles, 3, 224, 224]

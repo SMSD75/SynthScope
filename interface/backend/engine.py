@@ -124,6 +124,9 @@ def _build_model(cfg):
     if model_type == "ltf":
         from models.image.ltf.ltf import SynthScopeLTFModel
         return SynthScopeLTFModel(cfg)
+    if model_type == "mirror":
+        from models.image.mirror.mirror import SynthScopeMIRRORModel
+        return SynthScopeMIRRORModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)

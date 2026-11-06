@@ -145,6 +145,21 @@ VAL = {
     # AUROC / acc at the calibrated threshold. synthscope = job 270384, official = official code end to end (job 270323).
     ("split", "GenVideo"):               {"synthscope": {"map": 99.79, "auroc": 99.97, "acc": 99.41}, "official": {"map": 96.12, "auroc": 99.16}},
     ("restrav", "GenVidBench"):         {"synthscope": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
+    # MIRROR: the official phase-2 checkpoint (DINOv3 ViT-H+; no SynthScope-trained number). acc = mean per-subset
+    # balanced accuracy at 0.5; the paper column is the README's DINOv3-H+ value. Synthbuster uses the official
+    # extension-based JPEG-q96 rule (99.43 with the served decoded-format rule); UnivFakeDetect uses the official
+    # code's 13-subset UnivFD list (93.81 on the paper's Table 7 list). Jobs 279513, 279527, 279550-279555.
+    ("mirror", "AIGCDetect"):            {"official": {"map": 99.49, "acc": 97.39, "auroc": 99.51}},
+    ("mirror", "GenImage"):              {"official": {"map": 100.0, "acc": 99.78, "auroc": 100.0}},
+    ("mirror", "UnivFakeDetect"):        {"official": {"map": 97.04, "acc": 92.44, "auroc": 97.24}},
+    ("mirror", "Synthbuster"):           {"official": {"map": 99.92, "acc": 99.28, "auroc": 99.96}},
+    ("mirror", "EvalGEN"):               {"official": {"map": 100.0, "acc": 99.85, "auroc": 99.99}},
+    ("mirror", "SynthWildX"):            {"official": {"map": 97.71, "acc": 95.08, "auroc": 98.33}},
+    ("mirror", "WildRF"):                {"official": {"map": 99.8, "acc": 97.88, "auroc": 99.74}},   # official file set (no .jfif)
+    ("mirror", "AIGIBench"):             {"official": {"map": 98.06, "acc": 94.98, "auroc": 98.66}},
+    ("mirror", "RRDataset"):             {"official": {"map": 93.86, "acc": 86.91, "auroc": 91.98}},
+    ("mirror", "BFree-Online"):          {"official": {"map": 99.78, "acc": 97.4, "auroc": 99.5}},
+    ("mirror", "RealChain"):             {"official": {"map": 91.76, "acc": 81.71, "auroc": 89.96}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
@@ -153,6 +168,12 @@ VAL = {
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
+
+# Narrow label overrides applied after status_for (which stays unchanged for every other detector):
+# (model, exact benchmark label) -> status.
+# MIRROR RRDataset: 86.91 vs the README's 88.3 is 1.39 short, about 6x MIRROR's other deviations (all within 0.25), but
+# inside the generic +-2.0 tolerance, which would label it "official". Every doc calls it short, so the site does too.
+STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below"}
 
 # Tolerance (percentage points) for calling a number a reproduction of the paper.
 TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}
@@ -279,6 +300,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         spec_status = b.get("our_status", "")
         synthscope, official, sub = match_val(model, name)
         status = status_for(name, paper, synthscope, official, spec_status)
+        status = STATUS_OVERRIDE.get((model, name), status)
         on = b.get("our_number")
         note = ""
         if isinstance(on, dict) and on.get("note"):

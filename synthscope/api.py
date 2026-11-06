@@ -8,7 +8,6 @@ load, and the forward -> P(fake) math). We reuse it rather than duplicate that l
 from __future__ import annotations
 
 import dataclasses
-import io
 from pathlib import Path
 from typing import Union
 
@@ -180,9 +179,9 @@ class Detector:
     def _classify(self, source: PathOrImage):
         """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``."""
         if isinstance(source, Image.Image):
-            return "image", source.convert("RGB"), None
+            return "image", _media.to_rgb(source), None
         if isinstance(source, (bytes, bytearray)):
-            return "image", Image.open(io.BytesIO(bytes(source))).convert("RGB"), None
+            return "image", _media.decode_image(bytes(source)), None
         path = Path(source)
         kind = _media.media_kind(path.name)
         if kind == "image":
