@@ -120,6 +120,9 @@ def _build_model(cfg):
     if model_type == "d3qe":
         from models.image.d3qe.d3qe import SynthScopeD3QEModel
         return SynthScopeD3QEModel(cfg)
+    if model_type == "mirror":
+        from models.image.mirror.mirror import SynthScopeMIRRORModel
+        return SynthScopeMIRRORModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)

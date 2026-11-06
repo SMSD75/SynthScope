@@ -57,7 +57,7 @@ EXPECTED_SHAPES = {
     "adapted_dino": (3, 224, 224), "aide": (5, 3, 256, 256), "bfree": (3, 200, 300), "clip": (3, 224, 224),
     "cnn": (3, 224, 224), "co_spy": (3, 384, 384), "cure": (3, 336, 336), "d3qe": (3, 256, 256),
     "dda": (3, 336, 336), "dinov2": (3, 224, 224), "dinov3": (3, 256, 256), "effort": (3, 224, 224),
-    "fat_former": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
+    "fat_former": (3, 224, 224), "mirror": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
     "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224), "safe": (3, 256, 256),
     "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224),
 }
@@ -71,9 +71,9 @@ GOLDEN = {
     "dda": T.Compose([T.CenterCrop(336), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "safe": T.Compose([T.CenterCrop(256), T.ToTensor()]),
 }
-# CuRe re-encodes PNG sources as JPEG q96 first. The training loaders decode to tensors and lose the source format, so
-# their CuRe test path treats every image as non-PNG; the parity check compares against that branch of the inference.
-FORMAT_DEPENDENT = {"cure"}
+# CuRe and MIRROR re-encode PNG sources as JPEG q96 first. The training loaders decode to tensors and lose the source
+# format, so their test path treats every image as non-PNG; the parity check compares against that branch of the inference.
+FORMAT_DEPENDENT = {"cure", "mirror"}
 
 
 def _walk(node, prefix: str, found: dict[str, list[str]]) -> None:
@@ -263,7 +263,7 @@ def test_without_resize() -> None:
     native = tf.without_resize()
     assert native.transform_list == ["to_dtype", "normalize_clip"] and native.pil_input, native
     assert tuple(native(noise_pil()).shape) == (3, 200, 300)
-    for stem in ("spai", "cure", "effort", "aide", "moejepa"):
+    for stem in ("spai", "cure", "effort", "aide", "moejepa", "mirror"):
         try:
             model_transform(f"image/{stem}").without_resize()
         except ValueError:
