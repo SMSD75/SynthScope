@@ -1,3 +1,4 @@
+import math
 import random
 import re
 from io import BytesIO
@@ -27,7 +28,8 @@ _SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)")
 _SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop": CROPS}
 # Name prefixes of steps that resize inside (whole official pipelines, SPAI's cap, aide_five_view*): an eval list holding
 # one has no native-resolution form.
-_RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "vjepa2_processor", "aide_five_view")
+_RESIZING_STEPS = ("cap_long_side_1024", "effort_cv2_resize_224", "cure_eval", "vjepa2_processor", "aide_five_view",
+                   "translate_duplicate")
 
 
 class CNNDetAugment:
@@ -113,6 +115,31 @@ class ToFloat:
         return "ToFloat()"
 
 
+class TranslateDuplicate:
+    """``translate_duplicate_<n>``: a PIL image whose shorter side is below ``size`` is tiled with copies of itself until both
+    sides reach ``size`` (ceil(size / side) copies per axis, pasted from the top-left corner); larger images pass unchanged.
+    Verbatim from the Effort UniversalFakeDetect_Benchmark ``validate.py`` / ``data/datasets.py`` ``translate_duplicate``
+    (YZY-stack/Effort-AIGI-Detection), called there as ``translate_duplicate(img, 256)`` before ``CenterCrop(224)``."""
+
+    def __init__(self, size: int):
+        self.size = size
+
+    def __call__(self, img):
+        if min(img.size) < self.size:
+            width, height = img.size
+            new_width = width * math.ceil(self.size / width)
+            new_height = height * math.ceil(self.size / height)
+            new_img = Image.new("RGB", (new_width, new_height))
+            for i in range(0, new_width, width):
+                for j in range(0, new_height, height):
+                    new_img.paste(img, (i, j))
+            return new_img
+        return img
+
+    def __repr__(self):
+        return f"TranslateDuplicate({self.size})"
+
+
 class CapLongSide:
     """Downscale a PIL image (keeping aspect, min side 224) only if its long side exceeds ``max_side``; otherwise
     leave it at native resolution (SPAI's any-resolution path)."""
@@ -157,6 +184,8 @@ class AIGITransformations:
             return v2.CenterCrop(n)
         elif transform_name == "cap_long_side_1024":       # SPAI: native resolution, long side capped at 1024 (PIL)
             return CapLongSide(1024)
+        elif transform_name == "translate_duplicate_256":  # Effort UFD benchmark: tile an image shorter than 256 (PIL)
+            return TranslateDuplicate(256)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
         elif transform_name == "to_dtype":

@@ -1,0 +1,96 @@
+{
+  "tag": "effort_ufd_step24000_gan11",
+  "model": "effort",
+  "ckpt": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/effort_ufd/model_step24000.pth",
+  "model_config": "image/effort_ufd",
+  "benchmark": "forensynths",
+  "data_root": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 11,
+  "means": {
+    "acc": 93.25,
+    "map": 99.05,
+    "mauroc": 98.77
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.85,
+      "fake_acc": 99.25,
+      "acc": 99.55
+    },
+    "crn": {
+      "ap": 99.96,
+      "auroc": 99.96,
+      "real_acc": 99.25,
+      "fake_acc": 99.61,
+      "acc": 99.43
+    },
+    "cyclegan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.85,
+      "fake_acc": 100.0,
+      "acc": 99.92
+    },
+    "deepfake": {
+      "ap": 97.88,
+      "auroc": 97.24,
+      "real_acc": 100.0,
+      "fake_acc": 48.22,
+      "acc": 74.11
+    },
+    "gaugan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.86,
+      "fake_acc": 99.98,
+      "acc": 99.92
+    },
+    "imle": {
+      "ap": 99.98,
+      "auroc": 99.98,
+      "real_acc": 99.25,
+      "fake_acc": 99.86,
+      "acc": 99.55
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "san": {
+      "ap": 94.36,
+      "auroc": 92.94,
+      "real_acc": 100.0,
+      "fake_acc": 43.38,
+      "acc": 71.69
+    },
+    "seeingdark": {
+      "ap": 97.7,
+      "auroc": 96.74,
+      "real_acc": 98.89,
+      "fake_acc": 78.33,
+      "acc": 88.61
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.95,
+      "fake_acc": 100.0,
+      "acc": 99.97
+    },
+    "stylegan": {
+      "ap": 99.66,
+      "auroc": 99.62,
+      "real_acc": 100.0,
+      "fake_acc": 86.0,
+      "acc": 93.0
+    }
+  },
+  "date": "2026-11-06T01:35:04",
+  "synthscope_version": "0.1.0"
+}

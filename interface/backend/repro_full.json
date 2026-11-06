@@ -619,14 +619,14 @@
       "note": "89.83 (mAP 99.37) with the official checkpoint and DeepfakeBench's test transform (tag effort_genimage_full, job 269039)."
     },
     {
-      "benchmark": "UniversalFakeDetect (ProGAN-trained)",
-      "metric": "AP / acc",
-      "paper": "\u2014",
-      "ours": "",
-      "ours_synthscope": "",
+      "benchmark": "UniversalFakeDetect (ProGAN-trained, 19 subsets)",
+      "metric": "mAP and mean accuracy at 0.5, mean over the 19 subsets",
+      "paper": "map=99.41 / acc=95.19",
+      "ours": "mAP=99.2 / acc=94.81 / AUROC=99.04",
+      "ours_synthscope": "mAP=99.2 / acc=94.81 / AUROC=99.04",
       "ours_official": "",
-      "status": "missing",
-      "note": "Checkpoint not released."
+      "status": "reproduced",
+      "note": "Not served (CC BY-NC weights, trained in SynthScope): the official UniversalFakeDetect_Benchmark recipe (experiments/image/effort_ufd.sh, ProGAN 20 classes, 24000 iterations, job 276492), iteration 18000 (the official selection): mAP 99.20 / mAcc 94.81 over the 19 subsets (AUROC 99.04); every subset's accuracy is within 1.7 pt and its AP within 2.5 pt of the paper (bench_eval.py --model-config\u2026"
     },
     {
       "benchmark": "SynthWildX",
