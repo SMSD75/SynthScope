@@ -142,9 +142,10 @@ def summary():
          f"full val (100k); test release `mirror_genimage_full` {fmt(acc('mirror_genimage_full'))}"),
         ("UFD", None, ufd.get("official `UnivFD` (13)"), ufd.get("official `UnivFD` (13)"),
          "official `UnivFD` list (13); " + "; ".join(f"{k} {fmt(v)}" for k, v in ufd.items() if "13" not in k)),
-        ("Synthbuster", sbo, acc("mirror_synthbuster_coco"), sbx,
-         f"vs 5000 MSCOCO reals; served rule {fmt(acc('mirror_synthbuster_coco'))}, firefly under the official "
-         f"extension rule {fmt(sbx)} (aggregates use this); official column = official firefly + our 8 others"),
+        ("Synthbuster", sbo, sbx, sbx,
+         f"vs 5000 MSCOCO reals; headline = the official extension-based JPEG-q96 rule (firefly is 1000 JPEGs named "
+         f".png); the served pipeline keys on the decoded format: {fmt(acc('mirror_synthbuster_coco'))}; "
+         f"official column = official firefly + our 8 others"),
         ("EvalGEN", None, acc("mirror_evalgen"), acc("mirror_evalgen"), "5 subsets vs MSCOCO reals"),
         ("DRCT-2M", None, None, None, "**missing**: " + MISSING["DRCT-2M"]),
         ("Chameleon", None, None, None, "**missing**: " + MISSING["Chameleon"]),

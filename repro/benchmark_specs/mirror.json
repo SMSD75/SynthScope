@@ -1,0 +1,232 @@
+{
+ "model": "mirror",
+ "paper": "MIRROR: Manifold Ideal Reference ReconstructOR for Generalizable AI-Generated Image Detection (NeurIPS 2026, arXiv 2602.02222)",
+ "arxiv_id": "2602.02222",
+ "official_repo": "https://github.com/handsome-rich/MIRROR",
+ "training_set_in_paper": "Phase 1 trains the memory bank on real images only; phase 2 trains LoRA adapters and the head on real/fake images (Stable Diffusion v1.4 fakes, JPEG q96, per the paper) with the DINOv3 backbone, memory bank and attention projector frozen. Only the released phase-2 checkpoint (checkpoint-h-cur.pth, DINOv3 ViT-H+) is evaluated here; there is no SynthScope-trained checkpoint. The paper's per-subset tables are for DINOv3-L; the README's DINOv3-H+ column is the reproduction target.",
+ "benchmarks": [
+  {
+   "name": "AIGCDetectBenchmark (17 subsets, full data)",
+   "datasets": [
+    "AIGCDetect"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 97.3,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "Released checkpoint through SynthScope: 97.39 (mAP 99.49, AUROC 99.51), +0.09. Weakest: cyclegan 83.65, whichfaceisreal 87.10, stargan 93.67 (tag mirror_aigcdetect, job 279555)."
+   }
+  },
+  {
+   "name": "GenImage (8 subsets, full val)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 99.8,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "99.78 (mAP 100.00, AUROC 100.00) on the full val split (100k images), -0.02; the test release gives 99.79 (tags mirror_genimage_val100k, mirror_genimage_full, jobs 279552, 279553)."
+   }
+  },
+  {
+   "name": "UnivFakeDetect (official code's 13-subset UnivFD list)",
+   "datasets": [
+    "UniversalFakeDetect"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 92.4,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "92.44 (mAP 97.04, AUROC 97.24) on the official code's UnivFD list (13 subsets), +0.04. The paper's Table 7 list (12 subsets, no deepfake) gives 93.81 and the official ojha list (12) gives 95.03. Weak: seeingdark 61.39, deepfake 76.09 (tags mirror_ufd_diffusion8, mirror_ufd_cnndet5, job 279550)."
+   }
+  },
+  {
+   "name": "Synthbuster (9 generators vs 5000 MSCOCO reals)",
+   "datasets": [
+    "Synthbuster"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 99.2,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "99.28 (mAP 99.92, AUROC 99.96) with the official extension-based JPEG-q96 rule, +0.08 (firefly is 1000 JPEGs named .png: 94.29 under the official rule, 95.64 under the served decoded-format rule, which gives a mean of 99.43). Fakes-only set scored against the MSCOCO val2017 reals as in the paper (tags mirror_synthbuster_coco, mirror_synthbuster_coco_firefly_extrule, job 279527). An official-code confirmation run is pending (jobs 279825, 279857)."
+   }
+  },
+  {
+   "name": "EvalGEN (5 generators vs MSCOCO reals)",
+   "datasets": [
+    "EvalGEN"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 99.8,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "99.85 (mAP 100.00, AUROC 99.99), +0.05 (tag mirror_evalgen, job 279551)."
+   }
+  },
+  {
+   "name": "DRCT-2M",
+   "datasets": [
+    "DRCT-2M"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 93.0,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "DRCT-2M is not in SynthScope."
+   }
+  },
+  {
+   "name": "Chameleon",
+   "datasets": [
+    "Chameleon"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 94.6,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Chameleon is available by request only; not held."
+   }
+  },
+  {
+   "name": "SynthWildX (3 generators, images on X)",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 95.1,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "95.08 (mAP 97.71, AUROC 98.33), -0.02, on the 1713 of 2000 images still online. The unmodified official inference.py gives the same B.Acc on every subset (dalle3 97.44, firefly 90.21, midjourney_v5 97.59; tag mirror_synthwildx, job 279513)."
+   }
+  },
+  {
+   "name": "WildRF (Facebook, Reddit, Twitter)",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 97.8,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "97.88 (mAP 99.80, AUROC 99.74), +0.08, on the official file set (without the 262 .jfif files its loader skips); all files 97.86. The official inference.py gives the same B.Acc on every subset (facebook 97.50, reddit 97.53, twitter 98.60; tags mirror_wildrf_nojfif, mirror_wildrf, job 279513)."
+   }
+  },
+  {
+   "name": "AIGIBench (SocialRF + CommunityAI)",
+   "datasets": [
+    "AIGIBench"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "acc": 94.9,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "94.98 (mAP 98.06, AUROC 98.66), +0.08 (SocialRF 93.08, CommunityAI 96.89; tag mirror_aigibench, job 279554)."
+   }
+  },
+  {
+   "name": "CO-SPY in-the-wild (fake accuracy)",
+   "datasets": [
+    "CO-SPY in-the-wild"
+   ],
+   "metric": "fake accuracy",
+   "paper_number": {
+    "acc": 97.4,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "The in-the-wild part of CO-SPY is not held (SynthScope's cospy loader is the synthetic Co-Spy-Bench)."
+   }
+  },
+  {
+   "name": "RRDataset (pooled folder)",
+   "datasets": [
+    "RRDataset"
+   ],
+   "metric": "balanced accuracy at 0.5 (pooled folder)",
+   "paper_number": {
+    "acc": 88.3,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "below",
+   "our_number": {
+    "note": "86.91 (mAP 93.86, AUROC 91.98), -1.39: original 98.06, transfer 88.38, redigital 74.30 (fake acc 53.20). Pooled and 3-scenario mean agree. The causes are unresolved: a dataset copy or split difference, or a checkpoint difference (tag mirror_rrdataset, job 279554)."
+   }
+  },
+  {
+   "name": "BFree-Online (viral images still online)",
+   "datasets": [
+    "BFree-Online"
+   ],
+   "metric": "balanced accuracy at 0.5 (pooled folder)",
+   "paper_number": {
+    "acc": 97.6,
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "97.40 (mAP 99.78, AUROC 99.50), -0.20, on the 807 of about 1400 images still online (real acc 98.14, fake acc 96.65; tag mirror_bfree_online, job 279513). An official-code run is pending (jobs 279825, 279857)."
+   }
+  },
+  {
+   "name": "Human-AIGI (fake accuracy)",
+   "datasets": [
+    "Human-AIGI"
+   ],
+   "metric": "fake accuracy",
+   "paper_number": {
+    "note": "Official README table, DINOv3-H+ column (the released checkpoint)"
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Human-AIGI is not in SynthScope (not released); the README table has no value for it."
+   }
+  },
+  {
+   "name": "RealChain (7 generators, full data)",
+   "datasets": [
+    "RealChain"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean over subsets)",
+   "paper_number": {
+    "note": "Not one of the paper's benchmarks."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "81.71 (mAP 91.76, AUROC 89.96); Flux1 96.60, Hunyuan3 90.90, QwenImage 90.50, SDv3.5 80.05, NanoBanana 78.75, Seedream4 69.25, i2i 65.90 (tag mirror_realchain, job 279513)."
+   }
+  }
+ ]
+}
