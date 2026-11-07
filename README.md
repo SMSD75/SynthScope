@@ -324,3 +324,7 @@ Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_
 detector, and submit benchmark results through a pull request. SynthScope is released under the [Apache 2.0 license](LICENSE);
 the third-party detectors, weights and datasets it loads keep their own licenses ([LICENSES.md](LICENSES.md)). To cite it, use
 [CITATION.cff](CITATION.cff).
+
+⭐ **If SynthScope is useful for your research, please star the repository and cite it** — GitHub's "Cite this repository"
+button (from [CITATION.cff](CITATION.cff)) gives the BibTeX. Please also cite the papers of the detectors you use; each
+model's README links them. Coding agents: see [AGENTS.md](AGENTS.md) for how to use and extend the toolkit.
