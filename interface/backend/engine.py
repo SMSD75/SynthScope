@@ -127,6 +127,9 @@ def _build_model(cfg):
     if model_type == "mirror":
         from models.image.mirror.mirror import SynthScopeMIRRORModel
         return SynthScopeMIRRORModel(cfg)
+    if model_type == "vina":
+        from models.image.vina.vina import SynthScopeVINAModel
+        return SynthScopeVINAModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
@@ -303,6 +306,8 @@ class Engine:
                     z = -z
                 return torch.sigmoid(z)
         out = model(frames)  # [1,2]
+        if spec.video_prob == "sigmoid":  # one fake logit (VINA: the mean of the frame logits)
+            return torch.sigmoid(out.reshape(-1))
         if spec.key == "stall":
             # STALL returns [real_prob, fake_prob] (already calibrated percentiles); use directly.
             return out[:, 1]
@@ -413,6 +418,9 @@ class Engine:
 
     def video_clip(self, spec: ModelSpec, path) -> torch.Tensor:
         """Decode and normalize a clip exactly as ``spec`` prescribes: ``[T, 3, H, W]``."""
+        if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
+            frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
+            return torch.stack([spec.transform(f) for f in frames])
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
             window_center=spec.window_center, interp=spec.resize_interp,

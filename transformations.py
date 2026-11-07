@@ -25,8 +25,8 @@ DINOV3_MEAN, DINOV3_STD = [0.430, 0.411, 0.296], [0.213, 0.156, 0.143]
 SQUARE_RESIZES = (224, 256, 336, 512)        # resize_<n>: both sides to n (aspect not kept)
 SHORT_RESIZES = (256, 384, 448)              # resize_short_<n>: shorter side to n
 CROPS = (224, 256, 336, 384, 448)            # center_crop_<n> (zero-padded when the image is smaller)
-# The sized resize / crop names and their allowed sizes.
-_SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)")
+# The sized resize / crop names and their allowed sizes; a resize may end in "_bicubic" (default: bilinear).
+_SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)(_bicubic)?")
 _SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop": CROPS}
 # Name prefixes of steps that resize inside (whole official pipelines, SPAI's cap, aide_five_view*): an eval list holding
 # one has no native-resolution form.
@@ -176,13 +176,14 @@ class AIGITransformations:
     def _create_transform(self, transform_name: str):
         sized = _SIZED.fullmatch(transform_name)
         if sized:
-            kind, n = sized.group(1), int(sized.group(2))
-            if n not in _SIZES[kind]:
+            kind, n, bicubic = sized.group(1), int(sized.group(2)), bool(sized.group(3))
+            if n not in _SIZES[kind] or (bicubic and kind == "center_crop"):
                 raise ValueError(f"Invalid transform name: {transform_name}")
-            if kind == "resize_short":
-                return v2.Resize(n)
+            interp = v2.InterpolationMode.BICUBIC if bicubic else v2.InterpolationMode.BILINEAR
+            if kind == "resize_short":                     # e.g. VINA: resize_short_256_bicubic
+                return v2.Resize(n, interpolation=interp)
             if kind == "resize":                           # square, e.g. NPR/FatFormer (Resize((256, 256))), OmniAID
-                return v2.Resize((n, n))
+                return v2.Resize((n, n), interpolation=interp)
             return v2.CenterCrop(n)
         elif transform_name == "cap_long_side_1024":       # SPAI: native resolution, long side capped at 1024 (PIL)
             return CapLongSide(1024)
@@ -190,6 +191,8 @@ class AIGITransformations:
             return TranslateDuplicate(256)
         elif transform_name == "to_tensor":
             return v2.ToTensor()
+        elif transform_name == "to_image":                 # PIL -> uint8 tensor (v2.ToImage), so a following to_dtype
+            return v2.ToImage()                            # is v2.ToDtype(float32, scale=True), bit-exact (VINA)
         elif transform_name == "to_dtype":
             return ToFloat()
         elif transform_name == "gaussian_blur":

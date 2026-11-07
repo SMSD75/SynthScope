@@ -8,8 +8,8 @@
   (the training loaders), equals the registry transform on ``bench_eval._open_rgb`` (benchmarks / web UI) exactly, on
   PNG images of several sizes; models with a batchable ``test_transform_list`` compare their eval list through the
   training-path wrapper instead, and their test list must batch across image sizes,
-* pixel parity with hand-written torchvision v1 pipelines (the official eval code) for CLIP, NPR, PGC (incl. zero
-  padding), OmniAID v1, DDA and SAFE,
+* pixel parity with hand-written torchvision pipelines (the official eval code) for CLIP, NPR, PGC (incl. zero
+  padding), OmniAID v1, DDA, SAFE (v1) and VINA (v2, bicubic short-side resize),
 * a model's train / val / test outputs have the same per-sample rank,
 * ``without_resize`` drops only resize / crop steps and refuses pipelines that resize inside,
 * ``to_dtype`` equals ``to_tensor`` on a PIL image and ``ToDtype(float32, scale=True)`` on a uint8 tensor, exactly,
@@ -61,9 +61,9 @@ EXPECTED_SHAPES = {
     "mirror": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
     "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224),
     "safe": (3, 256, 256),
-    "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224),
+    "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224), "vina": (3, 256, 256),
 }
-# The official eval code as torchvision v1 pipelines (PIL in).
+# The official eval code as torchvision pipelines (PIL in).
 GOLDEN = {
     "clip": T.Compose([T.Resize(256), T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "npr": T.Compose([T.Resize((256, 256)), T.ToTensor(), T.Normalize(IMAGENET_MEAN, IMAGENET_STD)]),
@@ -72,6 +72,9 @@ GOLDEN = {
                              T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "dda": T.Compose([T.CenterCrop(336), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "safe": T.Compose([T.CenterCrop(256), T.ToTensor()]),
+    # VINA's official eval is torchvision v2 (Resize(256, interpolation=3), ToImage + ToDtype): bit-exact only that way
+    "vina": v2.Compose([v2.Resize(256, interpolation=3), v2.CenterCrop(256), v2.ToImage(),
+                        v2.ToDtype(torch.float32, scale=True), v2.Normalize(IMAGENET_MEAN, IMAGENET_STD)]),
 }
 # CuRe and MIRROR re-encode PNG sources as JPEG q96 first. The training loaders decode to tensors and lose the source
 # format, so their test path treats every image as non-PNG; the parity check compares against that branch of the inference.
@@ -153,7 +156,7 @@ def test_lists_build() -> None:
             AIGITransformations(names)
             n += 1
     for name in ("resize_300", "resize_short_224", "center_crop_100", "resize_0256", "resize_", "center_crop_abc",
-                 "resize_short_256x", "normalise_clip"):
+                 "resize_short_256x", "normalise_clip", "center_crop_256_bicubic", "resize_short_256_bilinear"):
         try:
             AIGITransformations([name])
         except ValueError as e:
@@ -217,7 +220,7 @@ def test_eval_path_is_inference_path() -> None:
 
 
 def test_golden() -> None:
-    print("[E] pixel parity with the official torchvision v1 pipelines ...")
+    print("[E] pixel parity with the official torchvision pipelines ...")
     with tempfile.TemporaryDirectory() as tmp:
         pngs = write_pngs(Path(tmp))
         for stem, golden in GOLDEN.items():

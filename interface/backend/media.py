@@ -6,11 +6,20 @@ training/eval pipeline does:
   * ``dataset.sample_video_frames`` -> evenly-sampled clip [T,3,size,size] float in [0,1]
 """
 import io
+import os
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 import numpy as np
 import torch
 from PIL import Image, ImageFile
+
+try:                                   # optional: a static ffmpeg for the ffmpeg-based video protocols (VINA)
+    import imageio_ffmpeg
+except ImportError:
+    imageio_ffmpeg = None
 
 # Some user uploads are truncated/progressive; let PIL load what it can.
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -86,6 +95,35 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
     if not frames:
         raise ValueError("Could not decode any frames from the video.")
     return frames
+
+
+def ffmpeg_exe() -> str:
+    """The ffmpeg binary: ``$SYNTHSCOPE_FFMPEG``, else ``ffmpeg`` on the PATH, else imageio-ffmpeg's static build."""
+    exe = os.environ.get("SYNTHSCOPE_FFMPEG") or shutil.which("ffmpeg")
+    if exe:
+        return exe
+    if imageio_ffmpeg is not None:
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    raise FileNotFoundError("ffmpeg not found: install it, set SYNTHSCOPE_FFMPEG, or pip install imageio-ffmpeg")
+
+
+def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int) -> list[Image.Image]:
+    """VINA's official video protocol: ffmpeg writes the video as JPEG frames at ``fps`` with its default JPEG settings
+    (preprocess/video2frame.py: ``ffmpeg -loglevel quiet -i <video> -vf fps=2 <dir>/%d.jpg``), and the central window
+    of ``num_frames`` of them is read back as RGB, the last frame repeated when there are fewer (the test phase of
+    dataset/dataloader.py ``_load_frames_dir``)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cmd = [ffmpeg_exe(), "-loglevel", "quiet", "-i", str(path), "-vf", f"fps={fps:g}", os.path.join(tmp, "%d.jpg")]
+        subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL)
+        ids = sorted(int(p.stem) for p in Path(tmp).glob("*.jpg") if p.stem.isdigit())
+        if not ids:
+            raise ValueError("ffmpeg wrote no frames for this video.")
+        if len(ids) >= num_frames:
+            start = (len(ids) - num_frames) // 2
+            ids = ids[start:start + num_frames]
+        else:
+            ids += [ids[-1]] * (num_frames - len(ids))
+        return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
 
 
 def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:
