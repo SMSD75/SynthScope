@@ -18,9 +18,11 @@ Input contract: ``forward`` takes ImageNet-normalized [B, 3, 256, 256] images fr
 [B, T, 3, 256, 256] clips, whose per-frame logits are averaged as in the official eval. It runs fp32 with eager
 attention, the official defaults (``use_bf16`` and ``attn_implementation`` are unset in configs/VINA_DINOv3.yaml).
 
-Training: ``compute_loss`` is the official ``util._classification_loss`` for one output (BCE with logits). The official
+Training: ``compute_loss`` is the official ``util._classification_loss`` for one output (BCE with logits); its
+``outputs`` are the two columns [-logit, logit], the repo convention for single-logit detectors. The official
 training code is not released (README TODO), so no training recipe is reproduced here.
 """
+import torch
 import torch.nn.functional as F
 from omegaconf import DictConfig
 
@@ -42,7 +44,8 @@ class SynthScopeVINAModel(DINOv3):
                          use_bf16=bool(mc.get("use_bf16", False)))
 
     def forward(self, images):
-        """[B, 3, H, W] or [B, T, 3, H, W] normalized pixels -> fake logits [B, 1] (mean over T, as the official eval)."""
+        """[B, 3, H, W] or [B, T, 3, H, W] normalized pixels -> fake logits [B, 1] (mean over T, as the official
+        eval)."""
         clip = images.dim() == 5
         if clip:
             b, t = images.shape[:2]
@@ -54,6 +57,7 @@ class SynthScopeVINAModel(DINOv3):
 
     def compute_loss(self, batch):
         images, labels = batch[0], batch[1]
-        logits = self.forward(images)
-        loss = F.binary_cross_entropy_with_logits(logits[:, 0], labels.to(logits.dtype))
-        return {"loss": loss, "outputs": logits}
+        logits = self.forward(images)[:, 0]
+        loss = F.binary_cross_entropy_with_logits(logits, labels.to(logits.dtype))
+        # Two-column [-logit, logit] so the trainer's metrics (argmax / softmax[:, 1]) read the single logit right.
+        return {"loss": loss, "outputs": torch.stack([-logits, logits], dim=1)}

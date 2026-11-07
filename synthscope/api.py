@@ -144,7 +144,7 @@ class Detector:
         kind, pil, path = self._classify(source)
 
         if kind == "image":
-            if self.spec.modality == "video" and self.spec.transform is None:
+            if self.spec.predict_kind == "video":    # video-only (vina_video has a transform, for its frames)
                 raise ValueError(
                     f"'{self.spec.key}' is a video-only detector and cannot score a still image."
                 )

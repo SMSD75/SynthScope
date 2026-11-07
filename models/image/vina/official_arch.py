@@ -38,7 +38,8 @@ CHECKPOINT = {
 
 
 def _load_backbone(source, attn_implementation, dtype):
-    """`DINOv3ViTModel.from_pretrained(path)` for a directory / hub id; a config dict builds the same model untrained."""
+    """`DINOv3ViTModel.from_pretrained(path)` for a directory / hub id; a config dict builds the same model
+    untrained."""
     if DINOv3ViTModel is None:
         raise ImportError("VINA needs transformers >= 4.56 (DINOv3); upgrade transformers")
     if isinstance(source, Mapping):

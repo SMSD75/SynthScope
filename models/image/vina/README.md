@@ -29,8 +29,11 @@ In SynthScope the two paths are two registry entries that share the model and th
   engine's generic frame sampling (16 frames spread over the clip, mean P(fake)), which is *not* the paper's protocol.
 * `vina_video` (video detector): the official video protocol above, run by the engine's video path
   (`media.ffmpeg_fps_frames` + the image transform, sigmoid of the mean frame logit); `benchmark/bench_eval_video.py
-  --model vina_video` uses it. It needs an ffmpeg binary (`$SYNTHSCOPE_FFMPEG`, else `ffmpeg` on the PATH, else
-  imageio-ffmpeg).
+  --model vina_video` uses it. It needs an ffmpeg binary, found as `$SYNTHSCOPE_FFMPEG`, else `ffmpeg` on the PATH,
+  else the static build of imageio-ffmpeg. The SynthScope environment ships none: `pip install imageio-ffmpeg` or set
+  `SYNTHSCOPE_FFMPEG=/path/to/ffmpeg`. Without one, `vina_video` is reported as unavailable. The parity below used the
+  static ffmpeg 7.0.2 (the imageio-ffmpeg build); the whole clip is extracted because ffmpeg's JPEG rate control runs
+  across frames, so other ffmpeg versions may encode the frames slightly differently.
 
 Weights: `VINA_DINOv3-L_140k+DDA.pth` (HF `mgiant/VINA_checkpoints`, 1.21 GB, sha256 `1c46c9d8…c1d59d`) holds the
 full model (all 415 backbone tensors + the head) and loads key-for-key as `vina.pth`; the gated DINOv3 weights are not
@@ -48,7 +51,7 @@ needed for inference.
 | new transform steps `resize_short_256_bicubic` and `to_image` | the official eval is torchvision v2 `Resize(256, interpolation=3)` then `ToImage` + `ToDtype(float32, scale=True)`; `to_tensor`-style conversion differs from it by one float ulp, so the v2 order is kept for bit-exact inputs. |
 | the video protocol uses the frame-directory path, not the `_mp4` path | the official benchmark keys (`genvideo`, `magic`, `reward`, ...) read ffmpeg frame directories; the `_mp4` keys decode with decord and, at test time too, pick a frame at `random.randint` (unseeded), so they are not reproducible. |
 | image files of every format PIL reads | the official test loader only accepts `.jpg`, `.jpeg`, `.png`, `.webp` (other files become a black image); the pixels of the accepted formats are the same. |
-| `compute_loss` = BCE with logits | the official `util._classification_loss` for one output; the training code is not released. |
+| `compute_loss` = BCE with logits, `outputs` = `[-logit, logit]` | the official `util._classification_loss` for one output; the two columns let the trainer's metrics (argmax, softmax[:, 1]) read the single logit, as DDA / D3QE / B-Free. The training code is not released. |
 
 ## Fidelity check
 

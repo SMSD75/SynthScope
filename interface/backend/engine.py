@@ -220,6 +220,8 @@ class Engine:
             import os
             from .registry import DINOV3_WEIGHTS
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
+        if spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available():   # vina_video needs ffmpeg
+            return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
         p = self.checkpoint_path(spec)

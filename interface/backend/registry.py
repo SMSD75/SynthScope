@@ -109,8 +109,9 @@ def remap_ltf(sd: dict) -> dict:
 
 
 def remap_vina(sd: dict) -> dict:
-    """Official VINA checkpoint ({"model_state_dict": ...}) -> SynthScopeVINAModel: the official util.load_checkpoint
-    rule (unwrap ``model_state_dict``, drop ``module.``); the names are the official ones (block prefix: a load hook)."""
+    """Official VINA checkpoint ({"model_state_dict": ...}) -> SynthScopeVINAModel: the official
+    util.load_checkpoint rule (unwrap ``model_state_dict``, drop ``module.``); the names are the official ones (the
+    block prefix is renamed by a load hook)."""
     sd = sd.get("model_state_dict", sd)
     return {k.replace("module.", ""): v for k, v in sd.items()}
 
@@ -148,8 +149,8 @@ class ModelSpec:
     short_clip_frames: int = 0          # frames to use when a video is too short for num_frames (D3: 8)
     fps_nearest: bool = False           # frame nearest to each k/fps, as ffmpeg's fps filter (D3)
     bgr: bool = False                   # feed BGR channels (D3's official reader never converts cv2's BGR)
-    # "ffmpeg_fps_center" (VINA): ffmpeg writes JPEG frames at ``fps``, the central ``num_frames`` are read back and each
-    # goes through ``transform`` (the image eval preprocessing) instead of the clip settings above.
+    # "ffmpeg_fps_center" (VINA): ffmpeg writes JPEG frames at ``fps``, the central ``num_frames`` are read back and
+    # each goes through ``transform`` (the image eval preprocessing) instead of the clip settings above.
     video_sampler: str = ""
     video_prob: str = "softmax"         # video output -> P(fake): softmax[:, 1] of [1, 2] logits, or "sigmoid"
     notes: str = ""
@@ -551,7 +552,8 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
             "scaling; edge tiles are aligned to the border, a side under 224 px is padded with black), plus one view of "
             "the whole image resized to 224 and center-cropped."),
     "vina": ("Resize + center-crop 256 (bicubic)", "The shorter side is scaled to 256 px (bicubic) and the central "
-             "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the detector."),
+             "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the "
+             "detector."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
@@ -560,12 +562,13 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
 def input_note(spec: ModelSpec) -> dict:
     """{label, explanation} describing the preprocessing of ``spec`` (frames for video models)."""
     if spec.video_sampler == "ffmpeg_fps_center":
-        frames = "the central frame" if spec.num_frames == 1 else f"the central {spec.num_frames} frames"
+        one = spec.num_frames == 1
+        frames = "the central frame" if one else f"the central {spec.num_frames} frames"
         return {"label": f"{frames.capitalize()} at {spec.fps:g} fps",
                 "explanation": f"The clip is written as JPEG frames at {spec.fps:g} fps (ffmpeg) and {frames} of "
-                               f"them is scored like an image: the shorter side is scaled to {spec.frame_size} px "
-                               f"(bicubic) and the central {spec.frame_size}×{spec.frame_size} square is used. "
-                               "This matches the paper's evaluation."}
+                               f"them {'is' if one else 'are'} scored like an image: the shorter side is scaled to "
+                               f"{spec.frame_size} px (bicubic) and the central {spec.frame_size}×{spec.frame_size} "
+                               "square is used. This matches the paper's evaluation."}
     if spec.modality == "video":
         crop = f", after trimming {int(spec.edge_crop * 100)}% off every edge" if spec.edge_crop else ""
         return {"label": f"{spec.num_frames} sampled frames",

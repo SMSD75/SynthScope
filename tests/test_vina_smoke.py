@@ -10,8 +10,10 @@ Checks:
   ``forward`` -> [B, 1] finite logits, a [B, T, ...] clip -> the mean of its per-frame logits (official eval),
   checkpoints with either ViT block prefix (transformers 4 ``backbone.layer`` / 5 ``backbone.model.layer``), wrapped
   as the official ``{"model_state_dict": ...}`` with ``module.`` names, load strictly through ``remap_vina`` with
-  identical outputs, ``compute_loss`` (BCE with logits) + backward,
-* ``vina_video``: the engine turns a clip into sigmoid(mean frame logit); its input note,
+  identical outputs, ``compute_loss`` (BCE with logits; outputs [-logit, logit]) + backward, and the trainer's
+  ``AIGIMetrics`` (accuracy argmax, AP / AUROC softmax[:, 1]) on those outputs,
+* ``vina_video``: the engine turns a clip into sigmoid(mean frame logit); its input notes; it is unavailable without
+  ffmpeg; the ``synthscope`` API refuses a still image with the "video-only detector" message,
 * ``media.ffmpeg_fps_frames`` on a synthetic clip: the frame count of ffmpeg's fps filter, the central window and the
   last-frame padding of the official test loader (skipped without ffmpeg),
 * the full-size model (built on the meta device) has exactly the keys and shapes of the released checkpoint, if
@@ -20,6 +22,7 @@ Checks:
 
 from __future__ import annotations
 
+import dataclasses
 import os
 import subprocess
 import sys
@@ -36,6 +39,8 @@ sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
 
 from backend import media                                                   # noqa: E402
 from backend.engine import Engine                                           # noqa: E402
+from metrics import AIGIMetrics                                             # noqa: E402
+from synthscope.api import Detector                                         # noqa: E402
 from backend.registry import get_spec, input_note, remap_vina               # noqa: E402
 from models.image.vina.vina import SynthScopeVINAModel                      # noqa: E402
 
@@ -95,13 +100,27 @@ def test_model_and_loader() -> None:
         with torch.no_grad():
             assert torch.equal(restored(images), logits), prefix
 
+    labels = torch.tensor([0, 1, 0, 1])
+    with torch.no_grad():                  # eval mode: train mode jitters DINOv3's RoPE (pos_embed_rescale)
+        out = model.compute_loss((images, labels))
+    single = out["outputs"][:, 1]
+    assert torch.isfinite(out["loss"]) and out["outputs"].shape == (4, 2)
+    assert torch.equal(out["outputs"][:, 0], -single) and torch.allclose(single, logits[:, 0], atol=1e-5)
+    # softmax[:, 1] = sigmoid(2 logit): same order (AP / AUROC) and the same 0.5 threshold as sigmoid(logit)
+    assert torch.allclose(out["outputs"].softmax(dim=1)[:, 1], torch.sigmoid(2 * single), atol=1e-6)
+    assert torch.equal(out["outputs"].argmax(dim=1), (single > 0).long())
+    metrics = AIGIMetrics(["real_accuracy", "fake_accuracy", "AP", "AUC"])
+    metrics(out["outputs"].detach(), labels, torch.zeros(4, dtype=torch.long))
+    values = {k: m.compute().item() for k, m in metrics._get_metrics_dict().items()}
+    assert len(values) == 4 and all(0.0 <= v <= 1.0 for v in values.values()), values
     model.train()
     model.zero_grad()
-    out = model.compute_loss((images, torch.tensor([0, 1, 0, 1])))
-    assert torch.isfinite(out["loss"]) and out["outputs"].shape == (4, 1)
+    out = model.compute_loss((images, labels))
+    assert torch.isfinite(out["loss"]) and out["outputs"].shape == (4, 2)
     out["loss"].backward()
     assert model.head.weight.grad is not None and model.backbone.embeddings.patch_embeddings.weight.grad is not None
-    print(f"    {len(sd)} tensors, logits {tuple(logits.shape)}, clip mean, strict loads with both prefixes")
+    print(f"    {len(sd)} tensors, logits {tuple(logits.shape)}, clip mean, strict loads with both prefixes, "
+          f"loss outputs (4, 2) -> AIGIMetrics {sorted(values)}")
 
 
 def test_video_spec() -> None:
@@ -117,8 +136,35 @@ def test_video_spec() -> None:
         want = torch.sigmoid(model(clip).mean())
     assert p.shape == (1,) and torch.allclose(p[0], want, atol=1e-6)
     note = input_note(spec)
-    assert note["label"] == "The central frame at 2 fps", note
-    print(f"    P(fake) {p.item():.4f}; note '{note['label']}'")
+    assert note["label"] == "The central frame at 2 fps" and " is scored " in note["explanation"], note
+    eight = input_note(dataclasses.replace(spec, num_frames=8))
+    assert eight["label"] == "The central 8 frames at 2 fps" and " are scored " in eight["explanation"], eight
+
+    engine = Engine(device="cpu")
+    with tempfile.TemporaryDirectory() as tmp:
+        open(os.path.join(tmp, "vina.pth"), "wb").close()
+        saved = {k: os.environ.get(k) for k in ("SYNTHSCOPE_FFMPEG", "PATH")}
+        try:                                       # no ffmpeg anywhere -> unavailable (imageio-ffmpeg: skip this half)
+            os.environ["SYNTHSCOPE_FFMPEG"], os.environ["PATH"] = "", tmp
+            if media.imageio_ffmpeg is None:
+                assert not media.ffmpeg_available()
+                assert not engine.is_available(dataclasses.replace(spec, checkpoint=os.path.join(tmp, "vina.pth")))
+            os.environ["SYNTHSCOPE_FFMPEG"] = sys.executable          # any existing file: found
+            assert engine.is_available(dataclasses.replace(spec, checkpoint=os.path.join(tmp, "vina.pth")))
+        finally:
+            for k, v in saved.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        api = Detector(spec, checkpoint=os.path.join(tmp, "vina.pth"), device="cpu")
+        try:
+            api.predict(noise_image((300, 200)))
+        except ValueError as e:
+            assert "video-only detector" in str(e), e
+        else:
+            raise AssertionError("vina_video scored a still image")
+    print(f"    P(fake) {p.item():.4f}; notes '{note['label']}' / '{eight['label']}'; ffmpeg gate; API image guard")
 
 
 def test_ffmpeg_frames() -> None:
@@ -143,7 +189,16 @@ def test_ffmpeg_frames() -> None:
         assert all(np.array_equal(a, b) for a, b in zip(two, all6[2:4]))
         padded = media.ffmpeg_fps_frames(video, fps=2.0, num_frames=8)
         assert len(padded) == 8 and all(np.array_equal(f, all6[-1]) for f in padded[6:])
-    print("    6 frames at 2 fps, center = frame 3, last frame repeated to pad")
+        broken = os.path.join(tmp, "broken.mp4")                      # ffmpeg fails, writes nothing: a clear error
+        with open(broken, "wb") as fh:
+            fh.write(b"not a video" * 100)
+        try:
+            media.ffmpeg_fps_frames(broken, fps=2.0, num_frames=1)
+        except ValueError as e:
+            assert "no frames" in str(e), e
+        else:
+            raise AssertionError("a broken clip produced frames")
+    print("    6 frames at 2 fps, center = frame 3, last frame repeated to pad; a broken clip -> 'no frames'")
 
 
 def test_released_layout() -> None:
@@ -154,7 +209,8 @@ def test_released_layout() -> None:
     print("[E] full-size model (meta device) vs the released checkpoint ...")
     with torch.device("meta"):
         model = SynthScopeVINAModel(OmegaConf.create({"ModelConfig": {"model_type": "vina"}}))
-    ours = {k.replace("backbone.model.layer.", "backbone.layer."): tuple(v.shape) for k, v in model.state_dict().items()}
+    ours = {k.replace("backbone.model.layer.", "backbone.layer."): tuple(v.shape)
+            for k, v in model.state_dict().items()}
     released = remap_vina(torch.load(ckpt, map_location="cpu", weights_only=False, mmap=True))
     assert ours == {k: tuple(v.shape) for k, v in released.items()}
     print(f"    {len(ours)} tensors: same names and shapes")
