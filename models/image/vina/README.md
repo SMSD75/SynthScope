@@ -52,8 +52,33 @@ needed for inference.
 
 ## Fidelity check
 
-Pending: the parity runs against the official code (state-dict equality, image and video score parity, memory and
-speed) are added here once they have run on committed code.
+The official code (`vina_ref` at commit 225d331, in a separate process with transformers 4.57.1, `test.py`'s
+`build_inference_loader` + `infer_inputs` and configs/VINA_DINOv3.yaml) against SynthScope's full pipeline, both with
+the same static ffmpeg 7.0.2:
+
+* **images** (24: PNG, JPEG, WebP, BMP; 128×128 to 2048×1365, square and non-square): raw file →
+  `bench_eval._open_rgb` → registry transform → engine-built model with `vina.pth` loaded by the engine → sigmoid;
+* **videos** (8 GenVideo-Val clips: 3 MSR-VTT reals, Sora, Gen2, Crafter, Lavie, MorphStudio; 3 to 61 frames at
+  2 fps): the official `preprocess/video2frame.py` then `test.py` on the frame directories, against SynthScope's
+  `vina_video` on the mp4 (`engine.video_clip` → `engine._video_fake_prob`), with the served `select_frame_nums = 1`
+  and with 8 (exercising the window, the last-frame padding of 3- to 5-frame clips and the logit mean).
+
+Results (CPU, commit d0b87f6; logs `repro/logs/vinapar_cpu_{official,ours}_d0b87f6.log`):
+
+* state dict: **all 417 tensors identical** (sha256 of the bytes; the only difference is the block-prefix name),
+* model inputs: identical on all 24 images and on all 8 clips for both frame counts,
+* P(fake) and logits: **max |diff| 0.0, 0 flips** on the 23 images the official loader reads (against its batch-1 run;
+  1.2e-7 against its default batch-64 run, the official batch-64 vs batch-1 difference itself) and on all 8 videos for
+  T = 1 and T = 8. The BMP file, which the official loader replaces by a black image, equals the official transform
+  applied directly (max |diff| 0.0).
+
+The official `_mp4` path (decord, a random frame) gives different scores on every run for the same clip (e.g. Sora
+P(fake) 0.995963 / 0.997796 for two seeds vs 0.999641 from the frame directory); SynthScope follows the frame-directory
+protocol.
+
+Memory and speed (CPU, 16 threads on a shared login node, 256×256 input, fp32): 276 ms per image at batch 1 (3.6
+img/s), 4.4 img/s at batch 8, peak RSS 2.96 GiB (`repro/logs/vinapar_cpu_speed_d0b87f6.log`); a `vina_video` clip
+(ffmpeg extraction + one frame) took 0.80 s on average over the 8 parity clips.
 
 ## Results
 
