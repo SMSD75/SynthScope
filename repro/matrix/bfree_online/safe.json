@@ -1,0 +1,26 @@
+{
+  "tag": "mx_safe_bfree_online",
+  "model": "safe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 50.19,
+    "map": 66.92,
+    "mauroc": 48.7
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 66.92,
+      "auroc": 48.7,
+      "real_acc": 99.26,
+      "fake_acc": 1.12,
+      "acc": 50.19
+    }
+  },
+  "date": "2026-11-08T21:16:15",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,26 @@
+{
+  "tag": "mx_clip_bfree_online",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 50.37,
+    "map": 65.59,
+    "mauroc": 43.92
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 65.59,
+      "auroc": 43.92,
+      "real_acc": 100.0,
+      "fake_acc": 0.74,
+      "acc": 50.37
+    }
+  },
+  "date": "2026-11-08T21:20:30",
+  "synthscope_version": "0.1.0"
+}
