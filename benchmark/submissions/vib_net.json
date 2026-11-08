@@ -7,16 +7,22 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "from-scratch",
   "metrics": {
-    "acc": null,
-    "map": 99.33,
+    "acc": 99.29,
+    "map": 99.98,
     "ap": null,
-    "auroc": 99.33
+    "auroc": 99.98
   },
-  "per_generator": null,
+  "per_generator": {
+    "sdv1.4": {
+      "ap": 99.98,
+      "auroc": 99.98,
+      "acc": 99.29
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-10-29",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "GenImage SD-v1.4 single real/fake pool (mAP == AUROC by construction)",
+  "source": "repro/bench_results/vib_net_trained_noresize_genimage7.json (tag vib_net_trained_noresize_genimage7, 1 of its 7 generators); eval job 267928 (repro/logs/vibevt_267928.out)",
+  "protocol_notes": "GenImage SD-v1.4, 6000 real + 6000 fake; trained in SynthScope on GenImage SD-v1.4 with the reconstructed recipe (job 267846, the served vib_net.pth); one generator, so mAP = AP",
   "synthscope_version": "0.1.0"
 }

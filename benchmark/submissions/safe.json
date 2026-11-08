@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "from-scratch",
   "metrics": {
-    "acc": null,
-    "map": 94.13,
+    "acc": 95.11,
+    "map": 97.79,
     "ap": null,
-    "auroc": 93.68
+    "auroc": 97.86
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 96.42,
+      "auroc": 97.18,
+      "acc": 91.15
+    },
+    "cyclegan": {
+      "ap": 99.82,
+      "auroc": 99.85,
+      "acc": 98.6
+    },
+    "deepfake": {
+      "ap": 86.74,
+      "auroc": 86.37,
+      "acc": 77.37
+    },
+    "gaugan": {
+      "ap": 99.37,
+      "auroc": 99.48,
+      "acc": 94.39
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 100.0
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 100.0
+    },
+    "stylegan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.62
+    },
+    "stylegan2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.72
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-16",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths; trained from scratch",
+  "source": "repro/bench_results/safe_v2_forensynths8.json (tag safe_v2_forensynths8, all generators); job 186235 (repro/logs/safe_v2_fs8_186235.out)",
+  "protocol_notes": "ForenSynths-8; trained in SynthScope on ProGAN, 40-epoch crop recipe (safe_full_v2/model_38, the served safe.pth)",
   "synthscope_version": "0.1.0"
 }

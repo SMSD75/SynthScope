@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "from-scratch",
   "metrics": {
-    "acc": null,
-    "map": 96.8,
+    "acc": 76.36,
+    "map": 94.42,
     "ap": null,
-    "auroc": 96.6
+    "auroc": 94.42
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 94.05,
+      "auroc": 94.18,
+      "acc": 67.95
+    },
+    "cyclegan": {
+      "ap": 97.06,
+      "auroc": 96.9,
+      "acc": 83.69
+    },
+    "deepfake": {
+      "ap": 72.84,
+      "auroc": 73.86,
+      "acc": 55.92
+    },
+    "gaugan": {
+      "ap": 99.28,
+      "auroc": 99.35,
+      "acc": 88.65
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 100.0
+    },
+    "stargan": {
+      "ap": 95.89,
+      "auroc": 95.29,
+      "acc": 82.97
+    },
+    "stylegan": {
+      "ap": 98.3,
+      "auroc": 98.09,
+      "acc": 69.51
+    },
+    "stylegan2": {
+      "ap": 97.91,
+      "auroc": 97.7,
+      "acc": 62.21
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-04",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths; ResNet-50 fine-tune (ProGAN)",
+  "source": "repro/bench_results/cnn_synthscope_forensynths.json (tag cnn_synthscope_forensynths, 8 of its 13 generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
+  "protocol_notes": "ForenSynths-8; ImageNet ResNet-50 fine-tuned in SynthScope on ProGAN (the served cnn.pth)",
   "synthscope_version": "0.1.0"
 }

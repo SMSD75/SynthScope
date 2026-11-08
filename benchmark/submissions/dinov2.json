@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "frozen-probe",
   "metrics": {
-    "acc": null,
-    "map": 95.03,
+    "acc": 78.98,
+    "map": 90.61,
     "ap": null,
-    "auroc": 94.86
+    "auroc": 90.83
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 93.65,
+      "auroc": 93.36,
+      "acc": 83.92
+    },
+    "cyclegan": {
+      "ap": 97.08,
+      "auroc": 96.92,
+      "acc": 90.08
+    },
+    "deepfake": {
+      "ap": 76.42,
+      "auroc": 79.0,
+      "acc": 58.46
+    },
+    "gaugan": {
+      "ap": 99.08,
+      "auroc": 98.98,
+      "acc": 94.86
+    },
+    "progan": {
+      "ap": 99.74,
+      "auroc": 99.73,
+      "acc": 97.35
+    },
+    "stargan": {
+      "ap": 88.99,
+      "auroc": 88.36,
+      "acc": 73.44
+    },
+    "stylegan": {
+      "ap": 85.23,
+      "auroc": 85.44,
+      "acc": 66.1
+    },
+    "stylegan2": {
+      "ap": 84.7,
+      "auroc": 84.84,
+      "acc": 67.66
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-04",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths; frozen DINOv2 ViT-L/14 probe",
+  "source": "repro/bench_results/dinov2_synthscope_forensynths.json (tag dinov2_synthscope_forensynths, 8 of its 13 generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
+  "protocol_notes": "ForenSynths-8; frozen DINOv2 ViT-L/14 + linear head trained in SynthScope on ProGAN (the served dinov2.pth)",
   "synthscope_version": "0.1.0"
 }

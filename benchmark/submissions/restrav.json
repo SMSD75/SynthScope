@@ -57,7 +57,7 @@
   "submitted_by": "SynthScope",
   "date": "2026-11-02",
   "verified": true,
-  "source": "repro/bench_results/restrav_genvideo_full.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
-  "protocol_notes": "Frozen DINOv2 trajectory geometry + MLP trained on GenVidBench; does not transfer to GenVideo-Val (AUROC below 50)",
+  "source": "repro/bench_results/restrav_genvideo_full.json (tag restrav_genvideo_full, all generators); job 271898 (repro/logs/restravgv_271898.out)",
+  "protocol_notes": "Frozen DINOv2 trajectory geometry + MLP trained in SynthScope (the served restrav.pth; its training set is not recorded); does not transfer to GenVideo-Val (AUROC below 50)",
   "synthscope_version": "0.1.0"
 }

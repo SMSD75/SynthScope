@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "official-weights",
   "metrics": {
-    "acc": 95.12,
-    "map": 98.71,
+    "acc": 94.64,
+    "map": 98.5,
     "ap": null,
-    "auroc": null
+    "auroc": 98.8
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 97.76,
+      "auroc": 98.18,
+      "acc": 93.95
+    },
+    "cyclegan": {
+      "ap": 99.43,
+      "auroc": 99.74,
+      "acc": 99.25
+    },
+    "deepfake": {
+      "ap": 93.4,
+      "auroc": 93.91,
+      "acc": 75.6
+    },
+    "gaugan": {
+      "ap": 97.49,
+      "auroc": 98.62,
+      "acc": 95.05
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 100.0
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.4
+    },
+    "stylegan": {
+      "ap": 99.94,
+      "auroc": 99.93,
+      "acc": 93.85
+    },
+    "stylegan2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 100.0
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-04",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths-8; vendored official architecture",
+  "source": "repro/bench_results/cospy_official_forensynths.json (tag cospy_official_forensynths, 8 of its 13 generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
+  "protocol_notes": "ForenSynths-8; official CO-SPY ProGAN checkpoint in the vendored official architecture (not the served co_spy.pth)",
   "synthscope_version": "0.1.0"
 }
