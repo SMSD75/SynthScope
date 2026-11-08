@@ -57,7 +57,7 @@
     "acc_official_wts": 83.57,
     "map_synthscope_retrain": 98.99,
     "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth (the served pgc.pth)",
-    "tags": "pgc_official_ufd8 / pgc_trained_step500_ufd8 (both job 266660, PadCenterCrop eval; official recipe in SynthScope, experiments/image/pgc.sh). pgc_official_ufd (99.34 / 94.16) is the 2026-06-04 run with the earlier Resize(256)+CenterCrop(224) eval",
+    "tags": "pgc_official_ufd8 / pgc_trained_step500_ufd8 (both job 266660, PadCenterCrop eval; official recipe in SynthScope, experiments/image/pgc.sh). pgc_official_ufd (99.34 / 94.16) is the 2026-06-04 run of the official PGC code (pgc_official_eval.py, PadCenterCrop); the SynthScope class on the same weights gives 99.17, the gap is the known model-forward difference",
     "acc_synthscope_retrain": 91.96
    },
    "gap_cause": "Reproduced (official weights 99.17; the official recipe trained in SynthScope, step 500: 98.99, same job and eval) >= paper 98.0.",
@@ -84,7 +84,7 @@
     "acc_official_wts": 76.34,
     "map_synthscope_retrain": 97.41,
     "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth (the served pgc.pth)",
-    "tags": "pgc_official_forensynths13 / pgc_trained_step500_forensynths13 (FS-8 subset of the 13, both job 266282). pgc_official_forensynths (FS-13 96.25 / 83.73) is the 2026-06-04 run with the earlier Resize(256)+CenterCrop(224) eval",
+    "tags": "pgc_official_forensynths13 / pgc_trained_step500_forensynths13 (FS-8 subset of the 13, both job 266282). pgc_official_forensynths (FS-13 96.25 / 83.73) is the 2026-06-04 run of the official PGC code (pgc_official_eval.py, PadCenterCrop); the SynthScope class on the same weights gives FS-13 93.80, the gap is the known model-forward difference",
     "acc_synthscope_retrain": 85.89
    },
    "gap_cause": "Not a paper number. The official recipe trained in SynthScope (step 500) gives FS-8 97.41 mAP, above the official checkpoint (96.41 on the same evaluation); the earlier 89.03 retrain overshot the early transfer peak.",

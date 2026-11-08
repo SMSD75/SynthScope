@@ -46,11 +46,11 @@ Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = SynthScope_tr
 | VIB-Net | Diffusion-source (SDv1.4), ACC | acc=85.83 | *none released* | mAP=83.94 / acc=77.57 | below |
 | VIB-Net | GAN-source (ForenSynths/ProGAN), AP | map=93.14 | *none released* | mAP=61.71 / acc=57.91 | below |
 | VIB-Net | GAN-source (ForenSynths/ProGAN), ACC | acc=82.5 | *none released* | mAP=61.71 / acc=57.91 | below |
-| PGC | GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 | mAP=97.62 / acc=78.6 | official |
+| PGC | GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 (official code) | mAP=97.62 / acc=78.6 | official |
 | PGC | UniversalFakeDetect (UFD) | map=98.0 | mAP=99.17 / acc=83.57 | mAP=98.99 / acc=91.96 | reproduced |
 | PGC | ForenSynths-8 (CNNDetection test) [†] | — | mAP=96.41 / acc=76.34 | mAP=97.41 / acc=85.89 | reference |
-| PGC | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
-| PGC | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
+| PGC | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 (official code) | mAP=86.88 | official |
+| PGC | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 (official code) | mAP=98.61 / acc=66.66 | official |
 | CuRe | AIGIBench — paper's 20 full-image-synthesis subsets | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 (full test data; every subset within 0.10 pt) | — (training recipe not released) | reproduced |
 | CuRe | UniversalFakeDetect (UFD-8, diffusion half) | acc=82.0 (UnivFD; aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
 | CuRe | ForenSynths (CNNDetection test, 13) | (GAN half of UnivFD 82.0) | mAP=94.05 / acc=81.95 | — | reference |
