@@ -10,13 +10,54 @@
     "acc": 98.39,
     "map": 99.7,
     "ap": null,
-    "auroc": null
+    "auroc": 99.57
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 99.98,
+      "auroc": 99.97,
+      "acc": 99.5
+    },
+    "cyclegan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.36
+    },
+    "deepfake": {
+      "ap": 97.99,
+      "auroc": 97.01,
+      "acc": 93.26
+    },
+    "gaugan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.43
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.89
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.75
+    },
+    "stylegan": {
+      "ap": 99.75,
+      "auroc": 99.69,
+      "acc": 97.13
+    },
+    "stylegan2": {
+      "ap": 99.92,
+      "auroc": 99.9,
+      "acc": 98.8
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-04",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths-8 subset; official released weights",
+  "source": "repro/bench_results/fatformer_official_forensynths.json (tag fatformer_official_forensynths, all generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
+  "protocol_notes": "ForenSynths-8; official 4-class ProGAN weights (the served fat_former.pth)",
   "synthscope_version": "0.1.0"
 }

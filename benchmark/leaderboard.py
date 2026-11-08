@@ -19,11 +19,12 @@ LEADERBOARD_MD = BENCH_DIR.parent / "LEADERBOARD.md"
 # Track order, titles, and the metric each track ranks by.
 TRACKS = {
     "forensynths": {
-        "title": "ForenSynths — image (ProGAN-trained, cross-generator)",
+        "title": "ForenSynths-8 (8 generators) — image (ProGAN-trained, cross-generator)",
         "primary": "map", "modality": "image",
     },
     "genimage-sdv1.4": {
-        "title": "GenImage SD-v1.4 — image", "primary": "auroc", "modality": "image",
+        "title": "GenImage SD-v1.4 — image (diffusion-trained; in-distribution only for SD-v1.4-trained rows)",
+        "primary": "auroc", "modality": "image",
     },
     "genvideo-val": {
         "title": "GenVideo-Val — video (all 10,000 MSR-VTT reals vs every fake, per generator)", "primary": "auroc",
@@ -82,8 +83,8 @@ def _fmt(v) -> str:
 
 def _sort_key(sub, primary):
     v = sub.get("metrics", {}).get(primary)
-    # rank desc by primary; missing primary sorts last
-    return (0, -v) if isinstance(v, (int, float)) else (1, 0.0)
+    # verified rows first, each group desc by primary; missing primary sorts last within its group
+    return (0 if sub.get("verified") else 1,) + ((0, -v) if isinstance(v, (int, float)) else (1, 0.0))
 
 
 def render() -> str:
@@ -94,7 +95,7 @@ def render() -> str:
         "See [benchmark/README.md](benchmark/README.md) for the protocol and how to submit.",
         "", "This is the **standardized, versioned** table: a few tracks with a fixed protocol that anyone can submit to. The web page's **Leaderboard** tab is broader (every paper benchmark, 30+ groups) and the repo supports many more datasets, which download and organize themselves: see [docs/BENCHMARKS.md](docs/BENCHMARKS.md).", "",
         "Metrics are percentages. **mAP** = mean AP over generators. Each track is ranked by "
-        "its primary metric (in bold).", "",
+        "its primary metric (in bold). Unverified rows are listed after the ranked ones, without a rank.", "",
     ]
     for track_id, cfg in TRACKS.items():
         rows = [s for s in subs if s.get("track") == track_id]
@@ -111,9 +112,12 @@ def render() -> str:
         rows.sort(key=lambda s: _sort_key(s, primary))
         lines.append("| " + " | ".join(header_cells) + " |")
         lines.append("| " + " | ".join(["---"] * len(header_cells)) + " |")
-        for i, s in enumerate(rows, 1):
+        rank = 0
+        for s in rows:
             m = s.get("metrics", {})
-            cells = [str(i), s["method"], s["evaluation"]]
+            if s.get("verified"):
+                rank += 1
+            cells = [str(rank) if s.get("verified") else "—", s["method"], s["evaluation"]]
             cells += [_fmt(m.get(key)) for key, _ in METRIC_COLS]
             cells.append("✓" if s.get("verified") else "")
             note = s.get("protocol_notes") or ""

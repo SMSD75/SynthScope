@@ -1,0 +1,221 @@
+[cuda-ok] GPU ready (try 1)
+=== aide_official_forensynths attempt 1 00:05:30 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+=== aide_official_eval aide_official_forensynths | model=aide (official-vendored) ckpt=/hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth | forensynths | 13 generators | device=cuda ===
+  biggan: 2000 real + 2000 fake ...
+    biggan: acc=83.95 AP=94.44 AUROC=94.43 (real_acc=70.8 fake_acc=97.1)
+  crn: 6382 real + 6382 fake ...
+    crn: acc=60.73 AP=91.24 AUROC=89.92 (real_acc=21.67 fake_acc=99.78)
+  cyclegan: 1321 real + 1321 fake ...
+    cyclegan: acc=98.49 AP=99.89 AUROC=99.9 (real_acc=97.96 fake_acc=99.02)
+  deepfake: 2707 real + 2698 fake ...
+    deepfake: acc=53.91 AP=76.22 AUROC=72.73 (real_acc=99.85 fake_acc=7.97)
+  gaugan: 5000 real + 5000 fake ...
+    gaugan: acc=73.24 AP=97.69 AUROC=97.77 (real_acc=46.54 fake_acc=99.94)
+  imle: 6382 real + 6382 fake ...
+    imle: acc=60.84 AP=99.95 AUROC=99.95 (real_acc=21.67 fake_acc=100.0)
+  progan: 4000 real + 4000 fake ...
+    progan: acc=99.99 AP=100.0 AUROC=100.0 (real_acc=99.98 fake_acc=100.0)
+  san: 219 real + 219 fake ...
+    san: acc=70.78 AP=90.28 AUROC=89.25 (real_acc=98.63 fake_acc=42.92)
+  seeingdark: 180 real + 180 fake ...
+    seeingdark: acc=69.44 AP=77.86 AUROC=81.22 (real_acc=41.11 fake_acc=97.78)
+  stargan: 1999 real + 1999 fake ...
+    stargan: acc=99.9 AP=100.0 AUROC=100.0 (real_acc=99.9 fake_acc=99.9)
+  stylegan: 5991 real + 5991 fake ...
+    stylegan: acc=99.62 AP=99.99 AUROC=99.99 (real_acc=99.85 fake_acc=99.4)
+  stylegan2: 7988 real + 7988 fake ...
+    stylegan2: acc=97.94 AP=99.97 AUROC=99.96 (real_acc=99.91 fake_acc=95.97)
+  whichfaceisreal: 1000 real + 1000 fake ...
+    whichfaceisreal: acc=94.7 AP=99.62 AUROC=99.61 (real_acc=99.3 fake_acc=90.1)
+
+=== RESULT aide_official_forensynths: mAP=94.4 mAUROC=94.21 acc=81.81 over 13 generators -> /ivi/zfs/s0/original_homes/ssalehi/AGID/repro/bench_results/aide_official_forensynths.json ===
+=== aide_official_aigcdetect attempt 1 02:18:31 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a1
+=== aide_official_aigcdetect attempt 2 02:19:03 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a2
+=== aide_official_aigcdetect attempt 3 02:19:34 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a3
+=== aide_official_aigcdetect attempt 4 02:20:06 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a4
+=== aide_official_aigcdetect attempt 5 02:20:37 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a5
+=== aide_official_aigcdetect attempt 6 02:21:08 ===
+WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+load: ckpt has 1025 keys. missing=0 unexpected=0
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 633, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 564, in main
+    model = build_model(ckpt, device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/AGID/repro/official_evals/aide_official_eval.py", line 520, in build_model
+    return model.to(device).eval()
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1384, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 934, in _apply
+    module._apply(fn)
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 965, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1370, in convert
+    return t.to(
+           ^^^^^
+  File "/home/ssalehi/miniconda3/envs/AGID/lib/python3.11/site-packages/torch/cuda/__init__.py", line 478, in _lazy_init
+    torch._C._cuda_init()
+RuntimeError: No CUDA GPUs are available
+ERROR conda.cli.main_run:execute(125): `conda run python repro/official_evals/aide_official_eval.py --benchmark pergen --data /hddstore/ssalehi/AGID/AIGCDetectBenchmark/test --bs 8 --device cuda --ckpt /hddstore/ssalehi/AGID/repro/official_ckpts/aide/AIDE_checkpoints/progan_train.pth --tag aide_official_aigcdetect` failed. (See above for error)
+[retry] aide_official_aigcdetect rc=0 a6
+!!! aide_official_aigcdetect FAILED
+=================== GPU7 AIDE FIXUP (bs8) DONE Fri Jun  5 02:21:39 CEST 2026 ===================

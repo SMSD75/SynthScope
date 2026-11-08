@@ -7,16 +7,22 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "from-scratch",
   "metrics": {
-    "acc": null,
-    "map": null,
+    "acc": 97.17,
+    "map": 99.93,
     "ap": null,
-    "auroc": 97.66
+    "auroc": 99.94
   },
-  "per_generator": null,
+  "per_generator": {
+    "sdv1.4": {
+      "ap": 99.93,
+      "auroc": 99.94,
+      "acc": 97.17
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-11-03",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "DMID Latent-Diffusion vs COCO; SynthScope fixed-resolution variant",
+  "source": "repro/bench_results/spai_ep8_genimage8.json (tag spai_ep8_genimage8, 1 of its 8 generators); job 273445 (repro/logs/spaiev_ep8_273445.out)",
+  "protocol_notes": "300+300 subsample; trained on latent-diffusion (LDM) data, not SD-v1.4. GenImage SD-v1.4; trained in SynthScope with the official recipe (LDM vs COCO/LSUN, job 267192, epoch 8 by validation loss), native resolution",
   "synthscope_version": "0.1.0"
 }

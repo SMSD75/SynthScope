@@ -15,8 +15,8 @@ from the submission files in [`submissions/`](submissions/) — see [LEADERBOARD
 
 | Track id | Modality | Test set | Train signal | Primary metric |
 | --- | --- | --- | --- | --- |
-| `forensynths` | image | ForenSynths real/fake, scored **per generator** | ProGAN-trained (cross-generator generalization) | **mAP** (mean AP over generators) |
-| `genimage-sdv1.4` | image | GenImage SD-v1.4 real/fake | in-distribution diffusion | **AUROC** |
+| `forensynths` | image | ForenSynths-8: the 8 GAN test sets (ProGAN, StyleGAN, StyleGAN2, BigGAN, CycleGAN, StarGAN, GauGAN, Deepfake), real/fake, scored **per generator** | ProGAN-trained (cross-generator generalization) | **mAP** (mean AP over generators) |
+| `genimage-sdv1.4` | image | the SD-v1.4 subset of the GenImage test set, real/fake (one generator, so mAP = AP; each row's notes give its image count) | diffusion-trained (in-distribution only for SD-v1.4-trained rows) | **AUROC** |
 | `genvideo-val` | video | GenVideo-Val: all 10,000 MSR-VTT reals against every fake, per generator | mixed | **AUROC** (AP with fake as positive is unstable here: as few as 56 fakes against 10,000 reals) |
 
 **These three tracks are only the start.** The repo supports 20 image and 8 video benchmark datasets (see the table in the
@@ -38,8 +38,12 @@ over generators at threshold 0.5.
 3. **Declare provenance** via `evaluation`: `official-weights`, `from-scratch`, `frozen-probe`,
    `training-free`, or `external` (numbers produced outside SynthScope).
 4. **Verified numbers trace to a run.** `verified: true` means the result came from a logged SynthScope
-   evaluation (set `source` to the log/run path). Reference seed entries are transcribed from the
-   repo's reproduction table.
+   evaluation of the registry-default checkpoint at the date given (or the checkpoint the row names); set
+   `source` to the log/run path. SynthScope's own entries
+   are built by [`seed_reference_results.py`](seed_reference_results.py) from the committed
+   `repro/bench_results/*.json` of each run, with the job id in `source`; `--check` confirms they still
+   match. An entry whose checkpoint cannot be confirmed to fit the track is kept with `verified: false`;
+   unverified rows are listed unranked, after the ranked ones.
 
 ## Data layout
 
