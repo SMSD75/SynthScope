@@ -14,7 +14,9 @@
 #   batch     per-GPU 64 = MICRO x ACCUM (MICRO 64 + GRAD_CKPT=true on a 48 GB GPU; e.g. MICRO 16 x ACCUM 4 on 24 GB);
 #             the paper does not state its GPU count (global batch = NGPU x 64)
 # Plain DDP with fp16 autocast + loss scaling, no gradient clipping (not the repo's DeepSpeed accelerate_config.yaml, which
-# clips at 1.0). Stage 1 resumes after its last finished epoch when rerun with the same SAVE.
+# clips at 1.0); the accelerate launch is pinned by an explicit
+# minimal config file + flags (ACC_ARGS), independent of the host's default accelerate config.
+# Stage 1 resumes after its last finished epoch when rerun with the same SAVE.
 # Evaluate:  python benchmark/bench_eval.py --model cure --ckpt $SAVE/stage23/cure_trained.pth --dataset wildrf
 set -eo pipefail
 export TRITON_CACHE_DIR=${TRITON_CACHE_DIR:-/nvmestore/ssalehi/.triton}
@@ -32,9 +34,31 @@ PY=${PY:-/home/ssalehi/miniconda3/envs/SynthScope/bin/python}
 if (( 64 % MICRO != 0 )); then echo "MICRO must divide the per-GPU batch 64" >&2; exit 1; fi
 ACCUM=$((64 / MICRO))
 MULTI=""; (( NGPU > 1 )) && MULTI="--multi_gpu"
+# Every accelerate setting is explicit (a minimal config file AND flags), so a default accelerate config on the host
+# (DeepSpeed, dynamo, other precision) cannot change the run: single machine, no dynamo, fp16 autocast + loss scaling
+# (CuRe.features always autocasts to fp16).
+ACC_CFG=$(mktemp --suffix=.yaml)
+trap 'rm -f "$ACC_CFG"' EXIT
+DIST=MULTI_GPU; (( NGPU > 1 )) || DIST="'NO'"
+cat > "$ACC_CFG" <<YAML
+compute_environment: LOCAL_MACHINE
+distributed_type: $DIST
+downcast_bf16: 'no'
+dynamo_config: {dynamo_backend: 'NO'}
+gpu_ids: all
+machine_rank: 0
+main_training_function: main
+mixed_precision: fp16
+num_machines: 1
+num_processes: $NGPU
+rdzv_backend: static
+same_network: true
+use_cpu: false
+YAML
+ACC_ARGS="--config_file $ACC_CFG --num_machines 1 --dynamo_backend no --mixed_precision fp16 --num_processes $NGPU $MULTI"
 
 if [[ " $STAGES " == *" 1 "* ]]; then
-    "$(dirname $PY)/accelerate" launch $MULTI --num_processes $NGPU --mixed_precision fp16 main.py \
+    "$(dirname $PY)/accelerate" launch $ACC_ARGS main.py \
         trainer@TrainerConfig=image/cure \
         model@ModelConfig=image/cure \
         dataset@DatasetConfig=image/cure_train \

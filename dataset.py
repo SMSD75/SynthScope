@@ -3101,14 +3101,15 @@ class CuReEndpoints:
     CenterCrop 390, Resize 336, JPEG q70, mean = std = 0.5): the paper does not state its training preprocessing, and
     the released test-time pipeline is the one the trained subspace and head are used with. Images are opened with PIL and
     their source format is recorded (``SRC_FORMAT_KEY``), as ``bench_eval`` does, so the PNG step applies.
-    ``max_per_class`` keeps the first N of each class (sorted file names; smoke runs)."""
+    ``max_images`` keeps the first N reals and the first N fakes (sorted file names, over the whole split, not per
+    ImageNet class; smoke runs)."""
 
-    def __init__(self, root_dir, split, transform, max_per_class=None):
+    def __init__(self, root_dir, split, transform, max_images=None):
         split_dir = Path(root_dir) / ("train" if split == "train" else "test")
         self.reals = sorted(_iter_images(split_dir / "real"))
         self.fakes = sorted(_iter_images(split_dir / "fake"))
-        if max_per_class:
-            self.reals, self.fakes = self.reals[:int(max_per_class)], self.fakes[:int(max_per_class)]
+        if max_images:
+            self.reals, self.fakes = self.reals[:int(max_images)], self.fakes[:int(max_images)]
         if not self.reals or not self.fakes:
             raise RuntimeError(f"CuRe data: no real/ or fake/ images under {split_dir}")
         self.transform = transform
@@ -3187,10 +3188,10 @@ class CuReTrainDatasetModule:
             for split in ("train", "test"):
                 GenImageDataset.prepare_split(root, split)
         transform = AIGITransformations(list(config.ModelConfig.eval_transform_list))
-        cap = cfg.get("max_per_class", None)
+        cap = cfg.get("max_images", None)
         seed = int(cfg.get("seed", 0))
         self.train_dataset = CuReMixDataset(CuReEndpoints(root, "train", transform, cap), "train", seed=seed)
-        self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_per_class", cap)), "val",
+        self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_images", cap)), "val",
                                           val_pairs=cfg.get("val_pairs", None), seed=seed)
 
     def train_dataloader(self):

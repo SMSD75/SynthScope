@@ -179,10 +179,20 @@ class SynthScopeCuReModel(nn.Module):
         return [{"params": [p for n, p in named if "lora_" in n], "weight_decay": self.lora_weight_decay},
                 {"params": [p for n, p in named if "lora_" not in n], "weight_decay": self.head_weight_decay}]
 
+    @staticmethod
+    def _require_grad_scaler(images: torch.Tensor) -> None:
+        """``features`` always runs fp16 autocast on CUDA, so CUDA training needs a gradient scaler; ``accelerate launch
+        --mixed_precision fp16`` (exported as ACCELERATE_MIXED_PRECISION, which the trainer's Accelerator reads) provides it.
+        Without it the fp16 gradients would underflow silently, so fail loudly instead."""
+        if images.is_cuda and torch.is_grad_enabled() and os.environ.get("ACCELERATE_MIXED_PRECISION", "no") != "fp16":
+            raise RuntimeError("CuRe stage 1 runs the backbone in fp16 autocast and needs a gradient scaler: launch with "
+                               "`accelerate launch --mixed_precision fp16` (experiments/image/cure.sh does)")
+
     def compute_loss(self, batch):
         images, targets, _folder_ids = batch
         if self.training_stage == "ratio":
             # Eq. 3-4: sigmoid ratio head, BCE with the mixing ratio as the soft target (targets = alpha in [0, 1]).
+            self._require_grad_scaler(images)
             logits = self.ratio_head(self.features(images)).squeeze(-1).float()
             loss = F.binary_cross_entropy_with_logits(logits, targets.float())
             return {"loss": loss, "outputs": torch.sigmoid(logits)}

@@ -12,6 +12,6 @@ train_batch_size: 64       # per GPU (the paper's per-GPU batch)
 val_batch_size: 64
 num_workers: 8
 val_pairs: 2000
-max_per_class: null        # smoke runs: the first N images of each class
-val_max_per_class: null
+max_images: null           # smoke runs: the first N reals and N fakes of the split (sorted names)
+val_max_images: null
 seed: 0                    # the validation pairs

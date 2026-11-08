@@ -100,7 +100,7 @@ class TrajectoryPairs(Dataset):
 
 
 class LabelledImages(Dataset):
-    """All (or the first ``max_per_class``) training images with labels 0 = real, 1 = generated."""
+    """All (or the first ``max_images``) training images with labels 0 = real, 1 = generated."""
 
     def __init__(self, ep: CuReEndpoints):
         self.ep = ep
@@ -177,7 +177,7 @@ def stage2(args) -> None:
         print(f"[stage2] reusing {traj_path}", flush=True)
         traj = torch.load(traj_path, map_location="cpu", weights_only=True)
     else:
-        ep = CuReEndpoints(args.data, "train", endpoint_transform(), args.max_per_class)
+        ep = CuReEndpoints(args.data, "train", endpoint_transform(), args.max_images)
         gen = torch.Generator().manual_seed(args.seed)
         n_r, n_f = len(ep.reals), len(ep.fakes)
         pairs = {"RF": draw_pairs(args.pairs, n_r, n_f, False, gen), "RR": draw_pairs(args.pairs, n_r, n_r, True, gen),
@@ -190,7 +190,7 @@ def stage2(args) -> None:
         traj = encode_trajectories(model, loader, args.pairs, args.device)
         traj["pairs"] = pairs
         traj["meta"] = json.dumps({"lora": args.lora, "data": args.data, "pairs": args.pairs, "seed": args.seed,
-                                   "max_per_class": args.max_per_class})
+                                   "max_images": args.max_images})
         torch.save(traj, traj_path)
         del model
     stats = S.statistics(traj["b_RF"], traj["b_RR"], traj["b_FF"], traj["zbar_RF"])
@@ -236,7 +236,7 @@ def train_head(u: torch.Tensor, y: torch.Tensor, args) -> nn.Linear:
             logits = head(drop(u[idx]))
             loss = F.cross_entropy(logits, y[idx])
             opt.zero_grad(); loss.backward(); opt.step()
-            total += float(loss) * len(idx)
+            total += loss.item() * len(idx)
             correct += int((logits.argmax(1) == y[idx]).sum())
         head.eval()
         with torch.no_grad():
@@ -253,7 +253,7 @@ def stage3(args) -> None:
     sub = torch.load(args.subspace or out / "subspace.pt", map_location="cpu", weights_only=True)
     w, mu = sub["W"].float(), sub["mu"].float()
     feat_path = out / "head_features.pt"
-    ep = CuReEndpoints(args.data, "train", endpoint_transform(), args.max_per_class)
+    ep = CuReEndpoints(args.data, "train", endpoint_transform(), args.max_images)
     model = build_model(args.lora, args.device)
     if feat_path.exists() and not args.recompute:
         print(f"[stage3] reusing {feat_path}", flush=True)
@@ -301,7 +301,7 @@ def main(argv=None) -> None:
         p.add_argument("--lora", required=True, help="state dict with the 96 stage-1 LoRA tensors (trainer model_last.pth)")
         p.add_argument("--data", required=True, help="GenImage SD v1.4 root (train/real, train/fake)")
         p.add_argument("--out", required=True)
-        p.add_argument("--max-per-class", type=int, default=None, help="first N images of each class (smoke runs)")
+        p.add_argument("--max-images", type=int, default=None, help="first N reals and N fakes of the split (smoke runs)")
         p.add_argument("--workers", type=int, default=8)
         p.add_argument("--seed", type=int, default=0)
         p.add_argument("--device", default="cuda")
