@@ -1,0 +1,74 @@
+{
+  "tag": "fat_former_trained_last_forensynths",
+  "model": "fat_former",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/fat_former_train/model_last.pth",
+  "benchmark": "forensynths",
+  "data_root": "/local/ssalehid/cache/data023/CNNDetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 97.29,
+    "map": 99.56,
+    "mauroc": 99.42
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 99.93,
+      "auroc": 99.89,
+      "real_acc": 99.55,
+      "fake_acc": 99.35,
+      "acc": 99.45
+    },
+    "cyclegan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.32,
+      "fake_acc": 99.92,
+      "acc": 99.62
+    },
+    "deepfake": {
+      "ap": 98.02,
+      "auroc": 97.24,
+      "real_acc": 100.0,
+      "fake_acc": 81.91,
+      "acc": 90.96
+    },
+    "gaugan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.2,
+      "fake_acc": 99.98,
+      "acc": 99.59
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.8,
+      "acc": 99.9
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.95,
+      "fake_acc": 100.0,
+      "acc": 99.97
+    },
+    "stylegan": {
+      "ap": 99.72,
+      "auroc": 99.69,
+      "real_acc": 100.0,
+      "fake_acc": 89.47,
+      "acc": 94.73
+    },
+    "stylegan2": {
+      "ap": 98.79,
+      "auroc": 98.56,
+      "real_acc": 99.99,
+      "fake_acc": 88.17,
+      "acc": 94.08
+    }
+  },
+  "date": "2026-11-08T18:09:50",
+  "synthscope_version": "0.1.0"
+}

@@ -1,4 +1,7 @@
+from contextlib import nullcontext
+
 import torch
+from torch.nn.parallel import DistributedDataParallel
 from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
 from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
 from models.image.dino_detection.dino_detection import SynthScopeDINOModel, SynthScopeDINOv3Model
@@ -153,8 +156,36 @@ class SynthScopeModelTrainer:
         return [{"params": [p for n, p in named if not no_decay(n, p)]},
                 {"params": [p for n, p in named if no_decay(n, p)], "weight_decay": 0.0}]
 
+    def _compute_loss(self, batch):
+        """``model.compute_loss(batch)``. Under multi-GPU DDP the prepared model is a ``DistributedDataParallel``, which has
+        no ``compute_loss`` and whose gradient reducer is armed only by its own ``forward``: the loss must be computed
+        through the wrapper, so for the duration of the call the inner module's ``forward`` is a dispatcher that runs
+        ``compute_loss`` on the wrapper's call (DDP runs ``module(*inputs)``) and the real ``forward`` for the calls
+        ``compute_loss`` itself makes. Single-process and DeepSpeed runs (the engine forwards unknown attributes to the module)
+        keep the plain call."""
+        if not isinstance(self.model, DistributedDataParallel):
+            return self.model.compute_loss(batch)
+        inner = self.model.module
+        previous = inner.__dict__.get("forward")
+        original_forward, armed = inner.forward, [True]
+
+        def dispatch(*args, **kwargs):
+            if armed[0]:                       # DDP's call: run the loss ...
+                armed[0] = False
+                return inner.compute_loss(*args, **kwargs)
+            return original_forward(*args, **kwargs)   # ... and compute_loss's own self(...) / self.forward(...) calls
+
+        inner.forward = dispatch
+        try:
+            return self.model(batch)
+        finally:
+            if previous is None:
+                del inner.forward
+            else:
+                inner.forward = previous
+
     def train_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
@@ -165,7 +196,7 @@ class SynthScopeModelTrainer:
         return loss
 
     def val_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
@@ -176,7 +207,7 @@ class SynthScopeModelTrainer:
         return loss
     
     def test_step(self, batch):
-        loss_dict = self.model.compute_loss(batch)
+        loss_dict = self._compute_loss(batch)
         loss = loss_dict["loss"]
         outputs = loss_dict["outputs"]
         labels = batch[1]
@@ -186,20 +217,47 @@ class SynthScopeModelTrainer:
             self.test_metrics(outputs_g, labels_g, folder_ids_g)
         return loss
 
-    def train_epoch(self):
+    def train_epoch(self, accum=1, log_every=0):
+        """One pass over the training data. With ``accum`` > 1 (the ``lr_step`` schedule's ``grad_accum_steps``) each
+        optimizer step uses ``accum`` micro-batches, the loss of each divided by ``accum``, so a step equals one batch of
+        ``accum`` x micro-batch (the last step of an epoch averages over the micro-batches that remain): a 24 GB GPU can follow an official batch size
+        it cannot hold. ``log_every`` > 0 prints the mean loss and the learning rate every that many optimizer steps."""
         self.model.train()
         total_loss = 0
-        for batch in tqdm(self.train_loader, desc="Training"):
-            self.optimizer.zero_grad()
-            loss  = self.train_step(batch)
-            self.accelerator.backward(loss)
-            self.optimizer.step()
-            if self.scheduler is not None:
-                self.scheduler.step()
-            if self.accelerator.sync_gradients:
-                self.global_step += 1
+        running, n_running = 0.0, 0
+        n_batches = len(self.train_loader)
+        n_tail = n_batches % accum           # micro-batches of the last, shorter optimizer step (0: none)
+        for idx, batch in enumerate(tqdm(self.train_loader, desc="Training")):
+            if accum == 1:
+                self.optimizer.zero_grad()
+                loss  = self.train_step(batch)
+                self.accelerator.backward(loss)
+                self.optimizer.step()
+                if self.scheduler is not None:
+                    self.scheduler.step()
+                if self.accelerator.sync_gradients:
+                    self.global_step += 1
+                at_step = True
+            else:
+                at_step = (idx + 1) % accum == 0 or idx + 1 == n_batches
+                # the micro-batches that do not step skip the DDP gradient all-reduce
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    # the mean over the micro-batches of THIS step, so the shorter last step is not under-weighted
+                    self.accelerator.backward(loss / (n_tail if n_tail and idx >= n_batches - n_tail else accum))
+                if at_step:
+                    self.optimizer.step()
+                    if self.scheduler is not None:
+                        self.scheduler.step()
+                    self.optimizer.zero_grad()
+                    self.global_step += 1
             loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
             total_loss += loss_sum.item()
+            running, n_running = running + loss_sum.item(), n_running + 1
+            if at_step and log_every and self.global_step % log_every == 0:
+                self.accelerator.print(f"optimizer step {self.global_step}: mean loss {running / n_running:.4f}, "
+                                       f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
+                running, n_running = 0.0, 0
         if self.use_metrics:
             total_metrics_dict = {
                 metric: self.train_metrics.metrics_dict[metric].compute().item()
@@ -318,14 +376,17 @@ class SynthScopeModelTrainer:
         """A fixed step schedule as in NPR's train.py (``delr_freq``): after epoch ``e`` (0-based) with
         ``e % every == 0 and e != 0`` the learning rate is multiplied by ``factor``; validation after every epoch is
         logged (plus ``model_best.pth`` by validation accuracy), and the final model is ``model_last.pth``, which is
-        the checkpoint the official code releases."""
+        the checkpoint the official code releases. Optional keys: ``grad_accum_steps`` (micro-batches per optimizer step,
+        default 1: the batch size is then micro-batch x GPUs) and ``log_every`` (print loss and lr every that many
+        optimizer steps), ``phase`` (default 0, NPR's rule; ``phase: 1`` drops after epochs 9, 19, ... instead, i.e.
+        torch's ``StepLR(step_size=10)`` stepped once per epoch)."""
         cfg = self.config.TrainerConfig
         best = None
         for epoch in range(cfg.epochs):
-            train_loss, train_metrics_dict = self.train_epoch()
+            train_loss, train_metrics_dict = self.train_epoch(accum=int(step.get("grad_accum_steps", 1)), log_every=int(step.get("log_every", 0)))
             self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
             self.logger.log_metrics({"train/loss": train_loss, **{f"train/{m}": v for m, v in train_metrics_dict.items()}}, self.global_step)
-            if epoch % int(step.every) == 0 and epoch != 0:
+            if (epoch + int(step.get("phase", 0))) % int(step.every) == 0 and epoch != 0:
                 for group in self.optimizer.param_groups:
                     group["lr"] *= float(step.factor)
                 self.accelerator.print(f"Epoch {epoch}: learning rate -> {self.optimizer.param_groups[0]['lr']:.3e}")
