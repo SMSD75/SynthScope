@@ -25,6 +25,10 @@ Use --model-config NAME with --ckpt for a checkpoint trained by a recipe whose m
 test preprocessing, e.g. Effort's UFD/ProGAN recipe (image/effort_ufd: center crop 224, not the served model's squash).
 Use --jpeg-fakes Q for protocols that JPEG-compress only the synthetic images (DDA: Q=96 on GenImage,
 ForenSynths and AIGCDetect, to remove the PNG-fake/JPEG-real format bias).
+Use --degrade SPEC for a robustness slice: one deterministic degradation applied to EVERY image (reals and fakes) after it is
+loaded and before --jpeg-fakes (fakes only) and the detector's own transform, in that order. SPEC is one token:
+jpeg<Q> | down<F> | blur<S> | social | social2 (see ``parse_degrade``). Use --results-log PATH to append the run's summary line
+to PATH instead of repro/MASTER_RESULTS.jsonl.
 """
 from __future__ import annotations
 
@@ -35,10 +39,11 @@ import dataclasses
 import datetime
 import io
 import json
+import re
 from pathlib import Path
 
 import torch
-from PIL import Image, ImageFile
+from PIL import Image, ImageFile, ImageFilter
 
 import synthscope
 from interface.backend.registry import get_spec, model_transform
@@ -183,10 +188,81 @@ def _jpeg(image: Image.Image, quality: int) -> Image.Image:
     return out
 
 
+SOCIAL_LONG_SIDE = 1080     # "social": the long side an image is resized to (when larger) before the JPEG q75 re-encode
+SOCIAL_QUALITY = 75
+
+
+def _resized(image: Image.Image, size: tuple[int, int]) -> Image.Image:
+    """Bicubic resize that keeps the source-format hint."""
+    out = image.resize(size, Image.BICUBIC)
+    out.info.update(image.info)
+    return out
+
+
+def _down(image: Image.Image, factor: float) -> Image.Image:
+    """Downscale by ``factor`` (bicubic), then upsample back to the original size (bicubic)."""
+    w, h = image.size
+    small = _resized(image, (max(1, round(w * factor)), max(1, round(h * factor))))
+    return _resized(small, (w, h))
+
+
+def _blur(image: Image.Image, sigma: float) -> Image.Image:
+    out = image.filter(ImageFilter.GaussianBlur(radius=sigma))
+    out.info.update(image.info)
+    return out
+
+
+def _social(image: Image.Image) -> Image.Image:
+    """A social-network upload: long side to 1080 if larger (bicubic), then JPEG q75 (4:2:0)."""
+    w, h = image.size
+    long_side = max(w, h)
+    if long_side > SOCIAL_LONG_SIDE:
+        scale = SOCIAL_LONG_SIDE / long_side
+        size = (SOCIAL_LONG_SIDE if w >= h else max(1, round(w * scale)),
+                SOCIAL_LONG_SIDE if h > w else max(1, round(h * scale)))
+        image = _resized(image, size)
+    return _jpeg(image, SOCIAL_QUALITY)
+
+
+def parse_degrade(spec: str):
+    """The deterministic degradation (``PIL image -> RGB PIL image``) a ``--degrade`` token names; ValueError if malformed.
+
+        jpeg<Q>   in-memory PIL JPEG re-encode at quality Q (1-100), default 4:2:0 chroma subsampling
+        down<F>   downscale by factor F (0 < F < 1, e.g. down0.5) with bicubic, then back to the original size with bicubic
+        blur<S>   Gaussian blur, sigma S > 0 (PIL ``ImageFilter.GaussianBlur(radius=S)``)
+        social    long side resized to 1080 if larger (bicubic), then JPEG q75 (4:2:0)
+        social2   ``social`` applied twice
+
+    No RNG. Source-format hint (``SRC_FORMAT_KEY``, read by CuRe / MIRROR for their official PNG->JPEG step): a degradation
+    that JPEG-encodes (jpeg, social, social2) leaves a JPEG, so the hint becomes "JPEG"; down and blur keep the file's own."""
+    number = r"(\d+(?:\.\d+)?)"
+    if spec == "social":
+        return _social
+    if spec == "social2":
+        return lambda image: _social(_social(image))
+    if m := re.fullmatch(r"jpeg(\d+)", spec):
+        quality = int(m.group(1))
+        if not 1 <= quality <= 100:
+            raise ValueError(f"--degrade {spec}: JPEG quality must be in 1..100")
+        return lambda image: _jpeg(image, quality)
+    if m := re.fullmatch(rf"down{number}", spec):
+        factor = float(m.group(1))
+        if not 0 < factor < 1:
+            raise ValueError(f"--degrade {spec}: downscale factor must be in (0, 1)")
+        return lambda image: _down(image, factor)
+    if m := re.fullmatch(rf"blur{number}", spec):
+        sigma = float(m.group(1))
+        if sigma <= 0:
+            raise ValueError(f"--degrade {spec}: blur sigma must be > 0")
+        return lambda image: _blur(image, sigma)
+    raise ValueError(f"--degrade {spec!r}: expected jpeg<Q>, down<F>, blur<S>, social or social2")
+
+
 def score(det, model, spec, paths: list[Path], bs: int, transform=None,
-          jpeg_q: int | None = None, jpeg_from: int = 0) -> tuple[torch.Tensor, list[int]]:
+          jpeg_q: int | None = None, jpeg_from: int = 0, degrade=None) -> tuple[torch.Tensor, list[int]]:
     """Fake probabilities for the images that could be read, and the indices (into ``paths``) they belong to.
-    With ``jpeg_q``, images from index ``jpeg_from`` on (the fakes) are JPEG-compressed at that quality first."""
+    ``degrade`` (a ``parse_degrade`` callable) is applied to every image right after loading; then, with ``jpeg_q``,
+    images from index ``jpeg_from`` on (the fakes) are JPEG-compressed at that quality; then the detector's transform."""
     device = det._engine.device
     tf = transform if transform is not None else spec.transform
     # Native-resolution specs (SPAI any-res) produce variable-size tensors that cannot be stacked,
@@ -199,6 +275,8 @@ def score(det, model, spec, paths: list[Path], bs: int, transform=None,
         for j, p in enumerate(paths[i:i + bs], start=i):
             try:
                 image = _open_rgb(p)
+                if degrade is not None:
+                    image = degrade(image)
                 if jpeg_q is not None and j >= jpeg_from and jpeg_q < 100:
                     image = _jpeg(image, jpeg_q)
                 batch.append(tf(image))
@@ -251,12 +329,24 @@ def main(argv=None) -> int:
                          "for artifact-based methods like NPR on low-res GAN sets (freqnet)")
     ap.add_argument("--jpeg-fakes", type=int, default=None, metavar="Q",
                     help="JPEG-compress only the fake images at quality Q before scoring (DDA protocol: 96)")
+    ap.add_argument("--degrade", default=None, metavar="SPEC",
+                    help="robustness slice: degrade EVERY image (reals and fakes) after loading, before --jpeg-fakes and the "
+                         "detector's transform. SPEC: jpeg<Q> | down<F> | blur<S> | social | social2, e.g. jpeg75, down0.5, "
+                         "blur2 (deterministic; recorded as `degrade` in the output)")
+    ap.add_argument("--results-log", default=None, metavar="PATH",
+                    help="append the run's summary line to PATH instead of repro/MASTER_RESULTS.jsonl")
     ap.add_argument("--device", default=None)
     ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
     if args.model_config and not args.ckpt:
         ap.error("--model-config needs --ckpt")
+    degrade = None
+    if args.degrade:
+        try:
+            degrade = parse_degrade(args.degrade)
+        except ValueError as e:
+            ap.error(str(e))
 
     if args.dataset:
         overrides = []
@@ -306,7 +396,8 @@ def main(argv=None) -> int:
 
     print(f"=== bench_eval {args.tag} | model={args.model} ckpt={args.ckpt or 'registry-default'} "
           f"| {args.benchmark} | {len(gens)} generators | device={det._engine.device}"
-          + (f" | fakes JPEG q{args.jpeg_fakes}" if args.jpeg_fakes else "") + " ===", flush=True)
+          + (f" | fakes JPEG q{args.jpeg_fakes}" if args.jpeg_fakes else "")
+          + (f" | degrade {args.degrade}" if args.degrade else "") + " ===", flush=True)
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
     for name, reals, fakes in gens:
@@ -315,7 +406,7 @@ def main(argv=None) -> int:
         labels = torch.tensor([0] * len(reals) + [1] * len(fakes))
         print(f"  {name}: {len(reals)} real + {len(fakes)} fake ...", flush=True)
         probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform,
-                            jpeg_q=args.jpeg_fakes, jpeg_from=len(reals))
+                            jpeg_q=args.jpeg_fakes, jpeg_from=len(reals), degrade=degrade)
         if len(kept) != labels.numel():     # unreadable images are skipped: keep each score paired with its own label
             print(f"    {labels.numel() - len(kept)} unreadable image(s) left out of {name}", flush=True)
             labels = labels[kept]
@@ -351,16 +442,20 @@ def main(argv=None) -> int:
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
         "synthscope_version": getattr(synthscope, "__version__", "?"),
     }
+    if args.degrade:
+        result["degrade"] = args.degrade
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2) + "\n")
 
-    RESULTS_LOG.parent.mkdir(parents=True, exist_ok=True)
-    with RESULTS_LOG.open("a") as f:
+    results_log = Path(args.results_log).expanduser() if args.results_log else RESULTS_LOG
+    results_log.parent.mkdir(parents=True, exist_ok=True)
+    with results_log.open("a") as f:
         f.write(json.dumps({k: result[k] for k in
                             ("date", "tag", "model", "ckpt", "benchmark", "data_root",
-                             "n_generators", "means") + (("model_config",) if args.model_config else ())}) + "\n")
+                             "n_generators", "means") + (("model_config",) if args.model_config else ())
+                            + (("degrade",) if args.degrade else ())}) + "\n")
 
     print(f"\n=== RESULT {args.tag}: mAP={means['map']} mAUROC={means['mauroc']} acc={means['acc']} "
           f"over {len(per_gen)} generators -> {out} ===", flush=True)
