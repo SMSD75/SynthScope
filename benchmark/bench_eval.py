@@ -336,13 +336,13 @@ def main(argv=None) -> int:
     ap.add_argument("--results-log", default=None, metavar="PATH",
                     help="append the run's summary line to PATH instead of repro/MASTER_RESULTS.jsonl")
     ap.add_argument("--device", default=None)
-    ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
+    ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset> (+ _<degrade> with --degrade and no --out)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
     if args.model_config and not args.ckpt:
         ap.error("--model-config needs --ckpt")
     degrade = None
-    if args.degrade:
+    if args.degrade is not None:     # "" is rejected by parse_degrade, not silently ignored
         try:
             degrade = parse_degrade(args.degrade)
         except ValueError as e:
@@ -358,7 +358,9 @@ def main(argv=None) -> int:
         eval_root, profile = find_eval_root(args.dataset, root)
         args.data = args.data or str(eval_root)
         args.benchmark = args.benchmark or profile
-        args.tag = args.tag or f"{args.model}_{args.dataset}"
+        # a degraded run must never overwrite the clean default repro/bench_results/<model>_<dataset>.json
+        degrade_suffix = f"_{args.degrade}" if args.degrade is not None and not args.out else ""
+        args.tag = args.tag or f"{args.model}_{args.dataset}{degrade_suffix}"
         print(f"[dataset] {args.dataset}: evaluating {args.data} with the '{args.benchmark}' profile", flush=True)
         if args.dry_run:
             return 0
@@ -397,7 +399,7 @@ def main(argv=None) -> int:
     print(f"=== bench_eval {args.tag} | model={args.model} ckpt={args.ckpt or 'registry-default'} "
           f"| {args.benchmark} | {len(gens)} generators | device={det._engine.device}"
           + (f" | fakes JPEG q{args.jpeg_fakes}" if args.jpeg_fakes else "")
-          + (f" | degrade {args.degrade}" if args.degrade else "") + " ===", flush=True)
+          + (f" | degrade {args.degrade}" if args.degrade is not None else "") + " ===", flush=True)
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
     for name, reals, fakes in gens:
@@ -442,7 +444,7 @@ def main(argv=None) -> int:
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
         "synthscope_version": getattr(synthscope, "__version__", "?"),
     }
-    if args.degrade:
+    if args.degrade is not None:
         result["degrade"] = args.degrade
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")
@@ -455,7 +457,7 @@ def main(argv=None) -> int:
         f.write(json.dumps({k: result[k] for k in
                             ("date", "tag", "model", "ckpt", "benchmark", "data_root",
                              "n_generators", "means") + (("model_config",) if args.model_config else ())
-                            + (("degrade",) if args.degrade else ())}) + "\n")
+                            + (("degrade",) if args.degrade is not None else ())}) + "\n")
 
     print(f"\n=== RESULT {args.tag}: mAP={means['map']} mAUROC={means['mauroc']} acc={means['acc']} "
           f"over {len(per_gen)} generators -> {out} ===", flush=True)

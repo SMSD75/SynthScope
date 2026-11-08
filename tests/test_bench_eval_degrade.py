@@ -7,6 +7,8 @@
 * the source-format hint: "JPEG" after jpeg / social / social2, the file's own format after down / blur,
 * malformed specs raise ValueError and ``main`` rejects them with an argparse error (exit 2),
 * ``score`` applies the degradation to reals and fakes, before ``--jpeg-fakes`` (fakes only),
+* an empty ``--degrade ""`` is rejected (not silently ignored), and with ``--dataset`` a degraded run's default tag / JSON
+  carries a ``_<degrade>`` suffix so it never overwrites the clean ``bench_results/<model>_<dataset>.json``,
 * ``main`` with a stubbed detector: without the flags the output JSON and the results-log line have exactly the old keys
   and go to the default log; with them ``degrade`` is added, and the line goes only to ``--results-log``.
 """
@@ -128,6 +130,15 @@ def check_bad_specs() -> None:
         else:
             raise AssertionError("main accepted a bad --degrade")
     assert "--degrade" in err.getvalue()
+    err = io.StringIO()
+    with contextlib.redirect_stderr(err):
+        try:
+            bench_eval.main(["-m", "stub", "--benchmark", "pool", "--data", "/nonexistent", "--tag", "t", "--degrade", ""])
+        except SystemExit as e:
+            assert e.code == 2, e.code
+        else:
+            raise AssertionError("main accepted an empty --degrade")
+    assert "--degrade" in err.getvalue()
 
 
 class StubEngine:
@@ -225,9 +236,41 @@ def check_main() -> None:
             bench_eval.synthscope, bench_eval.RESULTS_LOG = real_load, real_log
 
 
+def check_default_tag() -> None:
+    """With ``--dataset`` (default tag, default output) a degraded run gets its own file; clean and ``--tag`` / ``--out`` runs
+    keep the old names."""
+    real = {name: getattr(bench_eval, name) for name in ("synthscope", "RESULTS_LOG", "ensure_dataset", "find_eval_root")}
+    with tempfile.TemporaryDirectory() as tmp_:
+        tmp = Path(tmp_)
+        make_pool(tmp / "pool")
+        bench_eval.synthscope = types.SimpleNamespace(load=lambda model, device=None, **kw: StubDetector(), __version__="stub")
+        bench_eval.RESULTS_LOG = tmp / "default" / "MASTER.jsonl"
+        bench_eval.ensure_dataset = lambda *a, **kw: tmp
+        bench_eval.find_eval_root = lambda name, root: (tmp / "pool", "pool")
+        results = tmp / "default" / "bench_results"
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                bench_eval.main(["-m", "stub", "--dataset", "ds"])
+                bench_eval.main(["-m", "stub", "--dataset", "ds", "--degrade", "jpeg75"])
+                bench_eval.main(["-m", "stub", "--dataset", "ds", "--degrade", "jpeg75", "--tag", "mine"])
+                bench_eval.main(["-m", "stub", "--dataset", "ds", "--degrade", "jpeg75", "--out", str(tmp / "o.json")])
+            assert sorted(p.name for p in results.glob("*.json")) == ["mine.json", "stub_ds.json", "stub_ds_jpeg75.json"], \
+                sorted(p.name for p in results.glob("*.json"))
+            clean = json.loads((results / "stub_ds.json").read_text())
+            assert clean["tag"] == "stub_ds" and "degrade" not in clean       # the clean file is not overwritten
+            deg = json.loads((results / "stub_ds_jpeg75.json").read_text())
+            assert deg["tag"] == "stub_ds_jpeg75" and deg["degrade"] == "jpeg75"
+            assert json.loads((results / "mine.json").read_text())["tag"] == "mine"      # explicit --tag untouched
+            assert json.loads((tmp / "o.json").read_text())["tag"] == "stub_ds"          # explicit --out: tag stays the default
+        finally:
+            for name, value in real.items():
+                setattr(bench_eval, name, value)
+
+
 if __name__ == "__main__":
     check_degradations()
     check_bad_specs()
     check_score_order()
     check_main()
+    check_default_tag()
     print("bench_eval --degrade / --results-log: all checks passed")

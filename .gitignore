@@ -31,3 +31,7 @@ benchmark/generator_runs/*/fake/
 
 # Subagent-driven-development workspaces (local only)
 .superpowers/
+
+# cross-evaluation matrix: symlink layouts and in-flight partial results (benchmark/matrix.py)
+repro/matrix/_layouts/
+repro/matrix/*/*.partial

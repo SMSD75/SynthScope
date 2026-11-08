@@ -1,0 +1,254 @@
+{
+ "version": 1,
+ "description": "SynthScope cross-evaluation matrix: every image detector x every benchmark (x optional degradations). Read by benchmark/matrix.py and benchmark/matrix_table.py.",
+ "bench_eval_flags": "none of --limit/--jpeg-fakes/--ckpt/--model-config/--native-res/--select: registry-default checkpoint, registry eval transform, threshold 0.5, full data",
+ "degradations": ["jpeg95", "jpeg75", "jpeg50", "down0.5", "down0.25", "blur1", "blur2", "social", "social2"],
+ "excluded_detectors": {
+  "vib_net_official": "restricted official checkpoint not held (Google Drive access requested)",
+  "effort_chameleon": "its benchmark (Chameleon) is gated and not held"
+ },
+ "excluded_benchmarks": {
+  "chameleon": "gated, not held",
+  "drct_2m": "not held"
+ },
+ "detectors": [
+  {"key": "clip", "name": "UnivFD / CLIP", "cost": "mid"},
+  {"key": "cnn", "name": "CNNDetection", "cost": "mid"},
+  {"key": "dinov2", "name": "DINOv2 probe", "cost": "mid"},
+  {"key": "dinov3", "name": "DINOv3 probe", "cost": "mid"},
+  {"key": "adapted_dino", "name": "Adapter-tuned DINOv2", "cost": "mid"},
+  {"key": "safe", "name": "SAFE", "cost": "fast"},
+  {"key": "fat_former", "name": "FatFormer", "cost": "mid"},
+  {"key": "aide", "name": "AIDE", "cost": "very_slow", "native_res": true},
+  {"key": "spai", "name": "SPAI", "cost": "very_slow", "native_res": true},
+  {"key": "vib_net", "name": "VIB-Net (reproduced)", "cost": "mid"},
+  {"key": "bfree", "name": "B-Free", "cost": "mid", "native_res": true},
+  {"key": "effort", "name": "Effort", "cost": "mid"},
+  {"key": "moejepa", "name": "MoE-JEPA", "cost": "mid"},
+  {"key": "co_spy", "name": "CO-SPY", "cost": "mid"},
+  {"key": "pgc", "name": "PGC", "cost": "mid"},
+  {"key": "cure", "name": "CuRe", "cost": "mid"},
+  {"key": "dda", "name": "DDA", "cost": "mid"},
+  {"key": "d3qe", "name": "D3QE", "cost": "mid"},
+  {"key": "ltf", "name": "LTF", "cost": "slow", "native_res": true, "internal_only": true},
+  {"key": "mirror", "name": "MIRROR", "cost": "mid", "internal_only": true},
+  {"key": "vina", "name": "VINA", "cost": "mid", "internal_only": true},
+  {"key": "omniaid", "name": "OmniAID (v2)", "cost": "slow"},
+  {"key": "omniaid_v1", "name": "OmniAID v1", "cost": "slow"},
+  {"key": "omniaid_genimage", "name": "OmniAID (GenImage)", "cost": "slow"},
+  {"key": "npr", "name": "NPR", "cost": "fast"}
+ ],
+ "benchmarks": [
+  {"key": "genimage_val100k", "title": "GenImage val (100k)", "profile": "pergen", "data": "GenImage_val_full/test", "n_generators": 8, "images": 100000, "where": "cn029"},
+  {"key": "forensynths13", "title": "ForenSynths (13 generators)", "profile": "forensynths", "data": "CNNDetection/test", "n_generators": 13, "images": 90329, "where": "cn023"},
+  {"key": "ufd8", "title": "UniversalFakeDetect (8 diffusion sets)", "profile": "ufd", "data": "universialfakedetection/test", "n_generators": 8, "images": 16000, "where": "cn023"},
+  {"key": "aigcdetect17", "title": "AIGCDetectBenchmark (17)", "profile": "pergen", "data": "AIGCDetect/test", "n_generators": 17, "images": 152598, "where": "cn029"},
+  {"key": "synthbuster_coco", "title": "Synthbuster (MSCOCO reals)", "profile": "pergen", "data": "Synthbuster/test", "n_generators": 9, "images": 54000, "where": "cn029", "layout": "fakes_with_shared_reals", "reals": "EvalGEN/test/Flux/0_real"},
+  {"key": "evalgen", "title": "EvalGEN", "profile": "pergen", "data": "EvalGEN/test", "n_generators": 5, "images": 80298, "where": "cn029"},
+  {"key": "synthwildx", "title": "SynthWildX", "profile": "pergen", "data": "SynthWildX/test", "n_generators": 3, "images": 2539, "where": "cn029"},
+  {"key": "wildrf", "title": "WildRF", "profile": "pergen", "data": "WildRF/test", "n_generators": 3, "images": 2503, "where": "cn029"},
+  {"key": "aigibench25", "title": "AIGIBench (25 subsets, full)", "profile": "pergen", "data": "AIGIBench/test", "n_generators": 25, "images": null, "where": "cn023|cn029"},
+  {"key": "rrdataset", "title": "RRDataset", "profile": "pergen", "data": "RRDataset/test", "n_generators": 3, "images": 50999, "where": "cn029"},
+  {"key": "bfree_online", "title": "BFree-Online", "profile": "pergen", "data": "BFreeOnline/test", "n_generators": 1, "images": 807, "where": "cn029"},
+  {"key": "cospybench", "title": "Co-Spy-Bench (110 subsets)", "profile": "pergen", "data": "CoSpyBench/test", "n_generators": 110, "images": null, "where": "cn023"},
+  {"key": "ditfake", "title": "DiTFake", "profile": "pergen", "data": "DiTFake/test", "n_generators": 3, "images": 30000, "where": "cn023"},
+  {"key": "arforensics", "title": "ARForensics", "profile": "pergen", "data": "ARForensics/test", "n_generators": 7, "images": 84000, "where": "cn029"},
+  {"key": "realchain", "title": "RealChain (internal only)", "profile": "pergen", "data": "RealChain/test", "n_generators": 7, "images": 14000, "where": "cn029"}
+ ],
+ "reuse_note": "cells of the 2026-11-08 inventory (plans/matrix_inventory.md section 3a, classified V) plus 7 VINA full-benchmark cells; clean protocol only (registry-default checkpoint, full data, registry transform, threshold 0.5). Paths are relative to the repo root. vina_wildrf is not reused (its layout drops the .jfif files).",
+ "reuse": {
+  "clip": {
+   "evalgen": "repro/bench_results/clip_evalgen.json",
+   "synthwildx": "repro/bench_results/clip_synthwildx.json",
+   "wildrf": "repro/bench_results/clip_wildrf.json",
+   "rrdataset": "repro/bench_results/clip_rrdataset.json",
+   "bfree_online": "repro/bench_results/clip_bfree_online.json",
+   "realchain": "repro/bench_results/clip_realchain.json"
+  },
+  "cnn": {
+   "evalgen": "repro/bench_results/cnn_evalgen.json",
+   "synthwildx": "repro/bench_results/cnn_synthwildx.json",
+   "wildrf": "repro/bench_results/cnn_wildrf.json",
+   "rrdataset": "repro/bench_results/cnn_rrdataset.json",
+   "bfree_online": "repro/bench_results/cnn_bfree_online.json",
+   "realchain": "repro/bench_results/cnn_realchain.json"
+  },
+  "dinov2": {
+   "evalgen": "repro/bench_results/dinov2_evalgen.json",
+   "synthwildx": "repro/bench_results/dinov2_synthwildx.json",
+   "wildrf": "repro/bench_results/dinov2_wildrf.json",
+   "rrdataset": "repro/bench_results/dinov2_rrdataset.json",
+   "bfree_online": "repro/bench_results/dinov2_bfree_online.json",
+   "realchain": "repro/bench_results/dinov2_realchain.json"
+  },
+  "dinov3": {
+   "evalgen": "repro/bench_results/dinov3_evalgen.json",
+   "synthwildx": "repro/bench_results/dinov3_synthwildx.json",
+   "wildrf": "repro/bench_results/dinov3_wildrf.json",
+   "rrdataset": "repro/bench_results/dinov3_rrdataset.json",
+   "bfree_online": "repro/bench_results/dinov3_bfree_online.json",
+   "realchain": "repro/bench_results/dinov3_realchain.json"
+  },
+  "adapted_dino": {
+   "evalgen": "repro/bench_results/adapted_dino_evalgen.json",
+   "synthwildx": "repro/bench_results/adapted_dino_synthwildx.json",
+   "wildrf": "repro/bench_results/adapted_dino_wildrf.json",
+   "rrdataset": "repro/bench_results/adapted_dino_rrdataset.json",
+   "bfree_online": "repro/bench_results/adapted_dino_bfree_online.json",
+   "realchain": "repro/bench_results/adapted_dino_realchain.json"
+  },
+  "safe": {
+   "evalgen": "repro/bench_results/safe_evalgen.json",
+   "synthwildx": "repro/bench_results/safe_synthwildx.json",
+   "wildrf": "repro/bench_results/safe_wildrf.json",
+   "rrdataset": "repro/bench_results/safe_rrdataset.json",
+   "bfree_online": "repro/bench_results/safe_bfree_online.json",
+   "realchain": "repro/bench_results/safe_realchain.json"
+  },
+  "fat_former": {
+   "evalgen": "repro/bench_results/fat_former_evalgen.json",
+   "synthwildx": "repro/bench_results/fat_former_synthwildx.json",
+   "wildrf": "repro/bench_results/fat_former_wildrf.json",
+   "rrdataset": "repro/bench_results/fat_former_rrdataset.json",
+   "bfree_online": "repro/bench_results/fat_former_bfree_online.json",
+   "realchain": "repro/bench_results/fat_former_realchain.json"
+  },
+  "aide": {
+   "evalgen": "repro/bench_results/aide_evalgen.json",
+   "synthwildx": "repro/bench_results/aide_synthwildx.json",
+   "wildrf": "repro/bench_results/aide_wildrf.json",
+   "rrdataset": "repro/bench_results/aide_rrdataset.json",
+   "bfree_online": "repro/bench_results/aide_bfree_online.json",
+   "realchain": "repro/bench_results/aide_realchain.json"
+  },
+  "spai": {
+   "evalgen": "repro/bench_results/spai_evalgen.json",
+   "synthwildx": "repro/bench_results/spai_synthwildx.json",
+   "wildrf": "repro/bench_results/spai_wildrf.json",
+   "rrdataset": "repro/bench_results/spai_rrdataset.json",
+   "bfree_online": "repro/bench_results/spai_bfree_online.json",
+   "realchain": "repro/bench_results/spai_realchain.json"
+  },
+  "vib_net": {
+   "evalgen": "repro/bench_results/vib_net_evalgen.json",
+   "synthwildx": "repro/bench_results/vib_net_synthwildx.json",
+   "wildrf": "repro/bench_results/vib_net_wildrf.json",
+   "rrdataset": "repro/bench_results/vib_net_rrdataset.json",
+   "bfree_online": "repro/bench_results/vib_net_bfree_online.json",
+   "realchain": "repro/bench_results/vib_net_realchain.json"
+  },
+  "bfree": {
+   "evalgen": "repro/bench_results/bfree_evalgen.json",
+   "synthwildx": "repro/bench_results/bfree_synthwildx.json",
+   "wildrf": "repro/bench_results/bfree_wildrf.json",
+   "rrdataset": "repro/bench_results/bfree_rrdataset.json",
+   "bfree_online": "repro/bench_results/bfree_bfree_online.json",
+   "realchain": "repro/bench_results/bfree_realchain.json"
+  },
+  "effort": {
+   "evalgen": "repro/bench_results/effort_evalgen.json",
+   "synthwildx": "repro/bench_results/effort_synthwildx.json",
+   "wildrf": "repro/bench_results/effort_wildrf.json",
+   "rrdataset": "repro/bench_results/effort_rrdataset.json",
+   "bfree_online": "repro/bench_results/effort_bfree_online.json",
+   "realchain": "repro/bench_results/effort_realchain.json"
+  },
+  "moejepa": {
+   "evalgen": "repro/bench_results/moejepa_evalgen.json",
+   "synthwildx": "repro/bench_results/moejepa_synthwildx.json",
+   "wildrf": "repro/bench_results/moejepa_wildrf.json",
+   "rrdataset": "repro/bench_results/moejepa_rrdataset.json",
+   "bfree_online": "repro/bench_results/moejepa_bfree_online.json",
+   "realchain": "repro/bench_results/moejepa_realchain.json"
+  },
+  "co_spy": {
+   "evalgen": "repro/bench_results/co_spy_evalgen.json",
+   "synthwildx": "repro/bench_results/co_spy_synthwildx.json",
+   "wildrf": "repro/bench_results/co_spy_wildrf.json",
+   "rrdataset": "repro/bench_results/co_spy_rrdataset.json",
+   "bfree_online": "repro/bench_results/co_spy_bfree_online.json",
+   "realchain": "repro/bench_results/co_spy_realchain.json"
+  },
+  "pgc": {
+   "forensynths13": "repro/bench_results/pgc_official_forensynths13.json",
+   "ufd8": "repro/bench_results/pgc_official_ufd8.json",
+   "evalgen": "repro/bench_results/pgc_evalgen.json",
+   "synthwildx": "repro/bench_results/pgc_synthwildx.json",
+   "wildrf": "repro/bench_results/pgc_wildrf.json",
+   "rrdataset": "repro/bench_results/pgc_rrdataset.json",
+   "bfree_online": "repro/bench_results/pgc_bfree_online.json",
+   "realchain": "repro/bench_results/pgc_realchain.json"
+  },
+  "cure": {
+   "forensynths13": "repro/bench_results/cure_repro_forensynths.json",
+   "ufd8": "repro/bench_results/cure_repro_ufd.json",
+   "aigcdetect17": "repro/bench_results/cure_aigcdetect.json",
+   "evalgen": "repro/bench_results/cure_evalgen.json",
+   "synthwildx": "repro/bench_results/cure_synthwildx.json",
+   "wildrf": "repro/bench_results/cure_wildrf.json",
+   "rrdataset": "repro/bench_results/cure_rrdataset.json",
+   "bfree_online": "repro/bench_results/cure_bfree_online.json",
+   "realchain": "repro/bench_results/cure_realchain.json"
+  },
+  "dda": {
+   "forensynths13": "repro/bench_results/dda_cnndetection.json",
+   "aigcdetect17": "repro/bench_results/dda_aigcdetect.json",
+   "evalgen": "repro/bench_results/dda_evalgen.json",
+   "synthwildx": "repro/bench_results/dda_synthwildx.json",
+   "wildrf": "repro/bench_results/dda_wildrf.json",
+   "rrdataset": "repro/bench_results/dda_rrdataset.json",
+   "bfree_online": "repro/bench_results/dda_bfree_online.json",
+   "realchain": "repro/bench_results/dda_realchain.json"
+  },
+  "d3qe": {
+   "evalgen": "repro/bench_results/d3qe_evalgen.json",
+   "synthwildx": "repro/bench_results/d3qe_synthwildx.json",
+   "wildrf": "repro/bench_results/d3qe_wildrf.json",
+   "rrdataset": "repro/bench_results/d3qe_rrdataset.json",
+   "bfree_online": "repro/bench_results/d3qe_bfree_online.json",
+   "arforensics": "repro/bench_results/d3qe_arforensics.json",
+   "realchain": "repro/bench_results/d3qe_realchain.json"
+  },
+  "ltf": {
+   "genimage_val100k": "repro/bench_results/ltf_synthscope_genimage_val100k.json"
+  },
+  "mirror": {
+   "genimage_val100k": "repro/bench_results/mirror_genimage_val100k.json",
+   "ufd8": "repro/bench_results/mirror_ufd_diffusion8.json",
+   "aigcdetect17": "repro/bench_results/mirror_aigcdetect.json",
+   "synthbuster_coco": "repro/bench_results/mirror_synthbuster_coco.json",
+   "evalgen": "repro/bench_results/mirror_evalgen.json",
+   "synthwildx": "repro/bench_results/mirror_synthwildx.json",
+   "wildrf": "repro/bench_results/mirror_wildrf.json",
+   "rrdataset": "repro/bench_results/mirror_rrdataset.json",
+   "bfree_online": "repro/bench_results/mirror_bfree_online.json",
+   "realchain": "repro/bench_results/mirror_realchain.json"
+  },
+  "vina": {
+   "ufd8": "repro/bench_results/vina_ufd_diffusion8.json",
+   "ditfake": "repro/bench_results/vina_ditfake.json",
+   "arforensics": "repro/bench_results/vina_arforensics.json",
+   "forensynths13": "repro/bench_results/vina_cnndetection.json",
+   "genimage_val100k": "repro/bench_results/vina_genimage_val100k.json",
+   "rrdataset": "repro/bench_results/vina_rrdataset.json",
+   "synthwildx": "repro/bench_results/vina_synthwildx.json"
+  },
+  "omniaid": {
+   "evalgen": "repro/bench_results/omniaid_evalgen.json",
+   "synthwildx": "repro/bench_results/omniaid_synthwildx.json",
+   "wildrf": "repro/bench_results/omniaid_wildrf.json",
+   "rrdataset": "repro/bench_results/omniaid_rrdataset.json",
+   "bfree_online": "repro/bench_results/omniaid_bfree_online.json",
+   "realchain": "repro/bench_results/omniaid_realchain.json"
+  },
+  "omniaid_v1": {
+   "aigcdetect17": "repro/bench_results/omniaid_v1_aigcdetect.json"
+  },
+  "omniaid_genimage": {
+   "aigcdetect17": "repro/bench_results/omniaid_genimage_aigcdetect.json"
+  },
+  "npr": {
+   "ufd8": "repro/bench_results/npr_official_nprpth_ufd.json"
+  }
+ }
+}
