@@ -1,0 +1,20 @@
+{
+ "_comment": "DAS6 node cache: stage023/stage029 of SynthScope_shared/das6/das6_lib.sh rsync <rel> from ivi-cn023:/hddstore/ssalehi/SynthScope or ivi-cn029:/ssdstore/ssalehi/SynthScope into /local/ssalehid/cache/data023|data029/<rel>. Which node holds which benchmark follows plans/matrix_inventory.md section 2 and the D 023|029 calls of vina_bench.sbatch (AIGIBench, CNNDetection, UFD, DiTFake: 023; SynthWildX, WildRF, RRDataset, ARForensics, GenImage_val_full: 029). Stage a benchmark (and, for synthbuster_coco, Synthbuster/test + EvalGEN/test/Flux/0_real) before running it; /local is node-local, so run workers of one node with a node-local --out-root/--claim-dir and merge across nodes with --merge.",
+ "_unverified": ["aigcdetect17", "synthbuster_coco", "evalgen", "bfree_online", "realchain", "cospybench: stage source taken from the inventory (cn029 / cn023), no DAS6 job staged them yet", "aigibench25: vina_bench.sbatch staged only SocialRF + CommunityAI from cn023; the whole AIGIBench/test (~220 GB download) was never staged", "staged directories are the raw IVI folders, not the offext layouts vina_bench.sbatch made"],
+ "genimage_val100k": "/local/ssalehid/cache/data029/GenImage_val_full/test",
+ "forensynths13": "/local/ssalehid/cache/data023/CNNDetection/test",
+ "ufd8": "/local/ssalehid/cache/data023/universialfakedetection/test",
+ "aigcdetect17": "/local/ssalehid/cache/data029/AIGCDetect/test",
+ "synthbuster_coco": "/local/ssalehid/cache/data029/Synthbuster/test",
+ "evalgen": "/local/ssalehid/cache/data029/EvalGEN/test",
+ "synthwildx": "/local/ssalehid/cache/data029/SynthWildX/test",
+ "wildrf": "/local/ssalehid/cache/data029/WildRF/test",
+ "aigibench25": "/local/ssalehid/cache/data023/AIGIBench/test",
+ "rrdataset": "/local/ssalehid/cache/data029/RRDataset/test",
+ "bfree_online": "/local/ssalehid/cache/data029/BFreeOnline/test",
+ "cospybench": "/local/ssalehid/cache/data023/CoSpyBench/test",
+ "ditfake": "/local/ssalehid/cache/data023/DiTFake/test",
+ "arforensics": "/local/ssalehid/cache/data029/ARForensics/test",
+ "realchain": "/local/ssalehid/cache/data029/RealChain/test",
+ "synthbuster_coco.reals": "/local/ssalehid/cache/data029/EvalGEN/test/Flux/0_real"
+}

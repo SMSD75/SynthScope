@@ -1,0 +1,18 @@
+{
+ "_comment": "IVI cn029 (node-local /ssdstore/ssalehi/SynthScope). The cn029-resident sets per plans/matrix_inventory.md section 2; submit with the cees partition on cn029 itself (no staging).",
+ "_unverified": ["cn029 was not mounted when this was written: paths come from the inventory and recorded data_root fields", "forensynths13, ufd8 (CNNDetection/test, universialfakedetection/test): recorded as /ssdstore/ssalehi/SynthScope/... in the cure/pgc result JSONs, so mapped here", "aigibench25: inventory says cn023 or cn029 (both used by scripts)", "ditfake, cospybench: only seen on cn023, not mapped"],
+ "genimage_val100k": "/ssdstore/ssalehi/SynthScope/GenImage_val_full/test",
+ "forensynths13": "/ssdstore/ssalehi/SynthScope/CNNDetection/test",
+ "ufd8": "/ssdstore/ssalehi/SynthScope/universialfakedetection/test",
+ "aigcdetect17": "/ssdstore/ssalehi/SynthScope/AIGCDetect/test",
+ "synthbuster_coco": "/ssdstore/ssalehi/SynthScope/Synthbuster/test",
+ "evalgen": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+ "synthwildx": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+ "wildrf": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+ "aigibench25": "/ssdstore/ssalehi/SynthScope/AIGIBench/test",
+ "rrdataset": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+ "bfree_online": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+ "arforensics": "/ssdstore/ssalehi/SynthScope/ARForensics/test",
+ "realchain": "/ssdstore/ssalehi/SynthScope/RealChain/test",
+ "synthbuster_coco.reals": "/ssdstore/ssalehi/SynthScope/EvalGEN/test/Flux/0_real"
+}

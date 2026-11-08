@@ -7,7 +7,8 @@ Tables (detector x benchmark, unweighted mean over a benchmark's generators as `
 accuracy at the fixed 0.5 threshold, a per-detector mean over the benchmarks it has (with their count), then, if degraded cells
 exist, the robustness change versus the clean cell (percentage points). A cell comes from ``<out-dir>/<bench>/<det>.json`` (a
 fresh matrix run) or, failing that, from the ``reuse`` map of the spec (an existing ``bench_results`` JSON, marked with a dagger);
-degraded cells are never reused. Every number is read from one of those JSONs. Missing cells are shown as ``-``.
+degraded cells are never reused. Every number is read from one of those JSONs. Missing cells are shown as ``-``. Failures are read
+from every writer's ``FAILED*.jsonl`` (latest record per unit); cells with parts but no merged JSON are listed.
 """
 from __future__ import annotations
 
@@ -17,7 +18,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from matrix import DEFAULT_OUT_DIR, REPO, Cell, load_spec     # noqa: E402
+from matrix import DEFAULT_OUT_ROOT, REPO, Cell, load_spec     # noqa: E402
 
 METRICS = (("mauroc", "mAUROC (%)"), ("map", "mAP (%)"), ("acc", "Accuracy at threshold 0.5 (%)"))
 REUSED, INTERNAL, MISMATCH = "†", "‡", "!"
@@ -45,16 +46,35 @@ def read_cell(spec: dict, cell: Cell, out_dir: Path, repo: Path) -> dict | None:
 
 
 def failed_cells(out_dir: Path) -> dict[str, dict]:
-    """The latest FAILED.jsonl record per cell name."""
+    """The latest record per unit over every writer's ``FAILED*.jsonl`` (``FAILED.<host>.<pid>.jsonl``, or an older ``FAILED.jsonl``)."""
     out: dict[str, dict] = {}
-    path = out_dir / "FAILED.jsonl"
-    if path.is_file():
+    for path in sorted(out_dir.glob("FAILED*.jsonl")):
         for line in path.read_text().splitlines():
             try:
                 record = json.loads(line)
-            except ValueError:
+                name = record["cell"]
+            except (ValueError, KeyError, TypeError):
                 continue
-            out[record["cell"]] = record
+            if name not in out or record.get("time", "") >= out[name].get("time", ""):
+                out[name] = record
+    return out
+
+
+def still_failed(record: dict, out_dir: Path) -> bool:
+    """A failure counts while neither the cell's JSON nor (for a chunk) its part exists."""
+    cell = Cell(record["detector"], record["benchmark"], record.get("degrade"))
+    if cell.json_path(out_dir).is_file():
+        return False
+    chunk = record.get("chunk")
+    return not (chunk and chunk != "merge" and (cell.parts_dir(out_dir) / f"{chunk}.json").is_file())
+
+
+def unmerged_cells(out_dir: Path) -> dict[str, int]:
+    """Cells with part files but no cell JSON -> number of parts landed."""
+    out: dict[str, int] = {}
+    for parts in sorted(out_dir.glob("*/_parts/*")):
+        if parts.is_dir() and not (parts.parent.parent / f"{parts.name}.json").is_file():
+            out[f"{parts.parent.parent.name}/{parts.name}"] = len(list(parts.glob("*.json")))
     return out
 
 
@@ -137,44 +157,64 @@ def build(spec: dict, out_dir: Path, repo: Path) -> str:
     if degrades:
         out += ["## Robustness (change versus the clean cell, percentage points)", "",
                 "Each degradation is applied to every image (reals and fakes) before the detector's own transform "
-                "(`bench_eval --degrade`). A change needs both the clean and the degraded cell. The `mean (n)` column averages "
-                "the change over the n benchmarks that have both.", ""]
+                "(`bench_eval --degrade`). A change needs both the clean and the degraded cell; the number in brackets is how many "
+                "benchmarks the change is averaged over.", ""]
         deg_cells = {(d["key"], b["key"], g): read_cell(spec, Cell(d["key"], b["key"], g), out_dir, repo)
                      for d in detectors for b in benchmarks for g in degrades}
+        mismatched += sorted(Cell(d, b, g).name for (d, b, g), c in deg_cells.items() if c and c["n_generators"] != expected[b])
+
+        def change(det: str, bench: str, g: str, metric: str) -> tuple[float, str] | None:
+            """(degraded - clean, marks) when both cells exist; marks: dagger = the clean base is a reused cell, ! = the degraded cell
+            scored an unexpected number of generators."""
+            deg, base = deg_cells[det, bench, g], clean.get((det, bench))
+            if not (deg and base):
+                return None
+            marks = (REUSED if base["reused"] else "") + (MISMATCH if deg["n_generators"] != expected[bench] else "")
+            return deg["means"][metric] - base["means"][metric], marks
+
         for metric, title in (("mauroc", "mAUROC"), ("acc", "accuracy at 0.5")):
             rows = []
             for d in detectors:
                 row = [labels[d["key"]]]
                 present = False
                 for g in degrades:
-                    deltas = [deg["means"][metric] - clean[d["key"], b["key"]]["means"][metric] for b in benchmarks
-                              if (deg := deg_cells[d["key"], b["key"], g]) and (d["key"], b["key"]) in clean]
-                    present |= bool(deltas)
-                    row.append(f"{fmt(mean(deltas), signed=True)} ({len(deltas)})" if deltas else "-")
+                    found = [c for b in benchmarks if (c := change(d["key"], b["key"], g, metric))]
+                    present |= bool(found)
+                    present_marks = {m for _, flags in found for m in flags}
+                    marks = "".join(m for m in (REUSED, MISMATCH) if m in present_marks)
+                    row.append(f"{fmt(mean([v for v, _ in found]), signed=True)}{marks} ({len(found)})" if found else "-")
                 if present:
                     rows.append(row)
             if rows:
-                out += [f"### Mean {title} change per detector", "", md_table(["Detector"] + degrades, rows), ""]
+                out += [f"### Mean {title} change per detector", "",
+                        f"{REUSED} some of the clean cells behind the mean are reused cells; {MISMATCH} some degraded cell scored an "
+                        "unexpected number of generators.", "", md_table(["Detector"] + degrades, rows), ""]
         for g in degrades:
             rows = []
             for d in detectors:
-                cells = [(deg_cells[d["key"], b["key"], g], clean.get((d["key"], b["key"]))) for b in benchmarks]
-                if not any(deg for deg, _ in cells):
+                if not any(deg_cells[d["key"], b["key"], g] for b in benchmarks):
                     continue
-                rows.append([labels[d["key"]]] + [
-                    fmt(deg["means"]["mauroc"] - base["means"]["mauroc"], signed=True) if deg and base else
-                    (fmt(deg["means"]["mauroc"]) + "*" if deg else "-") for deg, base in cells])
+                cells = []
+                for b in benchmarks:
+                    found = change(d["key"], b["key"], g, "mauroc")
+                    deg = deg_cells[d["key"], b["key"], g]
+                    cells.append(fmt(found[0], signed=True) + found[1] if found else (fmt(deg["means"]["mauroc"]) + "*" if deg else "-"))
+                rows.append([labels[d["key"]]] + cells)
             if rows:
                 out += [f"### {g}: mAUROC change per benchmark", "",
-                        "A value ending in `*` is the degraded mAUROC itself (the clean cell is missing).", "",
+                        f"A value ending in `*` is the degraded mAUROC itself (the clean cell is missing); {REUSED} the clean cell is "
+                        f"a reused one; {MISMATCH} the degraded cell scored an unexpected number of generators.", "",
                         md_table(["Detector"] + [b["key"] for b in benchmarks], rows), ""]
 
-    failed = {name: rec for name, rec in failed_cells(out_dir).items()
-              if not Cell(rec["detector"], rec["benchmark"], rec["degrade"]).json_path(out_dir).is_file()}
+    failed = {name: rec for name, rec in failed_cells(out_dir).items() if still_failed(rec, out_dir)}
     if failed:
-        out += ["## Failed cells (latest error, retried by the next run)", "",
-                md_table(["Cell", "Error"], [[f"`{n}`", rec["error"].replace("|", "/")[:200]] for n, rec in sorted(failed.items())]),
+        out += ["## Failed units (latest error, retried by the next run)", "",
+                md_table(["Unit", "Error"], [[f"`{n}`", rec["error"].replace("|", "/")[:200]] for n, rec in sorted(failed.items())]),
                 ""]
+    unmerged = unmerged_cells(out_dir)
+    if unmerged:
+        out += ["## Cells with parts but no merged result (still running, or run `benchmark/matrix.py --merge`)", "",
+                md_table(["Cell", "Parts landed"], [[f"`{n}`", str(k)] for n, k in unmerged.items()]), ""]
     if mismatched:
         out += ["## Generator-count mismatches", "", ", ".join(f"`{m}`" for m in mismatched), ""]
     excluded = spec.get("excluded_detectors", {})
@@ -188,8 +228,8 @@ def build(spec: dict, out_dir: Path, repo: Path) -> str:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--spec", default=str(DEFAULT_OUT_DIR / "spec.json"))
-    ap.add_argument("--out-dir", default=str(DEFAULT_OUT_DIR), help="folder with <benchmark>/<detector>[__<degrade>].json")
+    ap.add_argument("--spec", default=str(DEFAULT_OUT_ROOT / "spec.json"))
+    ap.add_argument("--out-dir", default=str(DEFAULT_OUT_ROOT), help="folder with <benchmark>/<detector>[__<degrade>].json")
     ap.add_argument("--output", help="markdown file to write (default <out-dir>/MATRIX.md)")
     ap.add_argument("--repo-root", default=str(REPO), help="base of the spec's relative `reuse` paths")
     args = ap.parse_args(argv)
