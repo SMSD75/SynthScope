@@ -118,7 +118,7 @@ The model config:
 
 The trainer config (`conf/trainer/image/fat_former.yaml`) follows the paper's recipe (Sec. 4.1; the authors released no training code): Adam (AdamW with weight decay 0), lr `4e-4`, 25 epochs, total batch 256, lr x0.9 every 10 epochs (`lr_step` schedule, no warmup, no gradient clipping), no augmentation beyond resize 256 / random crop 224 / horizontal flip. Training data is the released 4-class ProGAN setting (car, cat, chair, horse; 144k images). `force_fp32=true` keeps the loaded CLIP backbone in fp32 (the upstream code keeps CLIP in fp16 on GPU).
 
-The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micro-batch x gradient accumulation; default 4 x 32 x 2 on 24 GB GPUs). It saves `model_last.pth` (taken as the released model) and `model_best.pth` (best validation accuracy, for reference). It trains on the 4-class ProGAN data (`image/cnndetection`) with the standard CLIP-style preprocessing (`resize_short_256`, `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format. The served `fat_former.pth` is still the official 4-class ProGAN checkpoint, not a run of this launcher; our trained checkpoint is reported in the SynthScope_train column below.
+The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micro-batch x gradient accumulation; default 4 x 32 x 2 on 24 GB GPUs). It saves `model_last.pth` (taken as the released model) and `model_best.pth` (best validation accuracy, for reference). It trains on the 4-class ProGAN data (`image/cnndetection`) with the paper's preprocessing: Resize((256,256)) -> RandomCrop 224 -> horizontal flip -> ImageNet normalization (`resize_256`, `random_crop_224`, `random_horizontal_flip`, `to_dtype`, `normalize_imagenet`). The served `fat_former.pth` is still the official 4-class ProGAN checkpoint, not a run of this launcher; our trained checkpoint is reported in the SynthScope_train column below.
 
 ## Reproduced benchmark results
 
@@ -128,13 +128,13 @@ Values are `mAP / acc`. **SynthScope_official** = the authors' released weights 
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train (model_last) | Status |
 |---|---|---|---|---|
-| GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | 99.56 / 97.29 | reproduced (mAP -0.14, acc -1.1) |
+| GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | 99.56 / 97.29 | reproduced within the 2-pt tolerance (mAP -0.14, acc -1.1) |
 | GANs — 8 GANs (2-class ProGAN) | 99.2 / 95.8 | — | — | missing |
 | Diffusion (DMs) — 10 subsets | 98.8 / 95.0 | 98.6 / 93.72 (8 UFD subsets) | 98.88 / 92.09 (8 UFD subsets) | official (the 8-subset mean is not the paper's 10-subset mean, see below) |
 | UniversalFakeDetect-8 | — | 98.60 / 93.7 | 98.88 / 92.09 | official |
 | DiffusionForensics-8 | — | 94.66 / 79.0 | — | official |
 
-Checkpoint choice. `model_best` is chosen by validation accuracy with a strict `>`; validation accuracy was already 1.0000 after epoch 0, so `model_best` **is the epoch-0 checkpoint** and never changes (later epochs reach 1.0000 again but do not beat it). It is reported for reference only: GANs-8 99.66 / 95.71 and UFD-8 98.67 / 90.89 (mAP / acc). It has the same mAP as `model_last` but lower accuracy at the fixed 0.5 threshold (StyleGAN 87.03 acc), so training for the full 25 epochs helps calibration, not ranking.
+Checkpoint choice. `model_best` is chosen by validation accuracy with a strict `>`; validation accuracy was already 1.0000 after epoch 0, so `model_best` **is the epoch-0 checkpoint** and never changes (later epochs reach 1.0000 again but do not beat it). It is reported for reference only: GANs-8 99.66 / 95.71 and UFD-8 98.67 / 90.89 (mAP / acc). Its mAP is within 0.2 of `model_last` but its accuracy is lower at the fixed 0.5 threshold (StyleGAN 87.03 acc), so training for the full 25 epochs helps calibration, not ranking.
 
 Per-subset results for `model_last` (acc / AP): GANs-8 ProGAN 99.90/100.0, StyleGAN 94.73/99.72, StyleGAN2 94.08/98.79, BigGAN 99.45/99.93, CycleGAN 99.62/100.0, StarGAN 99.97/100.0, GauGAN 99.59/100.0, Deepfake 90.96/98.02 (paper: 99.9/97.2/98.8/99.5/99.3/99.8/99.4/93.2 acc). The gap to the paper is concentrated in StyleGAN (-2.5 acc), StyleGAN2 (-4.7) and Deepfake (-2.2).
 
