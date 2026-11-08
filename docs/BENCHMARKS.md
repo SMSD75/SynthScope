@@ -192,9 +192,11 @@ The run writes `manifest.json`, `results.json` and `RESULTS.md` (commit these) p
 (git-ignored). The Generator benchmarks tab picks up every folder under `benchmark/generator_runs/` automatically; reload
 the page after a run.
 
-**Rescore note (CuRe).** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were scored
-before the scorers passed the source-format hint, so CuRe's official PNG to JPEG q96 step was skipped for the PNG inputs;
-those rows will change on a rescore (the scorers now use it; no other detector is affected).
+**Rescore note (CuRe).** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored
+before the scorers passed the source-format hint, so CuRe's official PNG to JPEG q96 step was skipped for the PNG inputs.
+They were rescored on 2026-11-08 with the hint (same images and weights; only the CuRe row changed, ranks unchanged).
+AUROC old -> new: FLUX.2 klein 4B 98.62 -> 99.02, 9B 96.23 -> 97.08, Qwen-Image-2.1 92.67 -> 92.37, Ideogram 86.88 -> 84.82,
+Ideogram 1024 92.10 -> 91.35.
 
 **What the numbers mean.** AUROC is threshold-free (50 is chance, 100 perfect). *Fakes caught* and *Reals flagged* use the
 detectors' 0.5 threshold, which is not tuned per generator, so accuracy can look poor even when AUROC is high. Real photos
