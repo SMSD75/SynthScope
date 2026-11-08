@@ -172,7 +172,8 @@ VAL = {
     # VINA: the official VINA_DINOv3-L_140k+DDA checkpoint (no SynthScope-trained number: the training code is not released).
     # acc / mAP = the OFFICIAL metric (the _offmetric tags): per-subset pooled accuracy at 0.5 and AP, mean over subsets, as
     # the paper reports them; mauroc is the mean AUROC from the same scores: bench_eval's own, except ForenSynths and
-    # ARForensics (the _offmetric files' mean over the official subsets) and GenVideo-Val (the _offmetric AUROC, pooled). ARForensics = the six subsets shared with the paper (our copy has Switti, no MAR;
+    # ARForensics (the _offmetric files' mean over the official subsets) and GenVideo-Val (the _offmetric AUROC, pooled).
+    # ARForensics = the six subsets shared with the paper (our copy has Switti, no MAR;
     # the 7-row bench_eval mean 96.88 / 99.60 is not comparable with the paper). GenImage = the full val split
     # (vina_genimage_val100k); the 1500-per-class test bundle (vina_genimage_full) is its own reference row.
     # Jobs: CPU 281654-281656, 281831; GPU 281657, DAS6 66630.
