@@ -247,8 +247,8 @@ _add(ModelSpec(
     interpret="spai_patch",   # per-patch spectral fake-evidence over the native 224-grid
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
           "image is patchified into a variable 224-grid (five_crop fallback for tiny images). Serves the "
-          "official SPAI weights remapped into the SynthScope class; reproduces the paper (GenImage-8 90.74 / "
-          "Synthbuster 96.07 mAP). A fixed 448 resize/crop destroys the native-res spectral statistics.",
+          "official SPAI weights remapped into the SynthScope class (GenImage-8 94.22 / Synthbuster 96.75 mAP on "
+          "SynthScope's protocol). A fixed 448 resize/crop destroys the native-res spectral statistics.",
 ))
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
@@ -317,12 +317,14 @@ _add(ModelSpec(
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
     transform=model_transform("image/co_spy"),  # raw [0,1]; per-branch norm inside the model
-    notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained on ProGAN).",
+    # co_spy.pth = the SynthScope retrain on GenImage SD v1.4 (repro/retrain_cospy_full_mgpu.sbatch,
+    # checkpoints_retrain/cospy_full/model_1.pth, promoted 2026-06-08), not an official checkpoint.
+    notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained in SynthScope on GenImage SD v1.4).",
 ))
 _add(ModelSpec(
     key="pgc", name="PGC", paper="Zhou et al., 2026",
     modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="synthscope",
-    weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
+    weights="official",  # official PGC ProGAN weights load remap-free; deploy PGC_train_progan_ckpt.pth as pgc.pth (FS-8 96.41 / UFD 99.17 mAP, jobs 266282/266660; the official recipe trained in SynthScope, step 500, gives 97.41 / 98.99)
     overrides=["model@ModelConfig=image/pgc"],
     transform=model_transform("image/pgc"),  # official PGC eval = PadCenterCrop(224), NO resize
     interpret="pgc_peak",   # peak-guided residual fake-evidence map (per-location score)
@@ -386,7 +388,8 @@ _add(ModelSpec(
     overrides=["model@ModelConfig=image/mirror"],
     # official data/datasets.py eval: short side >512 -> 512, center 224, PNG/BMP -> JPEG q96
     transform=model_transform("image/mirror"),
-    notes="Reference-comparison detector: a frozen memory bank of real-image prototypes reconstructs an 'ideal "
+    notes="Reference-comparison detector: a frozen memory bank (real-image prototypes in the paper; in the released "
+          "checkpoint, the code's seeded default initialization) reconstructs an 'ideal "
           "reference' of the DINOv3 ViT-H+/16 (+ LoRA) features; the residual, the retrieval uncertainty and the CLS "
           "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "
           "format-aligned inputs), so use the registered transform. Runs fp32, the official default.",
@@ -542,13 +545,14 @@ except Exception:
     REPRO_FULL = {}
 
 # SynthScope-only probe variants (no paper benchmark table of their own) — hand-kept headline cards.
+# "ours" = the full ForenSynths-13 test set (repro/bench_results/<model>_synthscope_forensynths.json).
 _PROBE_REPRO: dict[str, dict] = {
-    "dinov2": {"benchmark": "ForenSynths", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "95.03 mAP / 94.86 AUROC",
-               "match": "close", "note": "frozen DINOv2 ViT-L/14 probe."},
-    "dinov3": {"benchmark": "ForenSynths-8", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "93.68 mAP / 92.92 AUROC",
-               "match": "close", "note": "frozen DINOv3 ViT-L/16 probe (8 ForenSynths gens, n=400/class)."},
-    "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (SynthScope variant)", "ours": "98.96 mAP / 98.77 AUROC",
-                     "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8 gens, n=400/class)."},
+    "dinov2": {"benchmark": "ForenSynths-13", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "87.37 mAP / 87.41 AUROC",
+               "match": "ours-only", "note": "frozen DINOv2 ViT-L/14 probe (8-GAN subset: 90.61 mAP)."},
+    "dinov3": {"benchmark": "ForenSynths-13", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "89.02 mAP / 88.23 AUROC",
+               "match": "ours-only", "note": "frozen DINOv3 ViT-L/16 probe (8-GAN subset: 91.23 mAP)."},
+    "adapted_dino": {"benchmark": "ForenSynths-13", "paper": "— (SynthScope variant)", "ours": "95.35 mAP / 94.81 AUROC",
+                     "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8-GAN subset: 98.78 mAP)."},
 }
 
 # Each model's headline = its primary paper benchmark, derived from REPRO_FULL (single source of truth).

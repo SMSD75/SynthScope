@@ -76,8 +76,12 @@ Values are `mAP / acc`. **SynthScope_official** = the authors' released weights 
 | Table 1 — ForenSynths / Cross-GAN (8) | 96.1 / 92.5 | 94.22 / 92.3 | 93.83 / 84.09 | official; trained: AP close, acc below (as the official training code here) |
 | Table 2 — GANGen-Detection (9) | 96.6 / 93.2 | 96.49 / 94.81 | — | official |
 | Table 3 — DiffusionForensics / DIRE | 99.8 / 95.3 | 99.4 / 95.03 | — | official |
-| Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 96.69 / 93.94 | 97.49 / 88.91 | official; trained: AP matches, acc below |
+| Table 4 — UniversalFakeDetect / Ojha | acc 95.2 | 97.16 / 94.57 | 97.49 / 88.91 | official; trained: AP matches, acc below |
 | Table 5 — Diffusion1kStep | acc 80.1 | 83.47 / 79.13 | — | official |
+
+SynthScope_official is `NPR.pth`, the served `npr.pth`, for Tables 1 and 4. Tables 2, 3 and 5 were measured on 2026-06-04/05
+with `model_epoch_last_3090.pth`, the other released checkpoint and the registry default before 2026-06-09, and have not
+been re-run with `NPR.pth` (`repro/benchmark_specs/npr.json`).
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 

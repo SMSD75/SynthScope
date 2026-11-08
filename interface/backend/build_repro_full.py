@@ -17,14 +17,17 @@ ROOT = str(Path(__file__).resolve().parents[2])   # the repository root, whereve
 VAL = {
     # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no SynthScope_train here.
     ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
-    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces official.
+    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces the official mAP (acc is lower).
     ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 96.42, "acc": 77.87}},
-    ("clip", "ForenSynths"):             {"synthscope": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
+    # ForenSynths = the paper's 11 generators (no StyleGAN2 / WhichFaceIsReal), recomputed from the per-generator entries
+    # of {clip,cnn}_{synthscope,official}_forensynths.json; the 8-GAN subset gives clip 97.22 / 96.96, cnn 94.42 / 92.67.
+    ("clip", "ForenSynths"):             {"synthscope": {"map": 92.83, "acc": 85.39}, "official": {"map": 92.33, "acc": 80.58}},
     ("clip", "UniversalFakeDetect"):     {"synthscope": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
-    ("cnn", "ForenSynths"):              {"synthscope": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},
-    ("co_spy", "Co-Spy-Bench"):          {"synthscope": {"map": 96.6, "acc": 89.9}, "official": {"map": 86.65, "acc": 83.88}},
+    ("cnn", "ForenSynths"):              {"synthscope": {"map": 90.44, "acc": 74.57}, "official": {"map": 90.77, "acc": 75.82}},
+    # synthscope Co-Spy-Bench / GenImage = cospy_full/model_1.pth, the checkpoint promoted to co_spy.pth (2026-06-08).
+    ("co_spy", "Co-Spy-Bench"):          {"synthscope": {"map": 96.7, "acc": 90.28}, "official": {"map": 86.65, "acc": 83.88}},
     ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "synthscope": {"map": 84.91}},
-    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 75.91}},
+    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 76.23}},
     ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "synthscope": {"map": 96.17}},
     # CuRe: only the official adapter exists (the training recipe is unreleased), so there is no SynthScope-trained number.
     ("cure", "AIGIBench"):               {"official": {"map": 97.0, "acc": 92.85, "auroc": 97.48}},
@@ -112,7 +115,9 @@ VAL = {
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}, "synthscope": {"map": 93.83, "acc": 84.09, "auroc": 94.94}},
     ("npr", "Table 2"):                  {"official": {"map": 96.49, "acc": 94.81}},
     ("npr", "Table 3"):                  {"official": {"map": 99.4, "acc": 95.03}},
-    ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}, "synthscope": {"map": 97.49, "acc": 88.91, "auroc": 97.23}},
+    # Table 4 official = NPR.pth, the served file (npr_official_nprpth_ufd); model_epoch_last_3090.pth gives 96.69 / 93.94.
+    # Tables 2, 3 and 5 were measured with model_epoch_last_3090.pth (the registry default before 2026-06-09) only.
+    ("npr", "Table 4"):                  {"official": {"map": 97.16, "acc": 94.57}, "synthscope": {"map": 97.49, "acc": 88.91, "auroc": 97.23}},
     ("npr", "Table 5"):                  {"official": {"map": 83.47, "acc": 79.13}},
     # SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / model_38), which reproduces the paper.
     ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "synthscope": {"map": 97.79, "acc": 95.1}},
@@ -123,8 +128,12 @@ VAL = {
     ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
     ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
     # synthscope UFD / ForenSynths = the official recipe in SynthScope, step 500 (experiments/image/pgc.sh; jobs 266276, 266282, 266660).
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
+    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth in the same jobs, PadCenterCrop eval (pgc_official_ufd8,
+    # FS-8 subset of pgc_official_forensynths13). The 2026-06-04 runs of the official PGC code (pgc_official_eval.py, PadCenterCrop)
+    # gave 99.34 / 94.16 and FS-13 96.25 / 83.73; the SynthScope class on the same weights gives 99.17 / 93.80 (UFD / FS-13);
+    # the gap is the known model-forward difference. GenImage / AIGIBench / CommGen15 official = official-code numbers.
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.17, "acc": 83.57, "auroc": 99.2}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 96.41, "acc": 76.34, "auroc": 97.06}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
     # SPAI serves the official weights remapped into the SynthScope class, scored at NATIVE resolution (the faithful

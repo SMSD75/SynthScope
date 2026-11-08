@@ -97,16 +97,20 @@ CNNDetection shows that a detector trained only on ProGAN can detect many other 
 ### SynthScope reproduction (paper vs reproduced)
 
 Reproduced through `benchmark/bench_eval.py` (%). **SynthScope_official** loads the authors'
-released `blur_jpg_prob0.1` ResNet-50 into the SynthScope class; **SynthScope_train** fine-tunes ResNet-50 from scratch on
+released `blur_jpg_prob0.5` ResNet-50 into the SynthScope class (`cnn_official_forensynths`); **SynthScope_train** fine-tunes ResNet-50 from scratch on
 ProGAN via the SynthScope recipe (single best run).
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---|---|---|
-| ForenSynths test set (11) | 90.8 | mAP 92.67 | mAP 94.42 / acc 76.36 |
+| ForenSynths test set (11) | 90.8 | mAP 90.77 / acc 75.82 | mAP 90.44 / acc 74.57 |
 
-Both reproduce the paper's ForenSynths mAP (~91 vs 92.6); the lower acc@0.5 reflects the SynthScope per-generator
+Both reproduce the paper's ForenSynths mAP over its 11 generators (90.77 / 90.44 vs 90.8); on the 8 GANs (ProGAN,
+StyleGAN, StyleGAN2, BigGAN, CycleGAN, StarGAN, GauGAN, DeepFake) they give 92.67 / 94.42. The lower acc@0.5 reflects the SynthScope per-generator
 mean over the full on-disk set (including non-256 sources the paper's headline omits), while the *ranking*
 metric (mAP) matches.
+
+The served checkpoint comes from `interface/scripts/train_model.sh cnn` (promoted by `interface/scripts/run_all_training.sh`),
+which trains on `dataset@DatasetConfig=image/cnndetection`, the ProGAN training set.
 
 ## Core novelties
 
@@ -146,6 +150,6 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| ForenSynths test set (CVPR paper Table 2 = 11  | map=90.8 | mAP=92.67 | mAP=94.42 / acc=76.36 | reproduced |
+| ForenSynths test set (CVPR paper Table 2 = 11  | map=90.8 | mAP=90.77 / acc=75.82 | mAP=90.44 / acc=74.57 | reproduced |
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

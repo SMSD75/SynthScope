@@ -81,11 +81,16 @@ from the paper because SynthScope averages over the on-disk generator set.
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---|---|---|
-| ForenSynths GAN/low-level (11) | — | mAP 96.95 | mAP 97.22 / acc 88.28 |
+| ForenSynths GAN/low-level (11) | — | mAP 92.33 / acc 80.58 | mAP 92.83 / acc 85.39 |
 | UniversalFakeDetect diffusion/AR (8) | 95.0 | mAP 95.66 | mAP 96.44 / acc 87.23 |
 
+On the 8 GANs (ProGAN, StyleGAN, StyleGAN2, BigGAN, CycleGAN, StarGAN, GauGAN, DeepFake) the two give 96.95 / 97.22 mAP.
 Both columns land on the paper's LC mAP (≈92 ForenSynths, ≈95 UniversalFakeDetect), confirming the frozen-CLIP
 linear probe reproduces the paper's headline generalization result.
+
+The served checkpoint comes from `interface/scripts/train_model.sh clip` (promoted by `interface/scripts/run_all_training.sh`),
+which trains on `dataset@DatasetConfig=image/cnndetection`, the ProGAN training set; `experiments/image/clip_vitl14.sh` passes no
+dataset override and so trains on the config default, `image/genimage`.
 
 ## Core novelties
 
@@ -111,7 +116,7 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| ForenSynths GAN/low-level test (11 of the pape | — | mAP=96.95 | mAP=97.22 / acc=88.28 | reference |
+| ForenSynths GAN/low-level test (11 of the pape | — | mAP=92.33 / acc=80.58 | mAP=92.83 / acc=85.39 | reference |
 | UniversalFakeDetect diffusion/autoregressive t | map=95.0 | mAP=95.66 | mAP=96.44 / acc=87.23 | reproduced |
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
