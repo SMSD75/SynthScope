@@ -1,15 +1,11 @@
 {
- "_comment": "IVI cn023 (node-local /hddstore). forensynths13, ufd8, ditfake, cospybench, aigibench25 live in /hddstore/ssalehi/SynthScope; the cn029 sets below are the copies /hddstore/ssalehi/SynthScope_stage029/<rel> that mirror_bench.sbatch rsynced (paths recorded in the data_root of the mirror_* result JSONs).",
- "_unverified": ["cn023 was not mounted when this was written: every path is derived from scripts and recorded data_root fields", "aigcdetect17, rrdataset: mirror_aigcdetect/mirror_rrdataset ran from /ssdstore/ssalehi/SynthScope_stage029 on another node; not mapped here", "arforensics, synthbuster_coco (Synthbuster/test and EvalGEN/test/Flux/0_real): no recorded copy on cn023, not mapped"],
- "genimage_val100k": "/hddstore/ssalehi/SynthScope_stage029/GenImage_val_full/test",
+ "_comment": "IVI cn023 (node-local /hddstore). Verified by job 283119 on 2026-11-08: forensynths13, ufd8, ditfake, cospybench, aigibench25 exist under /hddstore/ssalehi/SynthScope. The /hddstore/ssalehi/SynthScope_stage029 copies recorded in the mirror result JSONs no longer exist, so the cn029-resident sets (genimage_val100k, evalgen, synthwildx, wildrf, bfree_online, realchain, rrdataset, ...) are not mapped here: run them on cn029 or DAS6.",
+ "_unverified": [
+  "aigcdetect17, rrdataset, arforensics, synthbuster_coco: not on cn023"
+ ],
  "forensynths13": "/hddstore/ssalehi/SynthScope/CNNDetection/test",
  "ufd8": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
- "evalgen": "/hddstore/ssalehi/SynthScope_stage029/EvalGEN/test",
- "synthwildx": "/hddstore/ssalehi/SynthScope_stage029/SynthWildX/test",
- "wildrf": "/hddstore/ssalehi/SynthScope_stage029/WildRF/test",
  "aigibench25": "/hddstore/ssalehi/SynthScope/AIGIBench/test",
- "bfree_online": "/hddstore/ssalehi/SynthScope_stage029/BFreeOnline/test",
  "cospybench": "/hddstore/ssalehi/SynthScope/CoSpyBench/test",
- "ditfake": "/hddstore/ssalehi/SynthScope/DiTFake/test",
- "realchain": "/hddstore/ssalehi/SynthScope_stage029/RealChain/test"
+ "ditfake": "/hddstore/ssalehi/SynthScope/DiTFake/test"
 }
