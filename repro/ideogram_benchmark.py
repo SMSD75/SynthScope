@@ -12,7 +12,7 @@ import os, sys, io, glob, json, random, time
 sys.path.insert(0, os.path.abspath("/ivi/zfs/s0/original_homes/ssalehi/SynthScope"))
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "7")
 
-from interface.backend import config, generators as G
+from interface.backend import config, generators as G, media
 from PIL import Image
 import numpy as np
 
@@ -138,8 +138,8 @@ def score():
     engine = get_engine()
     reals = sorted(glob.glob(os.path.join(REAL_DIR, "*.png")))
     fakes = sorted(glob.glob(os.path.join(FAKE_DIR, "*.png")))
-    real_imgs = [Image.open(p).convert("RGB") for p in reals]
-    fake_imgs = [Image.open(p).convert("RGB") for p in fakes]
+    real_imgs = [media.open_rgb(p) for p in reals]
+    fake_imgs = [media.open_rgb(p) for p in fakes]
     log(f"[score] {len(real_imgs)} real + {len(fake_imgs)} fake")
     from sklearn.metrics import roc_auc_score, average_precision_score
 

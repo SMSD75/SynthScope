@@ -1,0 +1,32 @@
+defaults:
+  - /model/default
+  - _self_
+
+# LTF (arXiv 2611.04529, HuiGuanLab/LTF): frozen CLIP ViT-L/14 block-24 tokens of a global view + native-resolution 224
+# tiles -> patch-token MIL per tile (L1), view-CLS MIL (L2), gated fusion MLP; P(fake) = softmax(fusion logits)[:, 1].
+# Values = the official configs/eval.yaml over config.DEFAULT_MODEL (the released GenImage checkpoint,
+# HF MuskAI/LTF-v3.3 weights/epoch_20.pth loaded as ltf.pth). The *_shuffle_* / *_replace_* knobs act only in training.
+model_type: ltf
+# Local ViT-L-14.pt; null -> $SYNTHSCOPE_LTF_BACKBONE, the OpenAI clip cache, else the pinned HF file (SHA-256 checked).
+backbone_checkpoint: null
+feature_layer: 24
+dropout: 0.1
+mil_heads: 8
+fusion_hidden: 512
+pool_gate_hidden: 16
+use_pool_gate_fusion: true
+l1_cross_shuffle_p: 0.9
+l1_replace_ratio_range: [0.5, 0.9]
+l1_with_replacement_p: 0.5
+l2_cross_shuffle_p: 0.9
+l2_replace_ratio_range: [0.1, 0.8]
+l2_with_replacement_p: 0.5
+bag_token_shuffle_p: 0.5
+cross_shuffle_min_keep_original: 1
+use_mil_cross_shuffle: true
+eval_chunk_size: 8           # views per CLIP forward (the official predict.py --chunk-size default)
+loss_weights: {level1: 1.0, level2: 1.0, fusion: 1.0}
+
+# Test-time preprocessing (official prepare_image): global view + 224 tiles, [1 + tiles, 3, 224, 224]; the view count
+# depends on the image size, so images are scored one at a time.
+eval_transform_list: [ltf_views]

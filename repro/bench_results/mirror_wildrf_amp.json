@@ -1,0 +1,42 @@
+{
+  "tag": "mirror_wildrf_amp",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope_stage029/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 97.86,
+    "map": 99.63,
+    "mauroc": 99.65
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 99.79,
+      "auroc": 99.79,
+      "real_acc": 96.25,
+      "fake_acc": 98.75,
+      "acc": 97.5
+    },
+    "reddit": {
+      "ap": 99.63,
+      "auroc": 99.5,
+      "real_acc": 97.87,
+      "fake_acc": 97.2,
+      "acc": 97.53
+    },
+    "twitter": {
+      "ap": 99.48,
+      "auroc": 99.67,
+      "real_acc": 97.95,
+      "fake_acc": 99.12,
+      "acc": 98.54
+    }
+  },
+  "date": "2026-11-06T12:44:36",
+  "synthscope_version": "0.1.0",
+  "variant": {
+    "use_amp": true
+  }
+}

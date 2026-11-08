@@ -118,7 +118,7 @@ The model config:
 
 The trainer config (`conf/trainer/image/fat_former.yaml`) follows the paper's recipe (Sec. 4.1; the authors released no training code): Adam (AdamW with weight decay 0), lr `4e-4`, 25 epochs, total batch 256, lr x0.9 every 10 epochs (`lr_step` schedule, no warmup, no gradient clipping), no augmentation beyond resize 256 / random crop 224 / horizontal flip. Training data is the released 4-class ProGAN setting (car, cat, chair, horse; 144k images). `force_fp32=true` keeps the loaded CLIP backbone in fp32 (the upstream code keeps CLIP in fp16 on GPU).
 
-The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micro-batch x gradient accumulation; default 4 x 32 x 2 on 24 GB GPUs). It saves `model_last.pth` (taken as the released model) and `model_best.pth` (best validation accuracy, for reference).
+The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micro-batch x gradient accumulation; default 4 x 32 x 2 on 24 GB GPUs). It saves `model_last.pth` (taken as the released model) and `model_best.pth` (best validation accuracy, for reference). It trains on the 4-class ProGAN data (`image/cnndetection`) with the standard CLIP-style preprocessing (`resize_short_256`, `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format. The served `fat_former.pth` is still the official 4-class ProGAN checkpoint, not a run of this launcher; our trained checkpoint is reported in the SynthScope_train column below.
 
 ## Reproduced benchmark results
 

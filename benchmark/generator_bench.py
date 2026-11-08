@@ -35,6 +35,7 @@ import numpy as np
 from PIL import Image
 
 from interface.backend import generators as G
+from interface.backend import media
 from interface.backend.registry import list_specs
 
 IMG_EXT = (".jpg", ".jpeg", ".png", ".webp")
@@ -124,8 +125,8 @@ def score(args, real_dir: Path, fake_dir: Path, out: Path) -> list:
     from sklearn.metrics import average_precision_score, roc_auc_score
     from interface.backend.engine import get_engine
     engine = get_engine()
-    reals = [Image.open(p).convert("RGB") for p in sorted(glob.glob(str(real_dir / "*.png")))]
-    fakes = [Image.open(p).convert("RGB") for p in sorted(glob.glob(str(fake_dir / "*.png")))]
+    reals = [media.open_rgb(p) for p in sorted(glob.glob(str(real_dir / "*.png")))]   # keeps the PNG hint (CuRe, MIRROR)
+    fakes = [media.open_rgb(p) for p in sorted(glob.glob(str(fake_dir / "*.png")))]
     log(f"[score] {len(reals)} real + {len(fakes)} fake")
     y = np.array([0] * len(reals) + [1] * len(fakes))
     keys = args.detectors.split(",") if args.detectors else None

@@ -16,8 +16,9 @@ Input is a normalized RGB image `[B, 3, 224, 224]`; the model builds the 6-chann
 tensor **internally** (see "SynthScope adaptations"):
 
 1. **RGB stream** — a **LoRA-tuned, frozen DINOv2-Large** ViT (HF `AutoModel`). Returns the CLS token
-   `[B, D]` and patch tokens `[B, N, D]`. Only the injected LoRA adapters (rank 8) on the attention
-   q/k/v/output + MLP fc1/fc2 are trainable; the backbone is frozen.
+   `[B, D]` and patch tokens `[B, N, D]`. Only the injected LoRA adapters (rank 8) on the MLP fc1/fc2
+   are trainable (as in the released checkpoints, whose attention target names do not match HF DINOv2); the
+   backbone is frozen.
 2. **Residual stream** — a **YCbCr quantization residual** (BT.601 round-trip rounding error, paper
    Eq. 1), fed through a 3-block stride-2 CNN → feature map `[B, 256, Hr, Wr]`, global-avg-pooled to
    `[B, 256]`.
@@ -34,7 +35,7 @@ Implemented in `models/image/pgc/pgc.py` as `SynthScopePGCModel`.
 | Component | Setting |
 |---|---|
 | RGB backbone | `facebook/dinov2-large` (HF), frozen + **LoRA** (rank 8, α 1.0, dropout 0.1) |
-| LoRA targets | attention `query/key/value`, `attention.output.dense`, `mlp.fc1/fc2` (HF DINOv2 names) |
+| LoRA targets | `mlp.fc1`, `mlp.fc2` only (`lora_targets` in `conf/model/image/pgc.yaml`; the released checkpoints carry LoRA on the MLP only) |
 | Residual | YCbCr quantization residual, normalized mean 0 / std 0.5 |
 | Residual stream | Conv(3→64→128→256), stride 2, BN+ReLU |
 | PGCM | per-patch + per-location score heads, log-sum-exp peak aggregation, learnable `λ_rgb` |
@@ -106,14 +107,16 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
 | GenImage | map=100.0 / acc=98.3 | mAP=100.0 / acc=99.49 | mAP=97.62 / acc=78.6 | official |
-| UniversalFakeDetect (UFD) | map=98.0 | mAP=99.34 / acc=94.16 | **mAP=98.99 / acc=91.96** | **reproduced** (step 500) |
-| ForenSynths-8 (CNNDetection test) | — (not reported separately; official checkpoint 96.25) | mAP=96.39 / acc=76.29 | **mAP=97.41 / acc=85.89** | matches/exceeds the official checkpoint (step 500) |
+| UniversalFakeDetect (UFD) | map=98.0 | mAP=99.17 / acc=83.57 | **mAP=98.99 / acc=91.96** | **reproduced** (step 500) |
+| ForenSynths-8 (CNNDetection test) | — (not reported separately) | mAP=96.41 / acc=76.34 | **mAP=97.41 / acc=85.89** | matches/exceeds the official checkpoint (step 500) |
 | AIGIBench (AIGI) | map=95.0 / acc=86.6 | mAP=95.36 / acc=88.33 | mAP=86.88 | official |
 | CommGen15 (commercial in-the-wild) | acc=97.9 | mAP=99.26 / acc=97.39 | mAP=98.61 / acc=66.66 | official |
 
+SynthScope_official uses the release that matches each benchmark's training setting (`repro/benchmark_specs/pgc.json`): `PGC_train_sdv1_4_ckpt.pth` for GenImage and CommGen15, `PGC_train_progan_ckpt.pth` (the served `pgc.pth`) for UFD and ForenSynths, `PGC_train_progan_sdv1_4_ckpt.pth` for AIGIBench. UFD and ForenSynths-8 are the SynthScope class on the same jobs as the step-500 numbers (266660, 266282; PadCenterCrop eval). GenImage, AIGIBench and CommGen15 are official-code numbers: 2026-06-04 runs of the official PGC code (`repro/official_evals/pgc_official_eval.py`, PadCenterCrop). The same official-code runs gave UFD 99.34 / 94.16 and FS-13 96.25 / 83.73; the SynthScope class on the same weights gives 99.17 / 93.80 (UFD / FS-13); the gap is the known model-forward difference (largest on seeingdark and whichfaceisreal).
+
 > **ForenSynths hard generators — reproduced via early-stopping (resolved 2026-06-19).** The released ProGAN checkpoint is trained for only **~400 steps (< 1 epoch)** — confirmed by the authors on our issue. DINOv2's strong priors overfit ProGAN within a few epochs (loss → floor), which keeps easy generators high but **erodes hard-generator transfer**; our earlier epoch-level checkpoints (ep10+) all overshot the peak. Re-running the official `train.py` verbatim with fine-grained eval shows the hard-3 (deepfake/san/seeingdark) **mean AUROC climb to 94.56 at step ~900 ≈ official 94.35**, then decay with longer training. So PGC **does** reproduce from the published recipe+data with early-stopping inside the first epoch. (Served PGC uses the official weights.) See `repro/investigate/pgc_gap_investigation.md`.
 
-> **Eval transform — `PadCenterCrop(224)`, no resize (verified 2026-06-19).** PGC's YCbCr residual is resolution-sensitive, so the eval transform is center-crop-224 with **no resize** (= the official `PadCenterCrop`; byte-identical to the genuine repo's). The earlier `Resize→CenterCrop` registry transform wiped the forensic signal on super-res/low-light generators (san 73.3, seeingdark 72.5 — same eval-transform family as the SAFE/AIDE/SPAI fixes). With the fix, SynthScope `bench_eval` gives ForenSynths-8 96.39 mAP with the official weights and 96.05 with the official code retrained (the paper reports no ForenSynths number; 96.25 was the earlier official-weights measurement) and san recovers to 98.65 AUROC. One generator, **seeingdark**, stays ~10 pt below the genuine repo (77.9 vs 87.49) on identical images/weights with now-bit-exact preprocessing — isolated to the model forward, not the transform; it is not part of the reported ForenSynths-8.
+> **Eval transform — `PadCenterCrop(224)`, no resize (verified 2026-06-19).** PGC's YCbCr residual is resolution-sensitive, so the eval transform is center-crop-224 with **no resize** (= the official `PadCenterCrop`; byte-identical to the genuine repo's). The earlier `Resize→CenterCrop` registry transform wiped the forensic signal on super-res/low-light generators (san 73.3, seeingdark 72.5 — same eval-transform family as the SAFE/AIDE/SPAI fixes). With the fix, SynthScope `bench_eval` gives ForenSynths-8 96.39 mAP with the official weights (this 2026-06-19 run, job 187387; the 2026-10-27 run in the table above, job 266282, gives 96.41) and 96.05 with the official code retrained (the paper reports no ForenSynths number; 96.25 is the official PGC code's own FS-13 mean, 2026-06-04) and san recovers to 98.65 AUROC. One generator, **seeingdark**, stays ~10 pt below the genuine repo (77.9 vs 87.49) on identical images/weights with now-bit-exact preprocessing — isolated to the model forward, not the transform; it is not part of the reported ForenSynths-8.
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 

@@ -45,10 +45,10 @@ The official repository lists:
 | Test Set 6 | GPT-ImgEval |
 | Test Set 7 | T2I-CoReBench |
 
-In this repo, the SAFE pre-test launcher selects the CNNDetection config explicitly:
+In this repo, the run that produced the served checkpoint (`repro/retrain_safe_v2.sbatch`) selects the CNNDetection config explicitly:
 
 ```bash
-dataset@DatasetConfig=cnndetection
+dataset@DatasetConfig=image/cnndetection
 ```
 
 ## Augmentation details
@@ -115,10 +115,13 @@ The official SAFE training defaults include:
 The SynthScope launcher is:
 
 ```bash
-experiments/safe_pretest.sh
+experiments/image/safe.sh
 ```
 
-It runs through Accelerate and the `SynthScope` conda environment.
+It runs through Accelerate and the `SynthScope` conda environment, for 100 epochs on `image/aigibench`. It does not
+regenerate the served checkpoint: `safe.pth` (`checkpoints_retrain/safe_full_v2/model_38.pth`) comes from
+`repro/retrain_safe_v2.sbatch`, 40 epochs on `image/cnndetection` with the same learning rate, weight decay and label
+smoothing.
 
 ## Reproduced benchmark results
 

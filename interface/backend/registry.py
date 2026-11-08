@@ -92,6 +92,22 @@ def remap_effort(sd: dict) -> dict:
     return {(k[len("module."):] if k.startswith("module.") else k): v for k, v in sd.items()}
 
 
+# Saved groups of the released LTF checkpoint that its forward path never reads (official ltf/checkpoint.py).
+LTF_UNUSED_PREFIXES = (
+    "baseline_core.cls_token",
+    "baseline_core.classifier.",
+    "baseline_core.jpeg_estimate.",
+    "baseline_core.patch_classifier.",
+    "baseline_core.tile_transformer.",
+)
+
+
+def remap_ltf(sd: dict) -> dict:
+    """Official LTF checkpoint (an ``LTFCore`` state dict) -> SynthScopeLTFModel: drop the 27 disconnected baseline
+    tensors, as the official ``load_core``, and put the 37 retained ones under ``core.`` (then checked strictly)."""
+    return {"core." + k: v for k, v in sd.items() if not k.startswith(LTF_UNUSED_PREFIXES)}
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -231,8 +247,8 @@ _add(ModelSpec(
     interpret="spai_patch",   # per-patch spectral fake-evidence over the native 224-grid
     notes="Spectral learning (MFM ViT-B/16) + Spectral Context Attention at NATIVE/arbitrary resolution: each "
           "image is patchified into a variable 224-grid (five_crop fallback for tiny images). Serves the "
-          "official SPAI weights remapped into the SynthScope class; reproduces the paper (GenImage-8 90.74 / "
-          "Synthbuster 96.07 mAP). A fixed 448 resize/crop destroys the native-res spectral statistics.",
+          "official SPAI weights remapped into the SynthScope class (GenImage-8 94.22 / Synthbuster 96.75 mAP on "
+          "SynthScope's protocol). A fixed 448 resize/crop destroys the native-res spectral statistics.",
 ))
 _add(ModelSpec(
     key="vib_net", name="VIB-Net", paper="Zhang et al., CVPR'25",
@@ -301,12 +317,14 @@ _add(ModelSpec(
     modality="image", predict_kind="bce", checkpoint="co_spy.pth", ckpt_kind="synthscope",
     overrides=["model@ModelConfig=image/co_spy"],
     transform=model_transform("image/co_spy"),  # raw [0,1]; per-branch norm inside the model
-    notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained on ProGAN).",
+    # co_spy.pth = the SynthScope retrain on GenImage SD v1.4 (repro/retrain_cospy_full_mgpu.sbatch,
+    # checkpoints_retrain/cospy_full/model_1.pth, promoted 2026-06-08), not an official checkpoint.
+    notes="SigLIP semantic + SD-VAE-residual artifact streams, feature fusion (trained in SynthScope on GenImage SD v1.4).",
 ))
 _add(ModelSpec(
     key="pgc", name="PGC", paper="Zhou et al., 2026",
     modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="synthscope",
-    weights="official",  # official PGC ProGAN weights load remap-free (FS 96.25 / hard-gens 94.35 vs our from-scratch 75.87); deploy PGC_train_progan_ckpt.pth as pgc.pth
+    weights="official",  # official PGC ProGAN weights load remap-free; deploy PGC_train_progan_ckpt.pth as pgc.pth (FS-8 96.41 / UFD 99.17 mAP, jobs 266282/266660; the official recipe trained in SynthScope, step 500, gives 97.41 / 98.99)
     overrides=["model@ModelConfig=image/pgc"],
     transform=model_transform("image/pgc"),  # official PGC eval = PadCenterCrop(224), NO resize
     interpret="pgc_peak",   # peak-guided residual fake-evidence map (per-location score)
@@ -347,6 +365,34 @@ _add(ModelSpec(
     notes="Detector for autoregressive (token-based) image generators: the quantization error of a frozen LlamaGen VQ "
           "tokenizer, read by a small transformer, fused with frozen CLIP ViT-L/14 features. Trained on LlamaGen vs "
           "ImageNet only. Uses the OFFICIAL released checkpoint.",
+))
+_add(ModelSpec(
+    key="ltf", name="LTF", paper="Chen et al., arXiv 2611.04529",
+    modality="image", predict_kind="ce", checkpoint="ltf.pth", ckpt_kind="official_ltf", remap=remap_ltf,
+    weights="official",
+    # ltf.pth = the official weights/epoch_20.pth unchanged (HF MuskAI/LTF-v3.3 @ a2a2e29c; code MIT); the frozen CLIP
+    # ViT-L/14 is the pinned backbones/ViT-L-14.pt of the same revision, loaded by the model (pretrained_prefixes).
+    overrides=["model@ModelConfig=image/ltf"],
+    transform=model_transform("image/ltf"),   # official prepare_image: global view + native-res 224 tiles
+    native_res=True,                # the view count depends on the image size: score one image at a time
+    notes="Hierarchical multiple-instance learning on frozen CLIP ViT-L/14 tokens: the image is cut into 224x224 tiles "
+          "at its own resolution, plus one resized global view. Patch tokens are pooled within each tile, tiles and "
+          "views are pooled across the image, and a gated fusion head decides. Uses the OFFICIAL GenImage checkpoint.",
+))
+_add(ModelSpec(
+    key="mirror", name="MIRROR", paper="Liu et al., NeurIPS'26",
+    modality="image", predict_kind="ce", checkpoint="mirror.pth", ckpt_kind="official_mirror", weights="official",
+    # mirror.pth = the official phase-2 checkpoint-h-cur.pth unchanged (authors' Google Drive); it holds the full model
+    # (DINOv3 ViT-H+ backbone, LoRA, memory bank, head), so neither the gated DINOv3 weights nor mirror_phase1.pth are
+    # needed at inference. Strict load; the ViT block prefix is renamed for transformers 4/5 (official_arch.py).
+    overrides=["model@ModelConfig=image/mirror"],
+    # official data/datasets.py eval: short side >512 -> 512, center 224, PNG/BMP -> JPEG q96
+    transform=model_transform("image/mirror"),
+    notes="Reference-comparison detector: a frozen memory bank (real-image prototypes in the paper; in the released "
+          "checkpoint, the code's seeded default initialization) reconstructs an 'ideal "
+          "reference' of the DINOv3 ViT-H+/16 (+ LoRA) features; the residual, the retrieval uncertainty and the CLS "
+          "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "
+          "format-aligned inputs), so use the registered transform. Runs fp32, the official default.",
 ))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
@@ -459,9 +505,15 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "moejepa": ("Short side 292, center 256×256", "The short side is resized to 292 and the central 256×256 is kept."),
     "effort": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
     "effort_chameleon": ("Squashed to 224×224", "The whole image is stretched to a 224×224 square (cv2 bicubic, the aspect ratio changes)."),
+    "mirror": ("Center-crop 224 (short side ≤ 512)", "If the shorter side exceeds 512 px it is scaled to 512, then "
+               "the central 224×224 is used (smaller images are padded with black). For PNG/BMP files that 224×224 "
+               "crop is then re-saved as JPEG (quality 96), as in the paper's format-aligned evaluation."),
     "omniaid": ("Squashed to 336×336", "The whole image is stretched to a 336×336 square (the aspect ratio changes)."),
     "omniaid_v1": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1 release."),
     "omniaid_genimage": ("Squashed to 512, then 336", "The image is stretched to 512×512 and then to 336×336, as in the v1-era releases."),
+    "ltf": ("Native-res 224 tiles + global view", "The image is cut into 224×224 tiles at its own resolution (no "
+            "scaling; edge tiles are aligned to the border, a side under 224 px is padded with black), plus one view of "
+            "the whole image resized to 224 and center-cropped."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
@@ -493,13 +545,14 @@ except Exception:
     REPRO_FULL = {}
 
 # SynthScope-only probe variants (no paper benchmark table of their own) — hand-kept headline cards.
+# "ours" = the full ForenSynths-13 test set (repro/bench_results/<model>_synthscope_forensynths.json).
 _PROBE_REPRO: dict[str, dict] = {
-    "dinov2": {"benchmark": "ForenSynths", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "95.03 mAP / 94.86 AUROC",
-               "match": "close", "note": "frozen DINOv2 ViT-L/14 probe."},
-    "dinov3": {"benchmark": "ForenSynths-8", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "93.68 mAP / 92.92 AUROC",
-               "match": "close", "note": "frozen DINOv3 ViT-L/16 probe (8 ForenSynths gens, n=400/class)."},
-    "adapted_dino": {"benchmark": "ForenSynths-8", "paper": "— (SynthScope variant)", "ours": "98.96 mAP / 98.77 AUROC",
-                     "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8 gens, n=400/class)."},
+    "dinov2": {"benchmark": "ForenSynths-13", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "87.37 mAP / 87.41 AUROC",
+               "match": "ours-only", "note": "frozen DINOv2 ViT-L/14 probe (8-GAN subset: 90.61 mAP)."},
+    "dinov3": {"benchmark": "ForenSynths-13", "paper": "~97 mAP (CLIP-probe ref.)", "ours": "89.02 mAP / 88.23 AUROC",
+               "match": "ours-only", "note": "frozen DINOv3 ViT-L/16 probe (8-GAN subset: 91.23 mAP)."},
+    "adapted_dino": {"benchmark": "ForenSynths-13", "paper": "— (SynthScope variant)", "ours": "95.35 mAP / 94.81 AUROC",
+                     "match": "ours-only", "note": "DINOv2 + per-block bottleneck adapters (8-GAN subset: 98.78 mAP)."},
 }
 
 # Each model's headline = its primary paper benchmark, derived from REPRO_FULL (single source of truth).

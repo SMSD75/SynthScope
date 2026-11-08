@@ -276,6 +276,7 @@ _METHOD_NAMES = {
     "aide": "AIDE", "safe": "SAFE", "co_spy": "Co-Spy", "spai": "SPAI", "vib_net": "VIB-Net",
     "pgc": "PGC", "cure": "CuRe", "d3": "D3", "restrav": "ReStraV", "stall": "STALL", "split": "SPLIT",
     "dda": "DDA", "d3qe": "D3QE", "omniaid": "OmniAID", "bfree": "B-Free", "effort": "Effort", "moejepa": "MoE-JEPA",
+    "ltf": "LTF",
 }
 
 
@@ -289,9 +290,11 @@ def _registry_name(key: str) -> str:
 
 _FAMILY = [  # (substring -> benchmark family label); first match wins
     ("genimage", "GenImage"), ("forensynth", "ForenSynths"), ("universalfakedetect", "UniversalFakeDetect"),
-    ("ojha", "UniversalFakeDetect"), ("ufd", "UniversalFakeDetect"), ("aigcdetect", "AIGCDetect"),
+    ("ojha", "UniversalFakeDetect"), ("ufd", "UniversalFakeDetect"), ("univfakedetect", "UniversalFakeDetect"),
+    ("aigcdetect", "AIGCDetect"),
     ("co-spy-bench in-the-wild", "In-the-wild"),  # before "co-spy-bench": a different benchmark
-    ("co-spy-bench", "Co-Spy-Bench"), ("aigibench", "AIGIBench"), ("aigi", "AIGIBench"),
+    ("co-spy-bench", "Co-Spy-Bench"), ("human-aigi", "Human-AIGI"),  # before "aigi": its own benchmark
+    ("aigibench", "AIGIBench"), ("aigi", "AIGIBench"),
     ("commgen", "CommGen15"), ("genvideo", "GenVideo"), ("evalcrafter", "EvalCrafter"),
     ("videophy", "VideoPhy"), ("vidprom", "VidProM"), ("genvidbench", "GenVidBench"),
     ("ditfake", "DiTFake"), ("diffusionforensics", "DiffusionForensics"),
