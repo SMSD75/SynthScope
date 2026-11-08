@@ -165,13 +165,13 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `pgc` | **PGC** (Zhou, 2026) | LoRA-tuned DINOv2 + YCbCr-residual CNN, peak-guided calibration. |
 | `cure` | **CuRe** (manic-cui, 2026) | Frozen Perception-Encoder Core L/14 + Q/V LoRA + source-response subspace, trained by regressing real↔generated mixing ratios on SD‑v1.4 only (official adapter). |
 | `omniaid` | **OmniAID** (Guo, 2025) | Hybrid mixture of experts on CLIP ViT-L/14@336: a router picks semantic experts (human, animal, object, scene) and an always-on artifact expert sees every image. Official weights; `omniaid_genimage` is the GenImage-SD v1.4 release used for the paper's academic tables. |
-| `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a codebook-aware transformer and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
+| `d3qe` | **D3QE** (Zhang, ICCV'25) | Quantization error of a frozen LlamaGen VQ tokenizer, read by a transformer (its codebook-frequency bias is zero in the released weights) and fused with frozen CLIP ViT-L/14 features; built for autoregressive generators (official weights). |
 | `dda` | **DDA** (Chen, NeurIPS'25 Spotlight) | DINOv2 ViT-L/14 + LoRA, trained only on MSCOCO with VAE-reconstructed fakes aligned to their reals in pixel and frequency space (official weights). |
 | `bfree` | **B-Free** (Guillaro, CVPR'25) | DINOv2 ViT-B/14 with registers, trained end to end on bias-free data: inpainted fakes that share content and format with their real images; five 504 crops at native resolution (official weights, nonprofit license). |
 | `moejepa` | **MoE-JEPA** (Teglia, ECCV'26 W) | Frozen V-JEPA 2 ViT-L (the image as a static clip) with a residual mixture of experts in its last blocks, gated-attention MIL pooling and a BayarConv noise branch; real / fully synthetic / tampered (official weights, SID-Set). |
 | `effort` | **Effort** (Yan, ICML'25) | CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each attention projection (orthogonal subspace decomposition), keeping the pretrained principal subspace (official weights, GenImage SD v1.4; also `effort_chameleon`). |
 | `ltf` | **LTF** (Chen, 2026) | Learning to Falsify: keeps the image at native resolution as a bag of 224 tiles plus a global view, reads each with frozen CLIP ViT-L/14, and pools them with hierarchical multiple instance learning (patch tokens inside a tile, then views) and a gated fusion head (official GenImage weights; evaluation only, training is not ported). |
-| `mirror` | **MIRROR** (Liu, NeurIPS'26) | Frozen DINOv3 ViT-H+/16 + LoRA; a memory bank of real-image prototypes rebuilds an "ideal reference" of the input's features by sparse attention, and the gap to it (plus the retrieval uncertainty and the CLS token) gives the score (official weights; licence unclear, so not redistributed). |
+| `mirror` | **MIRROR** (Liu, NeurIPS'26) | Frozen DINOv3 ViT-H+/16 + LoRA; a memory bank (real-image prototypes in the paper; the code's seeded default initialization in the released checkpoint) rebuilds an "ideal reference" of the input's features by sparse attention, and the gap to it (plus the retrieval uncertainty and the CLS token) gives the score (official weights; licence unclear, so not redistributed). |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
 ### 🎬 Video detectors
@@ -274,12 +274,12 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Detector | Headline benchmark | Paper | SynthScope | Status |
 | --- | --- | ---: | ---: | --- |
 | CLIP / UnivFD | UniversalFakeDetect | 95.0 | 96.44 | ✅ reproduced |
-| CNNDetection | ForenSynths | 90.8 | 94.42 | ✅ reproduced |
+| CNNDetection | ForenSynths (the paper's 11 generators) | 90.8 | 90.44 | ✅ reproduced |
 | FatFormer | ForenSynths-8 | 99.7 | 99.70 (official) | ✅ official weights match |
 | NPR | GANGen-Detection | 96.6 | 96.49 (official) | ✅ official weights match |
 | AIDE | GenImage | 86.9 acc | 85.9 acc (official) | ✅ official weights match |
 | SAFE | GenImage-8 | 99.3 | 99.51 | ✅ reproduced |
-| Co-Spy | Co-Spy-Bench | 96.0 | 96.60 | ✅ reproduced |
+| Co-Spy | Co-Spy-Bench | 96.0 | 96.70 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |
 | CuRe | 7 of its paper's benchmarks (AIGIBench, AIGCDetect, RealChain, EvalGEN, SynthWildX, WildRF, RRDataset) | 92.8 · 89.3 · 79.7 · 98.1 · 92.7 · 95.8 · 81.5 acc | 92.85 · 89.30 · 79.69 · 98.14 · 92.69 · 95.89 · 82.04 acc (official) | ✅ official weights match |
 | DDA | 6 of its paper's benchmarks (AIGCDetect, ForenSynths, EvalGEN, SynthWildX, WildRF, GenImage) | 87.8 · 81.4 · 97.2 · 90.9 · 90.3 · 91.7 acc | 87.84 · 81.43 · 96.86 · 90.80 · 90.20 · 89.37 acc (official); 89.58 · 80.79 · 96.79 · 88.00 · 90.56 · 91.35 acc (trained in SynthScope) | ✅ official weights match 5; our training reproduces 6 of 7 incl. GenImage |
@@ -291,7 +291,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Effort | GenImage (8 subsets) · UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc · 99.41 mAP / 95.19 acc | 89.83 acc (official) · 99.20 mAP / 94.81 acc (trained in SynthScope) | ✅ official weights match; our training reproduces the UFD table (the authors released no ProGAN checkpoint) |
 | MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
-| ReStraV (video) | GenVidBench | 93.0 avg. acc | 92.7 mAP / 86.9 acc | ⚠️ different metric; accuracy is lower |
+| ReStraV (video) | GenVidBench | 93.0 avg. acc (4 Main-task generators) | 93.3 acc on those 4 generators; 92.7 mAP / 86.9 acc on all 8 | ✅ close on the paper's 4 generators (not the paper's train/test split); lower on all 8 (Text2Video-Zero 45.3) |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.0 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
 | SPLIT (video) | GenVideo-Val, MSR-VTT-calibrated (fake recall at FPR 0.1 / 1 / 5%) | 82.1 · 91.7 · 97.2 | 98.9 · 99.9 · 100.0 | ✅ reproduced (official code on our data: 82.2 · 90.2 · 96.9) |
 | SPAI | GenImage | not reported | 94.22 (official) · 94.67 (trained in SynthScope) | ✅ our training reproduces the official weights (the paper's own test set is not in SynthScope yet) |
@@ -324,3 +324,7 @@ Contributions are welcome: see [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_
 detector, and submit benchmark results through a pull request. SynthScope is released under the [Apache 2.0 license](LICENSE);
 the third-party detectors, weights and datasets it loads keep their own licenses ([LICENSES.md](LICENSES.md)). To cite it, use
 [CITATION.cff](CITATION.cff).
+
+⭐ **If SynthScope is useful for your research, please star the repository and cite it** — GitHub's "Cite this repository"
+button (from [CITATION.cff](CITATION.cff)) gives the BibTeX. Please also cite the papers of the detectors you use; each
+model's README links them. Coding agents: see [AGENTS.md](AGENTS.md) for how to use and extend the toolkit.

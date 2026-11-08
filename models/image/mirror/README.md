@@ -6,7 +6,9 @@
 MIRROR does not hunt for generator artifacts. It compares the image with what a real image "should" look like: a
 memory bank of real-image prototypes rebuilds an *ideal reference* of the input's DINOv3 features by sparse attention,
 and the gap between the input and its reference (plus how uncertain the retrieval was, plus the global CLS token)
-gives the score. The released detector uses a DINOv3 ViT-H+/16 backbone with LoRA adapters.
+gives the score. The released detector uses a DINOv3 ViT-H+/16 backbone with LoRA adapters; its memory bank holds the
+code's seeded default initialization, not trained prototypes (see "Note on the released files" below). The training data
+of the released checkpoint is unverified here; the paper's setting is in `repro/benchmark_specs/mirror.json`.
 
 ## Pipeline (official, reproduced exactly)
 
@@ -169,11 +171,12 @@ official file set) and SynthWildX in job 279513, on the same images. **It gives 
 subset**: WildRF facebook 97.50, reddit 97.53, twitter 98.60 (mean 97.88); SynthWildX dalle3 97.44, firefly 90.21,
 midjourney_v5 97.59 (mean 95.08). The CSVs are in `repro/bench_results/mirror_official_code/279513/`.
 
-Two further official-code runs (Synthbuster firefly against the MSCOCO reals, to confirm the extension-rule number
-94.29, and BFree-Online pooled) are **pending (jobs 279825 and 279857)**: both are still queued on a busy cluster.
-When they finish, copy their CSVs from `SynthScope_shared/mirror_official_out/<jobid>/` to
-`repro/bench_results/mirror_official_code/<jobid>/` and re-run `repro/mirror_task2_table.py`; its "official code on
-our data" column picks them up.
+Two further official-code runs (job 279857; 279825 was a cancelled duplicate) confirm the other two numbers. Synthbuster
+firefly against the MSCOCO reals gives B.Acc 94.29 (real 99.98, fake 88.60, AP 99.29, AUROC 99.63), equal to SynthScope
+under the official extension rule (the Synthbuster mean is then 99.28). BFree-Online pooled (807 images) gives B.Acc
+97.40 (real 98.14, fake 96.65, AP 99.78, AUROC 99.50), equal to SynthScope. The CSVs are in
+`repro/bench_results/mirror_official_code/279857/`; `repro/mirror_task2_table.py` fills its "official code on our
+data" column from them.
 
 ### Variant runs
 
