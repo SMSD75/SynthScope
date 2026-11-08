@@ -694,10 +694,10 @@
       "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervision) \u2014 HEADLINE",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=99.7 / acc=98.4",
-      "ours": "mAP=99.7 / acc=98.39 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=99.56 / acc=97.29 / AUROC=99.42 \u00b7 official mAP=99.7 / acc=98.39",
+      "ours_synthscope": "mAP=99.56 / acc=97.29 / AUROC=99.42",
       "ours_official": "mAP=99.7 / acc=98.39",
-      "status": "official",
+      "status": "reproduced",
       "note": "SynthScope class + official weights = 99.70 mAP / 98.39 acc \u2014 EXACT match to paper 99.7/98.4. Loading verified clean (num_vit_adapter=3)."
     },
     {
@@ -714,8 +714,8 @@
       "benchmark": "Diffusion-model (DMs) dataset \u2014 10 subsets (4-class ProGAN supervision)",
       "metric": "acc and AP (mean ACCM / APM)",
       "paper": "map=98.8 / acc=95.0",
-      "ours": "mAP=98.6 / acc=93.72 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=98.88 / acc=92.09 / AUROC=98.67 \u00b7 official mAP=98.6 / acc=93.72",
+      "ours_synthscope": "mAP=98.88 / acc=92.09 / AUROC=98.67",
       "ours_official": "mAP=98.6 / acc=93.72",
       "status": "official",
       "note": "SynthScope evaluated the 8 UniversalFakeDetect DM subsets (dalle, glide x3, guided, ldm x3) = 98.60 mAP / 93.72 acc. The paper's 10-subset table additionally includes PNDM + VQ-Diffusion (both 99.8-100 AP in the paper), which SynthScope's UFD-8 run omits, so our 8-subset mean is not directly comparable to the paper's 10-subset 98.8."

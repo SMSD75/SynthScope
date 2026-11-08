@@ -124,15 +124,23 @@ The launcher is `experiments/image/fat_former.sh` (total batch 256 = GPUs x micr
 
 All benchmarks the paper reports, with our numbers (verified, traced to `repro/bench_results/` + `repro/benchmark_specs/`).
 
-Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us. For both FatFormer entries we did not train from scratch, so SynthScope_train is `—`.
+Values are `mAP / acc`. **SynthScope_official** = the authors' released weights run through the SynthScope class / eval. **SynthScope_train** = the SynthScope class trained from scratch by us with the paper's recipe (below); the headline checkpoint is `model_last` (epoch 24), the final model, which is what the paper and the official code evaluate.
 
-| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train (model_last) | Status |
 |---|---|---|---|---|
-| GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | — | official |
+| GANs — 8 GANs (4-class ProGAN) | 99.7 / 98.4 | 99.7 / 98.39 | 99.56 / 97.29 | reproduced (mAP -0.14, acc -1.1) |
 | GANs — 8 GANs (2-class ProGAN) | 99.2 / 95.8 | — | — | missing |
-| Diffusion (DMs) — 10 subsets | 98.8 / 95.0 | 98.6 / 93.72 | — | official |
-| UniversalFakeDetect-8 | — | 98.60 / 93.7 | — | official |
+| Diffusion (DMs) — 10 subsets | 98.8 / 95.0 | 98.6 / 93.72 (8 UFD subsets) | 98.88 / 92.09 (8 UFD subsets) | official (the 8-subset mean is not the paper's 10-subset mean, see below) |
+| UniversalFakeDetect-8 | — | 98.60 / 93.7 | 98.88 / 92.09 | official |
 | DiffusionForensics-8 | — | 94.66 / 79.0 | — | official |
+
+Checkpoint choice. `model_best` is chosen by validation accuracy with a strict `>`; validation accuracy was already 1.0000 after epoch 0, so `model_best` **is the epoch-0 checkpoint** and never changes (later epochs reach 1.0000 again but do not beat it). It is reported for reference only: GANs-8 99.66 / 95.71 and UFD-8 98.67 / 90.89 (mAP / acc). It has the same mAP as `model_last` but lower accuracy at the fixed 0.5 threshold (StyleGAN 87.03 acc), so training for the full 25 epochs helps calibration, not ranking.
+
+Per-subset results for `model_last` (acc / AP): GANs-8 ProGAN 99.90/100.0, StyleGAN 94.73/99.72, StyleGAN2 94.08/98.79, BigGAN 99.45/99.93, CycleGAN 99.62/100.0, StarGAN 99.97/100.0, GauGAN 99.59/100.0, Deepfake 90.96/98.02 (paper: 99.9/97.2/98.8/99.5/99.3/99.8/99.4/93.2 acc). The gap to the paper is concentrated in StyleGAN (-2.5 acc), StyleGAN2 (-4.7) and Deepfake (-2.2).
+
+DMs. The paper's DM table has 10 subsets (PNDM and VQ-Diffusion from DIRE, which we do not have); we evaluate the 8 UFD subsets. Averaging the paper's own per-subset numbers over these same 8 gives 98.54 AP / 93.80 acc, so on a like-for-like basis the trained model is +0.3 mAP and -1.7 acc (92.09 vs 93.80); the official weights give 98.60 / 93.72. The weakest subsets are Guided (76.10 acc, 93.82 AP; paper 76.1 / 92.0), LDM_200_cfg (91.65) and Glide_100-27 (91.40). The 10-subset mean cannot be formed without PNDM and VQ-Diffusion, so the row is not marked reproduced.
+
+Training run and protocol. Recipe from the paper (Sec. 4.1; no official training code): 4-class ProGAN (car, cat, chair, horse; 144k), resize 256, random crop 224, flip, Adam lr 4e-4, weight decay 0, total batch 256 (1 GPU x micro 32 x accumulation 8), 25 epochs, lr x0.9 every 10 epochs, no gradient clipping; training job 277158 (RTX 3090, finished 2026-11-07). Evaluation: `benchmark/bench_eval.py --model fat_former --ckpt <model_last|model_best>.pth`, ForenSynths test with the 8 subsets (progan, stylegan, stylegan2, biggan, cyclegan, stargan, gaugan, deepfake) and the 8 UFD diffusion sets, the same command and data as the official-weights runs; Resize((256,256)) -> CenterCrop(224) -> ImageNet normalization. Both checkpoints load strictly into the served spec (num_vit_adapter=3: 719 tensors, 0 missing, 0 unexpected). Eval job 66626 ran on the DAS6 cluster (node409, RTX A6000) at commit a2a4d2b; tags `fat_former_trained_{last,best}_{forensynths,ufd}` in `repro/bench_results/` and `repro/MASTER_RESULTS.jsonl`. Checkpoints are not uploaded.
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 

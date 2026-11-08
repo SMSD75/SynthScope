@@ -98,8 +98,10 @@ VAL = {
     ("omniaid", "RealChain (v2"):                            {"official": {"map": 84.02, "acc": 61.71, "auroc": 83.63}},
     ("omniaid", "EvalGEN (v2"):                              {"official": {"map": 96.46, "acc": 74.14, "auroc": 93.08}},
     ("omniaid", "RRDataset (v2"):                            {"official": {"map": 84.19, "acc": 71.75, "auroc": 82.32}},
-    ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
-    ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
+    # synthscope = trained in SynthScope with the paper's recipe (experiments/image/fat_former.sh; train job 277158), model_last
+    # (epoch 24); evals = DAS6 job 66626 (tags fat_former_trained_last_forensynths / _ufd). DMs = the 8 UFD subsets (paper: 10).
+    ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}, "synthscope": {"map": 99.56, "acc": 97.29, "auroc": 99.42}},
+    ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}, "synthscope": {"map": 98.88, "acc": 92.09, "auroc": 98.67}},
     # synthscope = trained in SynthScope with the official recipe (experiments/image/npr.sh; job 265720, eval 265808).
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}, "synthscope": {"map": 93.83, "acc": 84.09, "auroc": 94.94}},
     ("npr", "Table 2"):                  {"official": {"map": 96.49, "acc": 94.81}},

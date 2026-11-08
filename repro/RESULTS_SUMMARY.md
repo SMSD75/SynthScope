@@ -10,7 +10,7 @@
 ## Headline outcome (one row per paper)
 | Method | Headline benchmark | Paper | SynthScope_official | SynthScope_train | Verdict |
 |---|---|---:|---:|---:|---|
-| FatFormer | ForenSynths-8 | 99.7 | 99.70 | — | ✅ official match |
+| FatFormer | ForenSynths-8 | 99.7 | 99.70 | 99.56 | ✅ official match; trained with the paper recipe (model_last, epoch 24): 99.56 / 97.29 acc vs paper 98.4 |
 | NPR | ForenSynths-8 / GANGen | 96.1 / 96.6 | 94.22 / 96.49 | 93.83 / — | ✅ official match; trained (official recipe): AP close, acc 84.1 — the official train.py rerun here gets 81.5 |
 | CLIP/UnivFD | ForenSynths | — | 93.14 | 92.99 | ✅ match |
 | CNNDetection | ForenSynths | 90.8 | 91.15 | 91.05 | ✅ match |
@@ -74,12 +74,14 @@ SPAI SERVES official weights remapped into the SynthScope class at NATIVE resolu
 | FreqNet/GANGen-9 | 99.8 / 99.0 | 99.85 (99.0) | not re-run (data offline) |
 | ForenSynths-13 (full, incl. CRN/IMLE/face) | — | 85.74 (84.9) | 87.31 (83.9) |
 
-### FatFormer (official weights only)
-| Benchmark | Paper | SynthScope_official |
-|---|---:|---:|
-| ForenSynths-8 | 99.7 | 99.70 (98.4) |
-| UniversalFakeDetect-8 | — | 98.60 (93.7) |
-| DiffusionForensics-8 | — | 94.66 (79.0) |
+### FatFormer
+SynthScope_train = the paper recipe (4-class ProGAN, Adam 4e-4, batch 256, 25 epochs, lr x0.9 / 10 epochs; train job 277158), `model_last` = epoch 24. `model_best` is the epoch-0 checkpoint (val acc 1.0000, strict >): ForenSynths-8 99.66 (95.71), UFD-8 98.67 (90.89). Evals: job 66626 on DAS6, commit a2a4d2b.
+
+| Benchmark | Paper | SynthScope_official | SynthScope_train |
+|---|---:|---:|---:|
+| ForenSynths-8 | 99.7 (98.4) | 99.70 (98.4) | 99.56 (97.29) |
+| UniversalFakeDetect-8 (paper DMs-10: 98.8 (95.0); its per-subset numbers over these 8 average 98.54 (93.80)) | — | 98.60 (93.7) | 98.88 (92.09) |
+| DiffusionForensics-8 | — | 94.66 (79.0) | — |
 
 ### NPR (official weights only)
 | Benchmark | Paper | SynthScope_official |
