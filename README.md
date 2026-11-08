@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 23 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 24 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -172,6 +172,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `effort` | **Effort** (Yan, ICML'25) | CLIP ViT-L/14 fine-tuned only along the minor SVD direction of each attention projection (orthogonal subspace decomposition), keeping the pretrained principal subspace (official weights, GenImage SD v1.4; also `effort_chameleon`). |
 | `ltf` | **LTF** (Chen, 2026) | Learning to Falsify: keeps the image at native resolution as a bag of 224 tiles plus a global view, reads each with frozen CLIP ViT-L/14, and pools them with hierarchical multiple instance learning (patch tokens inside a tile, then views) and a gated fusion head (official GenImage weights; evaluation only, training is not ported). |
 | `mirror` | **MIRROR** (Liu, NeurIPS'26) | Frozen DINOv3 ViT-H+/16 + LoRA; a memory bank (real-image prototypes in the paper; the code's seeded default initialization in the released checkpoint) rebuilds an "ideal reference" of the input's features by sparse attention, and the gap to it (plus the retrieval uncertainty and the CLS token) gives the score (official weights; licence unclear, so not redistributed). |
+| `vina` | **VINA** (Li, 2026) | One DINOv3 ViT-L/16 fine-tuned end to end with a linear head on images and video frames together: video acts as a natural augmentation (compression, motion blur, varied content), so the same model detects AI-generated images (`vina`) and videos (`vina_video`, see below). Official `140k+DDA` weights; licence unclear, so not redistributed. |
 | `dinov2` / `dinov3` / `adapted_dino` | DINO probes | DINOv2/v3 backbone + linear head (or per-block adapters). |
 
 ### 🎬 Video detectors
@@ -182,6 +183,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `split` | **SPLIT** (Hyun, ECCV'26) | Training-free: two-step temporal roughness times spatial motion incoherence of frozen X-CLIP patch tokens. |
 | `restrav` | **ReStraV** (Internò, 2025) | Geometry of the frame-embedding trajectory in a frozen DINOv2 space, scored by a small MLP. |
 | `stall` | **STALL** (Ben Hayun, CVPR'26) | Training-free: spatio-temporal whitened log-likelihoods under real-video statistics (DINOv3). |
+| `vina_video` | **VINA** (video) | The same model as `vina`, run with the paper's video protocol: ffmpeg writes the clip as JPEG frames at 2 fps and the central frame is scored like an image (sigmoid of the mean frame logit). Needs an ffmpeg binary. |
 
 Image detectors can also score a video: they run frame by frame and average the result.
 
@@ -287,6 +289,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | OmniAID | GenImage · AIGCDetect · Mirage-Test (GenImage-SD1.4 release) | 95.94 · 88.87 · 51.10 acc | 95.82 · 88.87 · 51.10 acc (official) | ✅ official weights match |
 | D3QE | ARForensics · ForenSynths-7 · GenImage-6 | 82.11 · 83.73 · 78.61 acc | 81.74 · 83.45 · 79.44 acc (official) | ✅ official weights match |
 | LTF | GenImage (8 subsets, full official val, 100,000 images) | 98.4 acc | 98.36 acc (official weights, full 100k val); on a 33k subset the official code and SynthScope both give 98.38 | ✅ official weights match |
+| VINA | ForenSynths · UniversalFakeDetect · DiTFake · ARForensics (6 shared subsets) · GenImage (full val) · GenVideo-Val | 86.99 · 94.84 · 97.98 · 96.36 · 94.74 · 96.9 acc (ARForensics: mean of the paper's six per-subset values) | 86.93 · 94.84 · 97.98 · 96.36 · 94.74 · 96.86 acc (official weights; pooled accuracy per subset, the paper's metric) | ✅ official weights match on these 6; SynthWildX and WildRF are below the paper (mean 91.82 vs 92.8 and 96.12 vs 97.13, from the paper's per-subset values) and AIGIBench differs (-1.2 / +1.8), but the official code gives the same scores on our files, so the gap is data, not code |
 | B-Free | SynthWildX · WildRF (Facebook / Reddit / Twitter) | 95.6 · 95.6 / 86.2 / 97.3 bAcc | 95.64 · 95.31 / 86.47 / 97.66 bAcc (official) | ✅ official weights match |
 | Effort | GenImage (8 subsets) · UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc · 99.41 mAP / 95.19 acc | 89.83 acc (official) · 99.20 mAP / 94.81 acc (trained in SynthScope) | ✅ official weights match; our training reproduces the UFD table (the authors released no ProGAN checkpoint) |
 | MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |

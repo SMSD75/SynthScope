@@ -108,6 +108,14 @@ def remap_ltf(sd: dict) -> dict:
     return {"core." + k: v for k, v in sd.items() if not k.startswith(LTF_UNUSED_PREFIXES)}
 
 
+def remap_vina(sd: dict) -> dict:
+    """Official VINA checkpoint ({"model_state_dict": ...}) -> SynthScopeVINAModel: the official
+    util.load_checkpoint rule (unwrap ``model_state_dict``, drop ``module.``); the names are the official ones (the
+    block prefix is renamed by a load hook)."""
+    sd = sd.get("model_state_dict", sd)
+    return {k.replace("module.", ""): v for k, v in sd.items()}
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -141,6 +149,10 @@ class ModelSpec:
     short_clip_frames: int = 0          # frames to use when a video is too short for num_frames (D3: 8)
     fps_nearest: bool = False           # frame nearest to each k/fps, as ffmpeg's fps filter (D3)
     bgr: bool = False                   # feed BGR channels (D3's official reader never converts cv2's BGR)
+    # "ffmpeg_fps_center" (VINA): ffmpeg writes JPEG frames at ``fps``, the central ``num_frames`` are read back and
+    # each goes through ``transform`` (the image eval preprocessing) instead of the clip settings above.
+    video_sampler: str = ""
+    video_prob: str = "softmax"         # video output -> P(fake): softmax[:, 1] of [1, 2] logits, or "sigmoid"
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
     #   "official"      = authors' released weights (loaded into the SynthScope class)
@@ -394,6 +406,34 @@ _add(ModelSpec(
           "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "
           "format-aligned inputs), so use the registered transform. Runs fp32, the official default.",
 ))
+# VINA: one model for images and videos. `vina` scores images (and, like every image detector, sampled frames of a video
+# with the mean P(fake)); `vina_video` is the official video protocol, so the paper's video benchmarks run through it.
+_VINA_NOTES = ("DINOv3 ViT-L/16 fine-tuned end to end with a linear head, trained on images and video frames together "
+               "(video as a natural augmentation), so one model detects AI-generated images and videos. Uses the "
+               "OFFICIAL checkpoint VINA_DINOv3-L_140k+DDA (licence unclear: not in the zoo or on the Space). ")
+_add(ModelSpec(
+    key="vina", name="VINA", paper="arXiv 2605.21977",
+    modality="image", predict_kind="bce", checkpoint="vina.pth", ckpt_kind="official_vina", remap=remap_vina,
+    weights="official",
+    # vina.pth = the official VINA_DINOv3-L_140k+DDA.pth unchanged (HF mgiant/VINA_checkpoints); it holds the full model
+    # (DINOv3 ViT-L/16 + head), so the gated DINOv3 weights are not needed. Strict load; the ViT block prefix is renamed
+    # for transformers 4/5 (official_arch.py).
+    overrides=["model@ModelConfig=image/vina"],
+    transform=model_transform("image/vina"),   # official 'default' eval: Resize(256, bicubic), crop 256, ImageNet
+    notes=_VINA_NOTES + "Images: short side resized to 256 (bicubic), center crop 256. Runs fp32 (official default).",
+))
+_add(ModelSpec(
+    key="vina_video", name="VINA (video)", paper="arXiv 2605.21977",
+    modality="video", predict_kind="video", checkpoint="vina.pth", ckpt_kind="official_vina", remap=remap_vina,
+    weights="official",
+    overrides=["model@ModelConfig=image/vina"],
+    transform=model_transform("image/vina"),
+    # official protocol: preprocess/video2frame.py (ffmpeg -vf fps=2 -> JPEG frames), then the test loader reads the
+    # central select_frame_nums=1 frame(s) (configs/VINA_DINOv3.yaml); P(fake) = sigmoid(mean frame logit)
+    num_frames=1, fps=2.0, frame_size=256, video_sampler="ffmpeg_fps_center", video_prob="sigmoid",
+    notes=_VINA_NOTES + "Videos: the official protocol - ffmpeg writes the clip as JPEG frames at 2 fps and the "
+                        "central frame is scored with the image preprocessing (needs ffmpeg).",
+))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
 for _key, _name, _ckpt, _note in [
@@ -514,6 +554,9 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "ltf": ("Native-res 224 tiles + global view", "The image is cut into 224×224 tiles at its own resolution (no "
             "scaling; edge tiles are aligned to the border, a side under 224 px is padded with black), plus one view of "
             "the whole image resized to 224 and center-cropped."),
+    "vina": ("Resize + center-crop 256 (bicubic)", "The shorter side is scaled to 256 px (bicubic) and the central "
+             "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the "
+             "detector."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
@@ -521,6 +564,14 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
 
 def input_note(spec: ModelSpec) -> dict:
     """{label, explanation} describing the preprocessing of ``spec`` (frames for video models)."""
+    if spec.video_sampler == "ffmpeg_fps_center":
+        one = spec.num_frames == 1
+        frames = "the central frame" if one else f"the central {spec.num_frames} frames"
+        return {"label": f"{frames.capitalize()} at {spec.fps:g} fps",
+                "explanation": f"The clip is written as JPEG frames at {spec.fps:g} fps (ffmpeg) and {frames} of "
+                               f"them {'is' if one else 'are'} scored like an image: the shorter side is scaled to "
+                               f"{spec.frame_size} px (bicubic) and the central {spec.frame_size}×{spec.frame_size} "
+                               "square is used. This matches the paper's evaluation."}
     if spec.modality == "video":
         crop = f", after trimming {int(spec.edge_crop * 100)}% off every edge" if spec.edge_crop else ""
         return {"label": f"{spec.num_frames} sampled frames",

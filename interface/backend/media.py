@@ -6,11 +6,20 @@ training/eval pipeline does:
   * ``dataset.sample_video_frames`` -> evenly-sampled clip [T,3,size,size] float in [0,1]
 """
 import io
+import os
+import shutil
+import subprocess
+import tempfile
 from pathlib import Path
 
 import numpy as np
 import torch
 from PIL import Image, ImageFile
+
+try:                                   # optional: a static ffmpeg for the ffmpeg-based video protocols (VINA)
+    import imageio_ffmpeg
+except ImportError:
+    imageio_ffmpeg = None
 
 # Some user uploads are truncated/progressive; let PIL load what it can.
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -86,6 +95,60 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
     if not frames:
         raise ValueError("Could not decode any frames from the video.")
     return frames
+
+
+def ffmpeg_available() -> bool:
+    try:
+        ffmpeg_exe()
+    except (FileNotFoundError, RuntimeError, OSError):   # RuntimeError: imageio-ffmpeg found no binary
+        return False
+    return True
+
+
+def ffmpeg_exe() -> str:
+    """The ffmpeg binary: ``$SYNTHSCOPE_FFMPEG``, else ``ffmpeg`` on the PATH, else imageio-ffmpeg's static build."""
+    env = os.environ.get("SYNTHSCOPE_FFMPEG")
+    if env:
+        if not os.path.isfile(env) and shutil.which(env) is None:
+            raise FileNotFoundError(f"SYNTHSCOPE_FFMPEG={env!r} is not an executable file")
+        return env
+    exe = shutil.which("ffmpeg")
+    if exe:
+        return exe
+    if imageio_ffmpeg is not None:
+        try:
+            return imageio_ffmpeg.get_ffmpeg_exe()
+        except RuntimeError as e:
+            raise FileNotFoundError(f"imageio-ffmpeg found no ffmpeg binary ({e})") from e
+    raise FileNotFoundError("ffmpeg not found: install it, set SYNTHSCOPE_FFMPEG, or pip install imageio-ffmpeg")
+
+
+def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int, timeout: float = 300.0) -> list[Image.Image]:
+    """VINA's official video protocol: ffmpeg writes the video as JPEG frames at ``fps`` with its default JPEG settings
+    (preprocess/video2frame.py: ``ffmpeg -loglevel quiet -i <video> -vf fps=2 <dir>/%d.jpg``), and the central window
+    of ``num_frames`` of them is read back as RGB, the last frame repeated when there are fewer (the test phase of
+    dataset/dataloader.py ``_load_frames_dir``).
+
+    The whole clip is extracted, not just the frames that are read: ffmpeg's mjpeg rate control runs across frames, so
+    only the full extraction writes the same JPEG bytes as the official preprocessing. Parity holds for the ffmpeg
+    version used (checked with the static ffmpeg 7.0.2); other versions may encode slightly differently. As the
+    official ``process_video``, a failing ffmpeg run (a truncated clip) keeps the frames it wrote; only a clip with no
+    frame at all is an error. ``timeout`` (seconds) bounds a malformed upload."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cmd = [ffmpeg_exe(), "-loglevel", "quiet", "-i", str(path), "-vf", f"fps={fps:g}", os.path.join(tmp, "%d.jpg")]
+        try:
+            subprocess.run(cmd, check=False, stdin=subprocess.DEVNULL, timeout=timeout)
+        except subprocess.TimeoutExpired as e:
+            raise ValueError(f"ffmpeg did not finish within {timeout:g} s for this video.") from e
+        ids = sorted(int(p.stem) for p in Path(tmp).glob("*.jpg") if p.stem.isdigit())
+        if not ids:
+            raise ValueError("ffmpeg wrote no frames for this video.")
+        if len(ids) >= num_frames:
+            start = (len(ids) - num_frames) // 2
+            ids = ids[start:start + num_frames]
+        else:
+            ids += [ids[-1]] * (num_frames - len(ids))
+        return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
 
 
 def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:

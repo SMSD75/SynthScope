@@ -1,0 +1,133 @@
+{
+  "tag": "vina_synthwildx_vs_official",
+  "key": "synthwildx",
+  "model": "vina",
+  "synthscope_scores": "vina_scores/vina_synthwildx.json",
+  "synthscope_job": "281657",
+  "official_csv": "vina_official_out/281657/synthwildx-2026-11-08 17:54:33.csv",
+  "official_job": "281657",
+  "note": "official eval.py --analysis CSV vs SynthScope per-file P(fake) on the same files",
+  "compare": {
+    "n_ours": 1713,
+    "n_official": 1713,
+    "n_common": 1713,
+    "only_ours": [],
+    "only_official": [],
+    "max_abs_diff": 1.704692840576172e-05,
+    "mean_abs_diff": 2.2475706927403013e-07,
+    "decision_flips_at_0.5": 0,
+    "n_diff_gt_1e-3": 0,
+    "n_diff_gt_1e-2": 0,
+    "median_abs_diff": 0.0,
+    "worst_5": [
+      {
+        "path": "data/image_eval/SynthWildX/fake_dalle3/00059_F-aL17uaQAA6XUz.jpg",
+        "p_ours": 0.6663659811019897,
+        "p_official": 0.666348934173584,
+        "abs_diff": 1.704692840576172e-05
+      },
+      {
+        "path": "data/image_eval/SynthWildX/real/00280_GGhLXcnagAAJlvr.jpg",
+        "p_ours": 0.7404041290283203,
+        "p_official": 0.7404168248176575,
+        "abs_diff": 1.2695789337158203e-05
+      },
+      {
+        "path": "data/image_eval/SynthWildX/fake_firefly/00414_GCn5FTfWUAAf0Iw.jpg",
+        "p_ours": 0.6297712326049805,
+        "p_official": 0.6297603249549866,
+        "abs_diff": 1.0907649993896484e-05
+      },
+      {
+        "path": "data/image_eval/SynthWildX/real/00250_GGglG63agAAijRk.jpg",
+        "p_ours": 0.4491163492202759,
+        "p_official": 0.44910627603530884,
+        "abs_diff": 1.0073184967041016e-05
+      },
+      {
+        "path": "data/image_eval/SynthWildX/fake_midjourney_v5/00060_F1eH0wbWwAE9qH1.jpg",
+        "p_ours": 0.7695493102073669,
+        "p_official": 0.7695592045783997,
+        "abs_diff": 9.894371032714844e-06
+      }
+    ]
+  },
+  "means_synthscope": {
+    "acc": 91.82,
+    "map": 96.36,
+    "bacc": 91.76,
+    "mauroc": 97.46
+  },
+  "means_official_code": {
+    "acc": 91.82,
+    "map": 96.36,
+    "bacc": 91.76,
+    "mauroc": 97.46
+  },
+  "per_subset_synthscope": {
+    "dalle3": {
+      "acc": 92.8,
+      "ap": 95.89,
+      "real_acc": 86.68,
+      "fake_acc": 99.23,
+      "bacc": 92.96,
+      "auroc": 98.07,
+      "n_real": 413,
+      "n_fake": 392
+    },
+    "firefly": {
+      "acc": 89.5,
+      "ap": 96.03,
+      "real_acc": 86.68,
+      "fake_acc": 91.97,
+      "bacc": 89.32,
+      "auroc": 95.66,
+      "n_real": 413,
+      "n_fake": 473
+    },
+    "midjourney_v5": {
+      "acc": 93.16,
+      "ap": 97.17,
+      "real_acc": 86.68,
+      "fake_acc": 99.31,
+      "bacc": 93.0,
+      "auroc": 98.64,
+      "n_real": 413,
+      "n_fake": 435
+    }
+  },
+  "per_subset_official_code": {
+    "dalle3": {
+      "acc": 92.8,
+      "ap": 95.89,
+      "real_acc": 86.68,
+      "fake_acc": 99.23,
+      "bacc": 92.96,
+      "auroc": 98.07,
+      "n_real": 413,
+      "n_fake": 392
+    },
+    "firefly": {
+      "acc": 89.5,
+      "ap": 96.03,
+      "real_acc": 86.68,
+      "fake_acc": 91.97,
+      "bacc": 89.32,
+      "auroc": 95.66,
+      "n_real": 413,
+      "n_fake": 473
+    },
+    "midjourney_v5": {
+      "acc": 93.16,
+      "ap": 97.17,
+      "real_acc": 86.68,
+      "fake_acc": 99.31,
+      "bacc": 93.0,
+      "auroc": 98.64,
+      "n_real": 413,
+      "n_fake": 435
+    }
+  },
+  "n_files_compared": 1713,
+  "date": "2026-11-08T19:48:51"
+}

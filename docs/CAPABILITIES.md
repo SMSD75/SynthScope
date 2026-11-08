@@ -34,6 +34,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
 | `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
 | `mirror` | image | ce | official | – | Frozen DINOv3 ViT-H+/16 + LoRA + memory bank (seeded default initialization in the released checkpoint): reconstruction of an "ideal reference" (center-crop 224, JPEG q96 for PNG/BMP/TIFF) |
+| `vina` | image | bce | official | – | DINOv3 ViT-L/16 + linear head trained on images and video frames together (short side 256, center-crop 256) |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |
@@ -42,6 +43,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
+| `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
 convention the engine applies to `forward()` logits: `ce`→`softmax[:,1]`, `bce`→`sigmoid`,

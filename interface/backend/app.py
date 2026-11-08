@@ -71,6 +71,11 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         raise HTTPException(status_code=404, detail=str(e))
 
     engine = get_engine()
+    if engine.ffmpeg_missing(spec):
+        raise HTTPException(
+            status_code=409,
+            detail=f"'{spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg).",
+        )
     if not engine.is_available(spec):
         raise HTTPException(
             status_code=409,

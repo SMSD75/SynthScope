@@ -1,0 +1,21 @@
+defaults:
+  - /model/default
+  - _self_
+
+# VINA (arXiv 2605.21977): DINOv3 ViT-L/16 fine-tuned end to end + a linear head on the CLS (pooler) output, one model
+# for images and videos; P(fake) = sigmoid(logit), a video's logit = the mean over its frames. The official
+# VINA_DINOv3-L_140k+DDA.pth (HF mgiant/VINA_checkpoints) holds the full model and loads key-for-key as vina.pth.
+model_type: vina
+backbone_name: dinov3_vitl16
+backbone_path: null           # null: build the backbone from its config (vina.pth has the weights); a HF-format
+                              # directory (config.json + model.safetensors) loads pretrained DINOv3 weights
+attn_implementation: eager    # the official default (models/DINOv3.py)
+use_bf16: false               # fp32, the official default (configs/VINA_DINOv3.yaml leaves use_bf16 unset)
+
+# Test-time preprocessing (official dataset/dataloader.py, eval processing 'default' with width = height = 256):
+# Resize(256, bicubic) on the short side, CenterCrop(256), ToImage, ToDtype(float32, scale=True), ImageNet
+# normalization.
+eval_transform_list: [resize_short_256_bicubic, center_crop_256, to_image, to_dtype, normalize_imagenet]
+# The official dataloader's 'default' train processing (the VINA training recipe itself is not released).
+train_transform_list: [resize_short_256_bicubic, random_crop_256, random_horizontal_flip, to_image, to_dtype,
+                       normalize_imagenet]

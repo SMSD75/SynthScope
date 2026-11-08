@@ -1,0 +1,113 @@
+{
+  "tag": "vina_aigibench_vs_official",
+  "key": "aigibench",
+  "model": "vina",
+  "synthscope_scores": "vina_scores/vina_aigibench.json",
+  "synthscope_job": "281654",
+  "official_csv": "vina_official_out/das6_66627/aigibench-2026-11-08 17:55:24.csv",
+  "official_job": "das6-66627",
+  "note": "official eval.py --analysis CSV vs SynthScope per-file P(fake) on the same files",
+  "compare": {
+    "n_ours": 18000,
+    "n_official": 18000,
+    "n_common": 18000,
+    "only_ours": [],
+    "only_official": [],
+    "max_abs_diff": 5.8203935623168945e-05,
+    "mean_abs_diff": 5.912448602127066e-07,
+    "decision_flips_at_0.5": 0,
+    "n_diff_gt_1e-3": 0,
+    "n_diff_gt_1e-2": 0,
+    "median_abs_diff": 1.1641532182693481e-10,
+    "worst_5": [
+      {
+        "path": "data/image_eval/AIGIBench/CommunityAI/0_real/fec91e1e-f4c7-42e8-b60e-81149aef3262.jpg",
+        "p_ours": 0.27728763222694397,
+        "p_official": 0.2772294282913208,
+        "abs_diff": 5.8203935623168945e-05
+      },
+      {
+        "path": "data/image_eval/AIGIBench/CommunityAI/0_real/5f6d181d-20ee-4df4-9fcc-6bdd26e0488b.jpg",
+        "p_ours": 0.23035606741905212,
+        "p_official": 0.2303076535463333,
+        "abs_diff": 4.8413872718811035e-05
+      },
+      {
+        "path": "data/image_eval/AIGIBench/SocialRF/0_real/image_285.png",
+        "p_ours": 0.5909518599510193,
+        "p_official": 0.5909063220024109,
+        "abs_diff": 4.553794860839844e-05
+      },
+      {
+        "path": "data/image_eval/AIGIBench/CommunityAI/0_real/ab3f9c60-75bf-4341-9087-1881954f0f4e.jpg",
+        "p_ours": 0.565203070640564,
+        "p_official": 0.5652445554733276,
+        "abs_diff": 4.1484832763671875e-05
+      },
+      {
+        "path": "data/image_eval/AIGIBench/CommunityAI/0_real/ffded5ff-491f-4a7c-9ebf-055cc9cba932.jpg",
+        "p_ours": 0.6499567031860352,
+        "p_official": 0.6499155163764954,
+        "abs_diff": 4.118680953979492e-05
+      }
+    ]
+  },
+  "means_synthscope": {
+    "acc": 92.72,
+    "map": 97.33,
+    "bacc": 92.72,
+    "mauroc": 97.6
+  },
+  "means_official_code": {
+    "acc": 92.72,
+    "map": 97.33,
+    "bacc": 92.72,
+    "mauroc": 97.6
+  },
+  "per_subset_synthscope": {
+    "CommunityAI": {
+      "acc": 95.73,
+      "ap": 99.14,
+      "real_acc": 95.68,
+      "fake_acc": 95.77,
+      "bacc": 95.72,
+      "auroc": 99.07,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "SocialRF": {
+      "acc": 89.72,
+      "ap": 95.51,
+      "real_acc": 84.83,
+      "fake_acc": 94.6,
+      "bacc": 89.72,
+      "auroc": 96.14,
+      "n_real": 3000,
+      "n_fake": 3000
+    }
+  },
+  "per_subset_official_code": {
+    "CommunityAI": {
+      "acc": 95.73,
+      "ap": 99.14,
+      "real_acc": 95.68,
+      "fake_acc": 95.77,
+      "bacc": 95.72,
+      "auroc": 99.07,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "SocialRF": {
+      "acc": 89.72,
+      "ap": 95.51,
+      "real_acc": 84.83,
+      "fake_acc": 94.6,
+      "bacc": 89.72,
+      "auroc": 96.14,
+      "n_real": 3000,
+      "n_fake": 3000
+    }
+  },
+  "n_files_compared": 18000,
+  "date": "2026-11-08T19:48:54"
+}

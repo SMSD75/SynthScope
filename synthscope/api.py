@@ -144,7 +144,7 @@ class Detector:
         kind, pil, path = self._classify(source)
 
         if kind == "image":
-            if self.spec.modality == "video" and self.spec.transform is None:
+            if self.spec.predict_kind == "video":    # video-only (vina_video has a transform, for its frames)
                 raise ValueError(
                     f"'{self.spec.key}' is a video-only detector and cannot score a still image."
                 )
@@ -165,6 +165,10 @@ class Detector:
         """Fetch weights from the model zoo on first use if they're not present locally."""
         if self.available or self._custom_ckpt or self.spec.checkpoint is None:
             return  # already present, user-managed, or training-free
+        if self._engine.ffmpeg_missing(self.spec):
+            raise FileNotFoundError(
+                f"'{self.spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."
+            )
         if not self._auto_download:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "
