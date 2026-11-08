@@ -187,7 +187,7 @@ validation BCE on 256 fixed mixtures falls 0.738, 0.714, 0.698, 0.683, 0.674 ove
 a ~ U(0, 1)). Stage 2 on 200 pairs per type, stage 3 on the 5144 subset images (eval-mode accuracy real 0.63 / fake 0.66
 after 5 epochs of 21 steps), export: 100 tensors, reloaded logits equal the trained head's (max |diff| 3.6e-6), and
 `synthscope.load("cure", checkpoint=...)` loads it with the same status as the released adapter (`loaded 100 tensors,
-missing=295` frozen backbone keys, `unexpected=0`). The lr check of stage 1 is in job 283137.
+missing=295` frozen backbone keys, `unexpected=0`). Stage-1 lr (job 283137, `repro/logs/curesmlr_283137.out`): all 45 logged steps equal the intended schedule (linear from 0, 1.000e-05 at the start of epoch 2, cosine to 1.002e-06 at the last step).
 
 **Tests.** `tests/test_cure_recipe.py` (CPU): the mixing items, the BCE soft-target loss, the trainable set and weight-decay
 groups, gradient checkpointing, the trainer's logged lr at every step against the intended schedule, Eq. 6-10 against numpy
