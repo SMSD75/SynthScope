@@ -1,0 +1,98 @@
+{
+  "tag": "vina_video_genvideo",
+  "model": "vina_video",
+  "ckpt": "registry-default",
+  "benchmark": "video:genvideo",
+  "data_root": "/hddstore/ssalehi/SynthScope/d3_repro/genvideo_val/GenVideo-Val",
+  "n_generators": 10,
+  "means": {
+    "acc": 95.68,
+    "map": 92.83,
+    "map_real": 99.9,
+    "mauroc": 98.9
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 99.87,
+      "ap_real": 99.99,
+      "auroc": 99.96,
+      "real_acc": 98.16,
+      "fake_acc": 99.79,
+      "acc": 98.97
+    },
+    "Gen2": {
+      "ap": 99.96,
+      "ap_real": 100.0,
+      "auroc": 99.99,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "acc": 99.08
+    },
+    "HotShot": {
+      "ap": 95.9,
+      "ap_real": 99.96,
+      "auroc": 99.53,
+      "real_acc": 98.16,
+      "fake_acc": 94.29,
+      "acc": 96.22
+    },
+    "Lavie": {
+      "ap": 99.03,
+      "ap_real": 99.97,
+      "auroc": 99.81,
+      "real_acc": 98.16,
+      "fake_acc": 97.71,
+      "acc": 97.94
+    },
+    "ModelScope": {
+      "ap": 99.08,
+      "ap_real": 99.99,
+      "auroc": 99.91,
+      "real_acc": 98.16,
+      "fake_acc": 98.71,
+      "acc": 98.44
+    },
+    "MoonValley": {
+      "ap": 99.97,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "acc": 99.08
+    },
+    "MorphStudio": {
+      "ap": 99.74,
+      "ap_real": 100.0,
+      "auroc": 99.98,
+      "real_acc": 98.16,
+      "fake_acc": 99.86,
+      "acc": 99.01
+    },
+    "Show_1": {
+      "ap": 97.53,
+      "ap_real": 99.98,
+      "auroc": 99.73,
+      "real_acc": 98.16,
+      "fake_acc": 96.29,
+      "acc": 97.22
+    },
+    "Sora": {
+      "ap": 56.82,
+      "ap_real": 99.97,
+      "auroc": 96.86,
+      "real_acc": 98.16,
+      "fake_acc": 75.0,
+      "acc": 86.58
+    },
+    "WildScrape": {
+      "ap": 80.41,
+      "ap_real": 99.14,
+      "auroc": 93.22,
+      "real_acc": 98.16,
+      "fake_acc": 70.35,
+      "acc": 84.25
+    }
+  },
+  "date": "2026-11-07T16:36:42",
+  "synthscope_version": "video"
+}

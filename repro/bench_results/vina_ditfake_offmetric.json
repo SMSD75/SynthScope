@@ -1,0 +1,55 @@
+{
+  "tag": "vina_ditfake_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:ditfake",
+  "data_root": "/hddstore/ssalehi/SynthScope/DiTFake/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_ditfake.json",
+  "note": "SynthScope scores (job 281654, CPU) with the official forensynths metric",
+  "n_generators": 3,
+  "means": {
+    "acc": 97.98,
+    "map": 99.95,
+    "bacc": 97.98,
+    "mauroc": 99.94
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "acc": 97.11,
+      "ap": 99.95,
+      "real_acc": 100.0,
+      "fake_acc": 94.22,
+      "bacc": 97.11,
+      "auroc": 99.93,
+      "n_real": 5000,
+      "n_fake": 5000
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "acc": 100.0,
+      "ap": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "bacc": 100.0,
+      "auroc": 100.0,
+      "n_real": 5000,
+      "n_fake": 5000
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "acc": 96.84,
+      "ap": 99.9,
+      "real_acc": 100.0,
+      "fake_acc": 93.68,
+      "bacc": 96.84,
+      "auroc": 99.88,
+      "n_real": 5000,
+      "n_fake": 5000
+    }
+  },
+  "official_function_return": [
+    0.9798333333333332,
+    0.9994952176842621
+  ],
+  "n_files": 30000,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-07T22:05:38"
+}

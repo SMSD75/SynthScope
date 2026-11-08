@@ -1,0 +1,105 @@
+{
+  "tag": "vina_genimage_full_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:genimage",
+  "data_root": "/hddstore/ssalehi/SynthScope/GenImage_full/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_genimage_full.json",
+  "note": "SynthScope scores (job 281831, CPU) with the official forensynths metric; GenImage_full/test = val images capped 1500/class (SD v1.4 6000), NOT the full val split",
+  "n_generators": 8,
+  "means": {
+    "acc": 93.29,
+    "map": 98.45,
+    "bacc": 93.29,
+    "mauroc": 97.98
+  },
+  "per_generator": {
+    "midjourney": {
+      "acc": 96.43,
+      "ap": 99.71,
+      "real_acc": 99.73,
+      "fake_acc": 93.13,
+      "bacc": 96.43,
+      "auroc": 99.65,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "sdv4": {
+      "acc": 99.89,
+      "ap": 100.0,
+      "real_acc": 99.88,
+      "fake_acc": 99.9,
+      "bacc": 99.89,
+      "auroc": 100.0,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "sdv5": {
+      "acc": 99.9,
+      "ap": 100.0,
+      "real_acc": 99.87,
+      "fake_acc": 99.93,
+      "bacc": 99.9,
+      "auroc": 100.0,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "adm": {
+      "acc": 70.1,
+      "ap": 88.88,
+      "real_acc": 99.87,
+      "fake_acc": 40.33,
+      "bacc": 70.1,
+      "auroc": 85.19,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "glide": {
+      "acc": 92.73,
+      "ap": 99.62,
+      "real_acc": 99.87,
+      "fake_acc": 85.6,
+      "bacc": 92.73,
+      "auroc": 99.53,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "wukong": {
+      "acc": 99.83,
+      "ap": 100.0,
+      "real_acc": 99.73,
+      "fake_acc": 99.93,
+      "bacc": 99.83,
+      "auroc": 100.0,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "vqdm": {
+      "acc": 92.07,
+      "ap": 99.5,
+      "real_acc": 99.93,
+      "fake_acc": 84.2,
+      "bacc": 92.07,
+      "auroc": 99.54,
+      "n_real": 1500,
+      "n_fake": 1500
+    },
+    "biggan": {
+      "acc": 95.37,
+      "ap": 99.91,
+      "real_acc": 99.93,
+      "fake_acc": 90.8,
+      "bacc": 95.37,
+      "auroc": 99.91,
+      "n_real": 1500,
+      "n_fake": 1500
+    }
+  },
+  "official_function_return": [
+    0.9329062499999999,
+    0.9845253765352937
+  ],
+  "n_files": 33000,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-07T23:13:17"
+}

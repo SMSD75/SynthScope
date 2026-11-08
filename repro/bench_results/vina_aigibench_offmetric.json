@@ -1,0 +1,45 @@
+{
+  "tag": "vina_aigibench_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:aigibench",
+  "data_root": "/hddstore/ssalehi/SynthScope/AIGIBench/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_aigibench.json",
+  "note": "SynthScope scores (job 281654, CPU) with the official forensynths metric",
+  "n_generators": 2,
+  "means": {
+    "acc": 92.72,
+    "map": 97.33,
+    "bacc": 92.72,
+    "mauroc": 97.6
+  },
+  "per_generator": {
+    "CommunityAI": {
+      "acc": 95.73,
+      "ap": 99.14,
+      "real_acc": 95.68,
+      "fake_acc": 95.77,
+      "bacc": 95.72,
+      "auroc": 99.07,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "SocialRF": {
+      "acc": 89.72,
+      "ap": 95.51,
+      "real_acc": 84.83,
+      "fake_acc": 94.6,
+      "bacc": 89.72,
+      "auroc": 96.14,
+      "n_real": 3000,
+      "n_fake": 3000
+    }
+  },
+  "official_function_return": [
+    0.9272083333333334,
+    0.9732608644440301
+  ],
+  "n_files": 18000,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-08T01:28:58"
+}
