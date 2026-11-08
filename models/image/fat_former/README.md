@@ -121,10 +121,11 @@ The trainer config follows the paper's adapter-tuning setup: AdamW, lr `1e-4`, s
 A launcher is provided at:
 
 ```bash
-experiments/fat_former.sh
+experiments/image/fat_former.sh
 ```
 
-It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `center_crop_224` / `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format.
+It trains on `image/aigibench`; the served `fat_former.pth` is the official 4-class ProGAN checkpoint, not a run of this
+launcher. It uses the standard CLIP-style preprocessing pipeline (`resize_short_256`, `center_crop_224` / `random_crop_224`, `to_dtype`, `normalize_clip`), matching FatFormer's input format.
 
 ## Reproduced benchmark results
 

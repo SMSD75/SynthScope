@@ -6,7 +6,9 @@
 MIRROR does not hunt for generator artifacts. It compares the image with what a real image "should" look like: a
 memory bank of real-image prototypes rebuilds an *ideal reference* of the input's DINOv3 features by sparse attention,
 and the gap between the input and its reference (plus how uncertain the retrieval was, plus the global CLS token)
-gives the score. The released detector uses a DINOv3 ViT-H+/16 backbone with LoRA adapters.
+gives the score. The released detector uses a DINOv3 ViT-H+/16 backbone with LoRA adapters; its memory bank holds the
+code's seeded default initialization, not trained prototypes (see "Note on the released files" below). The training data
+of the released checkpoint is unverified here; the paper's setting is in `repro/benchmark_specs/mirror.json`.
 
 ## Pipeline (official, reproduced exactly)
 

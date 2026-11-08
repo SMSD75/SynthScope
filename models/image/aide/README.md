@@ -29,11 +29,11 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 | — | official |
-| GenImage (B2, Setting-I, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 (served 96.83) | **mAP=96.42 / acc=77.9** | reproduced |
-| ForenSynths-13 | — | mAP=94.40 / acc=81.8 | mAP=79.62 (cross-domain) | reference |
+| AIGCDetectBenchmark (B1, Setting-I, ProGAN-trained) | acc=92.77 | mAP=97.94 / acc=91.89 (official `progan_train.pth`) | — | official |
+| GenImage (B2, Setting-I, SDv1.4-trained) | acc=86.88 | mAP=97.12 / acc=85.91 (served 96.83) | **mAP=96.42 / acc=77.9** | official; trained: mAP matches the official weights, acc below |
+| ForenSynths-13 | — | mAP=94.40 / acc=81.8 (official `progan_train.pth`) | mAP=79.62 (cross-domain) | reference |
 | Chameleon (B3, Setting-II, in-the-wild) | acc=58–66 | — | — | missing |
 
-*(**SynthScope_train = a from-scratch retrain with the faithful native-res 5-view preprocessing** (`checkpoints_retrain/aide_native_v2/model_2`, GenImage SDv1.4): GenImage-8 **96.42 mAP / 97.07 mAUROC**, reproducing the official 97.12 — up from the old resize-256 run's 92.47. This proves the repo can regenerate the AIDE checkpoint from scratch. ForenSynths-13 is cross-domain (GenImage-trained model on the GAN benchmark, like the official sd14 checkpoint there).)*
+*(**SynthScope_train = a from-scratch retrain with the faithful native-res 5-view preprocessing** (`checkpoints_retrain/aide_native_v2/model_2`, GenImage SDv1.4): GenImage-8 **96.42 mAP / 97.07 mAUROC**, reproducing the official 97.12 — up from the old resize-256 run's 92.47. This proves the repo can regenerate the AIDE checkpoint from scratch. ForenSynths-13 is cross-domain for it (a GenImage-trained model on the GAN benchmark); the official number there is the ProGAN-trained `progan_train.pth`, not the served `sd14_train.pth`.)*
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.

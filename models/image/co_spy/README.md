@@ -104,11 +104,17 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
 |---|---|---|---|---|
-| Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.60 / acc=89.9 | reproduced |
+| Co-Spy-Bench | map=96.02 / acc=87.06 | mAP=86.65 / acc=83.88 | mAP=96.70 / acc=90.28 | reproduced |
 | AIGCDetectionBenchmark (AIGCDetect) | map=95.21 / acc=90.58 | mAP=94.59 / acc=89.25 | mAP=86.18 / acc=73.0 | official |
-| GenImage | — | mAP=92.41 | mAP=90.59 / acc=75.91 | reference |
+| GenImage | — | mAP=92.41 | mAP=90.59 / acc=76.23 | reference |
 | ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
 | In-the-wild (Co-Spy-Bench in-the-wild) | map=84.65 / acc=77.41 | — | — | missing |
+
+The served `co_spy.pth` is the SynthScope retrain on GenImage SD v1.4 (`repro/retrain_cospy_full_mgpu.sbatch`,
+`checkpoints_retrain/cospy_full/model_1.pth`), which gives the Co-Spy-Bench and GenImage SynthScope_train numbers. The
+AIGCDetect and ForenSynths SynthScope_train numbers are from earlier SynthScope checkpoints and have not been re-run with it.
+SynthScope_official uses the official SD v1.4 checkpoint for Co-Spy-Bench and GenImage and the official ProGAN one for
+AIGCDetect and ForenSynths.
 
 **reproduced** = SynthScope-trained checkpoint matches the paper · **official** = official weights loaded into the SynthScope class match (the SynthScope-trained number is shown alongside where we trained from scratch) · **below** = gap remains · **reference** = paper reports no comparable number · **missing** = not yet evaluated.
 
