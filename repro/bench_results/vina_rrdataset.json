@@ -1,0 +1,40 @@
+{
+  "tag": "vina_rrdataset",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 82.9,
+    "map": 92.77,
+    "mauroc": 91.69
+  },
+  "per_generator": {
+    "original": {
+      "ap": 98.57,
+      "auroc": 98.41,
+      "real_acc": 96.07,
+      "fake_acc": 92.08,
+      "acc": 94.08
+    },
+    "redigital": {
+      "ap": 84.8,
+      "auroc": 82.6,
+      "real_acc": 97.75,
+      "fake_acc": 41.72,
+      "acc": 69.74
+    },
+    "transfer": {
+      "ap": 94.95,
+      "auroc": 94.07,
+      "real_acc": 97.22,
+      "fake_acc": 72.52,
+      "acc": 84.87
+    }
+  },
+  "date": "2026-11-08T18:28:04",
+  "synthscope_version": "0.1.0"
+}

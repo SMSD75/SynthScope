@@ -1,0 +1,55 @@
+{
+  "tag": "vina_wildrf_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:wildrf",
+  "data_root": "/tmp/ssalehi_vina_281657/layouts/wildrf",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_wildrf.json",
+  "note": "official metric on SynthScope GPU scores (IVI 281657, code 0954488)",
+  "n_generators": 3,
+  "means": {
+    "acc": 96.12,
+    "map": 99.41,
+    "bacc": 95.94,
+    "mauroc": 99.25
+  },
+  "per_generator": {
+    "facebook": {
+      "acc": 96.25,
+      "ap": 99.43,
+      "real_acc": 94.38,
+      "fake_acc": 98.12,
+      "bacc": 96.25,
+      "auroc": 99.33,
+      "n_real": 160,
+      "n_fake": 160
+    },
+    "reddit": {
+      "acc": 94.73,
+      "ap": 99.09,
+      "real_acc": 94.53,
+      "fake_acc": 94.93,
+      "bacc": 94.73,
+      "auroc": 98.96,
+      "n_real": 750,
+      "n_fake": 750
+    },
+    "twitter": {
+      "acc": 97.39,
+      "ap": 99.73,
+      "real_acc": 95.14,
+      "fake_acc": 98.56,
+      "bacc": 96.85,
+      "auroc": 99.47,
+      "n_real": 144,
+      "n_fake": 277
+    }
+  },
+  "official_function_return": [
+    0.9612350224333598,
+    0.9941447893161911
+  ],
+  "n_files": 2241,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-08T19:48:13"
+}

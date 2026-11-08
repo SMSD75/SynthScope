@@ -1,0 +1,233 @@
+{
+  "tag": "vina_ufd_diffusion8_vs_official",
+  "key": "unifd",
+  "model": "vina",
+  "synthscope_scores": "vina_scores/vina_ufd_diffusion8.json",
+  "synthscope_job": "281654",
+  "official_csv": "vina_official_out/das6_66627/unifd-2026-11-08 17:59:30.csv",
+  "official_job": "das6-66627",
+  "note": "official eval.py --analysis CSV vs SynthScope per-file P(fake) on the same files",
+  "compare": {
+    "n_ours": 16000,
+    "n_official": 16000,
+    "n_common": 16000,
+    "only_ours": [],
+    "only_official": [],
+    "max_abs_diff": 4.8995018005371094e-05,
+    "mean_abs_diff": 3.89393895034118e-07,
+    "decision_flips_at_0.5": 0,
+    "n_diff_gt_1e-3": 0,
+    "n_diff_gt_1e-2": 0,
+    "median_abs_diff": 1.709850039333105e-10,
+    "worst_5": [
+      {
+        "path": "data/image_eval/UniFD/guided/1_fake/xvpiclvxzd.png",
+        "p_ours": 0.574577808380127,
+        "p_official": 0.5746268033981323,
+        "abs_diff": 4.8995018005371094e-05
+      },
+      {
+        "path": "data/image_eval/UniFD/glide_50_27/1_fake/wedprdqjkr.png",
+        "p_ours": 0.7553282976150513,
+        "p_official": 0.7553750276565552,
+        "abs_diff": 4.673004150390625e-05
+      },
+      {
+        "path": "data/image_eval/UniFD/glide_50_27/1_fake/tigzfxjaeg.png",
+        "p_ours": 0.8714717030525208,
+        "p_official": 0.8714354038238525,
+        "abs_diff": 3.629922866821289e-05
+      },
+      {
+        "path": "data/image_eval/UniFD/guided/0_real/zbnbosutcn.JPEG",
+        "p_ours": 0.2388608604669571,
+        "p_official": 0.23889683187007904,
+        "abs_diff": 3.597140312194824e-05
+      },
+      {
+        "path": "data/image_eval/UniFD/guided/1_fake/yyfgzdkznw.png",
+        "p_ours": 0.11149043589830399,
+        "p_official": 0.11152584105730057,
+        "abs_diff": 3.540515899658203e-05
+      }
+    ]
+  },
+  "means_synthscope": {
+    "acc": 94.84,
+    "map": 99.01,
+    "bacc": 94.84,
+    "mauroc": 98.71
+  },
+  "means_official_code": {
+    "acc": 94.84,
+    "map": 99.01,
+    "bacc": 94.84,
+    "mauroc": 98.71
+  },
+  "per_subset_synthscope": {
+    "guided": {
+      "acc": 75.8,
+      "ap": 93.98,
+      "real_acc": 100.0,
+      "fake_acc": 51.6,
+      "bacc": 75.8,
+      "auroc": 91.91,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200": {
+      "acc": 99.3,
+      "ap": 100.0,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200_cfg": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_100": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_27": {
+      "acc": 94.45,
+      "ap": 99.3,
+      "real_acc": 98.7,
+      "fake_acc": 90.2,
+      "bacc": 94.45,
+      "auroc": 99.17,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_50_27": {
+      "acc": 96.1,
+      "ap": 99.45,
+      "real_acc": 98.7,
+      "fake_acc": 93.5,
+      "bacc": 96.1,
+      "auroc": 99.33,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_10": {
+      "acc": 96.55,
+      "ap": 99.59,
+      "real_acc": 98.7,
+      "fake_acc": 94.4,
+      "bacc": 96.55,
+      "auroc": 99.51,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "dalle": {
+      "acc": 97.95,
+      "ap": 99.81,
+      "real_acc": 98.7,
+      "fake_acc": 97.2,
+      "bacc": 97.95,
+      "auroc": 99.77,
+      "n_real": 1000,
+      "n_fake": 1000
+    }
+  },
+  "per_subset_official_code": {
+    "guided": {
+      "acc": 75.8,
+      "ap": 93.98,
+      "real_acc": 100.0,
+      "fake_acc": 51.6,
+      "bacc": 75.8,
+      "auroc": 91.91,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200": {
+      "acc": 99.3,
+      "ap": 100.0,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200_cfg": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_100": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_27": {
+      "acc": 94.45,
+      "ap": 99.3,
+      "real_acc": 98.7,
+      "fake_acc": 90.2,
+      "bacc": 94.45,
+      "auroc": 99.17,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_50_27": {
+      "acc": 96.1,
+      "ap": 99.45,
+      "real_acc": 98.7,
+      "fake_acc": 93.5,
+      "bacc": 96.1,
+      "auroc": 99.33,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_10": {
+      "acc": 96.55,
+      "ap": 99.59,
+      "real_acc": 98.7,
+      "fake_acc": 94.4,
+      "bacc": 96.55,
+      "auroc": 99.51,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "dalle": {
+      "acc": 97.95,
+      "ap": 99.81,
+      "real_acc": 98.7,
+      "fake_acc": 97.2,
+      "bacc": 97.95,
+      "auroc": 99.77,
+      "n_real": 1000,
+      "n_fake": 1000
+    }
+  },
+  "n_files_compared": 16000,
+  "date": "2026-11-08T19:48:55"
+}
