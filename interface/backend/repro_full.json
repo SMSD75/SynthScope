@@ -1454,7 +1454,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=97.8 / acc=86.93 / AUROC=97.44",
       "status": "official",
-      "note": "86.93 ACC / 97.80 AP on the official extension set (90,310 files; the 19 SAN .bmp reals are not listed by the official CSV builder), -0.06 / +0.02; 10 of 11 subsets equal, SAN 83.05 / 95.44 vs 83.79 / 95.16. A reconstruction that keeps the .bmp reals as black images gives 86.99 / 97.77 (SAN equal); that is inferred, not the headline. bench_eval's balanced mean: 86.98 / 97.80 (tags\u2026"
+      "note": "86.93 ACC / 97.80 AP on the official extension set (90,310 files; the 19 SAN .bmp reals are not listed by the official CSV builder), -0.06 / +0.02; 10 of 11 subsets equal, SAN 83.05 / 95.44 vs 83.79 / 95.16. A reconstruction that keeps the .bmp reals as black images gives 86.99 / 97.77 (SAN equal); that is inferred, not the headline. The balanced mean on those files is 86.98 / 97.80 (bacc field\u2026"
     },
     {
       "benchmark": "UniversalFakeDetect (LDM, 8 sets)",
@@ -1484,7 +1484,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=99.54 / acc=96.36 / AUROC=99.38",
       "status": "official",
-      "note": "96.36 ACC / 99.54 AP over the six shared subsets, every subset equal to the paper's. Our copy has 7 subsets: those six plus Switti (99.95 / 100.00) and no MAR; bench_eval's mean over our 7 rows (96.88 / 99.60) is not comparable with the paper's 96.74 / 99.59 (tags vina_arforensics_offmetric, vina_arforensics; DAS6 job 66630)."
+      "note": "Paper value derived: mean of the six shared subsets of Table 15 = 96.36 / 99.54 (the paper's 7-subset mean with MAR is 96.74 / 99.59). 96.36 ACC / 99.54 AP over the six shared subsets, every subset equal to the paper's. Our copy has 7 subsets: those six plus Switti (99.95 / 100.00) and no MAR; bench_eval's mean over our 7 rows (96.88 / 99.60) is not comparable with the paper's 96.74 / 99.59\u2026"
     },
     {
       "benchmark": "GenImage (8 subsets, full val split, 100,000 images)",
@@ -1498,7 +1498,7 @@
     },
     {
       "benchmark": "GenImage test bundle (1500 per class and subset)",
-      "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+      "metric": "pooled accuracy per subset at 0.5 and AP, mean over the 8 subsets, on a 1500-per-class subsample",
       "paper": "acc=94.74",
       "ours": "mAP=98.45 / acc=93.29 / AUROC=97.98 (official wts)",
       "ours_synthscope": "",
@@ -1508,7 +1508,7 @@
     },
     {
       "benchmark": "GenVideo-Val (10 generators, overall)",
-      "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+      "metric": "overall pooled accuracy and AP at 0.5 over all reals and all fakes (the official code's metric for GenVideo-Val)",
       "paper": "acc=96.9 / map=99.26",
       "ours": "mAP=99.26 / acc=96.86 / AUROC=99.14 (official wts)",
       "ours_synthscope": "",
@@ -1524,7 +1524,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=96.36 / acc=91.82 / AUROC=97.46",
       "status": "below",
-      "note": "91.82 ACC / 96.36 AP (bAcc 91.76): dalle3 92.80 (-1.70), firefly 89.50 (+0.30), midjourney_v5 93.16 (-1.54). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (1,713 files, max diff 1.7e-05, 0 flips), so the gap is data (our copy: 413 reals and 1,300 fakes; Table 9: 500 and 1.5K), not code (tag vina_synthwildx_offmetric, job 281657)."
+      "note": "Paper value derived: mean of Table 2's printed 94.5 / 89.2 / 94.7 (the paper prints no mean). 91.82 ACC / 96.36 AP (bAcc 91.76): dalle3 92.80 (-1.70), firefly 89.50 (+0.30), midjourney_v5 93.16 (-1.54). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (1,713 files, max diff 1.7e-05, 0 flips), so the gap is data (our copy: 413 reals and 1,300 fakes\u2026"
     },
     {
       "benchmark": "WildRF (facebook / reddit / twitter)",
@@ -1534,7 +1534,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=99.41 / acc=96.12 / AUROC=99.25",
       "status": "below",
-      "note": "96.12 ACC / 99.41 AP (bAcc 95.94): facebook 96.25 (-0.35), reddit 94.73 (-1.97), twitter 97.39 (-0.71). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (2,241 files, max diff 1.5e-05, 0 flips), so the gap is data (262 .jfif files are not in the official CSV; Table 9 lists 500 + 500), not code (tag vina_wildrf_offmetric, job 281657)."
+      "note": "Paper value derived: mean of Table 2's printed 96.6 / 96.7 / 98.1 (the paper prints no mean). 96.12 ACC / 99.41 AP (bAcc 95.94): facebook 96.25 (-0.35), reddit 94.73 (-1.97), twitter 97.39 (-0.71). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (2,241 files, max diff 1.5e-05, 0 flips), so the gap is data (262 .jfif files are not in the official CSV\u2026"
     },
     {
       "benchmark": "AIGIBench (SocialRF / CommunityAI)",
@@ -1544,7 +1544,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=97.33 / acc=92.72 / AUROC=97.6",
       "status": "reference",
-      "note": "92.72 ACC / 97.33 AP: SocialRF 89.72 (-1.18), CommunityAI 95.73 (+1.83). The subsets differ from the paper in both directions. The unmodified official eval.py gives the same per-file scores on our files (18,000 files, max diff 5.8e-05, 0 flips), so the difference is the data release or file list, not code (tag vina_aigibench_offmetric, jobs 281654, 66627)."
+      "note": "Paper value derived: mean of Table 2's printed 90.9 / 93.9 (the paper prints no mean). 92.72 ACC / 97.33 AP: SocialRF 89.72 (-1.18), CommunityAI 95.73 (+1.83). The subsets differ from the paper in both directions. The unmodified official eval.py gives the same per-file scores on our files (18,000 files, max diff 5.8e-05, 0 flips), so the difference is the data release or file list, not code (tag\u2026"
     },
     {
       "benchmark": "RRDataset (mean of original / transfer / redigital)",

@@ -230,7 +230,7 @@ GenImage (Table 11; ACC only in the paper): equal in all 8 subsets on the full v
 | **mean** | **94.74** | **94.74 / 99.05** |
 
 `vina_genimage_full` is a different, smaller run: the **test bundle** with 1500 images per class and subset (33,000 images;
-SD v1.4 has 6000), kept as the fallback while the full split was not available. It gives 93.29 / 98.45 and is not the
+SD v1.4 has 6000), an earlier 1,500-per-class subsample run. It gives 93.29 / 98.45 and is not the
 paper's GenImage number (ADM 70.10, GLIDE 92.73, VQDM 92.07, BigGAN 95.37, Midjourney 96.43, SD v1.4 99.89, SD v1.5
 99.90, Wukong 99.83).
 
