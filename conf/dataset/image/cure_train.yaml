@@ -1,0 +1,17 @@
+name: cure_train
+# CuRe stage 1 (arXiv 2609.14316): GenImage SD v1.4 train, 162,000 ImageNet reals (JPEG) + 162,000 SD v1.4 images
+# (PNG, re-encoded as JPEG q96 by the endpoint preprocessing, as the paper / DDA). An item is the pixel mixture
+# (1 - a) x_r + a x_g of a real and an independently drawn generated image, a ~ U(0, 1), target a (dataset.CuReMixDataset);
+# an epoch = one pass over the 162k reals. Validation: val_pairs fixed mixtures of the SD v1.4 test split (6k + 6k).
+# Layout as GenImageDataset stores it: <root_dir>/{train,test}/{real,fake}; prefetch fetches it with that loader.
+root_dir: /hddstore/ssalehi/SynthScope/GenImage
+hf_repo_id: jzousz/GenImage
+hf_subdir: stable_diffusion_v_1_4
+prefetch: false
+train_batch_size: 64       # per GPU (the paper's per-GPU batch)
+val_batch_size: 64
+num_workers: 8
+val_pairs: 2000
+max_per_class: null        # smoke runs: the first N images of each class
+val_max_per_class: null
+seed: 0                    # the validation pairs

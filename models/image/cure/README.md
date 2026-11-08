@@ -30,7 +30,7 @@ fetched from the Hugging Face Hub on first use (or `ModelConfig.base_checkpoint`
 | Preprocessing in cv2/PIL (`preprocess.py`), not albumentations | No new dependency. Equal to the official pipeline up to **1 float32 ulp (5.96e-8)** on 104 PNG/JPEG images, 200 px–4256 px, square and non-square (`repro/cure_preproc_equiv.py`). |
 | **Source-format hint** `img.info["synthscope_src_format"]` | Official PNG sources get an extra JPEG‑q96 round-trip, decided by the file suffix. `bench_eval` and the web decoder now record the original format on the PIL image; without the hint an image is treated as non-PNG. |
 | fp16 autocast on CUDA inside `forward` | The released results use fp16 AMP; CPU runs in fp32 (scores differ in the 3rd decimal). |
-| `compute_loss` = plain cross-entropy | **The paper's two-stage mixing-ratio-regression training recipe is not in the official release.** `compute_loss` only satisfies SynthScope's trainer interface (LoRA + head trainable); it does **not** reproduce the paper's training. The SynthScope-trained row below is therefore empty. |
+| Training recipe implemented from the paper | **The official release has inference code only.** SynthScope implements the paper's three stages (see *Training recipe* below); without `training_stage` `compute_loss` stays a plain cross-entropy that only satisfies the trainer interface. |
 
 ## Fidelity check (identical to the official model)
 
@@ -58,7 +58,7 @@ Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema 
 | RRDataset (original / transfer / redigital, public test archive, 25.5k real / 25.5k fake) | acc=81.5 | mAP=90.40 / acc=82.04 / AUROC=88.88 | — | **reproduced** within 0.6 pt (the paper counts 30k/30k) |
 | Chameleon | 93.8 | — | — | missing (available by request only) |
 
-`SynthScope_train` is empty: the paper's training recipe is not released. Details and per-generator tables below
+`SynthScope_train` is empty until the full run of the recipe below has been evaluated (the authors released no training code). Details and per-generator tables below
 (official weights through SynthScope; balanced accuracy at 0.5 unless noted).
 
 Paper: **89.7 avg over ten benchmarks** — AIGCDetect 89.3 · AIGIBench 92.8 · UnivFD 82.0 · EvalGEN 98.1 ·
@@ -146,6 +146,44 @@ biggan 67.80 · adm 60.63
 **Rescore note.** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored without its
 official PNG to JPEG q96 step (the scorers did not pass the source-format hint then). They were rescored with the step on
 2026-11-08 (AUROC changes between -2.1 and +0.9, ranks unchanged); see `docs/BENCHMARKS.md`.
+
+## Training recipe (from the paper; no official training code)
+
+`experiments/image/cure.sh` runs the three stages of the paper (Sec. 3, 4.1-4.2, Appendix A) on GenImage SD v1.4 train
+(162,000 ImageNet reals + 162,000 SD v1.4 images) and writes `cure_trained.pth` with exactly the released adapter's 100
+tensors, so it is scored like the official weights: `bench_eval.py --model cure --ckpt <SAVE>/stage23/cure_trained.pth`.
+
+| stage | what (paper) | where |
+|---|---|---|
+| 1 | x_a = (1 - a) x_r + a x_g with independent real / generated endpoints, a ~ U(0, 1) per pair; linear ratio head + sigmoid on the adapted feature, BCE with soft target a; LoRA on Q and V of all 24 layers (rank 64, alpha 128, dropout 0); AdamW lr 1e-5, weight decay 0.1 (LoRA) / 0.01 (head); 5 epochs, per-GPU batch 64, 2 warmup epochs then cosine to 1e-6 | `main.py` with `trainer/image/cure.yaml`, `dataset/image/cure_train.yaml`, `ModelConfig.training_stage=ratio` (`dataset.CuReMixDataset`, `SynthScopeCuReModel.compute_loss`) |
+| 2 | frozen encoder; 20,000 endpoint pairs; RF / RR / FF trajectories on {0, .2, .4, .6, .8, 1}; slopes (Eq. 6); C_F, C_M, C_S (Eq. 7-9) trace-normalised; generalised eigenproblem (Eq. 10), top k = 128 -> W, mu = mean RF trajectory feature | `train_stages.py stage2`, `subspace.py` |
+| 3 | only Linear(128, 2) on W^T (z - mu): dropout 0.05, CE, AdamW lr 2e-4, weight decay 0.1, batch 256, 5 epochs | `train_stages.py stage3` (features cached once) |
+
+**Choices the paper leaves open** (each a documented assumption; the released `W` / `mu` allow checking stage 2):
+
+| open point | SynthScope choice | reason |
+|---|---|---|
+| training preprocessing | each endpoint goes through the released test pipeline (`cure_eval`: PNG -> JPEG q96, 390 resize / crop, 336, JPEG q70, mean = std = 0.5), then the mixture is formed | the paper re-encodes the PNG fakes as JPEG q96 (the pipeline's first step); the subspace and head are used with this pipeline at test time; no augmentation is mentioned |
+| where mixing happens | on the preprocessed tensors | normalisation is affine, so this equals the pixel mixture of the preprocessed images |
+| pairing / epoch | one item per real image (162k per epoch), its generated partner and a drawn at random per item (with replacement), fresh every epoch | "independently drawn" endpoints, "each training pair receives one independently sampled mixing ratio" |
+| warmup / cosine shape | linear from 0 per optimizer step over 2 epochs to 1e-5, then cosine over the remaining 3 epochs to 1e-6 (`timm_cosine.warmup_prefix`) | the usual meaning of "N warmup epochs and cosine decay to a minimum lr" (MAE-style) |
+| GPU count / global batch | per-GPU 64 as stated; the global batch is NGPU x 64 | not stated |
+| precision, clipping, betas, seed | fp16 autocast with loss scaling, no clipping, torch AdamW betas, seed 0 | the released inference is fp16; nothing else stated |
+| stage-1 model selection | the last epoch | not stated |
+| ratio-head weight decay | 0.01 on all head parameters (bias too) | "weight decay of 0.1 and 0.01, respectively" |
+| pairs per trajectory type | 20,000 for each of RF, RR, FF (360k forwards) | "20,000 sampled endpoint pairs" |
+| lambda_s, lambda_m, eps | 1, 1, 1e-4 (`subspace.py` defaults; `--lambda-s/--lambda-m/--eps`) | not stated; stage 2 with `--reference-adapter` reports the overlap with the released W and fits the (lambda_s, lambda_m, eps) under which the released W is B-orthonormal |
+| eigenvector scale | B-orthonormal (W^T B W = I), as LAPACK / scipy generalised solvers return | the released W is not unit-norm (column norms 6.8-8.8) |
+| stage-3 data and schedule | all 324k clean training images, constant lr, last epoch | not stated |
+
+**Memory.** On a 24 GB A5000, stage 1 at micro-batch 64 needs gradient checkpointing (`ModelConfig.grad_checkpointing`,
+6.3 GiB peak, 32 images/s); without it micro-batch 32 takes 14.1 GiB (43 images/s), so a 48 GB GPU can run 64 without
+checkpointing, or use `MICRO=32` (gradient accumulation 2, same per-GPU batch of 64). Checkpointing gives the same features and
+gradients (`tests/test_cure_recipe.py`).
+
+**Tests.** `tests/test_cure_recipe.py` (CPU): the mixing items, the BCE soft-target loss, the trainable set and weight-decay
+groups, gradient checkpointing, the trainer's logged lr at every step against the intended schedule, Eq. 6-10 against numpy
+/ scipy, and the export format (the released adapter's keys, shapes and dtypes).
 
 ## Usage
 

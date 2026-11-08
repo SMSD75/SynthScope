@@ -1,0 +1,30 @@
+defaults:
+  - /trainer/default
+  - _self_
+
+# CuRe stage 1 (arXiv 2609.14316, Appendix A): LoRA (Q/V, all 24 layers, rank 64, alpha 128, dropout 0) + linear ratio
+# head, BCE against the mixing ratio; AdamW lr 1e-5, weight decay 0.1 (LoRA) / 0.01 (head) (ModelConfig
+# lora_weight_decay / head_weight_decay, applied through the model's optimizer_param_groups), betas (0.9, 0.999) (torch
+# default; not stated), 5 epochs at per-GPU batch 64, two warmup epochs then cosine to 1e-6. Unstated, assumed: the
+# warmup is linear from 0 per optimizer step and the cosine runs over the remaining 3 epochs from the peak lr (MAE-style,
+# warmup_prefix); no gradient clipping; fp16 autocast with a loss scaler (the released inference runs fp16); seed 0; the
+# last epoch is the stage-1 model (the paper states no model selection; every epoch is kept, model_last.pth is used).
+trainer_type: cure
+epochs: 5
+lr: 1.0e-5
+weight_decay: 0.1          # overridden per group by the model (0.1 LoRA / 0.01 head)
+label_smoothing: 0.0
+seed: 0
+save: true
+save_policy: min
+save_path: /nvmestore/ssalehi/SynthScope/models/cure/stage1
+warmup:
+  mode: "off"              # quoted: a bare off is YAML boolean False
+timm_cosine:
+  warmup_epochs: 2
+  warmup_lr: 0.0
+  min_lr: 1.0e-6
+  warmup_prefix: true      # cosine over epochs 2-5, from 1e-5 down to 1e-6
+  grad_accum_steps: 1      # MICRO < 64 per GPU: accumulate 64 / MICRO micro-batches per optimizer step
+  save_all: true
+  log_every: 50

@@ -16,3 +16,11 @@ label_smoothing: 0.0
 
 # Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
 eval_transform_list: [cure_eval]
+
+# Training (the paper's recipe; the official release has no training code): experiments/image/cure.sh.
+# Stage 1 = training_stage: ratio (mixing-ratio regression; experiments/image/cure.sh sets it);
+# stages 2-3 = models/image/cure/train_stages.py. Stage-1 endpoints use eval_transform_list (see dataset.CuReEndpoints).
+training_stage: null           # null = the released 2-way model; ratio = stage 1 (adds the 1024 -> 1 ratio head)
+grad_checkpointing: false      # stage 1: recompute each block in backward (per-GPU batch 64 at 336 px)
+lora_weight_decay: 0.1         # stage 1 AdamW weight decay on the LoRA tensors (Appendix A)
+head_weight_decay: 0.01        # stage 1 AdamW weight decay on the ratio head (Appendix A)

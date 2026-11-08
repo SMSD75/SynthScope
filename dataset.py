@@ -32,6 +32,7 @@ from config_utils import compose_config
 from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_STD, build_item as dda_build_item, \
     create_train_transforms as dda_train_transforms
 from models.image.dda.official_train_transforms import ComposedTransforms as DDAComposedTransforms
+from models.image.cure.preprocess import SRC_FORMAT_KEY
 
 
 def _decode_rgb(path) -> torch.Tensor:
@@ -3092,6 +3093,120 @@ class SPAITrainDatasetModule:
         return None
 
 
+class CuReEndpoints:
+    """The real and generated images of a GenImage-layout split (``<root>/<train|test>/{real,fake}``, as
+    :class:`GenImageDataset` stores GenImage SD v1.4: 162k + 162k train, 6k + 6k test), each preprocessed on its own by
+    the CuRe endpoint transform. The transform is the model config's ``eval_transform_list`` (``cure_eval``: PNG sources
+    -> JPEG q96, which is the paper's re-encoding of the generated PNGs to match the JPEG reals; SmallestMaxSize 390,
+    CenterCrop 390, Resize 336, JPEG q70, mean = std = 0.5): the paper does not state its training preprocessing, and
+    the released test-time pipeline is the one the trained subspace and head are used with. Images are opened with PIL and
+    their source format is recorded (``SRC_FORMAT_KEY``), as ``bench_eval`` does, so the PNG step applies.
+    ``max_per_class`` keeps the first N of each class (sorted file names; smoke runs)."""
+
+    def __init__(self, root_dir, split, transform, max_per_class=None):
+        split_dir = Path(root_dir) / ("train" if split == "train" else "test")
+        self.reals = sorted(_iter_images(split_dir / "real"))
+        self.fakes = sorted(_iter_images(split_dir / "fake"))
+        if max_per_class:
+            self.reals, self.fakes = self.reals[:int(max_per_class)], self.fakes[:int(max_per_class)]
+        if not self.reals or not self.fakes:
+            raise RuntimeError(f"CuRe data: no real/ or fake/ images under {split_dir}")
+        self.transform = transform
+
+    def load(self, path: Path) -> torch.Tensor:
+        """``path`` -> the preprocessed float tensor ``[3, 336, 336]``."""
+        with Image.open(path) as source:
+            source_format = source.format
+            image = source.convert("RGB")
+        image.info[SRC_FORMAT_KEY] = source_format
+        return self.transform(image)
+
+    def load_any(self, paths, index: int, fallback) -> torch.Tensor:
+        """``load(paths[index])``; an unreadable file (GenImage has a few 0-byte PNGs) is replaced by ``paths[fallback()]``."""
+        for _ in range(10):
+            try:
+                return self.load(paths[index])
+            except Exception as exc:  # noqa: BLE001
+                print(f"[cure data] unreadable image {paths[index]}: {exc}", flush=True)
+                index = fallback()
+        raise RuntimeError("CuRe data: 10 unreadable images in a row")
+
+
+def cure_mix(x_real: torch.Tensor, x_gen: torch.Tensor, alpha) -> torch.Tensor:
+    """Eq. 1 / Eq. 5: ``(1 - alpha) x_0 + alpha x_1`` on preprocessed tensors (mean = std = 0.5 is affine, so this equals
+    the pixel-space mixture of the preprocessed images, normalized). ``alpha`` is a float or a tensor that broadcasts."""
+    return (1 - alpha) * x_real + alpha * x_gen
+
+
+class CuReMixDataset(Dataset):
+    """CuRe stage-1 data (arXiv 2609.14316, Sec. 3.1 / Appendix A): an item is the mixture x_a = (1 - a) x_r + a x_g of a
+    real image x_r and an independently drawn generated image x_g, a ~ U(0, 1) per pair, with a as the regression target:
+    ``(x_a [3, 336, 336], a, 0)``. Mixing happens after the endpoint preprocessing (see :class:`CuReEndpoints`).
+
+    ``train``: one item per real image (an epoch = 162,000 pairs for GenImage SD v1.4, the reals in the loader's random
+    order); the generated partner and a are drawn at random in each ``__getitem__``, so pairs and ratios change every
+    epoch and partners are drawn with replacement. In a DataLoader worker the draw uses a generator seeded by the
+    worker's seed (new every epoch) and the item index: every DDP process gets the same worker seeds (one global seed),
+    but its own real indices, so the processes' draws stay independent. ``val``: ``val_pairs`` fixed pairs (real i, a
+    seeded random fake, a seeded random a), the same every epoch."""
+
+    def __init__(self, endpoints: CuReEndpoints, split, val_pairs=None, seed=0):
+        self.ep, self.split, self.seed = endpoints, split, int(seed)
+        self.n = len(endpoints.reals) if split == "train" else min(int(val_pairs or len(endpoints.reals)), len(endpoints.reals))
+
+    def __len__(self):
+        return self.n
+
+    def __getitem__(self, idx):
+        ep = self.ep
+        if self.split == "train":
+            worker = torch.utils.data.get_worker_info()
+            g = None if worker is None else torch.Generator().manual_seed((worker.seed * 1_000_003 + idx) % 2 ** 63)
+        else:
+            g = torch.Generator().manual_seed(self.seed * 1_000_003 + idx)
+        draw_fake = lambda: int(torch.randint(len(ep.fakes), (), generator=g))
+        draw_real = lambda: int(torch.randint(len(ep.reals), (), generator=g))
+        fake_idx, alpha = draw_fake(), float(torch.rand((), generator=g))
+        x_real = ep.load_any(ep.reals, idx, draw_real)
+        x_gen = ep.load_any(ep.fakes, fake_idx, draw_fake)
+        return cure_mix(x_real, x_gen, alpha), torch.tensor(alpha, dtype=torch.float32), torch.tensor(0)
+
+
+class CuReTrainDatasetModule:
+    """CuRe stage 1 for SynthScope's trainer: :class:`CuReMixDataset` on GenImage SD v1.4 ``train`` and, for the
+    per-epoch validation loss, ``val_pairs`` fixed mixtures from its ``test`` split. ``prefetch`` downloads the split
+    with :class:`GenImageDataset`'s loader (``hf_repo_id`` / ``hf_subdir``) when it is missing."""
+
+    def __init__(self, config):
+        self.config = config
+        cfg = config.DatasetConfig
+        root = Path(cfg.root_dir)
+        if bool(cfg.get("prefetch", False)):
+            GenImageDataset.hf_repo_id = cfg.get("hf_repo_id", None)
+            GenImageDataset.hf_subdir = cfg.get("hf_subdir", None)
+            for split in ("train", "test"):
+                GenImageDataset.prepare_split(root, split)
+        transform = AIGITransformations(list(config.ModelConfig.eval_transform_list))
+        cap = cfg.get("max_per_class", None)
+        seed = int(cfg.get("seed", 0))
+        self.train_dataset = CuReMixDataset(CuReEndpoints(root, "train", transform, cap), "train", seed=seed)
+        self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_per_class", cap)), "val",
+                                          val_pairs=cfg.get("val_pairs", None), seed=seed)
+
+    def train_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.train_dataset, batch_size=cfg.train_batch_size, shuffle=True, num_workers=cfg.num_workers,
+                          pin_memory=True, drop_last=True, persistent_workers=False)
+
+    def val_dataloader(self):
+        cfg = self.config.DatasetConfig
+        return DataLoader(self.val_dataset, batch_size=cfg.val_batch_size, shuffle=False, num_workers=cfg.num_workers,
+                          pin_memory=True)
+
+    def test_dataloader(self):
+        return None
+
+
 class _TestOnlyImageModule:
     """Shared loader for the eval-only image benchmarks (test split only)."""
     DATASET_CLASS = _TestOnlyImageDataset
@@ -3438,6 +3553,7 @@ SynthScopeModuleDict = {
     "mirage_test": MirageTestDatasetModule,
     # Training sets of detectors trained in SynthScope with their official recipe.
     "spai_train": SPAITrainDatasetModule,
+    "cure_train": CuReTrainDatasetModule,
     # Video benchmarks. EvalCrafter/GenVidBench/VideoFeedback/ComGenVid have dedicated classes that
     # download + extract their HF archives into the real/fake layout; the rest use the generic
     # VideoFolderDatasetModule.
