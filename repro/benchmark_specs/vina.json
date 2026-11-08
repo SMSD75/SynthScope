@@ -1,0 +1,240 @@
+{
+ "model": "vina",
+ "paper": "Video as Natural Augmentation: Towards Unified AI-Generated Image and Video Detection (arXiv 2605.21977)",
+ "arxiv_id": "2605.21977",
+ "official_repo": "https://github.com/mgiant/VINA",
+ "training_set_in_paper": "VINA (140k+DDA): the 140k video set (from Qwen2.5-ViT) plus DDA's image data, DINOv3-L fine-tuned end to end with a cross-modal supervised contrastive loss (weight 0.05) next to BCE; one frame per video clip, 256x256, AdamW, 10 epochs, lr 1e-6, batch 64 (paper section 4.1). Only the released checkpoint VINA_DINOv3-L_140k+DDA.pth is evaluated here (the registry keys vina for images and vina_video for the paper's video protocol); the training code is not released, so there is no SynthScope-trained checkpoint. SynthScope numbers are the official pooled accuracy per subset (the _offmetric tags), the paper's metric.",
+ "benchmarks": [
+  {
+   "name": "ForenSynths (CNNDetection test, the paper's 11 subsets)",
+   "datasets": [
+    "ForenSynths"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 86.99,
+    "map": 97.78,
+    "note": "Table 12 (mean ACC / AP over 11 subsets; Table 10 prints AP 97.77)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "86.93 ACC / 97.80 AP on the official extension set (90,310 files; the 19 SAN .bmp reals are not listed by the official CSV builder), -0.06 / +0.02; 10 of 11 subsets equal, SAN 83.05 / 95.44 vs 83.79 / 95.16. A reconstruction that keeps the .bmp reals as black images gives 86.99 / 97.77 (SAN equal); that is inferred, not the headline. bench_eval's balanced mean: 86.98 / 97.80 (tags vina_cnndetection_offmetric, vina_cnndetection_bmpblack_offmetric, vina_cnndetection; job 281655)."
+   }
+  },
+  {
+   "name": "UniversalFakeDetect (LDM, 8 sets)",
+   "datasets": [
+    "UniversalFakeDetect"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 94.84,
+    "map": 99.01,
+    "note": "Table 13 (mean ACC / AP over guided, ldm_200, ldm_200_cfg, ldm_100, glide x3, dalle)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "94.84 ACC / 99.01 AP, equal in all 8 subsets (ldm_200 AP 100.00 vs the paper's 99.99, within 0.01). The unmodified official eval.py gives the same on our files (16,000 files, max per-file diff 4.9e-05, 0 flips) (tag vina_ufd_diffusion8_offmetric, jobs 281654, 66627)."
+   }
+  },
+  {
+   "name": "DiTFake (FLUX.1-schnell, PixArt-Sigma, SD3)",
+   "datasets": [
+    "DiTFake"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 97.98,
+    "map": 99.95,
+    "note": "Table 14 (mACC / mAP)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "97.98 ACC / 99.95 AP, equal in all 3 subsets (97.11, 100.00, 96.84) (tag vina_ditfake_offmetric, job 281654)."
+   }
+  },
+  {
+   "name": "ARForensics (6 subsets shared with the paper)",
+   "datasets": [
+    "ARForensics"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 96.36,
+    "map": 99.54,
+    "note": "Derived: mean of the paper's six per-subset values (Table 15) for Infinity, Janus_Pro, LlamaGen, Open_MAGVIT2, RAR, VAR. The paper's 7-subset mean with MAR is 96.74 / 99.59."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "96.36 ACC / 99.54 AP over the six shared subsets, every subset equal to the paper's. Our copy has 7 subsets: those six plus Switti (99.95 / 100.00) and no MAR; bench_eval's mean over our 7 rows (96.88 / 99.60) is not comparable with the paper's 96.74 / 99.59 (tags vina_arforensics_offmetric, vina_arforensics; DAS6 job 66630)."
+   }
+  },
+  {
+   "name": "GenImage (8 subsets, full val split, 100,000 images)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 94.74,
+    "note": "Table 11 (ACC only)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "94.74 ACC / 99.05 AP, equal in all 8 subsets (Midjourney 96.11, SD v1.4 99.89, SD v1.5 99.85, ADM 76.23, GLIDE 94.65, Wukong 99.83, VQDM 94.98, BigGAN 96.38) (tags vina_genimage_val100k_offmetric, vina_genimage_val100k; DAS6 job 66630)."
+   }
+  },
+  {
+   "name": "GenImage test bundle (1500 per class and subset)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 94.74,
+    "note": "Table 11, the full val split."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "93.29 ACC / 98.45 AP on the 33,000-image test bundle, a subsample (SD v1.4 has 6000), not the paper's split: ADM 70.10, GLIDE 92.73, VQDM 92.07, BigGAN 95.37, the others within 0.4 of the full split. The full split is the row above (tags vina_genimage_full_offmetric, vina_genimage_full; job 281831)."
+   }
+  },
+  {
+   "name": "GenVideo-Val (10 generators, overall)",
+   "datasets": [
+    "GenVideo"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 96.9,
+    "map": 99.26,
+    "note": "Tables 1 and 10 (overall pooled ACC / AP over all reals and all fakes); Table 17 gives per-generator recall / F1 / AP (mean 93.20 / 81.52 / 92.83)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "96.86 ACC / 99.26 AP overall (vina_video, ffmpeg 2 fps, central frame); all 10 generators equal Table 17 in recall, F1 and AP; mean recall / F1 / AP 93.20 / 81.91 / 92.83 (the paper's printed mean F1 81.52 is not the mean of its own column, 81.92). Official eval.py on the same videos: max per-file diff 4.5e-05, 0 flips (tags vina_video_genvideo_offmetric, vina_video_genvideo; jobs 281656, 281662)."
+   }
+  },
+  {
+   "name": "SynthWildX (dalle3 / firefly / midjourney_v5)",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 92.8,
+    "note": "Table 2 prints 94.5 / 89.2 / 94.7 per subset and no mean; 92.8 is the mean of those three, derived here."
+   },
+   "our_status": "below",
+   "our_number": {
+    "note": "91.82 ACC / 96.36 AP (bAcc 91.76): dalle3 92.80 (-1.70), firefly 89.50 (+0.30), midjourney_v5 93.16 (-1.54). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (1,713 files, max diff 1.7e-05, 0 flips), so the gap is data (our copy: 413 reals and 1,300 fakes; Table 9: 500 and 1.5K), not code (tag vina_synthwildx_offmetric, job 281657)."
+   }
+  },
+  {
+   "name": "WildRF (facebook / reddit / twitter)",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 97.13,
+    "note": "Table 2 prints 96.6 / 96.7 / 98.1 per subset and no mean; 97.13 is the mean of those three, derived here."
+   },
+   "our_status": "below",
+   "our_number": {
+    "note": "96.12 ACC / 99.41 AP (bAcc 95.94): facebook 96.25 (-0.35), reddit 94.73 (-1.97), twitter 97.39 (-0.71). Below the paper. The unmodified official eval.py gives the same per-file scores on our files (2,241 files, max diff 1.5e-05, 0 flips), so the gap is data (262 .jfif files are not in the official CSV; Table 9 lists 500 + 500), not code (tag vina_wildrf_offmetric, job 281657)."
+   }
+  },
+  {
+   "name": "AIGIBench (SocialRF / CommunityAI)",
+   "datasets": [
+    "AIGIBench"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 92.4,
+    "note": "Table 2 prints 90.9 / 93.9 per subset and no mean; 92.4 is the mean of the two, derived here."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "92.72 ACC / 97.33 AP: SocialRF 89.72 (-1.18), CommunityAI 95.73 (+1.83). The subsets differ from the paper in both directions. The unmodified official eval.py gives the same per-file scores on our files (18,000 files, max diff 5.8e-05, 0 flips), so the difference is the data release or file list, not code (tag vina_aigibench_offmetric, jobs 281654, 66627)."
+   }
+  },
+  {
+   "name": "RRDataset (mean of original / transfer / redigital)",
+   "datasets": [
+    "RRDataset"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 82.7,
+    "note": "Table 2 prints the mean only."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "82.89 ACC / 92.77 AP (bAcc 82.90), +0.19: original 94.08, transfer 84.87, redigital 69.73 (fake accuracy 41.72) (tag vina_rrdataset_offmetric, job 281657)."
+   }
+  },
+  {
+   "name": "Chameleon",
+   "datasets": [
+    "Chameleon"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 91.4,
+    "note": "Table 2."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: Chameleon is available by request only."
+   }
+  },
+  {
+   "name": "Magic Videos",
+   "datasets": [
+    "Magic Videos"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 77.1,
+    "map": 95.1,
+    "note": "Tables 1 and 16."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: no data or loader in SynthScope."
+   }
+  },
+  {
+   "name": "GenBuster++",
+   "datasets": [
+    "GenBuster++"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 90.1,
+    "note": "Table 1."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: no data or loader in SynthScope."
+   }
+  },
+  {
+   "name": "DeepTraceReward",
+   "datasets": [
+    "DeepTraceReward"
+   ],
+   "metric": "pooled accuracy per subset at 0.5 (the official code's metric), mean over subsets; AP mean over subsets",
+   "paper_number": {
+    "acc": 97.4,
+    "note": "Table 1."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: no data or loader in SynthScope."
+   }
+  }
+ ]
+}

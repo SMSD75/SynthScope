@@ -169,6 +169,24 @@ VAL = {
     ("mirror", "RRDataset"):             {"official": {"map": 93.86, "acc": 86.91, "auroc": 91.98}},
     ("mirror", "BFree-Online"):          {"official": {"map": 99.78, "acc": 97.4, "auroc": 99.5}},
     ("mirror", "RealChain"):             {"official": {"map": 91.76, "acc": 81.71, "auroc": 89.96}},
+    # VINA: the official VINA_DINOv3-L_140k+DDA checkpoint (no SynthScope-trained number: the training code is not released).
+    # acc / mAP = the OFFICIAL metric (the _offmetric tags): per-subset pooled accuracy at 0.5 and AP, mean over subsets, as
+    # the paper reports them; mauroc is bench_eval's own mean AUROC from the same scores, except GenVideo-Val (the
+    # _offmetric AUROC, pooled). ARForensics = the six subsets shared with the paper (our copy has Switti, no MAR;
+    # the 7-row bench_eval mean 96.88 / 99.60 is not comparable with the paper). GenImage = the full val split
+    # (vina_genimage_val100k); the 1500-per-class test bundle (vina_genimage_full) is its own reference row.
+    # Jobs: CPU 281654-281656, 281831; GPU 281657, DAS6 66630.
+    ("vina", "ForenSynths"):             {"official": {"map": 97.8, "acc": 86.93, "auroc": 97.44}},
+    ("vina", "UniversalFakeDetect"):     {"official": {"map": 99.01, "acc": 94.84, "auroc": 98.71}},
+    ("vina", "DiTFake"):                 {"official": {"map": 99.95, "acc": 97.98, "auroc": 99.94}},
+    ("vina", "ARForensics"):             {"official": {"map": 99.54, "acc": 96.36, "auroc": 99.38}},
+    ("vina", "GenImage (8 subsets"):     {"official": {"map": 99.05, "acc": 94.74, "auroc": 98.72}},
+    ("vina", "GenImage test bundle"):    {"official": {"map": 98.45, "acc": 93.29, "auroc": 97.98}},
+    ("vina", "GenVideo-Val"):            {"official": {"map": 99.26, "acc": 96.86, "auroc": 99.14}},   # overall pooled ACC / AP
+    ("vina", "SynthWildX"):              {"official": {"map": 96.36, "acc": 91.82, "auroc": 97.46}},
+    ("vina", "WildRF"):                  {"official": {"map": 99.41, "acc": 96.12, "auroc": 99.25}},
+    ("vina", "AIGIBench"):               {"official": {"map": 97.33, "acc": 92.72, "auroc": 97.6}},
+    ("vina", "RRDataset"):               {"official": {"map": 92.77, "acc": 82.89, "auroc": 91.69}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
@@ -182,7 +200,12 @@ VAL = {
 # (model, exact benchmark label) -> status.
 # MIRROR RRDataset: 86.91 vs the README's 88.3 is 1.39 short, about 6x MIRROR's other deviations (all within 0.25), but
 # inside the generic +-2.0 tolerance, which would label it "official". Every doc calls it short, so the site does too.
-STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below"}
+# VINA SynthWildX and WildRF: the paper prints per-subset values only; SynthScope is below it on both (and the unmodified
+# official eval.py gives the same scores on our files, so the gap is the data). The means of the printed values (92.8,
+# 97.13) are within the generic +-2.0 tolerance, which would label them "official".
+STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below",
+                   ("vina", "SynthWildX (dalle3 / firefly / midjourney_v5)"): "below",
+                   ("vina", "WildRF (facebook / reddit / twitter)"): "below"}
 
 # Tolerance (percentage points) for calling a number a reproduction of the paper.
 TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}
