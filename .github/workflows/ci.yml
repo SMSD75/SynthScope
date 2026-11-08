@@ -31,6 +31,8 @@ jobs:
           python-version: "3.11"
       # Pure-stdlib check: validates every submissions/*.json and that LEADERBOARD.md is current.
       - run: python benchmark/leaderboard.py --check
+      # Pure-stdlib check: SynthScope's own submissions still match their repro/bench_results evidence.
+      - run: python benchmark/seed_reference_results.py --check
 
   lint:
     name: Ruff (errors only)

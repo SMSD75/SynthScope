@@ -1,0 +1,59 @@
+NODE=ivi-cn029 Tue Oct 27 02:44:52 CET 2026 | code=8a381ec Train NPR in SynthScope with its official recipe
+=== official (registry npr.pth) Tue Oct 27 02:44:52 CET 2026
+    biggan: acc=84.35 AP=87.8 AUROC=92.36 (real_acc=70.0 fake_acc=98.7)
+    cyclegan: acc=96.1 AP=98.45 AUROC=99.04 (real_acc=96.06 fake_acc=96.14)
+    deepfake: acc=80.24 AP=82.4 AUROC=86.85 (real_acc=70.52 fake_acc=89.96)
+    gaugan: acc=82.5 AP=85.49 AUROC=90.75 (real_acc=65.54 fake_acc=99.46)
+    progan: acc=99.79 AP=99.99 AUROC=99.99 (real_acc=99.83 fake_acc=99.75)
+    stargan: acc=99.35 AP=99.94 AUROC=99.96 (real_acc=98.75 fake_acc=99.95)
+    stylegan: acc=97.7 AP=99.78 AUROC=99.75 (real_acc=99.65 fake_acc=95.76)
+    stylegan2: acc=98.38 AP=99.94 AUROC=99.94 (real_acc=99.74 fake_acc=97.02)
+=== RESULT npr_official_forensynths8: mAP=94.22 mAUROC=96.08 acc=92.3 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_official_forensynths8.json ===
+    dalle: acc=93.85 AP=98.96 AUROC=98.96 (real_acc=98.5 fake_acc=89.2)
+    glide_100_10: acc=97.6 AP=99.63 AUROC=99.64 (real_acc=98.5 fake_acc=96.7)
+    glide_100_27: acc=97.1 AP=99.55 AUROC=99.56 (real_acc=98.5 fake_acc=95.7)
+    glide_50_27: acc=97.55 AP=99.61 AUROC=99.62 (real_acc=98.5 fake_acc=96.6)
+    guided: acc=75.1 AP=80.28 AUROC=84.23 (real_acc=65.8 fake_acc=84.4)
+    ldm_100: acc=98.65 AP=99.8 AUROC=99.87 (real_acc=98.5 fake_acc=98.8)
+    ldm_200: acc=98.45 AP=99.76 AUROC=99.82 (real_acc=98.5 fake_acc=98.4)
+    ldm_200_cfg: acc=98.3 AP=99.73 AUROC=99.76 (real_acc=98.5 fake_acc=98.1)
+=== RESULT npr_official_ufd: mAP=97.16 mAUROC=97.68 acc=94.57 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_official_ufd.json ===
+=== trained_last (/ssdstore/ssalehi/SynthScope/models/npr_v1/model_last.pth) Tue Oct 27 02:49:55 CET 2026
+    biggan: acc=80.25 AP=91.45 AUROC=92.23 (real_acc=91.6 fake_acc=68.9)
+    cyclegan: acc=73.69 AP=99.07 AUROC=99.42 (real_acc=99.55 fake_acc=47.84)
+    deepfake: acc=62.91 AP=74.32 AUROC=78.49 (real_acc=90.47 fake_acc=35.36)
+    gaugan: acc=74.37 AP=86.04 AUROC=89.64 (real_acc=89.12 fake_acc=59.62)
+    progan: acc=99.81 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.62)
+    stargan: acc=90.25 AP=99.99 AUROC=99.99 (real_acc=100.0 fake_acc=80.49)
+    stylegan: acc=95.05 AP=99.83 AUROC=99.8 (real_acc=100.0 fake_acc=90.1)
+    stylegan2: acc=96.39 AP=99.93 AUROC=99.92 (real_acc=100.0 fake_acc=92.79)
+=== RESULT npr_trained_last_forensynths8: mAP=93.83 mAUROC=94.94 acc=84.09 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_trained_last_forensynths8.json ===
+    dalle: acc=68.9 AP=95.29 AUROC=94.52 (real_acc=99.7 fake_acc=38.1)
+    glide_100_10: acc=96.9 AP=99.73 AUROC=99.73 (real_acc=99.7 fake_acc=94.1)
+    glide_100_27: acc=94.7 AP=99.55 AUROC=99.5 (real_acc=99.7 fake_acc=89.7)
+    glide_50_27: acc=96.0 AP=99.64 AUROC=99.6 (real_acc=99.7 fake_acc=92.3)
+    guided: acc=74.95 AP=86.62 AUROC=85.23 (real_acc=90.0 fake_acc=59.9)
+    ldm_100: acc=93.35 AP=99.71 AUROC=99.79 (real_acc=99.7 fake_acc=87.0)
+    ldm_200: acc=92.5 AP=99.7 AUROC=99.78 (real_acc=99.7 fake_acc=85.3)
+    ldm_200_cfg: acc=94.0 AP=99.7 AUROC=99.71 (real_acc=99.7 fake_acc=88.3)
+=== RESULT npr_trained_last_ufd: mAP=97.49 mAUROC=97.23 acc=88.91 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_trained_last_ufd.json ===
+=== trained_best (/ssdstore/ssalehi/SynthScope/models/npr_v1/model_best.pth) Tue Oct 27 02:54:45 CET 2026
+    biggan: acc=79.5 AP=89.71 AUROC=90.53 (real_acc=90.3 fake_acc=68.7)
+    cyclegan: acc=82.55 AP=97.55 AUROC=98.21 (real_acc=98.49 fake_acc=66.62)
+    deepfake: acc=68.45 AP=69.88 AUROC=74.96 (real_acc=70.37 fake_acc=66.53)
+    gaugan: acc=66.96 AP=78.39 AUROC=83.97 (real_acc=89.12 fake_acc=44.8)
+    progan: acc=99.83 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=99.65)
+    stargan: acc=87.74 AP=99.99 AUROC=99.99 (real_acc=100.0 fake_acc=75.49)
+    stylegan: acc=92.22 AP=99.04 AUROC=98.85 (real_acc=99.93 fake_acc=84.51)
+    stylegan2: acc=97.11 AP=99.9 AUROC=99.88 (real_acc=99.94 fake_acc=94.29)
+=== RESULT npr_trained_best_forensynths8: mAP=91.81 mAUROC=93.3 acc=84.3 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_trained_best_forensynths8.json ===
+    dalle: acc=71.5 AP=92.85 AUROC=92.7 (real_acc=98.5 fake_acc=44.5)
+    glide_100_10: acc=94.6 AP=98.54 AUROC=98.22 (real_acc=98.5 fake_acc=90.7)
+    glide_100_27: acc=92.25 AP=97.85 AUROC=97.35 (real_acc=98.5 fake_acc=86.0)
+    glide_50_27: acc=93.55 AP=98.08 AUROC=97.6 (real_acc=98.5 fake_acc=88.6)
+    guided: acc=74.15 AP=84.94 AUROC=83.39 (real_acc=89.7 fake_acc=58.6)
+    ldm_100: acc=83.9 AP=97.13 AUROC=97.49 (real_acc=98.5 fake_acc=69.3)
+    ldm_200: acc=83.05 AP=97.01 AUROC=97.37 (real_acc=98.5 fake_acc=67.6)
+    ldm_200_cfg: acc=89.7 AP=98.09 AUROC=98.25 (real_acc=98.5 fake_acc=80.9)
+=== RESULT npr_trained_best_ufd: mAP=95.56 mAUROC=95.3 acc=85.34 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/npr_train_wt/repro/bench_results/npr_trained_best_ufd.json ===
+=== EVAL DONE Tue Oct 27 02:59:34 CET 2026

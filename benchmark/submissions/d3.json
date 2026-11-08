@@ -58,6 +58,6 @@
   "date": "2026-10-31",
   "verified": true,
   "source": "repro/bench_results/d3_genvideo_fpr.json (tag d3_genvideo_fpr, all generators); job 270384 (repro/logs/spliteval_270384.out)",
-  "protocol_notes": "Training-free X-CLIP 2nd-order feature volatility (official preprocessing)",
+  "protocol_notes": "Training-free X-CLIP 2nd-order feature volatility (official preprocessing). AP here is fake-as-positive against all 10k reals; the README's 99.0 AP is the paper protocol (real-as-positive, first 1000 clips)",
   "synthscope_version": "0.1.0"
 }
