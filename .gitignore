@@ -35,3 +35,6 @@ benchmark/generator_runs/*/fake/
 # cross-evaluation matrix: symlink layouts and in-flight partial results (benchmark/matrix.py)
 repro/matrix/_layouts/
 repro/matrix/*/*.partial
+repro/matrix/*/*.partial.*
+repro/matrix/*/_parts/*/*.partial.*
+repro/matrix/_claims/
