@@ -50,6 +50,7 @@ needed for inference.
 | `forward` averages the logits of a `[B, T, 3, H, W]` clip | the official `util.eval_model` / `test.py` aggregation, so a clip is one call. |
 | new transform steps `resize_short_256_bicubic` and `to_image` | the official eval is torchvision v2 `Resize(256, interpolation=3)` then `ToImage` + `ToDtype(float32, scale=True)`; `to_tensor`-style conversion differs from it by one float ulp, so the v2 order is kept for bit-exact inputs. |
 | the video protocol uses the frame-directory path, not the `_mp4` path | the official benchmark keys (`genvideo`, `magic`, `reward`, ...) read ffmpeg frame directories; the `_mp4` keys decode with decord and, at test time too, pick a frame at `random.randint` (unseeded), so they are not reproducible. |
+| a clip with zero extracted frames raises `ValueError` (`bench_eval_video` drops it with a "bad video" print) | the official loader scores such a clip as a black frame (vina_ref `dataset/dataloader.py:111-116`); no effect on GenVideo-Val, which reproduces exactly. |
 | image files of every format PIL reads | the official test loader only accepts `.jpg`, `.jpeg`, `.png`, `.webp` (other files become a black image); the pixels of the accepted formats are the same. |
 | `compute_loss` = BCE with logits, `outputs` = `[-logit, logit]` | the official `util._classification_loss` for one output; the two columns let the trainer's metrics (argmax, softmax[:, 1]) read the single logit, as DDA / D3QE / B-Free. The training code is not released. |
 
@@ -317,7 +318,7 @@ The UniversalFakeDetect (LDM) run was compared with the official `eval.py` as we
   means of both). The official per-file CSVs are not in the repository (the largest are 1.4 to 1.7 MB); the JSONs name them
   by paths relative to the shared working directory (`vina_official_out/...`) and they are kept outside the repo. It was not
   run on ForenSynths, DiTFake, ARForensics, GenImage or RRDataset; for those the evidence is the digit-level agreement with
-  the paper (and, for ARForensics, GenImage and ForenSynths, the file-level parity above).
+  the paper (and the 24-image / 8-clip fidelity check above).
 * **Code and jobs.** The CPU runs are on commit 0bd0597 and the GPU runs on 0954488 (0 uncommitted tracked files in every
   log header). Logs are `repro/logs/vinabench_<job>.out`.
 

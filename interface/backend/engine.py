@@ -215,12 +215,17 @@ class Engine:
             return None
         return config.CHECKPOINTS_DIR / spec.checkpoint
 
+    @staticmethod
+    def ffmpeg_missing(spec: ModelSpec) -> bool:
+        """True for a detector whose video protocol shells out to ffmpeg (vina_video) when none can be found."""
+        return spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available()
+
     def is_available(self, spec: ModelSpec) -> bool:
         if spec.key == "stall":  # training-free, but needs the gated DINOv3 ViT-L/16 weights
             import os
             from .registry import DINOV3_WEIGHTS
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
-        if spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available():   # vina_video needs ffmpeg
+        if self.ffmpeg_missing(spec):
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True

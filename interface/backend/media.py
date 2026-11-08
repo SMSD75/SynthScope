@@ -100,18 +100,26 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
 def ffmpeg_available() -> bool:
     try:
         ffmpeg_exe()
-    except FileNotFoundError:
+    except (FileNotFoundError, RuntimeError, OSError):   # RuntimeError: imageio-ffmpeg found no binary
         return False
     return True
 
 
 def ffmpeg_exe() -> str:
     """The ffmpeg binary: ``$SYNTHSCOPE_FFMPEG``, else ``ffmpeg`` on the PATH, else imageio-ffmpeg's static build."""
-    exe = os.environ.get("SYNTHSCOPE_FFMPEG") or shutil.which("ffmpeg")
+    env = os.environ.get("SYNTHSCOPE_FFMPEG")
+    if env:
+        if not os.path.isfile(env) and shutil.which(env) is None:
+            raise FileNotFoundError(f"SYNTHSCOPE_FFMPEG={env!r} is not an executable file")
+        return env
+    exe = shutil.which("ffmpeg")
     if exe:
         return exe
     if imageio_ffmpeg is not None:
-        return imageio_ffmpeg.get_ffmpeg_exe()
+        try:
+            return imageio_ffmpeg.get_ffmpeg_exe()
+        except RuntimeError as e:
+            raise FileNotFoundError(f"imageio-ffmpeg found no ffmpeg binary ({e})") from e
     raise FileNotFoundError("ffmpeg not found: install it, set SYNTHSCOPE_FFMPEG, or pip install imageio-ffmpeg")
 
 

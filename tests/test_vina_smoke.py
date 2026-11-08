@@ -27,6 +27,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import types
 
 import numpy as np
 import torch
@@ -123,6 +124,10 @@ def test_model_and_loader() -> None:
           f"loss outputs (4, 2) -> AIGIMetrics {sorted(values)}")
 
 
+def raise_no_binary() -> str:
+    raise RuntimeError("No ffmpeg exe could be found")
+
+
 def test_video_spec() -> None:
     print("[C] vina_video: sigmoid of the mean frame logit; input note ...")
     spec = get_spec("vina_video")
@@ -151,6 +156,23 @@ def test_video_spec() -> None:
                 assert not engine.is_available(dataclasses.replace(spec, checkpoint=os.path.join(tmp, "vina.pth")))
             os.environ["SYNTHSCOPE_FFMPEG"] = sys.executable          # any existing file: found
             assert engine.is_available(dataclasses.replace(spec, checkpoint=os.path.join(tmp, "vina.pth")))
+            os.environ["SYNTHSCOPE_FFMPEG"] = os.path.join(tmp, "no_such_ffmpeg")   # a dangling override: not found
+            assert not media.ffmpeg_available()
+            assert not engine.is_available(dataclasses.replace(spec, checkpoint=os.path.join(tmp, "vina.pth")))
+            os.environ["SYNTHSCOPE_FFMPEG"] = ""
+            saved_imageio = media.imageio_ffmpeg                      # imageio-ffmpeg without a binary raises RuntimeError
+            media.imageio_ffmpeg = types.SimpleNamespace(get_ffmpeg_exe=raise_no_binary)
+            try:
+                assert not media.ffmpeg_available()
+                assert not engine.is_available(spec) and engine.ffmpeg_missing(spec)
+                try:                                                  # the API says ffmpeg, not "download the weights"
+                    Detector(spec, device="cpu").predict("clip.mp4")
+                except FileNotFoundError as e:
+                    assert "needs ffmpeg" in str(e), e
+                else:
+                    raise AssertionError("vina_video ran without ffmpeg")
+            finally:
+                media.imageio_ffmpeg = saved_imageio
         finally:
             for k, v in saved.items():
                 if v is None:
