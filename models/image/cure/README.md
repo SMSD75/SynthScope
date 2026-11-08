@@ -163,7 +163,7 @@ tensors, so it is scored like the official weights: `bench_eval.py --model cure 
 
 | open point | SynthScope choice | reason |
 |---|---|---|
-| training preprocessing | each endpoint goes through the released test pipeline (`cure_eval`: PNG -> JPEG q96, 390 resize / crop, 336, JPEG q70, mean = std = 0.5), then the mixture is formed | the paper re-encodes the PNG fakes as JPEG q96 (the pipeline's first step); the subspace and head are used with this pipeline at test time; no augmentation is mentioned |
+| training preprocessing | each endpoint goes through the released test pipeline (`cure_eval`: PNG -> JPEG q96, 390 resize / crop, 336, JPEG q70, mean = std = 0.5), then the mixture is formed | the paper re-encodes the PNG fakes as JPEG q96 (the pipeline's first step); the subspace and head are used with this pipeline at test time; no augmentation is mentioned. Check: with the released encoder, stage 2 on this preprocessing gives a mu with cosine 0.99999 to the released mu (relative distance 0.5%, 2500 RF pairs, job 283104), so stage 2 of the release used the same pipeline (stage 1's own preprocessing cannot be checked this way) |
 | where mixing happens | on the preprocessed tensors | normalisation is affine, so this equals the pixel mixture of the preprocessed images |
 | pairing / epoch | one item per real image (162k per epoch), its generated partner and a drawn at random per item (with replacement), fresh every epoch | "independently drawn" endpoints, "each training pair receives one independently sampled mixing ratio" |
 | warmup / cosine shape | linear from 0 per optimizer step over 2 epochs to 1e-5, then cosine over the remaining 3 epochs to 1e-6 (`timm_cosine.warmup_prefix`) | the usual meaning of "N warmup epochs and cosine decay to a minimum lr" (MAE-style) |
@@ -172,7 +172,7 @@ tensors, so it is scored like the official weights: `bench_eval.py --model cure 
 | stage-1 model selection | the last epoch | not stated |
 | ratio-head weight decay | 0.01 on all head parameters (bias too) | "weight decay of 0.1 and 0.01, respectively" |
 | pairs per trajectory type | 20,000 for each of RF, RR, FF (360k forwards) | "20,000 sampled endpoint pairs" |
-| lambda_s, lambda_m, eps | 1, 1, 1e-4 (`subspace.py` defaults; `--lambda-s/--lambda-m/--eps`) | not stated; stage 2 with `--reference-adapter` reports the overlap with the released W and fits the (lambda_s, lambda_m, eps) under which the released W is B-orthonormal |
+| lambda_s, lambda_m, eps | 1, 1, 1e-3 (`subspace.py` defaults; `--lambda-s/--lambda-m/--eps`) | not stated. Stage 2 with `--reference-adapter` reports the overlap with the released W and fits the (lambda_s, lambda_m, eps) under which the released W is B-orthonormal. With the **released encoder** on 2500 pairs per type of a 2572 + 2572 subset of the training set (job 283104): fit lambda_s 0.90, lambda_m 1.02, eps 1.05e-3 (relative residual 0.09); with 1, 1, 1e-3 the solved W overlaps the released W at 0.74 (random 0.125), its columns have norms 9.0-9.6 (released 6.8-8.8), and the released W is nearly a generalised eigenbasis of our C_F (off-diagonal ratio 0.03). eps 1e-4 gave overlap 0.19 and 6x larger columns (job 283072, 1000 pairs). The paper's 20,000 pairs on the full set is the final check (Task 3) |
 | eigenvector scale | B-orthonormal (W^T B W = I), as LAPACK / scipy generalised solvers return | the released W is not unit-norm (column norms 6.8-8.8) |
 | stage-3 data and schedule | all 324k clean training images, constant lr, last epoch | not stated |
 
@@ -180,6 +180,14 @@ tensors, so it is scored like the official weights: `bench_eval.py --model cure 
 6.3 GiB peak, 32 images/s); without it micro-batch 32 takes 14.1 GiB (43 images/s), so a 48 GB GPU can run 64 without
 checkpointing, or use `MICRO=32` (gradient accumulation 2, same per-GPU batch of 64). Checkpointing gives the same features and
 gradients (`tests/test_cure_recipe.py`).
+
+**Smoke run** (job 283104, one A5000, log `repro/logs/curesmoke_283104.out`; a 2572 + 2572 subset of the training set,
+every 63rd image of each class; not a result). Stage 1, 200 optimizer steps at per-GPU batch 64 with checkpointing: the
+validation BCE on 256 fixed mixtures falls 0.738, 0.714, 0.698, 0.683, 0.674 over the 5 epochs (0.5 is the floor for
+a ~ U(0, 1)). Stage 2 on 200 pairs per type, stage 3 on the 5144 subset images (eval-mode accuracy real 0.63 / fake 0.66
+after 5 epochs of 21 steps), export: 100 tensors, reloaded logits equal the trained head's (max |diff| 3.6e-6), and
+`synthscope.load("cure", checkpoint=...)` loads it with the same status as the released adapter (`loaded 100 tensors,
+missing=295` frozen backbone keys, `unexpected=0`). The lr check of stage 1 is in job 283137.
 
 **Tests.** `tests/test_cure_recipe.py` (CPU): the mixing items, the BCE soft-target loss, the trainable set and weight-decay
 groups, gradient checkpointing, the trainer's logged lr at every step against the intended schedule, Eq. 6-10 against numpy

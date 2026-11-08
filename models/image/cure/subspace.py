@@ -16,7 +16,8 @@ each divided by its trace, then the generalised eigenproblem
 whose k = 128 leading eigenvectors are W [1024, 128] (Eq. 11); mu is the mean RF trajectory feature (Sec. 3.3).
 
 Unspecified in the paper (documented assumptions, see the README "Training recipe"): lambda_s, lambda_m, eps (defaults
-below); the scale of the eigenvectors (here B-orthonormal, W^T B W = I, the convention of LAPACK's / scipy's generalised
+below: 1, 1, 1e-3; with the released encoder our statistics make the released W B-orthonormal for about lambda_s 0.9,
+lambda_m 1.0, eps 1.05e-3, job 283104); the scale of the eigenvectors (here B-orthonormal, W^T B W = I, the convention of LAPACK's / scipy's generalised
 symmetric solver; the released W is not unit-norm, its columns have norms 6.8-8.8); C_S uses the 1/N covariance (the trace
 normalisation removes the factor). Everything is computed in float64.
 """
@@ -27,7 +28,7 @@ import torch
 GRID = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
 DEFAULT_LAMBDA_S = 1.0
 DEFAULT_LAMBDA_M = 1.0
-DEFAULT_EPS = 1e-4
+DEFAULT_EPS = 1e-3
 
 
 def slope_weights(grid=GRID) -> torch.Tensor:
