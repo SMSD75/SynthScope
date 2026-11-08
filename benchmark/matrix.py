@@ -35,6 +35,12 @@ Running several workers
     ``<out-root>/_claims``); a heartbeat thread touches the claim while the unit runs, and a claim not touched for
     ``--stale-minutes`` (30) is taken over, so a killed worker's unit is picked up again. ``--worker`` repeats passes over the unit list
     until a pass claims nothing; without it one pass runs. Claims need a filesystem with working O_EXCL (local disk, NFSv3+, Lustre).
+    A claim file holds its owner's token: the heartbeat and the release touch/remove it only while it still holds that token, and a worker
+    that lost its claim does not overwrite a result that is already there. Staleness compares the file's mtime (set by the NFS server)
+    with the local clock, so keep ``--stale-minutes`` far above any plausible clock skew. If a worker crashes inside a takeover the
+    ``.takeover`` lock lingers for a minute and a second takeover can then race it: the worst case is a duplicate computation of the same
+    unit (identical results, each renamed into place atomically), never a corrupt result. On a takeover the dead worker's
+    ``*.partial.*`` files for that unit older than the stale time are deleted; SIGTERM / SIGINT / an exception stop the bench_eval child.
     Clusters that do not share a filesystem must not share claims: give each its own ``--claim-dir`` and ``--out-root`` and split the
     work between them with ``--benchmarks`` (data locality); bring the result files together and run ``--merge``.
   * ``--shard i/n`` (0 <= i < n) takes units i, i+n, ... of the cost-sorted list: a static split on top of (or instead of) claiming.
@@ -42,6 +48,9 @@ Running several workers
     log are per writer (``MATRIX_RESULTS.<host>.<pid>.jsonl``, ``FAILED.<host>.<pid>.jsonl``; ``--results-log`` overrides the first),
     and a result is renamed into place only when complete, so an existing JSON is a complete one. ``matrix_table.py`` reads every
     writer's files and takes the latest record per cell.
+  * A benchmark whose data is not readable here (no data map entry, folder missing, listing failed) is reported once ("unresolved benchmark
+    X: N units skipped") and skipped without counting as a failure or tripping the circuit breaker, so a worker with only some of the
+    benchmarks (one cluster's) runs the rest; it exits 1 only if NOTHING it was given was runnable.
   * Resume: a unit whose result exists is skipped; a failed unit is logged with its error and retried by the next run (not again in
     the same process). The worker aborts (exit 2) after ``--max-same-failures`` (5) consecutive failures with the same error signature.
   * Before a result is kept its ``n_generators`` (and, for a chunk, its generator names) must equal the expected list; otherwise
@@ -73,11 +82,13 @@ import json
 import os
 import re
 import shlex
+import signal
 import socket
 import subprocess
 import sys
 import threading
 import time
+import uuid
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
@@ -87,6 +98,7 @@ BENCH_EVAL = Path(__file__).resolve().parent / "bench_eval.py"
 DATA_ROOT_ENV = "SYNTHSCOPE_MATRIX_DATA"
 DEGRADE_TOKEN = re.compile(r"social2?|jpeg\d+|down\d+(?:\.\d+)?|blur\d+(?:\.\d+)?")   # the grammar of bench_eval.parse_degrade
 TAIL_LINES = 40
+KILL_AFTER_S = 15           # a child that ignores SIGTERM this long is killed
 DEFAULT_IMGS_PER_S = 22.0           # when the spec gives a detector no estimate
 DEFAULT_CHUNK_HOURS = 2.0
 WRITER = f"{socket.gethostname().split('.')[0]}.{os.getpid()}"
@@ -380,29 +392,52 @@ def plan_units(spec: dict, cells: list[Cell], data_map: dict[str, str], data_roo
 
 # ---- claims ---------------------------------------------------------------------------------------------------------------
 
-def _write_claim(path: Path) -> bool:
+def _new_token() -> str:
+    return f"{WRITER}.{uuid.uuid4().hex[:8]}"
+
+
+def _write_claim(path: Path, token: str) -> bool:
     try:
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     except FileExistsError:
         return False
     try:
-        os.write(fd, json.dumps({"writer": WRITER, "time": datetime.datetime.now().isoformat(timespec="seconds")}).encode())
+        os.write(fd, json.dumps({"token": token, "writer": WRITER,
+                                 "time": datetime.datetime.now().isoformat(timespec="seconds")}).encode())
     finally:
         os.close(fd)
     return True
 
 
-def try_claim(claim_dir: Path, name: str, stale_s: float) -> Path | None:
+def _holds(path: Path, token: str) -> bool:
+    """True if the file exists and still holds ``token``."""
+    try:
+        return json.loads(path.read_text()).get("token") == token
+    except (OSError, ValueError):
+        return False
+
+
+@dataclasses.dataclass
+class Claim:
+    path: Path
+    token: str
+    took_over: bool = False         # the previous holder's claim was stale
+
+    def owns(self) -> bool:
+        return _holds(self.path, self.token)
+
+
+def try_claim(claim_dir: Path, name: str, stale_s: float) -> Claim | None:
     """Claim ``name`` by creating its file with O_CREAT|O_EXCL; None if another worker holds a live claim. A claim whose mtime is
-    older than ``stale_s`` is taken over (serialised by a short-lived ``.takeover`` file so two workers cannot both take it)."""
+    older than ``stale_s`` is taken over (serialised by a short-lived ``.takeover`` lock so two workers cannot both take it)."""
     claim_dir.mkdir(parents=True, exist_ok=True)
-    path = claim_dir / name
-    if _write_claim(path):
-        return path
+    path, token = claim_dir / name, _new_token()
+    if _write_claim(path, token):
+        return Claim(path, token)
     try:
         age = time.time() - path.stat().st_mtime
     except FileNotFoundError:
-        return path if _write_claim(path) else None
+        return Claim(path, token) if _write_claim(path, token) else None
     if age < stale_s:
         return None
     lock = claim_dir / f"{name}.takeover"
@@ -411,7 +446,7 @@ def try_claim(claim_dir: Path, name: str, stale_s: float) -> Path | None:
             lock.unlink(missing_ok=True)
     except FileNotFoundError:
         pass
-    if not _write_claim(lock):
+    if not _write_claim(lock, token):
         return None
     try:
         try:
@@ -420,23 +455,26 @@ def try_claim(claim_dir: Path, name: str, stale_s: float) -> Path | None:
         except FileNotFoundError:
             pass
         path.unlink(missing_ok=True)
-        return path if _write_claim(path) else None
+        return Claim(path, token, took_over=True) if _write_claim(path, token) else None
     finally:
-        lock.unlink(missing_ok=True)
+        if _holds(lock, token):                                        # never remove another worker's lock
+            lock.unlink(missing_ok=True)
 
 
 class Heartbeat:
-    """Touch a claim file every ``interval`` seconds while the unit runs; remove it on exit."""
+    """Touch the claim file every ``interval`` seconds while the unit runs, and remove it on exit; both only while the file still holds
+    this worker's token (a claim taken over by another worker is left alone)."""
 
-    def __init__(self, path: Path, interval: float):
-        self.path, self.interval = path, interval
+    def __init__(self, claim: Claim, interval: float):
+        self.claim, self.interval = claim, interval
         self.stop = threading.Event()
         self.thread = threading.Thread(target=self.run, daemon=True)
 
     def run(self) -> None:
         while not self.stop.wait(self.interval):
             with contextlib.suppress(OSError):
-                os.utime(self.path)
+                if self.claim.owns():
+                    os.utime(self.claim.path)
 
     def __enter__(self):
         self.thread.start()
@@ -445,7 +483,19 @@ class Heartbeat:
     def __exit__(self, *exc):
         self.stop.set()
         self.thread.join()
-        self.path.unlink(missing_ok=True)
+        if self.claim.owns():
+            self.claim.path.unlink(missing_ok=True)
+
+
+def sweep_partials(result: Path, older_than_s: float) -> int:
+    """Delete the ``<result>.partial.*`` files of a dead worker that are older than ``older_than_s``; returns how many."""
+    removed = 0
+    for path in result.parent.glob(result.name + ".partial.*"):
+        with contextlib.suppress(OSError):
+            if time.time() - path.stat().st_mtime > older_than_s:
+                path.unlink()
+                removed += 1
+    return removed
 
 
 # ---- merging --------------------------------------------------------------------------------------------------------------
@@ -539,14 +589,24 @@ def append_line(path: Path, record: dict) -> None:
 
 
 def run_command(cmd: list[str], env: dict[str, str]) -> tuple[int, list[str]]:
-    """Run ``cmd``, echo its output, return (exit code, last lines)."""
+    """Run ``cmd``, echo its output, return (exit code, last lines). Whatever interrupts the wait (SIGTERM / SIGINT turned into an
+    exception, any error) terminates the child, and kills it if it has not exited after ``KILL_AFTER_S``."""
     tail: collections.deque[str] = collections.deque(maxlen=TAIL_LINES)
     proc = subprocess.Popen(cmd, cwd=REPO, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                             errors="replace")
-    for line in proc.stdout:
-        print(line, end="", flush=True)
-        tail.append(line.rstrip("\n"))
-    return proc.wait(), list(tail)
+    try:
+        for line in proc.stdout:
+            print(line, end="", flush=True)
+            tail.append(line.rstrip("\n"))
+        return proc.wait(), list(tail)
+    finally:
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=KILL_AFTER_S)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+                proc.wait()
 
 
 def error_signature(error: str) -> str:
@@ -604,17 +664,18 @@ class Runner:
         except (ValueError, KeyError, OSError) as e:
             self.fail(merge_unit, f"merge failed: {e}")
 
-    def run_unit(self, unit: Unit) -> bool:
-        """Run one claimed unit; True if its result now exists. Any exception other than an open circuit breaker is a logged failure."""
+    def run_unit(self, unit: Unit, claim: Claim | None = None) -> bool:
+        """Run one claimed unit; True if its result now exists. Any exception other than an open circuit breaker (or an interrupt, which
+        is not an Exception) is a logged failure."""
         try:
-            return self._run_unit(unit)
+            return self._run_unit(unit, claim)
         except CircuitOpen:
             raise
         except Exception as e:                                                       # noqa: BLE001
             self.fail(unit, f"{type(e).__name__}: {e}")
             return False
 
-    def _run_unit(self, unit: Unit) -> bool:
+    def _run_unit(self, unit: Unit, claim: Claim | None) -> bool:
         if unit.error:
             self.fail(unit, unit.error)
             return False
@@ -625,7 +686,11 @@ class Runner:
         cmd = build_command(unit, partial, self.results_log, python=self.python, bench_eval=self.bench_eval, bs=self.bs,
                             device=self.device)
         print(f"=== unit {unit.key} (~{unit.cost / 3600:.1f} h) {datetime.datetime.now():%H:%M:%S}\n    {shlex.join(cmd)}", flush=True)
-        rc, tail = run_command(cmd, self.env)
+        try:
+            rc, tail = run_command(cmd, self.env)
+        except BaseException:
+            partial.unlink(missing_ok=True)                                          # interrupted: leave no half-written file
+            raise
         if rc != 0 or not partial.is_file():
             partial.unlink(missing_ok=True)
             last = next((line for line in reversed(tail) if line.strip()), "")
@@ -636,6 +701,10 @@ class Runner:
             partial.unlink(missing_ok=True)
             self.fail(unit, problem, cmd, rc, tail)
             return False
+        if claim is not None and not claim.owns() and final.is_file():
+            partial.unlink(missing_ok=True)                                          # another worker took the unit over and finished it
+            print(f"--- claim lost for {unit.key}: its result exists already, ours is discarded", flush=True)
+            return True
         os.replace(partial, final)
         self.succeeded()
         if unit.chunk:
@@ -657,10 +726,11 @@ class Runner:
         return None
 
     def run_pass(self, units: list[Unit]) -> int:
-        """One pass: claim and run what is neither done, nor held by another worker, nor failed here. Returns the number claimed."""
+        """One pass over the runnable units: claim and run what is neither done, nor held by another worker, nor failed here. Returns the
+        number claimed. (Units with a planning problem are not runnable: see ``report_unresolved``.)"""
         claimed = 0
         for unit in units:
-            if unit.key in self.failed_here:
+            if unit.error or unit.key in self.failed_here:
                 continue
             if self.done(unit):
                 print(f"--- skip {unit.key}: result exists", flush=True)
@@ -671,12 +741,37 @@ class Runner:
                 continue
             claimed += 1
             with Heartbeat(claim, self.heartbeat_s):
+                if claim.took_over:
+                    swept = sweep_partials(unit.result_path(self.out_root), self.stale_s)
+                    print(f"--- took over the stale claim of {unit.key}; removed {swept} old partial file(s)", flush=True)
                 if self.done(unit):                          # finished by someone between our check and the claim
                     continue
-                self.run_unit(unit)
+                self.run_unit(unit, claim)
         for cell in self.chunked:
             self.merge(cell)
         return claimed
+
+
+def report_unresolved(units: list[Unit]) -> int:
+    """Print one line per (benchmark, reason) for the units that cannot run here; returns how many units that is."""
+    groups: dict[tuple[str, str], int] = collections.Counter()
+    for unit in units:
+        if unit.error:
+            groups[unit.cell.benchmark, unit.error] += 1
+    for (benchmark, reason), n in sorted(groups.items()):
+        print(f"[matrix] unresolved benchmark {benchmark}: {n} units skipped: {reason}", flush=True)
+    return sum(groups.values())
+
+
+def orphan_parts(out_root: Path, cells: list[Cell], chunked: dict[Cell, list[Unit]]) -> dict[str, list[str]]:
+    """Part files of the given cells that the current plan does not name (the chunking or the listing changed since they were written)."""
+    out: dict[str, list[str]] = {}
+    for cell in cells:
+        planned = {u.chunk for u in chunked.get(cell, [])}
+        extra = sorted(p.name for p in cell.parts_dir(out_root).glob("*.json") if p.stem not in planned)
+        if extra:
+            out[cell.name] = extra
+    return out
 
 
 def unit_status(unit: Unit, spec: dict, out_root: Path) -> str:
@@ -761,19 +856,40 @@ def main(argv=None) -> int:
             counts[status] += 1
         print("[matrix] dry run: " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items())), flush=True)
         return 0
+    def on_signal(signum, frame):
+        raise SystemExit(128 + signum)          # unwinds through the finally blocks: child terminated, claim released, partial removed
+
+    old_handlers = {}
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        with contextlib.suppress(ValueError):       # only the main thread may install handlers
+            old_handlers[sig] = signal.signal(sig, on_signal)
+    unresolved = report_unresolved([u for _, u in mine])
+    runnable = [u for _, u in mine if not u.error]
     try:
         if args.merge:
+            orphans = orphan_parts(out_root, cells, chunked)
+            if orphans:
+                n = sum(len(v) for v in orphans.values())
+                print(f"[matrix] WARNING: {n} part files present but names do not match the current plan (chunking/listing changed?): "
+                      + "; ".join(f"{cell}: {', '.join(names[:3])}{'...' if len(names) > 3 else ''}" for cell, names in sorted(orphans.items())),
+                      flush=True)
             for cell in chunked:
                 runner.merge(cell)
         else:
             while True:
-                claimed = runner.run_pass([u for _, u in mine])
+                claimed = runner.run_pass(runnable)
                 if not args.worker or not claimed:
                     break
     except CircuitOpen as e:
         print(f"[matrix] ABORT (circuit breaker): {e}", flush=True)
         return 2
-    print(f"[matrix] finished: failed={len(runner.failed_here)}", flush=True)
+    finally:
+        for sig, handler in old_handlers.items():
+            signal.signal(sig, handler)
+    print(f"[matrix] finished: failed={len(runner.failed_here)} unresolved={unresolved}", flush=True)
+    if mine and not runnable and not args.merge:
+        print("[matrix] nothing was runnable here: check --data-root / --data-map", flush=True)
+        return 1
     return 1 if runner.failed_here else 0
 
 

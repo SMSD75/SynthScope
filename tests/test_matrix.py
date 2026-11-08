@@ -9,7 +9,8 @@ weights: the units run a stand-in for ``bench_eval.py`` over tiny fake benchmark
   of the whole run; parts that do not fit are rejected,
 * running with the stand-in: exact flags, results and failure/results logs are per writer (no shared jsonl), chunks land under
   ``_parts`` and merge when the last one is there, resume skips, failures are logged (also a wrong generator count, which is not
-  kept) and retried, an exception in one unit does not stop the others, the circuit breaker aborts, unresolved data is a logged failure,
+  kept) and retried, an exception in one unit does not stop the others, the circuit breaker aborts; unresolved benchmarks are reported once and skipped (not failures),
+  a lost claim does not overwrite a result, SIGTERM stops the child and releases the claim,
 * claims: O_EXCL exclusivity, stale takeover, heartbeat; three real worker processes on one folder run every unit exactly once;
   static shards partition the units,
 * the Synthbuster-style layout (hashed per data root) is found by ``bench_eval.discover``,
@@ -44,6 +45,9 @@ FAKE_BENCH_EVAL = textwrap.dedent('''
     get = lambda k: a[a.index(k) + 1] if k in a else None
     with open(os.environ["FAKE_CALLS"], "a") as f:
         f.write(json.dumps(a) + "\\n")
+    if os.environ.get("FAKE_PIDS"):
+        with open(os.environ["FAKE_PIDS"], "a") as f:
+            f.write(str(os.getpid()) + "\\n")
     time.sleep(float(os.environ.get("FAKE_SLEEP", "0")))
     model = get("--model")
     if model == os.environ.get("FAKE_FAIL_MODEL"):
@@ -311,26 +315,49 @@ def check_claims() -> None:
     with tempfile.TemporaryDirectory() as tmp_:
         claims = Path(tmp_) / "claims"
         first = matrix.try_claim(claims, "u1", 60)
-        assert first and first.is_file() and matrix.try_claim(claims, "u1", 60) is None            # exclusive
+        assert first and first.path.is_file() and first.owns() and not first.took_over
+        assert matrix.try_claim(claims, "u1", 60) is None                                           # exclusive
         assert matrix.try_claim(claims, "u2", 60)                                                   # others are free
         old = time.time() - 120
-        os.utime(first, (old, old))
+        os.utime(first.path, (old, old))
         taken = matrix.try_claim(claims, "u1", 60)                                                  # stale: taken over
-        assert taken == first and time.time() - taken.stat().st_mtime < 5
+        assert taken and taken.path == first.path and taken.took_over and taken.token != first.token
+        assert time.time() - taken.path.stat().st_mtime < 5
+        assert taken.owns() and not first.owns()                                                    # ownership is by token
         assert matrix.try_claim(claims, "u1", 60) is None                                           # and live again
         assert not list(claims.glob("*.takeover"))
-        # a heartbeat keeps a long unit's claim fresh; the claim is removed on exit
-        os.utime(taken, (old, old))
+        # the former owner's heartbeat and exit leave the new owner's claim alone
+        recent = time.time() - 10
+        os.utime(taken.path, (recent, recent))
+        with matrix.Heartbeat(first, 0.05):
+            time.sleep(0.3)
+            assert abs(taken.path.stat().st_mtime - recent) < 0.01, "a lost claim was touched"
+        assert taken.path.is_file() and taken.owns(), "a lost claim was removed"
+        # the owner's heartbeat keeps a long unit's claim fresh; the claim is removed on exit
+        os.utime(taken.path, (old, old))
         with matrix.Heartbeat(taken, 0.05):
             time.sleep(0.4)
-            assert time.time() - taken.stat().st_mtime < 5 and matrix.try_claim(claims, "u1", 60) is None
-        assert not taken.exists()
-        # a crashed takeover's lock is cleared
+            assert time.time() - taken.path.stat().st_mtime < 5 and matrix.try_claim(claims, "u1", 60) is None
+        assert not taken.path.exists()
+        # a crashed takeover's old lock is cleared
         (claims / "u3").write_text("{}")
-        os.utime(claims / "u3", (old, old))
+        os.utime(claims / "u3", (old - 100, old - 100))
         (claims / "u3.takeover").write_text("{}")
-        os.utime(claims / "u3.takeover", (old, old))
+        os.utime(claims / "u3.takeover", (old - 100, old - 100))
         assert matrix.try_claim(claims, "u3", 60)
+        # somebody else's live takeover lock is respected and never removed by us
+        (claims / "u4").write_text("{}")
+        os.utime(claims / "u4", (old, old))
+        (claims / "u4.takeover").write_text(json.dumps({"token": "someone-else"}))
+        assert matrix.try_claim(claims, "u4", 60) is None and (claims / "u4.takeover").is_file()
+        # sweeping a dead worker's partial files: only the old ones of that result
+        result = Path(tmp_) / "mx" / "b" / "aa.json"
+        result.parent.mkdir(parents=True)
+        for name, age in (("aa.json.partial.h.1", 5000), ("aa.json.partial.h.2", 10), ("bb.json.partial.h.1", 5000)):
+            (result.parent / name).write_text("x")
+            os.utime(result.parent / name, (time.time() - age, time.time() - age))
+        assert matrix.sweep_partials(result, 1800) == 1
+        assert sorted(p.name for p in result.parent.iterdir()) == ["aa.json.partial.h.2", "bb.json.partial.h.1"]
 
 
 # ---- running ------------------------------------------------------------------------------------------------------------------
@@ -426,8 +453,15 @@ def check_run_chunks_and_logs() -> None:
             code, text = run_matrix(tmp, ["--detectors", "aa", "--benchmarks", "plain", "--degrade", "jpeg75"], 0)
             assert "claimed by another worker" in text and not (mx / "plain/aa__jpeg75.json").exists()
             old = time.time() - 4000
-            os.utime(claim, (old, old))
-            run_matrix(tmp, ["--detectors", "aa", "--benchmarks", "plain", "--degrade", "jpeg75"], 0)
+            os.utime(claim.path, (old, old))
+            dead = mx / "plain/aa__jpeg75.json.partial.deadhost.7"          # left by the worker that died, plus a recent one of a live worker
+            live = mx / "plain/aa__jpeg75.json.partial.livehost.8"
+            for path, age in ((dead, 4000), (live, 5)):
+                path.write_text("x")
+                os.utime(path, (time.time() - age, time.time() - age))
+            code, text = run_matrix(tmp, ["--detectors", "aa", "--benchmarks", "plain", "--degrade", "jpeg75"], 0)
+            assert "took over the stale claim" in text and "removed 1 old partial" in text and not dead.exists() and live.exists()
+            live.unlink()
             deg = json.loads((mx / "plain/aa__jpeg75.json").read_text())
             assert deg["degrade"] == "jpeg75" and deg["tag"] == "mx_aa_plain_jpeg75"
             last = calls(tmp)[-1]
@@ -484,17 +518,106 @@ def check_failures_and_breaker() -> None:
             assert "circuit breaker" in text and len(calls(tmp)) - n_before == 2, len(calls(tmp)) - n_before
             assert not list((mx / "_claims").iterdir())                                       # the claim of the failing unit is released
 
-            # unresolved data: a logged failure per unit, nothing launched
+        finally:
+            for var in ("FAKE_CALLS", "FAKE_FAIL_MODEL", "FAKE_BAD_COUNT_MODEL"):
+                os.environ.pop(var, None)
+
+
+def check_unresolved_benchmarks() -> None:
+    """A worker that has only some of the benchmarks runs those: the rest is reported once per benchmark, is not a failure, and cannot trip
+    the circuit breaker (it did: five 'no data folder' failures aborted the worker before its runnable units)."""
+    with tempfile.TemporaryDirectory() as tmp_:
+        tmp = Path(tmp_)
+        setup(tmp)
+        try:
+            (tmp / "map.json").write_text(json.dumps({"_comment": "only plain is here", "plain": str(tmp / "data/Plain/test")}))
+            mx = tmp / "mx"
+            code, text = run_matrix(tmp, ["--worker", "--degrade", "all", "--detectors", "aa,bb,cc", "--data-root", "",
+                                          "--data-map-file", str(tmp / "map.json"), "--max-same-failures", "5"], 0)
+            assert "ABORT" not in text and not list(mx.glob("FAILED*.jsonl")), text                      # nothing logged as failed
+            lines = [line for line in text.splitlines() if "unresolved benchmark" in line]
+            assert len(lines) == 1 and lines[0].startswith("[matrix] unresolved benchmark shared: 9 units skipped: no data folder"), lines
+            assert not any("shared" in t for t in tags(tmp))                                             # none of them launched
+            assert (mx / "plain/bb.json").is_file() and (mx / "plain/cc__blur2.json").is_file()          # the runnable ones all ran
+            assert len(list(mx.glob("plain/*.json"))) == 8                                               # 3 detectors x 3 - the reused aa
             n_before = len(calls(tmp))
+            # nothing runnable at all: exit 1 with a hint, still no failure records
             out = io.StringIO()
             with contextlib.redirect_stdout(out):
                 code = matrix.main(["--spec", str(tmp / "spec.json"), "--out-root", str(tmp / "mx2"), "--benchmarks", "plain",
                                     "--detectors", "aa,bb", "--data-root", "", "--python", sys.executable,
                                     "--bench-eval", str(tmp / "fake_bench_eval.py")])
-            assert code == 1 and len(calls(tmp)) == n_before
-            assert all("no data folder" in r["error"] for r in failed_records(tmp / "mx2"))
+            assert code == 1 and len(calls(tmp)) == n_before and "nothing was runnable" in out.getvalue()
+            assert not list((tmp / "mx2").glob("FAILED*.jsonl"))
+            # the documented scenario with the real spec and a site map whose folders are not here
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                code = matrix.main(["--worker", "--data-map-file", str(ROOT / "repro/matrix/datamaps/cn029.json"), "--data-root", "",
+                                    "--benchmarks", "wildrf,ditfake,cospybench", "--out-root", str(tmp / "mx3")])
+            text = out.getvalue()
+            assert code == 1 and "ABORT" not in text and not list((tmp / "mx3").glob("FAILED*.jsonl")), text
+            assert [line.split(":")[0] for line in text.splitlines() if "unresolved benchmark" in line] == \
+                ["[matrix] unresolved benchmark cospybench", "[matrix] unresolved benchmark ditfake", "[matrix] unresolved benchmark wildrf"]
         finally:
-            for var in ("FAKE_CALLS", "FAKE_FAIL_MODEL", "FAKE_BAD_COUNT_MODEL"):
+            os.environ.pop("FAKE_CALLS", None)
+
+
+def check_claim_lost_and_signals() -> None:
+    with tempfile.TemporaryDirectory() as tmp_:
+        tmp = Path(tmp_)
+        setup(tmp)
+        mx = tmp / "mx"
+        try:
+            # a worker whose claim was taken over does not overwrite the complete result that is there
+            unit = matrix.plan_units(small_spec(), [Cell("cc", "plain")], {}, str(tmp / "data"), tmp / "lay", 9.0)[0][0]
+            final = unit.result_path(mx)
+            final.parent.mkdir(parents=True)
+            final.write_text('{"sentinel": 1}')
+            claims = mx / "_claims"
+            claims.mkdir()
+            (claims / unit.claim_name).write_text(json.dumps({"token": "the-new-owner"}))
+            lost = matrix.Claim(claims / unit.claim_name, "my-old-token")
+            runner = matrix.Runner(mx, claims, mx / "r.jsonl", mx / "f.jsonl", sys.executable, tmp / "fake_bench_eval.py", 32, None,
+                                   dict(os.environ), {})
+            with contextlib.redirect_stdout(io.StringIO()) as out:
+                assert runner.run_unit(unit, lost) is True
+            assert json.loads(final.read_text()) == {"sentinel": 1} and not list(mx.rglob("*.partial*"))
+            assert (claims / unit.claim_name).is_file() and len(calls(tmp)) == 1
+            # with the claim still ours the result is renamed into place
+            final.unlink()
+            (claims / unit.claim_name).write_text(json.dumps({"token": "mine"}))
+            with contextlib.redirect_stdout(io.StringIO()):
+                assert runner.run_unit(unit, matrix.Claim(claims / unit.claim_name, "mine")) is True
+            assert json.loads(final.read_text())["n_generators"] == 4
+
+            # SIGTERM to the worker: the bench_eval child is terminated, the claim released, no partial file left
+            os.environ["FAKE_SLEEP"] = "60"
+            os.environ["FAKE_PIDS"] = str(tmp / "pids")
+            mx2 = tmp / "mx2"
+            cmd = [sys.executable, str(ROOT / "benchmark/matrix.py"), "--worker", "--spec", str(tmp / "spec.json"), "--out-root", str(mx2),
+                   "--python", sys.executable, "--bench-eval", str(tmp / "fake_bench_eval.py"), "--data-root", str(tmp / "data"),
+                   "--detectors", "aa", "--benchmarks", "plain", "--degrade", "jpeg75"]
+            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            deadline = time.time() + 60
+            while not (tmp / "pids").exists() and time.time() < deadline:
+                time.sleep(0.1)
+            assert (tmp / "pids").exists(), "the stand-in never started"
+            child = int((tmp / "pids").read_text().split()[0])
+            assert list((mx2 / "_claims").iterdir())                                          # claimed while running
+            proc.send_signal(15)
+            proc.communicate(timeout=60)
+            assert proc.returncode == 128 + 15, proc.returncode
+            for _ in range(50):
+                try:
+                    os.kill(child, 0)
+                except ProcessLookupError:
+                    break
+                time.sleep(0.1)
+            else:
+                raise AssertionError("the bench_eval child survived SIGTERM")
+            assert not list((mx2 / "_claims").iterdir()) and not list(mx2.rglob("*.partial*")) and not list(mx2.glob("plain/*.json"))
+        finally:
+            for var in ("FAKE_CALLS", "FAKE_SLEEP", "FAKE_PIDS"):
                 os.environ.pop(var, None)
 
 
@@ -526,6 +649,7 @@ def check_workers_and_shards() -> None:
             for part in (tmp / "mx").glob("plain/_parts/bb/*.json"):
                 (mx2 / "plain/_parts/bb").mkdir(parents=True, exist_ok=True)
                 (mx2 / "plain/_parts/bb" / part.name).write_text(part.read_text())
+            (mx2 / "plain/_parts/bb" / "c09-abcdef.json").write_text("{}")                      # a part the plan does not name
             n_before = len(calls(tmp))
             out = io.StringIO()
             with contextlib.redirect_stdout(out):
@@ -533,6 +657,7 @@ def check_workers_and_shards() -> None:
                                     "--detectors", "bb", "--data-root", str(tmp / "data"), "--chunk-hours", CHUNK_HOURS]) == 0
             assert len(calls(tmp)) == n_before and json.loads((mx2 / "plain/bb.json").read_text()) == \
                 json.loads((tmp / "mx/plain/bb.json").read_text()), out.getvalue()
+            assert "WARNING: 1 part files present but names do not match the current plan" in out.getvalue() and "c09-abcdef.json" in out.getvalue()
 
             # static shards of the sorted unit list: disjoint, complete
             os.environ.pop("FAKE_SLEEP")
@@ -645,6 +770,8 @@ if __name__ == "__main__":
     check_claims()
     check_run_chunks_and_logs()
     check_failures_and_breaker()
+    check_unresolved_benchmarks()
+    check_claim_lost_and_signals()
     check_workers_and_shards()
     check_layout()
     check_table()
