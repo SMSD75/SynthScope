@@ -1,0 +1,26 @@
+{
+  "tag": "pgc_bfree_online_fixed",
+  "model": "pgc",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 50.28,
+    "map": 72.42,
+    "mauroc": 59.8
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 72.42,
+      "auroc": 59.8,
+      "real_acc": 99.63,
+      "fake_acc": 0.93,
+      "acc": 50.28
+    }
+  },
+  "date": "2026-11-09T08:23:21",
+  "synthscope_version": "0.1.0"
+}
