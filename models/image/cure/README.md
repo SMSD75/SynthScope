@@ -43,23 +43,23 @@ images (official preprocessing vs SynthScope preprocessing, each end to end). Lo
 
 Summary in the repo's **Paper / SynthScope_official / SynthScope_train** schema (`acc` = mean per-generator balanced accuracy at 0.5):
 
-| Benchmark | Paper | SynthScope_official | SynthScope_train | Status |
+| Benchmark | Paper | SynthScope_official | SynthScope_train | Status (official adapter) |
 |---|---|---|---|---|
-| AIGIBench (paper's 20 full-image-synthesis subsets, full test data) | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 | — | **reproduced** (every subset within 0.10 pt) |
-| UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | — | reference |
-| ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | — | reference |
-| GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | — | reference |
-| AIGCDetectBenchmark (17 generators, full data, 76.3k real / 76.3k fake) | acc=89.3 / AUC=98.0 | mAP=98.08 / acc=89.30 / AUROC=98.02 | — | **reproduced** |
-| RealChain (7 generators, 7000 real / 7000 fake, full data) | acc=79.7 | mAP=87.39 / acc=79.69 / AUROC=85.47 | — | **reproduced** |
-| EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | — | **reproduced** (our real pool; see below) |
-| SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | — | **reproduced** (on the images still online) |
-| WildRF (Facebook, Reddit, Twitter test sets, 1251 real / 1252 fake) | acc=95.8 | mAP=99.13 / acc=95.89 / AUROC=99.14 | — | **reproduced** |
-| BFree-Online (807 of the 1111 listed links still online; the paper had about 1400 images) | acc=90.9 | mAP=99.06 / acc=91.64 / AUROC=98.08 | — | close (about 58% of the paper's images) |
-| RRDataset (original / transfer / redigital, public test archive, 25.5k real / 25.5k fake) | acc=81.5 | mAP=90.40 / acc=82.04 / AUROC=88.88 | — | **reproduced** within 0.6 pt (the paper counts 30k/30k) |
+| AIGIBench (paper's 20 full-image-synthesis subsets, full test data) | acc=92.8 / AUC=97.5 | mAP=97.00 / acc=92.85 / AUROC=97.48 | mAP=92.69 / acc=85.05 / AUROC=91.84 (**not reproduced, -7.8 acc**) | **reproduced** (every subset within 0.10 pt) |
+| UniversalFakeDetect (UFD-8) | acc=82.0 (UnivFD, aggregation unspecified) | mAP=99.19 / acc=93.94 | mAP=95.26 / acc=82.69 / AUROC=93.85 (**reference**) | reference |
+| ForenSynths (13) | (GAN half of UnivFD) | mAP=94.05 / acc=81.95 | mAP=94.24 / acc=75.83 / AUROC=93.56 (**reference**) | reference |
+| GenImage-8 (its training set) | — | mAP=97.30 / acc=85.18 | mAP=89.41 / acc=77.70 / AUROC=87.88 (**reference**; SD v1.4 99.97, SD v1.5 99.93, Wukong 99.93) | reference |
+| AIGCDetectBenchmark (17 generators, full data, 76.3k real / 76.3k fake) | acc=89.3 / AUC=98.0 | mAP=98.08 / acc=89.30 / AUROC=98.02 | mAP=93.52 / acc=81.55 / AUROC=92.22 (**not reproduced, -7.8 acc**) | **reproduced** |
+| RealChain (7 generators, 7000 real / 7000 fake, full data) | acc=79.7 | mAP=87.39 / acc=79.69 / AUROC=85.47 | mAP=79.60 / acc=63.33 / AUROC=76.50 (**not reproduced, -16.4 acc**) | **reproduced** |
+| EvalGEN (5 generators, about 55k fakes, MSCOCO val2017 reals) | acc=98.1 | mAP=99.86 / acc=98.14 / AUROC=99.66 | mAP=98.30 / acc=90.65 / AUROC=95.96 (**not reproduced, -7.5 acc**) | **reproduced** (our real pool; see below) |
+| SynthWildX (3 generators; 1713 of 2000 images still online on X) | acc=92.7 | mAP=95.61 / acc=92.69 / AUROC=96.50 | mAP=88.83 / acc=76.11 / AUROC=86.84 (**not reproduced, -16.6 acc**) | **reproduced** (on the images still online) |
+| WildRF (Facebook, Reddit, Twitter test sets, 1251 real / 1252 fake) | acc=95.8 | mAP=99.13 / acc=95.89 / AUROC=99.14 | mAP=95.00 / acc=85.80 / AUROC=94.59 (**not reproduced, -10.0 acc**) | **reproduced** |
+| BFree-Online (807 of the 1111 listed links still online; the paper had about 1400 images) | acc=90.9 | mAP=99.06 / acc=91.64 / AUROC=98.08 | mAP=93.37 / acc=66.64 / AUROC=85.77 (**not reproduced, -24.3 acc; fewer images online**) | close (about 58% of the paper's images) |
+| RRDataset (original / transfer / redigital, public test archive, 25.5k real / 25.5k fake) | acc=81.5 | mAP=90.40 / acc=82.04 / AUROC=88.88 | mAP=80.40 / acc=66.36 / AUROC=76.87 (**not reproduced, -15.1 acc**) | **reproduced** within 0.6 pt (the paper counts 30k/30k) |
 | Chameleon | 93.8 | — | — | missing (available by request only) |
 
-`SynthScope_train` is empty until the full run of the recipe below has been evaluated (the authors released no training code). Details and per-generator tables below
-(official weights through SynthScope; balanced accuracy at 0.5 unless noted).
+`SynthScope_train` = the checkpoint trained by `experiments/image/cure.sh` (the recipe below, DAS6 job 66658), scored with `bench_eval --ckpt` and the same flags as the official rows (tags `cure_trained_<bench>`, DAS6 job 66721, see *Trained checkpoint* below). The verdict in that column uses the repo's tolerance (ours >= paper - 2.0 acc, - 2.5 AUROC): **the recipe does not reproduce the paper**; every comparable benchmark is 7.5-24 acc points below it. Details and per-generator tables below
+The tables below are the official weights through SynthScope (balanced accuracy at 0.5 unless noted); the trained checkpoint has its own section after the recipe.
 
 Paper: **89.7 avg over ten benchmarks** — AIGCDetect 89.3 · AIGIBench 92.8 · UnivFD 82.0 · EvalGEN 98.1 ·
 SynthWildX 92.7 · WildRF 95.8 · BFree-Online 90.9 · RRDataset 81.5 · RealChain 79.7 · Chameleon 93.8.
@@ -163,7 +163,7 @@ tensors, so it is scored like the official weights: `bench_eval.py --model cure 
 
 | open point | SynthScope choice | reason |
 |---|---|---|
-| training preprocessing | each endpoint goes through the released test pipeline (`cure_eval`: PNG -> JPEG q96, 390 resize / crop, 336, JPEG q70, mean = std = 0.5), then the mixture is formed | the paper re-encodes the PNG fakes as JPEG q96 (the pipeline's first step); the subspace and head are used with this pipeline at test time; no augmentation is mentioned. Check: with the released encoder, stage 2 on this preprocessing gives a mu with cosine 0.99999 to the released mu (relative distance 0.5%, 2500 RF pairs, job 283104), so stage 2 of the release used the same pipeline (stage 1's own preprocessing cannot be checked this way) |
+| training preprocessing | each endpoint goes through the released test pipeline (`cure_eval`: PNG -> JPEG q96, 390 resize / crop, 336, JPEG q70, mean = std = 0.5), then the mixture is formed | the paper re-encodes the PNG fakes as JPEG q96 (the pipeline's first step); the subspace and head are used with this pipeline at test time; no augmentation is mentioned. Check (consistency, not proof): with the released encoder, stage 2 on this preprocessing gives a mu with cosine 0.999998 to the released mu (relative distance 0.19 %, 20,000 pairs per type on the full data, job 66720); the same run without the final JPEG q70 pass (one control) gives cosine 0.982 / distance 19 % and a 17x larger off-diagonal ratio, so the mu match does discriminate that choice, whereas the subspace overlap (0.89 vs 0.86) does not. It is therefore consistent with the release's stage 2 having used this pipeline, but it does not establish it (mixing before q70, and stage 1's own preprocessing, are untested; stage 1 cannot be checked this way). See *Trained checkpoint* |
 | where mixing happens | on the preprocessed tensors | normalisation is affine, so this equals the pixel mixture of the preprocessed images |
 | pairing / epoch | one item per real image (162k per epoch), its generated partner and a drawn at random per item (with replacement), fresh every epoch | "independently drawn" endpoints, "each training pair receives one independently sampled mixing ratio" |
 | warmup / cosine shape | linear from 0 per optimizer step over 2 epochs to 1e-5, then cosine over the remaining 3 epochs to 1e-6 (`timm_cosine.warmup_prefix`) | the usual meaning of "N warmup epochs and cosine decay to a minimum lr" (MAE-style) |
@@ -172,7 +172,7 @@ tensors, so it is scored like the official weights: `bench_eval.py --model cure 
 | stage-1 model selection | the last epoch | not stated |
 | ratio-head weight decay | 0.01 on all head parameters (bias too) | "weight decay of 0.1 and 0.01, respectively" |
 | pairs per trajectory type | 20,000 for each of RF, RR, FF (360k forwards) | "20,000 sampled endpoint pairs" |
-| lambda_s, lambda_m, eps | 1, 1, 1e-3 (`subspace.py` defaults; `--lambda-s/--lambda-m/--eps`) | not stated. Stage 2 with `--reference-adapter` reports the overlap with the released W and fits the (lambda_s, lambda_m, eps) under which the released W is B-orthonormal. With the **released encoder** on 2500 pairs per type of a 2572 + 2572 subset of the training set (job 283104): fit lambda_s 0.90, lambda_m 1.02, eps 1.05e-3 (relative residual 0.09); with 1, 1, 1e-3 the solved W overlaps the released W at 0.74 (random 0.125), its columns have norms 9.0-9.6 (released 6.8-8.8), and the released W is nearly a generalised eigenbasis of our C_F (off-diagonal ratio 0.03). eps 1e-4 gave overlap 0.19 and 6x larger columns (job 283072, 1000 pairs). The paper's 20,000 pairs on the full set is the final check (Task 3) |
+| lambda_s, lambda_m, eps | 1, 1, 1e-3 (`subspace.py` defaults; `--lambda-s/--lambda-m/--eps`) | not stated. Stage 2 with `--reference-adapter` reports the overlap with the released W and fits the (lambda_s, lambda_m, eps) under which the released W is B-orthonormal. With the **released encoder** on 2500 pairs per type of a 2572 + 2572 subset of the training set (job 283104): fit lambda_s 0.90, lambda_m 1.02, eps 1.05e-3 (relative residual 0.09); with 1, 1, 1e-3 the solved W overlaps the released W at 0.74 (random 0.125), its columns have norms 9.0-9.6 (released 6.8-8.8), and the released W is nearly a generalised eigenbasis of our C_F (off-diagonal ratio 0.03). eps 1e-4 gave overlap 0.19 and 6x larger columns (job 283072, 1000 pairs). Final check on the full data (released encoder, 20,000 pairs per type, job 66720): overlap 0.89, fit lambda_s 0.96, lambda_m 1.02, eps 1.00e-3 (residual 0.036), off-diagonal ratio 0.016, so 1, 1, 1e-3 stand |
 | eigenvector scale | B-orthonormal (W^T B W = I), as LAPACK / scipy generalised solvers return | the released W is not unit-norm (column norms 6.8-8.8) |
 | stage-3 data and schedule | all 324k clean training images, constant lr, last epoch | not stated |
 
@@ -192,6 +192,45 @@ missing=295` frozen backbone keys, `unexpected=0`). Stage-1 lr (job 283137, `rep
 **Tests.** `tests/test_cure_recipe.py` (CPU): the mixing items, the BCE soft-target loss, the trainable set and weight-decay
 groups, gradient checkpointing, the trainer's logged lr at every step against the intended schedule, Eq. 6-10 against numpy
 / scipy, and the export format (the released adapter's keys, shapes and dtypes).
+
+## Trained checkpoint (SynthScope_train): does the recipe reproduce the paper?
+
+**No.** The checkpoint trained with the recipe above (`experiments/image/cure.sh`, code 2966f64, DAS6 job 66658 on 3x A6000: global batch 192, stage 1 about 1.5 h; sha256 of `cure_trained.pth` 38390ca9a7024ec3..., never uploaded) learns the training task and the training distribution, but it does **not** reach the paper's numbers on any benchmark the official adapter reproduces. It was scored with the official rows' exact protocol (`bench_eval --ckpt`, `--bs 16`, same data roots, AIGIBench `--select` of the paper's 20 subsets on full data, no `--limit`; DAS6 job 66721, tags `cure_trained_<bench>`, logs `repro/logs/cure_trained_<bench>_das6_66721.full.log`). Verdict by the repo's tolerance (reproduced = acc >= paper - 2.0 and AUROC >= paper - 2.5):
+
+| Benchmark | Paper acc / AUROC | Official adapter acc / AUROC | **Trained acc / AUROC** | Trained - paper (acc) | Trained real acc / fake acc (mean per generator) | Verdict |
+|---|---|---|---|---|---|---|
+| AIGIBench (20 subsets) | 92.8 / 97.5 | 92.85 / 97.48 | **85.05 / 91.84** | -7.8 | 98.0 / 72.1 (official 93.8 / 91.9) | not reproduced |
+| AIGCDetect (17) | 89.3 / 98.0 | 89.30 / 98.02 | **81.55 / 92.22** | -7.8 | 99.6 / 63.5 (official 98.7 / 79.9) | not reproduced |
+| EvalGEN (5) | 98.1 / - | 98.14 / 99.66 | **90.65 / 95.96** | -7.4 | 99.8 / 81.5 (official 99.7 / 96.6) | not reproduced |
+| SynthWildX (3) | 92.7 / - | 92.69 / 96.50 | **76.11 / 86.84** | -16.6 | 96.6 / 55.6 (official 93.0 / 92.4) | not reproduced |
+| WildRF (3) | 95.8 / - | 95.89 / 99.14 | **85.80 / 94.59** | -10.0 | 98.7 / 72.9 (official 93.6 / 98.2) | not reproduced |
+| BFree-Online (807 images) | 90.9 / - | 91.64 / 98.08 | **66.64 / 85.77** | -24.3 | 98.9 / 34.4 (official 96.7 / 86.6) | not reproduced |
+| RRDataset (3) | 81.5 / - | 82.04 / 88.88 | **66.36 / 76.87** | -15.1 | 99.0 / 33.7 (official 94.4 / 69.7) | not reproduced |
+| RealChain (7) | 79.7 / - | 79.69 / 85.47 | **63.33 / 76.50** | -16.4 | 98.9 / 27.8 (official 94.8 / 64.6) | not reproduced |
+| UFD-8 (diffusion half) | UnivFD 82.0 (aggregation unspecified) | 93.94 / 98.98 | 82.69 / 93.85 | n/a | 100.0 / 65.4 (official 99.6 / 88.2) | reference (not comparable) |
+| ForenSynths-13 | - | 81.95 / 95.02 | 75.83 / 93.56 | n/a | 99.5 / 52.2 (official 96.2 / 67.7) | reference |
+| GenImage-8 (`--limit 1500`) | - | 85.18 / 97.00 | 77.70 / 87.88 | n/a | 99.9 / 55.5 (official 99.7 / 70.7) | reference |
+
+All numbers are from `repro/bench_results/cure_trained_*.json` (each checked against its log's RESULT line); the official columns are the existing `cure_*` rows. The unweighted mean of the eight paper-comparable benchmarks is 76.9 acc for the trained checkpoint against 90.1 for the paper's eight numbers (the paper reports 89.7 over ten).
+
+What the numbers say:
+- **It is a conservative detector.** Real accuracy stays at 98-100 % everywhere, fake recall is what collapses (BFree-Online 34 %, RRDataset 34 %, RealChain 28 %, SynthWildX 56 %); the official adapter has real/fake accuracy balanced at 0.5. Part of the gap is therefore threshold calibration, but AUROC is also 3.7-12.3 points lower than the official adapter's (e.g. SynthWildX 86.8 vs 96.5, RRDataset 76.9 vs 88.9), so the ranking is worse too, not only the operating point.
+- **In-distribution it is fine.** SD v1.4 99.97, SD v1.5 99.93, Wukong 99.93 on GenImage (official 99.73 / 99.80 / 99.87); stage-3 training accuracy 99.8 %; stage-1 validation BCE 0.5099 (floor 0.5 for a ~ U(0, 1); epoch 4, `repro/logs/curetrain_das6_66658.out`). The failure is generalisation to other generators and to in-the-wild images, which is exactly what the paper's training is supposed to buy.
+- **Where the loss comes from** is examined by the stage-2 parity check and the hybrid-checkpoint diagnostic below.
+
+**Stage-2 parity check on the full data (review item M2).** Stage 2 run with the **released** encoder (`cure.pth` LoRA), 20,000 pairs per trajectory type on all 162k + 162k training images, once with the recipe's endpoint preprocessing and once with ONE control (the final JPEG q70 pass removed; same seed, same pairs). DAS6 job 66720 (`repro/logs/curepar_std_das6_66720.full.log`, `curepar_noq70_das6_66720.full.log`):
+
+| | recipe preprocessing | control (no q70) | random |
+|---|---|---|---|
+| overlap of the solved W with the released W | 0.892 | 0.864 | 0.125 |
+| cosine of mu to the released mu | 0.999998 | 0.982 | |
+| relative distance of mu | 0.19 % | 19.2 % | |
+| off-diagonal ratio of the released `W^T C_F W` | 0.016 | 0.276 | |
+| fitted (lambda_s, lambda_m, eps) / residual | 0.96, 1.02, 1.0e-3 / 0.036 | 1.03, 0.80, 1.06e-3 / 0.103 | |
+
+The subspace overlap barely separates the two pipelines (0.89 vs 0.86, both far above random), so an overlap alone does **not** identify the release's preprocessing. The mu distance (100x) and the off-diagonal ratio (17x) do, and the recipe's pipeline is the one that matches: this is the evidence that the released stage 2 used the endpoint preprocessing assumed here (the earlier subset claim was too strong). Mixing before the q70 step was not tested. With the fitted values the lambdas are 1, 1 and eps 1e-3 as assumed. Even with the released encoder the full-data W overlaps the released one at 0.89, not 1.0: the pair sampling and other unstated details of stage 2 are not pinned down. For the trained encoder stage 2 gave overlap 0.685 with the released W, mu cosine 0.696, and one dominant generalised eigenvalue (2.856, then 0.017) in `curetrain_das6_66658.out`; the released encoder's own spectrum is 2.157, then 0.039.
+
+HYBRID_SECTION
 
 ## Usage
 

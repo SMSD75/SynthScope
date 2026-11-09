@@ -130,7 +130,7 @@ transform (`vib_net_official`: fp32 CLIP, no feature norm, 224 center crop witho
 differ only in that resize (82.98 -> 94.08 AP). The earlier 83.9 / 77.6 model also differed from the official one (fp16
 CLIP, an added feature BatchNorm); their separate effect was not measured.
 
-### CuRe (official adapter)
+### CuRe (official adapter and trained in SynthScope)
 Fidelity: SynthScope's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
 
 | Benchmark (SynthScope protocol) | acc (mean per-gen balanced) | mAP | Paper | Note |
@@ -148,6 +148,22 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | AIGCDetectBenchmark (`--dataset aigcdetect`; all 17 generators, full data, 76.3k/76.3k) | **89.30** | 98.08 | **89.3** | **reproduced** (AUROC 98.02 vs 98.0) |
 
 **Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
+
+**SynthScope_train (the paper's 3-stage recipe, `experiments/image/cure.sh`, trained on 3 GPUs, DAS6 job 66658; scored with `bench_eval --ckpt` and the official rows' flags, job 66721, tags `cure_trained_*`; sha256 38390ca9a7024ec3...; `models/image/cure/README.md` "Trained checkpoint")**
+
+| Benchmark | Paper acc | SynthScope_official acc | SynthScope_train acc / mAP / AUROC | Verdict |
+|---|---:|---:|---|---|
+| AIGIBench (20 subsets, full data) | 92.8 | 92.85 | 85.05 / 92.69 / 91.84 | not reproduced (-7.8) |
+| AIGCDetectBenchmark | 89.3 | 89.30 | 81.55 / 93.52 / 92.22 | not reproduced (-7.8) |
+| EvalGEN | 98.1 | 98.14 | 90.65 / 98.30 / 95.96 | not reproduced (-7.5) |
+| SynthWildX | 92.7 | 92.69 | 76.11 / 88.83 / 86.84 | not reproduced (-16.6) |
+| WildRF | 95.8 | 95.89 | 85.80 / 95.00 / 94.59 | not reproduced (-10.0) |
+| BFree-Online (807 images) | 90.9 | 91.64 | 66.64 / 93.37 / 85.77 | not reproduced (-24.3) |
+| RRDataset | 81.5 | 82.04 | 66.36 / 80.40 / 76.87 | not reproduced (-15.1) |
+| RealChain | 79.7 | 79.69 | 63.33 / 79.60 / 76.50 | not reproduced (-16.4) |
+| UFD-8 / ForenSynths-13 / GenImage-8 (references) | UnivFD 82.0 | 93.94 / 81.95 / 85.18 | 82.69 / 75.83 / 77.70 | reference |
+
+**Verdict: not reproduced** (repo tolerance: acc >= paper - 2.0, AUROC >= paper - 2.5). Mean of the eight comparable benchmarks 76.9 vs 90.1 for the paper's numbers. The checkpoint is fine in distribution (GenImage SD v1.4 99.97, SD v1.5 99.93, Wukong 99.93; stage-1 val BCE 0.5099, floor 0.5) but conservative out of distribution: real accuracy 98-100 % everywhere, fake recall 28-56 % on the in-the-wild and RealChain/RRDataset sets, and AUROC 3.7-12.3 points below the official adapter's, so it is a worse ranking and a shifted threshold. Stage-2 parity with the **released** encoder on the full data (20,000 pairs per type, job 66720): mu cosine 0.999998 (distance 0.19 %), W overlap 0.89, fitted lambda_s/lambda_m/eps 0.96/1.02/1.0e-3; the same run without the final JPEG q70 (one control) gives mu cosine 0.982 (19 %), overlap 0.86, 17x larger off-diagonal ratio, so mu discriminates the endpoint preprocessing but the subspace overlap does not (HYBRID_SENTENCE)
 
 ### DDA (official checkpoint and trained in SynthScope)
 Fidelity: SynthScope's class == the official `DINOv2ModelWithLoRA` (537/537 state-dict tensors identical, transform and logits identical on 40 images, 0 verdict flips; job 264307). Paper: 90.7 avg accuracy over 11 benchmarks (trained on DDA-aligned MSCOCO only). Accuracy = mean per-subset balanced accuracy at 0.5, ± = sample std over subsets.
