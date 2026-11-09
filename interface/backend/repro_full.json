@@ -1176,21 +1176,21 @@
       "benchmark": "UniversalFakeDetect (UFD)",
       "metric": "AP",
       "paper": "map=98.0",
-      "ours": "SynthScope mAP=98.99 / acc=91.96 / AUROC=98.92 \u00b7 official mAP=99.17 / acc=83.57 / AUROC=99.2",
+      "ours": "SynthScope mAP=98.99 / acc=91.96 / AUROC=98.92 \u00b7 official mAP=99.35 / acc=94.19 / AUROC=99.31",
       "ours_synthscope": "mAP=98.99 / acc=91.96 / AUROC=98.92",
-      "ours_official": "mAP=99.17 / acc=83.57 / AUROC=99.2",
+      "ours_official": "mAP=99.35 / acc=94.19 / AUROC=99.31",
       "status": "reproduced",
-      "note": "Reproduced (official weights 99.17; the official recipe trained in SynthScope, step 500: 98.99, same job and eval) >= paper 98.0."
+      "note": "Reproduced: official weights 99.35 mAP / 94.19 acc (fixed load; = official code 99.34 / 94.16), official recipe trained in SynthScope (step 500) 98.99 / 91.96, both >= paper 98.0 mAP. Correction 2026-11-09: the earlier 99.17 / 83.57 for the official weights came from a load that dropped the LoRA."
     },
     {
       "benchmark": "ForenSynths (CNNDetection test)",
       "metric": "AP",
       "paper": "\u2014",
-      "ours": "SynthScope mAP=97.41 / acc=85.89 / AUROC=97.63 \u00b7 official mAP=96.41 / acc=76.34 / AUROC=97.06",
+      "ours": "SynthScope mAP=97.41 / acc=85.89 / AUROC=97.63 \u00b7 official mAP=97.83 / acc=89.17 / AUROC=98.14",
       "ours_synthscope": "mAP=97.41 / acc=85.89 / AUROC=97.63",
-      "ours_official": "mAP=96.41 / acc=76.34 / AUROC=97.06",
+      "ours_official": "mAP=97.83 / acc=89.17 / AUROC=98.14",
       "status": "reference",
-      "note": "Not a paper number. The official recipe trained in SynthScope (step 500) gives FS-8 97.41 mAP, above the official checkpoint (96.41 on the same evaluation); the earlier 89.03 retrain overshot the early transfer peak."
+      "note": "Not a paper number. Against the real official weights (fixed load) the step-500 SynthScope recipe is slightly below: FS-8 97.41 mAP / 85.89 acc vs 97.83 / 89.17. Correction 2026-11-09: the earlier 96.41 / 76.34 for the official weights came from a load that dropped the LoRA, so 'matches or exceeds the official checkpoint' no longer holds."
     },
     {
       "benchmark": "AIGIBench (AIGI)",

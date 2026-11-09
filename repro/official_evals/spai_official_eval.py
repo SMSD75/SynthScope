@@ -53,7 +53,7 @@ from spai.models.sid import build_mf_vit  # noqa: E402
 # ---------------------------------------------------------------------------
 # Paths / constants (mirror benchmark/bench_eval.py)
 # ---------------------------------------------------------------------------
-REPRO_DIR = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro")
+REPRO_DIR = Path(__file__).resolve().parents[1]  # <repo>/repro, wherever the checkout lives
 RESULTS_LOG = REPRO_DIR / "MASTER_RESULTS.jsonl"
 BENCH_RESULTS_DIR = REPRO_DIR / "bench_results"
 DEFAULT_CKPT = Path("/hddstore/ssalehi/SynthScope/repro/ckpts/spai_official.pth")
