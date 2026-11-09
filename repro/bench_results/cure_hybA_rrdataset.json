@@ -1,0 +1,40 @@
+{
+  "tag": "cure_hybA_rrdataset",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_trained/hybrid/A_trainedLoRA_releasedSubspaceHead.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 33.17,
+    "map": 39.18,
+    "mauroc": 25.55
+  },
+  "per_generator": {
+    "original": {
+      "ap": 35.51,
+      "auroc": 15.52,
+      "real_acc": 44.41,
+      "fake_acc": 15.4,
+      "acc": 29.91
+    },
+    "redigital": {
+      "ap": 43.38,
+      "auroc": 36.53,
+      "real_acc": 22.91,
+      "fake_acc": 55.59,
+      "acc": 39.25
+    },
+    "transfer": {
+      "ap": 38.66,
+      "auroc": 24.6,
+      "real_acc": 28.18,
+      "fake_acc": 32.52,
+      "acc": 30.35
+    }
+  },
+  "date": "2026-11-09T07:14:21",
+  "synthscope_version": "0.1.0"
+}

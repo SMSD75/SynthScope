@@ -1,0 +1,26 @@
+{
+  "tag": "cure_relS23_bfree_online",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/66726/relS23/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 91.08,
+    "map": 99.11,
+    "mauroc": 98.25
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 99.11,
+      "auroc": 98.25,
+      "real_acc": 97.03,
+      "fake_acc": 85.13,
+      "acc": 91.08
+    }
+  },
+  "date": "2026-11-09T07:29:13",
+  "synthscope_version": "0.1.0"
+}

@@ -1,0 +1,40 @@
+{
+  "tag": "cure_relS23_rrdataset",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/66726/relS23/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 81.04,
+    "map": 88.46,
+    "mauroc": 86.84
+  },
+  "per_generator": {
+    "original": {
+      "ap": 95.3,
+      "auroc": 95.17,
+      "real_acc": 93.62,
+      "fake_acc": 87.02,
+      "acc": 90.32
+    },
+    "redigital": {
+      "ap": 78.75,
+      "auroc": 76.25,
+      "real_acc": 92.92,
+      "fake_acc": 43.21,
+      "acc": 68.06
+    },
+    "transfer": {
+      "ap": 91.34,
+      "auroc": 89.1,
+      "real_acc": 94.4,
+      "fake_acc": 75.09,
+      "acc": 84.75
+    }
+  },
+  "date": "2026-11-09T08:01:04",
+  "synthscope_version": "0.1.0"
+}

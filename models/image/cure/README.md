@@ -153,6 +153,8 @@ official PNG to JPEG q96 step (the scorers did not pass the source-format hint t
 (162,000 ImageNet reals + 162,000 SD v1.4 images) and writes `cure_trained.pth` with exactly the released adapter's 100
 tensors, so it is scored like the official weights: `bench_eval.py --model cure --ckpt <SAVE>/stage23/cure_trained.pth`.
 
+**Status: implemented and run end to end, but the trained checkpoint does not reproduce the paper (see *Trained checkpoint* below); stages 2-3 are verified, the stage-1 shortfall is open.**
+
 | stage | what (paper) | where |
 |---|---|---|
 | 1 | x_a = (1 - a) x_r + a x_g with independent real / generated endpoints, a ~ U(0, 1) per pair; linear ratio head + sigmoid on the adapted feature, BCE with soft target a; LoRA on Q and V of all 24 layers (rank 64, alpha 128, dropout 0); AdamW lr 1e-5, weight decay 0.1 (LoRA) / 0.01 (head); 5 epochs, per-GPU batch 64, 2 warmup epochs then cosine to 1e-6 | `main.py` with `trainer/image/cure.yaml`, `dataset/image/cure_train.yaml`, `ModelConfig.training_stage=ratio` (`dataset.CuReMixDataset`, `SynthScopeCuReModel.compute_loss`) |
@@ -230,7 +232,20 @@ What the numbers say:
 
 The subspace overlap barely separates the two pipelines (0.89 vs 0.86, both far above random), so an overlap alone does **not** identify the release's preprocessing. The mu distance (100x) and the off-diagonal ratio (17x) do, and the recipe's pipeline is the one that matches: this is the evidence that the released stage 2 used the endpoint preprocessing assumed here (the earlier subset claim was too strong). Mixing before the q70 step was not tested. With the fitted values the lambdas are 1, 1 and eps 1e-3 as assumed. Even with the released encoder the full-data W overlaps the released one at 0.89, not 1.0: the pair sampling and other unstated details of stage 2 are not pinned down. For the trained encoder stage 2 gave overlap 0.685 with the released W, mu cosine 0.696, and one dominant generalised eigenvalue (2.856, then 0.017) in `curetrain_das6_66658.out`; the released encoder's own spectrum is 2.157, then 0.039.
 
-HYBRID_SECTION
+**Where the shortfall comes from (diagnostics, same protocol, `bench_eval --ckpt`).** The three parts of the adapter (LoRA, subspace `W` / `mu`, head) are only meaningful together, so swapping parts between the released and the trained adapter is a sanity check, not a decomposition:
+
+| checkpoint | BFree-Online acc / AUROC | SynthWildX | WildRF | RRDataset | job |
+|---|---|---|---|---|---|
+| official adapter | 91.64 / 98.08 | 92.69 / 96.50 | 95.89 / 99.14 | 82.04 / 88.88 | (existing rows) |
+| **trained** (our stage 1, 2, 3) | 66.64 / 85.77 | 76.11 / 86.84 | 85.80 / 94.59 | 66.36 / 76.87 | 66721 |
+| A: trained LoRA + released mu / W / head | 48.61 / 38.67 | 35.00 / 16.34 | 35.05 / 11.72 | 33.17 / 25.55 | 66725 |
+| B: released LoRA + trained mu / W / head | 43.68 / 6.53 | 38.44 / 5.17 | 40.50 / 3.35 | 43.15 / 12.87 | 66725 |
+| **D: released LoRA + OUR stage 2 + OUR stage 3** | **91.08 / 98.25** | **92.65 / 96.32** | **95.45 / 98.99** | **81.04 / 86.84** | 66726 |
+
+- A and B collapse (AUROC far below 50, the score is anti-correlated): the released `W` / `mu` / head live in the released encoder's feature space and the trained ones in the trained encoder's, so mixed adapters are meaningless. They cannot localise the problem.
+- **D is the informative one.** Run through SynthScope's stage 2 (the parity run, 20,000 pairs per type, `par_std/subspace.pt`) and stage 3 (head on all 324k clean images, 5 epochs), the *released* encoder reproduces the paper and the official adapter: BFree-Online 91.08 (paper 90.9), SynthWildX 92.65 (92.7), WildRF 95.45 (95.8), RRDataset 81.04 (81.5), all within the repo tolerance and within 1.0 pt of the official adapter. So **our stage-2 solver and stage-3 head trainer are sound, and the evaluation protocol is not the cause; the shortfall of the trained checkpoint comes from stage 1** (the LoRA we trained: ratio regression, 5 epochs, last epoch). Its stage-1 validation loss looks fine (0.5099 against a floor of 0.5), so the loss value does not reveal it.
+- What stage 1 could be missing is not determinable from here. The paper leaves open exactly the stage-1 details we had to assume (training preprocessing and augmentation, how pairs are drawn per epoch, model selection, global batch, precision); the unassumed ones are the first suspects. Not tested: any of these variants, the epoch curve (only `model_last` was kept after the run, so earlier epochs cannot be evaluated), or stage-1 hyper-parameters.
+
 
 ## Usage
 
