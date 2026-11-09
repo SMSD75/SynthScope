@@ -35,7 +35,11 @@ DETECTORS = [("cure", "CuRe"), ("dda", "DDA"), ("bfree", "B-Free"), ("effort", "
 
 
 def load(model, dataset):
-    p = RESULTS / f"{model}_{dataset}.json"
+    # A corrected rerun is stored as <model>_<dataset>_fixed.json and wins; the run it replaces sits in
+    # bench_results/_superseded/ (PGC: the 2026-11-09 load fix).
+    p = RESULTS / f"{model}_{dataset}_fixed.json"
+    if not p.is_file():
+        p = RESULTS / f"{model}_{dataset}.json"
     return json.loads(p.read_text())["means"] if p.is_file() else None
 
 
@@ -96,6 +100,13 @@ def main():
         "  every fake real (fake recall mostly under 15%), a new measurement that its paper does not report.",
         "- The other detectors were never evaluated on these sets by their authors, so their rows are new measurements, not",
         "  reproductions.",
+        "- **Correction (2026-11-09), PGC.** From 2026-06-15 to 2026-11-09 the served PGC dropped the `rgb_stream.*` tensors of",
+        "  the official checkpoint, including its trained LoRA (the checkpoint prefix was not remapped and the load did not fail),",
+        "  so the PGC row of this table was scored with a model without its LoRA. The row now comes from the rescored",
+        "  `pgc_<dataset>_fixed` runs (RealChain 49.9 -> 49.3, EvalGEN 50.2 -> 55.4, SynthWildX 50.9 -> 58.1, WildRF 60.1 -> 67.7,",
+        "  BFree-Online 50.0 -> 50.3, RRDataset 52.3 -> 55.5 balanced accuracy; mean 52.2 -> 56.0, so PGC moves from 16th to",
+        "  12th of 20). It still does not generalize to these sets. Details:",
+        "  [PGC investigation](../repro/investigate/pgc_gap_investigation.md).",
         "- Balanced accuracy uses a fixed 0.5 threshold. A detector with a high AUROC but a balanced accuracy near 50",
         "  separates real from fake but is miscalibrated for this data (it calls nearly everything one class).",
         "- An AUROC well below 50 means the detector ranks real images as more fake than the generated ones. We traced",

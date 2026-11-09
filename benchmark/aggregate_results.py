@@ -1,6 +1,7 @@
 """Aggregate the self-recorded bench_eval results into a master reproduced-results table.
 
-Reads every repro/bench_results/<tag>.json (latest run per tag), prints a compact summary, writes
+Reads every repro/bench_results/<tag>.json (latest run per tag; the _superseded/ subfolder is not read, it holds runs
+replaced by a corrected rerun, see its README), prints a compact summary, writes
 repro/RESULTS_TABLE.md (model | weights | benchmark | n_gen | acc / mAP / mAUROC), and supports
 computing a paper-matching subset mean from a run's per-generator dict:
 

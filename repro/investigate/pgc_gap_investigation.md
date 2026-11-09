@@ -1,5 +1,37 @@
 # PGC reproduction-gap investigation (ForenSynths hard generators)
 
+## CORRECTION 2026-11-09 — the "known forward difference" and the seeingdark gap were a checkpoint-load bug
+
+From 2026-06-15 to 2026-11-09 the served PGC (`pgc.pth` = the official `PGC_train_progan_ckpt.pth`) did not load the official
+checkpoint's `rgb_stream.*` tensors. The official `PGCNetwork` keeps the DINOv2 backbone under `rgb_stream.backbone.*`; the SynthScope
+class holds it as `backbone.*`; the registry had no remap and a non-strict kind, so `load_state_dict` skipped 535 keys without a
+warning. Only the 28 head tensors (`residual_stream`, `pgcm`, `classifier`) were loaded; the 96 trained LoRA tensors were dropped
+(`lora_B` stayed zero), so the engine ran the official network without its LoRA (bit-exact to the official network with `lora_B`
+zeroed: max |dp| 0.0). Debug report: `SynthScope_shared/plans/pgc_load_debug_report.md`.
+
+What this explains in the notes below:
+- **The "known model-forward difference" and the seeingdark gap (77.90 vs 87.49, "isolated to the model forward") were this bug.**
+  With the load fixed, the SynthScope class equals the official code: max |dp| 0.0 on 24 images (`tests/test_pgc_load.py`), UFD
+  99.35 / 94.19 against 99.34 / 94.16, FS-13 96.25 / 83.76 against 96.25 / 83.73, hard-3 AUROC deepfake 96.48 / san 99.06 /
+  seeingdark 87.49 against 96.48 / 99.06 / 87.49 (`pgc_official_ufd8_fixed`, `pgc_official_forensynths13_fixed`,
+  `pgc_official_deploycheck_fixed`, `pgc_h3_officialroot_fixed`).
+- The 2026-06-19 table (official weights FS-8 mAP 96.39, our from-scratch step 900 96.05) and every other bench_eval number for
+  official-format checkpoints in this file (`pgc_evalfix_*`, `pgc_h3_officialroot`, `pgc_400step_forensynths`, `pgc_official_deploycheck`)
+  were scored with the broken load. Rescored: official weights FS-8 97.83 / 89.17 (FS-13 96.25 / 83.76); the official `train.py` retrain at
+  step 900 (`pgc_evalfix_step900_fixed`) FS-8 98.01, FS-13 97.34 mAP / 80.68 acc, hard-3 AUROC 93.31 / 99.25 / 91.13 (mean 94.56),
+  equal to the official evaluator's step-900 values quoted below (93.29 / 99.25 / 91.13).
+- The step-500 SynthScope recipe was compared against the broken official model. Against the real weights it is **below** them (FS-8
+  97.41 / 85.89 against 97.83 / 89.17; hard-3 93.93 against 94.34; UFD 98.99 / 91.96 against 99.35 / 94.19). It still beats the paper's
+  UFD 98.0, so "reproduced against the paper" holds; "matches or exceeds the official checkpoint" does not. The official-script
+  retrain stopped at step 900 is above the released checkpoint on FS-13 mAP (97.34 against 96.25) and below it on FS-13 accuracy
+  (80.68 against 83.76).
+- Not affected: the early-stopping finding itself (it used the official evaluator), the SynthScope-trained checkpoints (`backbone.*`
+  keys load 567/567), the 2026-06-04 official-code numbers (GenImage, AIGIBench, CommGen15, UFD 99.34 / 94.16, FS-13 96.25 / 83.73).
+- Old runs are in `repro/bench_results/_superseded/`; the corrected runs are the same tags with the suffix `_fixed`. Mechanism and
+  list of tags: `repro/bench_results/_superseded/README.md`.
+
+The sections below are the original notes and keep their original numbers; read the broken-load ones through this correction.
+
 **Question:** why does our from-scratch PGC training not reach the official checkpoint's numbers on
 ForenSynths — specifically deepfake / san / seeingdark — when the official weights loaded into the
 same SynthScope class reproduce the paper exactly?
@@ -75,9 +107,10 @@ provably do not produce the released checkpoint; if it climbs, the defect is in 
 diff run-for-run.
 
 ## Architecture & inference are NOT the cause
-The official released weights, loaded into the SynthScope `SynthScopePGCModel` (with the engine's standard
-remap-free load), reproduce the paper on every benchmark — e.g. ForenSynths 96.25 mAP / 96.64 mAUROC,
-GenImage 100 mAP / 99.49 acc (`repro/bench_results/pgc_official_*.json`). So the model class,
+The official released weights, loaded into the SynthScope `SynthScopePGCModel`, reproduce the paper on every benchmark — e.g.
+ForenSynths 96.25 mAP / 96.64 mAUROC, GenImage 100 mAP / 99.49 acc (`repro/bench_results/pgc_official_*.json`). [Correction
+2026-11-09: those numbers are from the vendored official script (`pgc_official_eval.py`); the engine's "remap-free" load of the
+official file was broken until 2026-11-09 (see the top), and only the fixed load reproduces them through the SynthScope class.] So the model class,
 preprocessing (PadCenterCrop-224 + ImageNet/0-0.5 norm), residual math (BT.601 quantization), PGCM
 and eval protocol are all correct.
 
@@ -128,7 +161,7 @@ Job 184880 ran the official repo's own `test.py` + their released `PGC_train_pro
 copies of the three hard generators. Their evaluator reports deepfake AUC 0.9648 / san 0.9906 /
 seeingdark 0.8749 — identical (to rounding) to what the same weights produce through the SynthScope
 harness. **Test data, preprocessing, and metric computation are therefore byte-equivalent between
-the two pipelines; the entire gap is training-side.**
+the two pipelines; the entire gap is training-side.** [Correction 2026-11-09: the engine's load of the official file dropped its LoRA (the registry had no remap for it), so the "identical through the SynthScope harness" half of this statement is not traceable to a load-correct engine run. The official-repo numbers stand, and the fixed engine now matches them (max |dp| 0.0 on 24 images).]
 
 Easy generators (progan, biggan, cyclegan, gaugan, crn, imle) reproduce at 99–100 in ALL runs —
 the failure is specific to the three hard-transfer sets, and **scales with nothing we control**:
@@ -237,7 +270,7 @@ not retained -- /ivi quota -- regenerate via repro/pgc_400step_finegrain.sbatch;
   Matching the official PGC eval transform would close the bench_eval san/seeingdark gap too (same family as
   the SAFE/AIDE/SPAI eval-transform fixes); the served PGC uses official weights regardless.
 
-### EVAL-TRANSFORM FIX VERIFIED + residual round-trip bug fixed (2026-06-19)
+### EVAL-TRANSFORM FIX VERIFIED + residual round-trip bug fixed (2026-06-19) [numbers in this section were scored with the dropped-LoRA load; see the correction at the top]
 The predicted fix landed. Registry PGC transform switched `tf_resize_crop(256,224,ImageNet)` ->
 `tf_crop(224, ImageNet)` (= official `PadCenterCrop(224)`, NO resize; the genuine repo's PadCenterCrop is
 byte-identical to this — pad-if-needed then `CenterCrop(224)`). Full ForenSynths re-run on cn029 (job 187387,
@@ -248,7 +281,7 @@ byte-identical to this — pad-if-needed then `CenterCrop(224)`). Full ForenSynt
 | official `PGC_train_progan_ckpt.pth` (served) | **96.39** | 97.05 | 98.65 | 96.03 | 96.25 |
 | our from-scratch step900 | **96.05** | 96.68 | 98.09 | 94.36 | 96.25 |
 
-**ForenSynths-8 reproduces the paper (96.39 / 96.05 vs 96.25).** san recovered 73.29 -> 98.65 (official 99.06);
+**ForenSynths-8 reproduces the paper (96.39 / 96.05 vs 96.25).** [Superseded: rescored with the fixed load, FS-8 is 97.83 for the official weights and 98.01 for step 900; FS-13 96.25 / 97.34.] san recovered 73.29 -> 98.65 (official 99.06);
 the systemic "all evals broken" issue (resize wiping resolution-sensitive forensic features — same family as
 SAFE/AIDE/SPAI) is RESOLVED.
 
@@ -265,7 +298,8 @@ job 187416) with the bit-exact residual: deepfake 96.03 / san 98.67 / seeingdark
 unchanged (san +0.02). So the residual stream contributes little to the seeingdark score. With decode, crop,
 residual, and normalization now **all proven identical** to the genuine repo, the residual seeingdark gap
 (bench_eval 77.90 vs genuine-repo 87.49 on identical images/weights) is isolated to the **model forward**
-(LoRA-DINOv2 / score-fusion wiring), exposed only on seeingdark because it is a knife-edge generator
+(LoRA-DINOv2 / score-fusion wiring) [it was: the LoRA tensors were not loaded, see the correction at the top; with the load fixed
+seeingdark is 87.49 = the genuine repo], exposed only on seeingdark because it is a knife-edge generator
 (real_acc ~11%); san/deepfake reproduce to <0.5 AUROC. seeingdark is not in the reported ForenSynths-8.
 Chasing it further means diffing the vendored PGCModel against `repo/models/` — deferred (10pt on one
 non-headline generator). Artifacts: `repro/bench_results/pgc_evalfix_{official,step900}.json`,

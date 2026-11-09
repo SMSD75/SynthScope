@@ -9,6 +9,8 @@ Every benchmark each paper reports, with our verified numbers. Per-model detail 
 
 *Snapshot: most rows date from June 2026 and are not regenerated; the current per-benchmark numbers are in `interface/backend/repro_full.json` (the web Leaderboard tab), `repro/RESULTS_SUMMARY.md` and each model README, and detectors added later (DDA, D3QE, OmniAID, Effort, LTF, MIRROR, B-Free, MoE-JEPA, SPLIT) are not listed here. Rows below were corrected on 2026-11-08 where they contradicted those sources.*
 
+*Correction (2026-11-09): the PGC UniversalFakeDetect and ForenSynths-8 SynthScope_official cells below (99.17 / 83.57 and 96.41 / 76.34) were scored while the served PGC dropped its trained LoRA (2026-06-15 to 2026-11-09); the corrected values are 99.35 / 94.19 and 97.83 / 89.17, and step 500 is slightly below the official weights on both (see `repro/RESULTS_SUMMARY.md`, PGC).*
+
 Values are `mAP (acc)` or AUROC as noted. **Status:** reproduced = SynthScope_train matches paper/official · official = SynthScope_official matches (SynthScope_train may still lag) · below = gap remains · reference = no comparable paper figure · missing = not yet evaluated.
 
 | Model | Benchmark | Paper | SynthScope_official | SynthScope_train | Status |

@@ -130,12 +130,14 @@ VAL = {
     ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
     ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
     # synthscope UFD / ForenSynths = the official recipe in SynthScope, step 500 (experiments/image/pgc.sh; jobs 266276, 266282, 266660).
-    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth in the same jobs, PadCenterCrop eval (pgc_official_ufd8,
-    # FS-8 subset of pgc_official_forensynths13). The 2026-06-04 runs of the official PGC code (pgc_official_eval.py, PadCenterCrop)
-    # gave 99.34 / 94.16 and FS-13 96.25 / 83.73; the SynthScope class on the same weights gives 99.17 / 93.80 (UFD / FS-13);
-    # the gap is the known model-forward difference. GenImage / AIGIBench / CommGen15 official = official-code numbers.
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.17, "acc": 83.57, "auroc": 99.2}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.41, "acc": 76.34, "auroc": 97.06}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
+    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth with the checkpoint load FIXED (2026-11-09), PadCenterCrop
+    # eval: tags pgc_official_ufd8_fixed and (FS-8 subset of) pgc_official_forensynths13_fixed. They match the official PGC code
+    # (pgc_official_eval.py: UFD 99.34 / 94.16, FS-13 96.25 / 83.73) within 0.03. Correction 2026-11-09: from 2026-06-15 to
+    # 2026-11-09 the load dropped the checkpoint's rgb_stream.* tensors, trained LoRA included, so the earlier tags
+    # (pgc_official_ufd8 99.17 / 83.57, FS-8 96.41 / 76.34 / 97.06, now in bench_results/_superseded/) understated accuracy.
+    # GenImage / AIGIBench / CommGen15 official = official-code numbers (never affected).
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.35, "acc": 94.19, "auroc": 99.31}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 97.83, "acc": 89.17, "auroc": 98.14}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
     # SPAI serves the official weights remapped into the SynthScope class, scored at NATIVE resolution (the faithful
