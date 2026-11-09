@@ -116,6 +116,15 @@ def remap_vina(sd: dict) -> dict:
     return {k.replace("module.", ""): v for k, v in sd.items()}
 
 
+def remap_pgc(sd: dict) -> dict:
+    """Official PGC checkpoint -> SynthScopePGCModel: the official ``PGCNetwork`` keeps the DINOv2 backbone inside its
+    ``RgbStream`` wrapper (``rgb_stream.backbone.*``); the SynthScope class holds it as ``self.backbone``. Strip the
+    wrapper prefix. ``residual_stream`` / ``pgcm`` / ``classifier`` and the LoRA layout (``original_layer`` +
+    ``lora.lora_{A,B}`` on ``mlp.fc1`` / ``mlp.fc2``) are already identical. SynthScope-trained checkpoints
+    (``backbone.*``) pass through unchanged."""
+    return {(k[len("rgb_stream."):] if k.startswith("rgb_stream.") else k): v for k, v in sd.items()}
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -135,7 +144,7 @@ class ModelSpec:
     overrides: list[str]           # Hydra overrides for config_utils.compose_config
     predict_kind: str              # ce | bce | bce_npr | vib | video
     checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file)
-    ckpt_kind: str                 # synthscope | official_fatformer | official_aide | official_npr | none
+    ckpt_kind: str                 # synthscope | official_* (strict) | none
     transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video models)
     # Video-clip sampling (used when modality == "video").
     num_frames: int = 16
@@ -335,8 +344,12 @@ _add(ModelSpec(
 ))
 _add(ModelSpec(
     key="pgc", name="PGC", paper="Zhou et al., 2026",
-    modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="synthscope",
-    weights="official",  # official PGC ProGAN weights load remap-free; deploy PGC_train_progan_ckpt.pth as pgc.pth (FS-8 96.41 / UFD 99.17 mAP, jobs 266282/266660; the official recipe trained in SynthScope, step 500, gives 97.41 / 98.99)
+    modality="image", predict_kind="bce", checkpoint="pgc.pth", ckpt_kind="official_pgc", remap=remap_pgc,
+    # pgc.pth = the official PGC ProGAN checkpoint (PGC_train_progan_ckpt.pth). Its keys carry the official
+    # ``rgb_stream.`` wrapper prefix, which remap_pgc strips (a SynthScope-trained pgc.pth, ``backbone.*``, is unchanged);
+    # every key then loads strictly. Without the remap only the 28 head tensors loaded and all LoRA tensors were dropped
+    # silently (fixed 2026-11-09, see repro/investigate/pgc_gap_investigation.md).
+    weights="official",
     overrides=["model@ModelConfig=image/pgc"],
     transform=model_transform("image/pgc"),  # official PGC eval = PadCenterCrop(224), NO resize
     interpret="pgc_peak",   # peak-guided residual fake-evidence map (per-location score)
