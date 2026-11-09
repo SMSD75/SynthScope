@@ -1,0 +1,105 @@
+{
+  "tag": "vina_ufd_diffusion8_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:unifd",
+  "data_root": "/hddstore/ssalehi/SynthScope/universialfakedetection/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_ufd_diffusion8.json",
+  "note": "SynthScope scores (job 281654, CPU) with the official forensynths metric; Ojha real pairing",
+  "n_generators": 8,
+  "means": {
+    "acc": 94.84,
+    "map": 99.01,
+    "bacc": 94.84,
+    "mauroc": 98.71
+  },
+  "per_generator": {
+    "guided": {
+      "acc": 75.8,
+      "ap": 93.98,
+      "real_acc": 100.0,
+      "fake_acc": 51.6,
+      "bacc": 75.8,
+      "auroc": 91.91,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200": {
+      "acc": 99.3,
+      "ap": 100.0,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_200_cfg": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "ldm_100": {
+      "acc": 99.3,
+      "ap": 99.99,
+      "real_acc": 98.7,
+      "fake_acc": 99.9,
+      "bacc": 99.3,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_27": {
+      "acc": 94.45,
+      "ap": 99.3,
+      "real_acc": 98.7,
+      "fake_acc": 90.2,
+      "bacc": 94.45,
+      "auroc": 99.17,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_50_27": {
+      "acc": 96.1,
+      "ap": 99.45,
+      "real_acc": 98.7,
+      "fake_acc": 93.5,
+      "bacc": 96.1,
+      "auroc": 99.33,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "glide_100_10": {
+      "acc": 96.55,
+      "ap": 99.59,
+      "real_acc": 98.7,
+      "fake_acc": 94.4,
+      "bacc": 96.55,
+      "auroc": 99.51,
+      "n_real": 1000,
+      "n_fake": 1000
+    },
+    "dalle": {
+      "acc": 97.95,
+      "ap": 99.81,
+      "real_acc": 98.7,
+      "fake_acc": 97.2,
+      "bacc": 97.95,
+      "auroc": 99.77,
+      "n_real": 1000,
+      "n_fake": 1000
+    }
+  },
+  "official_function_return": [
+    0.9484375,
+    0.9901464182354338
+  ],
+  "n_files": 16000,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-07T15:31:44"
+}

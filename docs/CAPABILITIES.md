@@ -29,17 +29,22 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `co_spy` | image | bce | synthscope* | – | Semantic + artifact fusion (SigLIP + SD-VAE) |
 | `pgc` | image | bce | official | pgc_peak | LoRA-DINOv2 + YCbCr residual, peak-guided |
 | `cure` | image | ce | official | – | Frozen PE-Core L/14 + Q/V LoRA + source-response subspace (mixing-ratio regression) |
-| `d3qe` | image | bce | official | – | LlamaGen VQ quantization error + codebook-aware transformer + CLIP ViT-L/14 (autoregressive images) |
+| `d3qe` | image | bce | official | – | LlamaGen VQ quantization error + transformer (codebook-frequency bias zero in the released weights) + CLIP ViT-L/14 (autoregressive images) |
 | `omniaid` (+ `omniaid_v1`, `omniaid_genimage`) | image | ce | official | – | Hybrid MoE on CLIP ViT-L/14@336: routed semantic experts + an always-on artifact expert |
 | `dda` | image | bce | official | – | DINOv2 ViT-L/14 + LoRA, pixel- and frequency-aligned training data (center-crop 336) |
 | `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
+| `mirror` | image | ce | official | – | Frozen DINOv3 ViT-H+/16 + LoRA + memory bank (seeded default initialization in the released checkpoint): reconstruction of an "ideal reference" (center-crop 224, JPEG q96 for PNG/BMP/TIFF) |
+| `vina` | image | bce | official | – | DINOv3 ViT-L/16 + linear head trained on images and video frames together (short side 256, center-crop 256) |
+| `probe`, `probe_resnet` | image | bce | official | – | PROBE: DINOv2 ViT-L/14 + registers (`probe`, patches of 336) or ResNet-50 (`probe_resnet`, patches of 224), single-logit head; the score is the mean logit of the image's non-overlapping patches at native resolution |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
+| `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
+| `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
 convention the engine applies to `forward()` logits: `ce`→`softmax[:,1]`, `bce`→`sigmoid`,
@@ -91,6 +96,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
 - **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
+- `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
 - Results live in `repro/`: `RESULTS_SUMMARY.md` (read first), `AGGREGATED_BENCHMARK.md`,
   `BENCHMARK_COVERAGE_MATRIX.md`, `REPRODUCED_MODELS_BENCHMARKS.md`, `repro/bench_results/*.json`,

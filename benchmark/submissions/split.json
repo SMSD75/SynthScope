@@ -57,7 +57,7 @@
   "submitted_by": "SynthScope",
   "date": "2026-10-31",
   "verified": true,
-  "source": "repro/bench_results/split_genvideo_fpr.json (benchmark/bench_eval_video.py --dataset genvideo, no --limit)",
+  "source": "repro/bench_results/split_genvideo_fpr.json (tag split_genvideo_fpr, all generators); job 270384 (repro/logs/spliteval_270384.out)",
   "protocol_notes": "Training-free X-CLIP patch roughness x motion incoherence; Acc at the real-only FPR-1% calibration",
   "synthscope_version": "0.1.0"
 }

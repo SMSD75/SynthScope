@@ -1,0 +1,133 @@
+{
+  "tag": "vina_wildrf_vs_official",
+  "key": "wildrf",
+  "model": "vina",
+  "synthscope_scores": "vina_scores/vina_wildrf.json",
+  "synthscope_job": "281657",
+  "official_csv": "vina_official_out/281657/wildrf-2026-11-08 17:55:41.csv",
+  "official_job": "281657",
+  "note": "official eval.py --analysis CSV vs SynthScope per-file P(fake) on the same files",
+  "compare": {
+    "n_ours": 2241,
+    "n_official": 2241,
+    "n_common": 2241,
+    "only_ours": [],
+    "only_official": [],
+    "max_abs_diff": 1.4722347259521484e-05,
+    "mean_abs_diff": 2.3109875470320895e-07,
+    "decision_flips_at_0.5": 0,
+    "n_diff_gt_1e-3": 0,
+    "n_diff_gt_1e-2": 0,
+    "median_abs_diff": 0.0,
+    "worst_5": [
+      {
+        "path": "data/image_eval/WildRF/test/reddit/1_fake/000628_0628.jpg",
+        "p_ours": 0.35794326663017273,
+        "p_official": 0.35795798897743225,
+        "abs_diff": 1.4722347259521484e-05
+      },
+      {
+        "path": "data/image_eval/WildRF/test/reddit/0_real/000204_0204.jpg",
+        "p_ours": 0.4356502592563629,
+        "p_official": 0.4356359839439392,
+        "abs_diff": 1.4275312423706055e-05
+      },
+      {
+        "path": "data/image_eval/WildRF/test/reddit/0_real/000436_0436.jpg",
+        "p_ours": 0.4873379170894623,
+        "p_official": 0.4873511791229248,
+        "abs_diff": 1.3262033462524414e-05
+      },
+      {
+        "path": "data/image_eval/WildRF/test/reddit/0_real/000614_0614.jpg",
+        "p_ours": 0.46405264735221863,
+        "p_official": 0.4640398621559143,
+        "abs_diff": 1.2785196304321289e-05
+      },
+      {
+        "path": "data/image_eval/WildRF/test/reddit/0_real/000110_0110.jpg",
+        "p_ours": 0.15093456208705902,
+        "p_official": 0.15094497799873352,
+        "abs_diff": 1.0415911674499512e-05
+      }
+    ]
+  },
+  "means_synthscope": {
+    "acc": 96.12,
+    "map": 99.41,
+    "bacc": 95.94,
+    "mauroc": 99.25
+  },
+  "means_official_code": {
+    "acc": 96.12,
+    "map": 99.41,
+    "bacc": 95.94,
+    "mauroc": 99.25
+  },
+  "per_subset_synthscope": {
+    "facebook": {
+      "acc": 96.25,
+      "ap": 99.43,
+      "real_acc": 94.38,
+      "fake_acc": 98.12,
+      "bacc": 96.25,
+      "auroc": 99.33,
+      "n_real": 160,
+      "n_fake": 160
+    },
+    "reddit": {
+      "acc": 94.73,
+      "ap": 99.09,
+      "real_acc": 94.53,
+      "fake_acc": 94.93,
+      "bacc": 94.73,
+      "auroc": 98.96,
+      "n_real": 750,
+      "n_fake": 750
+    },
+    "twitter": {
+      "acc": 97.39,
+      "ap": 99.73,
+      "real_acc": 95.14,
+      "fake_acc": 98.56,
+      "bacc": 96.85,
+      "auroc": 99.47,
+      "n_real": 144,
+      "n_fake": 277
+    }
+  },
+  "per_subset_official_code": {
+    "facebook": {
+      "acc": 96.25,
+      "ap": 99.43,
+      "real_acc": 94.38,
+      "fake_acc": 98.12,
+      "bacc": 96.25,
+      "auroc": 99.33,
+      "n_real": 160,
+      "n_fake": 160
+    },
+    "reddit": {
+      "acc": 94.73,
+      "ap": 99.09,
+      "real_acc": 94.53,
+      "fake_acc": 94.93,
+      "bacc": 94.73,
+      "auroc": 98.96,
+      "n_real": 750,
+      "n_fake": 750
+    },
+    "twitter": {
+      "acc": 97.39,
+      "ap": 99.73,
+      "real_acc": 95.14,
+      "fake_acc": 98.56,
+      "bacc": 96.85,
+      "auroc": 99.47,
+      "n_real": 144,
+      "n_fake": 277
+    }
+  },
+  "n_files_compared": 2241,
+  "date": "2026-11-08T19:48:52"
+}

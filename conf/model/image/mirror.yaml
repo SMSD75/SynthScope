@@ -1,0 +1,19 @@
+defaults:
+  - /model/default
+  - _self_
+
+# MIRROR (NeurIPS 2026, arXiv 2602.02222): DINOv3 ViT-H+/16 + LoRA (r 8, alpha 16) on q/k/v, a frozen 4096-slot
+# memory bank of real prototypes (sparse top-128 attention, 8 heads) and a dual-branch head; P(fake) = softmax[:, 1].
+# The official phase-2 checkpoint-h-cur.pth holds the full model and loads key-for-key as mirror.pth.
+model_type: mirror
+backbone_name: dinov3_vith16plus
+backbone_path: null      # null: build the backbone from its config (mirror.pth has the weights); a HF-format directory
+                         # (config.json + model.safetensors) loads pretrained DINOv3 weights, e.g. for training
+memory_path: null        # optional phase-1 memory bank (mirror_phase1.pth); the phase-2 checkpoint already holds it
+use_amp: false           # fp32, the official default (inference.py --use_amp is opt-in; the checkpoint trained with
+                         # use_amp=False). true = CUDA fp16 autocast, as the README quick-start command; never in training
+label_smoothing: 0.1     # official phase-2 loss (timm LabelSmoothingCrossEntropy, --smoothing 0.1)
+
+# Test-time preprocessing (official data/datasets.py): short side > 512 -> 512 (bicubic), center crop 224, JPEG q96
+# for PNG/BMP/TIFF sources ("format-aligned inputs"), ToTensor; ImageNet normalization is inside the model.
+eval_transform_list: [mirror_eval, to_dtype]

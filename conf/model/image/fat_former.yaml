@@ -4,11 +4,15 @@ defaults:
 
 model_type: fat_former
 backbone_name: CLIP:ViT-L/14
-num_vit_adapter: 8
+# The released checkpoint has the forgery-aware adapter at blocks 7, 15, 23 (README: --num_vit_adapter 3
+# --num_context_embedding 8); the official code's argparse default would be 8.
+num_vit_adapter: 3
 num_context_embedding: 8
 init_context_embedding: ""
 num_classes: 2
 classnames: [real, fake]
+# Trained: the forgery-aware adapters (FAA), the language-guided alignment (context tokens + patch-based enhancer), and the
+# text-guided interactor; the whole CLIP (both towers, logit scale) is frozen.
 freeze_backbone: true
 force_fp32: true
 
@@ -16,7 +20,7 @@ force_fp32: true
 # official-weights eval reproduces 98.39 acc / 99.70 mAP with it).
 # Test-time preprocessing (official): inference, benchmarks and the end-of-training test.
 eval_transform_list: [resize_256, center_crop_224, to_dtype, normalize_imagenet]
-# Training augmentation.
-train_transform_list: [resize_short_256, gaussian_blur, jpeg_compression, random_crop_224, random_horizontal_flip, to_dtype, normalize_imagenet]
-# Validation during training (differs from the test-time preprocessing above).
-val_transform_list: [resize_short_256, center_crop_224, to_dtype, normalize_imagenet]
+# Training (paper: resize to 256, random crop 224 and random horizontal flip, "no other augmentations": no blur or JPEG).
+train_transform_list: [resize_256, random_crop_224, random_horizontal_flip, to_dtype, normalize_imagenet]
+# Validation during training: the test-time preprocessing.
+val_transform_list: [resize_256, center_crop_224, to_dtype, normalize_imagenet]

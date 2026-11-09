@@ -1,3 +1,5 @@
+from contextlib import nullcontext
+
 import torch
 from torch.nn.parallel import DistributedDataParallel
 from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
@@ -19,6 +21,10 @@ from models.image.effort.effort import SynthScopeEffortModel
 from models.image.moejepa.moejepa import SynthScopeMoEJEPAModel
 from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
+from models.image.ltf.ltf import SynthScopeLTFModel
+from models.image.mirror.mirror import SynthScopeMIRRORModel
+from models.image.probe.probe import SynthScopePROBEModel, SynthScopePROBEResNetModel
+from models.image.vina.vina import SynthScopeVINAModel
 from models.video.d3.d3 import SynthScopeD3Model
 from models.video.split.split import SynthScopeSPLITModel
 from models.video.restrav.restrav import SynthScopeReStraVModel
@@ -81,8 +87,10 @@ class SynthScopeModelTrainer:
     
     def print_trainable_parameters(self):
         trainable_parameters = [n for (n, p) in self.model.named_parameters() if p.requires_grad]
-        count = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
-        self.accelerator.print(f"Trainable Parameters ({len(trainable_parameters)} tensors, {count:,} values): {trainable_parameters}")
+        self.accelerator.print(f"Trainable Parameters: {trainable_parameters}")
+        n_train = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+        n_total = sum(p.numel() for p in self.model.parameters())
+        self.accelerator.print(f"Trainable parameters: {n_train:,} in {len(trainable_parameters)} tensors, of {n_total:,} total")
 
     def _build_model(self, config: DictConfig):
         model_type = config.ModelConfig.get("model_type", "dino").lower()
@@ -116,6 +124,16 @@ class SynthScopeModelTrainer:
             return SynthScopeBFreeModel(config)
         if model_type == "d3qe":
             return SynthScopeD3QEModel(config)
+        if model_type == "ltf":
+            return SynthScopeLTFModel(config)
+        if model_type == "mirror":
+            return SynthScopeMIRRORModel(config)
+        if model_type == "vina":
+            return SynthScopeVINAModel(config)
+        if model_type == "probe":
+            return SynthScopePROBEModel(config)
+        if model_type == "probe_resnet":
+            return SynthScopePROBEResNetModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
         if model_type == "split":
@@ -212,20 +230,47 @@ class SynthScopeModelTrainer:
             self.test_metrics(outputs_g, labels_g, folder_ids_g)
         return loss
 
-    def train_epoch(self):
+    def train_epoch(self, accum=1, log_every=0):
+        """One pass over the training data. With ``accum`` > 1 (the ``lr_step`` schedule's ``grad_accum_steps``) each
+        optimizer step uses ``accum`` micro-batches, the loss of each divided by ``accum``, so a step equals one batch of
+        ``accum`` x micro-batch (the last step of an epoch averages over the micro-batches that remain): a 24 GB GPU can follow an official batch size
+        it cannot hold. ``log_every`` > 0 prints the mean loss and the learning rate every that many optimizer steps."""
         self.model.train()
         total_loss = 0
-        for batch in tqdm(self.train_loader, desc="Training"):
-            self.optimizer.zero_grad()
-            loss  = self.train_step(batch)
-            self.accelerator.backward(loss)
-            self.optimizer.step()
-            if self.scheduler is not None:
-                self.scheduler.step()
-            if self.accelerator.sync_gradients:
-                self.global_step += 1
+        running, n_running = 0.0, 0
+        n_batches = len(self.train_loader)
+        n_tail = n_batches % accum           # micro-batches of the last, shorter optimizer step (0: none)
+        for idx, batch in enumerate(tqdm(self.train_loader, desc="Training")):
+            if accum == 1:
+                self.optimizer.zero_grad()
+                loss  = self.train_step(batch)
+                self.accelerator.backward(loss)
+                self.optimizer.step()
+                if self.scheduler is not None:
+                    self.scheduler.step()
+                if self.accelerator.sync_gradients:
+                    self.global_step += 1
+                at_step = True
+            else:
+                at_step = (idx + 1) % accum == 0 or idx + 1 == n_batches
+                # the micro-batches that do not step skip the DDP gradient all-reduce
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    # the mean over the micro-batches of THIS step, so the shorter last step is not under-weighted
+                    self.accelerator.backward(loss / (n_tail if n_tail and idx >= n_batches - n_tail else accum))
+                if at_step:
+                    self.optimizer.step()
+                    if self.scheduler is not None:
+                        self.scheduler.step()
+                    self.optimizer.zero_grad()
+                    self.global_step += 1
             loss_sum = self.accelerator.gather(loss.detach().unsqueeze(0)).mean()
             total_loss += loss_sum.item()
+            running, n_running = running + loss_sum.item(), n_running + 1
+            if at_step and log_every and self.global_step % log_every == 0:
+                self.accelerator.print(f"optimizer step {self.global_step}: mean loss {running / n_running:.4f}, "
+                                       f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
+                running, n_running = 0.0, 0
         if self.use_metrics:
             total_metrics_dict = {
                 metric: self.train_metrics.metrics_dict[metric].compute().item()
@@ -344,14 +389,17 @@ class SynthScopeModelTrainer:
         """A fixed step schedule as in NPR's train.py (``delr_freq``): after epoch ``e`` (0-based) with
         ``e % every == 0 and e != 0`` the learning rate is multiplied by ``factor``; validation after every epoch is
         logged (plus ``model_best.pth`` by validation accuracy), and the final model is ``model_last.pth``, which is
-        the checkpoint the official code releases."""
+        the checkpoint the official code releases. Optional keys: ``grad_accum_steps`` (micro-batches per optimizer step,
+        default 1: the batch size is then micro-batch x GPUs) and ``log_every`` (print loss and lr every that many
+        optimizer steps), ``phase`` (default 0, NPR's rule; ``phase: 1`` drops after epochs 9, 19, ... instead, i.e.
+        torch's ``StepLR(step_size=10)`` stepped once per epoch)."""
         cfg = self.config.TrainerConfig
         best = None
         for epoch in range(cfg.epochs):
-            train_loss, train_metrics_dict = self.train_epoch()
+            train_loss, train_metrics_dict = self.train_epoch(accum=int(step.get("grad_accum_steps", 1)), log_every=int(step.get("log_every", 0)))
             self.accelerator.print(f"Epoch {epoch}, Train Loss: {train_loss}, Train Metrics: {train_metrics_dict}")
             self.logger.log_metrics({"train/loss": train_loss, **{f"train/{m}": v for m, v in train_metrics_dict.items()}}, self.global_step)
-            if epoch % int(step.every) == 0 and epoch != 0:
+            if (epoch + int(step.get("phase", 0))) % int(step.every) == 0 and epoch != 0:
                 for group in self.optimizer.param_groups:
                     group["lr"] *= float(step.factor)
                 self.accelerator.print(f"Epoch {epoch}: learning rate -> {self.optimizer.param_groups[0]['lr']:.3e}")
@@ -371,12 +419,17 @@ class SynthScopeModelTrainer:
         ``grad_accum_steps`` and the optimizer steps every ``grad_accum_steps`` micro-batches, after clipping the gradient
         norm to ``max_grad_norm`` (0: no clipping); ``model_step<N>.pth`` is saved every ``save_every`` micro-batches, up
         to ``max_steps``. For detectors whose transfer peaks early (PGC's released checkpoint is ~400 steps in), the
-        saved curve is evaluated rather than only the last model."""
+        saved curve is evaluated rather than only the last model. With ``unit: optimizer_step``, ``max_steps`` /
+        ``save_every`` / ``log_every`` count optimizer steps (iterations of the effective batch) instead of micro-batches,
+        and the checkpoints are named by them: Effort's official ``model_iters_18000`` is ``model_step18000`` whether the
+        batch of 48 is one micro-batch or two of 24. ``log_every`` (default: ``save_every``) is the mean-loss / lr line."""
         accum = int(budget.get("grad_accum_steps", 1))
         clip = float(budget.get("max_grad_norm", 0.0))
+        scale = accum if str(budget.get("unit", "micro_batch")) == "optimizer_step" else 1   # micro-batches per counted step
         # max_steps null: `epochs` full passes over the training data
-        max_steps = int(budget.get("max_steps") or len(self.train_loader) * int(self.config.TrainerConfig.epochs))
-        save_every = int(budget.save_every)
+        max_steps = int(budget.max_steps) * scale if budget.get("max_steps") else len(self.train_loader) * int(self.config.TrainerConfig.epochs)
+        save_every = int(budget.save_every) * scale
+        log_every = int(budget.get("log_every") or budget.save_every) * scale
         save_path = self.config.TrainerConfig.save_path
         if budget.get("cosine_t_max"):
             # torch CosineAnnealingLR stepped once per optimizer step (e.g. DDA: T_max=1000, eta_min=1e-3 x lr; it cycles)
@@ -405,12 +458,13 @@ class SynthScopeModelTrainer:
                         self.scheduler.step()
                     self.optimizer.zero_grad()
                     self.global_step += 1
-                if step % save_every == 0:
-                    self.accelerator.print(f"step {step} (optimizer step {self.global_step}): mean loss {running / save_every:.4f}, "
+                if step % log_every == 0:
+                    self.accelerator.print(f"step {step // scale} (optimizer step {self.global_step}): mean loss {running / log_every:.4f}, "
                                            f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
-                    self.logger.log_metrics({"train/loss": running / save_every}, step)
+                    self.logger.log_metrics({"train/loss": running / log_every}, step // scale)
                     running = 0.0
-                    self._save_model(f"step{step}", save_path)
+                if step % save_every == 0:
+                    self._save_model(f"step{step // scale}", save_path)
                 if step >= max_steps:
                     break
         if step % accum != 0:                     # a partial accumulation at the end (the official finalize_epoch)

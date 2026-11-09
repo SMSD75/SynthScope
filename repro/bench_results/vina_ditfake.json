@@ -1,0 +1,40 @@
+{
+  "tag": "vina_ditfake",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 97.98,
+    "map": 99.95,
+    "mauroc": 99.94
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.95,
+      "auroc": 99.93,
+      "real_acc": 100.0,
+      "fake_acc": 94.22,
+      "acc": 97.11
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.9,
+      "auroc": 99.88,
+      "real_acc": 100.0,
+      "fake_acc": 93.68,
+      "acc": 96.84
+    }
+  },
+  "date": "2026-11-07T22:05:16",
+  "synthscope_version": "0.1.0"
+}

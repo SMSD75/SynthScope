@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "official-weights",
   "metrics": {
-    "acc": null,
-    "map": 92.08,
+    "acc": 88.38,
+    "map": 96.03,
     "ap": null,
-    "auroc": null
+    "auroc": 95.6
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 94.44,
+      "auroc": 94.43,
+      "acc": 83.95
+    },
+    "cyclegan": {
+      "ap": 99.89,
+      "auroc": 99.9,
+      "acc": 98.49
+    },
+    "deepfake": {
+      "ap": 76.22,
+      "auroc": 72.73,
+      "acc": 53.91
+    },
+    "gaugan": {
+      "ap": 97.69,
+      "auroc": 97.77,
+      "acc": 73.24
+    },
+    "progan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.99
+    },
+    "stargan": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "acc": 99.9
+    },
+    "stylegan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "acc": 99.62
+    },
+    "stylegan2": {
+      "ap": 99.97,
+      "auroc": 99.96,
+      "acc": 97.94
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-05",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths-8; mAP reproduces, acc@0.5 miscalibrated (single-view vs official 5-view DCT)",
+  "source": "repro/bench_results/aide_official_forensynths.json (tag aide_official_forensynths, 8 of its 13 generators); repro/eval_logs/fixup_aide_gpu7_bs8.log (2026-06-05 rerun)",
+  "protocol_notes": "ForenSynths-8; official ProGAN weights progan_train.pth, vendored official eval (native-resolution 5-view DCT); the served aide.pth is the SD-v1.4 release",
   "synthscope_version": "0.1.0"
 }

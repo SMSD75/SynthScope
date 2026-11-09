@@ -7,16 +7,22 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "official-weights",
   "metrics": {
-    "acc": null,
-    "map": null,
-    "ap": 94.01,
-    "auroc": 98.45
+    "acc": 95.67,
+    "map": 99.22,
+    "ap": null,
+    "auroc": 99.57
   },
-  "per_generator": null,
+  "per_generator": {
+    "sdv1.4": {
+      "ap": 99.22,
+      "auroc": 99.57,
+      "acc": 95.67
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-11-03",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "GenImage SD-v1.4; vendored official architecture, fixed-res 2x2x224",
+  "source": "repro/bench_results/spai_official_genimage8.json (tag spai_official_genimage8, 1 of its 8 generators); job 273444 (repro/logs/spaiev_official_273444.out)",
+  "protocol_notes": "300+300 subsample; trained on latent-diffusion (LDM) data, not SD-v1.4. GenImage SD-v1.4 (the run's per-generator cap); official weights remapped into the SynthScope class, native resolution (the served spai.pth)",
   "synthscope_version": "0.1.0"
 }

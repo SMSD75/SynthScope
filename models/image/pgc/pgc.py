@@ -39,10 +39,13 @@ from transformers import AutoModel
 logger = logging.getLogger(__name__)
 
 _RESIDUAL_DIM = 256
-# LoRA targets for a Hugging Face DINOv2 ViT (attention q/k/v + output dense + MLP fc1/fc2).
+# LoRA targets for a Hugging Face DINOv2 ViT (attention q/k/v + output dense + MLP fc1/fc2); attention modules are
+# named attention.attention.{query,key,value} / attention.output.dense up to transformers 5.5.x and
+# attention.{q,k,v,o}_proj in later releases (5.22), so both spellings are listed (each matches only on its own release).
 _DEFAULT_LORA_TARGETS = [
     "attention.attention.query", "attention.attention.key", "attention.attention.value",
-    "attention.output.dense", "mlp.fc1", "mlp.fc2",
+    "attention.output.dense", "attention.q_proj", "attention.k_proj", "attention.v_proj", "attention.o_proj",
+    "mlp.fc1", "mlp.fc2",
 ]
 _IMAGENET_MEAN = (0.485, 0.456, 0.406)
 _IMAGENET_STD = (0.229, 0.224, 0.225)
@@ -179,6 +182,10 @@ def _extract_cls_and_tokens(backbone, rgb):
 # ─────────────────────────────────────────────────────────────────────────────
 class SynthScopePGCModel(nn.Module):
     """Peak-Guided Calibration AI-generated-image detector (PGC)."""
+
+    # Constant ``register_buffer``s built in ``__init__`` (ImageNet mean/std, YCbCr matrices); the official checkpoint
+    # does not store them, so the loader accepts them as missing (``M_yuv`` also covers ``M_yuv_inv``).
+    pretrained_prefixes = ("imagenet_mean", "imagenet_std", "M_yuv")
 
     def __init__(self, config: DictConfig):
         super().__init__()

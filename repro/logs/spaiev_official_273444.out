@@ -1,0 +1,28 @@
+NODE=ivi-cn029 Tue Nov  3 15:16:29 CET 2026 | code=ede6412 SPAI training: validate as the official run does, and keep every epoch | ckpt: registry spai.pth (official)
+    glide: acc=88.5 AP=95.52 AUROC=95.86 (real_acc=90.67 fake_acc=86.33)
+  midjourney: 300 real + 300 fake ...
+    midjourney: acc=90.0 AP=96.08 AUROC=96.88 (real_acc=92.0 fake_acc=88.0)
+  sdv1.4: 300 real + 300 fake ...
+    sdv1.4: acc=95.67 AP=99.22 AUROC=99.57 (real_acc=91.33 fake_acc=100.0)
+  sdv1.5: 300 real + 300 fake ...
+    sdv1.5: acc=96.5 AP=99.28 AUROC=99.63 (real_acc=93.0 fake_acc=100.0)
+  vqdm: 300 real + 300 fake ...
+    vqdm: acc=90.17 AP=96.84 AUROC=96.37 (real_acc=93.33 fake_acc=87.0)
+  wukong: 300 real + 300 fake ...
+    wukong: acc=96.17 AP=99.27 AUROC=99.45 (real_acc=93.33 fake_acc=99.0)
+=== RESULT spai_official_genimage8: mAP=94.22 mAUROC=94.28 acc=87.44 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/spai_train_wt/repro/bench_results/spai_official_genimage8.json ===
+Downloading SynthbusterDataset test split...
+Downloading Synthbuster from https://zenodo.org/records/10066460/files/synthbuster.zip?download=1 ...
+[dataset] synthbuster: evaluating /ssdstore/ssalehi/SynthScope/Synthbuster/test with the 'pergen' profile
+[SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+  skip dalle2: reals=0 fakes=1000
+  skip dalle3: reals=0 fakes=1000
+  skip firefly: reals=0 fakes=1000
+  skip glide: reals=0 fakes=1000
+  skip midjourney-v5: reals=0 fakes=1000
+  skip stable-diffusion-1-3: reals=0 fakes=1000
+  skip stable-diffusion-1-4: reals=0 fakes=1000
+  skip stable-diffusion-2: reals=0 fakes=1000
+  skip stable-diffusion-xl: reals=0 fakes=1000
+No generators with real+fake under /ssdstore/ssalehi/SynthScope/Synthbuster/test (benchmark=pergen)
+=== DONE Tue Nov  3 15:38:47 CET 2026

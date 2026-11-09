@@ -8,7 +8,6 @@ load, and the forward -> P(fake) math). We reuse it rather than duplicate that l
 from __future__ import annotations
 
 import dataclasses
-import io
 from pathlib import Path
 from typing import Union
 
@@ -145,7 +144,7 @@ class Detector:
         kind, pil, path = self._classify(source)
 
         if kind == "image":
-            if self.spec.modality == "video" and self.spec.transform is None:
+            if self.spec.predict_kind == "video":    # video-only (vina_video has a transform, for its frames)
                 raise ValueError(
                     f"'{self.spec.key}' is a video-only detector and cannot score a still image."
                 )
@@ -166,6 +165,10 @@ class Detector:
         """Fetch weights from the model zoo on first use if they're not present locally."""
         if self.available or self._custom_ckpt or self.spec.checkpoint is None:
             return  # already present, user-managed, or training-free
+        if self._engine.ffmpeg_missing(self.spec):
+            raise FileNotFoundError(
+                f"'{self.spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."
+            )
         if not self._auto_download:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "
@@ -180,9 +183,9 @@ class Detector:
     def _classify(self, source: PathOrImage):
         """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``."""
         if isinstance(source, Image.Image):
-            return "image", source.convert("RGB"), None
+            return "image", _media.to_rgb(source), None
         if isinstance(source, (bytes, bytearray)):
-            return "image", Image.open(io.BytesIO(bytes(source))).convert("RGB"), None
+            return "image", _media.decode_image(bytes(source)), None
         path = Path(source)
         kind = _media.media_kind(path.name)
         if kind == "image":

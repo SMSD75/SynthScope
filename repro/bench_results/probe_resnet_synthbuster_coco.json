@@ -1,0 +1,82 @@
+{
+  "tag": "probe_resnet_synthbuster_coco",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/66755/tmp/layouts/Synthbuster_coco",
+  "jpeg_fakes": null,
+  "n_generators": 9,
+  "means": {
+    "acc": 83.75,
+    "map": 85.23,
+    "mauroc": 95.88
+  },
+  "per_generator": {
+    "dalle2": {
+      "ap": 60.83,
+      "auroc": 91.78,
+      "real_acc": 99.14,
+      "fake_acc": 6.8,
+      "acc": 52.97
+    },
+    "dalle3": {
+      "ap": 98.14,
+      "auroc": 99.72,
+      "real_acc": 99.14,
+      "fake_acc": 90.5,
+      "acc": 94.82
+    },
+    "firefly": {
+      "ap": 42.22,
+      "auroc": 82.88,
+      "real_acc": 99.14,
+      "fake_acc": 4.0,
+      "acc": 51.57
+    },
+    "glide": {
+      "ap": 67.67,
+      "auroc": 88.95,
+      "real_acc": 99.14,
+      "fake_acc": 25.0,
+      "acc": 62.07
+    },
+    "midjourney-v5": {
+      "ap": 99.48,
+      "auroc": 99.89,
+      "real_acc": 99.14,
+      "fake_acc": 96.5,
+      "acc": 97.82
+    },
+    "stable-diffusion-1-3": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.14,
+      "fake_acc": 100.0,
+      "acc": 99.57
+    },
+    "stable-diffusion-1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 99.14,
+      "fake_acc": 100.0,
+      "acc": 99.57
+    },
+    "stable-diffusion-2": {
+      "ap": 99.33,
+      "auroc": 99.84,
+      "real_acc": 99.14,
+      "fake_acc": 96.3,
+      "acc": 97.72
+    },
+    "stable-diffusion-xl": {
+      "ap": 99.41,
+      "auroc": 99.88,
+      "real_acc": 99.14,
+      "fake_acc": 96.2,
+      "acc": 97.67
+    }
+  },
+  "date": "2026-11-09T11:19:41",
+  "synthscope_version": "0.1.0"
+}

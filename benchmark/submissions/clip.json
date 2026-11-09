@@ -7,16 +7,57 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "frozen-probe",
   "metrics": {
-    "acc": null,
-    "map": 97.2,
+    "acc": 88.28,
+    "map": 97.22,
     "ap": null,
-    "auroc": 97.0
+    "auroc": 97.11
   },
-  "per_generator": null,
+  "per_generator": {
+    "biggan": {
+      "ap": 99.11,
+      "auroc": 99.03,
+      "acc": 95.07
+    },
+    "cyclegan": {
+      "ap": 99.71,
+      "auroc": 99.7,
+      "acc": 95.53
+    },
+    "deepfake": {
+      "ap": 87.82,
+      "auroc": 86.6,
+      "acc": 79.0
+    },
+    "gaugan": {
+      "ap": 99.98,
+      "auroc": 99.98,
+      "acc": 99.02
+    },
+    "progan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "acc": 99.52
+    },
+    "stargan": {
+      "ap": 99.72,
+      "auroc": 99.68,
+      "acc": 93.22
+    },
+    "stylegan": {
+      "ap": 96.02,
+      "auroc": 96.14,
+      "acc": 76.3
+    },
+    "stylegan2": {
+      "ap": 95.44,
+      "auroc": 95.74,
+      "acc": 68.6
+    }
+  },
   "submitted_by": "SynthScope",
-  "date": "2026-06-02",
+  "date": "2026-06-04",
   "verified": true,
-  "source": "SynthScope reproduction (logged Test Metrics); see repro/FINAL_RESULTS.md",
-  "protocol_notes": "ForenSynths; frozen CLIP ViT-L/14 probe (ProGAN)",
+  "source": "repro/bench_results/clip_synthscope_forensynths.json (tag clip_synthscope_forensynths, 8 of its 13 generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
+  "protocol_notes": "ForenSynths-8; frozen CLIP ViT-L/14 + linear head trained in SynthScope on ProGAN (the served clip.pth)",
   "synthscope_version": "0.1.0"
 }

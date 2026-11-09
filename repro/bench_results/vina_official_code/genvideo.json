@@ -1,0 +1,307 @@
+{
+  "tag": "vina_video_genvideo_vs_official",
+  "key": "genvideo",
+  "model": "vina_video",
+  "synthscope_scores": "vina_scores/vina_video_genvideo.json",
+  "synthscope_job": "281656",
+  "official_csv": "vina_official_out/281662/genvideo-2026-11-08 18:00:13.csv",
+  "official_job": "281662",
+  "note": "official eval.py --analysis CSV vs SynthScope per-file P(fake) on the same files",
+  "compare": {
+    "n_ours": 18584,
+    "n_official": 18584,
+    "n_common": 18584,
+    "only_ours": [],
+    "only_official": [],
+    "max_abs_diff": 4.547834396362305e-05,
+    "mean_abs_diff": 2.779297634013227e-07,
+    "decision_flips_at_0.5": 0,
+    "n_diff_gt_1e-3": 0,
+    "n_diff_gt_1e-2": 0,
+    "median_abs_diff": 6.548361852765083e-11,
+    "worst_5": [
+      {
+        "path": "data/image_eval/genvideo_val/fake_lavie/lavie_603",
+        "p_ours": 0.5446439385414124,
+        "p_official": 0.544689416885376,
+        "abs_diff": 4.547834396362305e-05
+      },
+      {
+        "path": "data/image_eval/genvideo_val/fake_hotshot/hotshot_583",
+        "p_ours": 0.4323737621307373,
+        "p_official": 0.43240800499916077,
+        "abs_diff": 3.4242868423461914e-05
+      },
+      {
+        "path": "data/image_eval/genvideo_val/fake_show1/show1_563",
+        "p_ours": 0.2643648386001587,
+        "p_official": 0.26439639925956726,
+        "abs_diff": 3.1560659408569336e-05
+      },
+      {
+        "path": "data/image_eval/genvideo_val/fake_lavie/lavie_1075",
+        "p_ours": 0.9039855599403381,
+        "p_official": 0.9039559364318848,
+        "abs_diff": 2.962350845336914e-05
+      },
+      {
+        "path": "data/image_eval/genvideo_val/real_msrvtt/msrvtt_2274",
+        "p_ours": 0.1832161843776703,
+        "p_official": 0.18318693339824677,
+        "abs_diff": 2.925097942352295e-05
+      }
+    ]
+  },
+  "means_synthscope": {
+    "acc": 96.86,
+    "map": 99.26,
+    "mean_recall": 93.2,
+    "mean_f1": 81.91,
+    "mean_subset_ap": 92.83,
+    "real_acc": 98.16,
+    "fake_acc": 95.35,
+    "bacc": 96.76,
+    "auroc": 99.14,
+    "n_real": 10000,
+    "n_fake": 8584
+  },
+  "means_official_code": {
+    "acc": 96.86,
+    "map": 99.26,
+    "mean_recall": 93.2,
+    "mean_f1": 81.91,
+    "mean_subset_ap": 92.83,
+    "real_acc": 98.16,
+    "fake_acc": 95.35,
+    "bacc": 96.76,
+    "auroc": 99.14,
+    "n_real": 10000,
+    "n_fake": 8584
+  },
+  "per_subset_synthscope": {
+    "sora": {
+      "recall": 75.0,
+      "f1": 29.79,
+      "ap": 56.82,
+      "real_acc": 98.16,
+      "fake_acc": 75.0,
+      "bacc": 86.58,
+      "auroc": 96.87,
+      "n_real": 10000,
+      "n_fake": 56
+    },
+    "morphstudio": {
+      "recall": 99.86,
+      "f1": 88.31,
+      "ap": 99.74,
+      "real_acc": 98.16,
+      "fake_acc": 99.86,
+      "bacc": 99.01,
+      "auroc": 99.98,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "gen2": {
+      "recall": 100.0,
+      "f1": 93.75,
+      "ap": 99.96,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "bacc": 99.08,
+      "auroc": 99.99,
+      "n_real": 10000,
+      "n_fake": 1380
+    },
+    "hotshot": {
+      "recall": 94.29,
+      "f1": 85.49,
+      "ap": 95.9,
+      "real_acc": 98.16,
+      "fake_acc": 94.29,
+      "bacc": 96.22,
+      "auroc": 99.53,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "lavie": {
+      "recall": 97.71,
+      "f1": 92.68,
+      "ap": 99.03,
+      "real_acc": 98.16,
+      "fake_acc": 97.71,
+      "bacc": 97.94,
+      "auroc": 99.81,
+      "n_real": 10000,
+      "n_fake": 1400
+    },
+    "show1": {
+      "recall": 96.29,
+      "f1": 86.52,
+      "ap": 97.53,
+      "real_acc": 98.16,
+      "fake_acc": 96.29,
+      "bacc": 97.22,
+      "auroc": 99.73,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "moonvalley": {
+      "recall": 100.0,
+      "f1": 87.19,
+      "ap": 99.97,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "bacc": 99.08,
+      "auroc": 100.0,
+      "n_real": 10000,
+      "n_fake": 626
+    },
+    "crafter": {
+      "recall": 99.79,
+      "f1": 93.72,
+      "ap": 99.87,
+      "real_acc": 98.16,
+      "fake_acc": 99.79,
+      "bacc": 98.97,
+      "auroc": 99.96,
+      "n_real": 10000,
+      "n_fake": 1398
+    },
+    "modelscope": {
+      "recall": 98.71,
+      "f1": 87.75,
+      "ap": 99.08,
+      "real_acc": 98.16,
+      "fake_acc": 98.71,
+      "bacc": 98.44,
+      "auroc": 99.91,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "wildscrape": {
+      "recall": 70.35,
+      "f1": 73.95,
+      "ap": 80.42,
+      "real_acc": 98.16,
+      "fake_acc": 70.35,
+      "bacc": 84.25,
+      "auroc": 93.22,
+      "n_real": 10000,
+      "n_fake": 924
+    }
+  },
+  "per_subset_official_code": {
+    "sora": {
+      "recall": 75.0,
+      "f1": 29.79,
+      "ap": 56.82,
+      "real_acc": 98.16,
+      "fake_acc": 75.0,
+      "bacc": 86.58,
+      "auroc": 96.87,
+      "n_real": 10000,
+      "n_fake": 56
+    },
+    "morphstudio": {
+      "recall": 99.86,
+      "f1": 88.31,
+      "ap": 99.74,
+      "real_acc": 98.16,
+      "fake_acc": 99.86,
+      "bacc": 99.01,
+      "auroc": 99.98,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "gen2": {
+      "recall": 100.0,
+      "f1": 93.75,
+      "ap": 99.96,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "bacc": 99.08,
+      "auroc": 99.99,
+      "n_real": 10000,
+      "n_fake": 1380
+    },
+    "hotshot": {
+      "recall": 94.29,
+      "f1": 85.49,
+      "ap": 95.9,
+      "real_acc": 98.16,
+      "fake_acc": 94.29,
+      "bacc": 96.22,
+      "auroc": 99.53,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "lavie": {
+      "recall": 97.71,
+      "f1": 92.68,
+      "ap": 99.03,
+      "real_acc": 98.16,
+      "fake_acc": 97.71,
+      "bacc": 97.94,
+      "auroc": 99.81,
+      "n_real": 10000,
+      "n_fake": 1400
+    },
+    "show1": {
+      "recall": 96.29,
+      "f1": 86.52,
+      "ap": 97.53,
+      "real_acc": 98.16,
+      "fake_acc": 96.29,
+      "bacc": 97.22,
+      "auroc": 99.73,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "moonvalley": {
+      "recall": 100.0,
+      "f1": 87.19,
+      "ap": 99.97,
+      "real_acc": 98.16,
+      "fake_acc": 100.0,
+      "bacc": 99.08,
+      "auroc": 100.0,
+      "n_real": 10000,
+      "n_fake": 626
+    },
+    "crafter": {
+      "recall": 99.79,
+      "f1": 93.72,
+      "ap": 99.87,
+      "real_acc": 98.16,
+      "fake_acc": 99.79,
+      "bacc": 98.97,
+      "auroc": 99.96,
+      "n_real": 10000,
+      "n_fake": 1398
+    },
+    "modelscope": {
+      "recall": 98.71,
+      "f1": 87.75,
+      "ap": 99.08,
+      "real_acc": 98.16,
+      "fake_acc": 98.71,
+      "bacc": 98.44,
+      "auroc": 99.91,
+      "n_real": 10000,
+      "n_fake": 700
+    },
+    "wildscrape": {
+      "recall": 70.35,
+      "f1": 73.95,
+      "ap": 80.42,
+      "real_acc": 98.16,
+      "fake_acc": 70.35,
+      "bacc": 84.25,
+      "auroc": 93.22,
+      "n_real": 10000,
+      "n_fake": 924
+    }
+  },
+  "n_files_compared": 18584,
+  "date": "2026-11-08T19:49:04"
+}

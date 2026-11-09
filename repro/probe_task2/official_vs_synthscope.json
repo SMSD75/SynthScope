@@ -1,0 +1,286 @@
+{
+ "probe_wildrf": {
+  "rows": {
+   "facebook": {
+    "n_synthscope": 320,
+    "n_official": 320,
+    "n_common": 320,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 98.75,
+    "official_bacc_all": 98.75,
+    "synthscope_bacc_common": 98.75,
+    "official_bacc_common": 98.75,
+    "official_overall_acc_balanced_subsample": 98.75,
+    "official_subsample_n": [
+     160,
+     160
+    ],
+    "official_ap": 99.91,
+    "max_abs_dP": 2.7120113372802734e-06,
+    "mean_abs_dP": 4.451856057130499e-08,
+    "flips_at_0.5": 0
+   },
+   "reddit": {
+    "n_synthscope": 1500,
+    "n_official": 1500,
+    "n_common": 1500,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 93.33,
+    "official_bacc_all": 93.33,
+    "synthscope_bacc_common": 93.33,
+    "official_bacc_common": 93.33,
+    "official_overall_acc_balanced_subsample": 93.33,
+    "official_subsample_n": [
+     750,
+     750
+    ],
+    "official_ap": 98.41,
+    "max_abs_dP": 3.039836883544922e-06,
+    "mean_abs_dP": 1.281230288441293e-07,
+    "flips_at_0.5": 0
+   },
+   "twitter": {
+    "n_synthscope": 683,
+    "n_official": 421,
+    "n_common": 421,
+    "only_synthscope": [
+     "jfif"
+    ],
+    "n_only_synthscope": 262,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 98.68,
+    "official_bacc_all": 98.57,
+    "synthscope_bacc_common": 98.57,
+    "official_bacc_common": 98.57,
+    "official_overall_acc_balanced_subsample": 98.26,
+    "official_subsample_n": [
+     144,
+     144
+    ],
+    "official_ap": 99.7,
+    "max_abs_dP": 1.564621925354004e-06,
+    "mean_abs_dP": 5.026400456898525e-08,
+    "flips_at_0.5": 0
+   }
+  },
+  "official_mean_bacc_all": 96.88,
+  "official_mean_overall_acc": 96.78,
+  "synthscope_mean": 96.92
+ },
+ "probe_synthwildx": {
+  "rows": {
+   "dalle3": {
+    "n_synthscope": 805,
+    "n_official": 805,
+    "n_common": 805,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 97.44,
+    "official_bacc_all": 97.44,
+    "synthscope_bacc_common": 97.44,
+    "official_bacc_common": 97.44,
+    "official_overall_acc_balanced_subsample": 97.58,
+    "official_subsample_n": [
+     392,
+     392
+    ],
+    "official_ap": 99.34,
+    "max_abs_dP": 4.7907233238220215e-06,
+    "mean_abs_dP": 7.362098625415693e-08,
+    "flips_at_0.5": 0
+   },
+   "firefly": {
+    "n_synthscope": 886,
+    "n_official": 886,
+    "n_common": 886,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 96.98,
+    "official_bacc_all": 96.98,
+    "synthscope_bacc_common": 96.98,
+    "official_bacc_common": 96.98,
+    "official_overall_acc_balanced_subsample": 97.22,
+    "official_subsample_n": [
+     413,
+     413
+    ],
+    "official_ap": 97.52,
+    "max_abs_dP": 4.7907233238220215e-06,
+    "mean_abs_dP": 8.706809170008059e-08,
+    "flips_at_0.5": 0
+   },
+   "midjourney_v5": {
+    "n_synthscope": 848,
+    "n_official": 848,
+    "n_common": 848,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 97.48,
+    "official_bacc_all": 97.48,
+    "synthscope_bacc_common": 97.48,
+    "official_bacc_common": 97.48,
+    "official_overall_acc_balanced_subsample": 97.46,
+    "official_subsample_n": [
+     413,
+     413
+    ],
+    "official_ap": 99.29,
+    "max_abs_dP": 4.7907233238220215e-06,
+    "mean_abs_dP": 7.980291761583121e-08,
+    "flips_at_0.5": 0
+   }
+  },
+  "official_mean_bacc_all": 97.3,
+  "official_mean_overall_acc": 97.42,
+  "synthscope_mean": 97.3
+ },
+ "probe_resnet_wildrf": {
+  "rows": {
+   "facebook": {
+    "n_synthscope": 320,
+    "n_official": 320,
+    "n_common": 320,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 87.81,
+    "official_bacc_all": 87.81,
+    "synthscope_bacc_common": 87.81,
+    "official_bacc_common": 87.81,
+    "official_overall_acc_balanced_subsample": 87.81,
+    "official_subsample_n": [
+     160,
+     160
+    ],
+    "official_ap": 95.25,
+    "max_abs_dP": 0.0006741583347320557,
+    "mean_abs_dP": 4.756571124744369e-05,
+    "flips_at_0.5": 0
+   },
+   "reddit": {
+    "n_synthscope": 1500,
+    "n_official": 1500,
+    "n_common": 1500,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 72.87,
+    "official_bacc_all": 72.87,
+    "synthscope_bacc_common": 72.87,
+    "official_bacc_common": 72.87,
+    "official_overall_acc_balanced_subsample": 72.87,
+    "official_subsample_n": [
+     750,
+     750
+    ],
+    "official_ap": 81.04,
+    "max_abs_dP": 0.0013099312782287598,
+    "mean_abs_dP": 2.5016618089163482e-05,
+    "flips_at_0.5": 0
+   },
+   "twitter": {
+    "n_synthscope": 683,
+    "n_official": 421,
+    "n_common": 421,
+    "only_synthscope": [
+     "jfif"
+    ],
+    "n_only_synthscope": 262,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 84.2,
+    "official_bacc_all": 84.27,
+    "synthscope_bacc_common": 84.27,
+    "official_bacc_common": 84.27,
+    "official_overall_acc_balanced_subsample": 82.29,
+    "official_subsample_n": [
+     144,
+     144
+    ],
+    "official_ap": 90.68,
+    "max_abs_dP": 0.0005781650543212891,
+    "mean_abs_dP": 3.790549008671256e-05,
+    "flips_at_0.5": 0
+   }
+  },
+  "official_mean_bacc_all": 81.65,
+  "official_mean_overall_acc": 80.99,
+  "synthscope_mean": 81.63
+ },
+ "probe_resnet_synthwildx": {
+  "rows": {
+   "dalle3": {
+    "n_synthscope": 805,
+    "n_official": 805,
+    "n_common": 805,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 89.71,
+    "official_bacc_all": 89.71,
+    "synthscope_bacc_common": 89.71,
+    "official_bacc_common": 89.71,
+    "official_overall_acc_balanced_subsample": 89.92,
+    "official_subsample_n": [
+     392,
+     392
+    ],
+    "official_ap": 97.51,
+    "max_abs_dP": 0.0004710555076599121,
+    "mean_abs_dP": 2.5517945806929693e-05,
+    "flips_at_0.5": 0
+   },
+   "firefly": {
+    "n_synthscope": 886,
+    "n_official": 886,
+    "n_common": 886,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 56.29,
+    "official_bacc_all": 56.29,
+    "synthscope_bacc_common": 56.29,
+    "official_bacc_common": 56.29,
+    "official_overall_acc_balanced_subsample": 56.05,
+    "official_subsample_n": [
+     413,
+     413
+    ],
+    "official_ap": 60.73,
+    "max_abs_dP": 0.0004710555076599121,
+    "mean_abs_dP": 2.393783120733831e-05,
+    "flips_at_0.5": 0
+   },
+   "midjourney_v5": {
+    "n_synthscope": 848,
+    "n_official": 848,
+    "n_common": 848,
+    "only_synthscope": [],
+    "n_only_synthscope": 0,
+    "n_only_official": 0,
+    "synthscope_bacc_all": 79.61,
+    "official_bacc_all": 79.61,
+    "synthscope_bacc_common": 79.61,
+    "official_bacc_common": 79.61,
+    "official_overall_acc_balanced_subsample": 79.3,
+    "official_subsample_n": [
+     413,
+     413
+    ],
+    "official_ap": 89.42,
+    "max_abs_dP": 0.0004710555076599121,
+    "mean_abs_dP": 4.6747759318710655e-05,
+    "flips_at_0.5": 0
+   }
+  },
+  "official_mean_bacc_all": 75.2,
+  "official_mean_overall_acc": 75.09,
+  "synthscope_mean": 75.2
+ }
+}

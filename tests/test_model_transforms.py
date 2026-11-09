@@ -8,8 +8,8 @@
   (the training loaders), equals the registry transform on ``bench_eval._open_rgb`` (benchmarks / web UI) exactly, on
   PNG images of several sizes; models with a batchable ``test_transform_list`` compare their eval list through the
   training-path wrapper instead, and their test list must batch across image sizes,
-* pixel parity with hand-written torchvision v1 pipelines (the official eval code) for CLIP, NPR, PGC (incl. zero
-  padding), OmniAID v1, DDA and SAFE,
+* pixel parity with hand-written torchvision pipelines (the official eval code) for CLIP, NPR, PGC (incl. zero
+  padding), OmniAID v1, DDA, SAFE (v1) and VINA (v2, bicubic short-side resize),
 * a model's train / val / test outputs have the same per-sample rank,
 * AIDE's ``aide_blur`` + ``aide_jpeg`` draw the same random numbers and give the same pixels as the official kornia
   ``Perturbations`` container (and leave an image with a side that is not a multiple of 16 the shape kornia's JPEG would
@@ -55,16 +55,19 @@ IMAGE_MODELS = sorted((CONF / "model" / "image").glob("*.yaml"))
 TRAINING_KEYS = ("train_transform_list", "val_transform_list", "test_transform_list")
 # (width, height) of the PNG test images: smaller than every crop, non-square both ways, square, long side > 1024.
 SIZES = [(300, 200), (200, 150), (150, 260), (512, 512), (1300, 900)]
-# Each image model's eval output on a 300x200 image (bfree / spai: native resolution).
+# Each image model's eval output on a 300x200 image (bfree / spai: native resolution; ltf: global view + 2 tiles; probe:
+# repeat-tiled to 600x400, one 336 patch; probe_resnet: one 224 patch of the black-padded square).
 EXPECTED_SHAPES = {
     "adapted_dino": (3, 224, 224), "aide": (5, 3, 256, 256), "bfree": (3, 200, 300), "clip": (3, 224, 224),
     "cnn": (3, 224, 224), "co_spy": (3, 384, 384), "cure": (3, 336, 336), "d3qe": (3, 256, 256),
     "dda": (3, 336, 336), "dinov2": (3, 224, 224), "dinov3": (3, 256, 256), "effort": (3, 224, 224),
-    "fat_former": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
-    "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224), "safe": (3, 256, 256),
-    "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224),
+    "effort_ufd": (3, 224, 224), "fat_former": (3, 224, 224), "ltf": (3, 3, 224, 224),
+    "mirror": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
+    "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224),
+    "probe": (1, 3, 336, 336), "probe_resnet": (1, 3, 224, 224), "safe": (3, 256, 256),
+    "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224), "vina": (3, 256, 256),
 }
-# The official eval code as torchvision v1 pipelines (PIL in).
+# The official eval code as torchvision pipelines (PIL in).
 GOLDEN = {
     "clip": T.Compose([T.Resize(256), T.CenterCrop(224), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "npr": T.Compose([T.Resize((256, 256)), T.ToTensor(), T.Normalize(IMAGENET_MEAN, IMAGENET_STD)]),
@@ -73,10 +76,13 @@ GOLDEN = {
                              T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "dda": T.Compose([T.CenterCrop(336), T.ToTensor(), T.Normalize(CLIP_MEAN, CLIP_STD)]),
     "safe": T.Compose([T.CenterCrop(256), T.ToTensor()]),
+    # VINA's official eval is torchvision v2 (Resize(256, interpolation=3), ToImage + ToDtype): bit-exact only that way
+    "vina": v2.Compose([v2.Resize(256, interpolation=3), v2.CenterCrop(256), v2.ToImage(),
+                        v2.ToDtype(torch.float32, scale=True), v2.Normalize(IMAGENET_MEAN, IMAGENET_STD)]),
 }
-# CuRe re-encodes PNG sources as JPEG q96 first. The training loaders decode to tensors and lose the source format, so
-# their CuRe test path treats every image as non-PNG; the parity check compares against that branch of the inference.
-FORMAT_DEPENDENT = {"cure"}
+# CuRe and MIRROR re-encode PNG sources as JPEG q96 first. The training loaders decode to tensors and lose the source
+# format, so their test path treats every image as non-PNG; the parity check compares against that branch of the inference.
+FORMAT_DEPENDENT = {"cure", "mirror"}
 
 
 def _walk(node, prefix: str, found: dict[str, list[str]]) -> None:
@@ -154,7 +160,7 @@ def test_lists_build() -> None:
             AIGITransformations(names)
             n += 1
     for name in ("resize_300", "resize_short_224", "center_crop_100", "resize_0256", "resize_", "center_crop_abc",
-                 "resize_short_256x", "normalise_clip"):
+                 "resize_short_256x", "normalise_clip", "center_crop_256_bicubic", "resize_short_256_bilinear"):
         try:
             AIGITransformations([name])
         except ValueError as e:
@@ -218,7 +224,7 @@ def test_eval_path_is_inference_path() -> None:
 
 
 def test_golden() -> None:
-    print("[E] pixel parity with the official torchvision v1 pipelines ...")
+    print("[E] pixel parity with the official torchvision pipelines ...")
     with tempfile.TemporaryDirectory() as tmp:
         pngs = write_pngs(Path(tmp))
         for stem, golden in GOLDEN.items():
@@ -298,7 +304,7 @@ def test_without_resize() -> None:
     native = tf.without_resize()
     assert native.transform_list == ["to_dtype", "normalize_clip"] and native.pil_input, native
     assert tuple(native(noise_pil()).shape) == (3, 200, 300)
-    for stem in ("spai", "cure", "effort", "aide", "moejepa"):
+    for stem in ("spai", "cure", "effort", "aide", "moejepa", "ltf", "mirror"):
         try:
             model_transform(f"image/{stem}").without_resize()
         except ValueError:

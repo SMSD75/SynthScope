@@ -7,6 +7,8 @@ and kept in a small LRU so a shared GPU is not exhausted. All forward passes hap
 import base64
 import gc
 import io
+import logging
+import math
 import threading
 import time
 from collections import OrderedDict
@@ -17,8 +19,11 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from . import config
+from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
 from . import media
+
+logger = logging.getLogger(__name__)
 
 
 def _png_b64(img: Image.Image) -> str:
@@ -120,6 +125,21 @@ def _build_model(cfg):
     if model_type == "d3qe":
         from models.image.d3qe.d3qe import SynthScopeD3QEModel
         return SynthScopeD3QEModel(cfg)
+    if model_type == "ltf":
+        from models.image.ltf.ltf import SynthScopeLTFModel
+        return SynthScopeLTFModel(cfg)
+    if model_type == "mirror":
+        from models.image.mirror.mirror import SynthScopeMIRRORModel
+        return SynthScopeMIRRORModel(cfg)
+    if model_type == "vina":
+        from models.image.vina.vina import SynthScopeVINAModel
+        return SynthScopeVINAModel(cfg)
+    if model_type == "probe":
+        from models.image.probe.probe import SynthScopePROBEModel
+        return SynthScopePROBEModel(cfg)
+    if model_type == "probe_resnet":
+        from models.image.probe.probe import SynthScopePROBEResNetModel
+        return SynthScopePROBEResNetModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
@@ -164,6 +184,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
     if spec.remap is not None:
         sd = spec.remap(sd)
+    # A checkpoint that holds a transformers backbone carries the parameter names of the release that saved it; map them
+    # onto this release's names when the rename is exact (hf_compat.HF_RENAMES), else leave them for the checks below.
+    sd, hf_note = translate_hf_keys(sd, model.state_dict())
+    if hf_note:
+        logger.info("%s: transformers parameter names translated (%s)", spec.key, hf_note)
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
     benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
@@ -182,9 +207,21 @@ def _load_checkpoint(model, spec: ModelSpec):
                 f"{spec.key}: checkpoint mismatch missing={real_missing[:8]} "
                 f"unexpected={unexpected[:8]}"
             )
+    elif real_missing or unexpected:
+        # Non-official kinds are not raised on (a model may legitimately rebuild some tensors itself, declared via
+        # ``pretrained_prefixes``), but a mismatch must never be silent: dropped keys (e.g. a wrapper prefix the
+        # checkpoint carries and the class does not, which once left the served PGC without its LoRA weights) or
+        # tensors that kept their __init__ values change what the detector computes.
+        logger.warning(
+            "%s: checkpoint %s does not match the model exactly: %d unexpected key(s) were dropped and %d key(s) kept "
+            "their __init__ values (unexpected=%s, missing=%s). Fix the remap or declare the keys in the model's "
+            "pretrained_prefixes.", spec.key, path.name, len(unexpected), len(real_missing), unexpected[:4],
+            real_missing[:4],
+        )
     return (
         f"loaded {len(sd)} tensors from {path.name} "
         f"(missing={len(real_missing)}, unexpected={len(unexpected)})"
+        + (f" [transformers key names translated, {hf_note}]" if hf_note else "")
     )
 
 
@@ -205,11 +242,18 @@ class Engine:
             return None
         return config.CHECKPOINTS_DIR / spec.checkpoint
 
+    @staticmethod
+    def ffmpeg_missing(spec: ModelSpec) -> bool:
+        """True for a detector whose video protocol shells out to ffmpeg (vina_video) when none can be found."""
+        return spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available()
+
     def is_available(self, spec: ModelSpec) -> bool:
         if spec.key == "stall":  # training-free, but needs the gated DINOv3 ViT-L/16 weights
             import os
             from .registry import DINOV3_WEIGHTS
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
+        if self.ffmpeg_missing(spec):
+            return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
         p = self.checkpoint_path(spec)
@@ -296,6 +340,8 @@ class Engine:
                     z = -z
                 return torch.sigmoid(z)
         out = model(frames)  # [1,2]
+        if spec.video_prob == "sigmoid":  # one fake logit (VINA: the mean of the frame logits)
+            return torch.sigmoid(out.reshape(-1))
         if spec.key == "stall":
             # STALL returns [real_prob, fake_prob] (already calibrated percentiles); use directly.
             return out[:, 1]
@@ -347,15 +393,20 @@ class Engine:
     @staticmethod
     def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280) -> str:
         """The image exactly as the network receives it (after this detector's preprocessing), as a PNG data URL.
-        Normalization is undone for display; multi-view inputs (AIDE) are laid out side by side."""
+        Normalization is undone for display; multi-view inputs are laid out side by side (up to 5 views, e.g. AIDE)
+        or in a near-square grid (LTF has one view per tile, up to dozens)."""
         t = x[0].detach().float().cpu()
-        if t.dim() == 4:
-            t = torch.cat(list(t), dim=2)
         norm = spec.transform.normalize_step()
         if norm is not None:
             t = t * torch.tensor(norm.std)[:, None, None] + torch.tensor(norm.mean)[:, None, None]
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
             t = t * 0.5 + 0.5
+        if t.dim() == 4:
+            cols = len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t)))
+            pad = -len(t) % cols
+            if pad:
+                t = torch.cat([t, torch.zeros(pad, *t.shape[1:])])
+            t = torch.cat([torch.cat(list(row), dim=2) for row in t.view(-1, cols, *t.shape[1:])], dim=1)
         if t.min() < 0 or t.max() > 1:                 # unknown scaling: stretch for display only
             t = (t - t.min()) / (t.max() - t.min() + 1e-8)
         img = Image.fromarray((t.clamp(0, 1) * 255).round().byte().permute(1, 2, 0).numpy())
@@ -401,6 +452,9 @@ class Engine:
 
     def video_clip(self, spec: ModelSpec, path) -> torch.Tensor:
         """Decode and normalize a clip exactly as ``spec`` prescribes: ``[T, 3, H, W]``."""
+        if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
+            frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
+            return torch.stack([spec.transform(f) for f in frames])
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
             window_center=spec.window_center, interp=spec.resize_interp,

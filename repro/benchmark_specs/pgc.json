@@ -3,7 +3,7 @@
  "paper": "PGC: Peak-Guided Calibration for Generalizable AI-Generated Image Detection (Zhou, Fei, Yu, Xie, Cheng, Xia \u2014 ICML 2026 / arXiv 2026)",
  "arxiv_id": "2605.21207",
  "official_repo": "https://github.com/xiaoyu6868/PGC (ModelScope/HF mirrors). on-disk: /hddstore/ssalehi/SynthScope/PGC_official",
- "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (4-class CNNDet/UniversalFakeDetect train) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
+ "training_set_in_paper": "Three checkpoints over a frozen DINOv2-Large + LoRA (rank 8). (a) SD-v1.4: GenImage SD-v1.4 split (nature/ai) -> used for GenImage + CommGen15. (b) ProGAN (the 20-class CNNDet/UniversalFakeDetect train set, 720k images; repro/investigate/pgc_gap_investigation.md) -> used for UniversalFakeDetect + ForenSynths. (c) joint ProGAN+SD-v1.4 -> used for AIGI(Bench). See README sections 3.1-3.3 and 4.1-4.4 (ckpt->benchmark mapping).",
  "benchmarks": [
   {
    "name": "GenImage",
@@ -53,14 +53,14 @@
    "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP. test.py --name test_UniversalFakeDetect.",
    "our_status": "reproduced",
    "our_number": {
-    "map_official_wts": 99.34,
-    "acc_official_wts": 94.16,
+    "map_official_wts": 99.35,
+    "acc_official_wts": 94.19,
     "map_synthscope_retrain": 98.99,
-    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
-    "tags": "pgc_official_ufd / pgc_trained_step500_ufd8 (official recipe in SynthScope, experiments/image/pgc.sh)",
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth (the served pgc.pth)",
+    "tags": "pgc_official_ufd8_fixed (SynthScope class, fixed load, 99.35 / 94.19) / pgc_trained_step500_ufd8 (job 266660, PadCenterCrop eval; official recipe in SynthScope, experiments/image/pgc.sh). pgc_official_ufd (99.34 / 94.16) is the 2026-06-04 run of the official PGC code (pgc_official_eval.py); with the load fixed the SynthScope class matches it within 0.03. Correction 2026-11-09: the earlier pgc_official_ufd8 (99.17 / 83.57, superseded, bench_results/_superseded/) was scored with the official LoRA tensors silently dropped (2026-06-15 to 2026-11-09).",
     "acc_synthscope_retrain": 91.96
    },
-   "gap_cause": "Reproduced (official weights 99.34; the official recipe trained in SynthScope, step 500: 98.99) >= paper 98.0.",
+   "gap_cause": "Reproduced: official weights 99.35 mAP / 94.19 acc (fixed load; = official code 99.34 / 94.16), official recipe trained in SynthScope (step 500) 98.99 / 91.96, both >= paper 98.0 mAP. Correction 2026-11-09: the earlier 99.17 / 83.57 for the official weights came from a load that dropped the LoRA.",
    "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/universialfakedetection/test. Origin: github.com/WisconsinAIVision/UniversalFakeDetect."
   },
   {
@@ -80,14 +80,14 @@
    "official_eval_protocol": "PGC_train_progan_ckpt.pth; PadCenterCrop 224 + DINOv2 norm; AP.",
    "our_status": "reproduced",
    "our_number": {
-    "map_official_wts": 96.25,
-    "acc_official_wts": 83.73,
+    "map_official_wts": 97.83,
+    "acc_official_wts": 89.17,
     "map_synthscope_retrain": 97.41,
-    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth",
-    "tags": "pgc_official_forensynths / pgc_trained_step500_forensynths13 (FS-8 subset of the 13)",
+    "ckpt_official": "repro/official_ckpts/pgc/PGC_train_progan_ckpt.pth (the served pgc.pth)",
+    "tags": "pgc_official_forensynths13_fixed (SynthScope class, fixed load; FS-8 subset 97.83 / 89.17 / mAUROC 98.14, FS-13 96.25 / 83.76) / pgc_trained_step500_forensynths13 (FS-8 subset of the 13, job 266282). pgc_official_forensynths (FS-13 96.25 / 83.73) is the 2026-06-04 run of the official PGC code (pgc_official_eval.py); the fixed SynthScope class matches it within 0.03. Correction 2026-11-09: the earlier pgc_official_forensynths13 (FS-8 96.41 / 76.34, FS-13 93.80 / 70.58, superseded) was scored with the official LoRA tensors silently dropped (2026-06-15 to 2026-11-09).",
     "acc_synthscope_retrain": 85.89
    },
-   "gap_cause": "Not a paper number. The official recipe trained in SynthScope (step 500) gives FS-8 97.41 mAP, above the official checkpoint (96.41 on the same evaluation); the earlier 89.03 retrain overshot the early transfer peak.",
+   "gap_cause": "Not a paper number. Against the real official weights (fixed load) the step-500 SynthScope recipe is slightly below: FS-8 97.41 mAP / 85.89 acc vs 97.83 / 89.17. Correction 2026-11-09: the earlier 96.41 / 76.34 for the official weights came from a load that dropped the LoRA, so 'matches or exceeds the official checkpoint' no longer holds.",
    "dataset_source": "on-disk /hddstore/ssalehi/SynthScope/CNNDetection/test. Origin: github.com/PeterWang512/CNNDetection."
   },
   {

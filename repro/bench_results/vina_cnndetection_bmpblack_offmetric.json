@@ -1,0 +1,135 @@
+{
+  "tag": "vina_cnndetection_bmpblack_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:cnn",
+  "data_root": "/tmp/ssalehi_vina_281655/layouts/cnndetection",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_cnndetection_bmpblack.json",
+  "note": "vina_cnndetection scores (job 281655) + the 19 SAN .bmp reals at the score of the official loader's black fallback image (P 0.000884, SynthScope vina; log vina_bmpblack_variant.log), official forensynths metric",
+  "n_generators": 11,
+  "means": {
+    "acc": 86.99,
+    "map": 97.77,
+    "bacc": 86.99,
+    "mauroc": 97.43
+  },
+  "per_generator": {
+    "progan": {
+      "acc": 95.21,
+      "ap": 99.35,
+      "real_acc": 91.33,
+      "fake_acc": 99.1,
+      "bacc": 95.21,
+      "auroc": 99.43,
+      "n_real": 4000,
+      "n_fake": 4000
+    },
+    "cyclegan": {
+      "acc": 93.15,
+      "ap": 99.52,
+      "real_acc": 99.77,
+      "fake_acc": 86.53,
+      "bacc": 93.15,
+      "auroc": 99.48,
+      "n_real": 1321,
+      "n_fake": 1321
+    },
+    "biggan": {
+      "acc": 95.05,
+      "ap": 99.81,
+      "real_acc": 99.75,
+      "fake_acc": 90.35,
+      "bacc": 95.05,
+      "auroc": 99.81,
+      "n_real": 2000,
+      "n_fake": 2000
+    },
+    "stylegan": {
+      "acc": 93.42,
+      "ap": 97.84,
+      "real_acc": 92.15,
+      "fake_acc": 94.7,
+      "bacc": 93.42,
+      "auroc": 98.1,
+      "n_real": 13979,
+      "n_fake": 13979
+    },
+    "gaugan": {
+      "acc": 96.06,
+      "ap": 99.96,
+      "real_acc": 99.92,
+      "fake_acc": 92.2,
+      "bacc": 96.06,
+      "auroc": 99.97,
+      "n_real": 5000,
+      "n_fake": 5000
+    },
+    "stargan": {
+      "acc": 98.2,
+      "ap": 99.97,
+      "real_acc": 99.8,
+      "fake_acc": 96.6,
+      "bacc": 98.2,
+      "auroc": 99.97,
+      "n_real": 1999,
+      "n_fake": 1999
+    },
+    "deepfake": {
+      "acc": 63.16,
+      "ap": 90.77,
+      "real_acc": 99.89,
+      "fake_acc": 26.32,
+      "bacc": 63.1,
+      "auroc": 88.3,
+      "n_real": 2707,
+      "n_fake": 2698
+    },
+    "seeingdark": {
+      "acc": 85.28,
+      "ap": 95.43,
+      "real_acc": 97.78,
+      "fake_acc": 72.78,
+      "bacc": 85.28,
+      "auroc": 94.75,
+      "n_real": 180,
+      "n_fake": 180
+    },
+    "san": {
+      "acc": 83.79,
+      "ap": 95.16,
+      "real_acc": 96.8,
+      "fake_acc": 70.78,
+      "bacc": 83.79,
+      "auroc": 93.74,
+      "n_real": 219,
+      "n_fake": 219
+    },
+    "crn": {
+      "acc": 76.83,
+      "ap": 99.6,
+      "real_acc": 53.65,
+      "fake_acc": 100.0,
+      "bacc": 76.83,
+      "auroc": 99.76,
+      "n_real": 6382,
+      "n_fake": 6382
+    },
+    "imle": {
+      "acc": 76.79,
+      "ap": 98.12,
+      "real_acc": 53.65,
+      "fake_acc": 99.92,
+      "bacc": 76.79,
+      "auroc": 98.45,
+      "n_real": 6382,
+      "n_fake": 6382
+    }
+  },
+  "official_function_return": [
+    0.8699419955713555,
+    0.9777499423171178
+  ],
+  "n_files": 90329,
+  "n_files_in_no_subset": 2000,
+  "date": "2026-11-08T04:57:36"
+}

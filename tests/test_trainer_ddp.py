@@ -4,7 +4,8 @@
 ``_compute_loss`` runs it through the wrapper's ``forward`` so the gradient reducer fires. Checked here, with a tiny model
 (a trainable linear layer behind frozen parameters, like a frozen backbone), on a global batch of 16 samples per step:
 
-* ``train_epoch`` (no accumulation): 2 processes x 8 equal one process x 16, and both ranks hold identical weights,
+* ``train_epoch`` (no accumulation): 2 processes x 8 equal one process x 16, and both ranks hold identical weights; the same
+  with accumulation (2 processes x micro-batch 4 x accumulation 2),
 * ``_train_with_timm_cosine`` (AIDE's path, with accumulation, 2 epochs): 2 processes x micro-batch 4 x accumulation 2 give
   the weights of one process x 16, of one process x 4 x accumulation 4, and of the same DDP run with ``no_sync`` disabled;
   the non-stepping micro-batches run under ``accelerator.no_sync`` (counted), the ranks stay identical,
@@ -95,7 +96,7 @@ def run(mode, micro, accum, no_sync=True):
     t.val = lambda: (0.0, {})
     t._save_model = lambda *args: None
     if mode == "train_epoch":
-        t.train_epoch()
+        t.train_epoch(accum=accum)
     elif mode == "timm_cosine":
         t.config = OmegaConf.create({"TrainerConfig": {"epochs": 2, "lr": 0.1, "save": False, "save_path": "unused"}})
         t._train_with_timm_cosine(OmegaConf.create({"warmup_epochs": 0, "warmup_lr": 0.0, "min_lr": 0.01,
@@ -150,6 +151,10 @@ def test_ddp_equals_single_process():
         got = ddp("train_epoch", 8, 1, tmp)
         assert got["steps"] == ref["steps"] == 2
         close(got, ref, "train_epoch")
+        # train_epoch with accumulation (lr_step / FatFormer path): 2 procs x 4 x 2 = 16
+        got = ddp("train_epoch", 4, 2, tmp)
+        assert got["steps"] == ref["steps"] == 2
+        close(got, ref, "train_epoch with accumulation")
         # timm_cosine with accumulation, 2 epochs x 2 steps: 2 procs x 4 x 2 = 16
         ref = single("timm_cosine", 16, 1)
         assert ref["steps"] == 4 and ref["calls"] == 0

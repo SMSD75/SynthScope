@@ -1,0 +1,33 @@
+{
+  "tag": "vina_aigibench",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope/AIGIBench/test",
+  "jpeg_fakes": null,
+  "n_generators": 2,
+  "means": {
+    "acc": 92.72,
+    "map": 97.33,
+    "mauroc": 97.6
+  },
+  "per_generator": {
+    "CommunityAI": {
+      "ap": 99.14,
+      "auroc": 99.07,
+      "real_acc": 95.68,
+      "fake_acc": 95.77,
+      "acc": 95.73
+    },
+    "SocialRF": {
+      "ap": 95.51,
+      "auroc": 96.14,
+      "real_acc": 84.83,
+      "fake_acc": 94.6,
+      "acc": 89.72
+    }
+  },
+  "date": "2026-11-08T01:28:35",
+  "synthscope_version": "0.1.0"
+}

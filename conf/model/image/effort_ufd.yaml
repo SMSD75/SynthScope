@@ -1,0 +1,27 @@
+defaults:
+  - /model/default
+  - _self_
+
+# Effort trained with the official UniversalFakeDetect_Benchmark recipe (YZY-stack/Effort-AIGI-Detection, ProGAN -> UFD
+# Tables 2/3): the same model as conf/model/image/effort.yaml (CLIP ViT-L/14, SVD rank 1023 frozen + residual trainable,
+# Linear(1024, 2)); only the preprocessing differs, because that benchmark's own loaders feed 224 crops, not the
+# DeepfakeBench squash the released GenImage checkpoint uses. The served `effort` models keep conf/model/image/effort.yaml.
+model_type: effort
+clip_name: openai/clip-vit-large-patch14
+svd_rank: 1023
+# Official trainer: torch.nn.init.normal_(fc.weight, 0.0, init_gain=0.02) (models/trainer.py:18, options/base_options.py:67).
+head_init_std: 0.02
+# Official classifier is Linear(1024, 1) + BCEWithLogitsLoss: row 0 of our 2-logit head is pinned at zero (logits [0, z]), so the
+# cross-entropy equals BCEWithLogits(z) exactly and the checkpoint keeps the 2-logit format.
+head_single_logit: true
+
+# Test-time preprocessing of the UFD benchmark (validate.py RealFakeDataset): translate_duplicate(img, 256) (tiles an image whose
+# shorter side is < 256: 90 of the 1000 ImageNet reals of Guided, 2 SAN images, every GenImage BigGAN fake), CenterCrop 224,
+# CLIP mean/std. No resize.
+eval_transform_list: [translate_duplicate_256, center_crop_224, to_dtype, normalize_clip]
+# Training (data/datasets.py:174-181, --data_aug off): [translate_duplicate(256)], RandomCrop 224, RandomHorizontalFlip, CLIP
+# mean/std. The official train Compose also tiles first (translate_duplicate(img, loadSize=256)); that is a no-op on the 256-px
+# ProGAN train images, so the list below omits it (the run is done with this list). The official Compose has no resize
+# (rz_func is commented out); resize_short_256 is the identity on the 256x256 ProGAN images and keeps the crop valid on any
+# smaller image.
+train_transform_list: [resize_short_256, random_crop_224, random_horizontal_flip, to_dtype, normalize_clip]

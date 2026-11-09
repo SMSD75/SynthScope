@@ -1,0 +1,55 @@
+{
+  "tag": "vina_rrdataset_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:rrdataset",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_rrdataset.json",
+  "note": "official metric on SynthScope GPU scores (IVI 281657, code 0954488)",
+  "n_generators": 3,
+  "means": {
+    "acc": 82.89,
+    "map": 92.77,
+    "bacc": 82.9,
+    "mauroc": 91.69
+  },
+  "per_generator": {
+    "original": {
+      "acc": 94.08,
+      "ap": 98.57,
+      "real_acc": 96.07,
+      "fake_acc": 92.08,
+      "bacc": 94.08,
+      "auroc": 98.41,
+      "n_real": 8500,
+      "n_fake": 8500
+    },
+    "transfer": {
+      "acc": 84.87,
+      "ap": 94.95,
+      "real_acc": 97.22,
+      "fake_acc": 72.52,
+      "bacc": 84.87,
+      "auroc": 94.07,
+      "n_real": 8500,
+      "n_fake": 8500
+    },
+    "redigital": {
+      "acc": 69.73,
+      "ap": 84.8,
+      "real_acc": 97.75,
+      "fake_acc": 41.72,
+      "bacc": 69.74,
+      "auroc": 82.6,
+      "n_real": 8499,
+      "n_fake": 8500
+    }
+  },
+  "official_function_return": [
+    0.8289352418654384,
+    0.9277287688736711
+  ],
+  "n_files": 50999,
+  "n_files_in_no_subset": 0,
+  "date": "2026-11-08T19:48:14"
+}

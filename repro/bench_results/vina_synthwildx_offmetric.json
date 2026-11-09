@@ -1,0 +1,55 @@
+{
+  "tag": "vina_synthwildx_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:synthwildx",
+  "data_root": "/ssdstore/ssalehi/SynthScope/SynthWildX/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_synthwildx.json",
+  "note": "official metric (synthbuster fn) on SynthScope GPU scores (IVI 281657, code 0954488)",
+  "n_generators": 3,
+  "means": {
+    "acc": 91.82,
+    "map": 96.36,
+    "bacc": 91.76,
+    "mauroc": 97.46
+  },
+  "per_generator": {
+    "dalle3": {
+      "acc": 92.8,
+      "ap": 95.89,
+      "real_acc": 86.68,
+      "fake_acc": 99.23,
+      "bacc": 92.96,
+      "auroc": 98.07,
+      "n_real": 413,
+      "n_fake": 392
+    },
+    "firefly": {
+      "acc": 89.5,
+      "ap": 96.03,
+      "real_acc": 86.68,
+      "fake_acc": 91.97,
+      "bacc": 89.32,
+      "auroc": 95.66,
+      "n_real": 413,
+      "n_fake": 473
+    },
+    "midjourney_v5": {
+      "acc": 93.16,
+      "ap": 97.17,
+      "real_acc": 86.68,
+      "fake_acc": 99.31,
+      "bacc": 93.0,
+      "auroc": 98.64,
+      "n_real": 413,
+      "n_fake": 435
+    }
+  },
+  "official_function_return": [
+    0.9181959813963528,
+    0.9636278494967089
+  ],
+  "n_files": 1713,
+  "n_files_in_no_subset": 413,
+  "date": "2026-11-08T19:48:11"
+}

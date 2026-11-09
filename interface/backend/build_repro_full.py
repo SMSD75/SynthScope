@@ -17,14 +17,17 @@ ROOT = str(Path(__file__).resolve().parents[2])   # the repository root, whereve
 VAL = {
     # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no SynthScope_train here.
     ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
-    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces official.
+    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces the official mAP (acc is lower).
     ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 96.42, "acc": 77.87}},
-    ("clip", "ForenSynths"):             {"synthscope": {"map": 97.22, "acc": 88.28}, "official": {"map": 96.95}},
+    # ForenSynths = the paper's 11 generators (no StyleGAN2 / WhichFaceIsReal), recomputed from the per-generator entries
+    # of {clip,cnn}_{synthscope,official}_forensynths.json; the 8-GAN subset gives clip 97.22 / 96.96, cnn 94.42 / 92.67.
+    ("clip", "ForenSynths"):             {"synthscope": {"map": 92.83, "acc": 85.39}, "official": {"map": 92.33, "acc": 80.58}},
     ("clip", "UniversalFakeDetect"):     {"synthscope": {"map": 96.44, "acc": 87.23}, "official": {"map": 95.66}},
-    ("cnn", "ForenSynths"):              {"synthscope": {"map": 94.42, "acc": 76.36}, "official": {"map": 92.67}},
-    ("co_spy", "Co-Spy-Bench"):          {"synthscope": {"map": 96.6, "acc": 89.9}, "official": {"map": 86.65, "acc": 83.88}},
+    ("cnn", "ForenSynths"):              {"synthscope": {"map": 90.44, "acc": 74.57}, "official": {"map": 90.77, "acc": 75.82}},
+    # synthscope Co-Spy-Bench / GenImage = cospy_full/model_1.pth, the checkpoint promoted to co_spy.pth (2026-06-08).
+    ("co_spy", "Co-Spy-Bench"):          {"synthscope": {"map": 96.7, "acc": 90.28}, "official": {"map": 86.65, "acc": 83.88}},
     ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "synthscope": {"map": 84.91}},
-    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 75.91}},
+    ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 76.23}},
     ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "synthscope": {"map": 96.17}},
     # CuRe: only the official adapter exists (the training recipe is unreleased), so there is no SynthScope-trained number.
     ("cure", "AIGIBench"):               {"official": {"map": 97.0, "acc": 92.85, "auroc": 97.48}},
@@ -49,7 +52,10 @@ VAL = {
     ("dda", "EvalGEN"):                  {"official": {"map": 99.93, "acc": 96.86, "auroc": 99.85}, "synthscope": {"map": 99.89, "acc": 96.79, "auroc": 99.76}},
     ("dda", "RealChain"):                {"official": {"map": 76.46, "acc": 67.23, "auroc": 74.97}, "synthscope": {"map": 74.72, "acc": 66.76, "auroc": 72.79}},
     ("dda", "RRDataset"):                {"official": {"map": 85.18, "acc": 75.99, "auroc": 81.74}, "synthscope": {"map": 85.81, "acc": 77.19, "auroc": 83.1}},
-    # Effort: the official GenImage-SD1.4 checkpoint (no SynthScope-trained number). acc = mean per-subset balanced accuracy.
+    # Effort: GenImage and the in-the-wild sets = the official GenImage-SD1.4 checkpoint. acc = mean per-subset balanced accuracy.
+    # UniversalFakeDetect (the paper's ProGAN-trained model; no checkpoint released): synthscope = trained in SynthScope with
+    # the official recipe (experiments/image/effort_ufd.sh; job 276492, iteration 18000 = the official selection; eval job 278691,
+    # tag effort_ufd_step18000_ufd19), 19 subsets, acc at 0.5.
     # MoE-JEPA: official SID-Set checkpoint (no SynthScope-trained number). SID-Set acc = 3-way accuracy (the paper's
     # metric, bf16 as the official test; job 270455) with the binary mAP/AUROC; the rest: balanced acc at 0.5.
     ("moejepa", "SID-Set"):              {"official": {"map": 99.47, "acc": 96.37, "auroc": 99.41}},
@@ -59,6 +65,7 @@ VAL = {
     ("moejepa", "BFree-Online"):         {"official": {"map": 91.79, "acc": 57.99, "auroc": 85.22}},
     ("moejepa", "EvalGEN"):              {"official": {"map": 92.77, "acc": 70.85, "auroc": 86.43}},
     ("moejepa", "RealChain"):            {"official": {"map": 71.74, "acc": 66.39, "auroc": 73.22}},
+    ("effort", "UniversalFakeDetect"):   {"synthscope": {"map": 99.2, "acc": 94.81, "auroc": 99.04}},
     ("effort", "GenImage"):              {"official": {"map": 99.37, "acc": 89.83, "auroc": 99.48}},
     ("effort", "SynthWildX"):            {"official": {"map": 61.2, "acc": 56.69, "auroc": 63.57}},
     ("effort", "WildRF"):                {"official": {"map": 81.11, "acc": 71.36, "auroc": 78.64}},
@@ -98,13 +105,21 @@ VAL = {
     ("omniaid", "RealChain (v2"):                            {"official": {"map": 84.02, "acc": 61.71, "auroc": 83.63}},
     ("omniaid", "EvalGEN (v2"):                              {"official": {"map": 96.46, "acc": 74.14, "auroc": 93.08}},
     ("omniaid", "RRDataset (v2"):                            {"official": {"map": 84.19, "acc": 71.75, "auroc": 82.32}},
-    ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}},
-    ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}},
+    # LTF: official checkpoint only (training is not ported). The "official" slot is the SynthScope class on the full
+    # official GenImage val (100,000 images; ltf_synthscope_genimage_val100k). On the 33k set the official ltf_ref
+    # code gives 98.38, the same as SynthScope.
+    ("ltf", "GenImage"):                 {"official": {"map": 99.86, "acc": 98.36, "auroc": 99.88}},
+    # synthscope = trained in SynthScope with the paper's recipe (experiments/image/fat_former.sh; train job 277158), model_last
+    # (epoch 24); evals = DAS6 job 66626 (tags fat_former_trained_last_forensynths / _ufd). DMs = the 8 UFD subsets (paper: 10).
+    ("fat_former", "4-class"):           {"official": {"map": 99.7, "acc": 98.39}, "synthscope": {"map": 99.56, "acc": 97.29, "auroc": 99.42}},
+    ("fat_former", "Diffusion-model"):   {"official": {"map": 98.6, "acc": 93.72}, "synthscope": {"map": 98.88, "acc": 92.09, "auroc": 98.67}},
     # synthscope = trained in SynthScope with the official recipe (experiments/image/npr.sh; job 265720, eval 265808).
     ("npr", "Table 1"):                  {"official": {"map": 94.22, "acc": 92.30}, "synthscope": {"map": 93.83, "acc": 84.09, "auroc": 94.94}},
     ("npr", "Table 2"):                  {"official": {"map": 96.49, "acc": 94.81}},
     ("npr", "Table 3"):                  {"official": {"map": 99.4, "acc": 95.03}},
-    ("npr", "Table 4"):                  {"official": {"map": 96.69, "acc": 93.94}, "synthscope": {"map": 97.49, "acc": 88.91, "auroc": 97.23}},
+    # Table 4 official = NPR.pth, the served file (npr_official_nprpth_ufd); model_epoch_last_3090.pth gives 96.69 / 93.94.
+    # Tables 2, 3 and 5 were measured with model_epoch_last_3090.pth (the registry default before 2026-06-09) only.
+    ("npr", "Table 4"):                  {"official": {"map": 97.16, "acc": 94.57}, "synthscope": {"map": 97.49, "acc": 88.91, "auroc": 97.23}},
     ("npr", "Table 5"):                  {"official": {"map": 83.47, "acc": 79.13}},
     # SAFE now SERVES the SynthScope-trained checkpoint (retrain v2 / model_38), which reproduces the paper.
     ("safe", "ForenSynths"):             {"official": {"map": 98.78, "acc": 96.2}, "synthscope": {"map": 97.79, "acc": 95.1}},
@@ -115,8 +130,14 @@ VAL = {
     ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
     ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
     # synthscope UFD / ForenSynths = the official recipe in SynthScope, step 500 (experiments/image/pgc.sh; jobs 266276, 266282, 266660).
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.34, "acc": 94.16}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.25, "acc": 83.73}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
+    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth with the checkpoint load FIXED (2026-11-09), PadCenterCrop
+    # eval: tags pgc_official_ufd8_fixed and (FS-8 subset of) pgc_official_forensynths13_fixed. They match the official PGC code
+    # (pgc_official_eval.py: UFD 99.34 / 94.16, FS-13 96.25 / 83.73) within 0.03. Correction 2026-11-09: from 2026-06-15 to
+    # 2026-11-09 the load dropped the checkpoint's rgb_stream.* tensors, trained LoRA included, so the earlier tags
+    # (pgc_official_ufd8 99.17 / 83.57, FS-8 96.41 / 76.34 / 97.06, now in bench_results/_superseded/) understated accuracy.
+    # GenImage / AIGIBench / CommGen15 official = official-code numbers (never affected).
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.35, "acc": 94.19, "auroc": 99.31}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 97.83, "acc": 89.17, "auroc": 98.14}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
     # SPAI serves the official weights remapped into the SynthScope class, scored at NATIVE resolution (the faithful
@@ -137,6 +158,56 @@ VAL = {
     # AUROC / acc at the calibrated threshold. synthscope = job 270384, official = official code end to end (job 270323).
     ("split", "GenVideo"):               {"synthscope": {"map": 99.79, "auroc": 99.97, "acc": 99.41}, "official": {"map": 96.12, "auroc": 99.16}},
     ("restrav", "GenVidBench"):         {"synthscope": {"map": 92.7, "auroc": 95.9, "acc": 86.87}},
+    # MIRROR: the official phase-2 checkpoint (DINOv3 ViT-H+; no SynthScope-trained number). acc = mean per-subset
+    # balanced accuracy at 0.5; the paper column is the README's DINOv3-H+ value. Synthbuster uses the official
+    # extension-based JPEG-q96 rule (99.43 with the served decoded-format rule); UnivFakeDetect uses the official
+    # code's 13-subset UnivFD list (93.81 on the paper's Table 7 list). Jobs 279513, 279527, 279550-279555.
+    ("mirror", "AIGCDetect"):            {"official": {"map": 99.49, "acc": 97.39, "auroc": 99.51}},
+    ("mirror", "GenImage"):              {"official": {"map": 100.0, "acc": 99.78, "auroc": 100.0}},
+    ("mirror", "UnivFakeDetect"):        {"official": {"map": 97.04, "acc": 92.44, "auroc": 97.24}},
+    ("mirror", "Synthbuster"):           {"official": {"map": 99.92, "acc": 99.28, "auroc": 99.96}},
+    ("mirror", "EvalGEN"):               {"official": {"map": 100.0, "acc": 99.85, "auroc": 99.99}},
+    ("mirror", "SynthWildX"):            {"official": {"map": 97.71, "acc": 95.08, "auroc": 98.33}},
+    ("mirror", "WildRF"):                {"official": {"map": 99.8, "acc": 97.88, "auroc": 99.74}},   # official file set (no .jfif)
+    ("mirror", "AIGIBench"):             {"official": {"map": 98.06, "acc": 94.98, "auroc": 98.66}},
+    ("mirror", "RRDataset"):             {"official": {"map": 93.86, "acc": 86.91, "auroc": 91.98}},
+    ("mirror", "BFree-Online"):          {"official": {"map": 99.78, "acc": 97.4, "auroc": 99.5}},
+    ("mirror", "RealChain"):             {"official": {"map": 91.76, "acc": 81.71, "auroc": 89.96}},
+    # VINA: the official VINA_DINOv3-L_140k+DDA checkpoint (no SynthScope-trained number: the training code is not released).
+    # acc / mAP = the OFFICIAL metric (the _offmetric tags): per-subset pooled accuracy at 0.5 and AP, mean over subsets, as
+    # the paper reports them; mauroc is the mean AUROC from the same scores: bench_eval's own, except ForenSynths and
+    # ARForensics (the _offmetric files' mean over the official subsets) and GenVideo-Val (the _offmetric AUROC, pooled).
+    # ARForensics = the six subsets shared with the paper (our copy has Switti, no MAR;
+    # the 7-row bench_eval mean 96.88 / 99.60 is not comparable with the paper). GenImage = the full val split
+    # (vina_genimage_val100k); the 1500-per-class test bundle (vina_genimage_full) is its own reference row.
+    # Jobs: CPU 281654-281656, 281831; GPU 281657, DAS6 66630.
+    ("vina", "ForenSynths"):             {"official": {"map": 97.8, "acc": 86.93, "auroc": 97.44}},
+    ("vina", "UniversalFakeDetect"):     {"official": {"map": 99.01, "acc": 94.84, "auroc": 98.71}},
+    ("vina", "DiTFake"):                 {"official": {"map": 99.95, "acc": 97.98, "auroc": 99.94}},
+    ("vina", "ARForensics"):             {"official": {"map": 99.54, "acc": 96.36, "auroc": 99.38}},
+    ("vina", "GenImage (8 subsets"):     {"official": {"map": 99.05, "acc": 94.74, "auroc": 98.72}},
+    ("vina", "GenImage test bundle"):    {"official": {"map": 98.45, "acc": 93.29, "auroc": 97.98}},
+    ("vina", "GenVideo-Val"):            {"official": {"map": 99.26, "acc": 96.86, "auroc": 99.14}},   # overall pooled ACC / AP
+    ("vina", "SynthWildX"):              {"official": {"map": 96.36, "acc": 91.82, "auroc": 97.46}},
+    ("vina", "WildRF"):                  {"official": {"map": 99.41, "acc": 96.12, "auroc": 99.25}},
+    ("vina", "AIGIBench"):               {"official": {"map": 97.33, "acc": 92.72, "auroc": 97.6}},
+    ("vina", "RRDataset"):               {"official": {"map": 92.77, "acc": 82.89, "auroc": 91.69}},
+    # PROBE (ICML'26): the two official checkpoints (probe = DINOv2 ViT-L/14 with registers, probe_resnet = ResNet-50); no
+    # SynthScope-trained number (the training code is not released). acc / mAP / mauroc = bench_eval means over the paper's
+    # subsets (repro/bench_results/<key>_<benchmark>.json; acc = mean balanced accuracy at 0.5 = the paper's metric).
+    # GenImage = the full val split (100,000 images) with all fakes JPEG q96 as in the paper. Synthbuster uses 5000 MSCOCO
+    # reals, NOT the paper's RAISE-1k (the spec marks it "reference": not like-for-like). AIGI-Bench = CommunityAI + SocialRF
+    # only. Chameleon and AIGI-Quality-Paradox were not run (no loader). Jobs DAS6 66753, 66755, 66790.
+    ("probe", "GenImage (8 subsets"):    {"official": {"map": 99.77, "acc": 97.47, "auroc": 99.8}},
+    ("probe", "Synthbuster"):            {"official": {"map": 99.64, "acc": 98.2, "auroc": 99.93}},
+    ("probe", "SynthWildX"):             {"official": {"map": 98.8, "acc": 97.3, "auroc": 99.18}},
+    ("probe", "WildRF"):                 {"official": {"map": 99.36, "acc": 96.92, "auroc": 99.26}},
+    ("probe", "AIGI-Bench"):             {"official": {"map": 96.46, "acc": 89.88, "auroc": 95.88}},
+    ("probe_resnet", "GenImage (8 subsets"): {"official": {"map": 86.69, "acc": 78.38, "auroc": 84.81}},
+    ("probe_resnet", "Synthbuster"):     {"official": {"map": 85.23, "acc": 83.75, "auroc": 95.88}},
+    ("probe_resnet", "SynthWildX"):      {"official": {"map": 83.88, "acc": 75.2, "auroc": 82.8}},
+    ("probe_resnet", "WildRF"):          {"official": {"map": 89.45, "acc": 81.63, "auroc": 85.76}},
+    ("probe_resnet", "AIGI-Bench"):      {"official": {"map": 79.8, "acc": 70.44, "auroc": 77.55}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
@@ -145,6 +216,17 @@ VAL = {
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},
     ("co_spy", "In-the-wild"): {},   # genuinely not evaluated (prevents the "Co-Spy-Bench" substring collision)
 }
+
+# Narrow label overrides applied after status_for (which stays unchanged for every other detector):
+# (model, exact benchmark label) -> status.
+# MIRROR RRDataset: 86.91 vs the README's 88.3 is 1.39 short, about 6x MIRROR's other deviations (all within 0.25), but
+# inside the generic +-2.0 tolerance, which would label it "official". Every doc calls it short, so the site does too.
+# VINA SynthWildX and WildRF: the paper prints per-subset values only; SynthScope is below it on both (and the unmodified
+# official eval.py gives the same scores on our files, so the gap is the data). The means of the printed values (92.8,
+# 97.13) are within the generic +-2.0 tolerance, which would label them "official".
+STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below",
+                   ("vina", "SynthWildX (dalle3 / firefly / midjourney_v5)"): "below",
+                   ("vina", "WildRF (facebook / reddit / twitter)"): "below"}
 
 # Tolerance (percentage points) for calling a number a reproduction of the paper.
 TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}
@@ -271,6 +353,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         spec_status = b.get("our_status", "")
         synthscope, official, sub = match_val(model, name)
         status = status_for(name, paper, synthscope, official, spec_status)
+        status = STATUS_OVERRIDE.get((model, name), status)
         on = b.get("our_number")
         note = ""
         if isinstance(on, dict) and on.get("note"):

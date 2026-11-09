@@ -121,7 +121,9 @@ With `--dataset` the grouping below is chosen for you; with `--data` you pick `-
 | `pergen` | one `<generator>/{0_real,1_fake}` folder each, optional shared `--reals` | AIGIBench, FreqNet, Co-Spy-Bench |
 | `pool` | one group: `<root>/{real,fake}` | GenImage (per subset) |
 
-Useful flags: `--ckpt FILE` to score a different checkpoint (official vs SynthScope-trained side by side), `--select a,b` to
+Useful flags: `--ckpt FILE` to score a different checkpoint (official vs SynthScope-trained side by side), `--model-config NAME` (with `--ckpt`) to score a
+checkpoint with another model config of the same detector (e.g. `image/effort_ufd`, a recipe whose test preprocessing differs from the served model's),
+`--select a,b` to
 limit the generators, `--limit N` to cap images per class (quick checks), `--native-res` to score at the original resolution,
 `--bs` for the batch size. Video: `python benchmark/bench_eval_video.py --model d3 --dataset genvideo --root /data/GenVideo --limit 1000` downloads
 the dataset if needed and evaluates it (`--limit 1000` is D3's official protocol: at most 1000 videos per class per generator;
@@ -189,6 +191,20 @@ content as ours. Any real images you cannot match are skipped.
 The run writes `manifest.json`, `results.json` and `RESULTS.md` (commit these) plus `real/` and `fake/` image folders
 (git-ignored). The Generator benchmarks tab picks up every folder under `benchmark/generator_runs/` automatically; reload
 the page after a run.
+
+**Rescore note (CuRe).** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored
+before the scorers passed the source-format hint, so CuRe's official PNG to JPEG q96 step was skipped for the PNG inputs.
+They were rescored on 2026-11-08 with the hint (same images and weights; only the CuRe row changed, ranks unchanged).
+AUROC old -> new: FLUX.2 klein 4B 98.62 -> 99.02, 9B 96.23 -> 97.08, Qwen-Image-2.1 92.67 -> 92.37, Ideogram 86.88 -> 84.82,
+Ideogram 1024 92.10 -> 91.35.
+
+**Rescore note (PGC).** PGC's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored while the served
+PGC dropped its trained LoRA (the official checkpoint's `rgb_stream.` prefix was not remapped; 2026-06-15 to 2026-11-09). They were
+rescored on 2026-11-09 with the fixed load (same images; only the PGC row's values changed; the other detectors' values are identical, but their ranks shift where PGC moved).
+AUROC old -> new (rank among 23): FLUX.2 klein 4B 97.33 -> 90.70 (4 -> 10), 9B 97.35 -> 90.72 (3 -> 10), Qwen-Image-2.1
+98.50 -> 94.43 (3 -> 5), Ideogram 97.53 -> 94.76 (1 -> 2), Ideogram 1024 98.67 -> 96.02 (1 -> 5). The broken model had the higher
+AUROC; accuracy and fake-detection rate rose on Qwen-Image and Ideogram (Qwen 60.0 -> 62.5 and 20.0 -> 27.0, Ideogram 61.5 -> 72.5 and
+23.0 -> 47.0; Ideogram 1024 64.5 -> 70.2 and 29.0 -> 43.6) and stayed about the same on FLUX.2 klein (acc 53.5 -> 52.5).
 
 **What the numbers mean.** AUROC is threshold-free (50 is chance, 100 perfect). *Fakes caught* and *Reals flagged* use the
 detectors' 0.5 threshold, which is not tuned per generator, so accuracy can look poor even when AUROC is high. Real photos

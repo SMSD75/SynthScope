@@ -1,0 +1,88 @@
+{
+  "tag": "vina_arforensics_offmetric",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "benchmark": "official-metrics:arforensics",
+  "data_root": "/local/ssalehid/cache/data029/ARForensics/test",
+  "source": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vina_scores/vina_arforensics.json",
+  "note": "official metric on SynthScope GPU scores (DAS6 66630, code 0954488); official arforensics subsets list MAR (absent in our release) and not Switti, so Switti files fall in no subset and 6 of the 7 official subsets are scored",
+  "n_generators": 6,
+  "means": {
+    "acc": 96.36,
+    "map": 99.54,
+    "bacc": 96.36,
+    "mauroc": 99.38
+  },
+  "per_generator": {
+    "Infinity": {
+      "acc": 99.84,
+      "ap": 100.0,
+      "real_acc": 99.73,
+      "fake_acc": 99.95,
+      "bacc": 99.84,
+      "auroc": 100.0,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "Janus_Pro": {
+      "acc": 99.9,
+      "ap": 100.0,
+      "real_acc": 99.8,
+      "fake_acc": 100.0,
+      "bacc": 99.9,
+      "auroc": 100.0,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "LlamaGen": {
+      "acc": 98.07,
+      "ap": 99.77,
+      "real_acc": 99.87,
+      "fake_acc": 96.27,
+      "bacc": 98.07,
+      "auroc": 99.69,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "MAR": {
+      "missing": true
+    },
+    "Open_MAGVIT2": {
+      "acc": 84.08,
+      "ap": 97.56,
+      "real_acc": 99.92,
+      "fake_acc": 68.23,
+      "bacc": 84.08,
+      "auroc": 96.74,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "RAR": {
+      "acc": 98.17,
+      "ap": 99.96,
+      "real_acc": 99.92,
+      "fake_acc": 96.43,
+      "bacc": 98.17,
+      "auroc": 99.96,
+      "n_real": 6000,
+      "n_fake": 6000
+    },
+    "VAR": {
+      "acc": 98.11,
+      "ap": 99.92,
+      "real_acc": 99.92,
+      "fake_acc": 96.3,
+      "bacc": 98.11,
+      "auroc": 99.91,
+      "n_real": 6000,
+      "n_fake": 6000
+    }
+  },
+  "official_function_return": [
+    0.9636111111111111,
+    0.9953562122478358
+  ],
+  "n_files": 84000,
+  "n_files_in_no_subset": 12000,
+  "date": "2026-11-08T19:48:22"
+}

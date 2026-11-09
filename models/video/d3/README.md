@@ -24,9 +24,10 @@ Given a clip `frames` of shape `[B, T, 3, 224, 224]` in `[0, 1]` (decoded by the
 dataset and normalized by its transform pipeline):
 
 1. **Zero-order features.** A frozen pretrained visual encoder embeds each frame:
-   `F0[b, t] = encoder(frame_{b,t}) ∈ R^N`. Run under `torch.no_grad()`. Default encoder is
-   **CLIP ViT-B/16** (HF `CLIPVisionModel`, `openai/clip-vit-base-patch16`, per-frame
-   `pooler_output`); DINOv2 and ResNet-18 are also selectable via `backbone_name`.
+   `F0[b, t] = encoder(frame_{b,t}) ∈ R^N`. Run under `torch.no_grad()`. The config default
+   (`conf/model/video/d3.yaml`) is **CLIP ViT-B/16** (HF `CLIPVisionModel`, `openai/clip-vit-base-patch16`,
+   per-frame `pooler_output`); the served D3 (registry `d3`) overrides it to **X-CLIP-B/16**, the paper's
+   encoder. DINOv2 and ResNet-18 are also selectable via `backbone_name`.
 2. **First-order features.** Inter-frame change between consecutive frames:
    `F1[b, k] = dist(F0[b, k], F0[b, k+1]) / dt`, `k = 0 … T-2`, where `dist` is the **L2 distance**
    (default, `first_order: l2`) or **cosine similarity** (`first_order: cos`).
@@ -76,7 +77,7 @@ Implemented in `models/video/d3/d3.py` as `SynthScopeD3Model`.
 D3 is encoder-agnostic; every backbone is used as a **frozen, per-frame** feature extractor
 (one global vector per frame — the inter-frame *differences* carry the temporal signal).
 
-- **CLIP ViT-B/16** (default) — HF `CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch16")`,
+- **CLIP ViT-B/16** (config default) — HF `CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch16")`,
   per-frame `pooler_output` (768-d), matching the official D3 `CLIP-16`. `clip-32` selects the patch32 variant.
 - **DINOv2** (`dinov2-base` / `dinov2-large`) — HF `AutoModel`, per-frame `pooler_output`, matching the
   official D3 `DINO-base` / `DINO-large`.

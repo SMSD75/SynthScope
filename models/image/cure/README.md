@@ -143,6 +143,10 @@ whichfaceisreal 93.60 (the low accuracies are fake-recall: cyclegan 41.8, deepfa
 **GenImage-8** — sdv1.4 99.73 · sdv1.5 99.80 · wukong 99.87 · midjourney 85.83 · glide 85.33 · vqdm 82.43 ·
 biggan 67.80 · adm 60.63
 
+**Rescore note.** CuRe's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored without its
+official PNG to JPEG q96 step (the scorers did not pass the source-format hint then). They were rescored with the step on
+2026-11-08 (AUROC changes between -2.1 and +0.9, ranks unchanged); see `docs/BENCHMARKS.md`.
+
 ## Usage
 
 ```bash
