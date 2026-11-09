@@ -19,7 +19,9 @@
   "test_jpeg95": 2000,
   "mix_val_aug_gray": 2000,
   "mix_val_aug_blur1": 2000,
-  "mix_val_aug_jpeg60": 2000
+  "mix_val_aug_jpeg60": 2000,
+  "mix_train_native": 4000,
+  "mix_val_native": 2000
  },
  "ratio_regression": {
   "base/after/fresh_head_val": {
@@ -70,6 +72,22 @@
    "pearson": 0.9161,
    "spearman": 0.9165
   },
+  "base/native/fresh_head_val": {
+   "bce": 0.5792,
+   "excess_bce": 0.08957,
+   "floor": 0.48963,
+   "mae": 0.1428,
+   "pearson": 0.7877,
+   "spearman": 0.788
+  },
+  "base/native/fresh_head_train": {
+   "bce": 0.54587,
+   "excess_bce": 0.03948,
+   "floor": 0.50639,
+   "mae": 0.094,
+   "pearson": 0.9052,
+   "spearman": 0.9054
+  },
   "base/head_after_on_before_val": {
    "bce": 0.58989,
    "excess_bce": 0.10026,
@@ -85,6 +103,14 @@
    "mae": 0.1543,
    "pearson": 0.7662,
    "spearman": 0.7657
+  },
+  "base/head_after_on_native_val": {
+   "bce": 0.60063,
+   "excess_bce": 0.111,
+   "floor": 0.48963,
+   "mae": 0.1579,
+   "pearson": 0.7448,
+   "spearman": 0.7424
   },
   "released/after/fresh_head_val": {
    "bce": 0.51164,
@@ -134,6 +160,22 @@
    "pearson": 0.9747,
    "spearman": 0.9747
   },
+  "released/native/fresh_head_val": {
+   "bce": 0.52157,
+   "excess_bce": 0.03194,
+   "floor": 0.48963,
+   "mae": 0.0789,
+   "pearson": 0.9305,
+   "spearman": 0.9305
+  },
+  "released/native/fresh_head_train": {
+   "bce": 0.52084,
+   "excess_bce": 0.01445,
+   "floor": 0.50639,
+   "mae": 0.0543,
+   "pearson": 0.9662,
+   "spearman": 0.9666
+  },
   "released/head_after_on_before_val": {
    "bce": 0.51629,
    "excess_bce": 0.02666,
@@ -149,6 +191,14 @@
    "mae": 0.087,
    "pearson": 0.9328,
    "spearman": 0.9352
+  },
+  "released/head_after_on_native_val": {
+   "bce": 0.52269,
+   "excess_bce": 0.03306,
+   "floor": 0.48963,
+   "mae": 0.0804,
+   "pearson": 0.9273,
+   "spearman": 0.9272
   },
   "ours/after/fresh_head_val": {
    "bce": 0.49681,
@@ -222,6 +272,30 @@
    "pearson": 0.9261,
    "spearman": 0.9649
   },
+  "ours/native/fresh_head_val": {
+   "bce": 0.51325,
+   "excess_bce": 0.02362,
+   "floor": 0.48963,
+   "mae": 0.0668,
+   "pearson": 0.9503,
+   "spearman": 0.9511
+  },
+  "ours/native/fresh_head_train": {
+   "bce": 0.51791,
+   "excess_bce": 0.01152,
+   "floor": 0.50639,
+   "mae": 0.0483,
+   "pearson": 0.9737,
+   "spearman": 0.9738
+  },
+  "ours/native/trained_ratio_head_val": {
+   "bce": 0.58514,
+   "excess_bce": 0.09551,
+   "floor": 0.48963,
+   "mae": 0.1392,
+   "pearson": 0.8773,
+   "spearman": 0.9412
+  },
   "ours/head_after_on_before_val": {
    "bce": 0.56135,
    "excess_bce": 0.07172,
@@ -237,6 +311,14 @@
    "mae": 0.1131,
    "pearson": 0.9165,
    "spearman": 0.9461
+  },
+  "ours/head_after_on_native_val": {
+   "bce": 0.60025,
+   "excess_bce": 0.11062,
+   "floor": 0.48963,
+   "mae": 0.1461,
+   "pearson": 0.8715,
+   "spearman": 0.9256
   },
   "base/head_after_on_aug_gray_val": {
    "bce": 0.62034,
