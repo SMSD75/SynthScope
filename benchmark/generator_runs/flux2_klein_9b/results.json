@@ -22,17 +22,6 @@
     "mean_p_fake_on_reals": 0.0934
   },
   {
-    "detector": "pgc",
-    "name": "PGC",
-    "auroc": 97.35,
-    "ap": 96.45,
-    "acc": 53.5,
-    "fake_detect_rate": 7.0,
-    "real_false_pos": 0.0,
-    "mean_p_fake_on_fakes": 0.4389,
-    "mean_p_fake_on_reals": 0.2672
-  },
-  {
     "detector": "cure",
     "name": "CuRe",
     "auroc": 97.08,
@@ -108,6 +97,17 @@
     "real_false_pos": 10.0,
     "mean_p_fake_on_fakes": 0.7988,
     "mean_p_fake_on_reals": 0.1425
+  },
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 90.72,
+    "ap": 83.54,
+    "acc": 52.5,
+    "fake_detect_rate": 7.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.4177,
+    "mean_p_fake_on_reals": 0.2596
   },
   {
     "detector": "npr",
