@@ -13,6 +13,9 @@ Image sets (all labelled; none is used to tune or select anything):
                  after   mix the two preprocessed endpoints after the final JPEG q70 (our stage-1 recipe)
                  before  mix the resized uint8 endpoints, round, then JPEG q70 on the mixture, then normalise
                  noq70   mix the resized endpoints, no JPEG q70 at all
+                 native  (``--only-native`` run -> features_native.pt) DDA's ``pixel_blend_mix``: the format-aligned generated
+                         image resized to the real image's size (LANCZOS), blended at native resolution in float, clipped
+                         and truncated to uint8, then the whole pipeline (390 / crop / 336 / q70) on the mixture
   rf_grid_after / rf_grid_before  ``--n-rf-grid`` real->generated trajectories on the stage-2 grid {0, .2, ..., 1}
                (mixing after / before q70): the stage-2 mean mu of each variant is compared with the released mu
   wild         a small in-the-wild set (WildRF test), a DIAGNOSTIC ONLY, never used for selection
@@ -138,6 +141,11 @@ class Jobs(Dataset):
             x = (1 - a) * norm(q70(geom(perturb(load_aligned(pr), kind)))) + a * norm(q70(geom(perturb(load_aligned(pg), kind))))
         else:
             _, pr, pg, a, var = j
+            if var == "native":
+                ir, ig = load_aligned(pr), load_aligned(pg)
+                ig = ig.resize(ir.size, Image.LANCZOS) if ig.size != ir.size else ig
+                m = np.clip(a * np.asarray(ig, dtype=np.float32) + (1 - a) * np.asarray(ir, dtype=np.float32), 0, 255).astype(np.uint8)
+                return norm(q70(geom(Image.fromarray(m)))), i
             gr, gg = geom(load_aligned(pr)), geom(load_aligned(pg))
             if var == "after":
                 x = (1 - a) * norm(q70(gr)) + a * norm(q70(gg))
@@ -180,6 +188,7 @@ def main():
     ap.add_argument("--extra-fake-dir", default=None, help="<generator>/1_fake tree (Synthbuster subset)")
     ap.add_argument("--only-extra", action="store_true", help="encode only the extra fakes (features_extra.pt)")
     ap.add_argument("--only-aug", action="store_true", help="encode only the format / augmented-mixture sets (features_aug.pt)")
+    ap.add_argument("--only-native", action="store_true", help="encode only the native-resolution mixing variant")
     ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=1234)
@@ -229,6 +238,13 @@ def main():
         add("test_jpeg95", [("pert", p, "jpeg95") for p in pr + pf], label=[0] * len(pr) + [1] * len(pf))
         for k in ("gray", "blur1", "jpeg60"):
             add(f"mix_val_aug_{k}", [("mixp", j[1], j[2], j[3], k) for j in mv], alpha=mv_alpha)
+    if args.only_native:
+        old_meta, old_jobs = meta, jobs
+        meta, jobs = {}, []
+        for split in ("mix_train", "mix_val"):
+            m = old_meta[f"{split}_after"]
+            add(f"{split}_native", [("mix", j[1], j[2], j[3], "native") for j in old_jobs[m["start"]:m["start"] + m["n"]]],
+                alpha=m["alpha"])
     if args.only_extra:
         meta, jobs = {}, []
         fakes = list_images(args.extra_fake_dir)
@@ -255,7 +271,8 @@ def main():
     torch.save({"features": feats, "meta": meta, "args": {k: v for k, v in vars(args).items()
                                                           if k not in ("released", "ours", "train_dir", "test_dir", "wild_dir", "out",
                                                                        "extra_fake_dir")}},
-               out / ("features_extra.pt" if args.only_extra else "features_aug.pt" if args.only_aug else "features.pt"))
+               out / ("features_extra.pt" if args.only_extra else "features_aug.pt" if args.only_aug else
+                               "features_native.pt" if args.only_native else "features.pt"))
     print(f"[diag] saved {out} in {time.time() - t0:.0f}s", flush=True)
 
 

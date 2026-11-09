@@ -107,7 +107,7 @@ def main():
     ap.add_argument("--ours-stage1", required=True, help="our stage-1 model_last.pth (ratio_head)")
     ap.add_argument("--ours-adapter", required=True, help="our cure_trained.pth (mu / W / head)")
     ap.add_argument("--extra", default=None, help="features_extra.pt (extra_fake set, scored against the test_clean reals)")
-    ap.add_argument("--aug", default=None, help="features_aug.pt (test_jpeg95 + mix_val_aug_* sets)")
+    ap.add_argument("--aug", nargs="*", default=[], help="features_aug.pt (test_jpeg95 + mix_val_aug_* sets), features_native.pt")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     data = torch.load(args.features, map_location="cpu", weights_only=False)
@@ -124,8 +124,8 @@ def main():
         em = ex["meta"]["extra_fake"]
         meta["extra_vs_real"] = {"start": base_n, "n": n_r + em["n"], "label": [0] * n_r + em["label"],
                                  "generator": ["real"] * n_r + em["generator"]}
-    if args.aug:
-        ag = torch.load(args.aug, map_location="cpu", weights_only=False)
+    for aug_path in args.aug:
+        ag = torch.load(aug_path, map_location="cpu", weights_only=False)
         off = data["features"]["base"].shape[0]
         for k in ENCODERS:
             data["features"][k] = torch.cat([data["features"][k], ag["features"][k]])
@@ -138,8 +138,9 @@ def main():
     s1 = s1.get("model", s1)
     rw, rb = s1["ratio_head.weight"].float().view(-1), s1["ratio_head.bias"].float().view(())
     ratio, heads = {}, {}
+    variants = [v for v in VARIANTS + ("native",) if f"mix_train_{v}" in meta]
     for enc in ENCODERS:
-        for v in VARIANTS:
+        for v in variants:
             Xtr, atr = block(data, f"mix_train_{v}", enc), torch.tensor(meta[f"mix_train_{v}"]["alpha"])
             Xva, ava = block(data, f"mix_val_{v}", enc), torch.tensor(meta[f"mix_val_{v}"]["alpha"])
             head = fit_ratio_head(Xtr, atr)
@@ -149,7 +150,7 @@ def main():
             if enc == "ours":
                 ratio[f"ours/{v}/trained_ratio_head_val"] = ratio_metrics(Xva @ rw + rb, ava, False)
         # cross-variant transfer of the head fitted on "after"
-        for v in VARIANTS[1:]:
+        for v in variants[1:]:
             Xva, ava = block(data, f"mix_val_{v}", enc), torch.tensor(meta[f"mix_val_{v}"]["alpha"])
             ratio[f"{enc}/head_after_on_{v}_val"] = ratio_metrics(apply_head(heads[(enc, "after")], Xva), ava, True)
     for enc in ENCODERS:
