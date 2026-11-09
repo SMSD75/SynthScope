@@ -119,6 +119,13 @@ def main() -> None:
     assert not no_grad, f"trainable params with no grad: {no_grad[:5]}"
     print(f"    train loss = {out['loss'].item():.4f} | backward OK")
 
+    print("[5] registry remap_aide: official keys get net., a trained checkpoint's keys are kept ...")
+    from interface.backend.registry import remap_aide
+    assert set(remap_aide({"fc.weight": 0, "module.model_min.conv1.weight": 1})) == {"net.fc.weight", "net.model_min.conv1.weight"}
+    trained = model.state_dict()
+    assert list(remap_aide(trained)) == list(trained), "a SynthScope-trained state dict must pass through remap_aide unchanged"
+    print("    OK")
+
     print("\nAll AIDE smoke checks passed.")
 
 
