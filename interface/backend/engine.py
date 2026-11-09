@@ -179,8 +179,7 @@ def _load_checkpoint(model, spec: ModelSpec):
         sd = spec.remap(sd)
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
-    # (PGC: the ImageNet constants and the YCbCr matrices are register_buffer constants built in __init__.)
-    benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std", "imagenet_mean", "imagenet_std", "M_yuv", "M_yuv_inv"}
+    benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
     # Frozen pretrained parts that a model loads from their own release in __init__ and that its official
     # checkpoint therefore does not contain (e.g. D3QE's CLIP and VQ tokenizer); everything else stays strict.
     pretrained = tuple(getattr(model, "pretrained_prefixes", ()))
