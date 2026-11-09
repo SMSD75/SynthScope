@@ -19,6 +19,7 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from . import config
+from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
 from . import media
 
@@ -177,6 +178,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
     if spec.remap is not None:
         sd = spec.remap(sd)
+    # A checkpoint that holds a transformers backbone carries the parameter names of the release that saved it; map them
+    # onto this release's names when the rename is exact (hf_compat.HF_RENAMES), else leave them for the checks below.
+    sd, hf_note = translate_hf_keys(sd, model.state_dict())
+    if hf_note:
+        logger.info("%s: transformers parameter names translated (%s)", spec.key, hf_note)
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
     benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
@@ -209,6 +215,7 @@ def _load_checkpoint(model, spec: ModelSpec):
     return (
         f"loaded {len(sd)} tensors from {path.name} "
         f"(missing={len(real_missing)}, unexpected={len(unexpected)})"
+        + (f" [transformers key names translated, {hf_note}]" if hf_note else "")
     )
 
 

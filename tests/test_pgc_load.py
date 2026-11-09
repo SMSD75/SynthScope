@@ -34,6 +34,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "benchmark")]
 
 from interface.backend import config, engine  # noqa: E402
+from interface.backend.hf_compat import translate_hf_keys  # noqa: E402
 from interface.backend.registry import get_spec, remap_pgc  # noqa: E402
 
 _PARITY_ENV = os.environ.get("SYNTHSCOPE_PGC_PARITY_REF")
@@ -141,8 +142,9 @@ def test_official_checkpoint_loads_exactly() -> object:
     assert not recs, [r.getMessage() for r in recs]
     assert "missing=0, unexpected=0" in status, status
     raw = torch.load(str(config.CHECKPOINTS_DIR / spec.checkpoint), map_location="cpu", weights_only=False)
-    sd = spec.remap(raw["model"] if "model" in raw else raw)
     msd = model.state_dict()
+    # the checkpoint holds transformers 5.5.4 DINOv2 names; the loader maps them onto the installed release's names
+    sd, _ = translate_hf_keys(spec.remap(raw["model"] if "model" in raw else raw), msd)
     assert set(sd) <= set(msd), sorted(set(sd) - set(msd))[:5]
     assert all(torch.equal(msd[k], v) for k, v in sd.items()), "a loaded tensor differs from the checkpoint"
     lora_b = max(v.abs().max().item() for k, v in msd.items() if k.endswith("lora_B"))
