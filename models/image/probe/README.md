@@ -96,7 +96,8 @@ The cost grows with the image area: an image is scored on all its patches.
 
 ## Results
 
-**Verdict: faithful port (SynthScope equals the official code file by file); the released checkpoints reproduce the
+**Verdict: faithful port (SynthScope equals the official code on every file compared: the 34 parity images, WildRF and
+SynthWildX); the released checkpoints reproduce the
 paper's Table 1 on four of the five benchmarks we can run (GenImage, SynthWildX, WildRF, AIGI-Bench) to within 0.9
 points per benchmark; Synthbuster uses different reals and is not a like-for-like comparison. Chameleon and
 AIGI-Quality-Paradox were not run (no loader), so the paper's 7-benchmark averages (93.9 / 78.1) are not comparable
@@ -143,8 +144,8 @@ The SynthScope columns are `means.acc` of `repro/bench_results/probe_<benchmark>
   folder, the same reals as the MIRROR and B-Free Synthbuster runs). The paper pairs them with the **1000 RAISE-1k reals**
   (its Table 12); RAISE is distributed through a personal registration form that was not filled in, so it is not in
   SynthScope. These rows are therefore a *different-reals* comparison and are not presented as reproducing the paper.
-* **SynthWildX**: dalle3 / firefly / midjourney_v5, 413 reals and 392 / 473 / 435 fakes (2539 files; the paper's Table 12
-  lists 0.5k reals and 1.5k fakes: our copy is the part still online).
+* **SynthWildX**: dalle3 / firefly / midjourney_v5, 413 reals and 392 / 473 / 435 fakes (1713 unique images: 413 reals scored against each of
+  the 3 fake subsets; the paper's Table 12 lists 0.5k reals and 1.5k fakes: our copy is the part still online).
 * **WildRF**: facebook / reddit / twitter, 2503 files (160 + 160, 750 + 750, 341 + 342); the paper lists 1.25k + 1.25k.
 * **AIGI-Bench**: only the two subsets the paper evaluates, **CommunityAI** (6000 real + 6000 fake) and **SocialRF** (3000
   real + 3000 fake), 18,000 files (the paper's 9k / 9k), staged as `aigibench/{CommunityAI,SocialRF}/{0_real,1_fake}`; the
@@ -248,8 +249,8 @@ batch 4 vs 1)**.
 | `probe_resnet` SynthWildX | 75.20 | 75.20 | 75.09 | 75.6 |
 
 * The official script's default `fake_equal_real=True` subsamples the larger class to the smaller one (seed 42) and
-  reports pooled accuracy on that sample; it equals bAcc up to sampling noise (at most 0.6 here, on the unbalanced
-  SynthWildX and WildRF-twitter subsets). `means.acc` is the paper's metric.
+  reports pooled accuracy on that sample; it equals bAcc up to sampling noise (at most 2.0 per subset, ResNet-50 on the unbalanced WildRF
+  twitter subset: 82.29 vs 84.27; at most 0.66 per benchmark, ResNet-50 WildRF: 80.99 vs 81.65). `means.acc` is the paper's metric.
 * **The official file lister keeps `.jpg` / `.jpeg` / `.png` only**, so it silently drops the 262 `.jfif` files of WildRF
   twitter (683 files in SynthScope, 421 in the official run). SynthScope scores all of them. On the 421 common files both
   give the same number (DINOv2 98.57, ResNet-50 84.27); on all 683 SynthScope gives 98.68 / 84.20. Every other subset is

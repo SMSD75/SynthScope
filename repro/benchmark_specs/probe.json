@@ -17,7 +17,7 @@
    },
    "our_status": "official",
    "our_number": {
-    "note": "97.47 bAcc / 99.77 mAP, +0.67 vs the paper. Per subset (diff to the paper): midjourney 98.73 (-0.07); sdv1.4 99.41 (+0.01); sdv1.5 99.39 (-0.01); adm 93.22 (+2.22); glide 93.86 (+1.76); wukong 99.33 (-0.17); vqdm 98.76 (-0.14); biggan 97.07 (+2.07). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). ADM, GLIDE and BigGAN are about 2 points above the paper while SynthScope equals the official code on every file compared (34 parity images, WildRF, SynthWildX); the official code was not run on GenImage; the difference is on the paper's data or preprocessing side and could not be determined. Tag probe_genimage_val100k, job 66753."
+    "note": "97.47 bAcc / 99.77 mAP, +0.67 vs the paper. Caveats: fakes JPEG q96 as the paper; sdv1.5 8000 per class (paper 6000); DINOv2 ADM/GLIDE/BigGAN about +2 above the paper while SynthScope equals the official code on every file compared (not run on GenImage), cause undetermined. Per subset (diff to the paper): midjourney 98.73 (-0.07); sdv1.4 99.41 (+0.01); sdv1.5 99.39 (-0.01); adm 93.22 (+2.22); glide 93.86 (+1.76); wukong 99.33 (-0.17); vqdm 98.76 (-0.14); biggan 97.07 (+2.07). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). Tag probe_genimage_val100k, job 66753."
    }
   },
   {

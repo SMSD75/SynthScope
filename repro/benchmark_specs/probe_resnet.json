@@ -17,7 +17,7 @@
    },
    "our_status": "official",
    "our_number": {
-    "note": "78.38 bAcc / 86.69 mAP, -0.02 vs the paper. Per subset (diff to the paper): midjourney 90.73 (+0.03); sdv1.4 99.36 (-0.04); sdv1.5 99.24 (+0.04); adm 58.94 (-1.06); glide 63.01 (+0.01); wukong 99.41 (+0.01); vqdm 66.90 (+0.00); biggan 49.41 (+0.01). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). Equal to the paper in 7 of 8 subsets (within 0.1); ADM 58.94 vs 60.0. Tag probe_resnet_genimage_val100k, job 66753."
+    "note": "78.38 bAcc / 86.69 mAP, -0.02 vs the paper. Caveats: fakes JPEG q96 as the paper; sdv1.5 8000 per class (paper 6000). Equal to the paper in 7 of 8 subsets (within 0.1); ADM 58.94 vs 60.0. Per subset (diff to the paper): midjourney 90.73 (+0.03); sdv1.4 99.36 (-0.04); sdv1.5 99.24 (+0.04); adm 58.94 (-1.06); glide 63.01 (+0.01); wukong 99.41 (+0.01); vqdm 66.90 (+0.00); biggan 49.41 (+0.01). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). Tag probe_resnet_genimage_val100k, job 66753."
    }
   },
   {

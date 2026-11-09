@@ -36,6 +36,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
 
 from backend.engine import Engine, _load_checkpoint                         # noqa: E402
+from backend.hf_compat import HF_RENAMES, translate_hf_keys                 # noqa: E402
 from backend.registry import get_spec, input_note, remap_probe              # noqa: E402
 from models.image.probe.official.dino_classifier import DINOV2_REG_LARGE, dino_classifier   # noqa: E402
 from models.image.probe.official.resnet50 import resnet50                   # noqa: E402
@@ -46,6 +47,30 @@ IMAGENET = T.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
 # (width, height): under the crop both ways, exact, one side under, non-square, large; also a grayscale image
 SIZES = [(128, 96), (180, 120), (224, 224), (336, 336), (300, 1200), (335, 700), (336, 500), (513, 700), (1258, 833),
          (2048, 1365)]
+
+
+def known_key(sd: dict, key: str) -> bool:
+    """``key`` is in ``sd`` under the naming of either transformers release (attention.attention.query vs attention.q_proj)."""
+    if key in sd:
+        return True
+    return any((a in key and key.replace(a, b, 1) in sd) or (b in key and key.replace(b, a, 1) in sd)
+               for a, b in HF_RENAMES)
+
+
+def other_naming(sd: dict) -> dict:
+    """``sd`` with the attention parameters renamed to the other transformers release's names (what a checkpoint saved
+    under that release holds)."""
+    out = {}
+    for k, v in sd.items():
+        for a, b in HF_RENAMES:
+            if a in k:
+                k = k.replace(a, b, 1)
+                break
+            if b in k:
+                k = k.replace(b, a, 1)
+                break
+        out[k] = v
+    return out
 
 
 def noise_image(size: tuple[int, int], mode: str = "RGB") -> Image.Image:
@@ -104,7 +129,7 @@ def test_dino_model() -> None:
               "backbone.encoder.layer.0.attention.attention.query.weight",
               "backbone.encoder.layer.1.layer_scale2.lambda1",
               "backbone.layernorm.weight", "fc.weight", "fc.bias"):
-        assert k in sd, k
+        assert known_key(sd, k), k
     assert tuple(sd["fc.weight"].shape) == (1, TINY["hidden_size"])
     # the vendored official class with the same config and weights
     official = dino_classifier(model_name=dict(DINOV2_REG_LARGE, **TINY)).eval()
@@ -155,8 +180,12 @@ def test_engine() -> None:
     sd = {k: v.clone() for k, v in model.state_dict().items()}
     assert remap_probe({"model_state_dict": sd}) is sd and remap_probe(sd) is sd
     with tempfile.TemporaryDirectory() as tmp:
-        for case in ("exact", "missing", "unexpected"):
-            ckpt = dict(sd)
+        for case in ("exact", "renamed", "missing", "unexpected"):
+            # "renamed": the attention parameters under the other transformers release's names, as a checkpoint saved
+            # with that release holds them; the engine maps them onto this release's names (hf_compat) and loads strictly
+            ckpt = other_naming(sd) if case == "renamed" else dict(sd)
+            if case == "renamed":
+                assert set(ckpt) != set(sd)
             if case == "missing":
                 ckpt.pop("fc.bias")
             elif case == "unexpected":
@@ -169,14 +198,14 @@ def test_engine() -> None:
             except RuntimeError as e:
                 assert case != "exact" and "checkpoint mismatch" in str(e), (case, e)
                 continue
-            assert case == "exact" and "missing=0, unexpected=0" in status, (case, status)
+            assert case in ("exact", "renamed") and "missing=0, unexpected=0" in status, (case, status)
             with torch.no_grad():
                 assert torch.equal(target(bag), model(bag))
     url = engine._model_input_data_url(spec, spec.transform(noise_image((700, 513))).unsqueeze(0))
     assert url.startswith("data:image/png;base64,")
     for key in ("probe", "probe_resnet"):
         assert "patches" in input_note(get_spec(key))["label"], key
-    print("    exact load passes, missing / unexpected keys raise; preview of a 2-patch bag renders")
+    print("    exact and renamed-key loads pass, missing / unexpected keys raise; preview of a 2-patch bag renders")
 
 
 def test_released_layout() -> None:
@@ -191,6 +220,7 @@ def test_released_layout() -> None:
             model = cls(OmegaConf.create({"ModelConfig": {"model_type": key}}))
         ours = {k: tuple(v.shape) for k, v in model.state_dict().items()}
         released = remap_probe(torch.load(path, map_location="cpu", weights_only=False, mmap=True))
+        released, _ = translate_hf_keys(released, model.state_dict())     # the names of this transformers release
         assert ours == {k: tuple(v.shape) for k, v in released.items()}, key
         print(f"    {len(ours)} tensors: same names and shapes")
 
