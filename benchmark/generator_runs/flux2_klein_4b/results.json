@@ -33,17 +33,6 @@
     "mean_p_fake_on_reals": 0.0115
   },
   {
-    "detector": "pgc",
-    "name": "PGC",
-    "auroc": 97.33,
-    "ap": 96.57,
-    "acc": 53.5,
-    "fake_detect_rate": 7.0,
-    "real_false_pos": 0.0,
-    "mean_p_fake_on_fakes": 0.438,
-    "mean_p_fake_on_reals": 0.2672
-  },
-  {
     "detector": "vib_net",
     "name": "VIB-Net",
     "auroc": 97.16,
@@ -108,6 +97,17 @@
     "real_false_pos": 10.0,
     "mean_p_fake_on_fakes": 0.7562,
     "mean_p_fake_on_reals": 0.1425
+  },
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 90.7,
+    "ap": 83.29,
+    "acc": 52.5,
+    "fake_detect_rate": 7.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.4145,
+    "mean_p_fake_on_reals": 0.2596
   },
   {
     "detector": "npr",

@@ -7,6 +7,7 @@ and kept in a small LRU so a shared GPU is not exhausted. All forward passes hap
 import base64
 import gc
 import io
+import logging
 import math
 import threading
 import time
@@ -20,6 +21,8 @@ from safetensors.torch import load_file as load_safetensors
 from . import config
 from .registry import ModelSpec, get_spec, input_note
 from . import media
+
+logger = logging.getLogger(__name__)
 
 
 def _png_b64(img: Image.Image) -> str:
@@ -192,6 +195,17 @@ def _load_checkpoint(model, spec: ModelSpec):
                 f"{spec.key}: checkpoint mismatch missing={real_missing[:8]} "
                 f"unexpected={unexpected[:8]}"
             )
+    elif real_missing or unexpected:
+        # Non-official kinds are not raised on (a model may legitimately rebuild some tensors itself, declared via
+        # ``pretrained_prefixes``), but a mismatch must never be silent: dropped keys (e.g. a wrapper prefix the
+        # checkpoint carries and the class does not, which once left the served PGC without its LoRA weights) or
+        # tensors that kept their __init__ values change what the detector computes.
+        logger.warning(
+            "%s: checkpoint %s does not match the model exactly: %d unexpected key(s) were dropped and %d key(s) kept "
+            "their __init__ values (unexpected=%s, missing=%s). Fix the remap or declare the keys in the model's "
+            "pretrained_prefixes.", spec.key, path.name, len(unexpected), len(real_missing), unexpected[:4],
+            real_missing[:4],
+        )
     return (
         f"loaded {len(sd)} tensors from {path.name} "
         f"(missing={len(real_missing)}, unexpected={len(unexpected)})"

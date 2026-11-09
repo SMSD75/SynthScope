@@ -22,17 +22,6 @@
     "mean_p_fake_on_reals": 0.116
   },
   {
-    "detector": "pgc",
-    "name": "PGC",
-    "auroc": 98.5,
-    "ap": 98.3,
-    "acc": 60.0,
-    "fake_detect_rate": 20.0,
-    "real_false_pos": 0.0,
-    "mean_p_fake_on_fakes": 0.4666,
-    "mean_p_fake_on_reals": 0.2672
-  },
-  {
     "detector": "effort",
     "name": "Effort",
     "auroc": 97.14,
@@ -53,6 +42,17 @@
     "real_false_pos": 8.0,
     "mean_p_fake_on_fakes": 0.8983,
     "mean_p_fake_on_reals": 0.0778
+  },
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 94.43,
+    "ap": 92.19,
+    "acc": 62.5,
+    "fake_detect_rate": 27.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.4723,
+    "mean_p_fake_on_reals": 0.2596
   },
   {
     "detector": "omniaid_v1",

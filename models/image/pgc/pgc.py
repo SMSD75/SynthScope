@@ -180,6 +180,10 @@ def _extract_cls_and_tokens(backbone, rgb):
 class SynthScopePGCModel(nn.Module):
     """Peak-Guided Calibration AI-generated-image detector (PGC)."""
 
+    # Constant ``register_buffer``s built in ``__init__`` (ImageNet mean/std, YCbCr matrices); the official checkpoint
+    # does not store them, so the loader accepts them as missing (``M_yuv`` also covers ``M_yuv_inv``).
+    pretrained_prefixes = ("imagenet_mean", "imagenet_std", "M_yuv")
+
     def __init__(self, config: DictConfig):
         super().__init__()
         self.config = config

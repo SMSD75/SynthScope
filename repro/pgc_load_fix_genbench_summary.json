@@ -1,0 +1,132 @@
+{
+  "flux2_klein_4b": {
+    "old": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 97.33,
+      "ap": 96.57,
+      "acc": 53.5,
+      "fake_detect_rate": 7.0,
+      "real_false_pos": 0.0,
+      "mean_p_fake_on_fakes": 0.438,
+      "mean_p_fake_on_reals": 0.2672
+    },
+    "new": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 90.7,
+      "ap": 83.29,
+      "acc": 52.5,
+      "fake_detect_rate": 7.0,
+      "real_false_pos": 2.0,
+      "mean_p_fake_on_fakes": 0.4145,
+      "mean_p_fake_on_reals": 0.2596
+    },
+    "rank_old": 4,
+    "rank_new": 10
+  },
+  "flux2_klein_9b": {
+    "old": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 97.35,
+      "ap": 96.45,
+      "acc": 53.5,
+      "fake_detect_rate": 7.0,
+      "real_false_pos": 0.0,
+      "mean_p_fake_on_fakes": 0.4389,
+      "mean_p_fake_on_reals": 0.2672
+    },
+    "new": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 90.72,
+      "ap": 83.54,
+      "acc": 52.5,
+      "fake_detect_rate": 7.0,
+      "real_false_pos": 2.0,
+      "mean_p_fake_on_fakes": 0.4177,
+      "mean_p_fake_on_reals": 0.2596
+    },
+    "rank_old": 3,
+    "rank_new": 10
+  },
+  "qwen_image_2_1": {
+    "old": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 98.5,
+      "ap": 98.3,
+      "acc": 60.0,
+      "fake_detect_rate": 20.0,
+      "real_false_pos": 0.0,
+      "mean_p_fake_on_fakes": 0.4666,
+      "mean_p_fake_on_reals": 0.2672
+    },
+    "new": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 94.43,
+      "ap": 92.19,
+      "acc": 62.5,
+      "fake_detect_rate": 27.0,
+      "real_false_pos": 2.0,
+      "mean_p_fake_on_fakes": 0.4723,
+      "mean_p_fake_on_reals": 0.2596
+    },
+    "rank_old": 3,
+    "rank_new": 5
+  },
+  "ideogram_bench": {
+    "old": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 97.53,
+      "ap": 97.39,
+      "acc": 61.5,
+      "fake_detect_rate": 23.0,
+      "real_false_pos": 0.0,
+      "mean_p_fake_on_fakes": 0.4645,
+      "mean_p_fake_on_reals": 0.2672
+    },
+    "new": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 94.76,
+      "ap": 93.63,
+      "acc": 72.5,
+      "fake_detect_rate": 47.0,
+      "real_false_pos": 2.0,
+      "mean_p_fake_on_fakes": 0.4886,
+      "mean_p_fake_on_reals": 0.2596
+    },
+    "rank_old": 1,
+    "rank_new": 2
+  },
+  "ideogram_bench_1024": {
+    "old": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 98.67,
+      "ap": 98.46,
+      "acc": 64.52,
+      "fake_detect_rate": 29.03,
+      "real_false_pos": 0.0,
+      "mean_p_fake_on_fakes": 0.4794,
+      "mean_p_fake_on_reals": 0.2583
+    },
+    "new": {
+      "detector": "pgc",
+      "name": "PGC",
+      "auroc": 96.02,
+      "ap": 94.55,
+      "acc": 70.16,
+      "fake_detect_rate": 43.55,
+      "real_false_pos": 3.23,
+      "mean_p_fake_on_fakes": 0.4978,
+      "mean_p_fake_on_reals": 0.251
+    },
+    "rank_old": 1,
+    "rank_new": 5
+  }
+}

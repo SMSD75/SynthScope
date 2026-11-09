@@ -1,0 +1,40 @@
+{
+  "tag": "pgc_h3_officialroot_fixed",
+  "model": "pgc",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/PGC_train_progan_ckpt.pth",
+  "model_config": null,
+  "benchmark": "forensynths",
+  "data_root": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/pgc_official_eval/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 72.08,
+    "map": 93.27,
+    "mauroc": 94.34
+  },
+  "per_generator": {
+    "deepfake": {
+      "ap": 93.91,
+      "auroc": 96.48,
+      "real_acc": 97.97,
+      "fake_acc": 46.26,
+      "acc": 72.11
+    },
+    "san": {
+      "ap": 98.88,
+      "auroc": 99.06,
+      "real_acc": 98.17,
+      "fake_acc": 79.0,
+      "acc": 88.58
+    },
+    "seeingdark": {
+      "ap": 87.03,
+      "auroc": 87.49,
+      "real_acc": 11.11,
+      "fake_acc": 100.0,
+      "acc": 55.56
+    }
+  },
+  "date": "2026-11-09T06:55:04",
+  "synthscope_version": "0.1.0"
+}

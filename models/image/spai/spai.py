@@ -156,6 +156,10 @@ class SPAI(nn.Module):
             mod.apply(_init)
 
         self.register_buffer("mask", generate_circular_mask(cfg.input_size, cfg.mask_radius))
+        # Keys the SPAI checkpoint does not carry and that never affect the output: ``mask`` is rebuilt above and the
+        # ViT's own classification head is unused (``self.backbone`` returns the intermediate features). The engine
+        # accepts exactly these as missing; every other tensor must load.
+        self.pretrained_prefixes = ("mask", "backbone.head.")
         self.norm = Normalize(IMAGENET_MEAN, IMAGENET_STD)
         self.criterion = nn.BCEWithLogitsLoss()
 

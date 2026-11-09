@@ -79,6 +79,9 @@ class SynthScopeCuReModel(nn.Module):
         # Everything frozen except the LoRA tensors and the head (the adapter's trainable set).
         for name, param in self.named_parameters():
             param.requires_grad = "lora_" in name or name.startswith("head.")
+        # The frozen PE-Core base is loaded above from its own release (``_load_base``), so the released adapter
+        # (LoRA + subspace + head only) does not contain it: the engine accepts exactly these keys as missing.
+        self.pretrained_prefixes = tuple(n for n, p in self.named_parameters() if not p.requires_grad)
         self.criterion = nn.CrossEntropyLoss(label_smoothing=self.label_smoothing)
 
     def _load_base(self, path: Path) -> None:
