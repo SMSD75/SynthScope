@@ -287,15 +287,31 @@ def stage3(args) -> None:
     missing, unexpected = check.load_state_dict(torch.load(out / "cure_trained.pth", map_location="cpu", weights_only=True),
                                                 strict=False)
     stray = [k for k in missing if "lora_" in k or k in ("mu", "W", "head.weight", "head.bias")]
-    n = min(64, len(ep.reals))
-    probe = [ep.load(ep.reals[i]) for i in range(n // 2)] + [ep.load(ep.fakes[i]) for i in range(n - n // 2)]
-    idx = torch.tensor(list(range(n // 2)) + [len(ep.reals) + i for i in range(n - n // 2)])
+    # The reloaded model runs at the SAME batch size and precision (fp16 autocast) the cached features were encoded with
+    # (--encode-batch): fp16 kernels can give batch-size-dependent results (measured on an RTX 6000 Ada, job 285054:
+    # max |feature diff| 0.29 at |z| <= 82 between batches of 64 and 128, bit-identical at equal batch size), which is a
+    # GPU property, not an export error. One batch of reals and one of generated images; the tolerance is unchanged.
+    n_r = len(ep.reals)
+    nb = max(1, min(args.encode_batch, n_r, len(ep.fakes)))
+    logits_export, idx = [], []
     with torch.no_grad():
-        logits_export = check(torch.stack(probe).to(dev)).float().cpu()
-        logits_cached = head(u[idx.to(dev)]).float().cpu()
+        for blk in (list(range(nb)), [n_r + i for i in range(nb)]):
+            xs = torch.stack([ep.load(ep.reals[i]) if i < n_r else ep.load(ep.fakes[i - n_r]) for i in blk]).to(dev)
+            logits_export.append(check(xs).float().cpu())
+            idx += blk
+        logits_export = torch.cat(logits_export)
+        logits_cached = head(u[torch.tensor(idx).to(dev)]).float().cpu()
     diff = float((logits_export - logits_cached).abs().max())
     print(f"[stage3] export check: missing adapter keys {stray}, unexpected {unexpected}; reloaded-model logits vs trained "
-          f"head on cached features, max |diff| {diff:.2e} over {n} images", flush=True)
+          f"head on cached features, max |diff| {diff:.2e} over {len(idx)} images (batches of {nb}, as encoded)", flush=True)
+    # informational only, not a gate: the same comparison with one batch of 32 + 32 images (the check's former batch)
+    n = min(64, 2 * nb)
+    probe = [ep.load(ep.reals[i]) for i in range(n // 2)] + [ep.load(ep.fakes[i]) for i in range(n - n // 2)]
+    pidx = torch.tensor(list(range(n // 2)) + [n_r + i for i in range(n - n // 2)])
+    with torch.no_grad():
+        alt = float((check(torch.stack(probe).to(dev)).float().cpu() - head(u[pidx.to(dev)]).float().cpu()).abs().max())
+    print(f"[stage3] batch-size sensitivity on this GPU (informational, not a gate): reloaded-model logits in one batch of "
+          f"{n} vs cached features encoded in batches of {args.encode_batch}: max |diff| {alt:.2e}", flush=True)
     if stray or unexpected or diff > 1e-2:
         raise RuntimeError("exported adapter does not reproduce the trained head")
 
