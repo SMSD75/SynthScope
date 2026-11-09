@@ -16,6 +16,8 @@ Image sets (all labelled; none is used to tune or select anything):
   rf_grid_after / rf_grid_before  ``--n-rf-grid`` real->generated trajectories on the stage-2 grid {0, .2, ..., 1}
                (mixing after / before q70): the stage-2 mean mu of each variant is compared with the released mu
   wild         a small in-the-wild set (WildRF test), a DIAGNOSTIC ONLY, never used for selection
+  extra_fake   (``--only-extra``, a separate run -> features_extra.pt) generated images of ``--extra-fake-dir``
+               (<generator>/1_fake; Synthbuster, not a CuRe paper benchmark), scored against the test_clean reals
 
 The pipeline is the official ``cure/preprocess.py`` (PNG source -> JPEG q96; SmallestMaxSize 390 cubic; CenterCrop 390;
 Resize 336 cubic; JPEG q70; mean = std = 0.5), split into its steps here so the mixture can be placed before or after
@@ -158,6 +160,8 @@ def main():
     ap.add_argument("--n-mix-val", type=int, default=2000)
     ap.add_argument("--n-pert", type=int, default=1000)
     ap.add_argument("--n-rf-grid", type=int, default=2000)
+    ap.add_argument("--extra-fake-dir", default=None, help="<generator>/1_fake tree (Synthbuster subset)")
+    ap.add_argument("--only-extra", action="store_true", help="encode only the extra fakes (features_extra.pt)")
     ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=1234)
@@ -200,6 +204,11 @@ def main():
                 alpha.append(al)
         add(f"rf_grid_{v}", js, pair=pair, alpha=alpha)
     add("wild", [("clean", w[0]) for w in wild], label=[w[1] for w in wild], platform=[w[2] for w in wild])
+    if args.only_extra:
+        meta, jobs = {}, []
+        fakes = list_images(args.extra_fake_dir)
+        add("extra_fake", [("clean", p) for p in fakes], label=[1] * len(fakes),
+            generator=[p.relative_to(args.extra_fake_dir).parts[0] for p in fakes])
     print(f"[diag] {len(jobs)} items: " + ", ".join(f"{k} {v['n']}" for k, v in meta.items()), flush=True)
 
     dev = "cuda"
@@ -219,9 +228,10 @@ def main():
         if not torch.isfinite(feats[k].float()).all():
             raise RuntimeError(f"non-finite features from {k}")
     torch.save({"features": feats, "meta": meta, "args": {k: v for k, v in vars(args).items()
-                                                          if k not in ("released", "ours", "train_dir", "test_dir", "wild_dir", "out")}},
-               out / "features.pt")
-    print(f"[diag] saved {out / 'features.pt'} in {time.time() - t0:.0f}s", flush=True)
+                                                          if k not in ("released", "ours", "train_dir", "test_dir", "wild_dir", "out",
+                                                                       "extra_fake_dir")}},
+               out / ("features_extra.pt" if args.only_extra else "features.pt"))
+    print(f"[diag] saved {out} in {time.time() - t0:.0f}s", flush=True)
 
 
 if __name__ == "__main__":

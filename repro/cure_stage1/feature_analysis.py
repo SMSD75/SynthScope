@@ -106,10 +106,23 @@ def main():
     ap.add_argument("--released", required=True, help="released cure_adapter.pt (mu / W / head)")
     ap.add_argument("--ours-stage1", required=True, help="our stage-1 model_last.pth (ratio_head)")
     ap.add_argument("--ours-adapter", required=True, help="our cure_trained.pth (mu / W / head)")
+    ap.add_argument("--extra", default=None, help="features_extra.pt (extra_fake set, scored against the test_clean reals)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     data = torch.load(args.features, map_location="cpu", weights_only=False)
     meta = data["meta"]
+    if args.extra:
+        ex = torch.load(args.extra, map_location="cpu", weights_only=False)
+        tc = meta["test_clean"]
+        n_r = sum(1 for v in tc["label"] if v == 0)
+        # extra_vs_real: the test_clean reals followed by the extra fakes (one contiguous block appended to the features)
+        reals = {k: data["features"][k][tc["start"]:tc["start"] + n_r] for k in ENCODERS}
+        base_n = data["features"]["base"].shape[0]
+        for k in ENCODERS:
+            data["features"][k] = torch.cat([data["features"][k], reals[k], ex["features"][k]])
+        em = ex["meta"]["extra_fake"]
+        meta["extra_vs_real"] = {"start": base_n, "n": n_r + em["n"], "label": [0] * n_r + em["label"],
+                                 "generator": ["real"] * n_r + em["generator"]}
     res = {"counts": {k: v["n"] for k, v in meta.items()}}
 
     # ---- 1. ratio regression
@@ -134,12 +147,13 @@ def main():
     res["ratio_regression"] = ratio
 
     # ---- 2. linear probes
-    lab = {n: np.asarray(meta[n]["label"]) for n in ["train_clean", "test_clean", "wild"] + [f"test_{k}" for k in PERTS]}
+    EVAL = ["test_clean", "wild"] + [f"test_{k}" for k in PERTS] + (["extra_vs_real"] if "extra_vs_real" in meta else [])
+    lab = {n: np.asarray(meta[n]["label"]) for n in ["train_clean"] + EVAL}
     probes = {}
     for enc in ENCODERS:
         sc = StandardScaler().fit(block(data, "train_clean", enc).numpy())
         clf = LogisticRegression(C=1.0, max_iter=3000).fit(sc.transform(block(data, "train_clean", enc).numpy()), lab["train_clean"])
-        for n in ["test_clean", "wild"] + [f"test_{k}" for k in PERTS]:
+        for n in EVAL:
             probes[f"{enc}/genimage_probe_on_{n}"] = binary_metrics(clf.predict_proba(sc.transform(block(data, n, enc).numpy()))[:, 1], lab[n])
         Xw, yw = block(data, "wild", enc).numpy(), lab["wild"]
         scores = np.zeros(len(yw))
@@ -158,8 +172,7 @@ def main():
         return lambda X: torch.softmax(((X - mu) @ W) @ hw.T + hb, dim=1)[:, 1]
     det_rel, det_ours = subspace_scorer(args.released), subspace_scorer(args.ours_adapter)
     dets = {}
-    sets = ["test_clean", "wild"] + [f"test_{k}" for k in PERTS]
-    for n in sets:
+    for n in EVAL:
         dets[f"released_detector/{n}"] = binary_metrics(det_rel(block(data, n, "released")).numpy(), lab[n])
         dets[f"ours_detector/{n}"] = binary_metrics(det_ours(block(data, n, "ours")).numpy(), lab[n])
         dets[f"ours_stage1_ratio_head_direct/{n}"] = binary_metrics(torch.sigmoid(block(data, n, "ours") @ rw + rb).numpy(), lab[n])
@@ -170,6 +183,15 @@ def main():
         sel = plat == p
         dets[f"released_detector/wild_{p}"] = binary_metrics(det_rel(block(data, "wild", "released")).numpy()[sel], lab["wild"][sel])
         dets[f"ours_detector/wild_{p}"] = binary_metrics(det_ours(block(data, "wild", "ours")).numpy()[sel], lab["wild"][sel])
+    if "extra_vs_real" in meta:
+        gen = np.asarray(meta["extra_vs_real"]["generator"])
+        y = lab["extra_vs_real"]
+        sr = det_rel(block(data, "extra_vs_real", "released")).numpy()
+        so = det_ours(block(data, "extra_vs_real", "ours")).numpy()
+        for gname in sorted(set(gen.tolist()) - {"real"}):
+            sel = (gen == gname) | (gen == "real")
+            dets[f"released_detector/extra_{gname}"] = binary_metrics(sr[sel], y[sel])
+            dets[f"ours_detector/extra_{gname}"] = binary_metrics(so[sel], y[sel])
     res["detectors"] = dets
 
     # ---- 4. geometry
@@ -188,7 +210,7 @@ def main():
         d = X[y == 1].mean(0) - X[y == 0].mean(0)
         dirs[enc] = d / d.norm()
         geo[f"{enc}/mean_diff_norm_train"] = round(float(d.norm()), 4)
-        for n in ["train_clean", "test_clean", "wild"] + [f"test_{k}" for k in PERTS]:
+        for n in ["train_clean"] + EVAL:
             geo[f"{enc}/cohen_d_along_train_meandiff/{n}"] = round(cohen_d((block(data, n, enc) @ dirs[enc]).numpy(), lab[n]), 3)
     geo["cos_meandiff_released_ours"] = round(float(dirs["released"] @ dirs["ours"]), 4)
     geo["cos_meandiff_released_base"] = round(float(dirs["released"] @ dirs["base"]), 4)
