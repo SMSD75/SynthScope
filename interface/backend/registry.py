@@ -116,6 +116,13 @@ def remap_vina(sd: dict) -> dict:
     return {k.replace("module.", ""): v for k, v in sd.items()}
 
 
+def remap_probe(sd: dict) -> dict:
+    """Official PROBE checkpoint ({"model_state_dict": ...}) -> SynthScopePROBEModel / SynthScopePROBEResNetModel: the
+    official evaluate_dino.py / evaluate_resnet.py load ``checkpoint['model_state_dict']`` strictly; the names are the
+    official ones."""
+    return sd.get("model_state_dict", sd)
+
+
 def remap_safe(sd: dict) -> dict:
     """Official SAFE (Ouxiang-Li/SAFE) → SynthScopeSAFEModel. The custom ResNet (conv1/bn1/layer1/layer2)
     matches our class verbatim; only the classifier head differs: official names it ``fc1``, ours
@@ -406,6 +413,38 @@ _add(ModelSpec(
           "token give the score. Uses the OFFICIAL checkpoint. PNG/BMP inputs get a JPEG q96 round trip (the paper's "
           "format-aligned inputs), so use the registered transform. Runs fp32, the official default.",
 ))
+# PROBE: two released detectors (Table 1 of the paper has both rows), each scored as the official evaluate_*.py does:
+# the mean logit of the image's non-overlapping crop-size patches at native resolution.
+_PROBE_NOTES = ("Trained with PROBE, which steers a generative model through small edits of its internal "
+                "representations to find realistic images the detector gets wrong, then refines the detector on them. ")
+_add(ModelSpec(
+    key="probe", name="PROBE (DINOv2)", paper="Cao et al., ICML'26",
+    modality="image", predict_kind="bce", checkpoint="probe.pth", ckpt_kind="official_probe", remap=remap_probe,
+    weights="official",
+    # probe.pth = the official DINOv2_best_model_step_34999.pth unchanged (ModelScope
+    # shuinishaojiu/PROBE-AIGI-Detection, sha256 c8caa9ba...450156); it holds the full model (DINOv2-reg ViT-L/14 +
+    # head), so no backbone download.
+    overrides=["model@ModelConfig=image/probe"],
+    transform=model_transform("image/probe"),   # official evaluate_dino.py: repeat-pad to 336, 336 patches, ImageNet
+    native_res=True,                # the patch count depends on the image size: score one image at a time
+    notes=_PROBE_NOTES + "DINOv2 ViT-L/14 with registers + a linear head on the CLS token, trained on the paper's "
+                         "reconstruction training set (SD 2.1 reconstructions of real images) plus PROBE samples. Uses "
+                         "the OFFICIAL checkpoint (licence unclear: not in the zoo or on the Space). The image is cut "
+                         "into 336x336 patches at its own resolution and the patch logits are averaged.",
+))
+_add(ModelSpec(
+    key="probe_resnet", name="PROBE (ResNet-50)", paper="Cao et al., ICML'26",
+    modality="image", predict_kind="bce", checkpoint="probe_resnet.pth", ckpt_kind="official_probe",
+    remap=remap_probe, weights="official",
+    # probe_resnet.pth = the official ResNet50_best_model_step_19343.pth unchanged (same ModelScope repo, sha256
+    # 71ef257e...20f0507c).
+    overrides=["model@ModelConfig=image/probe_resnet"],
+    transform=model_transform("image/probe_resnet"),   # official evaluate_resnet.py: black-pad to 224, 224 patches
+    native_res=True,
+    notes=_PROBE_NOTES + "ResNet-50 with a linear head, trained on GenImage SD v1.4 plus PROBE samples. Uses the "
+                         "OFFICIAL checkpoint (licence unclear: not in the zoo or on the Space). The image is cut into "
+                         "224x224 patches at its own resolution and the patch logits are averaged.",
+))
 # VINA: one model for images and videos. `vina` scores images (and, like every image detector, sampled frames of a video
 # with the mean P(fake)); `vina_video` is the official video protocol, so the paper's video benchmarks run through it.
 _VINA_NOTES = ("DINOv3 ViT-L/16 fine-tuned end to end with a linear head, trained on images and video frames together "
@@ -554,6 +593,15 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "ltf": ("Native-res 224 tiles + global view", "The image is cut into 224×224 tiles at its own resolution (no "
             "scaling; edge tiles are aligned to the border, a side under 224 px is padded with black), plus one view of "
             "the whole image resized to 224 and center-cropped."),
+    "probe": ("Native-res 336 patches, mean logit", "The image is cut into non-overlapping 336×336 patches at its own "
+              "resolution (no scaling; a strip at the right / bottom edge narrower than 336 px is not seen); a side "
+              "under 336 px is first tiled with copies of the image. Each patch is scored and the scores are "
+              "averaged."),
+    "probe_resnet": ("Native-res 224 patches, mean logit", "The image is cut into non-overlapping 224×224 patches at "
+                     "its own resolution (no scaling; a strip at the right / bottom edge narrower than 224 px is not "
+                     "seen); an image with a side under 224 px is centered on a black 224×224 square instead (its "
+                     "other side, if longer, is cut to the central 224 px). Each patch is scored and the scores are "
+                     "averaged."),
     "vina": ("Resize + center-crop 256 (bicubic)", "The shorter side is scaled to 256 px (bicubic) and the central "
              "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the "
              "detector."),

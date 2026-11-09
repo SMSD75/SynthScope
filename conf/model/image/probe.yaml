@@ -1,0 +1,20 @@
+defaults:
+  - /model/default
+  - _self_
+
+# PROBE-DINOv2 (ICML 2026, arXiv 2605.24906): DINOv2 ViT-L/14 with registers + Linear(1024, 1) on the CLS token, scored
+# as the mean logit of the image's non-overlapping 336x336 patches at native resolution; P(fake) = sigmoid(mean).
+# The official DINOv2_best_model_step_34999.pth (ModelScope shuinishaojiu/PROBE-AIGI-Detection) holds the full model
+# and loads key-for-key as probe.pth.
+model_type: probe
+backbone_name: dinov2_with_registers_large
+backbone_path: null           # null: build the backbone from its config (probe.pth has the weights); a HF-format
+                              # directory or hub id (facebook/dinov2-with-registers-large) loads pretrained weights
+classifier_type: linear       # the official evaluate_dino.py: dino_classifier(classifier_type='linear')
+patch_chunk_size: 32          # patches per backbone forward (0 = all of a batch at once, as the official code)
+
+# Test-time preprocessing (official evaluate_dino.py, README: --crop_size 336): pad_image(mode='repeat') tiles an image
+# with a side under 336 with copies of itself, ToTensor + ImageNet normalization, then the non-overlapping 336 patches
+# [N, 3, 336, 336]; the model averages the patch logits. The patch count depends on the image size.
+eval_transform_list: [probe_pad_repeat_336, to_dtype, normalize_imagenet, sliding_patches_336]
+# No training lists: the official fine-tuning code is not released.

@@ -52,7 +52,8 @@ IMAGE_MODELS = sorted((CONF / "model" / "image").glob("*.yaml"))
 TRAINING_KEYS = ("train_transform_list", "val_transform_list", "test_transform_list")
 # (width, height) of the PNG test images: smaller than every crop, non-square both ways, square, long side > 1024.
 SIZES = [(300, 200), (200, 150), (150, 260), (512, 512), (1300, 900)]
-# Each image model's eval output on a 300x200 image (bfree / spai: native resolution; ltf: global view + 2 tiles).
+# Each image model's eval output on a 300x200 image (bfree / spai: native resolution; ltf: global view + 2 tiles; probe:
+# repeat-tiled to 600x400, one 336 patch; probe_resnet: one 224 patch of the black-padded square).
 EXPECTED_SHAPES = {
     "adapted_dino": (3, 224, 224), "aide": (5, 3, 256, 256), "bfree": (3, 200, 300), "clip": (3, 224, 224),
     "cnn": (3, 224, 224), "co_spy": (3, 384, 384), "cure": (3, 336, 336), "d3qe": (3, 256, 256),
@@ -60,7 +61,7 @@ EXPECTED_SHAPES = {
     "effort_ufd": (3, 224, 224), "fat_former": (3, 224, 224), "ltf": (3, 3, 224, 224),
     "mirror": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
     "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224),
-    "safe": (3, 256, 256),
+    "probe": (1, 3, 336, 336), "probe_resnet": (1, 3, 224, 224), "safe": (3, 256, 256),
     "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224), "vina": (3, 256, 256),
 }
 # The official eval code as torchvision pipelines (PIL in).
