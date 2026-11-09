@@ -1,0 +1,33 @@
+{
+  "tag": "probe_resnet_aigibench",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/66790/tmp/layouts/aigibench",
+  "jpeg_fakes": null,
+  "n_generators": 2,
+  "means": {
+    "acc": 70.44,
+    "map": 79.8,
+    "mauroc": 77.55
+  },
+  "per_generator": {
+    "CommunityAI": {
+      "ap": 80.28,
+      "auroc": 81.36,
+      "real_acc": 87.1,
+      "fake_acc": 54.88,
+      "acc": 70.99
+    },
+    "SocialRF": {
+      "ap": 79.31,
+      "auroc": 73.73,
+      "real_acc": 84.2,
+      "fake_acc": 55.57,
+      "acc": 69.88
+    }
+  },
+  "date": "2026-11-09T16:45:46",
+  "synthscope_version": "0.1.0"
+}

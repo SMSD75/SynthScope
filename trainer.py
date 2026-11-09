@@ -23,6 +23,7 @@ from models.image.bfree.bfree import SynthScopeBFreeModel
 from models.image.d3qe.d3qe import SynthScopeD3QEModel
 from models.image.ltf.ltf import SynthScopeLTFModel
 from models.image.mirror.mirror import SynthScopeMIRRORModel
+from models.image.probe.probe import SynthScopePROBEModel, SynthScopePROBEResNetModel
 from models.image.vina.vina import SynthScopeVINAModel
 from models.video.d3.d3 import SynthScopeD3Model
 from models.video.split.split import SynthScopeSPLITModel
@@ -124,6 +125,10 @@ class SynthScopeModelTrainer:
             return SynthScopeMIRRORModel(config)
         if model_type == "vina":
             return SynthScopeVINAModel(config)
+        if model_type == "probe":
+            return SynthScopePROBEModel(config)
+        if model_type == "probe_resnet":
+            return SynthScopePROBEResNetModel(config)
         if model_type == "d3":
             return SynthScopeD3Model(config)
         if model_type == "split":

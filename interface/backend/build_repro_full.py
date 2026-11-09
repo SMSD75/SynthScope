@@ -192,6 +192,22 @@ VAL = {
     ("vina", "WildRF"):                  {"official": {"map": 99.41, "acc": 96.12, "auroc": 99.25}},
     ("vina", "AIGIBench"):               {"official": {"map": 97.33, "acc": 92.72, "auroc": 97.6}},
     ("vina", "RRDataset"):               {"official": {"map": 92.77, "acc": 82.89, "auroc": 91.69}},
+    # PROBE (ICML'26): the two official checkpoints (probe = DINOv2 ViT-L/14 with registers, probe_resnet = ResNet-50); no
+    # SynthScope-trained number (the training code is not released). acc / mAP / mauroc = bench_eval means over the paper's
+    # subsets (repro/bench_results/<key>_<benchmark>.json; acc = mean balanced accuracy at 0.5 = the paper's metric).
+    # GenImage = the full val split (100,000 images) with all fakes JPEG q96 as in the paper. Synthbuster uses 5000 MSCOCO
+    # reals, NOT the paper's RAISE-1k (the spec marks it "reference": not like-for-like). AIGI-Bench = CommunityAI + SocialRF
+    # only. Chameleon and AIGI-Quality-Paradox were not run (no loader). Jobs DAS6 66753, 66755, 66790.
+    ("probe", "GenImage (8 subsets"):    {"official": {"map": 99.77, "acc": 97.47, "auroc": 99.8}},
+    ("probe", "Synthbuster"):            {"official": {"map": 99.64, "acc": 98.2, "auroc": 99.93}},
+    ("probe", "SynthWildX"):             {"official": {"map": 98.8, "acc": 97.3, "auroc": 99.18}},
+    ("probe", "WildRF"):                 {"official": {"map": 99.36, "acc": 96.92, "auroc": 99.26}},
+    ("probe", "AIGI-Bench"):             {"official": {"map": 96.46, "acc": 89.88, "auroc": 95.88}},
+    ("probe_resnet", "GenImage (8 subsets"): {"official": {"map": 86.69, "acc": 78.38, "auroc": 84.81}},
+    ("probe_resnet", "Synthbuster"):     {"official": {"map": 85.23, "acc": 83.75, "auroc": 95.88}},
+    ("probe_resnet", "SynthWildX"):      {"official": {"map": 83.88, "acc": 75.2, "auroc": 82.8}},
+    ("probe_resnet", "WildRF"):          {"official": {"map": 89.45, "acc": 81.63, "auroc": 85.76}},
+    ("probe_resnet", "AIGI-Bench"):      {"official": {"map": 79.8, "acc": 70.44, "auroc": 77.55}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},

@@ -134,6 +134,12 @@ def _build_model(cfg):
     if model_type == "vina":
         from models.image.vina.vina import SynthScopeVINAModel
         return SynthScopeVINAModel(cfg)
+    if model_type == "probe":
+        from models.image.probe.probe import SynthScopePROBEModel
+        return SynthScopePROBEModel(cfg)
+    if model_type == "probe_resnet":
+        from models.image.probe.probe import SynthScopePROBEResNetModel
+        return SynthScopePROBEResNetModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
