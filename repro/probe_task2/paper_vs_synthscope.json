@@ -1,0 +1,534 @@
+{
+ "paper_missing": {
+  "chameleon": {
+   "probe": 86.6,
+   "probe_resnet": 74.0
+  },
+  "aigi_quality_paradox": {
+   "probe": 92.9,
+   "probe_resnet": 87.7
+  }
+ },
+ "benchmarks": {
+  "genimage_val100k": {
+   "probe": {
+    "rows": [
+     {
+      "subset": "midjourney",
+      "paper": 98.8,
+      "synthscope": 98.73,
+      "real_acc": 98.57,
+      "fake_acc": 98.9,
+      "ap": 99.86
+     },
+     {
+      "subset": "sdv1.4",
+      "paper": 99.4,
+      "synthscope": 99.41,
+      "real_acc": 98.85,
+      "fake_acc": 99.97,
+      "ap": 100.0
+     },
+     {
+      "subset": "sdv1.5",
+      "paper": 99.4,
+      "synthscope": 99.39,
+      "real_acc": 98.9,
+      "fake_acc": 99.87,
+      "ap": 99.99
+     },
+     {
+      "subset": "adm",
+      "paper": 91.0,
+      "synthscope": 93.22,
+      "real_acc": 98.55,
+      "fake_acc": 87.88,
+      "ap": 99.32
+     },
+     {
+      "subset": "glide",
+      "paper": 92.1,
+      "synthscope": 93.86,
+      "real_acc": 99.07,
+      "fake_acc": 88.65,
+      "ap": 99.47
+     },
+     {
+      "subset": "wukong",
+      "paper": 99.5,
+      "synthscope": 99.33,
+      "real_acc": 98.68,
+      "fake_acc": 99.97,
+      "ap": 100.0
+     },
+     {
+      "subset": "vqdm",
+      "paper": 98.9,
+      "synthscope": 98.76,
+      "real_acc": 98.62,
+      "fake_acc": 98.9,
+      "ap": 99.88
+     },
+     {
+      "subset": "biggan",
+      "paper": 95.0,
+      "synthscope": 97.07,
+      "real_acc": 98.75,
+      "fake_acc": 95.38,
+      "ap": 99.65
+     }
+    ],
+    "paper_avg_table1": 96.8,
+    "paper_mean_of_listed": 96.76,
+    "synthscope_mean": 97.47,
+    "synthscope_map": 99.77,
+    "tag": "probe_genimage_val100k",
+    "data_root": "/local/ssalehid/cache/data029/GenImage_val_full/test",
+    "extra_subsets_in_run": []
+   },
+   "probe_resnet": {
+    "rows": [
+     {
+      "subset": "midjourney",
+      "paper": 90.7,
+      "synthscope": 90.73,
+      "real_acc": 98.67,
+      "fake_acc": 82.8,
+      "ap": 98.63
+     },
+     {
+      "subset": "sdv1.4",
+      "paper": 99.4,
+      "synthscope": 99.36,
+      "real_acc": 98.72,
+      "fake_acc": 100.0,
+      "ap": 100.0
+     },
+     {
+      "subset": "sdv1.5",
+      "paper": 99.2,
+      "synthscope": 99.24,
+      "real_acc": 98.6,
+      "fake_acc": 99.89,
+      "ap": 99.99
+     },
+     {
+      "subset": "adm",
+      "paper": 60.0,
+      "synthscope": 58.94,
+      "real_acc": 98.52,
+      "fake_acc": 19.37,
+      "ap": 85.17
+     },
+     {
+      "subset": "glide",
+      "paper": 63.0,
+      "synthscope": 63.01,
+      "real_acc": 98.78,
+      "fake_acc": 27.23,
+      "ap": 85.76
+     },
+     {
+      "subset": "wukong",
+      "paper": 99.4,
+      "synthscope": 99.41,
+      "real_acc": 98.87,
+      "fake_acc": 99.95,
+      "ap": 100.0
+     },
+     {
+      "subset": "vqdm",
+      "paper": 66.9,
+      "synthscope": 66.9,
+      "real_acc": 98.72,
+      "fake_acc": 35.08,
+      "ap": 90.07
+     },
+     {
+      "subset": "biggan",
+      "paper": 49.4,
+      "synthscope": 49.41,
+      "real_acc": 98.82,
+      "fake_acc": 0.0,
+      "ap": 33.88
+     }
+    ],
+    "paper_avg_table1": 78.4,
+    "paper_mean_of_listed": 78.5,
+    "synthscope_mean": 78.38,
+    "synthscope_map": 86.69,
+    "tag": "probe_resnet_genimage_val100k",
+    "data_root": "/local/ssalehid/cache/data029/GenImage_val_full/test",
+    "extra_subsets_in_run": []
+   }
+  },
+  "synthbuster_coco": {
+   "probe": {
+    "rows": [
+     {
+      "subset": "dalle2",
+      "paper": 94.6,
+      "synthscope": 93.47,
+      "real_acc": 99.54,
+      "fake_acc": 87.4,
+      "ap": 98.65
+     },
+     {
+      "subset": "dalle3",
+      "paper": 99.4,
+      "synthscope": 99.57,
+      "real_acc": 99.54,
+      "fake_acc": 99.6,
+      "ap": 99.93
+     },
+     {
+      "subset": "firefly",
+      "paper": 99.5,
+      "synthscope": 99.77,
+      "real_acc": 99.54,
+      "fake_acc": 100.0,
+      "ap": 99.64
+     },
+     {
+      "subset": "glide",
+      "paper": 86.7,
+      "synthscope": 92.22,
+      "real_acc": 99.54,
+      "fake_acc": 84.9,
+      "ap": 98.54
+     },
+     {
+      "subset": "midjourney-v5",
+      "paper": 99.5,
+      "synthscope": 99.77,
+      "real_acc": 99.54,
+      "fake_acc": 100.0,
+      "ap": 99.99
+     },
+     {
+      "subset": "stable-diffusion-1-3",
+      "paper": 99.5,
+      "synthscope": 99.72,
+      "real_acc": 99.54,
+      "fake_acc": 99.9,
+      "ap": 99.99
+     },
+     {
+      "subset": "stable-diffusion-1-4",
+      "paper": 99.5,
+      "synthscope": 99.77,
+      "real_acc": 99.54,
+      "fake_acc": 100.0,
+      "ap": 100.0
+     },
+     {
+      "subset": "stable-diffusion-2",
+      "paper": 99.5,
+      "synthscope": 99.77,
+      "real_acc": 99.54,
+      "fake_acc": 100.0,
+      "ap": 99.99
+     },
+     {
+      "subset": "stable-diffusion-xl",
+      "paper": 99.5,
+      "synthscope": 99.72,
+      "real_acc": 99.54,
+      "fake_acc": 99.9,
+      "ap": 99.99
+     }
+    ],
+    "paper_avg_table1": 97.5,
+    "paper_mean_of_listed": 97.52,
+    "synthscope_mean": 98.2,
+    "synthscope_map": 99.64,
+    "tag": "probe_synthbuster_coco",
+    "data_root": "/local/ssalehid/66755/tmp/layouts/Synthbuster_coco",
+    "extra_subsets_in_run": []
+   },
+   "probe_resnet": {
+    "rows": [
+     {
+      "subset": "dalle2",
+      "paper": 48.3,
+      "synthscope": 52.97,
+      "real_acc": 99.14,
+      "fake_acc": 6.8,
+      "ap": 60.83
+     },
+     {
+      "subset": "dalle3",
+      "paper": 90.2,
+      "synthscope": 94.82,
+      "real_acc": 99.14,
+      "fake_acc": 90.5,
+      "ap": 98.14
+     },
+     {
+      "subset": "firefly",
+      "paper": 46.9,
+      "synthscope": 51.57,
+      "real_acc": 99.14,
+      "fake_acc": 4.0,
+      "ap": 42.22
+     },
+     {
+      "subset": "glide",
+      "paper": 57.4,
+      "synthscope": 62.07,
+      "real_acc": 99.14,
+      "fake_acc": 25.0,
+      "ap": 67.67
+     },
+     {
+      "subset": "midjourney-v5",
+      "paper": 93.2,
+      "synthscope": 97.82,
+      "real_acc": 99.14,
+      "fake_acc": 96.5,
+      "ap": 99.48
+     },
+     {
+      "subset": "stable-diffusion-1-3",
+      "paper": 94.9,
+      "synthscope": 99.57,
+      "real_acc": 99.14,
+      "fake_acc": 100.0,
+      "ap": 100.0
+     },
+     {
+      "subset": "stable-diffusion-1-4",
+      "paper": 94.9,
+      "synthscope": 99.57,
+      "real_acc": 99.14,
+      "fake_acc": 100.0,
+      "ap": 100.0
+     },
+     {
+      "subset": "stable-diffusion-2",
+      "paper": 93.1,
+      "synthscope": 97.72,
+      "real_acc": 99.14,
+      "fake_acc": 96.3,
+      "ap": 99.33
+     },
+     {
+      "subset": "stable-diffusion-xl",
+      "paper": 93.0,
+      "synthscope": 97.67,
+      "real_acc": 99.14,
+      "fake_acc": 96.2,
+      "ap": 99.41
+     }
+    ],
+    "paper_avg_table1": 79.1,
+    "paper_mean_of_listed": 79.1,
+    "synthscope_mean": 83.75,
+    "synthscope_map": 85.23,
+    "tag": "probe_resnet_synthbuster_coco",
+    "data_root": "/local/ssalehid/66755/tmp/layouts/Synthbuster_coco",
+    "extra_subsets_in_run": []
+   }
+  },
+  "synthwildx": {
+   "probe": {
+    "rows": [
+     {
+      "subset": "dalle3",
+      "paper": 96.5,
+      "synthscope": 97.44,
+      "real_acc": 95.64,
+      "fake_acc": 99.23,
+      "ap": 99.32
+     },
+     {
+      "subset": "firefly",
+      "paper": 96.4,
+      "synthscope": 96.98,
+      "real_acc": 95.64,
+      "fake_acc": 98.31,
+      "ap": 97.74
+     },
+     {
+      "subset": "midjourney_v5",
+      "paper": 96.5,
+      "synthscope": 97.48,
+      "real_acc": 95.64,
+      "fake_acc": 99.31,
+      "ap": 99.34
+     }
+    ],
+    "paper_avg_table1": 96.4,
+    "paper_mean_of_listed": 96.47,
+    "synthscope_mean": 97.3,
+    "synthscope_map": 98.8,
+    "tag": "probe_synthwildx",
+    "data_root": "/local/ssalehid/cache/data029/SynthWildX/test",
+    "extra_subsets_in_run": []
+   },
+   "probe_resnet": {
+    "rows": [
+     {
+      "subset": "dalle3",
+      "paper": 90.3,
+      "synthscope": 89.71,
+      "real_acc": 89.1,
+      "fake_acc": 90.31,
+      "ap": 97.31
+     },
+     {
+      "subset": "firefly",
+      "paper": 56.7,
+      "synthscope": 56.29,
+      "real_acc": 89.1,
+      "fake_acc": 23.47,
+      "ap": 64.22
+     },
+     {
+      "subset": "midjourney_v5",
+      "paper": 79.7,
+      "synthscope": 79.61,
+      "real_acc": 89.1,
+      "fake_acc": 70.11,
+      "ap": 90.12
+     }
+    ],
+    "paper_avg_table1": 75.6,
+    "paper_mean_of_listed": 75.57,
+    "synthscope_mean": 75.2,
+    "synthscope_map": 83.88,
+    "tag": "probe_resnet_synthwildx",
+    "data_root": "/local/ssalehid/cache/data029/SynthWildX/test",
+    "extra_subsets_in_run": []
+   }
+  },
+  "wildrf": {
+   "probe": {
+    "rows": [
+     {
+      "subset": "facebook",
+      "paper": 98.4,
+      "synthscope": 98.75,
+      "real_acc": 98.12,
+      "fake_acc": 99.37,
+      "ap": 99.91
+     },
+     {
+      "subset": "reddit",
+      "paper": 93.4,
+      "synthscope": 93.33,
+      "real_acc": 94.4,
+      "fake_acc": 92.27,
+      "ap": 98.41
+     },
+     {
+      "subset": "twitter",
+      "paper": 99.0,
+      "synthscope": 98.68,
+      "real_acc": 99.12,
+      "fake_acc": 98.25,
+      "ap": 99.77
+     }
+    ],
+    "paper_avg_table1": 96.9,
+    "paper_mean_of_listed": 96.93,
+    "synthscope_mean": 96.92,
+    "synthscope_map": 99.36,
+    "tag": "probe_wildrf",
+    "data_root": "/local/ssalehid/cache/data029/WildRF/test",
+    "extra_subsets_in_run": []
+   },
+   "probe_resnet": {
+    "rows": [
+     {
+      "subset": "facebook",
+      "paper": 87.8,
+      "synthscope": 87.81,
+      "real_acc": 82.5,
+      "fake_acc": 93.12,
+      "ap": 95.24
+     },
+     {
+      "subset": "reddit",
+      "paper": 72.9,
+      "synthscope": 72.87,
+      "real_acc": 89.6,
+      "fake_acc": 56.13,
+      "ap": 81.04
+     },
+     {
+      "subset": "twitter",
+      "paper": 83.3,
+      "synthscope": 84.2,
+      "real_acc": 89.74,
+      "fake_acc": 78.65,
+      "ap": 92.08
+     }
+    ],
+    "paper_avg_table1": 81.3,
+    "paper_mean_of_listed": 81.33,
+    "synthscope_mean": 81.63,
+    "synthscope_map": 89.45,
+    "tag": "probe_resnet_wildrf",
+    "data_root": "/local/ssalehid/cache/data029/WildRF/test",
+    "extra_subsets_in_run": []
+   }
+  },
+  "aigibench": {
+   "probe": {
+    "rows": [
+     {
+      "subset": "CommunityAI",
+      "paper": 89.8,
+      "synthscope": 90.38,
+      "real_acc": 97.17,
+      "fake_acc": 83.6,
+      "ap": 97.08
+     },
+     {
+      "subset": "SocialRF",
+      "paper": 89.9,
+      "synthscope": 89.38,
+      "real_acc": 89.87,
+      "fake_acc": 88.9,
+      "ap": 95.84
+     }
+    ],
+    "paper_avg_table1": 89.9,
+    "paper_mean_of_listed": 89.85,
+    "synthscope_mean": 89.88,
+    "synthscope_map": 96.46,
+    "tag": "probe_aigibench",
+    "data_root": "/local/ssalehid/66790/tmp/layouts/aigibench",
+    "extra_subsets_in_run": []
+   },
+   "probe_resnet": {
+    "rows": [
+     {
+      "subset": "CommunityAI",
+      "paper": 71.0,
+      "synthscope": 70.99,
+      "real_acc": 87.1,
+      "fake_acc": 54.88,
+      "ap": 80.28
+     },
+     {
+      "subset": "SocialRF",
+      "paper": 69.9,
+      "synthscope": 69.88,
+      "real_acc": 84.2,
+      "fake_acc": 55.57,
+      "ap": 79.31
+     }
+    ],
+    "paper_avg_table1": 70.4,
+    "paper_mean_of_listed": 70.45,
+    "synthscope_mean": 70.44,
+    "synthscope_map": 79.8,
+    "tag": "probe_resnet_aigibench",
+    "data_root": "/local/ssalehid/66790/tmp/layouts/aigibench",
+    "extra_subsets_in_run": []
+   }
+  }
+ }
+}
