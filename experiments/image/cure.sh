@@ -33,6 +33,11 @@ STAGES=${STAGES:-"1 2 3"}
 PY=${PY:-/home/ssalehi/miniconda3/envs/SynthScope/bin/python}
 if (( 64 % MICRO != 0 )); then echo "MICRO must divide the per-GPU batch 64" >&2; exit 1; fi
 ACCUM=$((64 / MICRO))
+# STEP_MULT (default 1): accumulate STEP_MULT x the per-GPU 64 per optimizer step, i.e. global batch NGPU x 64 x STEP_MULT.
+# Only for the stage-1 investigation's R2 run (global 512 = 2 GPUs x 64 x 4, the paper's per-GPU 64 on an assumed 8 GPUs);
+# the recipe default is 1 (global NGPU x 64).
+STEP_MULT=${STEP_MULT:-1}
+ACCUM=$((ACCUM * STEP_MULT))
 MULTI=""; (( NGPU > 1 )) && MULTI="--multi_gpu"
 # Every accelerate setting is explicit (a minimal config file AND flags), so a default accelerate config on the host
 # (DeepSpeed, dynamo, other precision) cannot change the run: single machine, no dynamo, fp16 autocast + loss scaling
