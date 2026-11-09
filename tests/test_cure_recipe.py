@@ -83,6 +83,11 @@ def test_mix_dataset() -> None:
         plain = tf(Image.open(ep.fakes[0]).convert("RGB"))
         assert not torch.equal(plain, ep.load(ep.fakes[0])), "PNG fakes must get the JPEG q96 step"
         assert torch.equal(tf(Image.open(ep.reals[0]).convert("RGB")), ep.load(ep.reals[0]))
+        # the stage-2 parity control (no final JPEG q70) differs from the default
+        img = Image.open(ep.reals[0]).convert("RGB")
+        ctrl, base = CuReTransform(eval_jpeg_quality=None)(img), tf(img)
+        assert ctrl.shape == base.shape and not torch.equal(ctrl, base) and bool(torch.isfinite(ctrl).all())
+        assert torch.equal(CuReTransform(eval_jpeg_quality=70)(img), base)
 
         train = CuReMixDataset(CuReEndpoints(tmp, "train", tf), "train")
         loader = torch.utils.data.DataLoader(train, batch_size=4, shuffle=True, num_workers=2)

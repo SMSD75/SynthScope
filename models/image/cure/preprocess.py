@@ -37,7 +37,13 @@ def _cubic_resize(arr: np.ndarray, height: int, width: int) -> np.ndarray:
 
 
 class CuReTransform:
-    """PIL image -> normalized float32 tensor ``[3, 336, 336]`` (picklable, stateless)."""
+    """PIL image -> normalized float32 tensor ``[3, 336, 336]`` (picklable, stateless).
+
+    ``eval_jpeg_quality`` is the final JPEG pass (official: 70); ``None`` skips it. Only the stage-2 parity control of the
+    training recipe (``train_stages.py --control no_q70``) changes it; every registered pipeline uses the default."""
+
+    def __init__(self, eval_jpeg_quality: int | None = EVAL_JPEG_QUALITY):
+        self.eval_jpeg_quality = eval_jpeg_quality
 
     def __call__(self, img: Image.Image) -> torch.Tensor:
         source_format = img.info.get(SRC_FORMAT_KEY) or img.format
@@ -57,7 +63,8 @@ class CuReTransform:
         left = (arr.shape[1] - RESIZE_SIZE) // 2
         arr = np.ascontiguousarray(arr[top:top + RESIZE_SIZE, left:left + RESIZE_SIZE])
         arr = _cubic_resize(arr, INPUT_SIZE, INPUT_SIZE)
-        _, encoded = cv2.imencode(".jpg", arr, (int(cv2.IMWRITE_JPEG_QUALITY), EVAL_JPEG_QUALITY))
-        arr = cv2.imdecode(encoded, cv2.IMREAD_UNCHANGED)
+        if self.eval_jpeg_quality is not None:
+            _, encoded = cv2.imencode(".jpg", arr, (int(cv2.IMWRITE_JPEG_QUALITY), self.eval_jpeg_quality))
+            arr = cv2.imdecode(encoded, cv2.IMREAD_UNCHANGED)
         arr = (arr.astype(np.float32) - 127.5) / 127.5
         return torch.from_numpy(arr).permute(2, 0, 1).contiguous()

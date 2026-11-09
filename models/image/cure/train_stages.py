@@ -37,6 +37,7 @@ from torch.utils.data import DataLoader, Dataset
 
 from dataset import CuReEndpoints, cure_mix
 from transformations import AIGITransformations
+from .preprocess import CuReTransform
 from .cure import FEATURE_DIM, SUBSPACE_DIM, SynthScopeCuReModel
 from . import subspace as S
 
@@ -62,8 +63,14 @@ def build_model(lora_path: str | None, device: str) -> SynthScopeCuReModel:
     return model.to(device).eval()
 
 
-def endpoint_transform() -> AIGITransformations:
-    """The stage-1 endpoint preprocessing (the model config's eval list), see ``dataset.CuReEndpoints``."""
+def endpoint_transform(control: str = "none"):
+    """The stage-1 endpoint preprocessing (the model config's eval list), see ``dataset.CuReEndpoints``.
+    ``control="no_q70"`` drops the final JPEG q70 pass: a deliberately different pipeline, used only to show whether the
+    parity check against the released W / mu discriminates preprocessing choices (``--control``)."""
+    if control == "no_q70":
+        return CuReTransform(eval_jpeg_quality=None)
+    if control != "none":
+        raise ValueError(f"unknown control {control!r}")
     return AIGITransformations(list(OmegaConf.load(MODEL_YAML).eval_transform_list))
 
 
@@ -177,7 +184,7 @@ def stage2(args) -> None:
         print(f"[stage2] reusing {traj_path}", flush=True)
         traj = torch.load(traj_path, map_location="cpu", weights_only=True)
     else:
-        ep = CuReEndpoints(args.data, "train", endpoint_transform(), args.max_images)
+        ep = CuReEndpoints(args.data, "train", endpoint_transform(args.control), args.max_images)
         gen = torch.Generator().manual_seed(args.seed)
         n_r, n_f = len(ep.reals), len(ep.fakes)
         pairs = {"RF": draw_pairs(args.pairs, n_r, n_f, False, gen), "RR": draw_pairs(args.pairs, n_r, n_r, True, gen),
@@ -190,7 +197,7 @@ def stage2(args) -> None:
         traj = encode_trajectories(model, loader, args.pairs, args.device)
         traj["pairs"] = pairs
         traj["meta"] = json.dumps({"lora": args.lora, "data": args.data, "pairs": args.pairs, "seed": args.seed,
-                                   "max_images": args.max_images})
+                                   "max_images": args.max_images, "control": args.control})
         torch.save(traj, traj_path)
         del model
     stats = S.statistics(traj["b_RF"], traj["b_RR"], traj["b_FF"], traj["zbar_RF"])
@@ -314,6 +321,8 @@ def main(argv=None) -> None:
     p2.add_argument("--lambda-m", type=float, default=S.DEFAULT_LAMBDA_M)
     p2.add_argument("--eps", type=float, default=S.DEFAULT_EPS)
     p2.add_argument("--reference-adapter", default=None, help="released cure_adapter.pt: compare W / mu with it")
+    p2.add_argument("--control", choices=["none", "no_q70"], default="none",
+                    help="parity control only: preprocess the endpoints without the final JPEG q70 pass")
     p2.add_argument("--subspace-name", default="subspace.pt")
     p3 = sub.choices["stage3"]
     p3.add_argument("--subspace", default=None, help="default <out>/subspace.pt")
