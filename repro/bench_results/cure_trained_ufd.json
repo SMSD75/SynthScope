@@ -1,0 +1,75 @@
+{
+  "tag": "cure_trained_ufd",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_trained/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "ufd",
+  "data_root": "/local/ssalehid/cache/data023/universialfakedetection/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 82.69,
+    "map": 95.26,
+    "mauroc": 93.85
+  },
+  "per_generator": {
+    "dalle": {
+      "ap": 99.09,
+      "auroc": 98.69,
+      "real_acc": 100.0,
+      "fake_acc": 86.2,
+      "acc": 93.1
+    },
+    "glide_100_10": {
+      "ap": 96.27,
+      "auroc": 94.95,
+      "real_acc": 100.0,
+      "fake_acc": 61.6,
+      "acc": 80.8
+    },
+    "glide_100_27": {
+      "ap": 92.08,
+      "auroc": 89.35,
+      "real_acc": 100.0,
+      "fake_acc": 45.2,
+      "acc": 72.6
+    },
+    "glide_50_27": {
+      "ap": 92.94,
+      "auroc": 90.76,
+      "real_acc": 100.0,
+      "fake_acc": 47.0,
+      "acc": 73.5
+    },
+    "guided": {
+      "ap": 83.35,
+      "auroc": 79.18,
+      "real_acc": 100.0,
+      "fake_acc": 21.4,
+      "acc": 60.7
+    },
+    "ldm_100": {
+      "ap": 99.56,
+      "auroc": 99.39,
+      "real_acc": 100.0,
+      "fake_acc": 86.8,
+      "acc": 93.4
+    },
+    "ldm_200": {
+      "ap": 99.56,
+      "auroc": 99.47,
+      "real_acc": 100.0,
+      "fake_acc": 84.0,
+      "acc": 92.0
+    },
+    "ldm_200_cfg": {
+      "ap": 99.27,
+      "auroc": 98.97,
+      "real_acc": 100.0,
+      "fake_acc": 90.8,
+      "acc": 95.4
+    }
+  },
+  "date": "2026-11-09T02:44:02",
+  "synthscope_version": "0.1.0"
+}
