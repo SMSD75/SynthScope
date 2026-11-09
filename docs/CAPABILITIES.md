@@ -35,6 +35,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `bfree` | image | bce | official | – | DINOv2 ViT-B/14 + registers, bias-free training data; five 504 crops at native resolution |
 | `mirror` | image | ce | official | – | Frozen DINOv3 ViT-H+/16 + LoRA + memory bank (seeded default initialization in the released checkpoint): reconstruction of an "ideal reference" (center-crop 224, JPEG q96 for PNG/BMP/TIFF) |
 | `vina` | image | bce | official | – | DINOv3 ViT-L/16 + linear head trained on images and video frames together (short side 256, center-crop 256) |
+| `probe`, `probe_resnet` | image | bce | official | – | PROBE: DINOv2 ViT-L/14 + registers (`probe`, patches of 336) or ResNet-50 (`probe_resnet`, patches of 224), single-logit head; the score is the mean logit of the image's non-overlapping patches at native resolution |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |

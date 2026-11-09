@@ -1213,6 +1213,150 @@
       "note": "Official-weights-in-SynthScope reproduces the AP (99.26) and acc 97.39 ~= paper 97.9. SynthScope retrain matches on AP (98.61) but acc collapses (66.66) due to threshold/calibration drift in the from-scratch LoRA head; the released checkpoint's peak-guided calibration is what the paper headline relies on."
     }
   ],
+  "probe": [
+    {
+      "benchmark": "GenImage (8 subsets, val100k, fakes JPEG q96)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=96.8",
+      "ours": "mAP=99.77 / acc=97.47 / AUROC=99.8 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.77 / acc=97.47 / AUROC=99.8",
+      "status": "official",
+      "note": "97.47 bAcc / 99.77 mAP, +0.67 vs the paper. Per subset (diff to the paper): midjourney 98.73 (-0.07); sdv1.4 99.41 (+0.01); sdv1.5 99.39 (-0.01); adm 93.22 (+2.22); glide 93.86 (+1.76); wukong 99.33 (-0.17); vqdm 98.76 (-0.14); biggan 97.07 (+2.07). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). ADM, GLIDE and\u2026"
+    },
+    {
+      "benchmark": "Synthbuster (9 subsets, vs 5000 MSCOCO reals - not the paper's RAISE-1k)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets (reals: 5000 MSCOCO val2017, different from the paper)",
+      "paper": "acc=97.5",
+      "ours": "mAP=99.64 / acc=98.2 / AUROC=99.93 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.64 / acc=98.2 / AUROC=99.93",
+      "status": "reference",
+      "note": "98.2 bAcc / 99.64 mAP with DIFFERENT REALS: 5000 MSCOCO val2017 images (EvalGEN/Flux/0_real) instead of the paper's RAISE-1k (registration-gated, not in SynthScope), so this is not a like-for-like comparison and does not reproduce the paper's number. Per subset (diff to the paper): dalle2 93.47 (-1.13); dalle3 99.57 (+0.17); firefly 99.77 (+0.27); glide 92.22 (+5.52); midjourney-v5 99.77\u2026"
+    },
+    {
+      "benchmark": "SynthWildX (dalle3 / firefly / midjourney_v5)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=96.4",
+      "ours": "mAP=98.8 / acc=97.3 / AUROC=99.18 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=98.8 / acc=97.3 / AUROC=99.18",
+      "status": "official",
+      "note": "97.3 bAcc / 98.8 mAP, +0.90. Per subset (diff): dalle3 97.44 (+0.94); firefly 96.98 (+0.58); midjourney_v5 97.48 (+0.98). Our copy: 413 reals and 392 / 473 / 435 fakes (paper Table 12: 0.5k and 1.5k). The unmodified official code gives the same bAcc on every subset (max |dP| 4.8e-6, 0 flips). Tag probe_synthwildx, job 66753."
+    },
+    {
+      "benchmark": "WildRF (facebook / reddit / twitter)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=96.9",
+      "ours": "mAP=99.36 / acc=96.92 / AUROC=99.26 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=99.36 / acc=96.92 / AUROC=99.26",
+      "status": "official",
+      "note": "96.92 bAcc / 99.36 mAP, +0.02. Per subset (diff): facebook 98.75 (+0.35); reddit 93.33 (-0.07); twitter 98.68 (-0.32). 2503 files (the paper lists 1.25k + 1.25k). The official code drops the 262 .jfif files of twitter (.jpg/.jpeg/.png only); on the common files it equals SynthScope (0 flips, max |dP| 3.0e-6). Tag probe_wildrf, job 66753."
+    },
+    {
+      "benchmark": "AIGI-Bench (CommunityAI + SocialRF)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=89.9",
+      "ours": "mAP=96.46 / acc=89.88 / AUROC=95.88 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=96.46 / acc=89.88 / AUROC=95.88",
+      "status": "official",
+      "note": "89.88 bAcc / 96.46 mAP, -0.02. Per subset (diff): CommunityAI 90.38 (+0.58); SocialRF 89.38 (-0.52). Only the paper's two subsets were scored: CommunityAI 6000 + 6000, SocialRF 3000 + 3000. Tag probe_aigibench, job 66790."
+    },
+    {
+      "benchmark": "Chameleon",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=86.6",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not run: Chameleon is available by request only and has no loader in SynthScope."
+    },
+    {
+      "benchmark": "AIGI-Quality-Paradox",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=92.9",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not run: no loader in SynthScope."
+    }
+  ],
+  "probe_resnet": [
+    {
+      "benchmark": "GenImage (8 subsets, val100k, fakes JPEG q96)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=78.4",
+      "ours": "mAP=86.69 / acc=78.38 / AUROC=84.81 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=86.69 / acc=78.38 / AUROC=84.81",
+      "status": "official",
+      "note": "78.38 bAcc / 86.69 mAP, -0.02 vs the paper. Per subset (diff to the paper): midjourney 90.73 (+0.03); sdv1.4 99.36 (-0.04); sdv1.5 99.24 (+0.04); adm 58.94 (-1.06); glide 63.01 (+0.01); wukong 99.41 (+0.01); vqdm 66.90 (+0.00); biggan 49.41 (+0.01). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). Equal to the\u2026"
+    },
+    {
+      "benchmark": "Synthbuster (9 subsets, vs 5000 MSCOCO reals - not the paper's RAISE-1k)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets (reals: 5000 MSCOCO val2017, different from the paper)",
+      "paper": "acc=79.1",
+      "ours": "mAP=85.23 / acc=83.75 / AUROC=95.88 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=85.23 / acc=83.75 / AUROC=95.88",
+      "status": "reference",
+      "note": "83.75 bAcc / 85.23 mAP with DIFFERENT REALS: 5000 MSCOCO val2017 images (EvalGEN/Flux/0_real) instead of the paper's RAISE-1k (registration-gated, not in SynthScope), so this is not a like-for-like comparison and does not reproduce the paper's number. Per subset (diff to the paper): dalle2 52.97 (+4.67); dalle3 94.82 (+4.62); firefly 51.57 (+4.67); glide 62.07 (+4.67); midjourney-v5 97.82\u2026"
+    },
+    {
+      "benchmark": "SynthWildX (dalle3 / firefly / midjourney_v5)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=75.6",
+      "ours": "mAP=83.88 / acc=75.2 / AUROC=82.8 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=83.88 / acc=75.2 / AUROC=82.8",
+      "status": "official",
+      "note": "75.2 bAcc / 83.88 mAP, -0.40. Per subset (diff): dalle3 89.71 (-0.59); firefly 56.29 (-0.41); midjourney_v5 79.61 (-0.09). Our copy: 413 reals and 392 / 473 / 435 fakes (paper Table 12: 0.5k and 1.5k). The unmodified official code gives the same bAcc on every subset (max |dP| 4.7e-4, 0 flips). Tag probe_resnet_synthwildx, job 66753."
+    },
+    {
+      "benchmark": "WildRF (facebook / reddit / twitter)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=81.3",
+      "ours": "mAP=89.45 / acc=81.63 / AUROC=85.76 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=89.45 / acc=81.63 / AUROC=85.76",
+      "status": "official",
+      "note": "81.63 bAcc / 89.45 mAP, +0.33. Per subset (diff): facebook 87.81 (+0.01); reddit 72.87 (-0.03); twitter 84.20 (+0.90). 2503 files (the paper lists 1.25k + 1.25k). The official code drops the 262 .jfif files of twitter (.jpg/.jpeg/.png only); on the common files it equals SynthScope (0 flips, max |dP| 1.3e-3). Tag probe_resnet_wildrf, job 66753."
+    },
+    {
+      "benchmark": "AIGI-Bench (CommunityAI + SocialRF)",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=70.4",
+      "ours": "mAP=79.8 / acc=70.44 / AUROC=77.55 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "mAP=79.8 / acc=70.44 / AUROC=77.55",
+      "status": "official",
+      "note": "70.44 bAcc / 79.8 mAP, +0.04. Per subset (diff): CommunityAI 70.99 (-0.01); SocialRF 69.88 (-0.02). Only the paper's two subsets were scored: CommunityAI 6000 + 6000, SocialRF 3000 + 3000. Tag probe_resnet_aigibench, job 66790."
+    },
+    {
+      "benchmark": "Chameleon",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=74.0",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not run: Chameleon is available by request only and has no loader in SynthScope."
+    },
+    {
+      "benchmark": "AIGI-Quality-Paradox",
+      "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+      "paper": "acc=87.7",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not run: no loader in SynthScope."
+    }
+  ],
   "restrav": [
     {
       "benchmark": "A) VidProM vs image-based detectors (Table 2)",

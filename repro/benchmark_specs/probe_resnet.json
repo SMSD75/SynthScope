@@ -1,0 +1,114 @@
+{
+ "model": "probe_resnet",
+ "paper": "Where Detectors Fail: Probing Generative Space for Generalizable AI-Generated Image Detection (PROBE, ICML 2026, arXiv 2605.24906)",
+ "arxiv_id": "2605.24906",
+ "official_repo": "https://github.com/Amamiya-C/PROBE-AIGI-Detection",
+ "training_set_in_paper": "PROBE-ResNet50 (ResNet-50 trained on GenImage SD v1.4 + PROBE samples). Only the released checkpoint (ResNet50_best_model_step_19343.pth, ModelScope shuinishaojiu/PROBE-AIGI-Detection) is evaluated here; the generator-probing and fine-tuning code is not released, so there is no SynthScope-trained checkpoint. Metric: balanced accuracy at 0.5 (positive = fake), mean over the paper's subsets (Table 1 Avg = mean of Tables 2-4); SynthScope's means.acc is the same quantity. Inference: official protocol (pad to the crop size, ImageNet normalisation, mean logit of non-overlapping 224 patches), exact parity with the official evaluate_resnet.py. The paper's 7-benchmark Avg (78.1) is not comparable with our 5-benchmark mean because Chameleon and AIGI-Quality-Paradox were not run.",
+ "benchmarks": [
+  {
+   "name": "GenImage (8 subsets, val100k, fakes JPEG q96)",
+   "datasets": [
+    "GenImage"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 78.4,
+    "note": "Table 1 (Avg of Tables 2-4); the paper JPEG-compresses all generated images at quality 96."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "78.38 bAcc / 86.69 mAP, -0.02 vs the paper. Per subset (diff to the paper): midjourney 90.73 (+0.03); sdv1.4 99.36 (-0.04); sdv1.5 99.24 (+0.04); adm 58.94 (-1.06); glide 63.01 (+0.01); wukong 99.41 (+0.01); vqdm 66.90 (+0.00); biggan 49.41 (+0.01). Full val split, fakes JPEG q96 (reals untouched), 6000 + 6000 per generator except sdv1.5 8000 + 8000 (paper Table 12: 48k / 48k). Equal to the paper in 7 of 8 subsets (within 0.1); ADM 58.94 vs 60.0. Tag probe_resnet_genimage_val100k, job 66753."
+   }
+  },
+  {
+   "name": "Synthbuster (9 subsets, vs 5000 MSCOCO reals - not the paper's RAISE-1k)",
+   "datasets": [
+    "Synthbuster"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets (reals: 5000 MSCOCO val2017, different from the paper)",
+   "paper_number": {
+    "acc": 79.1,
+    "note": "Table 1 (Avg of Tables 2-4); the paper pairs the 9k fakes with the 1k RAISE-1k reals (Table 12)."
+   },
+   "our_status": "reference",
+   "our_number": {
+    "note": "83.75 bAcc / 85.23 mAP with DIFFERENT REALS: 5000 MSCOCO val2017 images (EvalGEN/Flux/0_real) instead of the paper's RAISE-1k (registration-gated, not in SynthScope), so this is not a like-for-like comparison and does not reproduce the paper's number. Per subset (diff to the paper): dalle2 52.97 (+4.67); dalle3 94.82 (+4.62); firefly 51.57 (+4.67); glide 62.07 (+4.67); midjourney-v5 97.82 (+4.62); stable-diffusion-1-3 99.57 (+4.67); stable-diffusion-1-4 99.57 (+4.67); stable-diffusion-2 97.72 (+4.62); stable-diffusion-xl 97.67 (+4.67). Real accuracy 99.14 on every subset. Tag probe_resnet_synthbuster_coco, job 66755."
+   }
+  },
+  {
+   "name": "SynthWildX (dalle3 / firefly / midjourney_v5)",
+   "datasets": [
+    "SynthWildX"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 75.6,
+    "note": "Table 1 (Avg of Tables 2-4)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "75.2 bAcc / 83.88 mAP, -0.40. Per subset (diff): dalle3 89.71 (-0.59); firefly 56.29 (-0.41); midjourney_v5 79.61 (-0.09). Our copy: 413 reals and 392 / 473 / 435 fakes (paper Table 12: 0.5k and 1.5k). The unmodified official code gives the same bAcc on every subset (max |dP| 4.7e-4, 0 flips). Tag probe_resnet_synthwildx, job 66753."
+   }
+  },
+  {
+   "name": "WildRF (facebook / reddit / twitter)",
+   "datasets": [
+    "WildRF"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 81.3,
+    "note": "Table 1 (Avg of Tables 2-4)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "81.63 bAcc / 89.45 mAP, +0.33. Per subset (diff): facebook 87.81 (+0.01); reddit 72.87 (-0.03); twitter 84.20 (+0.90). 2503 files (the paper lists 1.25k + 1.25k). The official code drops the 262 .jfif files of twitter (.jpg/.jpeg/.png only); on the common files it equals SynthScope (0 flips, max |dP| 1.3e-3). Tag probe_resnet_wildrf, job 66753."
+   }
+  },
+  {
+   "name": "AIGI-Bench (CommunityAI + SocialRF)",
+   "datasets": [
+    "AIGIBench"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 70.4,
+    "note": "Table 1 (Avg of Tables 2-4; the paper's two subsets, 9k + 9k)."
+   },
+   "our_status": "official",
+   "our_number": {
+    "note": "70.44 bAcc / 79.8 mAP, +0.04. Per subset (diff): CommunityAI 70.99 (-0.01); SocialRF 69.88 (-0.02). Only the paper's two subsets were scored: CommunityAI 6000 + 6000, SocialRF 3000 + 3000. Tag probe_resnet_aigibench, job 66790."
+   }
+  },
+  {
+   "name": "Chameleon",
+   "datasets": [
+    "Chameleon"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 74.0,
+    "note": "Table 1."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: Chameleon is available by request only and has no loader in SynthScope."
+   }
+  },
+  {
+   "name": "AIGI-Quality-Paradox",
+   "datasets": [
+    "AIGI-Quality-Paradox"
+   ],
+   "metric": "balanced accuracy at 0.5 (mean of real and fake accuracy), mean over subsets",
+   "paper_number": {
+    "acc": 87.7,
+    "note": "Table 1."
+   },
+   "our_status": "missing",
+   "our_number": {
+    "note": "Not run: no loader in SynthScope."
+   }
+  }
+ ]
+}
