@@ -18,6 +18,10 @@ Image sets (all labelled; none is used to tune or select anything):
   wild         a small in-the-wild set (WildRF test), a DIAGNOSTIC ONLY, never used for selection
   extra_fake   (``--only-extra``, a separate run -> features_extra.pt) generated images of ``--extra-fake-dir``
                (<generator>/1_fake; Synthbuster, not a CuRe paper benchmark), scored against the test_clean reals
+  aug sets     (``--only-aug``, a separate run -> features_aug.pt) test_jpeg95: the n_pert test images JPEG q95 (with
+               test_jpeg50 the paper's Fig. 2 "format" groups q95 / q50); mix_val_aug_<k>: the mix_val pairs and ratios
+               ("after" variant) with both endpoints perturbed first (k = gray, blur1, jpeg60), to compare how the
+               ratio read-out of each encoder degrades under training-style augmentations
 
 The pipeline is the official ``cure/preprocess.py`` (PNG source -> JPEG q96; SmallestMaxSize 390 cubic; CenterCrop 390;
 Resize 336 cubic; JPEG q70; mean = std = 0.5), split into its steps here so the mixture can be placed before or after
@@ -98,6 +102,16 @@ def perturb(img, kind):
     if kind in ("blur1", "blur2"):
         sigma = 1.0 if kind == "blur1" else 2.0
         return Image.fromarray(cv2.GaussianBlur(np.asarray(img), (0, 0), sigmaX=sigma, sigmaY=sigma))
+    if kind == "jpeg95" or kind == "jpeg60":
+        buf = io.BytesIO()
+        img.save(buf, format="JPEG", quality=int(kind[4:]))
+        buf.seek(0)
+        with Image.open(buf) as dec:
+            out = dec.convert("RGB")
+            out.load()
+        return out
+    if kind == "gray":
+        return img.convert("L").convert("RGB")
     if kind == "resize05":
         w, h = img.size
         return img.resize((max(1, round(w * 0.5)), max(1, round(h * 0.5))), Image.BICUBIC)
@@ -119,6 +133,9 @@ class Jobs(Dataset):
             x = norm(q70(geom(load_aligned(j[1]))))
         elif j[0] == "pert":
             x = norm(q70(geom(perturb(load_aligned(j[1]), j[2]))))
+        elif j[0] == "mixp":
+            _, pr, pg, a, kind = j
+            x = (1 - a) * norm(q70(geom(perturb(load_aligned(pr), kind)))) + a * norm(q70(geom(perturb(load_aligned(pg), kind))))
         else:
             _, pr, pg, a, var = j
             gr, gg = geom(load_aligned(pr)), geom(load_aligned(pg))
@@ -162,6 +179,7 @@ def main():
     ap.add_argument("--n-rf-grid", type=int, default=2000)
     ap.add_argument("--extra-fake-dir", default=None, help="<generator>/1_fake tree (Synthbuster subset)")
     ap.add_argument("--only-extra", action="store_true", help="encode only the extra fakes (features_extra.pt)")
+    ap.add_argument("--only-aug", action="store_true", help="encode only the format / augmented-mixture sets (features_aug.pt)")
     ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--workers", type=int, default=10)
     ap.add_argument("--seed", type=int, default=1234)
@@ -204,6 +222,13 @@ def main():
                 alpha.append(al)
         add(f"rf_grid_{v}", js, pair=pair, alpha=alpha)
     add("wild", [("clean", w[0]) for w in wild], label=[w[1] for w in wild], platform=[w[2] for w in wild])
+    if args.only_aug:
+        mv = jobs[meta["mix_val_after"]["start"]:meta["mix_val_after"]["start"] + meta["mix_val_after"]["n"]]
+        mv_alpha = meta["mix_val_after"]["alpha"]
+        meta, jobs = {}, []
+        add("test_jpeg95", [("pert", p, "jpeg95") for p in pr + pf], label=[0] * len(pr) + [1] * len(pf))
+        for k in ("gray", "blur1", "jpeg60"):
+            add(f"mix_val_aug_{k}", [("mixp", j[1], j[2], j[3], k) for j in mv], alpha=mv_alpha)
     if args.only_extra:
         meta, jobs = {}, []
         fakes = list_images(args.extra_fake_dir)
@@ -230,7 +255,7 @@ def main():
     torch.save({"features": feats, "meta": meta, "args": {k: v for k, v in vars(args).items()
                                                           if k not in ("released", "ours", "train_dir", "test_dir", "wild_dir", "out",
                                                                        "extra_fake_dir")}},
-               out / ("features_extra.pt" if args.only_extra else "features.pt"))
+               out / ("features_extra.pt" if args.only_extra else "features_aug.pt" if args.only_aug else "features.pt"))
     print(f"[diag] saved {out} in {time.time() - t0:.0f}s", flush=True)
 
 

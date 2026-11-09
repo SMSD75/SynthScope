@@ -107,6 +107,7 @@ def main():
     ap.add_argument("--ours-stage1", required=True, help="our stage-1 model_last.pth (ratio_head)")
     ap.add_argument("--ours-adapter", required=True, help="our cure_trained.pth (mu / W / head)")
     ap.add_argument("--extra", default=None, help="features_extra.pt (extra_fake set, scored against the test_clean reals)")
+    ap.add_argument("--aug", default=None, help="features_aug.pt (test_jpeg95 + mix_val_aug_* sets)")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     data = torch.load(args.features, map_location="cpu", weights_only=False)
@@ -123,6 +124,13 @@ def main():
         em = ex["meta"]["extra_fake"]
         meta["extra_vs_real"] = {"start": base_n, "n": n_r + em["n"], "label": [0] * n_r + em["label"],
                                  "generator": ["real"] * n_r + em["generator"]}
+    if args.aug:
+        ag = torch.load(args.aug, map_location="cpu", weights_only=False)
+        off = data["features"]["base"].shape[0]
+        for k in ENCODERS:
+            data["features"][k] = torch.cat([data["features"][k], ag["features"][k]])
+        for name, m in ag["meta"].items():
+            meta[name] = {**m, "start": m["start"] + off}
     res = {"counts": {k: v["n"] for k, v in meta.items()}}
 
     # ---- 1. ratio regression
@@ -144,6 +152,13 @@ def main():
         for v in VARIANTS[1:]:
             Xva, ava = block(data, f"mix_val_{v}", enc), torch.tensor(meta[f"mix_val_{v}"]["alpha"])
             ratio[f"{enc}/head_after_on_{v}_val"] = ratio_metrics(apply_head(heads[(enc, "after")], Xva), ava, True)
+    for enc in ENCODERS:
+        for k in ("gray", "blur1", "jpeg60"):
+            if f"mix_val_aug_{k}" in meta:
+                Xa, aa = block(data, f"mix_val_aug_{k}", enc), torch.tensor(meta[f"mix_val_aug_{k}"]["alpha"])
+                ratio[f"{enc}/head_after_on_aug_{k}_val"] = ratio_metrics(apply_head(heads[(enc, "after")], Xa), aa, True)
+                if enc == "ours":
+                    ratio[f"ours/trained_ratio_head_on_aug_{k}_val"] = ratio_metrics(Xa @ rw + rb, aa, False)
     res["ratio_regression"] = ratio
 
     # ---- 2. linear probes
@@ -239,6 +254,24 @@ def main():
                                          "split_half_rel_dist_pct": round(float((h1 - h2).norm() / mu_rel.norm() * 100), 4)}
         Xa, Xb = block(data, "rf_grid_after", enc).double(), block(data, "rf_grid_before", enc).double()
         geo[f"{enc}/stage2_mu_after_vs_before_rel_dist_pct"] = round(float((Xa.mean(0) - Xb.mean(0)).norm() / mu_rel.norm() * 100), 4)
+    # paper Fig. 2 "format" groups: the same test images at JPEG q95 vs q50; how linearly separable is the JPEG quality
+    if "test_jpeg95" in meta:
+        from sklearn.model_selection import GroupKFold
+        n = meta["test_jpeg95"]["n"]
+        for enc in ENCODERS:
+            X = torch.cat([block(data, "test_jpeg95", enc), block(data, "test_jpeg50", enc)]).numpy()
+            y = np.r_[np.zeros(n), np.ones(n)]
+            grp = np.r_[np.arange(n), np.arange(n)]
+            sc_ = np.zeros(2 * n)
+            for tr, te in GroupKFold(5).split(X, y, grp):
+                s_ = StandardScaler().fit(X[tr])
+                sc_[te] = LogisticRegression(C=1.0, max_iter=3000).fit(s_.transform(X[tr]), y[tr]).predict_proba(s_.transform(X[te]))[:, 1]
+            geo[f"{enc}/format_probe_q95_vs_q50_5fold"] = binary_metrics(sc_, y)
+            d = X[y == 1].mean(0) - X[y == 0].mean(0)
+            rf = block(data, "train_clean", enc)
+            lab_tr = np.asarray(meta["train_clean"]["label"])
+            dsrc = (rf[lab_tr == 1].mean(0) - rf[lab_tr == 0].mean(0)).numpy()
+            geo[f"{enc}/format_shift_norm_over_source_shift_norm"] = round(float(np.linalg.norm(d) / np.linalg.norm(dsrc)), 4)
     res["geometry"] = geo
     with open(args.out, "w") as f:
         json.dump(res, f, indent=1)
