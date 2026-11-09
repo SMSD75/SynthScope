@@ -22,6 +22,7 @@ import tempfile
 from pathlib import Path
 
 import torch
+import transformers
 from torch import nn
 from transformers import AutoConfig, AutoModel, Dinov2Config, Dinov2Model
 
@@ -169,7 +170,6 @@ def test_engine_loader() -> None:
 
 def test_table_matches_installed_transformers() -> None:
     print("[D] table matches the installed transformers Dinov2Model ...")
-    import transformers
 
     cfg = Dinov2Config(hidden_size=32, num_hidden_layers=2, num_attention_heads=2, intermediate_size=64, image_size=28,
                        patch_size=14)
