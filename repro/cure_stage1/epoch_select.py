@@ -80,6 +80,7 @@ def main():
     ap.add_argument("--wild-dir", required=True)
     ap.add_argument("--extra-fake-dir", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--json", default="epoch_select.json", help="result file name inside --out")
     ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--workers", type=int, default=12)
     args = ap.parse_args()
@@ -163,7 +164,7 @@ def main():
         best = max(res["rows"][k]["select_score"] for k in r1)
         res["r1_selected"] = next(k for k in r1 if res["rows"][k]["select_score"] >= best - 0.5)
         print(f"[sel] R1 selected (pre-registered rule): {res['r1_selected']}", flush=True)
-    with open(out / "epoch_select.json", "w") as f:
+    with open(out / args.json, "w") as f:
         json.dump(res, f, indent=1)
 
 
