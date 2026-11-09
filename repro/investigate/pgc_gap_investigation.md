@@ -302,5 +302,6 @@ residual, and normalization now **all proven identical** to the genuine repo, th
 seeingdark is 87.49 = the genuine repo], exposed only on seeingdark because it is a knife-edge generator
 (real_acc ~11%); san/deepfake reproduce to <0.5 AUROC. seeingdark is not in the reported ForenSynths-8.
 Chasing it further means diffing the vendored PGCModel against `repo/models/` — deferred (10pt on one
-non-headline generator). Artifacts: `repro/bench_results/pgc_evalfix_{official,step900}.json`,
-`pgc_h3_officialroot.json`.
+non-headline generator). Artifacts: `repro/bench_results/_superseded/pgc_evalfix_{official,step900}.json` and
+`pgc_h3_officialroot.json` (broken load; superseded by `repro/bench_results/pgc_evalfix_{official,step900}_fixed.json` and
+`pgc_h3_officialroot_fixed.json`).

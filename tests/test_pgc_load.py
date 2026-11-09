@@ -12,8 +12,9 @@ With weights (skipped cleanly when ``$SYNTHSCOPE_CKPT_DIR/pgc.pth`` or the DINOv
 * the pgc checkpoint loads through ``engine._load_checkpoint`` with 0 unexpected / 0 real missing, the whole model state
   matches the checkpoint, and no warning is logged;
 * parity on a fixed list of images: probabilities equal those of the UNMODIFIED official repo (stored reference
-  ``$PGC_PARITY_REF``, produced by ``SynthScope_shared/pgc_load_debug/official_repo.py`` from ``$PGC_PARITY_IMAGES``;
-  skipped when the reference or the images are absent) with max |dp| < 1e-6.
+  JSON file named by the environment variable ``SYNTHSCOPE_PGC_PARITY_REF``: a dict with a ``paths`` list of image files and
+  the matching official-repo probabilities, produced by running the official PGC repo on those images; the step is skipped when
+  the variable is unset, the file is missing, or the images are not on this machine) with max |dp| < 1e-6.
 """
 
 from __future__ import annotations
@@ -35,8 +36,8 @@ sys.path[:0] = [ROOT, os.path.join(ROOT, "benchmark")]
 from interface.backend import config, engine  # noqa: E402
 from interface.backend.registry import get_spec, remap_pgc  # noqa: E402
 
-SHARED = Path(os.environ.get("SYNTHSCOPE_SHARED", "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared"))
-PARITY_REF = Path(os.environ.get("PGC_PARITY_REF", SHARED / "pgc_load_debug" / "official_repo.json"))
+_PARITY_ENV = os.environ.get("SYNTHSCOPE_PGC_PARITY_REF")
+PARITY_REF = Path(_PARITY_ENV) if _PARITY_ENV else None
 PARITY_TOL = 1e-6
 
 
@@ -155,8 +156,8 @@ def test_parity(model) -> None:
     if model is None:
         print("    SKIP (no model)")
         return
-    if not PARITY_REF.exists():
-        print(f"    SKIP (no reference {PARITY_REF})")
+    if PARITY_REF is None or not PARITY_REF.exists():
+        print("    SKIP (set SYNTHSCOPE_PGC_PARITY_REF to the official-repo reference JSON)")
         return
     ref = json.loads(PARITY_REF.read_text())
     paths = [Path(p) for p in ref["paths"]]

@@ -110,7 +110,9 @@ the earlier row (FS-8 96.41 / 76.34, hard-3 90.87, FS-13 93.80) had the LoRA dro
 
 The paper reports no standalone ForenSynths number, so the reference is the official checkpoint. With the load fixed, the
 SynthScope-trained checkpoints land at or just below it: FS-8 mAP 97.21 to 97.82 against 97.83 (step 900 is 0.01 below), accuracy
-84.06 to 90.82 against 89.17 (only step 300 is above), and hard-3 AUROC 91.03 to 93.93 against 94.34 (every step below). Transfer to
+84.06 to 90.82 against 89.17 (only step 300 is above), and hard-3 AUROC 91.03 to 93.93 against 94.34 (every step below). On the full 13-generator set the picture differs: FS-13 mAP is
+above the official 96.25 for steps 700 to 1700 (96.67, 97.12, 96.74, 97.03, 96.85, 96.69; `pgc_trained_step*_forensynths13.json`) and
+below it at steps 300, 500 and 1900 (95.07, 95.78, 95.97), while FS-13 accuracy (74.18 to 82.98) stays below the official 83.76. Transfer to
 the hard generators peaks around steps 500-900 and then erodes, as the authors describe. **Step 500**, the saved checkpoint nearest
 the authors' ~400 steps (picked by that rule, not by test score), is the SynthScope-trained number in the table below; on
 UniversalFakeDetect, which the paper does report, it gives 98.99 mAP / 91.96 acc (paper 98.0, reproduced; the official weights
