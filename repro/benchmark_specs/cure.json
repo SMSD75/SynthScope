@@ -18,7 +18,7 @@
       },
       "our_status": "official",
       "our_number": {
-        "note": "Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigibench20_full): acc 91.12 / AUROC 97.1 (reproduced); the recipe's last epoch (tag cure_trained_aigibench20_full): acc 85.05 / AUROC 91.84."
+        "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigibench20_full): acc 91.12 / AUROC 97.1 (reproduced); the recipe's last epoch (tag cure_trained_aigibench20_full): acc 85.05 / AUROC 91.84."
       }
     },
     {
@@ -76,7 +76,7 @@
       },
       "our_status": "official",
       "our_number": {
-        "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigcdetect): acc 92.01 / AUROC 98.38 (reproduced); the recipe's last epoch (tag cure_trained_aigcdetect): acc 81.55 / AUROC 92.22."
+        "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigcdetect): acc 92.01 / AUROC 98.38 (reproduced); the recipe's last epoch (tag cure_trained_aigcdetect): acc 81.55 / AUROC 92.22."
       }
     },
     {
@@ -106,7 +106,7 @@
       },
       "our_status": "official",
       "our_number": {
-        "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_synthwildx): acc 91.76 / AUROC 97.09 (reproduced); the recipe's last epoch (tag cure_trained_synthwildx): acc 76.11 / AUROC 86.84."
+        "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_synthwildx): acc 91.76 / AUROC 97.09 (reproduced); the recipe's last epoch (tag cure_trained_synthwildx): acc 76.11 / AUROC 86.84."
       }
     },
     {
@@ -121,7 +121,7 @@
       },
       "our_status": "official",
       "our_number": {
-        "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_wildrf): acc 95.58 / AUROC 99.25 (reproduced); the recipe's last epoch (tag cure_trained_wildrf): acc 85.8 / AUROC 94.59."
+        "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_wildrf): acc 95.58 / AUROC 99.25 (reproduced); the recipe's last epoch (tag cure_trained_wildrf): acc 85.8 / AUROC 94.59."
       }
     },
     {

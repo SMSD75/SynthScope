@@ -227,8 +227,8 @@
       "ours": "SynthScope mAP=96.72 / acc=91.12 / AUROC=97.1 \u00b7 official mAP=97.0 / acc=92.85 / AUROC=97.48",
       "ours_synthscope": "mAP=96.72 / acc=91.12 / AUROC=97.1",
       "ours_official": "mAP=97.0 / acc=92.85 / AUROC=97.48",
-      "status": "official",
-      "note": "Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigibench20_full): acc 91.12 / AUROC 97.1 (reproduced); the recipe's last epoch (tag\u2026"
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark\u2026"
     },
     {
       "benchmark": "UniversalFakeDetect (UFD-8, diffusion and DALL-E half)",
@@ -267,8 +267,8 @@
       "ours": "SynthScope mAP=98.59 / acc=92.01 / AUROC=98.38 \u00b7 official mAP=98.08 / acc=89.3 / AUROC=98.02",
       "ours_synthscope": "mAP=98.59 / acc=92.01 / AUROC=98.38",
       "ours_official": "mAP=98.08 / acc=89.3 / AUROC=98.02",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_aigcdetect): acc 92.01 / AUROC 98.38\u2026"
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523). SynthScope-trained: r3e0\u2026"
     },
     {
       "benchmark": "EvalGEN (5 generators, full data)",
@@ -287,8 +287,8 @@
       "ours": "SynthScope mAP=97.12 / acc=91.76 / AUROC=97.09 \u00b7 official mAP=95.61 / acc=92.69 / AUROC=96.5",
       "ours_synthscope": "mAP=97.12 / acc=91.76 / AUROC=97.09",
       "ours_official": "mAP=95.61 / acc=92.69 / AUROC=96.5",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_synthwildx): acc 91.76 / AUROC\u2026"
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435).\u2026"
     },
     {
       "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
@@ -297,8 +297,8 @@
       "ours": "SynthScope mAP=99.3 / acc=95.58 / AUROC=99.25 \u00b7 official mAP=99.13 / acc=95.89 / AUROC=99.14",
       "ours_synthscope": "mAP=99.3 / acc=95.58 / AUROC=99.25",
       "ours_official": "mAP=99.13 / acc=95.89 / AUROC=99.14",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_wildrf): acc 95.58 / AUROC 99.25 (reproduced); the recipe's last\u2026"
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; relies on an unstated augmentation assumption; single seed); the served cure model is the official adapter. Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440). SynthScope-trained: r3e0, the best checkpoint by\u2026"
     },
     {
       "benchmark": "BFree-Online (viral images still online)",

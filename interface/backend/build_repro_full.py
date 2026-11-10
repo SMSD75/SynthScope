@@ -322,13 +322,7 @@ def match_val(model, name):
     return best[3].get("synthscope", {}), best[3].get("official", {}), best[2]
 
 
-# Models whose served checkpoint is the official one although a SynthScope-trained number is listed: where the official weights
-# match the paper the row keeps status "official" (the trained number is still shown next to it). CuRe: the served `cure` is the
-# released adapter; the SynthScope-trained r3e0 partially reproduces the paper (models/image/cure/README.md).
-SERVED_OFFICIAL = {"cure"}
-
-
-def status_for(name, paper, synthscope, official, spec_status, model=None):
+def status_for(name, paper, synthscope, official, spec_status):
     """reproduced = SynthScope-trained matches paper; official = official-weights-in-SynthScope matches paper
     (SynthScope-trained number shown alongside where attempted); below = neither; reference = paper gives
     no number for this cross-dataset; missing = not evaluated. Falls back to the spec's label only
@@ -344,8 +338,6 @@ def status_for(name, paper, synthscope, official, spec_status, model=None):
     if not pm:                                   # paper has numbers but not in comparable keys
         return spec_status or "below"
     synthscope_ok, off_ok = cmp_ok(synthscope, pm), cmp_ok(official, pm)
-    if off_ok and model in SERVED_OFFICIAL:
-        return "official"
     if synthscope_ok:
         return "reproduced"
     if off_ok:
@@ -366,7 +358,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         paper = b.get("paper_number")
         spec_status = b.get("our_status", "")
         synthscope, official, sub = match_val(model, name)
-        status = status_for(name, paper, synthscope, official, spec_status, model)
+        status = status_for(name, paper, synthscope, official, spec_status)
         status = STATUS_OVERRIDE.get((model, name), status)
         on = b.get("our_number")
         note = ""
