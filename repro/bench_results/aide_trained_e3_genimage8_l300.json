@@ -1,0 +1,76 @@
+{
+  "tag": "aide_trained_e3_genimage8_l300",
+  "model": "aide",
+  "ckpt": "/local/ssalehid/cache/data023/models/aide_full/model_3.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/GenImage_full/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 79.73,
+    "map": 92.5,
+    "mauroc": 89.53
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 64.85,
+      "auroc": 49.18,
+      "real_acc": 100.0,
+      "fake_acc": 8.67,
+      "acc": 54.33
+    },
+    "biggan": {
+      "ap": 85.71,
+      "auroc": 82.15,
+      "real_acc": 100.0,
+      "fake_acc": 1.33,
+      "acc": 50.67
+    },
+    "glide": {
+      "ap": 99.39,
+      "auroc": 99.05,
+      "real_acc": 100.0,
+      "fake_acc": 84.33,
+      "acc": 92.17
+    },
+    "midjourney": {
+      "ap": 96.43,
+      "auroc": 94.99,
+      "real_acc": 100.0,
+      "fake_acc": 51.0,
+      "acc": 75.5
+    },
+    "sdv1.4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sdv1.5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "vqdm": {
+      "ap": 93.6,
+      "auroc": 90.86,
+      "real_acc": 100.0,
+      "fake_acc": 30.67,
+      "acc": 65.33
+    },
+    "wukong": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 99.67,
+      "acc": 99.83
+    }
+  },
+  "date": "2026-11-10T04:22:21",
+  "synthscope_version": "0.1.0",
+  "ckpt_ivi": "/hddstore/ssalehi/SynthScope/models/aide_full/model_3.pth on ivi-cn023 (the ckpt field above is the DAS6 node-cache copy); DIAGNOSTIC per-epoch run, --limit 300"
+}

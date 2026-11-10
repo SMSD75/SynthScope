@@ -14,11 +14,11 @@
       "benchmark": "GenImage (B2, Setting-I, SDv1.4-trained)",
       "metric": "acc",
       "paper": "acc=86.88",
-      "ours": "SynthScope mAP=96.42 / acc=77.87 \u00b7 official mAP=97.12 / acc=85.91",
-      "ours_synthscope": "mAP=96.42 / acc=77.87",
+      "ours": "SynthScope mAP=93.9 / acc=80.73 / AUROC=91.66 \u00b7 official mAP=97.12 / acc=85.91",
+      "ours_synthscope": "mAP=93.9 / acc=80.73 / AUROC=91.66",
       "ours_official": "mAP=97.12 / acc=85.91",
       "status": "official",
-      "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88 (tag aide_official_genimage8). FROM-SCRATCH reproduction (native-res 5-view, aide_native_v2/model_2): GenImage-8 96.42 mAP / 97.07 mAUROC / 77.9 acc (tag aide_retrain_native_g8) = reproduces official 97.12. The old resize-256 retrains (91.75 / 92.47) were capped by the resize-before-DCT bug."
+      "note": "official sd14_train.pth, faithful vendored eval; acc 85.91 ~ paper 86.88 (tag aide_official_genimage8, full GenImage_full/test: 1500 real + 1500 fake per generator, 6000 + 6000 for sdv1.4). SYNTHSCOPE-TRAINED (the official recipe through experiments/image/aide.sh, train job 281041 on 4x A6000, model_best = epoch 4, val acc 0.9984): full GenImage-8 93.90 mAP / 91.66 mAUROC / 80.73 acc (tag\u2026"
     },
     {
       "benchmark": "Chameleon (B3, Setting-II, in-the-wild)",

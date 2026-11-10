@@ -50,9 +50,14 @@ def remap_fatformer(sd: dict) -> dict:
 def remap_aide(sd: dict) -> dict:
     """Official AIDE checkpoint -> SynthScopeAIDEModel. The SynthScope class now wraps the GENUINE arch as
     ``self.net`` (key-for-key identical to the official ``AIDE_Model``), so we just strip any
-    DataParallel ``module.`` prefix and add the ``net.`` prefix; every official key loads strict."""
-    return {("net." + (k[len("module."):] if k.startswith("module.") else k)): v
-            for k, v in sd.items()}
+    DataParallel ``module.`` prefix and add the ``net.`` prefix; every official key loads strict. A SynthScope-TRAINED
+    checkpoint (the trainer saves the model's own state dict) already carries ``net.`` and keeps it, so
+    ``bench_eval --model aide --ckpt <trained>`` loads it; no official key starts with ``net.``."""
+    out = {}
+    for k, v in sd.items():
+        k = k[len("module."):] if k.startswith("module.") else k
+        out[k if k.startswith("net.") else "net." + k] = v
+    return out
 
 
 def remap_npr(sd: dict) -> dict:
