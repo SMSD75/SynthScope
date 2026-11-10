@@ -58,8 +58,8 @@ ENTRIES = {
         "ForenSynths-8; official 4-class ProGAN weights (the served fat_former.pth)"),
     "co_spy_official": Entry(
         "CO-SPY (official weights)", "forensynths", "co_spy", "Cheng et al., CVPR'25", "official-weights",
-        "cospy_official_forensynths.json", FS8, JUNE_LOG, True,
-        "ForenSynths-8; official CO-SPY ProGAN checkpoint in the vendored official architecture "
+        "cospy_official_fs8_nov.json", None, "DAS6 job 66671 (repro/logs/lbfu_cospyoff_das6_66671.out)", True,
+        "ForenSynths-8, full test sets; official CO-SPY ProGAN checkpoint in the vendored official architecture "
         "(not the served co_spy.pth)"),
     "npr": Entry(
         "NPR", "forensynths", "npr", "Tan et al., CVPR'24", "official-weights",

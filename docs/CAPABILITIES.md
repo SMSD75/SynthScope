@@ -10,9 +10,10 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ---
 
-## 1. What's already integrated (17 detectors)
+## 1. What's already integrated
 
-`synthscope.list_models()` / `from synthscope.api import list_specs`. Each is an `SynthScope<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (34 registry keys on
+2026-11-10: 29 image, 5 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`.
 
@@ -40,6 +41,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |
 | `vib_net` | image | vib | synthscope | – | Variational information bottleneck on frozen CLIP ViT-L/14 (trained in SynthScope; reproduces the paper) |
+| `vib_net_official` | image | vib | official | – | The same model with the official architecture and test transform (center-crop 224); loads the released checkpoints or a SynthScope-trained one |
 | `d3` | video | video | training-free | – | Disentangled detail dynamics (X-CLIP) |
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
@@ -94,7 +96,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 ## 4. Evaluation / benchmarking
 
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
-- **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
+- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
@@ -108,7 +110,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 Known image sets: `cnndetection` (ForenSynths/ProGAN), `genimage`, `genimage_full` (8-gen),
 `universialfakedetection` (Ojha UFD), `aigibench`, `synthbuster`, `ditfake`, `diffusionforensics`,
-`diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `bfree_online`, `rrdataset`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
+`diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `bfree_online`, `rrdataset`, `mirage_test`, `arforensics`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
 Video: `genvideo_val`, `genvideo`, `videophy`, `vidprom`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
 
 Each `DatasetDef` lists candidate roots; **`_resolve_root` is node-portable** — it remaps the configured

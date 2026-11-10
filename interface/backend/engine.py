@@ -18,6 +18,7 @@ import torch
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
+from models.image.probe.preprocess import ProbePad, SlidingPatches
 from . import config
 from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
@@ -225,6 +226,20 @@ def _load_checkpoint(model, spec: ModelSpec):
     )
 
 
+def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
+    """For a detector that scores a bag of non-overlapping patches (PROBE: ``ProbePad`` then ``SlidingPatches``): the
+    padded image size ``(width, height)`` and the patch grid ``(rows, cols)`` the bag came from, or ``None`` when the
+    transform is not of that kind or the grid does not hold ``num_patches`` patches."""
+    steps = spec.transform.transforms if spec.transform is not None else []
+    pads = [t for t in steps if isinstance(t, ProbePad)]
+    cuts = [t for t in steps if isinstance(t, SlidingPatches)]
+    if len(pads) != 1 or len(cuts) != 1:
+        return None
+    width, height = pads[0](pil).size
+    rows, cols = height // cuts[0].size, width // cuts[0].size
+    return ((width, height), (rows, cols)) if rows * cols == num_patches else None
+
+
 class Engine:
     """Lazily builds, caches, and runs the detectors."""
 
@@ -391,10 +406,11 @@ class Engine:
             return None
 
     @staticmethod
-    def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280) -> str:
+    def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280, cols: int | None = None) -> str:
         """The image exactly as the network receives it (after this detector's preprocessing), as a PNG data URL.
         Normalization is undone for display; multi-view inputs are laid out side by side (up to 5 views, e.g. AIDE)
-        or in a near-square grid (LTF has one view per tile, up to dozens)."""
+        or in a near-square grid (LTF has one view per tile, up to dozens). ``cols`` fixes the number of columns of a
+        multi-view layout (PROBE: the patches' real grid)."""
         t = x[0].detach().float().cpu()
         norm = spec.transform.normalize_step()
         if norm is not None:
@@ -402,7 +418,7 @@ class Engine:
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
             t = t * 0.5 + 0.5
         if t.dim() == 4:
-            cols = len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t)))
+            cols = cols or (len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t))))
             pad = -len(t) % cols
             if pad:
                 t = torch.cat([t, torch.zeros(pad, *t.shape[1:])])
@@ -424,9 +440,15 @@ class Engine:
         res = self._result(spec, p, time.time() - t0)
         res["orig_size"] = [pil.width, pil.height]
         res["input_size"] = [int(x.shape[-1]), int(x.shape[-2])]     # what the network actually received
+        layout = patch_layout(spec, pil, int(x.shape[1])) if x.dim() == 5 else None
+        if layout is not None:        # a patch bag: report the padded image and its patch grid, not one patch's size
+            (width, height), (rows, cols) = layout
+            res["input_size"] = [width, height]
+            res["input_grid"] = [rows, cols]
+            res["input_patches"] = rows * cols
         res["input_note"] = input_note(spec)
         try:
-            res["input_image"] = self._model_input_data_url(spec, x)
+            res["input_image"] = self._model_input_data_url(spec, x, cols=layout[1][1] if layout else None)
         except Exception:                                           # display-only: never fail a prediction over it
             pass
         amap = self._interpret_map(model, spec, x, pil)

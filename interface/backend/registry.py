@@ -188,6 +188,11 @@ class ModelSpec:
     interpret: str = ""
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
 
+    def eval_batch_size(self, batch_size: int) -> int:
+        """Batch size an evaluation loop may use: 1 for a ``native_res`` spec (its inputs differ in size and cannot be
+        stacked), else ``batch_size``."""
+        return 1 if self.native_res else batch_size
+
 
 # ---------------------------------------------------------------------------
 # The registry.

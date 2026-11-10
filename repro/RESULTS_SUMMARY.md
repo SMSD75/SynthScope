@@ -92,6 +92,8 @@ SynthScope_official uses the release matching each benchmark's training setting:
 
 SynthScope_train on Co-Spy-Bench and GenImage is the served `co_spy.pth` (`checkpoints_retrain/cospy_full/model_1.pth`, GenImage SD v1.4; `cospy_full_cospybench` also has rows for model_0 96.12 and model_2 96.60). The ForenSynths and AIGCDetect SynthScope_train entries are from earlier SynthScope checkpoints and have not been re-run with it. SynthScope_official is the official SD v1.4 checkpoint on Co-Spy-Bench and GenImage and the official ProGAN one on ForenSynths and AIGCDetect.
 
+The ForenSynths-13 SynthScope_official entry (`cospy_official_forensynths`, 87.97 mAP / 83.42 acc, 2026-06-04) is a **1000-per-class** run (`--limit 1000` on the sorted path list: every per-class rate is a multiple of 0.1, and the June job log was not kept), not the full test sets. The full ForenSynths-8 run with the same checkpoint and evaluator (`cospy_official_fs8_nov`, DAS6 job 66671, `repro/logs/lbfu_cospyoff_das6_66671.out`) gives 98.85 mAP / 95.12 acc / 99.03 mAUROC; that is the leaderboard's CO-SPY (official weights) row (it previously used the 8 ForenSynths-8 sets of the 1000-per-class file: 98.50 / 94.64).
+
 ### SAFE
 `SynthScope_train` = retrained SAFE v2 (full 40-epoch crop recipe, `safe_full_v2/model_38`); supersedes the earlier resize-era column.
 | Benchmark | Paper | SynthScope_official | SynthScope_train (retrain v2) |
