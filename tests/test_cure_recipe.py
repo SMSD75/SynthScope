@@ -11,6 +11,9 @@
   groups keep their own weight decays,
 * [E] stage-2 math (Eq. 6-10) on random features against a direct numpy computation (np.polyfit slopes, covariances,
   the eigenvalues of B^-1 C_F) and scipy.linalg.eigh(C_F, B),
+* [G] R3 augmentation (models/image/cure/train_augment.py): disabled it equals the eval pipeline bit for bit; enabled it is
+  deterministic in the seed, varies with the seed, leaves the caller's global RNGs untouched; in the train dataset the
+  pair / ratio draws are those of the recipe and both endpoints use the same seed; validation is not augmented,
 * [F] the export has exactly the released adapter's 100 keys / shapes and loads into a fresh model like it; the
   normalisation fit recovers known (lambda_s, lambda_m, eps).
 """
@@ -99,6 +102,40 @@ def test_mix_dataset() -> None:
     assert big.min() >= 0 and big.max() < 1 and abs(float(big.mean()) - 0.5) < 0.01
     print("    val items = (1-a) x_r + a x_g of the CuRe-preprocessed endpoints (PNG fake -> JPEG q96); "
           "train draws change every epoch")
+
+
+def test_train_augment() -> None:
+    print("[G] R3 DDA-style endpoint augmentation ...")
+    from models.image.cure.train_augment import CuReDDAEndpoint
+    tf = CuReTransform()
+    with tempfile.TemporaryDirectory() as tmp:
+        write_genimage(Path(tmp))
+        ep = CuReEndpoints(tmp, "train", tf)
+        off, on = CuReDDAEndpoint(augment=False), CuReDDAEndpoint(augment=True)
+        for p, fmt in ((ep.reals[1], "JPEG"), (ep.fakes[2], "PNG")):
+            img = Image.open(p).convert("RGB"); img.info[SRC_FORMAT_KEY] = fmt
+            assert torch.equal(off(img, 7), tf(img)), "augment=False must equal the eval pipeline"
+            states = (torch.get_rng_state(), np.random.get_state()[1].copy())
+            a, b, c = on(img, 11), on(img, 11), on(img, 12)
+            assert torch.equal(torch.get_rng_state(), states[0]) and np.array_equal(np.random.get_state()[1], states[1])
+            assert torch.equal(a, b) and not torch.equal(a, c) and a.shape == (3, 336, 336) and bool(torch.isfinite(a).all())
+        # dataset: recipe draws unchanged, one seed per pair shared by both endpoints, val not augmented
+        seen = []
+        class Spy(CuReDDAEndpoint):
+            def __call__(self, img, seed=None):
+                seen.append(seed); return super().__call__(img, seed)
+        aug = CuReMixDataset(CuReEndpoints(tmp, "train", tf, augment=Spy(augment=True)), "train")
+        plain = CuReMixDataset(CuReEndpoints(tmp, "train", tf), "train")
+        _, a1, _ = aug[0]; _, a0, _ = plain[0]
+        assert len(seen) == 2 and seen[0] == seen[1] and seen[0] is not None, seen
+        val = CuReMixDataset(CuReEndpoints(tmp, "test", tf, augment=Spy(augment=True)), "val", val_pairs=2, seed=5)
+        n = len(seen); val[0]
+        assert len(seen) == n, "validation must not be augmented"
+        for idx in range(2):
+            torch.manual_seed(idx)
+            x1 = aug[idx]; torch.manual_seed(idx); x0 = plain[idx]
+            assert float(x1[1]) == float(x0[1]), "the augmentation seed is drawn after the recipe's draws"
+    print("    off == eval pipeline; seeded, deterministic, RNG-neutral; one shared seed per pair; val un-augmented")
 
 
 def test_ratio_stage(model: SynthScopeCuReModel) -> None:
@@ -290,6 +327,7 @@ def test_export(model: SynthScopeCuReModel) -> None:
 def main() -> None:
     torch.manual_seed(0)
     test_mix_dataset()
+    test_train_augment()
     test_subspace_math()
     test_trainer_schedule()
     if os.environ.get("CURE_RECIPE_SKIP_MODEL"):            # the ViT-L parts take a few CPU minutes

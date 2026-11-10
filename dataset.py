@@ -3104,8 +3104,11 @@ class CuReEndpoints:
     ``max_images`` keeps the first N reals and the first N fakes (sorted file names, over the whole split, not per
     ImageNet class; smoke runs)."""
 
-    def __init__(self, root_dir, split, transform, max_images=None):
+    def __init__(self, root_dir, split, transform, max_images=None, augment=None):
         split_dir = Path(root_dir) / ("train" if split == "train" else "test")
+        # augment: optional ``callable(PIL image, seed) -> tensor`` used instead of ``transform`` when a seed is given
+        # (the stage-1 investigation's R3 run: models/image/cure/train_augment.py); None = the recipe (no augmentation)
+        self.augment = augment
         self.reals = sorted(_iter_images(split_dir / "real"))
         self.fakes = sorted(_iter_images(split_dir / "fake"))
         if max_images:
@@ -3114,19 +3117,21 @@ class CuReEndpoints:
             raise RuntimeError(f"CuRe data: no real/ or fake/ images under {split_dir}")
         self.transform = transform
 
-    def load(self, path: Path) -> torch.Tensor:
-        """``path`` -> the preprocessed float tensor ``[3, 336, 336]``."""
+    def load(self, path: Path, seed=None) -> torch.Tensor:
+        """``path`` -> the preprocessed float tensor ``[3, 336, 336]`` (with ``augment`` and a ``seed``: augmented)."""
         with Image.open(path) as source:
             source_format = source.format
             image = source.convert("RGB")
         image.info[SRC_FORMAT_KEY] = source_format
+        if self.augment is not None and seed is not None:
+            return self.augment(image, seed)
         return self.transform(image)
 
-    def load_any(self, paths, index: int, fallback) -> torch.Tensor:
+    def load_any(self, paths, index: int, fallback, seed=None) -> torch.Tensor:
         """``load(paths[index])``; an unreadable file (GenImage has a few 0-byte PNGs) is replaced by ``paths[fallback()]``."""
         for _ in range(10):
             try:
-                return self.load(paths[index])
+                return self.load(paths[index], seed)
             except Exception as exc:  # noqa: BLE001
                 print(f"[cure data] unreadable image {paths[index]}: {exc}", flush=True)
                 index = fallback()
@@ -3168,8 +3173,11 @@ class CuReMixDataset(Dataset):
         draw_fake = lambda: int(torch.randint(len(ep.fakes), (), generator=g))
         draw_real = lambda: int(torch.randint(len(ep.reals), (), generator=g))
         fake_idx, alpha = draw_fake(), float(torch.rand((), generator=g))
-        x_real = ep.load_any(ep.reals, idx, draw_real)
-        x_gen = ep.load_any(ep.fakes, fake_idx, draw_fake)
+        # R3 only (ep.augment set, train split): one augmentation seed per pair, shared by both endpoints (DDA's paired
+        # transforms); drawn after the pair and ratio so the recipe's draws are unchanged
+        aug_seed = int(torch.randint(2 ** 31 - 1, (), generator=g)) if (ep.augment is not None and self.split == "train") else None
+        x_real = ep.load_any(ep.reals, idx, draw_real, aug_seed)
+        x_gen = ep.load_any(ep.fakes, fake_idx, draw_fake, aug_seed)
         return cure_mix(x_real, x_gen, alpha), torch.tensor(alpha, dtype=torch.float32), torch.tensor(0)
 
 
@@ -3190,7 +3198,13 @@ class CuReTrainDatasetModule:
         transform = AIGITransformations(list(config.ModelConfig.eval_transform_list))
         cap = cfg.get("max_images", None)
         seed = int(cfg.get("seed", 0))
-        self.train_dataset = CuReMixDataset(CuReEndpoints(root, "train", transform, cap), "train", seed=seed)
+        augment = cfg.get("train_augment", None)
+        if augment not in (None, "dda"):
+            raise ValueError(f"cure_train: train_augment must be null or 'dda', got {augment!r}")
+        if augment == "dda":   # stage-1 investigation R3 only; validation stays un-augmented
+            from models.image.cure.train_augment import CuReDDAEndpoint
+            augment = CuReDDAEndpoint(augment=True)
+        self.train_dataset = CuReMixDataset(CuReEndpoints(root, "train", transform, cap, augment=augment), "train", seed=seed)
         self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_images", cap)), "val",
                                           val_pairs=cfg.get("val_pairs", None), seed=seed)
 

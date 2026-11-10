@@ -15,3 +15,4 @@ val_pairs: 2000
 max_images: null           # smoke runs: the first N reals and N fakes of the split (sorted names)
 val_max_images: null
 seed: 0                    # the validation pairs
+train_augment: null        # null = the recipe; dda = stage-1 investigation R3 (models/image/cure/train_augment.py)
