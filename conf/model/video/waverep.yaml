@@ -1,0 +1,18 @@
+defaults:
+  - /model/default
+  - _self_
+
+# WaveRep (NeurIPS'25, grip-unina/WaveRep-SyntheticVideoDetection): timm DINOv2 ViT-B/14 + 4 registers at a 504x504
+# input with one logit, fine-tuned end to end on single video frames; a video's logit is the mean over its frames. The
+# released weights_dinov2_G{1,4}.ckpt hold the full timm model (strict load); pretrained_backbone: true starts from the
+# timm DINOv2 weights instead (the official create_model does, then overwrites every key with the checkpoint).
+model_type: waverep
+timm_arch: vit_base_patch14_reg4_dinov2.lvd142m
+crop_size: 504
+pretrained_backbone: false
+frame_batch: 16               # frames per forward pass when a clip is scored (memory only; per-frame logits as official)
+
+# Per-frame test-time preprocessing (official demo/utils.py create_transform): CenterCrop((504, 504)) on the PIL frame,
+# zero-padded when the frame is smaller, no resize; ToTensor; ImageNet normalization. Frame reading and aggregation are
+# the registry's video settings (interface/backend/registry.py, video_sampler "cv2_frames").
+eval_transform_list: [center_crop_504, to_dtype, normalize_imagenet]

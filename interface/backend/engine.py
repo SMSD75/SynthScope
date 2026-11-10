@@ -152,6 +152,9 @@ def _build_model(cfg):
     if model_type == "restrav":
         from models.video.restrav.restrav import SynthScopeReStraVModel
         return SynthScopeReStraVModel(cfg)
+    if model_type == "waverep":
+        from models.video.waverep.waverep import SynthScopeWaveRepModel
+        return SynthScopeWaveRepModel(cfg)
     if model_type == "cnn":
         from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
         return SynthScopeCNNModel(cfg)
@@ -455,6 +458,11 @@ class Engine:
         if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
             frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
             return torch.stack([spec.transform(f) for f in frames])
+        if spec.video_sampler == "cv2_frames":          # WaveRep: the first num_frames (0: all) OpenCV frames
+            frames = [spec.transform(f) for f in media.cv2_frames(path, limit=spec.num_frames or None)]
+            if not frames:
+                raise ValueError("Could not decode any frames from the video.")
+            return torch.stack(frames)
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
             window_center=spec.window_center, interp=spec.resize_interp,
@@ -466,8 +474,33 @@ class Engine:
         mean, std = spec.video_norm
         return (clip - torch.tensor(mean).view(1, 3, 1, 1)) / torch.tensor(std).view(1, 3, 1, 1)
 
+    @torch.no_grad()
+    def video_frame_logits(self, spec: ModelSpec, path) -> torch.Tensor:
+        """The per-frame logits [T] of a frame-level video detector (video_sampler "cv2_frames", WaveRep): the frames
+        are read, transformed and scored ``frame_batch`` at a time, so a long video is never held in memory at once."""
+        model = self._get_model(spec)
+        batch, logits = [], []
+        for frame in media.cv2_frames(path, limit=spec.num_frames or None):
+            batch.append(spec.transform(frame))
+            if len(batch) == model.frame_batch:
+                logits.append(model.frame_logits(torch.stack(batch).to(self.device)).float().cpu())
+                batch = []
+        if batch:
+            logits.append(model.frame_logits(torch.stack(batch).to(self.device)).float().cpu())
+        if not logits:
+            raise ValueError("Could not decode any frames from the video.")
+        return torch.cat(logits)
+
     def predict_video_clip(self, spec: ModelSpec, path) -> dict:
         """Run a native *video* detector on a decoded clip."""
+        if spec.video_sampler == "cv2_frames":          # frame-level: P(fake) = sigmoid(mean frame logit), official
+            t0 = time.time()
+            logits = self.video_frame_logits(spec, path)
+            logit = logits.double().mean()              # the official mean (pandas, float64) of the float32 logits
+            res = self._result(spec, float(torch.sigmoid(logit)), time.time() - t0)   # official: scipy expit
+            res["num_frames"] = int(logits.numel())
+            res["logit"] = round(float(logit), 6)
+            return res
         model = self._get_model(spec)
         clip = self.video_clip(spec, path)
         t0 = time.time()

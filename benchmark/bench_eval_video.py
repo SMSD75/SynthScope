@@ -1,4 +1,5 @@
-"""Unified VIDEO benchmark eval for SynthScope video detectors (d3, split, restrav, stall, vina_video).
+"""Unified VIDEO benchmark eval for SynthScope video detectors (d3, split, restrav, stall, vina_video, waverep,
+waverep_g4).
 
 Scores each video through the SAME verified synthscope engine path the web app uses
 (engine.predict_video_clip -> native clip pipeline + per-model norm + fake-prob), computes
@@ -129,7 +130,8 @@ def fake_recall_at_fpr(real_scores, fake_scores):
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("-m", "--model", required=True, choices=["d3", "split", "restrav", "stall", "vina_video"])
+    ap.add_argument("-m", "--model", required=True, choices=["d3", "split", "restrav", "stall", "vina_video", "waverep",
+                                                                 "waverep_g4"])
     ap.add_argument("--benchmark", choices=["genvideo", "fakeonly", "pergen"], help="layout (not needed with --dataset)")
     ap.add_argument("--data", help="benchmark root (not needed with --dataset)")
     ap.add_argument("--dataset", help="a supported video dataset (genvideo, videophy, vidprom, evalcrafter, ...): downloads "

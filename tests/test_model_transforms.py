@@ -2,7 +2,8 @@
 
 * every ``conf/model/image/*.yaml`` has a non-empty ``eval_transform_list``, and every ``*_transform_list`` of every model
   and dataset config builds through ``AIGITransformations``; malformed names raise ``Invalid transform name``,
-* each image detector's registry transform is its model config's ``eval_transform_list`` (one source of truth),
+* each image detector's (and per-frame video detector's, e.g. WaveRep) registry transform is its model config's
+  ``eval_transform_list`` (one source of truth),
 * the output shape of every eval pipeline on a 300x200 image,
 * eval path == inference path: the test transform ``dataset.resolve_transforms`` builds, on ``dataset._decode_rgb``
   (the training loaders), equals the registry transform on ``bench_eval._open_rgb`` (benchmarks / web UI) exactly, on
@@ -171,14 +172,17 @@ def test_registry_matches_config() -> None:
     print("[B] registry transform == the model config's eval_transform_list ...")
     n = 0
     for spec in list_specs():
-        configs = [o.split("=", 1)[1] for o in spec.overrides if o.startswith("model@ModelConfig=image/")]
-        if not configs:
+        # image configs, and the video configs with per-frame eval preprocessing (WaveRep)
+        configs = [o.split("=", 1)[1] for o in spec.overrides
+                   if o.startswith(("model@ModelConfig=image/", "model@ModelConfig=video/"))]
+        lists = transform_lists(CONF / "model" / f"{configs[0]}.yaml") if configs else {}
+        expected = lists.get("eval_transform_list")
+        if not expected:
             continue
-        expected = transform_lists(CONF / "model" / f"{configs[0]}.yaml")["eval_transform_list"]
         assert isinstance(spec.transform, AIGITransformations), (spec.key, type(spec.transform))
         assert list(spec.transform.transform_list) == expected, (spec.key, spec.transform.transform_list, expected)
         n += 1
-    print(f"    {n} image specs")
+    print(f"    {n} specs (image models and per-frame video models)")
 
 
 def test_eval_shapes() -> None:

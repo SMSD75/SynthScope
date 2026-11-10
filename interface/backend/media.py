@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import cv2
 import numpy as np
 import torch
 from PIL import Image, ImageFile
@@ -149,6 +150,26 @@ def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int, timeout: fl
         else:
             ids += [ids[-1]] * (num_frames - len(ids))
         return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
+
+
+def cv2_frames(path: str | Path, limit: int | None = None):
+    """WaveRep's official frame reader (demo/utils.py ``ReadVideoIteratorCV``, vendored in
+    models/video/waverep/official_utils.py): every frame OpenCV's ``VideoCapture`` decodes, in order, converted from BGR
+    to RGB, as PIL images; reading stops at the first failed read, and after ``limit`` frames when it is set (the demo's
+    ``--limit``). A generator, so a long video is never held in memory at once."""
+    cap = cv2.VideoCapture(str(path))
+    try:
+        idx = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            yield Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            idx = idx + 1
+            if limit and idx >= limit:
+                break
+    finally:
+        cap.release()
 
 
 def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:

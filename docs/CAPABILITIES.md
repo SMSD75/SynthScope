@@ -44,6 +44,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
+| `waverep` (+ `waverep_g4`) | video | video | official | – | DINOv2 ViT-B/14 + registers fine-tuned frame by frame with a wavelet-band augmentation; the first 64 frames (OpenCV), center 504 crop, sigmoid of the mean frame logit (`waverep` = trained on one generator, `waverep_g4` on four) |
 | `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
