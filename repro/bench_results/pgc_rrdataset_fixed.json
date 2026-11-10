@@ -1,0 +1,40 @@
+{
+  "tag": "pgc_rrdataset_fixed",
+  "model": "pgc",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 55.51,
+    "map": 61.37,
+    "mauroc": 57.83
+  },
+  "per_generator": {
+    "original": {
+      "ap": 85.13,
+      "auroc": 85.69,
+      "real_acc": 95.48,
+      "fake_acc": 32.86,
+      "acc": 64.17
+    },
+    "redigital": {
+      "ap": 51.22,
+      "auroc": 46.36,
+      "real_acc": 90.08,
+      "fake_acc": 13.07,
+      "acc": 51.58
+    },
+    "transfer": {
+      "ap": 47.76,
+      "auroc": 41.44,
+      "real_acc": 95.27,
+      "fake_acc": 6.31,
+      "acc": 50.79
+    }
+  },
+  "date": "2026-11-09T08:48:37",
+  "synthscope_version": "0.1.0"
+}

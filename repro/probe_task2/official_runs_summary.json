@@ -1,0 +1,302 @@
+{
+ "probe_official_dino_synthwildx_66753.json": {
+  "variant": "dino",
+  "batch_size": 4,
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth",
+  "torch": "2.11.0+cu126",
+  "device": "cuda",
+  "subsets": {
+   "dalle3": {
+    "n_real": 413,
+    "n_fake": 392,
+    "full": {
+     "acc": 97.3913043478261,
+     "fake_acc": 99.23469387755102,
+     "real_acc": 95.64164648910412,
+     "ap": 99.32060777960963,
+     "bacc": 97.43817018332757
+    },
+    "official": {
+     "acc": 97.5765306122449,
+     "fake_acc": 99.23469387755102,
+     "real_acc": 95.91836734693877,
+     "ap": 99.33794737824222,
+     "n_real": 392,
+     "n_fake": 392,
+     "bacc": 97.5765306122449
+    },
+    "sec": 288.14118337631226,
+    "n_p_exactly_0.5": 0
+   },
+   "firefly": {
+    "n_real": 413,
+    "n_fake": 473,
+    "full": {
+     "acc": 97.06546275395034,
+     "fake_acc": 98.30866807610994,
+     "real_acc": 95.64164648910412,
+     "ap": 97.73509241904287,
+     "bacc": 96.97515728260703
+    },
+    "official": {
+     "acc": 97.21549636803874,
+     "fake_acc": 98.78934624697337,
+     "real_acc": 95.64164648910412,
+     "ap": 97.52259541283286,
+     "n_real": 413,
+     "n_fake": 413,
+     "bacc": 97.21549636803874
+    },
+    "sec": 453.96343088150024,
+    "n_p_exactly_0.5": 0
+   },
+   "midjourney_v5": {
+    "n_real": 413,
+    "n_fake": 435,
+    "full": {
+     "acc": 97.52358490566037,
+     "fake_acc": 99.3103448275862,
+     "real_acc": 95.64164648910412,
+     "ap": 99.33874577941279,
+     "bacc": 97.47599565834517
+    },
+    "official": {
+     "acc": 97.45762711864407,
+     "fake_acc": 99.27360774818402,
+     "real_acc": 95.64164648910412,
+     "ap": 99.28710387989716,
+     "n_real": 413,
+     "n_fake": 413,
+     "bacc": 97.45762711864407
+    },
+    "sec": 289.85088324546814,
+    "n_p_exactly_0.5": 0
+   }
+  }
+ },
+ "probe_official_dino_wildrf_66753.json": {
+  "variant": "dino",
+  "batch_size": 4,
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth",
+  "torch": "2.11.0+cu126",
+  "device": "cuda",
+  "subsets": {
+   "facebook": {
+    "n_real": 160,
+    "n_fake": 160,
+    "full": {
+     "acc": 98.75,
+     "fake_acc": 99.375,
+     "real_acc": 98.125,
+     "ap": 99.91279426954243,
+     "bacc": 98.75
+    },
+    "official": {
+     "acc": 98.75,
+     "fake_acc": 99.375,
+     "real_acc": 98.125,
+     "ap": 99.91279426954243,
+     "n_real": 160,
+     "n_fake": 160,
+     "bacc": 98.75
+    },
+    "sec": 95.98293161392212,
+    "n_p_exactly_0.5": 0
+   },
+   "reddit": {
+    "n_real": 750,
+    "n_fake": 750,
+    "full": {
+     "acc": 93.33333333333333,
+     "fake_acc": 92.26666666666667,
+     "real_acc": 94.39999999999999,
+     "ap": 98.40668646247475,
+     "bacc": 93.33333333333333
+    },
+    "official": {
+     "acc": 93.33333333333333,
+     "fake_acc": 92.26666666666667,
+     "real_acc": 94.39999999999999,
+     "ap": 98.40668646247475,
+     "n_real": 750,
+     "n_fake": 750,
+     "bacc": 93.33333333333333
+    },
+    "sec": 1604.3685626983643,
+    "n_p_exactly_0.5": 0
+   },
+   "twitter": {
+    "n_real": 144,
+    "n_fake": 277,
+    "full": {
+     "acc": 98.33729216152018,
+     "fake_acc": 97.83393501805054,
+     "real_acc": 99.30555555555556,
+     "ap": 99.89951054760652,
+     "bacc": 98.56974528680306
+    },
+    "official": {
+     "acc": 98.26388888888889,
+     "fake_acc": 97.22222222222221,
+     "real_acc": 99.30555555555556,
+     "ap": 99.7034962070625,
+     "n_real": 144,
+     "n_fake": 144,
+     "bacc": 98.26388888888889
+    },
+    "sec": 190.89450860023499,
+    "n_p_exactly_0.5": 0
+   }
+  }
+ },
+ "probe_official_resnet_synthwildx_66753.json": {
+  "variant": "resnet",
+  "batch_size": 4,
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth",
+  "torch": "2.11.0+cu126",
+  "device": "cuda",
+  "subsets": {
+   "dalle3": {
+    "n_real": 413,
+    "n_fake": 392,
+    "full": {
+     "acc": 89.68944099378882,
+     "fake_acc": 90.3061224489796,
+     "real_acc": 89.10411622276028,
+     "ap": 97.31166823216985,
+     "bacc": 89.70511933586994
+    },
+    "official": {
+     "acc": 89.9234693877551,
+     "fake_acc": 90.3061224489796,
+     "real_acc": 89.54081632653062,
+     "ap": 97.5101521756668,
+     "n_real": 392,
+     "n_fake": 392,
+     "bacc": 89.9234693877551
+    },
+    "sec": 89.89981245994568,
+    "n_p_exactly_0.5": 0
+   },
+   "firefly": {
+    "n_real": 413,
+    "n_fake": 473,
+    "full": {
+     "acc": 54.06320541760722,
+     "fake_acc": 23.46723044397463,
+     "real_acc": 89.10411622276028,
+     "ap": 64.21946843465771,
+     "bacc": 56.285673333367455
+    },
+    "official": {
+     "acc": 56.05326876513317,
+     "fake_acc": 23.002421307506054,
+     "real_acc": 89.10411622276028,
+     "ap": 60.72654590588502,
+     "n_real": 413,
+     "n_fake": 413,
+     "bacc": 56.05326876513317
+    },
+    "sec": 71.28153395652771,
+    "n_p_exactly_0.5": 0
+   },
+   "midjourney_v5": {
+    "n_real": 413,
+    "n_fake": 435,
+    "full": {
+     "acc": 79.36320754716981,
+     "fake_acc": 70.11494252873564,
+     "real_acc": 89.10411622276028,
+     "ap": 90.1230627190098,
+     "bacc": 79.60952937574797
+    },
+    "official": {
+     "acc": 79.29782082324455,
+     "fake_acc": 69.49152542372882,
+     "real_acc": 89.10411622276028,
+     "ap": 89.4198404579261,
+     "n_real": 413,
+     "n_fake": 413,
+     "bacc": 79.29782082324455
+    },
+    "sec": 38.00030064582825,
+    "n_p_exactly_0.5": 0
+   }
+  }
+ },
+ "probe_official_resnet_wildrf_66753.json": {
+  "variant": "resnet",
+  "batch_size": 4,
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth",
+  "torch": "2.11.0+cu126",
+  "device": "cuda",
+  "subsets": {
+   "facebook": {
+    "n_real": 160,
+    "n_fake": 160,
+    "full": {
+     "acc": 87.8125,
+     "fake_acc": 93.125,
+     "real_acc": 82.5,
+     "ap": 95.2455251583609,
+     "bacc": 87.8125
+    },
+    "official": {
+     "acc": 87.8125,
+     "fake_acc": 93.125,
+     "real_acc": 82.5,
+     "ap": 95.2455251583609,
+     "n_real": 160,
+     "n_fake": 160,
+     "bacc": 87.8125
+    },
+    "sec": 43.95567750930786,
+    "n_p_exactly_0.5": 0
+   },
+   "reddit": {
+    "n_real": 750,
+    "n_fake": 750,
+    "full": {
+     "acc": 72.86666666666667,
+     "fake_acc": 56.13333333333333,
+     "real_acc": 89.60000000000001,
+     "ap": 81.03946276195629,
+     "bacc": 72.86666666666667
+    },
+    "official": {
+     "acc": 72.86666666666667,
+     "fake_acc": 56.13333333333333,
+     "real_acc": 89.60000000000001,
+     "ap": 81.03946276195629,
+     "n_real": 750,
+     "n_fake": 750,
+     "bacc": 72.86666666666667
+    },
+    "sec": 658.3460166454315,
+    "n_p_exactly_0.5": 0
+   },
+   "twitter": {
+    "n_real": 144,
+    "n_fake": 277,
+    "full": {
+     "acc": 81.71021377672209,
+     "fake_acc": 76.17328519855594,
+     "real_acc": 92.36111111111111,
+     "ap": 94.87560773775566,
+     "bacc": 84.26719815483352
+    },
+    "official": {
+     "acc": 82.29166666666666,
+     "fake_acc": 72.22222222222221,
+     "real_acc": 92.36111111111111,
+     "ap": 90.67780268647668,
+     "n_real": 144,
+     "n_fake": 144,
+     "bacc": 82.29166666666666
+    },
+    "sec": 63.55457925796509,
+    "n_p_exactly_0.5": 0
+   }
+  }
+ }
+}

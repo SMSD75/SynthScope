@@ -1,0 +1,18 @@
+defaults:
+  - /model/default
+  - _self_
+
+# PROBE-ResNet50 (ICML 2026, arXiv 2605.24906): the official resnet50(num_classes=1, classifier_type='linear'),
+# scored as the mean logit of the image's non-overlapping 224x224 patches at native resolution; P(fake) = sigmoid(mean).
+# The official ResNet50_best_model_step_19343.pth (ModelScope shuinishaojiu/PROBE-AIGI-Detection) holds the full model
+# and loads key-for-key as probe_resnet.pth.
+model_type: probe_resnet
+backbone_name: resnet50
+classifier_type: linear
+patch_chunk_size: 32          # patches per forward (0 = all of a batch at once, as the official code)
+
+# Test-time preprocessing (official evaluate_resnet.py, README: --crop_size 224): pad_image(mode='pad') pastes an image
+# with a side under 224 on a black 224x224 square (a longer side is cut), ToTensor + ImageNet normalization, then the
+# non-overlapping 224 patches [N, 3, 224, 224]; the model averages the patch logits.
+eval_transform_list: [probe_pad_224, to_dtype, normalize_imagenet, sliding_patches_224]
+# No training lists: the official fine-tuning code is not released.

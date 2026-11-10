@@ -21,7 +21,9 @@ RUN git clone -q https://github.com/facebookresearch/dinov3 /home/user/dinov3 &&
 # CPU-only PyTorch first (much smaller than the CUDA build), then SynthScope with the web extras
 RUN pip install --no-cache-dir --user torch torchvision --index-url https://download.pytorch.org/whl/cpu
 COPY --chown=user . .
-RUN pip install --no-cache-dir --user -e ".[web]" "git+https://github.com/openai/CLIP.git"
+# transformers pinned to the version every parity check ran on: newer releases rename DINOv2 attention modules
+# (attention.attention.query -> attention.q_proj), so full-backbone checkpoints such as PGC's no longer match strictly.
+RUN pip install --no-cache-dir --user -e ".[web]" "git+https://github.com/openai/CLIP.git" "transformers==5.5.4"
 
 EXPOSE 7860
 CMD ["bash", "deploy/hf-space/start.sh"]

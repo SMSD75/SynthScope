@@ -198,6 +198,14 @@ They were rescored on 2026-11-08 with the hint (same images and weights; only th
 AUROC old -> new: FLUX.2 klein 4B 98.62 -> 99.02, 9B 96.23 -> 97.08, Qwen-Image-2.1 92.67 -> 92.37, Ideogram 86.88 -> 84.82,
 Ideogram 1024 92.10 -> 91.35.
 
+**Rescore note (PGC).** PGC's rows in `benchmark/generator_runs/*` and `repro/ideogram_bench*` were first scored while the served
+PGC dropped its trained LoRA (the official checkpoint's `rgb_stream.` prefix was not remapped; 2026-06-15 to 2026-11-09). They were
+rescored on 2026-11-09 with the fixed load (same images; only the PGC row's values changed; the other detectors' values are identical, but their ranks shift where PGC moved).
+AUROC old -> new (rank among 23): FLUX.2 klein 4B 97.33 -> 90.70 (4 -> 10), 9B 97.35 -> 90.72 (3 -> 10), Qwen-Image-2.1
+98.50 -> 94.43 (3 -> 5), Ideogram 97.53 -> 94.76 (1 -> 2), Ideogram 1024 98.67 -> 96.02 (1 -> 5). The broken model had the higher
+AUROC; accuracy and fake-detection rate rose on Qwen-Image and Ideogram (Qwen 60.0 -> 62.5 and 20.0 -> 27.0, Ideogram 61.5 -> 72.5 and
+23.0 -> 47.0; Ideogram 1024 64.5 -> 70.2 and 29.0 -> 43.6) and stayed about the same on FLUX.2 klein (acc 53.5 -> 52.5).
+
 **What the numbers mean.** AUROC is threshold-free (50 is chance, 100 perfect). *Fakes caught* and *Reals flagged* use the
 detectors' 0.5 threshold, which is not tuned per generator, so accuracy can look poor even when AUROC is high. Real photos
 are JPEG-origin and of varying size, while the generated images are 1024x1024 PNGs, which can help size- or

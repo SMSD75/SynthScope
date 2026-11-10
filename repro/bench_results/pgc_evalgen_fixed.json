@@ -1,0 +1,54 @@
+{
+  "tag": "pgc_evalgen_fixed",
+  "model": "pgc",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 55.38,
+    "map": 90.23,
+    "mauroc": 82.95
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 79.66,
+      "auroc": 66.47,
+      "real_acc": 99.86,
+      "fake_acc": 0.18,
+      "acc": 50.02
+    },
+    "GoT": {
+      "ap": 91.21,
+      "auroc": 84.43,
+      "real_acc": 99.86,
+      "fake_acc": 1.74,
+      "acc": 50.8
+    },
+    "Infinity": {
+      "ap": 90.86,
+      "auroc": 82.81,
+      "real_acc": 99.86,
+      "fake_acc": 5.14,
+      "acc": 52.5
+    },
+    "NOVA": {
+      "ap": 99.16,
+      "auroc": 98.25,
+      "real_acc": 99.86,
+      "fake_acc": 45.52,
+      "acc": 72.69
+    },
+    "OmniGen": {
+      "ap": 90.25,
+      "auroc": 82.79,
+      "real_acc": 99.86,
+      "fake_acc": 1.96,
+      "acc": 50.91
+    }
+  },
+  "date": "2026-11-09T08:16:37",
+  "synthscope_version": "0.1.0"
+}

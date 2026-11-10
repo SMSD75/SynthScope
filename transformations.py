@@ -18,6 +18,7 @@ from models.image.effort.preprocess import Cv2SquareResize
 from models.image.ltf.preprocess import LTFViews
 from models.image.mirror.preprocess import MirrorEvalTransform
 from models.image.moejepa.preprocess import VJEPA2ImageTransform
+from models.image.probe.preprocess import ProbePad, SlidingPatches
 
 IMAGENET_MEAN, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 CLIP_MEAN, CLIP_STD = [0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]
@@ -257,6 +258,15 @@ class AIGITransformations:
             return VJEPA2ImageTransform()
         elif transform_name == "ltf_views":                # LTF: global view + native-res 224 tiles, [1 + tiles, 3, 224, 224]
             return LTFViews()
+        # PROBE (official evaluate_dino.py / evaluate_resnet.py): pad_image to the crop size ('repeat' tiles a small
+        # image with copies of itself, 'pad' pastes it on a black square), then the normalized image's non-overlapping
+        # patches.
+        elif transform_name == "probe_pad_repeat_336":     # PIL out
+            return ProbePad(336, "repeat")
+        elif transform_name == "probe_pad_224":            # PIL out
+            return ProbePad(224, "pad")
+        elif transform_name in ("sliding_patches_336", "sliding_patches_224"):   # [3, H, W] -> [N, 3, n, n]
+            return SlidingPatches(int(transform_name.rsplit("_", 1)[1]))
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
 
