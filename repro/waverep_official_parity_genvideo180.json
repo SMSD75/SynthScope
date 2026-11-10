@@ -1,0 +1,58 @@
+{
+ "G1": {
+  "official_rows": 180,
+  "compared": 180,
+  "missing_in_ours": [],
+  "official_nan": 0,
+  "max_abs_logit_diff": 1.0248080758445965e-05,
+  "mean_abs_logit_diff": 1.7069871762565641e-06,
+  "max_abs_prob_diff": 2.1448522281031224e-06,
+  "worst": [
+   [
+    1.0248080758445965e-05,
+    "WildScrape/1_fake/00002_T1.mp4"
+   ],
+   [
+    8.98731485987625e-06,
+    "WildScrape/1_fake/00006_D3.mp4"
+   ],
+   [
+    8.861494675271864e-06,
+    "HotShot/1_fake/00003_hotshot_4.mp4"
+   ]
+  ],
+  "sign_agree": 180,
+  "logit_range": [
+   -8.89874092116952,
+   10.816624581813812
+  ]
+ },
+ "G4": {
+  "official_rows": 180,
+  "compared": 180,
+  "missing_in_ours": [],
+  "official_nan": 0,
+  "max_abs_logit_diff": 1.0536868095378793e-05,
+  "mean_abs_logit_diff": 1.4127489889597219e-06,
+  "max_abs_prob_diff": 1.0311529782258688e-06,
+  "worst": [
+   [
+    1.0536868095378793e-05,
+    "HotShot/1_fake/00006_hotshot_7.mp4"
+   ],
+   [
+    8.364375114311429e-06,
+    "HotShot/1_fake/00005_hotshot_6.mp4"
+   ],
+   [
+    7.367748976250255e-06,
+    "HotShot/1_fake/00002_hotshot_3.mp4"
+   ]
+  ],
+  "sign_agree": 180,
+  "logit_range": [
+   -8.121102714538575,
+   10.78410802781582
+  ]
+ }
+}

@@ -1,0 +1,74 @@
+{
+  "tag": "waverep_vidprom",
+  "model": "waverep",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 89.85,
+    "map": 98.11,
+    "map_real": 97.94,
+    "mauroc": 98.06
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 94.35,
+      "ap_real": 94.69,
+      "auroc": 94.52,
+      "real_acc": 99.3,
+      "fake_acc": 43.8,
+      "acc": 71.55,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "rank_by": "logit"
+    },
+    "Pika": {
+      "ap": 99.97,
+      "ap_real": 99.97,
+      "auroc": 99.97,
+      "real_acc": 99.3,
+      "fake_acc": 99.4,
+      "acc": 99.35,
+      "n_real": 1000,
+      "n_fake": 998,
+      "failed_real": 0,
+      "failed_fake": 2,
+      "rank_by": "logit"
+    },
+    "Text2Video-Zero": {
+      "ap": 98.45,
+      "ap_real": 97.43,
+      "auroc": 98.1,
+      "real_acc": 99.3,
+      "fake_acc": 83.8,
+      "acc": 91.55,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "rank_by": "logit"
+    },
+    "VideoCrafter2": {
+      "ap": 99.69,
+      "ap_real": 99.66,
+      "auroc": 99.66,
+      "real_acc": 99.3,
+      "fake_acc": 94.6,
+      "acc": 96.95,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "rank_by": "logit"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 2,
+    "real_unique": 0
+  },
+  "date": "2026-11-11T00:32:11",
+  "synthscope_version": "video"
+}
