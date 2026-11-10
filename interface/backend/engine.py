@@ -7,6 +7,7 @@ and kept in a small LRU so a shared GPU is not exhausted. All forward passes hap
 import base64
 import gc
 import io
+import logging
 import math
 import threading
 import time
@@ -17,9 +18,13 @@ import torch
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
+from models.image.probe.preprocess import ProbePad, SlidingPatches
 from . import config
+from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
 from . import media
+
+logger = logging.getLogger(__name__)
 
 
 def _png_b64(img: Image.Image) -> str:
@@ -130,6 +135,12 @@ def _build_model(cfg):
     if model_type == "vina":
         from models.image.vina.vina import SynthScopeVINAModel
         return SynthScopeVINAModel(cfg)
+    if model_type == "probe":
+        from models.image.probe.probe import SynthScopePROBEModel
+        return SynthScopePROBEModel(cfg)
+    if model_type == "probe_resnet":
+        from models.image.probe.probe import SynthScopePROBEResNetModel
+        return SynthScopePROBEResNetModel(cfg)
     if model_type == "stall":
         from models.video.stall.stall import SynthScopeSTALLModel
         return SynthScopeSTALLModel(cfg)
@@ -174,6 +185,11 @@ def _load_checkpoint(model, spec: ModelSpec):
         sd = raw["model"] if isinstance(raw, dict) and "model" in raw else raw
     if spec.remap is not None:
         sd = spec.remap(sd)
+    # A checkpoint that holds a transformers backbone carries the parameter names of the release that saved it; map them
+    # onto this release's names when the rename is exact (hf_compat.HF_RENAMES), else leave them for the checks below.
+    sd, hf_note = translate_hf_keys(sd, model.state_dict())
+    if hf_note:
+        logger.info("%s: transformers parameter names translated (%s)", spec.key, hf_note)
     missing, unexpected = model.load_state_dict(sd, strict=False)
     # Buffers that are legitimately reconstructed in __init__ / not in official dumps.
     benign = {"clip_mean", "clip_std", "imnet_mean", "imnet_std"}
@@ -192,10 +208,36 @@ def _load_checkpoint(model, spec: ModelSpec):
                 f"{spec.key}: checkpoint mismatch missing={real_missing[:8]} "
                 f"unexpected={unexpected[:8]}"
             )
+    elif real_missing or unexpected:
+        # Non-official kinds are not raised on (a model may legitimately rebuild some tensors itself, declared via
+        # ``pretrained_prefixes``), but a mismatch must never be silent: dropped keys (e.g. a wrapper prefix the
+        # checkpoint carries and the class does not, which once left the served PGC without its LoRA weights) or
+        # tensors that kept their __init__ values change what the detector computes.
+        logger.warning(
+            "%s: checkpoint %s does not match the model exactly: %d unexpected key(s) were dropped and %d key(s) kept "
+            "their __init__ values (unexpected=%s, missing=%s). Fix the remap or declare the keys in the model's "
+            "pretrained_prefixes.", spec.key, path.name, len(unexpected), len(real_missing), unexpected[:4],
+            real_missing[:4],
+        )
     return (
         f"loaded {len(sd)} tensors from {path.name} "
         f"(missing={len(real_missing)}, unexpected={len(unexpected)})"
+        + (f" [transformers key names translated, {hf_note}]" if hf_note else "")
     )
+
+
+def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
+    """For a detector that scores a bag of non-overlapping patches (PROBE: ``ProbePad`` then ``SlidingPatches``): the
+    padded image size ``(width, height)`` and the patch grid ``(rows, cols)`` the bag came from, or ``None`` when the
+    transform is not of that kind or the grid does not hold ``num_patches`` patches."""
+    steps = spec.transform.transforms if spec.transform is not None else []
+    pads = [t for t in steps if isinstance(t, ProbePad)]
+    cuts = [t for t in steps if isinstance(t, SlidingPatches)]
+    if len(pads) != 1 or len(cuts) != 1:
+        return None
+    width, height = pads[0](pil).size
+    rows, cols = height // cuts[0].size, width // cuts[0].size
+    return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
 class Engine:
@@ -364,10 +406,11 @@ class Engine:
             return None
 
     @staticmethod
-    def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280) -> str:
+    def _model_input_data_url(spec: ModelSpec, x: torch.Tensor, max_side: int = 1280, cols: int | None = None) -> str:
         """The image exactly as the network receives it (after this detector's preprocessing), as a PNG data URL.
         Normalization is undone for display; multi-view inputs are laid out side by side (up to 5 views, e.g. AIDE)
-        or in a near-square grid (LTF has one view per tile, up to dozens)."""
+        or in a near-square grid (LTF has one view per tile, up to dozens). ``cols`` fixes the number of columns of a
+        multi-view layout (PROBE: the patches' real grid)."""
         t = x[0].detach().float().cpu()
         norm = spec.transform.normalize_step()
         if norm is not None:
@@ -375,7 +418,7 @@ class Engine:
         elif spec.key == "cure":                       # CuRe maps pixels to (x - 127.5) / 127.5
             t = t * 0.5 + 0.5
         if t.dim() == 4:
-            cols = len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t)))
+            cols = cols or (len(t) if len(t) <= 5 else math.ceil(math.sqrt(len(t))))
             pad = -len(t) % cols
             if pad:
                 t = torch.cat([t, torch.zeros(pad, *t.shape[1:])])
@@ -397,9 +440,15 @@ class Engine:
         res = self._result(spec, p, time.time() - t0)
         res["orig_size"] = [pil.width, pil.height]
         res["input_size"] = [int(x.shape[-1]), int(x.shape[-2])]     # what the network actually received
+        layout = patch_layout(spec, pil, int(x.shape[1])) if x.dim() == 5 else None
+        if layout is not None:        # a patch bag: report the padded image and its patch grid, not one patch's size
+            (width, height), (rows, cols) = layout
+            res["input_size"] = [width, height]
+            res["input_grid"] = [rows, cols]
+            res["input_patches"] = rows * cols
         res["input_note"] = input_note(spec)
         try:
-            res["input_image"] = self._model_input_data_url(spec, x)
+            res["input_image"] = self._model_input_data_url(spec, x, cols=layout[1][1] if layout else None)
         except Exception:                                           # display-only: never fail a prediction over it
             pass
         amap = self._interpret_map(model, spec, x, pil)

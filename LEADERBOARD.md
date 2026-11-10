@@ -11,7 +11,7 @@ Metrics are percentages. **mAP** = mean AP over generators. Each track is ranked
 | Rank | Method | Eval | Acc | **mAP** | AP | AUROC | Verified | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 1 | FatFormer | official-weights | 98.39 | 99.70 | — | 99.57 | ✓ | ForenSynths-8; official 4-class ProGAN weights (the served fat_former.pth) |
-| 2 | CO-SPY (official weights) | official-weights | 94.64 | 98.50 | — | 98.80 | ✓ | ForenSynths-8; official CO-SPY ProGAN checkpoint in the vendored official architecture (not the served co_spy.pth) |
+| 2 | CO-SPY (official weights) | official-weights | 95.12 | 98.85 | — | 99.03 | ✓ | ForenSynths-8, full test sets; official CO-SPY ProGAN checkpoint in the vendored official architecture (not the served co_spy.pth) |
 | 3 | SAFE | from-scratch | 95.11 | 97.79 | — | 97.86 | ✓ | ForenSynths-8; trained in SynthScope on ProGAN, 40-epoch crop recipe (safe_full_v2/model_38, the served safe.pth) |
 | 4 | UnivFD / CLIP | frozen-probe | 88.28 | 97.22 | — | 97.11 | ✓ | ForenSynths-8; frozen CLIP ViT-L/14 + linear head trained in SynthScope on ProGAN (the served clip.pth) |
 | 5 | AIDE | official-weights | 88.38 | 96.03 | — | 95.60 | ✓ | ForenSynths-8; official ProGAN weights progan_train.pth, vendored official eval (native-resolution 5-view DCT); the served aide.pth is the SD-v1.4 release |

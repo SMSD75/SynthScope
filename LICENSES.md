@@ -15,6 +15,9 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 > non-commercial-only**, and some weights are **gated** (require accepting an upstream license).
 > The table below is a starting point — verify each entry against its source. (`⚠ verify` = please
 > confirm and fill in from the official repo before relying on it.)
+>
+> `synthscope push` enforces this for the rows marked **unclear** / **not redistributed** below: the keys in
+> `NEVER_REDISTRIBUTE` (`synthscope/hub.py`) are refused even with `--include-official`; update that constant together with the table when a licence is clarified.
 
 ## Detectors
 
@@ -39,6 +42,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `bfree` | B-Free (CVPR'25) | grip-unina/B-Free | GRIP-UNINA license: informational and **nonprofit use only** (notices kept); `official_arch.py` vendors `code/networks/wrapper5crops.py` — see its header | **official** checkpoint (`BFREE_dino2reg4/model_epoch_best.pth` from grip.unina.it, loaded as `bfree.pth`) | GRIP-UNINA license (nonprofit use only) |
 | `mirror` | MIRROR (NeurIPS'26) | handsome-rich/MIRROR | **unclear**: the README badge says MIT, but the repo has no LICENSE file (the badge's link 404s); `official_arch.py` vendors `models/mirror.py`, and `preprocess.py` vendors the eval transform of `data/datasets.py` (see the file headers) | **official** phase-2 checkpoint (`checkpoint-h-cur.pth`, authors' Google Drive, loaded as `mirror.pth`; it contains the DINOv3 ViT-H+ weights) | **unclear** (no licence stated); not redistributed: not in the model zoo or on the Space |
 | `vina`, `vina_video` | VINA (arXiv 2605.21977) | mgiant/VINA | **unclear**: the repo (commit 225d331) has no LICENSE file and the README states no licence; `official_arch.py` vendors the `DINOv3` class of `models/DINOv3.py` (see its header) | **official** checkpoint (`VINA_DINOv3-L_140k+DDA.pth` from HF `mgiant/VINA_checkpoints` @ f258349, loaded as `vina.pth`; it contains the DINOv3 ViT-L/16 weights) | **unclear** (no licence tag on the HF repo, empty model card); not redistributed: not in the model zoo or on the Space |
+| `probe`, `probe_resnet` | PROBE (ICML'26) | Amamiya-C/PROBE-AIGI-Detection | **unclear**: the repo (commit b145f71) has no LICENSE file, GitHub reports no licence and the README states none; `official/dino_classifier.py` and `official/resnet50.py` vendor `Detector/model/*.py`, and `preprocess.py` vendors `pad_image` and the sliding-patch step of `Detector/util.py` / `evaluate_dino.py` (see the file headers) | **official** checkpoints (`DINOv2_best_model_step_34999.pth` and `ResNet50_best_model_step_19343.pth` from ModelScope `shuinishaojiu/PROBE-AIGI-Detection`, loaded as `probe.pth` / `probe_resnet.pth`; the DINOv2 one contains the DINOv2-with-registers ViT-L/14 weights) | **unclear** (the ModelScope licence field is empty); not redistributed: not in the model zoo or on the Space |
 | `moejepa` | MoE-JEPA (ECCV'26 W) | ALCOR-Lab-DIAG/MoE-JEPA | MIT; `official_arch.py` vendors the blocks of `model/model.py` — see its header | **official** checkpoint (`moejepa_sidset.safetensors`, v1.0 GitHub release, loaded as `moejepa.safetensors`) | MIT |
 | `effort`, `effort_chameleon` | Effort (ICML'25) | YZY-stack/Effort-AIGI-Detection | CC BY-NC 4.0 (README badge); `official_arch.py` vendors the SVD-residual layers of `DeepfakeBench/training/detectors/effort_detector.py` — see its header | **official** checkpoints (`effort_clip_L14_trainOn_{sdv14,chameleon}.pth` from the authors' Google Drive, loaded as `<key>.pth`); the SynthScope-trained ProGAN model (config `image/effort_ufd`) is not a served key and stays on the shared filesystem | CC BY-NC 4.0 (non-commercial) |
 | `dinov2` | DINOv2 probe | facebookresearch/dinov2 | Apache-2.0 (verify) | DINOv2 backbone | Apache-2.0 (verify) |
@@ -57,6 +61,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
+| DINOv2 with registers ViT-L/14 (HF `facebook/dinov2-with-registers-large`) | `probe` (its weights are inside the PROBE checkpoint; the HF download is only needed for training) | Apache-2.0 (HF model card) |
 | DINOv3 (ViT-L/16) | `dinov3`, `stall`, `vina` / `vina_video` (its weights are inside the VINA checkpoint; the gated HF `facebook/dinov3-vitl16-pretrain-lvd1689m` is only needed for training) | **gated** download — DINOv3 License (use and redistribution allowed with the license and attribution; trade-control restrictions) |
 | DINOv3 ViT-H+/16 (HF `facebook/dinov3-vith16plus-pretrain-lvd1689m`) | `mirror` (its weights are inside the MIRROR checkpoint; the gated download is only needed for training) | **gated** - DINOv3 License |
 | SigLIP | `co_spy` | Apache-2.0 (verify) |

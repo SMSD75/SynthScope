@@ -11,6 +11,9 @@
 * pixel parity with hand-written torchvision pipelines (the official eval code) for CLIP, NPR, PGC (incl. zero
   padding), OmniAID v1, DDA, SAFE (v1) and VINA (v2, bicubic short-side resize),
 * a model's train / val / test outputs have the same per-sample rank,
+* AIDE's ``aide_blur`` + ``aide_jpeg`` draw the same random numbers and give the same pixels as the official kornia
+  ``Perturbations`` container (and leave an image with a side that is not a multiple of 16 the shape kornia's JPEG would
+  reject),
 * ``without_resize`` drops only resize / crop steps and refuses pipelines that resize inside,
 * ``to_dtype`` equals ``to_tensor`` on a PIL image and ``ToDtype(float32, scale=True)`` on a uint8 tensor, exactly,
 * ``resolve_transforms`` reports a DatasetConfig list shadowed by the model's only when it was overridden (differs from
@@ -52,7 +55,8 @@ IMAGE_MODELS = sorted((CONF / "model" / "image").glob("*.yaml"))
 TRAINING_KEYS = ("train_transform_list", "val_transform_list", "test_transform_list")
 # (width, height) of the PNG test images: smaller than every crop, non-square both ways, square, long side > 1024.
 SIZES = [(300, 200), (200, 150), (150, 260), (512, 512), (1300, 900)]
-# Each image model's eval output on a 300x200 image (bfree / spai: native resolution; ltf: global view + 2 tiles).
+# Each image model's eval output on a 300x200 image (bfree / spai: native resolution; ltf: global view + 2 tiles; probe:
+# repeat-tiled to 600x400, one 336 patch; probe_resnet: one 224 patch of the black-padded square).
 EXPECTED_SHAPES = {
     "adapted_dino": (3, 224, 224), "aide": (5, 3, 256, 256), "bfree": (3, 200, 300), "clip": (3, 224, 224),
     "cnn": (3, 224, 224), "co_spy": (3, 384, 384), "cure": (3, 336, 336), "d3qe": (3, 256, 256),
@@ -60,7 +64,7 @@ EXPECTED_SHAPES = {
     "effort_ufd": (3, 224, 224), "fat_former": (3, 224, 224), "ltf": (3, 3, 224, 224),
     "mirror": (3, 224, 224), "moejepa": (3, 256, 256), "npr": (3, 256, 256), "omniaid": (3, 336, 336),
     "omniaid_genimage": (3, 336, 336), "omniaid_v1": (3, 336, 336), "pgc": (3, 224, 224),
-    "safe": (3, 256, 256),
+    "probe": (1, 3, 336, 336), "probe_resnet": (1, 3, 224, 224), "safe": (3, 256, 256),
     "spai": (3, 200, 300), "vib_net": (3, 224, 224), "vib_net_official": (3, 224, 224), "vina": (3, 256, 256),
 }
 # The official eval code as torchvision pipelines (PIL in).
@@ -262,6 +266,38 @@ def test_training_lists_on_tensor() -> None:
     print(f"    {len(lists)} lists")
 
 
+def test_aide_perturbations() -> None:
+    print("[K] aide_blur + aide_jpeg == the official kornia Perturbations ...")
+    import kornia.augmentation as K
+    official = K.container.ImageSequential(K.RandomGaussianBlur(kernel_size=(3, 3), sigma=(0.1, 3.0), p=0.1),
+                                           K.RandomJPEG(jpeg_quality=(30, 100), p=0.1))
+    ours = AIGITransformations(["aide_blur", "aide_jpeg"])
+    uint8 = torch.randint(0, 256, (3, 96, 128), generator=torch.Generator().manual_seed(1), dtype=torch.uint8)
+    pil = TF.to_pil_image(uint8)
+    base = TF.to_tensor(pil)
+    changed = 0
+    for seed in range(300):
+        torch.manual_seed(seed)
+        want = official(base)[0]
+        torch.manual_seed(seed)
+        assert torch.equal(ours(pil), want), seed                    # PIL in (val path)
+        torch.manual_seed(seed)
+        assert torch.equal(ours(uint8), want), seed                  # uint8 tensor in (train path)
+        changed += int(not torch.equal(want, base))
+    assert 40 < changed < 80, changed                                # 1 - 0.9^2 = 19% of 300 (a fixed draw: 57)
+    odd = torch.randint(0, 256, (3, 100, 131), dtype=torch.uint8)    # not a multiple of 16: kornia's JPEG would raise
+    jpeg_only = AIGITransformations(["aide_jpeg"])
+    hits = 0
+    for seed in range(200):
+        torch.manual_seed(seed)
+        out = jpeg_only(odd)
+        assert out.shape == (3, 100, 131) and out.dtype == torch.float32 and 0 <= out.min() and out.max() <= 1
+        hits += int(not torch.equal(out, odd.float().div(255)))
+    assert 5 < hits < 40, hits                                       # about 10% of 200
+    train = AIGITransformations(["aide_blur", "aide_jpeg", "aide_five_view_train"])(odd)
+    assert tuple(train.shape) == (5, 3, 256, 256)
+
+
 def test_without_resize() -> None:
     print("[H] without_resize ...")
     tf = AIGITransformations(["resize_short_256", "center_crop_224", "to_dtype", "normalize_clip"], pil_input=True)
@@ -315,6 +351,7 @@ if __name__ == "__main__":
     test_golden()
     test_split_ranks()
     test_training_lists_on_tensor()
+    test_aide_perturbations()
     test_without_resize()
     test_to_dtype()
     test_shadow_warning()

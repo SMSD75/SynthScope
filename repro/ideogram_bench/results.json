@@ -1,16 +1,5 @@
 [
   {
-    "detector": "pgc",
-    "name": "PGC",
-    "auroc": 97.53,
-    "ap": 97.39,
-    "acc": 61.5,
-    "fake_detect_rate": 23.0,
-    "real_false_pos": 0.0,
-    "mean_p_fake_on_fakes": 0.4645,
-    "mean_p_fake_on_reals": 0.2672
-  },
-  {
     "detector": "effort",
     "name": "Effort",
     "auroc": 96.94,
@@ -20,6 +9,17 @@
     "real_false_pos": 10.0,
     "mean_p_fake_on_fakes": 0.8147,
     "mean_p_fake_on_reals": 0.0787
+  },
+  {
+    "detector": "pgc",
+    "name": "PGC",
+    "auroc": 94.76,
+    "ap": 93.63,
+    "acc": 72.5,
+    "fake_detect_rate": 47.0,
+    "real_false_pos": 2.0,
+    "mean_p_fake_on_fakes": 0.4886,
+    "mean_p_fake_on_reals": 0.2596
   },
   {
     "detector": "safe",

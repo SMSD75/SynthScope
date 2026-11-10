@@ -17,8 +17,11 @@ ROOT = str(Path(__file__).resolve().parents[2])   # the repository root, whereve
 VAL = {
     # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no SynthScope_train here.
     ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
-    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces the official mAP (acc is lower).
-    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 96.42, "acc": 77.87}},
+    # SynthScope_train = the official AIDE recipe in SynthScope (experiments/image/aide.sh; train job 281041, model_best = epoch 4,
+    # eval DAS6 job 66956, tag aide_trained_genimage8: the full GenImage_full/test, the same data as the official row). Below the
+    # paper (acc -6.15) and the official weights (mAP -3.22); the previous native-res retrain (aide_native_v2/model_2, 96.42 / 77.87 on
+    # 300 images per class) had the higher mAP and the lower accuracy.
+    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 93.9, "acc": 80.73, "auroc": 91.66}},
     # ForenSynths = the paper's 11 generators (no StyleGAN2 / WhichFaceIsReal), recomputed from the per-generator entries
     # of {clip,cnn}_{synthscope,official}_forensynths.json; the 8-GAN subset gives clip 97.22 / 96.96, cnn 94.42 / 92.67.
     ("clip", "ForenSynths"):             {"synthscope": {"map": 92.83, "acc": 85.39}, "official": {"map": 92.33, "acc": 80.58}},
@@ -131,12 +134,14 @@ VAL = {
     ("safe", "DiffusionForensics"):      {"synthscope": {"map": 99.34, "acc": 91.3}},
     ("pgc", "GenImage"):                 {"official": {"map": 100.0, "acc": 99.49}, "synthscope": {"map": 97.62, "acc": 78.6}},
     # synthscope UFD / ForenSynths = the official recipe in SynthScope, step 500 (experiments/image/pgc.sh; jobs 266276, 266282, 266660).
-    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth in the same jobs, PadCenterCrop eval (pgc_official_ufd8,
-    # FS-8 subset of pgc_official_forensynths13). The 2026-06-04 runs of the official PGC code (pgc_official_eval.py, PadCenterCrop)
-    # gave 99.34 / 94.16 and FS-13 96.25 / 83.73; the SynthScope class on the same weights gives 99.17 / 93.80 (UFD / FS-13);
-    # the gap is the known model-forward difference. GenImage / AIGIBench / CommGen15 official = official-code numbers.
-    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.17, "acc": 83.57, "auroc": 99.2}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
-    ("pgc", "ForenSynths"):              {"official": {"map": 96.41, "acc": 76.34, "auroc": 97.06}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
+    # official UFD / ForenSynths-8 = the served PGC_train_progan_ckpt.pth with the checkpoint load FIXED (2026-11-09), PadCenterCrop
+    # eval: tags pgc_official_ufd8_fixed and (FS-8 subset of) pgc_official_forensynths13_fixed. They match the official PGC code
+    # (pgc_official_eval.py: UFD 99.34 / 94.16, FS-13 96.25 / 83.73) within 0.03. Correction 2026-11-09: from 2026-06-15 to
+    # 2026-11-09 the load dropped the checkpoint's rgb_stream.* tensors, trained LoRA included, so the earlier tags
+    # (pgc_official_ufd8 99.17 / 83.57, FS-8 96.41 / 76.34 / 97.06, now in bench_results/_superseded/) understated accuracy.
+    # GenImage / AIGIBench / CommGen15 official = official-code numbers (never affected).
+    ("pgc", "UniversalFakeDetect"):      {"official": {"map": 99.35, "acc": 94.19, "auroc": 99.31}, "synthscope": {"map": 98.99, "acc": 91.96, "auroc": 98.92}},
+    ("pgc", "ForenSynths"):              {"official": {"map": 97.83, "acc": 89.17, "auroc": 98.14}, "synthscope": {"map": 97.41, "acc": 85.89, "auroc": 97.63}},
     ("pgc", "AIGIBench"):                {"official": {"map": 95.36, "acc": 88.33}, "synthscope": {"map": 86.88}},
     ("pgc", "CommGen15"):                {"official": {"map": 99.26, "acc": 97.39}, "synthscope": {"map": 98.61, "acc": 66.66}},
     # SPAI serves the official weights remapped into the SynthScope class, scored at NATIVE resolution (the faithful
@@ -191,6 +196,22 @@ VAL = {
     ("vina", "WildRF"):                  {"official": {"map": 99.41, "acc": 96.12, "auroc": 99.25}},
     ("vina", "AIGIBench"):               {"official": {"map": 97.33, "acc": 92.72, "auroc": 97.6}},
     ("vina", "RRDataset"):               {"official": {"map": 92.77, "acc": 82.89, "auroc": 91.69}},
+    # PROBE (ICML'26): the two official checkpoints (probe = DINOv2 ViT-L/14 with registers, probe_resnet = ResNet-50); no
+    # SynthScope-trained number (the training code is not released). acc / mAP / mauroc = bench_eval means over the paper's
+    # subsets (repro/bench_results/<key>_<benchmark>.json; acc = mean balanced accuracy at 0.5 = the paper's metric).
+    # GenImage = the full val split (100,000 images) with all fakes JPEG q96 as in the paper. Synthbuster uses 5000 MSCOCO
+    # reals, NOT the paper's RAISE-1k (the spec marks it "reference": not like-for-like). AIGI-Bench = CommunityAI + SocialRF
+    # only. Chameleon and AIGI-Quality-Paradox were not run (no loader). Jobs DAS6 66753, 66755, 66790.
+    ("probe", "GenImage (8 subsets"):    {"official": {"map": 99.77, "acc": 97.47, "auroc": 99.8}},
+    ("probe", "Synthbuster"):            {"official": {"map": 99.64, "acc": 98.2, "auroc": 99.93}},
+    ("probe", "SynthWildX"):             {"official": {"map": 98.8, "acc": 97.3, "auroc": 99.18}},
+    ("probe", "WildRF"):                 {"official": {"map": 99.36, "acc": 96.92, "auroc": 99.26}},
+    ("probe", "AIGI-Bench"):             {"official": {"map": 96.46, "acc": 89.88, "auroc": 95.88}},
+    ("probe_resnet", "GenImage (8 subsets"): {"official": {"map": 86.69, "acc": 78.38, "auroc": 84.81}},
+    ("probe_resnet", "Synthbuster"):     {"official": {"map": 85.23, "acc": 83.75, "auroc": 95.88}},
+    ("probe_resnet", "SynthWildX"):      {"official": {"map": 83.88, "acc": 75.2, "auroc": 82.8}},
+    ("probe_resnet", "WildRF"):          {"official": {"map": 89.45, "acc": 81.63, "auroc": 85.76}},
+    ("probe_resnet", "AIGI-Bench"):      {"official": {"map": 79.8, "acc": 70.44, "auroc": 77.55}},
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},

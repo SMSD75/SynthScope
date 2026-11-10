@@ -1,0 +1,33 @@
+{
+  "tag": "probe_aigibench",
+  "model": "probe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/66790/tmp/layouts/aigibench",
+  "jpeg_fakes": null,
+  "n_generators": 2,
+  "means": {
+    "acc": 89.88,
+    "map": 96.46,
+    "mauroc": 95.88
+  },
+  "per_generator": {
+    "CommunityAI": {
+      "ap": 97.08,
+      "auroc": 96.33,
+      "real_acc": 97.17,
+      "fake_acc": 83.6,
+      "acc": 90.38
+    },
+    "SocialRF": {
+      "ap": 95.84,
+      "auroc": 95.44,
+      "real_acc": 89.87,
+      "fake_acc": 88.9,
+      "acc": 89.38
+    }
+  },
+  "date": "2026-11-09T16:13:43",
+  "synthscope_version": "0.1.0"
+}

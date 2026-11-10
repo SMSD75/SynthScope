@@ -18,6 +18,7 @@ from models.image.effort.preprocess import Cv2SquareResize
 from models.image.ltf.preprocess import LTFViews
 from models.image.mirror.preprocess import MirrorEvalTransform
 from models.image.moejepa.preprocess import VJEPA2ImageTransform
+from models.image.probe.preprocess import ProbePad, SlidingPatches
 
 IMAGENET_MEAN, IMAGENET_STD = [0.485, 0.456, 0.406], [0.229, 0.224, 0.225]
 CLIP_MEAN, CLIP_STD = [0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.26130258, 0.27577711]
@@ -115,6 +116,44 @@ class ToFloat:
 
     def __repr__(self):
         return "ToFloat()"
+
+
+class AIDEPerturbation:
+    """AIDE's training perturbations (official ``data/datasets.py``): ``Perturbations = ImageSequential(RandomGaussianBlur(
+    (3, 3), sigma=(0.1, 3.0), p=0.1), RandomJPEG((30, 100), p=0.1))`` from kornia, applied to the ``ToTensor`` image at
+    NATIVE resolution before the DCT patch selection. ``kind`` is ``"blur"`` or ``"jpeg"``: the two steps are separate
+    transform names (``aide_blur``, ``aide_jpeg``), and in this order they draw the same random numbers as the
+    sequential container (tests/test_model_transforms.py checks it). Takes a PIL image or a uint8 / float ``[3, H, W]``
+    tensor and returns a float ``[3, H, W]`` tensor in [0, 1].
+
+    kornia's JPEG codec raises on a side that is not a multiple of 16, which most ImageNet reals are (500x375, ...): the
+    official code would crash on those images, so a selected image is edge-padded to a multiple of 16 and cropped back
+    after the codec (a JPEG encoder pads the same way), and an image whose sides are multiples of 16 is untouched.
+    kornia (the official ``kornia==0.7.2``) is imported when the step is built, so only AIDE training needs it."""
+
+    def __init__(self, kind: str):
+        if kind not in ("blur", "jpeg"):
+            raise ValueError(f"AIDEPerturbation kind must be 'blur' or 'jpeg', got {kind!r}")
+        import kornia.augmentation as K
+        self.kind = kind
+        self.aug = (K.RandomGaussianBlur(kernel_size=(3, 3), sigma=(0.1, 3.0), p=0.1) if kind == "blur"
+                    else K.RandomJPEG(jpeg_quality=(30, 100), p=0.1))
+
+    def __call__(self, image):
+        if isinstance(image, Image.Image):
+            x = TF.to_tensor(image)
+        else:                                              # uint8 tensor: exactly ToTensor's /255; float: unchanged
+            x = image.float().div(255) if image.dtype == torch.uint8 else image
+        if self.kind == "jpeg":
+            h, w = x.shape[-2:]
+            pad_h, pad_w = -h % 16, -w % 16
+            if pad_h or pad_w:
+                x = torch.nn.functional.pad(x[None], (0, pad_w, 0, pad_h), mode="replicate")[0]
+                return self.aug(x)[0, :, :h, :w].contiguous()
+        return self.aug(x)[0]
+
+    def __repr__(self):
+        return f"AIDEPerturbation({self.kind!r})"
 
 
 class TranslateDuplicate:
@@ -231,6 +270,10 @@ class AIGITransformations:
             return v2.RandomApply([v2.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=0.05)], p=0.2)
         elif transform_name == "random_mask_safe":
             return RandomMask(ratio=(0.0, 0.75), patch_size=16, p=0.5)
+        elif transform_name in ("aide_blur", "aide_jpeg"):
+            # AIDE training: kornia Gaussian blur (3x3, sigma 0.1-3, p 0.1) then JPEG (QF 30-100, p 0.1) at native
+            # resolution, as the official Perturbations; goes before aide_five_view_train.
+            return AIDEPerturbation(transform_name.removeprefix("aide_"))
         elif transform_name == "aide_five_view":
             # AIDE native-resolution 5-view preprocessing: PIL/tensor -> [5,3,256,256] (DCT patch
             # selection at native res, then resize the selected patches). Must be the LAST transform.
@@ -257,6 +300,15 @@ class AIGITransformations:
             return VJEPA2ImageTransform()
         elif transform_name == "ltf_views":                # LTF: global view + native-res 224 tiles, [1 + tiles, 3, 224, 224]
             return LTFViews()
+        # PROBE (official evaluate_dino.py / evaluate_resnet.py): pad_image to the crop size ('repeat' tiles a small
+        # image with copies of itself, 'pad' pastes it on a black square), then the normalized image's non-overlapping
+        # patches.
+        elif transform_name == "probe_pad_repeat_336":     # PIL out
+            return ProbePad(336, "repeat")
+        elif transform_name == "probe_pad_224":            # PIL out
+            return ProbePad(224, "pad")
+        elif transform_name in ("sliding_patches_336", "sliding_patches_224"):   # [3, H, W] -> [N, 3, n, n]
+            return SlidingPatches(int(transform_name.rsplit("_", 1)[1]))
         else:
             raise ValueError(f"Invalid transform name: {transform_name}")
 

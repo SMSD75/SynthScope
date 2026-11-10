@@ -16,7 +16,10 @@ class SynthScopeEffortModel(nn.Module):
     def __init__(self, config: DictConfig):
         super().__init__()
         mc = config.ModelConfig
-        vision = CLIPVisionModel.from_pretrained(mc.get("clip_name", "openai/clip-vit-large-patch14")).vision_model
+        clip_vision = CLIPVisionModel.from_pretrained(mc.get("clip_name", "openai/clip-vit-large-patch14"))
+        # transformers <= 5.5.4 wraps the tower as ``.vision_model``; 5.22.2 made CLIPVisionModel the tower itself (the
+        # tensor names under it, and the pooled output, are the same either way).
+        vision = getattr(clip_vision, "vision_model", clip_vision)
         self.backbone = apply_svd_residual_to_self_attn(vision, r=int(mc.get("svd_rank", 1023)))
         self.head = nn.Linear(1024, 2)
         # Training recipe only (conf/model/image/effort_ufd.yaml): the official UniversalFakeDetect trainer re-draws the
