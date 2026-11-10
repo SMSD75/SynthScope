@@ -48,6 +48,18 @@ SynthScope_train (GenImage-8, ForenSynths-13) = the official AIDE recipe in Synt
 
 SynthScope_official is `sd14_train.pth` (the served `aide.pth`) on GenImage and the ProGAN-trained `progan_train.pth` on ForenSynths and AIGCDetect. The earlier 72.25 (61.6) AIGCDetect entry was `progan_train.pth` under the old resize-before-DCT eval, not a SynthScope-trained model.
 
+**Per-epoch diagnostic (not a reproduction claim; the headline stays `model_best` = epoch 4, chosen by validation accuracy as in the official code).** Each epoch checkpoint `model_0..model_4` of train job 281041 was scored on GenImage-8 (first 300 images per class and generator; epoch 4 is `aide_trained_genimage8_l300`) and, as a transfer probe, on Synthbuster (not an AIDE paper benchmark: the 9 generators' fakes against the 5,000 shared MSCOCO reals, first 300 per class and generator, 5,400 images), DAS6 job 66991, tags `aide_trained_e<k>_genimage8_l300` / `aide_trained_e<k>_synthbuster`:
+
+| Epoch | val acc | GenImage-8 mAP / acc | GenImage-8 ADM acc | Synthbuster mAP / acc | Synthbuster DALL-E 2 AP |
+|---|---:|---:|---:|---:|---:|
+| 0 | 0.9913 | 93.20 / 77.83 | 52.67 | **96.16** / 72.20 | 98.90 |
+| 1 | 0.9956 | 91.99 / 77.88 | 54.17 | 94.20 / 69.63 | 93.79 |
+| 2 | 0.9973 | 92.96 / 79.73 | 54.67 | 93.13 / 70.37 | 86.57 |
+| 3 | 0.9979 | 92.50 / 79.73 | 54.33 | 92.56 / 70.24 | 84.96 |
+| 4 (best) | 0.9984 | 92.57 / 80.69 | 56.83 | 92.20 / 70.67 | 81.79 |
+
+Reading: Synthbuster mAP falls monotonically with training (96.16 to 92.20; DALL-E 2 98.9 to 81.8, Firefly 82.8 to 78.6), the signature of over-adapting to SD v1.4 artifacts, while GenImage-8 mAP is flat (92.0-93.2, within single-run noise) and its accuracy creeps up (77.8 to 80.7) as the 0.5 threshold calibrates. No early epoch comes near the official weights' 97.12 mAP on GenImage-8, so an early checkpoint does not explain the gap on the paper's benchmark. One run, one seed, 300 images per class.
+
 ### SPAI
 SPAI SERVES official weights remapped into the SynthScope class at NATIVE resolution (any-res spectral path). `SynthScope_official` = that served number; `SynthScope_train` = the official-recipe retrain in SynthScope (35 epochs, job 267192), epoch 8 chosen by validation loss (epoch 17 as a note). It reproduces the official weights within about 1 point; the earlier from-scratch fixed-448 retrain (88.80) is superseded. Protocol: native resolution, GenImage-8 300 per class per generator, Synthbuster 200 with GenImage-nature proxy reals; eval jobs 273444-273446, 273597.
 | Benchmark | Paper | SynthScope_official (served, native-res) | SynthScope_train (epoch 8) | Epoch 17 |

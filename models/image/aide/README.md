@@ -36,6 +36,18 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 
 *(**SynthScope_train = the official training recipe run in SynthScope** (`bash experiments/image/aide.sh`, train job 281041, `model_best` = epoch 4 of 5, validation accuracy 0.9984), evaluated with `bench_eval --model aide --ckpt model_best.pth`: GenImage-8 on the full test set (tag `aide_trained_genimage8`) **93.90 mAP / 91.66 mAUROC / 80.73 acc**; on the first 300 images per class and generator (the protocol of the served row and of the previous retrain; tag `aide_trained_genimage8_l300`) 92.57 / 89.63 / 80.69. It stays outside the 2-point tolerance of the paper (86.88 acc, -6.15) and below the official weights (97.12 mAP, -3.22): SD v1.4, SD v1.5, Wukong and GLIDE match them (acc 99.97 / 100.0 / 99.93 / 92.00 against 99.76 / 99.80 / 99.13 / 90.83), but ADM (58.63 against 76.60), Midjourney (74.60 against 83.70), VQDM (69.83 against 76.80) and BigGAN (50.87 against 60.63) transfer worse; real accuracy is 99.93-100 on every subset, so the loss is fake recall at the 0.5 threshold. The previous retrain (`aide_native_v2/model_2`: native-resolution 5-view, but the earlier recipe with lr 1e-4, batch 32, horizontal flip, no perturbations, no label smoothing, DeepSpeed gradient clipping 1.0 and the epoch picked by validation loss; 300 images per class) had 96.42 mAP / 77.87 acc: the faithful recipe gains 2.8 points of accuracy and loses 3.9 mAP on the same images. The cause of the remaining gap is not identified. ForenSynths-13 (tag `aide_trained_forensynths`, 300 per class) is cross-domain for a GenImage-trained model (80.42 mAP / 62.5 acc); the official number there is the ProGAN-trained `progan_train.pth`, not the served `sd14_train.pth`.)*
 
+**Per-epoch diagnostic (not a reproduction claim; the headline stays `model_best` = epoch 4, chosen by validation accuracy as in the official code).** Each epoch checkpoint `model_0..model_4` of train job 281041 was scored on GenImage-8 (first 300 images per class and generator; epoch 4 is `aide_trained_genimage8_l300`) and, as a transfer probe, on Synthbuster (not an AIDE paper benchmark: the 9 generators' fakes against the 5,000 shared MSCOCO reals, first 300 per class and generator, 5,400 images), DAS6 job 66991, tags `aide_trained_e<k>_genimage8_l300` / `aide_trained_e<k>_synthbuster`:
+
+| Epoch | val acc | GenImage-8 mAP / acc | GenImage-8 ADM acc | Synthbuster mAP / acc | Synthbuster DALL-E 2 AP |
+|---|---:|---:|---:|---:|---:|
+| 0 | 0.9913 | 93.20 / 77.83 | 52.67 | **96.16** / 72.20 | 98.90 |
+| 1 | 0.9956 | 91.99 / 77.88 | 54.17 | 94.20 / 69.63 | 93.79 |
+| 2 | 0.9973 | 92.96 / 79.73 | 54.67 | 93.13 / 70.37 | 86.57 |
+| 3 | 0.9979 | 92.50 / 79.73 | 54.33 | 92.56 / 70.24 | 84.96 |
+| 4 (best) | 0.9984 | 92.57 / 80.69 | 56.83 | 92.20 / 70.67 | 81.79 |
+
+Reading: Synthbuster mAP falls monotonically with training (96.16 to 92.20; DALL-E 2 98.9 to 81.8, Firefly 82.8 to 78.6), the signature of over-adapting to SD v1.4 artifacts, while GenImage-8 mAP is flat (92.0-93.2, within single-run noise) and its accuracy creeps up (77.8 to 80.7) as the 0.5 threshold calibrates. No early epoch comes near the official weights' 97.12 mAP on GenImage-8, so an early checkpoint does not explain the gap on the paper's benchmark. One run, one seed, 300 images per class.
+
 ### Training recipe (`experiments/image/aide.sh`)
 
 The recipe follows the official code (`shilinyan99/AIDE`, `main_finetune.py`, `data/datasets.py`) and the paper's GenImage setting:
