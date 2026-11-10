@@ -191,8 +191,7 @@ def score(det, model, spec, paths: list[Path], bs: int, transform=None,
     tf = transform if transform is not None else spec.transform
     # Native-resolution specs (SPAI any-res) produce variable-size tensors that cannot be stacked,
     # so they MUST be scored one image at a time.
-    if getattr(spec, "native_res", False):
-        bs = 1
+    bs = spec.eval_batch_size(bs)
     probs, kept = [], []
     for i in range(0, len(paths), bs):
         batch = []
