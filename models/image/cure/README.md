@@ -212,6 +212,11 @@ The scripts are in `repro/cure_stage1/` and the JSON outputs in `repro/cure_stag
   - **r3e0 is the main SynthScope-trained checkpoint** (sha256 ac70224f...).
   - It depends on an augmentation assumption the paper does not state.
   - Among the pre-registered checkpoints it has both the best selection score (94.31 vs r1e0 92.84 vs R2 final 86.86) and the best benchmark mean.
+  - **Disclosure: choosing r3e0 over r1e0 was a run-level decision.**
+    - The pre-registered rule selects an epoch *within* a run.
+    - Running R3 at all, and making it the main checkpoint, was decided after the R1 benchmark results were known.
+    - The cross-run selection scores were computed on different GPUs: R1 on an RTX 6000 Ada, R2 on an RTX A5000, R3 on an RTX A6000. R1's reference rows reuse R2's A5000 features. The released reference scores 95.2 on the A5000 and 95.16 on the A6000.
+    - **Only the AIGIBench "reproduced" depends on the augmentation.** r1e0 alone, which uses only the paper's settings, already reproduces AIGCDetect, SynthWildX and WildRF.
 - **r1e0 is the result that uses only the paper's stated settings** (sha256 60346a37...).
 
 All checkpoints were scored with the official rows' exact protocol: `bench_eval --ckpt`, `--bs 16`, the same data, AIGIBench `--select` of the paper's 20 subsets on full data, no `--limit`. Tags: `cure_trained_<bench>` (original), `cure_trained_r1e0_*`, `cure_trained_r2_*`, `cure_trained_r2e1_*`, `cure_trained_r3e0_*`. Every JSON was checked against its log's RESULT line.
@@ -252,7 +257,7 @@ Each cell is acc / AUROC. R means reproduced (acc >= paper - 2.0, and AUROC >= p
   - Its LoRA update is 1.71x the released adapter's (Frobenius norm of 2·B·A over all 48 adapted projections). The released adapter starts from the same standard init.
   - It fits the SD v1.4 mixing ratio about 3x better than the released encoder: excess BCE of a fresh linear head 0.0072 vs 0.0220.
   - It encodes JPEG quality more strongly: a q95-vs-q50 probe gives 90.2 bacc vs the release's 83.4.
-  - A linear probe fitted on SD v1.4 features transfers worse than the **frozen** base: on Synthbuster fakes, 81.0 vs 92.5, against 95.0 for the released encoder.
+  - A linear probe fitted on SD v1.4 features transfers worse than the **frozen** base: on Synthbuster fakes, 81.0 vs 92.5, against 95.0 for the released encoder. These are balanced accuracies 80.95 / 92.53 / 95.03 from `repro/cure_stage1/results/epoch_select_r1.json` (rows orig / base / released).
 - **Ruled out by direct tests:** the stage-2 mixing position (released mu matches mixing after q70: 0.59% vs 3.59% before), the stage-2 solver, the head trainer and the protocol.
 - **Selection rule.** It was committed before any epoch was scored (`repro/cure_stage1/epoch_select.py`, commit d73d102), and no CuRe paper benchmark is used.
   - **Data:** 1287 Synthbuster fakes (143 per generator; Synthbuster is not a CuRe benchmark) against 2000 SD v1.4 test reals.

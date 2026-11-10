@@ -41,6 +41,7 @@ from dataset import CuReEndpoints, CuReMixDataset, cure_mix                  # n
 from models.image.cure import subspace as S                                  # noqa: E402
 from models.image.cure.cure import SynthScopeCuReModel                       # noqa: E402
 from models.image.cure.preprocess import SRC_FORMAT_KEY, CuReTransform       # noqa: E402
+from models.image.cure.train_augment import CuReDDAEndpoint                  # noqa: E402
 from models.image.cure.train_stages import draw_pairs, fit_normalisation     # noqa: E402
 from trainer import SynthScopeModelTrainer                                   # noqa: E402
 
@@ -106,7 +107,6 @@ def test_mix_dataset() -> None:
 
 def test_train_augment() -> None:
     print("[G] R3 DDA-style endpoint augmentation ...")
-    from models.image.cure.train_augment import CuReDDAEndpoint
     tf = CuReTransform()
     with tempfile.TemporaryDirectory() as tmp:
         write_genimage(Path(tmp))

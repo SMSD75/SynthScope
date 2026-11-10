@@ -197,7 +197,7 @@ Each cell is acc / AUROC; R means reproduced.
 - **Last epoch, as written:** 13 points short. Stage 1 over-adapts to SD v1.4:
   - LoRA update 1.71x the release's;
   - a 3x tighter fit of the SD1.4 mixing ratio;
-  - a SD1.4-fitted probe transfers to Synthbuster worse than the frozen base (81.0 vs 92.5; release 95.0).
+  - a SD1.4-fitted probe transfers to Synthbuster worse than the frozen base (81.0 vs 92.5; release 95.0; `repro/cure_stage1/results/epoch_select_r1.json`).
 - **Early stopping by the pre-registered rule (epoch 0):** recovers more than half of the gap.
 - **Augmentation:** adds AIGIBench.
 - **What remains with R3 e0:**
@@ -206,6 +206,10 @@ Each cell is acc / AUROC; R means reproduced.
   - RRDataset -8 (AUROC 85.3 vs 88.9);
   - RealChain -7, which is calibration (AUROC 84.7 vs the official 85.5);
   - EvalGEN -5, mostly the threshold (AUROC 98.85 vs 99.66).
+- **Disclosure:** the pre-registered rule selects an epoch within a run.
+  - Choosing r3e0 over r1e0 as the main checkpoint was decided after R1's benchmark results were known.
+  - Cross-run selection scores come from different GPUs: R1 RTX 6000 Ada, R2 A5000, R3 A6000. The released reference scores 95.2 on the A5000 and 95.16 on the A6000.
+  - Only the AIGIBench "reproduced" depends on the augmentation; r1e0 alone reproduces AIGCDetect, SynthWildX and WildRF.
 - **Seed and global batch:** single seed (paper std 0.3-0.7). Global batch 512 alone (R2) does not reproduce the paper.
 - **Stages 2-3:** verified. The released encoder through our stage 2 + 3 reproduces the paper (jobs 66720 / 66726).
 - **Engineering notes:**

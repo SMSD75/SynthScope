@@ -11,7 +11,8 @@
 #             trace-normalised C_F, C_M, C_S, generalised eigenproblem -> W (1024 x 128), mu (train_stages.py stage2)
 #   stage 3   Linear(128, 2) on W^T (z - mu), dropout 0.05, CE, AdamW lr 2e-4, weight decay 0.1, batch 256, 5 epochs
 #             (train_stages.py stage3) -> $SAVE/stage23/cure_trained.pth, the released adapter's 100 keys
-#   batch     per-GPU 64 = MICRO x ACCUM (MICRO 64 + GRAD_CKPT=true on a 48 GB GPU; e.g. MICRO 16 x ACCUM 4 on 24 GB);
+#   batch     per-GPU 64 = MICRO x ACCUM. Measured: 48 GB (A6000 / RTX 6000 Ada): MICRO 64, GRAD_CKPT=false, about 28 GiB;
+#             24 GB (A5000): MICRO 64 + GRAD_CKPT=true (6.3 GiB peak) or MICRO 32 x ACCUM 2 without checkpointing (14.1 GiB);
 #             the paper does not state its GPU count (global batch = NGPU x 64)
 # Plain DDP with fp16 autocast + loss scaling, no gradient clipping (not the repo's DeepSpeed accelerate_config.yaml, which
 # clips at 1.0); the accelerate launch is pinned by an explicit

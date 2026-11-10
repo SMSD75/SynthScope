@@ -60,7 +60,8 @@ class CuReDDAEndpoint:
                 image.load()
         crop_rng = None
         if self.augment:
-            # replay one RNG state per pair (DDA's ComposedTransforms); restore the caller's global states afterwards
+            # replay one RNG state per pair (DDA's ComposedTransforms); restore the caller's global (CPU) states afterwards;
+            # the CUDA generators are never touched
             states = (random.getstate(), np.random.get_state(), torch.get_rng_state())
             try:
                 # re-seed before EVERY step: the two endpoints differ in size, so size-dependent draws (noise, pepper
@@ -68,7 +69,8 @@ class CuReDDAEndpoint:
                 # (apply?, which blur, jitter factors, flips, JPEG quality, ...) identical for the pair
                 for k, step in enumerate(self.steps):
                     s = (seed * 1_000_003 + k) % 2 ** 31
-                    random.seed(s); np.random.seed(s); torch.manual_seed(s)
+                    # torch: the CPU default generator only (torch.manual_seed would also re-seed every CUDA device)
+                    random.seed(s); np.random.seed(s); torch.default_generator.manual_seed(s)
                     image = step(image)
                 image = image.convert("RGB")
             finally:

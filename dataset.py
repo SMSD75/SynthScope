@@ -33,6 +33,7 @@ from models.image.dda.official_train_data import MEAN as DDA_MEAN, STD as DDA_ST
     create_train_transforms as dda_train_transforms
 from models.image.dda.official_train_transforms import ComposedTransforms as DDAComposedTransforms
 from models.image.cure.preprocess import SRC_FORMAT_KEY
+from models.image.cure.train_augment import CuReDDAEndpoint
 
 
 def _decode_rgb(path) -> torch.Tensor:
@@ -3202,10 +3203,9 @@ class CuReTrainDatasetModule:
         if augment not in (None, "dda"):
             raise ValueError(f"cure_train: train_augment must be null or 'dda', got {augment!r}")
         if augment == "dda":   # stage-1 investigation R3 only; validation stays un-augmented
-            from models.image.cure.train_augment import CuReDDAEndpoint
             augment = CuReDDAEndpoint(augment=True)
         self.train_dataset = CuReMixDataset(CuReEndpoints(root, "train", transform, cap, augment=augment), "train", seed=seed)
-        self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_images", cap)), "val",
+        self.val_dataset = CuReMixDataset(CuReEndpoints(root, "test", transform, cfg.get("val_max_images", None)), "val",
                                           val_pairs=cfg.get("val_pairs", None), seed=seed)
 
     def train_dataloader(self):

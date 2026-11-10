@@ -99,7 +99,7 @@ def main():
                     print(f"  head features {n}/{len(loader.dataset)} ({n / (time.time() - t0):.0f} images/s)", flush=True)
         y = torch.cat(labels)
         for k, (_, out) in runs.items():
-            torch.save({"z": torch.cat(feats[k]), "y": y}, out / "head_features.pt")
+            torch.save({"z": torch.cat(feats[k]), "y": y, "encode_batch": args.encode_batch}, out / "head_features.pt")
         del feats
     del models
     if dev.startswith("cuda"):
@@ -115,7 +115,7 @@ def main():
             a2 += ["--reference-adapter", args.reference_adapter]
         print(f"[multi] {k}: train_stages {' '.join(a2)}", flush=True)
         train_stages_main(a2)
-        a3 = ["stage3", *common]
+        a3 = ["stage3", *common, "--encode-batch", str(args.encode_batch)]
         print(f"[multi] {k}: train_stages {' '.join(a3)}", flush=True)
         train_stages_main(a3)
 

@@ -13,6 +13,6 @@ val_batch_size: 64
 num_workers: 8
 val_pairs: 2000
 max_images: null           # smoke runs: the first N reals and N fakes of the split (sorted names)
-val_max_images: null
+val_max_images: null       # null = the whole test split (independent of max_images)
 seed: 0                    # the validation pairs
 train_augment: null        # null = the recipe; dda = stage-1 investigation R3 (models/image/cure/train_augment.py)

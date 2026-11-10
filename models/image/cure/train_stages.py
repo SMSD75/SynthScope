@@ -74,16 +74,19 @@ def endpoint_transform(control: str = "none"):
     return AIGITransformations(list(OmegaConf.load(MODEL_YAML).eval_transform_list))
 
 
+def _draw_indices(n: int, n_pairs: int, gen: torch.Generator) -> torch.Tensor:
+    """``n_pairs`` indices into ``n`` images: without replacement while ``n`` is large enough, else with replacement."""
+    return torch.randperm(n, generator=gen)[:n_pairs] if n_pairs <= n else torch.randint(n, (n_pairs,), generator=gen)
+
+
 def draw_pairs(n_pairs: int, n_a: int, n_b: int, same_class: bool, gen: torch.Generator) -> torch.Tensor:
     """``[n_pairs, 2]`` endpoint indices: independent uniform draws (without replacement while the class is large
     enough); for a same-class pair the second index is uniform over the other images of the class."""
-    def draw(n):
-        return torch.randperm(n, generator=gen)[:n_pairs] if n_pairs <= n else torch.randint(n, (n_pairs,), generator=gen)
-    first = draw(n_a)
+    first = _draw_indices(n_a, n_pairs, gen)
     if same_class:
         second = (first + 1 + torch.randint(n_a - 1, (n_pairs,), generator=gen)) % n_a
     else:
-        second = draw(n_b)
+        second = _draw_indices(n_b, n_pairs, gen)
     return torch.stack([first, second], dim=1)
 
 
@@ -266,12 +269,14 @@ def stage3(args) -> None:
         print(f"[stage3] reusing {feat_path}", flush=True)
         cache = torch.load(feat_path, map_location="cpu", weights_only=True)
         z, y = cache["z"], cache["y"]
+        encode_batch = int(cache["encode_batch"]) if "encode_batch" in cache else None
     else:
         print(f"[stage3] encoding {len(ep.reals)} real + {len(ep.fakes)} generated images", flush=True)
         loader = DataLoader(LabelledImages(ep), batch_size=args.encode_batch, shuffle=False, num_workers=args.workers,
                             pin_memory=True)
         z, y = encode_images(model, loader, args.device)
-        torch.save({"z": z, "y": y}, feat_path)
+        encode_batch = args.encode_batch
+        torch.save({"z": z, "y": y, "encode_batch": encode_batch}, feat_path)   # the export check matches this batch size
     dev = args.device
     u = ((z.to(dev) - mu.to(dev)) @ w.to(dev)).float()
     head = train_head(u, y.to(dev), args)
@@ -291,8 +296,15 @@ def stage3(args) -> None:
     # (--encode-batch): fp16 kernels can give batch-size-dependent results (measured on an RTX 6000 Ada, job 285054:
     # max |feature diff| 0.29 at |z| <= 82 between batches of 64 and 128, bit-identical at equal batch size), which is a
     # GPU property, not an export error. One batch of reals and one of generated images; the tolerance is unchanged.
+    if encode_batch is None:
+        print(f"[stage3] WARNING: {feat_path} records no encode batch size; assuming --encode-batch {args.encode_batch}",
+              flush=True)
+        encode_batch = args.encode_batch
+    elif encode_batch != args.encode_batch:
+        print(f"[stage3] WARNING: cached features were encoded in batches of {encode_batch}, not --encode-batch "
+              f"{args.encode_batch}; the export check uses {encode_batch}", flush=True)
     n_r = len(ep.reals)
-    nb = max(1, min(args.encode_batch, n_r, len(ep.fakes)))
+    nb = max(1, min(encode_batch, n_r, len(ep.fakes)))
     logits_export, idx = [], []
     with torch.no_grad():
         for blk in (list(range(nb)), [n_r + i for i in range(nb)]):
@@ -311,7 +323,7 @@ def stage3(args) -> None:
     with torch.no_grad():
         alt = float((check(torch.stack(probe).to(dev)).float().cpu() - head(u[pidx.to(dev)]).float().cpu()).abs().max())
     print(f"[stage3] batch-size sensitivity on this GPU (informational, not a gate): reloaded-model logits in one batch of "
-          f"{n} vs cached features encoded in batches of {args.encode_batch}: max |diff| {alt:.2e}", flush=True)
+          f"{n} vs cached features encoded in batches of {encode_batch}: max |diff| {alt:.2e}", flush=True)
     if stray or unexpected or diff > 1e-2:
         raise RuntimeError("exported adapter does not reproduce the trained head")
 
