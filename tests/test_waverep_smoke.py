@@ -18,6 +18,8 @@ Checks:
 * with ``$SYNTHSCOPE_CKPT_DIR/waverep.pth`` / ``waverep_g4.pth`` (the released weights_dinov2_G{1,4}.ckpt): the engine
   loads them strictly (0 missing / 0 unexpected, no transformers key translation) and every tensor equals the file's
   (skipped otherwise).
+The vendored official_utils.py (demo/utils.py) imports pandas and tqdm, which SynthScope does not depend on: without
+them the official reader, transform and per-frame loop are compared in their written-out form instead.
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ import cv2
 import numpy as np
 import timm
 import torch
+import torchvision.transforms as T
 from omegaconf import OmegaConf
 from PIL import Image
 
@@ -42,13 +45,19 @@ from backend import media                                                       
 from backend.engine import Engine, _load_checkpoint                              # noqa: E402
 from backend.hf_compat import translate_hf_keys                                  # noqa: E402
 from backend.registry import get_spec, input_note, remap_waverep                  # noqa: E402
-from models.video.waverep import official_utils as official                       # noqa: E402
 from models.video.waverep.waverep import SynthScopeWaveRepModel                   # noqa: E402
 from synthscope.api import Detector                                               # noqa: E402
+try:   # the vendored official demo/utils.py imports pandas and tqdm, which SynthScope does not depend on
+    from models.video.waverep import official_utils as official                   # noqa: E402
+except ImportError as e:
+    official, OFFICIAL_MISSING = None, f"{type(e).__name__}: {e}"
 
 KEYS = ("waverep", "waverep_g4")
 # A one-block ViT with the official layout (registers, one output) for fast CPU checks at the real 504 input.
 TINY = {"embed_dim": 48, "depth": 1, "num_heads": 2}
+# The official create_transform(504) (demo/utils.py), written out so the check runs without pandas.
+OFFICIAL_TRANSFORM = T.Compose([T.CenterCrop((504, 504)), T.ToTensor(),
+                                T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
 
 
 def noise_image(size: tuple[int, int]) -> Image.Image:
@@ -83,18 +92,45 @@ def write_clip(path: str, n: int, size=(160, 120)) -> None:
     writer.release()
 
 
+def official_reader(path: str, limit=None):
+    """The official ReadVideoIteratorCV loop (demo/utils.py) written out: every cv2 frame, BGR -> RGB, PIL."""
+    cap = cv2.VideoCapture(path)
+    idx = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        yield Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        idx += 1
+        if limit and idx >= limit:
+            break
+    cap.release()
+
+
+@torch.no_grad()
+def reference_logits(timm_model, clip: str, limit) -> torch.Tensor:
+    """Per-frame logits as the official demo computes them: the vendored ``evaluate`` (one frame at a time) on the
+    official reader + transform, or, without pandas, the same loop written out."""
+    if official is not None:
+        reader = official.ReadVideoIteratorCV(clip, transform=official.create_transform(504), limit=limit)
+        return torch.tensor(official.evaluate(timm_model, reader, "cpu")["logit"].to_numpy(), dtype=torch.float64)
+    return torch.tensor([timm_model(OFFICIAL_TRANSFORM(f)[None])[0, -1].item() for f in official_reader(clip, limit)],
+                        dtype=torch.float64)
+
+
 def test_transform() -> None:
     print("[A] registry transform == the official create_transform(504) ...")
     tf = get_spec("waverep").transform
     assert list(tf.transform_list) == ["center_crop_504", "to_dtype", "normalize_imagenet"]
     assert get_spec("waverep_g4").transform is tf
-    golden = official.create_transform(504)
+    goldens = [OFFICIAL_TRANSFORM] + ([official.create_transform(504)] if official is not None else [])
     for size in [(298, 224), (256, 256), (503, 505), (504, 504), (512, 320), (672, 384), (1280, 720), (2160, 544)]:
         img = noise_image(size)
         x = tf(img)
         assert x.shape == (3, 504, 504) and x.dtype == torch.float32, size
-        assert torch.equal(x, golden(img)), size                       # bit-exact, incl. the zero padding
-    print("    8 sizes equal the official torchvision v1 pipeline")
+        assert all(torch.equal(x, golden(img)) for golden in goldens), size   # bit-exact, incl. the zero padding
+    print(f"    8 sizes equal the official torchvision v1 pipeline"
+          f"{'' if official is not None else ' (written out; vendored file skipped: ' + OFFICIAL_MISSING + ')'}")
 
 
 def test_reader() -> None:
@@ -103,11 +139,12 @@ def test_reader() -> None:
         clip = os.path.join(tmp, "clip.mp4")
         write_clip(clip, 70)
         ours = list(media.cv2_frames(clip))
-        ref = [f for _, f in official.ReadVideoIteratorCV(clip)]
+        vendored = official.ReadVideoIteratorCV if official is not None else None
+        ref = [f for _, f in vendored(clip)] if vendored else list(official_reader(clip))
         assert len(ours) == len(ref) == 70
         assert all(o.mode == "RGB" and np.array_equal(np.asarray(o), np.asarray(r)) for o, r in zip(ours, ref))
         limited = list(media.cv2_frames(clip, limit=64))
-        ref64 = [f for _, f in official.ReadVideoIteratorCV(clip, limit=64)]
+        ref64 = [f for _, f in vendored(clip, limit=64)] if vendored else list(official_reader(clip, 64))
         assert len(limited) == len(ref64) == 64
         assert all(np.array_equal(np.asarray(o), np.asarray(r)) for o, r in zip(limited, ref64))
         assert len(list(media.cv2_frames(os.path.join(tmp, "missing.mp4")))) == 0
@@ -176,19 +213,17 @@ def test_specs_and_engine() -> None:
         for spec, n in ((get_spec("waverep"), 64), (dataclasses.replace(get_spec("waverep"), key="waverep_all",
                                                                          num_frames=0), 70)):
             engine._cache[spec.key] = model
-            reader = official.ReadVideoIteratorCV(clip, transform=official.create_transform(504),
-                                                  limit=spec.num_frames or None)
-            ref = official.evaluate(model.model, reader, "cpu")     # the official evaluate takes the timm model
+            ref = reference_logits(model.model, clip, spec.num_frames or None)   # the official takes the timm model
             assert len(ref) == n
             logits = engine.video_frame_logits(spec, clip)
             assert logits.shape == (n,)
-            assert torch.allclose(logits.double(), torch.tensor(ref["logit"].to_numpy()), atol=1e-5), spec.key
+            assert torch.allclose(logits.double(), ref, atol=1e-5), spec.key
             res = engine.predict_video_clip(spec, clip)
-            want = float(torch.sigmoid(torch.tensor(ref["logit"].mean(), dtype=torch.float64)))
+            want = float(torch.sigmoid(ref.mean()))
             assert res["num_frames"] == n and abs(res["fake_probability"] - round(want, 6)) < 2e-6, (res, want)
-            print(f"    {n} frames: official logits mean {ref['logit'].mean():.4f} std {ref['logit'].std():.4f}")
-            assert ref["logit"].std() > 0.01                # frames score differently (a non-trivial comparison)
-            assert abs(res["logit"] - ref["logit"].mean()) < 1e-5
+            print(f"    {n} frames: official logits mean {ref.mean():.4f} std {ref.std():.4f}")
+            assert ref.std() > 0.01                         # frames score differently (a non-trivial comparison)
+            assert abs(res["logit"] - float(ref.mean())) < 1e-5
             stacked = engine.video_clip(spec, clip)
             assert stacked.shape == (n, 3, 504, 504)
             assert torch.equal(stacked[0], get_spec("waverep").transform(next(media.cv2_frames(clip))))
@@ -212,7 +247,8 @@ def test_specs_and_engine() -> None:
             assert "video-only detector" in str(e), e
         else:
             raise AssertionError("waverep scored a still image")
-    print(f"    64 / 70 frame logits == official evaluate, P(fake) {res['fake_probability']:.4f}; note "
+    ref_name = "evaluate" if official is not None else "loop (written out)"
+    print(f"    64 / 70 frame logits == official {ref_name}, P(fake) {res['fake_probability']:.4f}; note "
           f"'{note['label']}'; broken clip -> error; API image guard")
 
 

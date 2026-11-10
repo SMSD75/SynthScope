@@ -77,6 +77,11 @@ matters too: on the 600-frame Sora clip the G4 logit is -2.61 over the first 64 
 
 Benchmarks: see Task 2 of the integration (to be added).
 
+## Availability
+
+Space: pending user approval (requires uploading `weights_dinov2_G{1,4}.ckpt` to the hub repo; ~30 s/video on CPU).
+Not in the model zoo: place the checkpoints under `$SYNTHSCOPE_CKPT_DIR` as `waverep.pth` / `waverep_g4.pth`.
+
 ## License
 
 GRIP-UNINA license (`LICENSE.md` of the official repository): free for informational and nonprofit purposes only,

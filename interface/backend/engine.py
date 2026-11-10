@@ -454,7 +454,11 @@ class Engine:
         return res
 
     def video_clip(self, spec: ModelSpec, path) -> torch.Tensor:
-        """Decode and normalize a clip exactly as ``spec`` prescribes: ``[T, 3, H, W]``."""
+        """Decode and normalize a clip exactly as ``spec`` prescribes: ``[T, 3, H, W]``.
+
+        For video_sampler "cv2_frames" (WaveRep) this materializes every selected frame at 504x504 float (~3 MB each):
+        with ``num_frames=0`` (the official demo's default, every frame) a long video needs that much memory per frame;
+        scoring goes through ``video_frame_logits`` instead, which streams."""
         if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
             frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
             return torch.stack([spec.transform(f) for f in frames])
@@ -494,6 +498,7 @@ class Engine:
     def predict_video_clip(self, spec: ModelSpec, path) -> dict:
         """Run a native *video* detector on a decoded clip."""
         if spec.video_sampler == "cv2_frames":          # frame-level: P(fake) = sigmoid(mean frame logit), official
+            self._get_model(spec)                       # load first: elapsed covers decoding and scoring only
             t0 = time.time()
             logits = self.video_frame_logits(spec, path)
             logit = logits.double().mean()              # the official mean (pandas, float64) of the float32 logits
