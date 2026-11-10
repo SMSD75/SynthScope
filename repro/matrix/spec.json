@@ -35,6 +35,8 @@
   {"key": "ltf", "name": "LTF", "cost": "slow", "native_res": true, "internal_only": true, "imgs_per_s": 6, "split": true},
   {"key": "mirror", "name": "MIRROR", "cost": "mid", "internal_only": true, "imgs_per_s": 19, "split": true},
   {"key": "vina", "name": "VINA", "cost": "mid", "internal_only": true, "imgs_per_s": 35},
+  {"key": "probe", "name": "PROBE", "cost": "very_slow", "native_res": true, "internal_only": true, "imgs_per_s": 6, "split": true},
+  {"key": "probe_resnet", "name": "PROBE (ResNet-50)", "cost": "mid", "native_res": true, "internal_only": true, "imgs_per_s": 30, "split": true},
   {"key": "omniaid", "name": "OmniAID (v2)", "cost": "slow", "imgs_per_s": 11, "split": true},
   {"key": "omniaid_v1", "name": "OmniAID v1", "cost": "slow", "imgs_per_s": 11, "split": true},
   {"key": "omniaid_genimage", "name": "OmniAID (GenImage)", "cost": "slow", "imgs_per_s": 11, "split": true},
@@ -172,14 +174,14 @@
    "realchain": "repro/bench_results/co_spy_realchain.json"
   },
   "pgc": {
-   "forensynths13": "repro/bench_results/pgc_official_forensynths13.json",
-   "ufd8": "repro/bench_results/pgc_official_ufd8.json",
-   "evalgen": "repro/bench_results/pgc_evalgen.json",
-   "synthwildx": "repro/bench_results/pgc_synthwildx.json",
-   "wildrf": "repro/bench_results/pgc_wildrf.json",
-   "rrdataset": "repro/bench_results/pgc_rrdataset.json",
-   "bfree_online": "repro/bench_results/pgc_bfree_online.json",
-   "realchain": "repro/bench_results/pgc_realchain.json"
+   "forensynths13": "repro/bench_results/pgc_official_forensynths13_fixed.json",
+   "ufd8": "repro/bench_results/pgc_official_ufd8_fixed.json",
+   "evalgen": "repro/bench_results/pgc_evalgen_fixed.json",
+   "synthwildx": "repro/bench_results/pgc_synthwildx_fixed.json",
+   "wildrf": "repro/bench_results/pgc_wildrf_fixed.json",
+   "rrdataset": "repro/bench_results/pgc_rrdataset_fixed.json",
+   "bfree_online": "repro/bench_results/pgc_bfree_online_fixed.json",
+   "realchain": "repro/bench_results/pgc_realchain_fixed.json"
   },
   "cure": {
    "forensynths13": "repro/bench_results/cure_repro_forensynths.json",
@@ -225,6 +227,16 @@
    "rrdataset": "repro/bench_results/mirror_rrdataset.json",
    "bfree_online": "repro/bench_results/mirror_bfree_online.json",
    "realchain": "repro/bench_results/mirror_realchain.json"
+  },
+  "probe": {
+   "synthwildx": "repro/bench_results/probe_synthwildx.json",
+   "wildrf": "repro/bench_results/probe_wildrf.json",
+   "synthbuster_coco": "repro/bench_results/probe_synthbuster_coco.json"
+  },
+  "probe_resnet": {
+   "synthwildx": "repro/bench_results/probe_resnet_synthwildx.json",
+   "wildrf": "repro/bench_results/probe_resnet_wildrf.json",
+   "synthbuster_coco": "repro/bench_results/probe_resnet_synthbuster_coco.json"
   },
   "vina": {
    "ufd8": "repro/bench_results/vina_ufd_diffusion8.json",

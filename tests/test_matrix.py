@@ -121,10 +121,10 @@ def check_committed_spec() -> None:
     keys = [d["key"] for d in spec["detectors"]]
     assert set(keys) == image - set(spec["excluded_detectors"]), (set(keys) ^ (image - set(spec["excluded_detectors"])))
     assert set(spec["excluded_detectors"]) == {"vib_net_official", "effort_chameleon"}
-    assert len(spec["benchmarks"]) == 15 and len(keys) == 25
+    assert len(spec["benchmarks"]) == 15 and len(keys) == 27   # 25 + probe, probe_resnet (merged 2026-11-09)
     assert {d["key"] for d in spec["detectors"] if d.get("native_res")} == {k for k in keys if MODELS[k].native_res}    # the registry's flag
     assert {d["key"] for d in spec["detectors"] if d.get("split")} == {"spai", "aide", "ltf", "omniaid", "omniaid_v1", "omniaid_genimage",
-                                                                       "mirror", "bfree"}
+                                                                       "mirror", "bfree", "probe", "probe_resnet"}
     assert {b["key"] for b in spec["benchmarks"] if b.get("split")} == {"aigibench25", "cospybench"}
     assert all(d["imgs_per_s"] > 0 for d in spec["detectors"]) and spec["chunk_hours"] > 0
     for det, per_bench in spec["reuse"].items():
@@ -134,9 +134,9 @@ def check_committed_spec() -> None:
             assert data["model"] == det and data["n_generators"] == want, (det, bench, rel)
     for b in spec["benchmarks"]:
         assert b["profile"] in ("pergen", "forensynths", "ufd", "pool") and b["data"], b
-    assert sum(len(v) for v in spec["reuse"].values()) == 143
+    assert sum(len(v) for v in spec["reuse"].values()) == 149   # 143 + probe/probe_resnet x 3 wild/Synthbuster runs
     cells = matrix.build_cells(spec, keys, [b["key"] for b in spec["benchmarks"]], [None])
-    assert len(cells) == 25 * 15 - 143, len(cells)
+    assert len(cells) == 27 * 15 - 149, len(cells)
     # planning the whole matrix against empty benchmark folders with a fake listing
     listings = {"CoSpyBench": [(f"gen{i:03d}", 1000) for i in range(110)], "AIGIBench": [(f"s{i:02d}", 5000) for i in range(25)]}
     with tempfile.TemporaryDirectory() as tmp_:
@@ -150,7 +150,7 @@ def check_committed_spec() -> None:
         costs = [u.cost for u in units]
         assert costs == sorted(costs, reverse=True)
         cospy = [u for u in units if u.cell.benchmark == "cospybench"]
-        assert len(cospy) == 25 * 11 and max(len(u.generators) for u in cospy) == 10
+        assert len(cospy) == 27 * 11 and max(len(u.generators) for u in cospy) == 10
         assert all(len(u.generators) <= 10 for u in cospy)
         spai = [u for u in units if u.cell == Cell("spai", "aigibench25")]
         clip = [u for u in units if u.cell == Cell("clip", "aigibench25")]
