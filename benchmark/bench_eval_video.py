@@ -192,6 +192,17 @@ def score_videos(engine, spec, paths, raw=False, cache: ScoreCache | None = None
     return out, bad
 
 
+def unique_videos(gens, pool_key) -> list[Path]:
+    """The videos to score once: each distinct real pool (the same pool is hard-linked per generator) and every fake."""
+    jobs, seen = [], set()
+    for _, reals, fakes in gens:
+        if pool_key(reals) not in seen:
+            seen.add(pool_key(reals))
+            jobs += reals
+        jobs += fakes
+    return jobs
+
+
 def fake_recall_at_fpr(real_scores, fake_scores):
     """SPLIT's operating-point metric (official eval.py): the threshold is the (1 - FPR) quantile of the real scores
     (numpy method "higher"); fake recall = share of fakes scoring at or above it. In percent, per FPR."""
@@ -217,11 +228,30 @@ def main(argv=None) -> int:
     ap.add_argument("--cache-dir", default=None, help="store / reuse the per-video scores here (resumable, see above)")
     ap.add_argument("--cache-only", action="store_true", help="with --cache-dir: fail on a video that is not cached "
                                                               "instead of scoring it (the final aggregation run)")
+    ap.add_argument("--list-out", default=None, help="with --shard: write the slice's video paths (relative to --base) to "
+                                                     "this file and stop (no model needed); for staging only those files")
+    ap.add_argument("--score-list", default=None, help="score exactly the videos listed in this file (paths relative to "
+                                                       "--base) into --cache-dir and stop (a staged slice, no discovery)")
+    ap.add_argument("--base", default=None, help="with --list-out / --score-list: the directory the listed paths are relative to")
     ap.add_argument("--shard", default=None, help="K/N: score only slice K of N of the unique videos into --cache-dir, "
                                                   "then stop (no metrics)")
     args = ap.parse_args(argv)
-    if args.shard and not args.cache_dir:
-        raise SystemExit("--shard needs --cache-dir")
+    if args.shard and not (args.cache_dir or args.list_out):
+        raise SystemExit("--shard needs --cache-dir (or --list-out)")
+
+    if args.score_list:
+        if not (args.cache_dir and args.base):
+            raise SystemExit("--score-list needs --cache-dir and --base")
+        engine, spec = get_engine(), get_spec(args.model)
+        engine._get_model(spec)
+        paths = [Path(args.base) / line.strip() for line in Path(args.score_list).read_text().splitlines() if line.strip()]
+        cache = ScoreCache(args.cache_dir, Path(args.score_list).stem)
+        print(f"score cache {args.cache_dir}: {len(cache.rec)} videos already scored; {len(paths)} listed | device={engine.device}",
+              flush=True)
+        recs, bad = score_videos(engine, spec, paths, hasattr(engine._get_model(spec), "score"), cache, label="list")
+        print(f"=== LIST DONE {args.model} {Path(args.score_list).name}: scored {len(recs)} ok + {bad} failed of {len(paths)} ===",
+              flush=True)
+        return 0
 
     if args.dataset:
         droot = ensure_dataset(args.dataset, "video", args.root, download=not args.no_download)
@@ -235,22 +265,28 @@ def main(argv=None) -> int:
     if not (args.data and args.benchmark and args.tag):
         raise SystemExit("pass --dataset, or --data, --benchmark and --tag")
 
-    engine = get_engine()
-    spec = get_spec(args.model)
-    engine._get_model(spec)
     root = Path(args.data)
     select = set(args.select.split(",")) if args.select else None
     gens = discover(args.benchmark, root, Path(args.reals) if args.reals else None, select)
     if not gens:
         print(f"No generators with real+fake videos under {root} ({args.benchmark})")
         return 1
+    if args.limit:
+        gens = [(n, r[:args.limit], f[:args.limit]) for n, r, f in gens]
+    pool_key = lambda reals: (len(reals), reals[0].name, reals[-1].name)    # the same pool hard-linked per generator
+    if args.list_out:
+        k, n = (int(x) for x in args.shard.split("/"))
+        jobs = unique_videos(gens, pool_key)
+        Path(args.list_out).write_text("".join(f"{p.relative_to(args.base)}\n" for p in jobs[k::n]))
+        print(f"{args.list_out}: shard {k}/{n} = {len(jobs[k::n])} of {len(jobs)} unique videos")
+        return 0
+    engine = get_engine()
+    spec = get_spec(args.model)
+    engine._get_model(spec)
     print(f"=== bench_eval_video {args.tag} | {args.model} | {args.benchmark} | {len(gens)} gens "
           f"| device={engine.device} ===", flush=True)
 
     raw = hasattr(engine._get_model(spec), "score")     # training-free detectors: also fake recall at fixed FPR
-    if args.limit:
-        gens = [(n, r[:args.limit], f[:args.limit]) for n, r, f in gens]
-    pool_key = lambda reals: (len(reals), reals[0].name, reals[-1].name)    # the same pool hard-linked per generator
     cache = None
     if args.cache_dir:
         tag = f"{args.shard.replace('/', 'of')}" if args.shard else f"agg{os.getpid()}"
@@ -259,12 +295,7 @@ def main(argv=None) -> int:
         print(f"score cache {args.cache_dir}: {len(cache.rec)} videos already scored", flush=True)
     if args.shard:
         k, n = (int(x) for x in args.shard.split("/"))
-        jobs, seen = [], set()                           # the unique videos: each real pool once, every fake
-        for _, reals, fakes in gens:
-            if pool_key(reals) not in seen:
-                seen.add(pool_key(reals))
-                jobs += reals
-            jobs += fakes
+        jobs = unique_videos(gens, pool_key)
         mine = jobs[k::n]
         print(f"shard {k}/{n}: {len(mine)} of {len(jobs)} unique videos", flush=True)
         recs, bad = score_videos(engine, spec, mine, raw, cache, label=f"shard{k}")
