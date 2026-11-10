@@ -1,0 +1,54 @@
+{
+  "tag": "cure_trained_r3e0_evalgen",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/67200/s23_r3e0/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 93.32,
+    "map": 99.47,
+    "mauroc": 98.85
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 97.73,
+      "auroc": 95.04,
+      "real_acc": 99.1,
+      "fake_acc": 50.83,
+      "acc": 74.97
+    },
+    "GoT": {
+      "ap": 99.88,
+      "auroc": 99.73,
+      "real_acc": 99.1,
+      "fake_acc": 96.2,
+      "acc": 97.65
+    },
+    "Infinity": {
+      "ap": 99.82,
+      "auroc": 99.63,
+      "real_acc": 99.1,
+      "fake_acc": 92.73,
+      "acc": 95.92
+    },
+    "NOVA": {
+      "ap": 99.97,
+      "auroc": 99.93,
+      "real_acc": 99.1,
+      "fake_acc": 99.24,
+      "acc": 99.17
+    },
+    "OmniGen": {
+      "ap": 99.95,
+      "auroc": 99.91,
+      "real_acc": 99.1,
+      "fake_acc": 98.71,
+      "acc": 98.9
+    }
+  },
+  "date": "2026-11-10T21:38:37",
+  "synthscope_version": "0.1.0"
+}
