@@ -15,7 +15,7 @@
 | CLIP/UnivFD | ForenSynths-13 | — | 93.14 | 92.99 | ✅ match |
 | CNNDetection | ForenSynths-11 (the paper's set) | 90.8 | 90.77 | 90.44 | ✅ match |
 | SAFE | GenImage | 99.3 | 99.32 | 99.51 | ✅ retrain reproduces |
-| AIDE | GenImage (SD-v1.4) | 86.9 acc | 85.91 acc (97.12 mAP) | 77.87 acc (96.42 mAP) | ✅ official match on acc; the native-res retrain matches the official weights' mAP, its acc is 9 pt lower |
+| AIDE | GenImage (SD-v1.4) | 86.9 acc | 85.91 acc (97.12 mAP) | 80.73 acc (93.90 mAP) | ⚠️ official weights match on acc; **trained in SynthScope with the official recipe: 6.2 pt below the paper on acc, 3.2 mAP below the official weights** (in-domain SD-v1.4/v1.5/Wukong/GLIDE match, ADM / Midjourney / VQDM transfer is weaker) |
 | SPAI | GenImage | ~91 AUC | 94.22 | 94.67 | ✅ served native-res (beats vendored 91.33); official-recipe retrain reproduces the official weights (+0.45 mAP; Synthbuster -0.99) |
 | PGC | GenImage / ForenSynths-8 / UFD | 100 / — / 98.0 AP | 100.0 / 97.83 / 99.35 | 97.62 / 97.41 / **98.99** | ✅ UFD reproduced by the official recipe in SynthScope (step 500); ForenSynths (not in the paper) slightly below the official checkpoint (corrected 2026-11-09, see the PGC section) |
 | VIB-Net | 15 generators (7 GenImage + 8 GANs), SD-v1.4-trained | 95.53 AP / 85.83 acc | *not available* | **94.08 / 85.22** | ✅ reproduced by the reconstructed recipe (native-resolution training) |
@@ -40,9 +40,11 @@
 ### AIDE
 | Benchmark | Paper | SynthScope_official | SynthScope_train |
 |---|---:|---:|---:|
-| GenImage-8 | 86.9 acc | 97.12 (85.9) | **96.42 (77.9)** (native-res 5-view retrain, model_2) |
-| ForenSynths-13 | — | 94.40 (81.8) | 79.62 (59.0) (native-res retrain, cross-domain) |
+| GenImage-8 | 86.9 acc | 97.12 (85.9) | **93.90 (80.73)** (official recipe, `experiments/image/aide.sh`, model_best = epoch 4; full test set) |
+| ForenSynths-13 | — | 94.40 (81.8) | 80.42 (62.5) (same checkpoint, cross-domain, 300 images per class) |
 | AIGCDetect-17 | 92.8 acc | 97.94 (91.9) | — (not trained in this setting) |
+
+SynthScope_train (GenImage-8, ForenSynths-13) = the official AIDE recipe in SynthScope (`bash experiments/image/aide.sh`, train job 281041: 4 x A6000, effective batch 256 = 4 GPUs x micro-batch 8 x accumulation 8 with SyncBatchNorm over 32 images as on each official GPU, AdamW lr 5e-4, weight decay 0, 5 epochs, per-iteration cosine to 1e-6, label smoothing 0.1, fp32, no clipping; training images get the official Gaussian blur and JPEG perturbations (p 0.1 each) at native resolution before the 5-view DCT selection, no flip; the long side is capped at 1024 before the DCT, the only deviation). `model_best` = epoch 4 (validation accuracy 0.9984; every epoch was still improving). Evaluated by DAS6 job 66956 through `bench_eval --model aide --ckpt`: tags `aide_trained_genimage8` (all 1500 + 1500 images per generator, 6000 + 6000 for sdv1.4: 93.90 mAP / 91.66 mAUROC / 80.73 acc), `aide_trained_genimage8_l300` (first 300 per class, the protocol of the previous retrain and the served row: 92.57 / 89.63 / 80.69), `aide_trained_forensynths` (300 per class: 80.42 / 80.41 / 62.5). Accuracy per generator (full): ADM 58.63, BigGAN 50.87, GLIDE 92.00, Midjourney 74.60, SD v1.4 99.97, SD v1.5 100.0, VQDM 69.83, Wukong 99.93 (official weights: 76.60, 60.63, 90.83, 83.70, 99.76, 99.80, 76.80, 99.13). Real accuracy is 99.93-100 everywhere: the loss is fake recall at threshold 0.5 on generators other than SD v1.4. The previous retrain (`aide_native_v2/model_2`: native-resolution 5-view, but the earlier recipe with lr 1e-4, batch 32, horizontal flip, no perturbations, no label smoothing, DeepSpeed gradient clipping 1.0 and the epoch picked by validation loss; 300 per class) scored 96.42 mAP / 77.87 acc, so the faithful recipe gains 2.8 pt accuracy (80.69 on the same 300 images per class) and loses 3.9 mAP (92.57); neither reaches the paper's 86.88 accuracy within the 2-point tolerance.
 
 SynthScope_official is `sd14_train.pth` (the served `aide.pth`) on GenImage and the ProGAN-trained `progan_train.pth` on ForenSynths and AIGCDetect. The earlier 72.25 (61.6) AIGCDetect entry was `progan_train.pth` under the old resize-before-DCT eval, not a SynthScope-trained model.
 
