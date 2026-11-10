@@ -17,6 +17,11 @@
 # clips at 1.0); the accelerate launch is pinned by an explicit
 # minimal config file + flags (ACC_ARGS), independent of the host's default accelerate config.
 # Stage 1 resumes after its last finished epoch when rerun with the same SAVE.
+# Stage-1 epoch: every epoch is saved (stage1/model_<k>.pth). The last epoch over-adapts to SD v1.4; the SynthScope-trained
+# checkpoints that partially reproduce the paper use the epoch picked by the pre-registered, non-benchmark rule of
+# repro/cure_stage1/epoch_select.py (epoch 0 in both runs), set with LORA=$SAVE/stage1/model_<k>.pth for stages 2-3. Optional
+# DDA-style training augmentation (an assumption; the paper states none): append DatasetConfig.train_augment=dda to stage 1.
+# See models/image/cure/README.md "Trained checkpoint".
 # Evaluate:  python benchmark/bench_eval.py --model cure --ckpt $SAVE/stage23/cure_trained.pth --dataset wildrf
 set -eo pipefail
 export TRITON_CACHE_DIR=${TRITON_CACHE_DIR:-/nvmestore/ssalehi/.triton}
@@ -30,6 +35,7 @@ MICRO=${MICRO:-64}
 GRAD_CKPT=${GRAD_CKPT:-true}
 WORKERS=${WORKERS:-8}
 STAGES=${STAGES:-"1 2 3"}
+LORA=${LORA:-}                  # stage-1 checkpoint for stages 2-3 (default: $SAVE/stage1/model_last.pth)
 PY=${PY:-/home/ssalehi/miniconda3/envs/SynthScope/bin/python}
 if (( 64 % MICRO != 0 )); then echo "MICRO must divide the per-GPU batch 64" >&2; exit 1; fi
 ACCUM=$((64 / MICRO))
@@ -81,10 +87,10 @@ if [[ " $STAGES " == *" 1 "* ]]; then
         "$@"
 fi
 if [[ " $STAGES " == *" 2 "* ]]; then
-    $PY -m models.image.cure.train_stages stage2 --lora $SAVE/stage1/model_last.pth --data $DATA --out $SAVE/stage23 \
+    $PY -m models.image.cure.train_stages stage2 --lora ${LORA:-$SAVE/stage1/model_last.pth} --data $DATA --out $SAVE/stage23 \
         --workers $WORKERS ${STAGE2_ARGS:-}
 fi
 if [[ " $STAGES " == *" 3 "* ]]; then
-    $PY -m models.image.cure.train_stages stage3 --lora $SAVE/stage1/model_last.pth --data $DATA --out $SAVE/stage23 \
+    $PY -m models.image.cure.train_stages stage3 --lora ${LORA:-$SAVE/stage1/model_last.pth} --data $DATA --out $SAVE/stage23 \
         --workers $WORKERS ${STAGE3_ARGS:-}
 fi

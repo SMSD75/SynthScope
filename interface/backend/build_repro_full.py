@@ -32,19 +32,21 @@ VAL = {
     ("co_spy", "AIGCDetect"):            {"official": {"map": 94.59, "acc": 89.25}, "synthscope": {"map": 84.91}},
     ("co_spy", "GenImage"):              {"official": {"map": 92.41}, "synthscope": {"map": 90.59, "acc": 76.23}},
     ("co_spy", "ForenSynths"):           {"official": {"map": 87.97}, "synthscope": {"map": 96.17}},
-    # CuRe: official = the released adapter. synthscope = trained in SynthScope with the paper's recipe (experiments/image/cure.sh; train job 66658,
-    # evals = DAS6 job 66721, tags cure_trained_*): it does NOT reproduce the paper (7.5-24 acc points below on every comparable benchmark).
-    ("cure", "AIGIBench"):               {"official": {"map": 97.0, "acc": 92.85, "auroc": 97.48}, "synthscope": {"map": 92.69, "acc": 85.05, "auroc": 91.84}},
-    ("cure", "UniversalFakeDetect"):     {"official": {"map": 99.19, "acc": 93.94}, "synthscope": {"map": 95.26, "acc": 82.69, "auroc": 93.85}},
-    ("cure", "ForenSynths"):             {"official": {"map": 94.05, "acc": 81.95}, "synthscope": {"map": 94.24, "acc": 75.83, "auroc": 93.56}},
-    ("cure", "GenImage"):                {"official": {"map": 97.3, "acc": 85.18}, "synthscope": {"map": 89.41, "acc": 77.7, "auroc": 87.88}},
-    ("cure", "RealChain"):               {"official": {"map": 87.39, "acc": 79.69, "auroc": 85.47}, "synthscope": {"map": 79.6, "acc": 63.33, "auroc": 76.5}},
-    ("cure", "EvalGEN"):                 {"official": {"map": 99.86, "acc": 98.14, "auroc": 99.66}, "synthscope": {"map": 98.3, "acc": 90.65, "auroc": 95.96}},
-    ("cure", "SynthWildX"):              {"official": {"map": 95.61, "acc": 92.69, "auroc": 96.5}, "synthscope": {"map": 88.83, "acc": 76.11, "auroc": 86.84}},
-    ("cure", "WildRF"):                  {"official": {"map": 99.13, "acc": 95.89, "auroc": 99.14}, "synthscope": {"map": 95.0, "acc": 85.8, "auroc": 94.59}},
-    ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}, "synthscope": {"map": 93.37, "acc": 66.64, "auroc": 85.77}},
-    ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}, "synthscope": {"map": 80.4, "acc": 66.36, "auroc": 76.87}},
-    ("cure", "AIGCDetect"):              {"official": {"map": 98.08, "acc": 89.3, "auroc": 98.02}, "synthscope": {"map": 93.52, "acc": 81.55, "auroc": 92.22}},
+    # CuRe: official = the released adapter (served). synthscope = r3e0, the best SynthScope-trained checkpoint by the pre-registered
+    # non-benchmark selection rule (the paper's recipe + DDA-style augmentation, stage-1 epoch 0; jobs 67199 / 67200, tags
+    # cure_trained_r3e0_*): partially reproduces the paper (4 of 8 comparable benchmarks; mean acc 85.15 vs 90.10). The recipe's
+    # last epoch (tags cure_trained_*, job 66721) and the other runs are in models/image/cure/README.md.
+    ("cure", "AIGIBench"):               {"official": {"map": 97.0, "acc": 92.85, "auroc": 97.48}, "synthscope": {"map": 96.72, "acc": 91.12, "auroc": 97.1}},
+    ("cure", "UniversalFakeDetect"):     {"official": {"map": 99.19, "acc": 93.94}, "synthscope": {"map": 98.73, "acc": 93.89, "auroc": 98.31}},
+    ("cure", "ForenSynths"):             {"official": {"map": 94.05, "acc": 81.95}, "synthscope": {"map": 97.22, "acc": 89.36, "auroc": 96.58}},
+    ("cure", "GenImage"):                {"official": {"map": 97.3, "acc": 85.18}, "synthscope": {"map": 97.56, "acc": 86.22, "auroc": 97.59}},
+    ("cure", "RealChain"):               {"official": {"map": 87.39, "acc": 79.69, "auroc": 85.47}, "synthscope": {"map": 83.67, "acc": 72.75, "auroc": 84.7}},
+    ("cure", "EvalGEN"):                 {"official": {"map": 99.86, "acc": 98.14, "auroc": 99.66}, "synthscope": {"map": 99.47, "acc": 93.32, "auroc": 98.85}},
+    ("cure", "SynthWildX"):              {"official": {"map": 95.61, "acc": 92.69, "auroc": 96.5}, "synthscope": {"map": 97.12, "acc": 91.76, "auroc": 97.09}},
+    ("cure", "WildRF"):                  {"official": {"map": 99.13, "acc": 95.89, "auroc": 99.14}, "synthscope": {"map": 99.3, "acc": 95.58, "auroc": 99.25}},
+    ("cure", "BFree-Online"):            {"official": {"map": 99.06, "acc": 91.64, "auroc": 98.08}, "synthscope": {"map": 89.48, "acc": 71.19, "auroc": 79.51}},
+    ("cure", "RRDataset"):               {"official": {"map": 90.4, "acc": 82.04, "auroc": 88.88}, "synthscope": {"map": 84.91, "acc": 73.46, "auroc": 85.32}},
+    ("cure", "AIGCDetect"):              {"official": {"map": 98.08, "acc": 89.3, "auroc": 98.02}, "synthscope": {"map": 98.59, "acc": 92.01, "auroc": 98.38}},
     # DDA: synthscope = trained in SynthScope with the official recipe (experiments/image/dda.sh; job 267042, eval 267832).
     ("dda", "SynthWildX"):               {"official": {"map": 96.47, "acc": 90.8, "auroc": 96.4}, "synthscope": {"map": 96.99, "acc": 88.0, "auroc": 96.88}},
     ("dda", "WildRF"):                   {"official": {"map": 96.76, "acc": 90.2, "auroc": 96.14}, "synthscope": {"map": 97.83, "acc": 90.56, "auroc": 97.62}},
@@ -320,7 +322,13 @@ def match_val(model, name):
     return best[3].get("synthscope", {}), best[3].get("official", {}), best[2]
 
 
-def status_for(name, paper, synthscope, official, spec_status):
+# Models whose served checkpoint is the official one although a SynthScope-trained number is listed: where the official weights
+# match the paper the row keeps status "official" (the trained number is still shown next to it). CuRe: the served `cure` is the
+# released adapter; the SynthScope-trained r3e0 partially reproduces the paper (models/image/cure/README.md).
+SERVED_OFFICIAL = {"cure"}
+
+
+def status_for(name, paper, synthscope, official, spec_status, model=None):
     """reproduced = SynthScope-trained matches paper; official = official-weights-in-SynthScope matches paper
     (SynthScope-trained number shown alongside where attempted); below = neither; reference = paper gives
     no number for this cross-dataset; missing = not evaluated. Falls back to the spec's label only
@@ -336,6 +344,8 @@ def status_for(name, paper, synthscope, official, spec_status):
     if not pm:                                   # paper has numbers but not in comparable keys
         return spec_status or "below"
     synthscope_ok, off_ok = cmp_ok(synthscope, pm), cmp_ok(official, pm)
+    if off_ok and model in SERVED_OFFICIAL:
+        return "official"
     if synthscope_ok:
         return "reproduced"
     if off_ok:
@@ -356,7 +366,7 @@ for f in sorted(glob.glob(f"{ROOT}/repro/benchmark_specs/*.json")):
         paper = b.get("paper_number")
         spec_status = b.get("our_status", "")
         synthscope, official, sub = match_val(model, name)
-        status = status_for(name, paper, synthscope, official, spec_status)
+        status = status_for(name, paper, synthscope, official, spec_status, model)
         status = STATUS_OVERRIDE.get((model, name), status)
         on = b.get("our_number")
         note = ""
