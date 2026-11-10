@@ -23,6 +23,8 @@
       "n_fake": 626,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "floor33": {
@@ -36,6 +38,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "gen2": {
@@ -49,6 +53,8 @@
       "n_fake": 681,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "gen2_december": {
@@ -62,6 +68,8 @@
       "n_fake": 699,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "hotshot": {
@@ -75,6 +83,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "lavie-base": {
@@ -88,6 +98,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "lavie-interpolation": {
@@ -101,6 +113,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "mix-sr": {
@@ -114,6 +128,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "modelscope": {
@@ -127,6 +143,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "pika": {
@@ -140,6 +158,8 @@
       "n_fake": 697,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "pika_v1_december_1": {
@@ -153,6 +173,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "show_1": {
@@ -166,6 +188,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "videocrafter-v1.0": {
@@ -179,6 +203,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "zeroscope": {
@@ -192,6 +218,8 @@
       "n_fake": 598,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     }
   },
@@ -199,6 +227,14 @@
     "fake": 0,
     "real_unique": 0
   },
-  "date": "2026-11-11T00:33:38",
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": "/ssdstore/ssalehi/SynthScope/GenVideo/test/Crafter/0_real",
+  "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+  "cache_dir": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/waverep_bench_cache/waverep_g4/evalcrafter",
+  "date": "2026-11-11T00:46:42",
   "synthscope_version": "video"
 }

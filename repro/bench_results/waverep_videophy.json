@@ -23,6 +23,8 @@
       "n_fake": 339,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Gen-2": {
@@ -36,6 +38,8 @@
       "n_fake": 312,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "LaVie": {
@@ -49,6 +53,8 @@
       "n_fake": 343,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "OpenSora": {
@@ -62,6 +68,8 @@
       "n_fake": 344,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Pika": {
@@ -75,6 +83,8 @@
       "n_fake": 304,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "SVD": {
@@ -88,6 +98,8 @@
       "n_fake": 344,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "VideoCrafter2": {
@@ -101,6 +113,8 @@
       "n_fake": 344,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "ZeroScope": {
@@ -114,6 +128,8 @@
       "n_fake": 344,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     }
   },
@@ -121,6 +137,14 @@
     "fake": 0,
     "real_unique": 0
   },
-  "date": "2026-11-11T00:32:00",
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+  "cache_dir": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/waverep_bench_cache/waverep/videophy",
+  "date": "2026-11-11T00:45:20",
   "synthscope_version": "video"
 }

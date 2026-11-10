@@ -23,6 +23,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Pika": {
@@ -36,6 +38,8 @@
       "n_fake": 998,
       "failed_real": 0,
       "failed_fake": 2,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Text2Video-Zero": {
@@ -49,6 +53,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "VideoCrafter2": {
@@ -62,6 +68,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     }
   },
@@ -69,6 +77,14 @@
     "fake": 2,
     "real_unique": 0
   },
-  "date": "2026-11-11T00:32:11",
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+  "cache_dir": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/waverep_bench_cache/waverep/vidprom",
+  "date": "2026-11-11T00:45:32",
   "synthscope_version": "video"
 }

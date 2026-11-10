@@ -23,6 +23,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Gen2": {
@@ -36,6 +38,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "HotShot": {
@@ -49,6 +53,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Lavie": {
@@ -62,6 +68,8 @@
       "n_fake": 1000,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "ModelScope": {
@@ -75,6 +83,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "MoonValley": {
@@ -88,6 +98,8 @@
       "n_fake": 626,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "MorphStudio": {
@@ -101,6 +113,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Show_1": {
@@ -114,6 +128,8 @@
       "n_fake": 700,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "Sora": {
@@ -127,6 +143,8 @@
       "n_fake": 56,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     },
     "WildScrape": {
@@ -140,6 +158,8 @@
       "n_fake": 924,
       "failed_real": 0,
       "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
       "rank_by": "logit"
     }
   },
@@ -147,6 +167,14 @@
     "fake": 0,
     "real_unique": 0
   },
-  "date": "2026-11-11T00:33:02",
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+  "cache_dir": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/waverep_bench_cache/waverep_g4/genvideo",
+  "date": "2026-11-11T00:46:08",
   "synthscope_version": "video"
 }

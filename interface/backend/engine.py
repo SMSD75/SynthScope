@@ -465,7 +465,7 @@ class Engine:
         if spec.video_sampler == "cv2_frames":          # WaveRep: the first num_frames (0: all) OpenCV frames
             frames = [spec.transform(f) for f in media.cv2_frames(path, limit=spec.num_frames or None)]
             if not frames:
-                raise ValueError("Could not decode any frames from the video.")
+                raise media.VideoDecodeError("Could not decode any frames from the video.")
             return torch.stack(frames)
         clip = media.video_clip_tensor(
             path, num_frames=spec.num_frames, fps=spec.fps, frame_size=spec.frame_size,
@@ -492,7 +492,7 @@ class Engine:
         if batch:
             logits.append(model.frame_logits(torch.stack(batch).to(self.device)).float().cpu())
         if not logits:
-            raise ValueError("Could not decode any frames from the video.")
+            raise media.VideoDecodeError("Could not decode any frames from the video.")
         return torch.cat(logits)
 
     def predict_video_clip(self, spec: ModelSpec, path) -> dict:
