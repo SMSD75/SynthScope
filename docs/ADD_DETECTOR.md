@@ -33,8 +33,12 @@ for the maintainers and stop.
    `conf/dataset/...` config are fallbacks, used only for models whose config sets none, and a warning is printed
    when a dataset list is shadowed. Validation and test pipelines run on PIL images like inference, so an
    end-of-training test with `eval_transform_list` preprocesses exactly as the benchmarks do.
-   Video models are out of scope for now: their preprocessing is the registry's video settings plus the dataset
-   lists. Add `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
+   Video models are mostly out of scope for training: their preprocessing is the registry's video settings (frame
+   sampler, `num_frames`, window) plus the dataset lists, and most do not use `eval_transform_list`. `waverep` is the exception:
+   its frames go through a per-frame transform, so it sets `eval_transform_list` (`center_crop_504`,
+   `to_dtype`, `normalize_imagenet`) and the registry builds its `transform` from it with `model_transform`
+   like an image detector (`tests/test_model_transforms.py` checks video configs that have a list). Add
+   `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
 3. **Dispatch** — add a branch in `trainer.py` `_build_model` (the `if model_type == "<k>": return SynthScope<Name>Model(config)` chain, ~line 69+). The interface lazy-imports by `model_type` in `interface/backend/engine.py` — mirror it if needed.
 4. **Interface registry** — `interface/backend/registry.py` `_add(ModelSpec(...))`:
    - `key`, `name`, `paper`, `modality` (`image`|`video`), `overrides=["model@ModelConfig=image/<k>"]`,

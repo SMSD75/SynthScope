@@ -211,6 +211,24 @@ VAL = {
     ("stall", "GenVideo"):               {"synthscope": {"map": 82.38, "auroc": 83.51, "acc": 56.88}},
     ("stall", "VideoFeedback"):          {"synthscope": {"map": 83.07, "auroc": 85.1, "acc": 62.12}},
     ("stall", "ComGenVid"):              {"synthscope": {"map": 82.59, "auroc": 84.0, "acc": 57.34}},
+    # WaveRep (NeurIPS'25): the two official checkpoints (waverep = G1, the paper's single-generator model; waverep_g4 = four
+    # generators); no SynthScope-trained number (no training code). acc / mAP / mauroc = bench_eval_video means (repro/bench_results/
+    # <key>_<set>.json; acc = balanced accuracy at logit 0 = the paper's metric, mAP = AP with fake positive). The "paper's 8" row is the
+    # mean over the paper's 8 GenVideo columns (Crafter, Gen2, HotShot, LaVie, ModelScope, MorphStudio, Show-1, MoonValley) of
+    # <key>_genvideo_full.json per_generator acc / auroc; the other rows are zero-shot references (no paper number).
+    # Jobs: IVI 285376_0 / 285390_3-4 / 285389_2 / 285886_2, DAS6 67328 / 67404, aggregation 286053 / 286059.
+    ("waverep", "GenVideo-Val, the paper's 8"): {"official": {"acc": 90.3, "auroc": 95.73}},
+    ("waverep", "GenVideo-Val full"):      {"official": {"map": 79.85, "acc": 86.87, "auroc": 92.13}},
+    ("waverep", "GenVideo-Val --limit"):   {"official": {"map": 89.81, "acc": 86.62, "auroc": 92.09}},
+    ("waverep", "VideoPhy"):               {"official": {"map": 93.21, "acc": 90.0, "auroc": 96.54}},
+    ("waverep", "VidProM"):                {"official": {"map": 98.11, "acc": 89.85, "auroc": 98.06}},
+    ("waverep", "EvalCrafter"):            {"official": {"map": 96.93, "acc": 92.84, "auroc": 97.17}},
+    ("waverep_g4", "GenVideo-Val, the paper's 8"): {"official": {"acc": 96.3, "auroc": 99.05}},
+    ("waverep_g4", "GenVideo-Val full"):   {"official": {"map": 88.88, "acc": 93.28, "auroc": 96.69}},
+    ("waverep_g4", "GenVideo-Val --limit"): {"official": {"map": 94.47, "acc": 92.65, "auroc": 96.53}},
+    ("waverep_g4", "VideoPhy"):            {"official": {"map": 98.2, "acc": 95.73, "auroc": 99.29}},
+    ("waverep_g4", "VidProM"):             {"official": {"map": 99.29, "acc": 95.8, "auroc": 99.25}},
+    ("waverep_g4", "EvalCrafter"):         {"official": {"map": 99.19, "acc": 96.55, "auroc": 99.29}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

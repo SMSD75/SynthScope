@@ -10,7 +10,7 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ---
 
-## 1. What's already integrated (17 detectors)
+## 1. What's already integrated (36 registry keys on 2026-11-11: 29 image, 7 video)
 
 `synthscope.list_models()` / `from synthscope.api import list_specs`. Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
@@ -95,7 +95,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 ## 4. Evaluation / benchmarking
 
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
-- **Video**: `benchmark/bench_eval_video.py --model {d3|restrav|stall} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
+- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video|waverep|waverep_g4} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.

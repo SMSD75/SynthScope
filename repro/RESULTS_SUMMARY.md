@@ -1,6 +1,6 @@
 # SynthScope Full-Benchmark Reproduction & Gap-Closing — Results Summary
 
-*Updated 2026-11-09. Numbers trace to `repro/bench_results/*.json` and `repro/MASTER_RESULTS.jsonl`. Format: **mAP** (acc@0.5), % — unless noted.*
+*Updated 2026-11-11. Numbers trace to `repro/bench_results/*.json` and `repro/MASTER_RESULTS.jsonl`. Format: **mAP** (acc@0.5), % — unless noted.*
 
 ## Three number columns (consistent everywhere)
 - **Paper** — figure reported in the paper.
@@ -32,6 +32,7 @@
 | ReStraV (video) | GenVidBench (Main task: 4 test generators) | 93.01 acc | — | 93.33 acc on those 4; 92.70 mAP / 86.87 acc on all 8 | ✅ close on acc on the paper's 4 generators (not the paper's train/test split) |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC (training-free) | ✅ match |
 | SPLIT (video) | GenVideo-Val, fake recall at FPR 0.1 / 1 / 5% | 82.1 / 91.7 / 97.2 | 82.22 / 90.17 / 96.89 (official code) | 98.87 / 99.86 / 99.98 (training-free) | ✅ the official code reproduces the paper; SynthScope's SPLIT skips the official JPEG frame round trip, so it scores higher (see `models/video/split/README.md`) |
+| WaveRep (video; `waverep` = G1, the paper's model) | The 8 GenVideo generators of the paper's Tables 1 and 7, on GenVideo-Val (PARTIAL: the paper's own 7-generator test set is not held) | 94.83 bAcc / 98.03 AUC (means of the printed per-generator values) | 90.30 bAcc / 95.73 AUC (official G1 weights; G4, trained on four generators, 96.30 / 99.05, reference only) | — (no training code) | ⚠️ **partial**: faithful port (the unmodified official demo agrees on 180 of 180 benchmark files, max logit diff 1.05e-5, and on 15 videos / 6 codecs with bit-exact inputs); 5 of the 8 generators within about 2 points, but HotShot (60.10 vs 81.4 bAcc), Show-1 (79.67 vs 92.1) and LaVie (92.06 vs 95.5) are **not reproduced** (HotShot fake recall 21%, AUC 75.6 vs 91.0, so not a threshold offset; cause untested; the paper does not say which reals it paired, we use GenVideo-Val's 10,000). Zero-shot reference rows only for VideoPhy / VidProM / EvalCrafter. GRIP non-profit licence: not redistributed |
 | B-Free | SynthWildX / WildRF | 95.6 / 95.6 · 86.2 · 97.3 bAcc | 95.64 / 95.31 · 86.47 · 97.66 bAcc | — | ✅ official match (details in `models/image/bfree/README.md`) |
 | MoE-JEPA | SID-Set (3-way) | 95.54 acc | 96.37 acc | — | ✅ official match (details in `models/image/moejepa/README.md`) |
 
@@ -284,6 +285,37 @@ Fidelity: SynthScope's classes equal the official `dino_classifier` / `ResNet` (
 | Mean of the 5 run (4 like-for-like) | 95.95 (95.39) | 77.88 (76.41) | 95.50 (95.00) / 76.96 (76.43) | the paper's Avg over all 7 (93.9 / 78.1) is not comparable |
 
 **Official code on our data** (unmodified `evaluate_dino.py` / `evaluate_resnet.py`, job 66753, WildRF and SynthWildX): **0 flips at 0.5 over every common file in all four runs; max |dP| 4.8e-6 (DINOv2), 1.3e-3 (ResNet-50, GPU convolution algorithms / TF32 at batch 4 vs 1)**. Its own "Overall Accuracy" is pooled accuracy on a seed-42 class-balanced subsample, which equals bAcc up to sampling noise (at most 2.0 per subset, ResNet-50 on WildRF twitter: 82.29 vs 84.27; at most 0.66 per benchmark, ResNet-50 WildRF: 80.99 vs 81.65). **Verdict: faithful port; the released checkpoints reproduce the paper on GenImage (JPEG q96), SynthWildX, WildRF and AIGI-Bench; Synthbuster is not a like-for-like comparison and Chameleon / AIGI-Quality-Paradox were not run.** Jobs (DAS6, A6000): 66753 (SynthWildX, WildRF, official runs, GenImage), 66755 (Synthbuster), 66790 (AIGI-Bench); tags `probe_<x>`, `probe_resnet_<x>` in `repro/bench_results/`; per-subset tables, protocol and scripts: `models/image/probe/README.md`, `repro/probe_task2/`. Licence unclear (no LICENSE file): not redistributed, not on the Space.
+
+### WaveRep (official checkpoints G1 and G4; PARTIAL paper comparison)
+Fidelity: SynthScope's class == the official timm `vit_base_patch14_reg4_dinov2` model (177/177 state-dict tensors identical, strict load, both checkpoints). The unmodified official demo (`main_avideo.py` / `main_directory.py` @ `0fd6010`) and SynthScope agree: 15 videos in 6 codecs (model inputs bit-exact; video logit max diff 6.0e-7; CPU) and 180 GenVideo-Val files per checkpoint (max |logit diff| 1.02e-5 G1 / 1.05e-5 G4, 0 sign flips, 0 NaN; GPU-vs-GPU; `repro/waverep_official_parity_genvideo180.json`, DAS6 67291). Protocol: official OpenCV reader, the first 64 frames (paper App. D; the demo's default is every frame, `num_frames=0`), 504 centre crop, mean frame logit, balanced accuracy at 0.5 and AUC (the paper's metrics). Two released checkpoints: `waverep` = G1 (trained on ONE generator, Pyramid Flow: the paper's detector), `waverep_g4` = G4 (four generators; Table 5, the demo's default). No training code is released, so there is no SynthScope-trained number.
+
+**What is held.** The paper's own test set (7 generators vs 300 Panda-70M YouTube reals) is **NOT held**: the reals need a YouTube downloader and were not scraped. The comparison below uses the 8 GenVideo generators that are among the paper's columns, scored on full GenVideo-Val with its own 10,000 reals; the paper does not say which reals it paired, so this is a **PARTIAL** comparison.
+
+| Generator (n fake) | Paper bAcc (Table 1) | G1 `waverep` bAcc | G4 `waverep_g4` bAcc (reference only) | Paper AUC (Table 7) | G1 AUC | G4 AUC |
+|---|---:|---:|---:|---:|---:|---:|
+| Crafter (1398) | 98.3 | 98.99 | 98.90 | 99.8 | 99.90 | 99.98 |
+| Gen2 (1380) | 98.8 | 99.49 | 98.90 | 100.0 | 99.99 | 99.99 |
+| HotShot (700) | 81.4 | **60.10** | 83.40 | 91.0 | **75.60** | 94.15 |
+| LaVie (1400) | 95.5 | **92.06** | 97.33 | 97.7 | 97.03 | 99.26 |
+| ModelScope (700) | 97.1 | 95.24 | 97.54 | 99.4 | 99.31 | 99.69 |
+| MorphStudio (700) | 97.0 | 97.74 | 98.61 | 99.3 | 99.74 | 99.94 |
+| Show-1 (700) | 92.1 | **79.67** | 96.83 | 97.1 | 94.27 | 99.43 |
+| MoonValley (626) | 98.4 | 99.12 | 98.89 | 99.9 | 99.97 | 99.98 |
+| 8-generator mean | 94.83 | 90.30 | 96.30 | 98.03 | 95.73 | 99.05 |
+
+Reading: 5 of 8 G1 cells are within about 2 points (Crafter, Gen2, MorphStudio, MoonValley, ModelScope -1.86); **HotShot (-21.3 bAcc / -15.4 AUC), Show-1 (-12.4 / -2.8) and LaVie (-3.4 / -0.7) are NOT reproduced.** HotShot: G1 real accuracy 99.2 but fake recall 21.0% at P >= 0.5 (Show-1 60.1%, LaVie 84.9%); AUC falls too, so it is not a calibration or threshold offset. The cause is untested (a different real pool or fake subset in the paper is a possibility; we cannot check it). G4 is trained on four generators, so its higher numbers are not single-generator generalization. Source: `repro/bench_results/waverep_genvideo_full.json`, `waverep_g4_genvideo_full.json` (`per_generator` `acc`, `auroc`); paper values from arXiv 2506.16802 Tables 1 and 7. Sora (56 fakes: G1 67.46 / 68.54, G4 76.65 / 83.61) and WildScrape (924: 78.87 / 86.92, 85.77 / 90.83) are GenVideo-Val extras with no paper cell.
+
+**Zero-shot reference rows (NOT paper reproductions; the paper reports none of these sets).** Means over the generators; bAcc at 0.5 / mAP (fake positive) / mAUROC.
+
+| Set | gens | G1 `waverep` | G4 `waverep_g4` |
+|---|---:|---|---|
+| GenVideo-Val full (10,000 reals + all fakes) | 10 | 86.87 / 79.85 / 92.13 | 93.28 / 88.88 / 96.69 |
+| GenVideo-Val `--limit 1000` (D3 protocol) | 10 | 86.62 / 89.81 / 92.09 | 92.65 / 94.47 / 96.53 |
+| VideoPhy `--limit 1000` | 8 | 90.00 / 93.21 / 96.54 | 95.73 / 98.20 / 99.29 |
+| VidProM `--limit 1000` | 4 | 89.85 / 98.11 / 98.06 | 95.80 / 99.29 / 99.25 |
+| EvalCrafter (fakes vs the **first 1000 GenVideo-Val MSR-VTT reals**; EvalCrafter has none of its own) | 14 | 92.84 / 96.93 / 97.17 | 96.55 / 99.19 / 99.29 |
+
+`--limit 1000` = the first 1000 clips per class per generator. Two undecodable VidProM Pika fakes (`00642_pika-9e93dcfc...`, `00891_pika-e025f9ee...`) are excluded (998 scored); every other set decodes fully. Weakest G1 cells: VideoPhy OpenSora 62.15 / ZeroScope 63.75, VidProM ModelScope 71.55, GenVideo Sora 67.46; G4 is better on all of them. Full GenVideo-Val mAP (fake positive) is low only through the 10,000 : 56-1400 class imbalance. Jobs: IVI 285376_0, 285390_3-4, 285389_2 / 285886_2, DAS6 67328 / 67404 (scoring), IVI 286053 / 286059 (aggregation), DAS6 67291 (official demo); logs `repro/logs/waverep_*`. Licence: GRIP-UNINA, free for informational / non-profit use only, so the weights are not redistributed, not in the model zoo, and not on the Space (pending user approval: needs uploading the checkpoints to the hub; about 30 s per clip on CPU). Details: `models/video/waverep/README.md`.
 
 ### Video detectors (D3, SPLIT and STALL are training-free; ReStraV is trained in SynthScope; no official weights)
 | Method · Benchmark | Paper | SynthScope |
