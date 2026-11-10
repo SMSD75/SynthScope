@@ -1,0 +1,54 @@
+{
+  "tag": "cure_trained_r1e0_evalgen",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23_r1e0/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 91.57,
+    "map": 99.34,
+    "mauroc": 98.63
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 97.2,
+      "auroc": 94.24,
+      "real_acc": 99.1,
+      "fake_acc": 39.35,
+      "acc": 69.22
+    },
+    "GoT": {
+      "ap": 99.84,
+      "auroc": 99.64,
+      "real_acc": 99.1,
+      "fake_acc": 94.04,
+      "acc": 96.57
+    },
+    "Infinity": {
+      "ap": 99.74,
+      "auroc": 99.43,
+      "real_acc": 99.1,
+      "fake_acc": 89.66,
+      "acc": 94.38
+    },
+    "NOVA": {
+      "ap": 99.97,
+      "auroc": 99.93,
+      "real_acc": 99.1,
+      "fake_acc": 98.99,
+      "acc": 99.04
+    },
+    "OmniGen": {
+      "ap": 99.95,
+      "auroc": 99.89,
+      "real_acc": 99.1,
+      "fake_acc": 98.16,
+      "acc": 98.63
+    }
+  },
+  "date": "2026-11-10T10:22:42",
+  "synthscope_version": "0.1.0"
+}

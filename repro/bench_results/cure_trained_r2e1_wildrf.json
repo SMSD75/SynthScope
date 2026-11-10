@@ -1,0 +1,40 @@
+{
+  "tag": "cure_trained_r2e1_wildrf",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23mc_r2e1/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 93.91,
+    "map": 98.48,
+    "mauroc": 98.43
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 97.74,
+      "auroc": 97.71,
+      "real_acc": 94.38,
+      "fake_acc": 90.0,
+      "acc": 92.19
+    },
+    "reddit": {
+      "ap": 99.11,
+      "auroc": 99.07,
+      "real_acc": 97.47,
+      "fake_acc": 93.87,
+      "acc": 95.67
+    },
+    "twitter": {
+      "ap": 98.58,
+      "auroc": 98.5,
+      "real_acc": 97.36,
+      "fake_acc": 90.35,
+      "acc": 93.86
+    }
+  },
+  "date": "2026-11-10T11:27:21",
+  "synthscope_version": "0.1.0"
+}

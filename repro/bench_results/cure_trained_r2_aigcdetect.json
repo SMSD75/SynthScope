@@ -1,0 +1,138 @@
+{
+  "tag": "cure_trained_r2_aigcdetect",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23mc_r2e4/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/AIGCDetect/test",
+  "jpeg_fakes": null,
+  "n_generators": 17,
+  "means": {
+    "acc": 82.29,
+    "map": 95.21,
+    "mauroc": 94.4
+  },
+  "per_generator": {
+    "ADM": {
+      "ap": 72.39,
+      "auroc": 64.84,
+      "real_acc": 99.8,
+      "fake_acc": 11.23,
+      "acc": 55.52
+    },
+    "DALLE2": {
+      "ap": 90.03,
+      "auroc": 86.72,
+      "real_acc": 100.0,
+      "fake_acc": 46.8,
+      "acc": 73.4
+    },
+    "Glide": {
+      "ap": 93.53,
+      "auroc": 91.52,
+      "real_acc": 99.75,
+      "fake_acc": 52.78,
+      "acc": 76.27
+    },
+    "Midjourney": {
+      "ap": 87.08,
+      "auroc": 82.32,
+      "real_acc": 99.78,
+      "fake_acc": 44.78,
+      "acc": 72.28
+    },
+    "VQDM": {
+      "ap": 95.98,
+      "auroc": 94.55,
+      "real_acc": 99.8,
+      "fake_acc": 64.88,
+      "acc": 82.34
+    },
+    "biggan": {
+      "ap": 97.98,
+      "auroc": 98.9,
+      "real_acc": 99.4,
+      "fake_acc": 63.35,
+      "acc": 81.37
+    },
+    "cyclegan": {
+      "ap": 98.61,
+      "auroc": 98.57,
+      "real_acc": 99.85,
+      "fake_acc": 26.42,
+      "acc": 63.13
+    },
+    "gaugan": {
+      "ap": 99.11,
+      "auroc": 99.55,
+      "real_acc": 99.72,
+      "fake_acc": 53.72,
+      "acc": 76.72
+    },
+    "progan": {
+      "ap": 99.76,
+      "auroc": 99.82,
+      "real_acc": 99.85,
+      "fake_acc": 69.13,
+      "acc": 84.49
+    },
+    "sd_xl": {
+      "ap": 99.52,
+      "auroc": 99.34,
+      "real_acc": 99.9,
+      "fake_acc": 93.3,
+      "acc": 96.6
+    },
+    "stable_diffusion_v_1_4": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.65,
+      "fake_acc": 99.87,
+      "acc": 99.76
+    },
+    "stable_diffusion_v_1_5": {
+      "ap": 99.94,
+      "auroc": 99.9,
+      "real_acc": 99.79,
+      "fake_acc": 99.8,
+      "acc": 99.79
+    },
+    "stargan": {
+      "ap": 95.25,
+      "auroc": 98.49,
+      "real_acc": 98.45,
+      "fake_acc": 76.44,
+      "acc": 87.44
+    },
+    "stylegan": {
+      "ap": 98.53,
+      "auroc": 98.78,
+      "real_acc": 99.63,
+      "fake_acc": 71.96,
+      "acc": 85.8
+    },
+    "stylegan2": {
+      "ap": 94.44,
+      "auroc": 93.65,
+      "real_acc": 99.66,
+      "fake_acc": 36.91,
+      "acc": 68.28
+    },
+    "whichfaceisreal": {
+      "ap": 96.39,
+      "auroc": 97.99,
+      "real_acc": 94.5,
+      "fake_acc": 97.7,
+      "acc": 96.1
+    },
+    "wukong": {
+      "ap": 99.96,
+      "auroc": 99.94,
+      "real_acc": 99.7,
+      "fake_acc": 99.45,
+      "acc": 99.57
+    }
+  },
+  "date": "2026-11-10T09:54:09",
+  "synthscope_version": "0.1.0"
+}
