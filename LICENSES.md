@@ -15,6 +15,9 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 > non-commercial-only**, and some weights are **gated** (require accepting an upstream license).
 > The table below is a starting point — verify each entry against its source. (`⚠ verify` = please
 > confirm and fill in from the official repo before relying on it.)
+>
+> `synthscope push` enforces this for the rows marked **unclear** / **not redistributed** below: the keys in
+> `NEVER_REDISTRIBUTE` (`synthscope/hub.py`) are refused even with `--include-official`; update that constant together with the table when a licence is clarified.
 
 ## Detectors
 

@@ -7,6 +7,7 @@ License safety (see LICENSES.md): by default ``push`` uploads only **SynthScope-
 which are this project's to redistribute. Checkpoints derived from authors' **official released
 weights** (``ckpt_kind`` starting with ``official_`` — e.g. FatFormer, AIDE, NPR) are skipped
 unless you pass ``--include-official`` AND have confirmed the upstream license permits it.
+Keys in ``NEVER_REDISTRIBUTE`` (licence unclear or not granted) are refused even with ``--include-official``.
 """
 from __future__ import annotations
 
@@ -22,6 +23,20 @@ DEFAULT_REPO = os.environ.get("SYNTHSCOPE_HUB_REPO", "SMSD75/synthscope-checkpoi
 # Small SynthScope-produced auxiliary files (calibration stats) that some detectors read from the
 # checkpoint dir. Safe to redistribute (produced by this project).
 AUX_FILES = ["d3_calibration.json", "stall_params_genvideo.npz"]
+
+# Detectors whose official weights must never be uploaded: the upstream licence is unclear (no LICENSE / empty licence
+# field) or redistribution was not granted. These are the "unclear" / "not redistributed" rows of LICENSES.md; ``push``
+# refuses them even with ``--include-official``. Edit this one constant when a licence is clarified (and LICENSES.md with
+# it). B-Free and WaveRep (GRIP, nonprofit use) are not listed: they stay under the ``official_*`` rule.
+NEVER_REDISTRIBUTE = {
+    "probe": "PROBE weights: licence unclear (empty ModelScope licence field, no LICENSE in the repo)",
+    "probe_resnet": "PROBE weights: licence unclear (empty ModelScope licence field, no LICENSE in the repo)",
+    "vina": "VINA weights: licence unclear (no licence tag on the HF repo, no LICENSE in the code repo)",
+    "vina_video": "VINA weights: licence unclear (no licence tag on the HF repo, no LICENSE in the code repo)",
+    "mirror": "MIRROR weights: licence unclear (README MIT badge but no LICENSE file)",
+    "ltf": "LTF weights: no licence tag on the HF model card; terms not confirmed by the authors",
+    "vib_net_official": "VIB-Net official checkpoints: restricted download, weights licence not verified, not redistributed",
+}
 
 
 def _ckpt_dir() -> Path:
@@ -90,6 +105,10 @@ def _select(keys: list[str] | None, include_official: bool):
         wanted = set(keys)
         specs = [s for s in specs if s.key in wanted]
     for s in specs:
+        if s.key in NEVER_REDISTRIBUTE:      # checked first: refused whether or not the file exists and whatever the flags
+            skipped.append((s.key, f"REFUSED, never redistributed even with --include-official: "
+                                   f"{NEVER_REDISTRIBUTE[s.key]} (see LICENSES.md)"))
+            continue
         path = ckpt_dir / s.checkpoint
         if not path.exists():
             skipped.append((s.key, "no local checkpoint"))
