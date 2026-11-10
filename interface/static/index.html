@@ -1248,7 +1248,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
           <div class="imgcell seenbox"><img src=${r.input_image} alt="the detector's input" /></div>
           <div class="meta seen-cap">
             ${r.input_note && html`<span class="itag">${r.input_note.label}</span>`}
-            ${r.input_size && r.orig_size && html`<b>${r.input_size[0]}×${r.input_size[1]} px</b>${(r.input_size[0] === r.orig_size[0] && r.input_size[1] === r.orig_size[1]) ? " (your image's own size)" : " (from your " + r.orig_size[0] + "×" + r.orig_size[1] + " image)"}. `}
+            ${r.input_size && r.orig_size && html`<b>${r.input_size[0]}×${r.input_size[1]} px</b>${(r.input_size[0] === r.orig_size[0] && r.input_size[1] === r.orig_size[1]) ? " (your image's own size)" : " (from your " + r.orig_size[0] + "×" + r.orig_size[1] + " image)"}${r.input_grid ? ", cut into " + r.input_grid[1] + "×" + r.input_grid[0] + " = " + r.input_patches + " patches" : ""}. `}
             ${r.input_note && r.input_note.explanation}
           </div>
         </div>`}
