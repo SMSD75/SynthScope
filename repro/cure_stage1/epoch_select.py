@@ -2,7 +2,7 @@
 for the released encoder, the frozen base and our original run), on NON-benchmark data only.
 
 PRE-REGISTERED SELECTION RULE (fixed before any R1 / R2 epoch was scored; plans/2026-11-09-cure-stage1-investigation.md,
-Task 2 ruling): for R1, the selected epoch is the one with the highest
+Task 2 ruling): for R1 (and, by the same rule, R3: --select-prefix r3e), the selected epoch is the one with the highest
     select_score = mean( Synthbuster bacc of the stage-1 ratio head used directly (threshold 0.5),
                          Synthbuster bacc of the SD1.4-fitted linear probe (logistic regression, C = 1, threshold 0.5) )
 where "Synthbuster" = the 1287 Synthbuster fakes (143 per generator, every 7th file; not a CuRe paper benchmark) scored
@@ -81,6 +81,7 @@ def main():
     ap.add_argument("--extra-fake-dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--json", default="epoch_select.json", help="result file name inside --out")
+    ap.add_argument("--select-prefix", default="r1e", help="apply the selection rule to the encoders named <prefix><epoch>")
     ap.add_argument("--bs", type=int, default=32)
     ap.add_argument("--workers", type=int, default=12)
     args = ap.parse_args()
@@ -159,11 +160,14 @@ def main():
               f"SB direct {row['direct_synthbuster']['bacc']} probe {row['probe_synthbuster']['bacc']} -> score "
               f"{row['select_score']} | SD14 direct {row['direct_sd14_test']['bacc']} | WildRF(diag) direct "
               f"{row['direct_wildrf_DIAGNOSTIC']['bacc']} probe {row['probe_wildrf_DIAGNOSTIC']['bacc']}", flush=True)
-    r1 = sorted(k for k in res["rows"] if k.startswith("r1e"))
-    if r1:
-        best = max(res["rows"][k]["select_score"] for k in r1)
-        res["r1_selected"] = next(k for k in r1 if res["rows"][k]["select_score"] >= best - 0.5)
-        print(f"[sel] R1 selected (pre-registered rule): {res['r1_selected']}", flush=True)
+    # the pre-registered rule, applied to the epochs of the run named by --select-prefix (r1e: R1; r3e: R3, same rule)
+    cand = sorted(k for k in res["rows"] if k.startswith(args.select_prefix))
+    if cand:
+        best = max(res["rows"][k]["select_score"] for k in cand)
+        sel = next(k for k in cand if res["rows"][k]["select_score"] >= best - 0.5)
+        res["selected"] = sel
+        res[f"{args.select_prefix[:-1]}_selected"] = sel
+        print(f"[sel] {args.select_prefix[:-1].upper()} selected (pre-registered rule): {sel}", flush=True)
     with open(out / args.json, "w") as f:
         json.dump(res, f, indent=1)
 
