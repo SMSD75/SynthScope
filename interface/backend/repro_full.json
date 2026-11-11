@@ -1021,14 +1021,14 @@
   ],
   "nsg_vd": [
     {
-      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the authors' released results CSV",
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
       "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
       "paper": "acc=88.97 / auroc=97.68 / recall=98.54",
       "ours": "SynthScope acc=88.96 / AUROC=97.5 \u00b7 official acc=89.22 / AUROC=97.51",
       "ours_synthscope": "acc=88.96 / AUROC=97.5",
       "ours_official": "acc=89.22 / AUROC=97.51",
       "status": "reproduced",
-      "note": "Reproduces the authors' released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
       "benchmark": "GenVideo-Val, paper Table 2 (~120 per generator, subsets unspecified) vs the first-120 approximation",
@@ -1073,14 +1073,14 @@
   ],
   "nsg_vd_pika": [
     {
-      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the authors' released results CSV",
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
       "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
       "paper": "acc=89.34 / auroc=96.8 / recall=95.86",
       "ours": "SynthScope acc=89.15 / AUROC=96.75 \u00b7 official acc=89.42 / AUROC=96.69",
       "ours_synthscope": "acc=89.15 / AUROC=96.75",
       "ours_official": "acc=89.42 / AUROC=96.69",
       "status": "reproduced",
-      "note": "Reproduces the authors' released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 89.15 SynthScope, 89.42 official code, CSV 89.34. Sora AUROC 0.32 below the CSV, unexplained. Needs ffmpeg 4.2."
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 89.15 SynthScope, 89.42 official code, CSV 89.34. Sora AUROC 0.32 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
       "benchmark": "GenVideo-Val, paper Table 1 (~120 per generator, subsets unspecified) vs the first-120 approximation",
@@ -1095,14 +1095,14 @@
   ],
   "nsg_vd_unbalance": [
     {
-      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the authors' released results CSV",
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
       "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
       "paper": "acc=90.37 / auroc=96.95 / recall=98.44",
       "ours": "SynthScope acc=90.47 / AUROC=96.9 \u00b7 official acc=90.37 / AUROC=96.83",
       "ours_synthscope": "acc=90.47 / AUROC=96.9",
       "ours_official": "acc=90.37 / AUROC=96.83",
       "status": "reproduced",
-      "note": "Reproduces the authors' released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 90.47 SynthScope, 90.37 official code, CSV 90.37. Sora AUROC 0.37 below the CSV, unexplained. Needs ffmpeg 4.2."
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 90.47 SynthScope, 90.37 official code, CSV 90.37. Sora AUROC 0.37 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
       "benchmark": "GenVideo-Val, paper Table 3 (~120 per generator, subsets unspecified) vs the first-120 approximation",

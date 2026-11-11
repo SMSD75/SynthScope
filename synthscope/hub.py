@@ -35,6 +35,9 @@ NEVER_REDISTRIBUTE = {
     "vina_video": "VINA weights: licence unclear (no licence tag on the HF repo, no LICENSE in the code repo)",
     "mirror": "MIRROR weights: licence unclear (README MIT badge but no LICENSE file)",
     "ltf": "LTF weights: no licence tag on the HF model card; terms not confirmed by the authors",
+    "nsg_vd": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
+    "nsg_vd_pika": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
+    "nsg_vd_unbalance": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "vib_net_official": "VIB-Net official checkpoints: restricted download, weights licence not verified, not redistributed",
 }
 

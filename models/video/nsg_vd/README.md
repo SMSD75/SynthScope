@@ -99,8 +99,14 @@ sides. Record: `repro/nsg_vd_official_parity_genvideo75.json` (per-video scores;
 | the official code against itself: its own NSG features scored one at a time, or in reshuffled batches (`test_dMMD` uses `shuffle=True`) | max spread 0.037 / 0.035 / 0.022 (mp), 0.0001 / 0.0015 / 0.005 (d) |
 
 So the port is exact; the engine's per-video score differs from a given official run only through fp16 / batch numerics
-(which videos share a diffusion pass and an MMD batch), by at most 0.038, about as much as the official test itself
-varies with the batch a video lands in for the MMD-MP checkpoints (for the -d ones the diffusion batch dominates). The statistic is sensitive to them because
+(which videos share a diffusion pass and an MMD batch), by at most 0.038 on these 75 videos. The two batchings can be separated
+on this run. For the MMD-MP checkpoints the **MMD batch alone accounts for essentially all of the gap**: scoring the official
+code's own NSG features one video per MMD batch (official diffusion grouping) moves the scores by 0.037 / 0.035 / 0.022
+(Pika-mp / SEINE-mp / unbalance-mp), the whole served path (1 video per diffusion pass and per MMD batch) by 0.038 / 0.024 / 0.022.
+For the -d checkpoints the diffusion grouping shows up in only some: the MMD batch alone gives 0.0001 / 0.0015 / 0.005
+(Pika-d / SEINE-d / unbalance-d) against 0.015 / 0.002 / 0.008 for the served path, so the diffusion grouping contributes clearly
+for Pika-d, somewhat for unbalance-d and not visibly for SEINE-d (NSG features computed one video per pass differ from the
+3-per-pass ones by up to 5.4% in relative L1). The statistic is sensitive to batching because
 the trained kernel width `sigma0` is tiny (5e-7 to 1e-6 for the MMD-MP checkpoints).
 
 **Frame extraction (ffmpeg build).** The official code shells out to whatever `ffmpeg` is installed; its version is not
@@ -142,7 +148,7 @@ computed on the raw statistic; "Avg." is the mean over the 10 generators. Every 
 | L120 (our approximation) | the first 120 of each official list (Sora 51 + 56) | **a labelled approximation of the paper's subsets, not the paper's protocol** |
 
 The paper's subsets cannot be reconstructed: Appendix C gives no counts and no selection rule, `test.yaml` uses 500, the
-released val splits do not have 120 ids either (62 to 140 per generator), the paper's Sora column has 56 fakes against
+released val splits do not have 120 ids either (62 to 140 per generator for the nine generators other than Sora; Sora's val split has 5), the paper's Sora column has 56 fakes against
 51 in the released test split, and the checkpoint path in `test.yaml` is dated 2025-07-01. The released CSVs themselves differ from the paper's
 tables (CSV minus paper, 10-generator average, the largest metric per key: SEINE-mp accuracy +2.92; Pika-mp recall
 +7.84; unbalance-SEINE-mp recall +5.23). So the released checkpoints with the released protocol give the CSV numbers,
@@ -327,11 +333,16 @@ and shuffled batches of 24 for the net and the MMD, so a video's statistic diffe
   0.029 (Pika-mp) and 0.017 (unbalance-SEINE-mp); within 0.2 of 1 it is 0.041 / 0.067 / 0.028. Every verdict flip is within
   0.017 of the threshold. About three videos flip per generator, mostly the same few MSR-VTT reals, which is why every generator's accuracy moves by
   about 0.3 together.
-* **Cause: the diffusion step's batch grouping** (3 videos per pass in the official code, 1 in the engine), by elimination: the
-  official code against itself, with the same cached NSG features but other shuffles (seeds 1 and 2), moves per-video statistics by at most
-  0.041 / 0.061 / 0.030 with 0 / 2-3 / 0 flips; a seed-42 rerun is bit-identical (max 0.0), and re-batching the same
-  videos (L500 against L120) moves at most 0.033 with 0-1 flips. The SynthScope-against-official gap (28-33 flips) is larger than that
-  batch-shuffle noise (0-3 flips). The 75-video parity run (max 0.038) agrees; over 9,107 pairs the tails are longer.
+* **Cause: batching, with the split between its two parts not measured on the 9,107 pairs.** Two things differ: the MMD batch
+  (official: shuffled batches of 24; engine: 1 video) and the diffusion-pass grouping (official: 3 videos; engine: 1). On the
+  75-video parity run (above) the MMD batch alone reproduces the whole gap for the three MMD-MP checkpoints (max 0.037 / 0.035 / 0.022
+  with only the MMD batch changed, 0.038 / 0.024 / 0.022 for the served path), and the diffusion grouping adds to it for some
+  -d checkpoints. No run scored the 9,107 videos with only one of the two changed, so over this larger set the split is not
+  measured, and its tails are longer (max 0.096 / 0.267 / 0.069). What the 9,107 pairs do show is that the served path is
+  not within the official code's own shuffle noise: the official code against itself, with the same cached NSG features
+  but other shuffles (seeds 1 and 2), moves per-video statistics by at most 0.041 / 0.061 / 0.030 with 0 / 2-3 / 0 flips, a
+  seed-42 rerun is bit-identical (max 0.0), and re-batching the same videos (L500 against L120) moves at most 0.033 with 0-1 flips,
+  against 28-33 flips for the served path.
 * The seed runs bound the official numbers' own noise: the 10-generator averages move by at most 0.02 across seeds.
 
 ### ffmpeg build sensitivity (9.0.2 against the pinned 4.2.2)
@@ -372,8 +383,8 @@ mAUROC 95.49 / 97.88 / 97.79, mAP 93.63 / 90.91 / 94.71). Averages over the gene
   look low where the fakes are few (VideoPhy), while AUROC stays high: the threshold 1 is calibrated on the GenVideo-Val reals,
   and these sets are not it.
 * **12 of the 100 reference videos are in each real pool**, and are scored against a set that contains them. The JSON also
-  gives every row without those 12: accuracy, recall and AUROC change by at most 0.03; precision and F1 by up to 0.21 and 0.17
-  (VideoPhy precision 59.87 to 60.09, F1 74.67 to 74.84).
+  gives every row without those 12: accuracy, recall and AUROC change by at most 0.03; precision and F1 by up to 0.22 and 0.17 in the
+  averages (VideoPhy precision 59.87 to 60.09, F1 74.67 to 74.84; per generator up to 0.23 and 0.18).
 
 ### Deviations and provenance
 
@@ -390,7 +401,7 @@ mAUROC 95.49 / 97.88 / 97.79, mAP 93.63 / 90.91 / 94.71). Averages over the gene
   `DataFrame.map` only when it is missing. It runs after the metrics are computed, and the metrics `test_dMMD` logged equal the ones recomputed
   from the recorded per-video statistics (max difference 0.0 in all 21 runs).
 * **The official modules are unmodified**: the staged copy was checked against the repository sources in every job (the `.py` files
-  are identical; only `__pycache__` differs). The wrappers only record (sampler indices, the statistic per id); a toy check and the
+  are identical; only `__pycache__` differs, and the job's check did not list files present only in the staged copy). The wrappers only record (sampler indices, the statistic per id); a toy check and the
   bit-identical seed-42 rerun show they change nothing.
 * **Drivers and node-local files.** The driver scripts (official run and per-video recorder, frame extraction, list farm,
   SynthScope batch scripts) live in a private working directory and are identified here by job id: official frames 286532,
@@ -408,11 +419,14 @@ mAUROC 95.49 / 97.88 / 97.79, mAP 93.63 / 90.91 / 94.71). Averages over the gene
 and: a check of the MSR-VTT terms for the shipped reference file (derived from 100 MSR-VTT videos, released for research
 use); the 2.2 GB OpenAI diffusion model plus the 482 MB reference file on the hub (a hub upload; `synthscope push` uploads
 no aux files for it, `AUX_FILES` lists only D3's and STALL's); ffmpeg 4.2 in the image (the Dockerfile installs the distribution's ffmpeg with apt, which is not
-a 4.2 build; 7.0.x is unusable); and CPU time. Measured here
-(`nsg_vd`, one 4-second 256x256 clip, fp32 UNet on CPU, warm model, engine path): 91 s with 2 threads, 21 s with 16 threads
-(a shared login node, so an upper bound); on an RTX A5000 the benchmark runs took 0.45 to 0.67 s per video. With the model resident (about 1.1 GB UNet plus the
-482 MB reference) a clip is therefore a minute-scale request on a small CPU Space. CPU scores also differ in the second decimal between thread counts (1.106 with 2 threads,
-1.094 with 16 for that clip), against the statistic's tiny kernel width, which is another reason to treat a CPU verdict near 1 as noise.
+a 4.2 build; 7.0.x is unusable); and CPU time. Measured in a logged job (`repro/nsg_vd_cpu_timing.json`, `repro/nsg_vd_cpu_timing.py`,
+job 286994: an AMD EPYC 7453 node with 16 CPUs allocated and no GPU, `nsg_vd`, engine path, fp32 UNet, one synthetic 4 s 256x256 clip,
+a fresh process per thread count): 75.5 s per clip with 2 torch threads, 31.6 to 34.7 s with 8 and 24.5 to 24.9 s with 16 (warm; the
+first call, with the model load and the reference discriminator features, takes 106.8 / 37.5 / 31.2 s). One clip and a shared node, so
+read these as the order of magnitude, not a benchmark. On an RTX A5000 the benchmark runs took 0.45 to 0.67 s per video on GenVideo-Val and up to 0.73 s
+on the zero-shot sets (logs `repro/logs/nsgvd*`). With the model resident (about 1.1 GB UNet plus the 482 MB reference) a clip is a
+minute-scale request on a small CPU Space. CPU scores also depend on the thread count: the same clip scores 1.1062 with 2 and 8 threads
+and 1.0939 with 16, against the statistic's tiny kernel width, which is another reason to treat a CPU verdict near 1 as noise.
 To run it yourself, put the three checkpoints, `256x256_diffusion_uncond.pt` and
 `nsg_vd_reference_msrvtt_val100.safetensors` (built with `build_reference.py` from the official split and local MSR-VTT clips) in
 `$SYNTHSCOPE_CKPT_DIR` and point `$SYNTHSCOPE_FFMPEG_NSG_VD` at an ffmpeg 4.2 binary.

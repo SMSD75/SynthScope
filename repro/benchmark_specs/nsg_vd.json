@@ -3,10 +3,10 @@
  "paper": "Physics-Driven Spatiotemporal Modeling for AI-Generated Video Detection (NSG-VD, Zhang, Lian, Yang, Li, Pang, Liu, Han, Li, Tan, NeurIPS 2025 Spotlight, arXiv 2510.08073)",
  "arxiv_id": "2510.08073",
  "official_repo": "https://github.com/ZSHsh98/NSG-VD",
- "training_set_in_paper": "Table 2 of the paper (the NSG-VD MMD-MP row): the deep kernel trained on Kinetics-400 + SEINE. The key serves the official checkpoint standard-SEINE-mp.pth (no SynthScope-trained model; the official train_dMMD.py is not wrapped). The statistic is the deep-kernel MMD between a video's normalized spatiotemporal gradient features (guided-diffusion 256x256) and 100 MSR-VTT val reference videos; a video is generated iff it is > 1. The paper's subsets (~120 per generator) are unspecified, so the paper tables are NOT reproduced; the authors' released results CSV (500 per generator, Sora 51 + 56) is, with the official code on our data and with SynthScope. Metrics are the official ones: pooled accuracy (not balanced), recall / precision / F1 on the fake class, AUROC of the raw statistic. ffmpeg 4.2 is required (the build changes the frames). Exact parity with the official code at its own batching; the served path (1 video per diffusion pass) differs from the official 3-per-pass batching by up to 0.27 per video.",
+ "training_set_in_paper": "Table 2 of the paper (the NSG-VD MMD-MP row): the deep kernel trained on Kinetics-400 + SEINE. The key serves the official checkpoint standard-SEINE-mp.pth (no SynthScope-trained model; the official train_dMMD.py is not wrapped). The statistic is the deep-kernel MMD between a video's normalized spatiotemporal gradient features (guided-diffusion 256x256) and 100 MSR-VTT val reference videos; a video is generated iff it is > 1. The paper's subsets (~120 per generator) are unspecified, so the paper tables are NOT reproduced; the authors' released results CSV (500 per generator, Sora 51 + 56) is, with the official code on our data and with SynthScope. Metrics are the official ones: pooled accuracy (not balanced), recall / precision / F1 on the fake class, AUROC of the raw statistic. ffmpeg 4.2 is required (the build changes the frames). Exact parity with the official code at its own batching; the served path (1 video per diffusion pass and MMD batch) differs from the official batching (3 per pass, MMD batches of 24) by up to 0.27 per video.",
  "benchmarks": [
   {
-   "name": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the authors' released results CSV",
+   "name": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
    "datasets": [
     "GenVideo-Val"
    ],
@@ -199,9 +199,9 @@
       "auroc": 94.41
      }
     },
-    "note": "Reproduces the authors' released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
+    "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
    },
-   "gap_cause": "Per generator, accuracy / recall / F1 / precision are within 0.43 of the CSV for both paths. Unexplained: Sora AUROC is below the CSV for every checkpoint (this key: official code 96.04, SynthScope 96.08, CSV 96.92). The served path scores one video per diffusion pass (official: 3), which flips about 30 of 9,107 verdicts (Avg accuracy differs by up to 0.27).",
+   "gap_cause": "Per generator, accuracy / recall / F1 / precision are within 0.43 of the CSV for both paths. Unexplained: Sora AUROC is below the CSV for every checkpoint (this key: official code 96.04, SynthScope 96.08, CSV 96.92). The served path scores one video per diffusion pass (official: 3) and per MMD batch (official: 24), which flips about 30 of 9,107 verdicts (Avg accuracy differs by up to 0.27); on 75 videos the MMD batch alone reproduces that gap for the mp keys, not measured on the 9,107.",
    "dataset_source": "GenVideo-Val (ModelScope cccnju/Gen-Video), reals = MSR-VTT; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.standard-SEINE-mp.L500), repro/bench_results/nsg_vd_genvideo_split500.json"
   },
   {
@@ -401,7 +401,7 @@
     },
     "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 86.52 vs 86.05, recall 98.72 vs 97.13. The authors' released CSV differs from the paper too (recall 98.54)."
    },
-   "gap_cause": "The paper's NSG-VD rows imply 120 reals + 120 fakes per generator (68.33 = 82/120) and 56 + 56 for Sora, but Appendix C gives no counts or selection rule, test.yaml uses 500, and the released val splits have 62-140 ids; even the released CSVs differ from the paper by up to 2.92 points on average. Not reproduced.",
+   "gap_cause": "The paper's NSG-VD rows imply 120 reals + 120 fakes per generator (68.33 = 82/120) and 56 + 56 for Sora, but Appendix C gives no counts or selection rule, test.yaml uses 500, and the released val splits have 62-140 ids for the nine generators other than Sora (Sora's has 5); even the released CSVs differ from the paper by up to 2.92 points on average. Not reproduced.",
    "dataset_source": "GenVideo-Val; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.standard-SEINE-mp.L120), repro/bench_results/nsg_vd_genvideo_split120.json"
   },
   {

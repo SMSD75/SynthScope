@@ -197,6 +197,11 @@ def test_frames() -> None:
 
 
 def test_model() -> None:
+    # Tolerances, not bit equality: float32 CPU convolutions round differently with the torch thread count (1 thread vs more) and
+    # with the batch composition. Measured on this random UNet over 1, 2, 3, 4, 8 and 16 threads x 3 seeds: model.nsg() against
+    # score_features differs by at most 9.5e-5 (only at 1 thread, values up to 5.3; exactly 0 at 2+ threads), a batch of 3 against
+    # the three single videos by at most 4.2e-6 (one run in nine exceeded 1e-5 under the old bit-equal / 1e-5 checks). The tolerances below leave a
+    # margin of about 5x / 12x over these maxima and are still far below any structural error (the end frames are x100).
     print("[C] SynthScopeNSGVDModel (small random UNet) ...")
     model = small_model()
     torch.manual_seed(0)
@@ -204,13 +209,14 @@ def test_model() -> None:
     x = model.nsg(clips)
     assert x.shape == (3, 8, 3, 224, 224) and torch.isfinite(x).all()
     _, raw = official_nsg.score_features(model.unet, clips.reshape(-1, 3, 224, 224), 3)
-    assert torch.equal(x[:, 1:-1], raw[:, 1:-1]) and torch.equal(x[:, 0], raw[:, 0] * 100)
-    assert torch.equal(x[:, -1], raw[:, -1] * 100)
+    assert torch.allclose(x[:, 1:-1], raw[:, 1:-1], rtol=0, atol=5e-4)
+    assert torch.allclose(x[:, 0], raw[:, 0] * 100, rtol=1e-4, atol=5e-2)
+    assert torch.allclose(x[:, -1], raw[:, -1] * 100, rtol=1e-4, atol=5e-2)
     model.set_reference(model.nsg(torch.rand(6, 8, 3, 224, 224)))
     s = model.score(clips)
     assert s.shape == (3,) and torch.isfinite(s).all()
     single = torch.cat([model.score(clips[i:i + 1]) for i in range(3)])
-    assert torch.allclose(s, single, rtol=0, atol=1e-5), (s, single)
+    assert torch.allclose(s, single, rtol=0, atol=5e-5), (s, single)
     p = model.fake_probability(s)
     assert torch.allclose(p, torch.sigmoid((s - 1.0) / model.prob_scale))
     assert float(model.fake_probability(torch.tensor(1.0))) == 0.5
