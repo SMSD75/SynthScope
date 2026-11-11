@@ -199,6 +199,13 @@ class ModelSpec:
     # Extra files the model reads from the checkpoint folder: {Hydra config key: file name in CHECKPOINTS_DIR}; the
     # engine passes their paths as overrides and reports the detector unavailable while one is missing.
     aux_files: dict = field(default_factory=dict)
+    # A detector whose official protocol depends on the ffmpeg build pins it (NSG-VD: JPEG encoder + frame selection):
+    # ``ffmpeg_version`` is the required "major.minor" and ``ffmpeg_env`` an environment variable naming the binary for
+    # this detector only. The engine resolves the binary from ``ffmpeg_env``, else as every other detector
+    # ($SYNTHSCOPE_FFMPEG, ffmpeg on the PATH, imageio-ffmpeg), records its version in each result and warns when it is
+    # not the pinned one. Empty for every other detector (their behaviour is unchanged).
+    ffmpeg_version: str = ""
+    ffmpeg_env: str = ""
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
     #   "official"      = authors' released weights (loaded into the SynthScope class)
@@ -547,9 +554,12 @@ for _key, _name, _ckpt, _note in [
         num_frames=64, fps=None, frame_size=504, video_sampler="cv2_frames", video_prob="sigmoid",
         notes=_WAVEREP_NOTES.format(ckpt=_note),
     ))
-# NSG-VD: the paper's main method is MMD-MP (Eq. 13); its three tables are the three released MMD-MP checkpoints:
-# Table 1 Kinetics-400 + Pika, Table 2 Kinetics-400 + SEINE, Table 3 data-imbalanced (Kinetics-400 + 1,000 SEINE).
-# Default: SEINE (the best released results, assets/nsg-vd-test_results). The MMD-D checkpoints are not registered.
+# NSG-VD: the paper's method is the multi-population (MMD-MP) objective (Sec. 3.3, Eq. 13), which the authors' README
+# also recommends; its three result tables match the three released MMD-MP checkpoints: Table 1 Kinetics-400 + Pika,
+# Table 2 Kinetics-400 + SEINE, Table 3 data-imbalanced (Kinetics-400 + 1,000 SEINE). Default: SEINE-mp, the best
+# released AUROC among the MMD-MP checkpoints (assets/nsg-vd-test_results). The MMD-D checkpoints (*-d.pth, only in the
+# released results files, no paper table) are not registered. The protocol is pinned to ffmpeg 4.2 (parity build);
+# $SYNTHSCOPE_FFMPEG_NSG_VD points these keys at a binary.
 _NSGVD_NOTES = ("Physics-driven: a pre-trained diffusion model (guided-diffusion 256 uncond) estimates the Normalized "
                 "Spatiotemporal Gradient (spatial score over temporal change) of 8 frames; a deep-kernel MMD between the "
                 "clip's NSG features and 100 real MSR-VTT reference videos (the official reference set) is the score, "
@@ -571,6 +581,7 @@ for _key, _name, _ckpt, _note in [
                    "ModelConfig.reference_path": "nsg_vd_reference_msrvtt_val100.safetensors"},
         transform=model_transform("video/nsg_vd"),   # official _preprocess_frame_from_path: LANCZOS 224, /255
         num_frames=8, fps=None, frame_size=224, video_sampler="ffmpeg_select_jpeg", video_prob="mmd",
+        ffmpeg_version="4.2", ffmpeg_env="SYNTHSCOPE_FFMPEG_NSG_VD",
         notes=_NSGVD_NOTES.format(ckpt=_note),
     ))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a

@@ -5,8 +5,8 @@ Checks:
     ``torch.from_numpy(np.array(img)).float() / 255``, CHW) on JPEG frames of several sizes, bit-exact;
 [B] media.ffmpeg_select_frames == the official ``process_video`` command (written out, run through a shell exactly as
     ``os.system`` does) on a synthetic clip, same decoded pixels; media.ffmpeg_frame_count == moviepy's
-    ``int(fps * duration)`` when moviepy is importable; a clip shorter than 8 frames is a VideoDecodeError
-    (skipped without ffmpeg);
+    ``int(fps * duration)`` when moviepy is importable; a clip shorter than 8 frames and an empty file are a
+    VideoDecodeError, a missing or unreadable file an OSError (skipped without ffmpeg);
 [C] SynthScopeNSGVDModel with a small random UNet: NSG features [B, 8, 3, 224, 224] with the end frames x100, score
     [B] finite and per row independent of the batch, ``fake_probability`` = sigmoid((s - 1) / prob_scale); a released
     checkpoint layout (``deep_MMD`` keys) loads strictly through ``remap_nsg_vd``; a mismatch raises in the engine;
@@ -16,21 +16,26 @@ Checks:
     modules on the same inputs and weights (skipped otherwise);
 [E] the nsg_vd / nsg_vd_pika / nsg_vd_unbalance specs (official kind, 8 frames, ffmpeg_select_jpeg, mmd, aux files),
     the input note, and the engine's predict_video_clip on a synthetic clip with a small model: P(fake) and the
-    reported raw statistic (``logit``) equal the model's;
+    reported raw statistic (``logit``) equal the model's, the verdict is the official ``> 1`` (a score of exactly 1 is
+    real), the ffmpeg build is recorded and a pin mismatch warned about, $SYNTHSCOPE_FFMPEG_NSG_VD selects the binary
+    (other detectors unaffected), and bench_eval_video's cache_meta carries the aux-file and ffmpeg identity;
 [F] with $SYNTHSCOPE_CKPT_DIR holding nsg_vd*.pth (the released checkpoints) + 256x256_diffusion_uncond.pt +
     nsg_vd_reference_msrvtt_val100.safetensors: every registered checkpoint loads strictly in the engine (0 missing /
     0 unexpected) and equals the file; the reference set is [100, 8, 3, 224, 224] (skipped otherwise).
 """
 from __future__ import annotations
 
+import contextlib
 import dataclasses
 import importlib.util
+import io
 import math
 import os
 import subprocess
 import sys
 import tempfile
 import types
+import warnings
 
 import cv2
 import numpy as np
@@ -38,20 +43,32 @@ import torch
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
+sys.path[:0] = [ROOT, os.path.join(ROOT, "interface"), os.path.join(ROOT, "benchmark")]
 
 from backend import config as backend_config                                     # noqa: E402
 from backend import media                                                         # noqa: E402
-from backend.engine import Engine, _load_checkpoint                              # noqa: E402
+from backend.engine import Engine, _load_checkpoint, spec_ffmpeg_exe             # noqa: E402
 from backend.registry import get_spec, input_note, remap_nsg_vd                   # noqa: E402
 from config_utils import compose_config                                           # noqa: E402
 from models.video.nsg_vd import official_mmd, official_nsg                        # noqa: E402
 from models.video.nsg_vd.nsg_vd import SynthScopeNSGVDModel                       # noqa: E402
 from models.video.nsg_vd.official_tall import SingleSwinBlockDiscriminator        # noqa: E402
 
+_bench_spec = importlib.util.spec_from_file_location("bench_eval_video", os.path.join(ROOT, "benchmark", "bench_eval_video.py"))
+bench = importlib.util.module_from_spec(_bench_spec)
+_bench_spec.loader.exec_module(bench)
+
 KEYS = ("nsg_vd", "nsg_vd_pika", "nsg_vd_unbalance")
 # A small UNet with the official layout (6 levels, attention at 32/16/8, learned sigma) for fast CPU checks.
 SMALL_UNET = "{model_channels:32,num_res_blocks:1,num_head_channels:16}"
+
+
+@contextlib.contextmanager
+def quiet():
+    """The vendored / official Swin prints its layout and warns about torch.meshgrid: silence both (as the model does)."""
+    with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        yield
 
 
 def small_model(prob_scale: float | None = None) -> SynthScopeNSGVDModel:
@@ -137,7 +154,35 @@ def test_frames() -> None:
             raise AssertionError("a 5-frame clip gave 8 frames")
         except media.VideoDecodeError:
             pass
-    print(f"    frame count {n} ({how}), step {k}: 8 identical frames; a 5-frame clip is refused")
+        # I/O problems are OSErrors (not cached as decode failures); an empty file is a decode failure
+        for bad, err in [(os.path.join(tmp, "missing.mp4"), FileNotFoundError)]:
+            try:
+                media.ffmpeg_select_frames(bad, 8)
+                raise AssertionError(f"{bad} scored")
+            except media.VideoDecodeError:
+                raise AssertionError("a missing file is a decode failure")
+            except err:
+                pass
+        locked = os.path.join(tmp, "locked.mp4")
+        write_clip(locked, 20)
+        os.chmod(locked, 0)
+        if not os.access(locked, os.R_OK):                 # (root can read it anyway)
+            try:
+                media.ffmpeg_frame_count(locked)
+                raise AssertionError("an unreadable file was read")
+            except media.VideoDecodeError:
+                raise AssertionError("an unreadable file is a decode failure")
+            except OSError:
+                pass
+        empty = os.path.join(tmp, "empty.mp4")
+        open(empty, "wb").close()
+        try:
+            media.ffmpeg_select_frames(empty, 8)
+            raise AssertionError("an empty file scored")
+        except media.VideoDecodeError:
+            pass
+    print(f"    frame count {n} ({how}), step {k}: 8 identical frames; a 5-frame clip is refused; missing / "
+          "unreadable file -> OSError, empty file -> VideoDecodeError")
 
 
 def test_model() -> None:
@@ -158,8 +203,10 @@ def test_model() -> None:
     p = model.fake_probability(s)
     assert torch.allclose(p, torch.sigmoid((s - 1.0) / model.prob_scale))
     assert float(model.fake_probability(torch.tensor(1.0))) == 0.5
+    assert not bool(model.is_fake(torch.tensor(1.0))) and bool(model.is_fake(torch.tensor(1.000001)))   # official > 1
     # the released checkpoint layout: a deep_MMD state dict
-    ref = official_mmd.deep_MMD(SingleSwinBlockDiscriminator(num_features=300))
+    with quiet():
+        ref = official_mmd.deep_MMD(SingleSwinBlockDiscriminator(num_features=300))
     ref.set_info(-0.2, 1e-8, 1.0035e8, 5e-7, -0.8)
     sd = {k: v.clone() for k, v in ref.state_dict().items()}
     missing, unexpected = model.load_state_dict(remap_nsg_vd(sd), strict=False)
@@ -214,8 +261,9 @@ def test_against_official() -> None:
         print(f"[D] official modules: skipped (cannot import the official code: {e})")
         return
     torch.manual_seed(0)
-    ours = SingleSwinBlockDiscriminator(num_features=300).eval()
-    theirs = tall.SingleSwinBlockDiscriminator(num_features=300).eval()
+    with quiet():
+        ours = SingleSwinBlockDiscriminator(num_features=300).eval()
+        theirs = tall.SingleSwinBlockDiscriminator(num_features=300).eval()
     theirs.load_state_dict(ours.state_dict(), strict=True)
     x = torch.randn(3, 8, 3, 224, 224)
     with torch.no_grad():
@@ -271,11 +319,51 @@ def test_specs_and_engine() -> None:
         s = float(model.score(frames.unsqueeze(0))[0])
         assert res["num_frames"] == 8 and abs(res["logit"] - s) < 1e-6, (res, s)
         assert abs(res["fake_probability"] - 1 / (1 + math.exp(-(s - 1) / 0.5))) < 1e-6
-        assert res["verdict"] == ("fake" if s >= 1 else "real")
+        assert res["verdict"] == ("fake" if s > 1 else "real")
         assert abs(engine.video_raw_score(spec, clip) - s) < 1e-6
+        exe = spec_ffmpeg_exe(spec)
+        assert res["ffmpeg"] == {"path": exe, "version": media.ffmpeg_version(exe), "required": "4.2",
+                                 "match": media.ffmpeg_version(exe).startswith("4.2.")}
+        assert ("warning" in res) == (not res["ffmpeg"]["match"])
+        # exactly at the threshold: P(fake) 0.5 and, as the official rule (> 1), "real"
+        model.score = lambda x: torch.tensor([1.0])
+        at = engine.predict_video_clip(spec, clip)
+        del model.score
+        assert at["fake_probability"] == 0.5 and at["verdict"] == "real" and at["logit"] == 1.0
+        # a pin the binary does not meet is reported and warned about; the per-detector variable picks the binary
+        pinned = dataclasses.replace(spec, key="nsg_vd_pin_test", ffmpeg_version="0.1")
+        engine._cache[pinned.key] = model
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            other = engine.predict_video_clip(pinned, clip)
+        assert not other["ffmpeg"]["match"] and "warning" in other
+        assert any(issubclass(w.category, RuntimeWarning) and "pinned 0.1" in str(w.message) for w in caught)
+        os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = os.path.join(tmp, "no_such_ffmpeg")
+        try:
+            assert engine.ffmpeg_missing(spec)
+            os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = exe
+            assert spec_ffmpeg_exe(spec) == exe and not engine.ffmpeg_missing(spec)
+        finally:
+            os.environ.pop("SYNTHSCOPE_FFMPEG_NSG_VD", None)
+        assert spec_ffmpeg_exe(get_spec("vina_video")) == media.ffmpeg_exe()      # other detectors: unchanged
+        # bench_eval_video's cache identity covers the extra files and the ffmpeg build
+        ck = os.path.join(tmp, "ck")
+        os.makedirs(ck)
+        for name in [spec.checkpoint, *spec.aux_files.values()]:
+            with open(os.path.join(ck, name), "wb") as f:
+                f.write(name.encode())
+        saved = backend_config.CHECKPOINTS_DIR
+        backend_config.CHECKPOINTS_DIR = type(saved)(ck)
+        try:
+            meta = bench.cache_meta(engine, spec)
+        finally:
+            backend_config.CHECKPOINTS_DIR = saved
+        assert set(meta["aux_sha256"]) == set(spec.aux_files.values())
+        assert meta["ffmpeg"]["version"] == media.ffmpeg_version(exe) and len(meta["ffmpeg"]["sha256"]) == 64
     missing = dataclasses.replace(spec, aux_files={"ModelConfig.reference_path": "no_such_file.safetensors"})
     assert not engine.is_available(missing)
-    print(f"    3 specs ok; score {s:.4f} -> P(fake) {res['fake_probability']:.4f}; note '{note['label']}'")
+    print(f"    3 specs ok; score {s:.4f} -> P(fake) {res['fake_probability']:.4f}; s == 1 -> real; ffmpeg "
+          f"{res['ffmpeg']['version']} recorded, pin mismatch warned; cache_meta has aux + ffmpeg; note '{note['label']}'")
 
 
 def test_released_checkpoints() -> None:

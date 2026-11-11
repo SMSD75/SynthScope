@@ -5,6 +5,7 @@ training/eval pipeline does:
   * ``dataset._decode_rgb``         -> robust still-image decode (torchvision, PIL fallback)
   * ``dataset.sample_video_frames`` -> evenly-sampled clip [T,3,size,size] float in [0,1]
 """
+import functools
 import io
 import os
 import re
@@ -158,12 +159,37 @@ def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int, timeout: fl
         return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
 
 
+@functools.lru_cache(maxsize=None)
+def ffmpeg_version(exe: str) -> str:
+    """The version of an ffmpeg binary, as ``ffmpeg -version`` reports it, without a leading ``n`` (``4.2.2``,
+    ``7.0.2``, ``9.0.2``; a git build gives e.g. ``9.0.2``), or ``unknown``."""
+    try:
+        out = subprocess.run([exe, "-version"], stdin=subprocess.DEVNULL, capture_output=True, timeout=30,
+                             check=False).stdout.decode("utf8", errors="ignore")
+    except (OSError, subprocess.TimeoutExpired):
+        return "unknown"
+    m = re.search(r"ffmpeg version n?(\d+(?:\.\d+)*)", out)
+    return m.group(1) if m else "unknown"
+
+
+def _check_video_file(path: str | Path) -> None:
+    """I/O problems are not a verdict on the video: a missing file is a ``FileNotFoundError`` and an unreadable one an
+    ``OSError`` (neither is cached as a decode failure); an empty (0-byte) file is a ``VideoDecodeError``."""
+    path = str(path)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Video file not found: {path}")
+    with open(path, "rb"):                     # raises PermissionError / OSError when it cannot be opened
+        pass
+    if os.path.getsize(path) == 0:
+        raise VideoDecodeError("The video file is empty (0 bytes).")
+
+
 def _moviepy_seconds(stamp: str) -> float:
     """moviepy.tools.convert_to_seconds for an ``HH:MM:SS.ss`` string (same float operations, same order)."""
     return sum(mult * part for mult, part in zip((1, 60, 3600), reversed([float(p.replace(",", ".")) for p in stamp.split(":")])))
 
 
-def ffmpeg_frame_count(path: str | Path, timeout: float = 60.0) -> int:
+def ffmpeg_frame_count(path: str | Path, timeout: float = 60.0, exe: str | None = None) -> int:
     """The frame count NSG-VD's official code computes for a video (data/video_frames_dataset.py
     ``get_video_frame_count``: ``int(VideoFileClip(path).fps * VideoFileClip(path).duration)``, moviepy 2.x), without
     moviepy: moviepy runs ``ffmpeg -hide_banner -i <video>`` and parses its stderr (video/io/ffmpeg_reader.py
@@ -173,8 +199,9 @@ def ffmpeg_frame_count(path: str | Path, timeout: float = 60.0) -> int:
         video stream): ``<x> fps``, else ``<x> tbr`` (``k`` = x1000); a value within 0.01 of n*1000/1001 for n in
         23, 24, 25, 30, 50 becomes exactly n*1000/1001.
     A file with no duration or no video stream raises ``VideoDecodeError`` (moviepy fails on it and the official code
-    skips the video)."""
-    cmd = [ffmpeg_exe(), "-hide_banner", "-i", str(path)]
+    skips the video); a missing / unreadable file an ``OSError``. ``exe``: the ffmpeg binary (default ``ffmpeg_exe()``)."""
+    _check_video_file(path)
+    cmd = [exe or ffmpeg_exe(), "-hide_banner", "-i", str(path)]
     try:
         proc = subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
                               timeout=timeout, check=False)
@@ -210,7 +237,8 @@ def ffmpeg_frame_count(path: str | Path, timeout: float = 60.0) -> int:
     return int(fps * duration)
 
 
-def ffmpeg_select_frames(path: str | Path, num_frames: int = 8, timeout: float = 300.0) -> list[Image.Image]:
+def ffmpeg_select_frames(path: str | Path, num_frames: int = 8, timeout: float = 300.0,
+                         exe: str | None = None) -> list[Image.Image]:
     """NSG-VD's official frame extraction (data/video_frames_dataset.py ``process_video``): with ``n`` the moviepy frame
     count (``ffmpeg_frame_count``) and ``k = max(1, n // num_frames)``, ffmpeg writes the first ``num_frames`` frames
     whose index is a multiple of ``k`` as JPEGs with its default settings::
@@ -218,15 +246,17 @@ def ffmpeg_select_frames(path: str | Path, num_frames: int = 8, timeout: float =
         ffmpeg -i <video> -vf select='not(mod(n\\,k))',setpts=N/FRAME_RATE/TB -vframes <num_frames> <dir>/frame%d.jpg
 
     and they are read back in sorted file-name order (``glob`` + ``sort``). The official dataset drops a video that does
-    not give exactly ``num_frames`` frames; here that is a ``VideoDecodeError``. The result depends on the ffmpeg build:
-    its JPEG encoder (parity with the official code checked with the static ffmpeg 4.2.2 of imageio-ffmpeg 0.4.2; 9.0.2
-    encodes the same frames ~0.8 grey levels apart on average, which moves NSG-VD scores by 0.04-0.19 on average), and
-    ffmpeg 7.0.x drops selected frames on some 50 / 30 fps clips (MoonValley, Sora), so fewer than 8 are written. Set
-    ``$SYNTHSCOPE_FFMPEG`` to the build to use. The frames are returned as decoded (the official code opens
-    each JPEG and resizes it as is); a non-RGB JPEG (grayscale) is converted to RGB, where the official code would fail."""
-    k = max(1, ffmpeg_frame_count(path) // num_frames)
+    not give exactly ``num_frames`` frames; here that is a ``VideoDecodeError`` (a missing / unreadable file is an
+    ``OSError``). The result depends on the ffmpeg build (``exe``, default ``ffmpeg_exe()``; the engine resolves it per
+    detector, ``ModelSpec.ffmpeg_env`` / ``ffmpeg_version``): its JPEG encoder, and ffmpeg 7.0.x drops selected frames
+    on some 50 / 30 fps clips so that fewer than 8 are written. Parity with the official code was checked with the
+    static ffmpeg 4.2.2; the build comparison on 75 GenVideo-Val clips is repro/nsg_vd_ffmpeg_builds_genvideo75.json.
+    The frames are returned as decoded (the official code opens each JPEG and resizes it as is); a non-RGB JPEG
+    (grayscale) is converted to RGB, where the official code would fail."""
+    exe = exe or ffmpeg_exe()
+    k = max(1, ffmpeg_frame_count(path, exe=exe) // num_frames)
     with tempfile.TemporaryDirectory() as tmp:
-        cmd = [ffmpeg_exe(), "-i", str(path), "-vf", f"select=not(mod(n\\,{k})),setpts=N/FRAME_RATE/TB",
+        cmd = [exe, "-i", str(path), "-vf", f"select=not(mod(n\\,{k})),setpts=N/FRAME_RATE/TB",
                "-vframes", str(num_frames), os.path.join(tmp, "frame%d.jpg")]
         try:
             subprocess.run(cmd, check=False, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,

@@ -35,7 +35,10 @@ then differ slightly from the official GPU run).
 
 Training: not supported (official train_dMMD.py); ``compute_loss`` raises.
 """
+import contextlib
+import io
 import os
+import warnings
 
 import torch
 import torch.nn as nn
@@ -76,7 +79,12 @@ class SynthScopeNSGVDModel(nn.Module):
         if mc.get("diffusion_weights"):
             self.unet.load_state_dict(torch.load(str(mc.diffusion_weights), map_location="cpu", weights_only=True))
         self.unet.eval()
-        self.mmd = deep_MMD(discriminator=SingleSwinBlockDiscriminator(num_features=int(mc.get("feature_dim", 300))),
+        # The vendored SwinTransformer prints its layout and calls torch.meshgrid without ``indexing`` (the default "ij",
+        # a deprecation warning): silenced here, the module itself is unchanged.
+        with contextlib.redirect_stdout(io.StringIO()), warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=r"torch\.meshgrid", category=UserWarning)
+            discriminator = SingleSwinBlockDiscriminator(num_features=int(mc.get("feature_dim", 300)))
+        self.mmd = deep_MMD(discriminator=discriminator,
                             sigma=mc.get("sigma", 1000), sigma0=mc.get("sigma0", 0.1), epsilon=mc.get("epsilon", 10),
                             img_size=int(mc.get("img_size", 224)), is_yy_zero=bool(mc.get("is_yy_zero", True)),
                             is_smooth=bool(mc.get("is_smooth", True)))
@@ -141,6 +149,11 @@ class SynthScopeNSGVDModel(nn.Module):
 
     def forward(self, clips: torch.Tensor) -> torch.Tensor:
         return self.score(clips)
+
+    def is_fake(self, score: torch.Tensor) -> torch.Tensor:
+        """The official decision: fake iff score > threshold (test_dMMD.py ``raw_predict > 1``; a score of exactly 1 is
+        real)."""
+        return score > self.threshold
 
     def fake_probability(self, score: torch.Tensor) -> torch.Tensor:
         """P(fake) = sigmoid((score - threshold) / prob_scale): 0.5 exactly at the official threshold (1)."""

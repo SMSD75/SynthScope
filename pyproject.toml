@@ -41,6 +41,7 @@ dependencies = [
     "transformers>=4.38",
     "torchmetrics>=1.0",
     "timm>=0.9",
+    "einops>=0.6",                # NSG-VD (vendored TALL discriminator, models/video/nsg_vd/official_tall.py)
     "open_clip_torch>=2.24",
     "diffusers>=0.27",
     "pytorch_wavelets>=1.3",

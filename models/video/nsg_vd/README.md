@@ -18,9 +18,19 @@ Three released checkpoints are registered, the paper's main method (MMD-MP, Eq. 
 | `nsg_vd_pika` | `standard-Pika-mp.pth` (`nsg_vd_pika.pth`) | Kinetics-400 + Pika | Table 1 |
 | `nsg_vd_unbalance` | `unbalance-SEINE-mp.pth` (`nsg_vd_unbalance.pth`) | Kinetics-400 + 1,000 SEINE | Table 3 |
 
-The default is the SEINE model, which has the best released results (`assets/nsg-vd-test_results`). The three MMD-D
-checkpoints (`*-d.pth`) are not registered (they appear only in the released results files, not in the paper's tables);
-the parity check below covers them too.
+Which tables use which checkpoint (arXiv 2510.08073 v2): the paper's method trains the deep kernel with the
+multi-population objective ("we adopt a multi-population aware optimization for the kernel training", Sec. 3.3, Eq. 13),
+i.e. MMD-MP, and the captions of its three result tables name the training data: Table 1 "10,000 real and generated
+videos from Kinetics-400 and Pika", Table 2 "... Kinetics-400 and SEINE", Table 3 "10,000 real and 1,000 generated
+videos from Kinetics-400 and SEINE" (data-imbalanced). No table or ablation reports an MMD-D model. The released files
+map onto them as above (by name; the repo does not say which file produced which table).
+
+The default is `standard-SEINE-mp`: MMD-MP is the paper's method and the variant the authors' README recommends ("Use
+MMD-MP for multiple generators or unbalanced data"), and SEINE-mp has the best AUROC of the three MMD-MP checkpoints in
+the released results (`assets/nsg-vd-test_results`, average 97.68, against 96.80 Pika-mp and 96.95 unbalance-mp; its
+accuracy, 88.97, is the lowest of the three). The three MMD-D checkpoints (`*-d.pth`) appear only in the released
+results files, not in the paper, and are not registered (standard-SEINE-d has the best released numbers overall, 94.00
+accuracy / 98.38 AUROC); the parity check below covers them too.
 
 ## Pipeline (official, reproduced exactly)
 
@@ -58,7 +68,8 @@ Files in `$SYNTHSCOPE_CKPT_DIR`:
 | `media.ffmpeg_frame_count` re-implements moviepy's frame count; `media.ffmpeg_select_frames` runs the official ffmpeg command | SynthScope does not depend on moviepy; both checked against the official code (counts and decoded frames identical). |
 | a video that gives fewer than 8 frames is a `VideoDecodeError` | The official dataset silently drops it. |
 | the UNet's convolutions are converted to fp16 before each diffusion pass | The official `convert_to_fp16`; the engine casts models to fp32 after loading. On a CPU the UNet runs in fp32 (`cpu_fp32`), a deviation. |
-| P(fake) = sigmoid((MMD - 1) / `prob_scale`) | The official output is the raw MMD thresholded at 1; the probability is for display (0.5 at the threshold). The engine reports the raw statistic as `logit`. |
+| P(fake) = sigmoid((MMD - 1) / `prob_scale`), `prob_scale` 0.1; verdict = MMD > 1 | The official output is the raw MMD thresholded at 1; the probability is for display (0.5 at the threshold). The verdict follows the official rule exactly (`raw_predict > 1`: a score of exactly 1 is real, although its P(fake) is 0.5). The engine reports the raw statistic as `logit`. |
+| ffmpeg pinned per detector: `ffmpeg_version="4.2"`, binary from `$SYNTHSCOPE_FFMPEG_NSG_VD` (else the global `$SYNTHSCOPE_FFMPEG` / PATH / imageio-ffmpeg) | The official code uses whatever ffmpeg is installed, and the build changes the frames (below). Each result records the ffmpeg path and version used (`ffmpeg`) and carries a `warning` (also logged, once per binary) when it is not 4.2.x; `bench_eval_video.py`'s cache identity includes the ffmpeg build and the sha256 of the diffusion model and the reference file. Other detectors are unaffected. |
 | no training (`compute_loss` raises) | Use the official `train_dMMD.py`. |
 
 ## Fidelity check
@@ -88,14 +99,15 @@ varies with the batch a video lands in for the MMD-MP checkpoints (for the -d on
 the trained kernel width `sigma0` is tiny (5e-7 to 1e-6 for the MMD-MP checkpoints).
 
 **Frame extraction (ffmpeg build).** The official code shells out to whatever `ffmpeg` is installed; its version is not
-pinned, and it matters. On the same 75 videos, with SynthScope's pipeline:
+pinned, and it matters. On the same 75 videos (frames: `repro/nsg_vd_ffmpeg_builds_genvideo75.json`, job 286412;
+scores: `alt_ffmpeg` in `repro/nsg_vd_official_parity_genvideo75.json`, job 286389):
 
-| ffmpeg | videos giving 8 frames | score vs the official run with 4.2.2 (SEINE-mp / Pika-mp / unbalance-mp) |
-|---|---|---|
-| 4.2.2 (static, imageio-ffmpeg 0.4.2) — used for parity | 75/75 | (exact, above) |
-| 9.0.2 (static, imageio-ffmpeg 0.8.1) | 75/75 | mean abs diff 0.19 / 0.07 / 0.04, max 0.79 / 0.83 / 0.44; verdicts agree 70 / 70 / 73 of 75 |
-| 7.0.2 (static, the repo's VINA / D3 build) | 68/75 (drops frames on all 5 MoonValley and 2 Sora clips) | mean abs diff 0.13 / 0.17 / 0.12 on the 68; verdicts agree 59 / 57 / 59 |
+| ffmpeg | videos giving 8 frames | frames vs 4.2.2 | score vs the official run with 4.2.2 (SEINE-mp / Pika-mp / unbalance-mp) |
+|---|---|---|---|
+| 4.2.2 (static, imageio-ffmpeg 0.4.2) — used for parity | 75/75 | — | (exact, above) |
+| 9.0.2 (static, imageio-ffmpeg 0.8.1) | 75/75 | same frames, re-encoded: model inputs 0.83 grey levels apart on average (max 1.16 per video), none identical | mean abs diff 0.19 / 0.07 / 0.04, max 0.79 / 0.83 / 0.44; verdicts agree 70 / 70 / 73 of 75 |
+| 7.0.2 (static, the repo's VINA / D3 build) | 68/75: 6 frames on all 5 MoonValley clips, 7 on 2 of 5 Sora clips | on the 68: 7 identical, the others select different frames (25.3 grey levels apart on average, max 114.5) | mean abs diff 0.13 / 0.17 / 0.12 on the 68; verdicts agree 59 / 57 / 59 |
 
-The JPEG encoders of 4.2.2 and 9.0.2 put the same frames ~0.8 grey levels apart on average, and the NSG amplifies it.
-ffmpeg 7.0.x is unusable for this protocol. Point `$SYNTHSCOPE_FFMPEG` at a 4.x build to match the parity setting; which
-build the authors used is unknown.
+The frame counts (`n`, hence the step `k`) are the same under all three builds; 9.0.2 changes only the JPEG encoding,
+which the NSG amplifies; 7.0.x drops and shifts the selected frames and is unusable for this protocol. The registry pins
+4.2 and warns otherwise; which build the authors used is unknown.

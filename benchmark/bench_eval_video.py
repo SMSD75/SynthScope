@@ -46,7 +46,8 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "interface"))
-from backend.engine import get_engine          # noqa: E402
+from backend import config as backend_config   # noqa: E402
+from backend.engine import get_engine, spec_ffmpeg   # noqa: E402
 from backend.media import VideoDecodeError     # noqa: E402
 from backend.registry import get_spec          # noqa: E402
 from datasets_util import ensure_dataset        # noqa: E402
@@ -146,14 +147,24 @@ def _sha256(path: Path) -> str:
 
 def cache_meta(engine, spec) -> dict:
     """What a score cache is valid for: the detector key, the sha256 of the resolved checkpoint, and every spec field that
-    changes a video's score (frame count, sampler, preprocessing)."""
+    changes a video's score (frame count, sampler, preprocessing); for a detector that declares them, the sha256 of its
+    extra files (``aux_files``) and its pinned ffmpeg build (version + binary sha256)."""
     ck = engine.checkpoint_path(spec)
-    return {"model": spec.key,
+    meta = {"model": spec.key,
             "ckpt_sha256": _sha256(Path(ck).resolve()) if ck is not None else None,
             "spec": {"num_frames": spec.num_frames, "video_sampler": spec.video_sampler,
                      "transform": repr(spec.transform),
                      **{k: repr(getattr(spec, k, None)) for k in ("fps", "frame_size", "window_center", "video_norm")}},
             "cache_format": CACHE_FORMAT}
+    # Only for detectors that declare them (NSG-VD), so the caches of the others keep their identity: the extra files the
+    # model reads (diffusion model, reference set) and the pinned ffmpeg build its frames depend on.
+    if getattr(spec, "aux_files", None):
+        meta["aux_sha256"] = {name: _sha256((backend_config.CHECKPOINTS_DIR / name).resolve())
+                              for name in sorted(spec.aux_files.values())}
+    if getattr(spec, "ffmpeg_version", ""):
+        ff = spec_ffmpeg(spec)
+        meta["ffmpeg"] = {"version": ff["version"], "sha256": _sha256(Path(ff["path"]).resolve())}
+    return meta
 
 
 class ScoreCache:

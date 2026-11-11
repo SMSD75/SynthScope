@@ -12,12 +12,20 @@ ScoreFeaturesDataset (``process_batch_size=3``).
         --out $SYNTHSCOPE_CKPT_DIR/nsg_vd_reference_msrvtt_val100.safetensors
 
 ``--videos`` holds the MSR-VTT clips named as in the split (``MSRVTT_684.mp4``) or as in GenVideo-Val
-(``<index>_msrvtt_684.mp4``). Writes ``ref_data`` [N, 8, 3, 224, 224] float32 plus the video ids in the metadata.
+(``<index>_msrvtt_684.mp4``). Writes ``ref_data`` [N, 8, 3, 224, 224] float32 plus the video ids, the ffmpeg binary and
+version and the diffusion model's sha256 in the metadata.
+
+ffmpeg: the frames (JPEG encoder, frame selection) depend on the ffmpeg build, so the reference and the videos scored
+against it must be extracted with the same build. The shipped file was built with the static ffmpeg 4.2.2 (imageio-ffmpeg
+0.4.2), the build the registry pins for NSG-VD (``ffmpeg_version="4.2"``) and the one the official parity used; it is
+bit-identical to the official run's reference features with that build. The binary is $SYNTHSCOPE_FFMPEG_NSG_VD, else
+$SYNTHSCOPE_FFMPEG / ffmpeg on the PATH / imageio-ffmpeg.
 """
 import argparse
 import hashlib
 import io
 import json
+import os
 import sys
 import zipfile
 from pathlib import Path
@@ -35,6 +43,15 @@ from models.video.nsg_vd.preprocess import NSGVDFrame              # noqa: E402
 SPLIT_MEMBER = "split/real/MSR-VTT/val_ids.txt"
 REF_LEN = 100            # test.yaml ref_load_len
 PROCESS_BATCH = 3        # ScoreFeaturesDataset process_batch_size (utils/data_utils.py)
+
+
+def sha256(path: str) -> str:
+    """sha256 of a file, read in 16 MB chunks (the diffusion model is 2.2 GB)."""
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 24), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 
 def reference_ids(split_zip: str | None, ids_file: str | None) -> list[str]:
@@ -79,11 +96,13 @@ def main(argv=None):
     cfg = compose_config(["model@ModelConfig=video/nsg_vd", f"ModelConfig.diffusion_weights={args.diffusion_weights}",
                           f"ModelConfig.process_batch={PROCESS_BATCH}"])
     model = SynthScopeNSGVDModel(cfg).to(args.device).eval()
+    ffmpeg = os.environ.get("SYNTHSCOPE_FFMPEG_NSG_VD") or media.ffmpeg_exe()
+    print(f"ffmpeg {media.ffmpeg_version(ffmpeg)} ({ffmpeg})")
     transform = NSGVDFrame(224)
     kept, clips, dropped = [], [], []
     for vid, p in zip(ids, paths):
         try:
-            frames = media.ffmpeg_select_frames(p, num_frames=model.num_frames)
+            frames = media.ffmpeg_select_frames(p, num_frames=model.num_frames, exe=ffmpeg)
         except media.VideoDecodeError as e:          # the official dataset drops it
             dropped.append({"id": vid, "reason": str(e)})
             continue
@@ -95,8 +114,8 @@ def main(argv=None):
     ref = torch.cat(feats).contiguous()
     meta = {"ids": json.dumps([v.split(".")[0] for v in kept]), "dropped": json.dumps(dropped),
             "source": "NSG-VD assets/split.zip split/real/MSR-VTT/val_ids.txt, first 100 (test.yaml ref_mode val)",
-            "ffmpeg": media.ffmpeg_exe(), "device": args.device, "torch": torch.__version__,
-            "diffusion_weights_sha256": hashlib.sha256(Path(args.diffusion_weights).read_bytes()).hexdigest()}
+            "ffmpeg": ffmpeg, "ffmpeg_version": media.ffmpeg_version(ffmpeg), "device": args.device,
+            "torch": torch.__version__, "diffusion_weights_sha256": sha256(args.diffusion_weights)}
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     save_file({"ref_data": ref}, args.out, metadata=meta)
     print(f"wrote {args.out}: ref_data {tuple(ref.shape)} from {len(kept)} videos ({len(dropped)} dropped: {dropped})")

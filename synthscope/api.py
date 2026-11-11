@@ -163,6 +163,14 @@ class Detector:
 
     def _ensure_weights(self) -> None:
         """Fetch weights from the model zoo on first use if they're not present locally."""
+        # Extra files a detector reads from the checkpoint folder (NSG-VD: its diffusion model and reference set) are not
+        # in the zoo: say which are missing instead of trying to download the checkpoint.
+        missing_aux = [f for f in self.spec.aux_files.values() if not (_config.CHECKPOINTS_DIR / f).exists()]
+        if missing_aux:
+            raise FileNotFoundError(
+                f"'{self.spec.key}' needs {', '.join(missing_aux)} in $SYNTHSCOPE_CKPT_DIR ({_config.CHECKPOINTS_DIR}); "
+                "they are not in the model zoo; the detector's README (models/<modality>/) says how to get them."
+            )
         if self.available or self._custom_ckpt or self.spec.checkpoint is None:
             return  # already present, user-managed, or training-free
         if self._engine.ffmpeg_missing(self.spec):
