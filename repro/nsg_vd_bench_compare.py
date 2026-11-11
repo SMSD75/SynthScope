@@ -22,6 +22,7 @@ accuracy and AP, which differ for Sora's 56 + 51).
 import argparse
 import csv
 import json
+import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -137,12 +138,61 @@ def official_seed_spread(runs: dict) -> dict:
     out = {"note": "official test_dMMD.main, same cached NSG features; the seed only changes the DataLoader shuffles "
                    "(batch composition of the net / MMD_batch2 forward)",
            "metrics": {name: with_avg({g: metrics_of(r[g]) for g in GENS if g in r}) for name, r in runs.items()},
-           "per_video_vs_seed42": {name: per_video_diff(base, r) for name, r in runs.items() if r is not base}}
+           "per_video_vs_seed42": {name: per_video_diff(base, r) for name, r in runs.items() if r is not base},
+           "logged_vs_recomputed_max_abs_diff": {name: max(abs(r[g]["metrics_logged"][m] - metrics_of(r[g])[m])
+                                                           for g in r for m in METRICS) for name, r in runs.items()}}
     names = [n for n in runs if not n.startswith("rerun")]
     out["spread_max_minus_min"] = {g: {m: round(max(out["metrics"][n][g][m] for n in names)
                                                  - min(out["metrics"][n][g][m] for n in names), 2) for m in METRICS}
                                    for g in GENS + ["Avg."]}
     return out
+
+
+def zero_shot(cache_root: Path, split_zip: str | None) -> dict:
+    """nsg_vd on other benchmarks (bench_eval_video --dataset <d> --limit 1000; EvalCrafter with GenVideo-Val's MSR-VTT
+    reals), in test_dMMD's definitions. The real pools are the first 1,000 MSR-VTT files by name; some of them are in
+    the 100-video reference set (scored against a set that holds themselves), so each row is also given without them."""
+    ref = set()
+    if split_zip:
+        with zipfile.ZipFile(split_zip) as z:
+            val = [x.strip() for x in z.read("split/real/MSR-VTT/val_ids.txt").decode().splitlines() if x.strip()]
+        ref = set([v.split(".")[0].lower() for v in val if v.endswith(".mp4")][:100])   # the shipped reference set
+    out = {"note": "ZERO-SHOT reference rows (not a paper protocol): nsg_vd (standard-SEINE-mp), the shipped reference "
+                   "set (100 MSR-VTT val videos) for every dataset, ffmpeg 4.2.2, --limit 1000 per class per generator; "
+                   "metrics as test_dMMD (fake iff MMD > 1, pooled accuracy)"}
+    for ds in ("vidprom", "videophy", "evalcrafter"):
+        cdir = cache_root / f"cache_nsg_vd_{ds}"
+        if not cdir.is_dir():
+            continue
+        reals, fakes, failed = {}, {}, []
+        for f in sorted(cdir.glob("scores.*.jsonl")):
+            for line in f.read_text().splitlines():
+                if not line.strip():
+                    continue
+                r = json.loads(line)
+                a, b, name = r["k"].split("/")        # <gen>/<0_real|1_fake>/<file>, or 1_fake/<gen>/<file> (fake-only)
+                if "err" in r:
+                    failed.append(r["k"])
+                    continue
+                if b in ("0_real", "real", "reals", "Real"):
+                    reals[name.split("_", 1)[1].rsplit(".", 1)[0].lower()] = r["logit"]
+                else:
+                    fakes.setdefault(b if a in ("1_fake", "fake", "fakes", "Fake") else a, []).append(r["logit"])
+        overlap = sorted(set(reals) & ref)
+        rows = {}
+        for g, fk in sorted(fakes.items()):
+            rr = np.array(list(reals.values()))
+            rows[g] = {"all_reals": {k: round(v, 2) if isinstance(v, float) else v
+                                     for k, v in official_metrics(rr, np.array(fk)).items()}}
+            if overlap:
+                rr2 = np.array([v for k, v in reals.items() if k not in ref])
+                rows[g]["without_reference_reals"] = {k: round(v, 2) if isinstance(v, float) else v
+                                                      for k, v in official_metrics(rr2, np.array(fk)).items()}
+        avg = {variant: {m: round(float(np.mean([rows[g][variant][m] for g in rows])), 2) for m in METRICS}
+               for variant in ("all_reals", "without_reference_reals") if all(variant in rows[g] for g in rows)}
+        out[ds] = {"n_reals": len(reals), "reals_in_reference_set": len(overlap), "decode_failures": failed,
+                   "per_generator": rows, "Avg.": avg}
+    return out if len(out) > 1 else {}
 
 
 def ss_scores(by_id, gen, real_ids, fake_ids):
@@ -159,6 +209,8 @@ def main():
     ap.add_argument("--lists", required=True, help="nsgvd_bench_farm.py's lists.json (official id order per generator)")
     ap.add_argument("--ffmpeg", default="ffmpeg-linux64-v4.2.2")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--split-zip", default=None, help="the released split.zip: with it, the zero-shot rows are also given "
+                                                       "without the reals that are in the 100-video reference set")
     ap.add_argument("--per-video-out", default=None, help="also write the per-video statistics (L500, seed 42) aligned "
                                                           "to the official id lists")
     args = ap.parse_args()
@@ -259,6 +311,9 @@ def main():
                                         "verdict_flips": int(((sa > 1) != (sb > 1)).sum())}}
             sens[f"L{n}"] = per
         res["ffmpeg_9.0.2_sensitivity"] = sens
+    zs = zero_shot(Path(args.ss_cache), args.split_zip)
+    if zs:
+        res["zero_shot"] = zs
     Path(args.out).write_text(json.dumps(res, indent=1) + "\n")
     if args.per_video_out:
         pv = {"note": "per-video MMD statistic (fake iff > 1), L500 protocol, ids in the official list order "
