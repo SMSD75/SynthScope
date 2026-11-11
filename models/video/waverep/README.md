@@ -244,10 +244,11 @@ website data: `repro/benchmark_specs/waverep.json`, `waverep_g4.json`.
 
 ## Availability
 
-Space: pending user approval. It requires uploading `weights_dinov2_G{1,4}.ckpt` to the hub repo (a decision for the maintainer,
-under the GRIP non-profit licence below), and a clip costs about 30 s on the Space's CPU (up to 64 ViT-B/14 forwards at 504 px).
-For that reason the keys are not in `deploy/hf-space/fetch_weights.py`.
-Not in the model zoo: place the checkpoints under `$SYNTHSCOPE_CKPT_DIR` as `waverep.pth` / `waverep_g4.pth`.
+Space: served (both keys), under the GRIP non-profit licence below: the free, non-commercial demo credits the authors and links
+the paper and repository (maintainer approval 2026-11-11). The checkpoints sit in the private weights repo the Space reads
+(`waverep.pth` = `weights_dinov2_G1.ckpt`, `waverep_g4.pth` = `weights_dinov2_G4.ckpt`, sha256 1c7566b2... / 50d63904...) and are
+fetched by `deploy/hf-space/fetch_weights.py`. A clip costs about 30 s on the Space's CPU (up to 64 ViT-B/14 forwards at 504 px).
+Locally: place the checkpoints under `$SYNTHSCOPE_CKPT_DIR` as `waverep.pth` / `waverep_g4.pth`.
 
 ## License
 
