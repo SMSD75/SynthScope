@@ -1,0 +1,75 @@
+{
+  "tag": "cure_trained_r1e0_genimage8",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23_r1e0/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/GenImage_full/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 86.05,
+    "map": 97.47,
+    "mauroc": 97.36
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 89.12,
+      "auroc": 89.01,
+      "real_acc": 99.2,
+      "fake_acc": 25.0,
+      "acc": 62.1
+    },
+    "biggan": {
+      "ap": 98.1,
+      "auroc": 98.56,
+      "real_acc": 99.13,
+      "fake_acc": 60.53,
+      "acc": 79.83
+    },
+    "glide": {
+      "ap": 97.97,
+      "auroc": 97.95,
+      "real_acc": 99.47,
+      "fake_acc": 59.2,
+      "acc": 79.33
+    },
+    "midjourney": {
+      "ap": 95.76,
+      "auroc": 94.63,
+      "real_acc": 99.47,
+      "fake_acc": 58.8,
+      "acc": 79.13
+    },
+    "sdv1.4": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.33,
+      "fake_acc": 99.8,
+      "acc": 99.57
+    },
+    "sdv1.5": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.47,
+      "fake_acc": 99.8,
+      "acc": 99.63
+    },
+    "vqdm": {
+      "ap": 98.81,
+      "auroc": 98.73,
+      "real_acc": 99.27,
+      "fake_acc": 79.33,
+      "acc": 89.3
+    },
+    "wukong": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.2,
+      "fake_acc": 99.8,
+      "acc": 99.5
+    }
+  },
+  "date": "2026-11-10T11:22:15",
+  "synthscope_version": "0.1.0"
+}

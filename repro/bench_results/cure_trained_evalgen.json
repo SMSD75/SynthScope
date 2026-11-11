@@ -1,0 +1,54 @@
+{
+  "tag": "cure_trained_evalgen",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_trained/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/EvalGEN/test",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 90.65,
+    "map": 98.3,
+    "mauroc": 95.96
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 93.44,
+      "auroc": 84.58,
+      "real_acc": 99.78,
+      "fake_acc": 39.96,
+      "acc": 69.87
+    },
+    "GoT": {
+      "ap": 99.69,
+      "auroc": 99.24,
+      "real_acc": 99.78,
+      "fake_acc": 93.98,
+      "acc": 96.88
+    },
+    "Infinity": {
+      "ap": 98.72,
+      "auroc": 96.83,
+      "real_acc": 99.78,
+      "fake_acc": 80.22,
+      "acc": 90.0
+    },
+    "NOVA": {
+      "ap": 99.77,
+      "auroc": 99.41,
+      "real_acc": 99.78,
+      "fake_acc": 96.26,
+      "acc": 98.02
+    },
+    "OmniGen": {
+      "ap": 99.88,
+      "auroc": 99.72,
+      "real_acc": 99.78,
+      "fake_acc": 97.14,
+      "acc": 98.46
+    }
+  },
+  "date": "2026-11-09T03:45:31",
+  "synthscope_version": "0.1.0"
+}

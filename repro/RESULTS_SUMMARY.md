@@ -150,7 +150,7 @@ transform (`vib_net_official`: fp32 CLIP, no feature norm, 224 center crop witho
 differ only in that resize (82.98 -> 94.08 AP). The earlier 83.9 / 77.6 model also differed from the official one (fp16
 CLIP, an added feature BatchNorm); their separate effect was not measured.
 
-### CuRe (official adapter)
+### CuRe (official adapter and trained in SynthScope)
 Fidelity: SynthScope's class == the official model (395/395 state-dict tensors identical, logit diff 4.8e-6, 0 verdict flips; `repro/cure_verify_load.py`). Paper: 89.7 avg balanced acc over 10 benchmarks (trained on GenImage SD-v1.4 only).
 
 | Benchmark (SynthScope protocol) | acc (mean per-gen balanced) | mAP | Paper | Note |
@@ -168,6 +168,55 @@ Fidelity: SynthScope's class == the official model (395/395 state-dict tensors i
 | AIGCDetectBenchmark (`--dataset aigcdetect`; all 17 generators, full data, 76.3k/76.3k) | **89.30** | 98.08 | **89.3** | **reproduced** (AUROC 98.02 vs 98.0) |
 
 **Verdict: faithful port (identical to the official model); 7 of the paper's 10 benchmarks reproduced** — AIGIBench (92.85 vs 92.8), AIGCDetectBenchmark (89.30 vs 89.3), RealChain (79.69 vs 79.7), EvalGEN (98.14 vs 98.1), SynthWildX (92.69 vs 92.7), WildRF (95.89 vs 95.8), RRDataset (82.04 vs 81.5). BFree-Online is close (91.64 vs 90.9) but only 807 of about 1400 images are still online. Not confirmed: UnivFD (the paper's aggregation is unspecified) and Chameleon (released by email request only).
+
+**SynthScope_train (the paper's 3-stage recipe, `experiments/image/cure.sh`; investigation scripts and results in `repro/cure_stage1/`; all scored with `bench_eval --ckpt` and the official rows' flags; `models/image/cure/README.md` "Trained checkpoint")**
+
+Columns:
+- **Original:** the recipe as written, last epoch (job 66658).
+- **R1 e0:** the recipe, every epoch saved, epoch chosen by a pre-registered non-benchmark rule (Synthbuster fakes vs SD1.4 test reals).
+- **R2 final:** global batch 512.
+- **R2 e1:** chosen after the fact by its weight-norm match to the release; diagnostic only.
+- **R3 e0:** R1 + DDA-style training augmentation (an assumption, not in the paper), same rule. **This is the main trained checkpoint.**
+
+Each cell is acc / AUROC; R means reproduced.
+
+| Benchmark | Paper | Official | Original | R1 e0 | R2 final | R2 e1 (diag) | **R3 e0** |
+|---|---|---|---|---|---|---|---|
+| AIGIBench-20 | 92.8/97.5 | 92.85/97.48 | 85.05/91.84 | 88.85/95.86 | 87.10/93.73 | 88.81/95.78 | **91.12/97.10 R** |
+| AIGCDetect | 89.3 | 89.30/98.02 | 81.55/92.22 | 92.25/98.47 R | 82.29/94.40 | 88.20/97.84 R | **92.01/98.38 R** |
+| EvalGEN | 98.1 | 98.14/99.66 | 90.65/95.96 | 91.57/98.63 | 92.45/97.90 | 93.98/99.17 | 93.32/98.85 (-4.8) |
+| SynthWildX | 92.7/96.6 | 92.69/96.50 | 76.11/86.84 | 90.99/96.85 R | 81.56/91.85 | 88.65/95.90 | **91.76/97.09 R** |
+| WildRF | 95.8/99.1 | 95.89/99.14 | 85.80/94.59 | 95.23/99.06 R | 90.24/96.19 | 93.91/98.43 R | **95.58/99.25 R** |
+| BFree-Online (807 imgs) | 90.9 | 91.64/98.08 | 66.64/85.77 | 72.30/81.80 | 69.52/81.51 | 74.54/89.90 | 71.19/79.51 (-19.7) |
+| RRDataset | 81.5 | 82.04/88.88 | 66.36/76.87 | 72.62/85.25 | 68.01/78.57 | 72.65/84.82 | 73.46/85.32 (-8.0) |
+| RealChain | 79.7 | 79.69/85.47 | 63.33/76.50 | 70.34/84.87 | 67.49/82.20 | 72.28/85.02 | 72.75/84.70 (-7.0) |
+| UFD-8 / ForenSynths-13 / GenImage-8 (ref) | - | 93.94 / 81.95 / 85.18 | 82.69 / 75.83 / 77.70 | 93.99 / 89.79 / 86.05 | 83.81 / 74.35 / 79.89 | 92.14 / 84.26 / 83.48 | 93.89 / 89.36 / 86.22 |
+| Mean acc (8 comparable) | 90.10 | 90.28 | 76.94 | 84.27 | 79.83 | 84.13 | **85.15** |
+| Reproduced | | | 0/8 | 3/8 | 0/8 | 2/8 | **4/8** |
+
+**Verdict: the recipe is provided and partially reproduces the paper.** The repo tolerance is acc >= paper - 2.0 and AUROC >= paper - 2.5.
+- **Last epoch, as written:** 13 points short. Stage 1 over-adapts to SD v1.4:
+  - LoRA update 1.71x the release's;
+  - a 3x tighter fit of the SD1.4 mixing ratio;
+  - a SD1.4-fitted probe transfers to Synthbuster worse than the frozen base (81.0 vs 92.5; release 95.0; `repro/cure_stage1/results/epoch_select_r1.json`).
+- **Early stopping by the pre-registered rule (epoch 0):** recovers more than half of the gap.
+- **Augmentation:** adds AIGIBench.
+- **What remains with R3 e0:**
+  - mean -5;
+  - BFree-Online -19.7 with AUROC 79.5 against the official adapter's 98.1, a ranking failure;
+  - RRDataset -8 (AUROC 85.3 vs 88.9);
+  - RealChain -7, which is calibration (AUROC 84.7 vs the official 85.5);
+  - EvalGEN -5, mostly the threshold (AUROC 98.85 vs 99.66).
+- **Disclosure:** the pre-registered rule selects an epoch within a run.
+  - Choosing r3e0 over r1e0 as the main checkpoint was decided after R1's benchmark results were known.
+  - Cross-run selection scores come from different GPUs: R1 RTX 6000 Ada, R2 A5000, R3 A6000. The released reference scores 95.2 on the A5000 and 95.16 on the A6000.
+  - Only the AIGIBench "reproduced" depends on the augmentation; r1e0 alone reproduces AIGCDetect, SynthWildX and WildRF.
+- **Seed and global batch:** single seed (paper std 0.3-0.7). Global batch 512 alone (R2) does not reproduce the paper.
+- **Stages 2-3:** verified. The released encoder through our stage 2 + 3 reproduces the paper (jobs 66720 / 66726).
+- **Engineering notes:**
+  - On RTX 6000 Ada GPUs, PE-Core fp16 features depend on the batch size (logits differ by about 2e-2 between batches of 64 and 128; Ampere 1e-5). The stage-3 export check now compares at the encoding batch size.
+  - The multi-encoder stage-2/3 driver is bit-identical to the single path.
+- **Serving:** the served `cure` model stays the official adapter.
 
 ### DDA (official checkpoint and trained in SynthScope)
 Fidelity: SynthScope's class == the official `DINOv2ModelWithLoRA` (537/537 state-dict tensors identical, transform and logits identical on 40 images, 0 verdict flips; job 264307). Paper: 90.7 avg accuracy over 11 benchmarks (trained on DDA-aligned MSCOCO only). Accuracy = mean per-subset balanced accuracy at 0.5, ± = sample std over subsets.

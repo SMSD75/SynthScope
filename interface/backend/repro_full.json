@@ -224,111 +224,111 @@
       "benchmark": "AIGIBench (20 full-image-synthesis subsets, full test data)",
       "metric": "balanced accuracy / AUROC",
       "paper": "acc=92.8 / auroc=97.5",
-      "ours": "mAP=97.0 / acc=92.85 / AUROC=97.48 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=96.72 / acc=91.12 / AUROC=97.1 \u00b7 official mAP=97.0 / acc=92.85 / AUROC=97.48",
+      "ours_synthscope": "mAP=96.72 / acc=91.12 / AUROC=97.1",
       "ours_official": "mAP=97.0 / acc=92.85 / AUROC=97.48",
-      "status": "official",
-      "note": "Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC)."
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 ONLY with the unstated augmentation assumption (pre-registered non-benchmark selection; single seed; the paper-settings-only r1e0 gives 88.85 acc, not reproduced); the served cure model is the official adapter. Official adapter through SynthScope reproduces every one of the 20 subsets within 0.10 pt (92.85 acc / 97.48 AUROC). SynthScope-trained: r3e0\u2026"
     },
     {
       "benchmark": "UniversalFakeDetect (UFD-8, diffusion and DALL-E half)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
-      "ours": "mAP=99.19 / acc=93.94 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=98.73 / acc=93.89 / AUROC=98.31 \u00b7 official mAP=99.19 / acc=93.94",
+      "ours_synthscope": "mAP=98.73 / acc=93.89 / AUROC=98.31",
       "ours_official": "mAP=99.19 / acc=93.94",
       "status": "reference",
-      "note": "UFD-8 mean balanced accuracy 93.94; 16-generator union 89.27 (aggregation differs from the paper)."
+      "note": "UFD-8 mean balanced accuracy 93.94; 16-generator union 89.27 (aggregation differs from the paper). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_ufd): acc 93.89 / AUROC 98.31 (reference); the recipe's last epoch (tag cure_trained_ufd): acc 82.69 / AUROC 93.85."
     },
     {
       "benchmark": "ForenSynths (13 GAN generators)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
-      "ours": "mAP=94.05 / acc=81.95 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=97.22 / acc=89.36 / AUROC=96.58 \u00b7 official mAP=94.05 / acc=81.95",
+      "ours_synthscope": "mAP=97.22 / acc=89.36 / AUROC=96.58",
       "ours_official": "mAP=94.05 / acc=81.95",
       "status": "reference",
-      "note": "Mean balanced accuracy 81.95 (low scores are fake-recall; AP/AUROC are 95-99 on those generators)."
+      "note": "Mean balanced accuracy 81.95 (low scores are fake-recall; AP/AUROC are 95-99 on those generators). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_forensynths): acc 89.36 / AUROC 96.58 (reference); the recipe's last epoch (tag cure_trained_forensynths): acc 75.83 /\u2026"
     },
     {
       "benchmark": "GenImage-8 (CuRe's training set, in-distribution sanity check)",
       "metric": "balanced accuracy",
       "paper": "\u2014",
-      "ours": "mAP=97.3 / acc=85.18 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=97.56 / acc=86.22 / AUROC=97.59 \u00b7 official mAP=97.3 / acc=85.18",
+      "ours_synthscope": "mAP=97.56 / acc=86.22 / AUROC=97.59",
       "ours_official": "mAP=97.3 / acc=85.18",
       "status": "reference",
-      "note": "SD-v1.4 99.73, SD-v1.5 99.80, Wukong 99.87; weaker on ADM/BigGAN/VQDM at the fixed 0.5 threshold."
+      "note": "SD-v1.4 99.73, SD-v1.5 99.80, Wukong 99.87; weaker on ADM/BigGAN/VQDM at the fixed 0.5 threshold. SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style augmentation, stage-1 epoch 0; tag cure_trained_r3e0_genimage8): acc 86.22 / AUROC 97.59 (reference); the recipe's last epoch (tag cure_trained_genimage8): acc 77.7 / AUROC 87.88."
     },
     {
       "benchmark": "AIGCDetectBenchmark (17 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=89.3 / auroc=98.0",
-      "ours": "mAP=98.08 / acc=89.3 / AUROC=98.02 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=98.59 / acc=92.01 / AUROC=98.38 \u00b7 official mAP=98.08 / acc=89.3 / AUROC=98.02",
+      "ours_synthscope": "mAP=98.59 / acc=92.01 / AUROC=98.38",
       "ours_official": "mAP=98.08 / acc=89.3 / AUROC=98.02",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect, job 251523)."
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; single seed) and, without the augmentation assumption, by the paper-settings-only r1e0 (92.25 acc); the served cure model is the official adapter. Official adapter through SynthScope: 89.30 balanced acc / 98.02 AUROC (mAP 98.08) on all 17 generators, full test data, 76,299 real / 76,299 fake (tag cure_aigcdetect\u2026"
     },
     {
       "benchmark": "EvalGEN (5 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=98.1",
-      "ours": "mAP=99.86 / acc=98.14 / AUROC=99.66 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=99.47 / acc=93.32 / AUROC=98.85 \u00b7 official mAP=99.86 / acc=98.14 / AUROC=99.66",
+      "ours_synthscope": "mAP=99.47 / acc=93.32 / AUROC=98.85",
       "ours_official": "mAP=99.86 / acc=98.14 / AUROC=99.66",
       "status": "official",
-      "note": "Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412)."
+      "note": "Trained r3e0 not reproduced (-4.8 acc); the served cure model is the official adapter. Official adapter through SynthScope: 98.14 balanced acc (mAP 99.86, AUROC 99.66) on all 55,298 fakes vs MSCOCO val2017 (5000 reals; our choice of pool) (tag cure_evalgen, job 251412). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection rule (paper recipe + DDA-style\u2026"
     },
     {
       "benchmark": "SynthWildX (3 generators, images still online on X)",
       "metric": "balanced accuracy",
       "paper": "acc=92.7",
-      "ours": "mAP=95.61 / acc=92.69 / AUROC=96.5 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=97.12 / acc=91.76 / AUROC=97.09 \u00b7 official mAP=95.61 / acc=92.69 / AUROC=96.5",
+      "ours_synthscope": "mAP=97.12 / acc=91.76 / AUROC=97.09",
       "ours_official": "mAP=95.61 / acc=92.69 / AUROC=96.5",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag cure_synthwildx, job 251435)."
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; single seed) and, without the augmentation assumption, by the paper-settings-only r1e0 (90.99 acc); the served cure model is the official adapter. Official adapter through SynthScope: 92.69 balanced acc (mAP 95.61, AUROC 96.50) on the 1713 of 2000 images still online on X (413 real; 392/473/435 fake) (tag\u2026"
     },
     {
       "benchmark": "WildRF (Facebook, Reddit, Twitter test sets)",
       "metric": "balanced accuracy",
       "paper": "acc=95.8",
-      "ours": "mAP=99.13 / acc=95.89 / AUROC=99.14 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=99.3 / acc=95.58 / AUROC=99.25 \u00b7 official mAP=99.13 / acc=95.89 / AUROC=99.14",
+      "ours_synthscope": "mAP=99.3 / acc=95.58 / AUROC=99.25",
       "ours_official": "mAP=99.13 / acc=95.89 / AUROC=99.14",
-      "status": "official",
-      "note": "Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440)."
+      "status": "reproduced",
+      "note": "Reproduced by the SynthScope-trained r3e0 (pre-registered non-benchmark selection; single seed) and, without the augmentation assumption, by the paper-settings-only r1e0 (95.23 acc); the served cure model is the official adapter. Official adapter through SynthScope: 95.89 balanced acc (mAP 99.13, AUROC 99.14) on the full test split, 1251 real / 1252 fake (tag cure_wildrf, job 251440).\u2026"
     },
     {
       "benchmark": "BFree-Online (viral images still online)",
       "metric": "balanced accuracy",
       "paper": "acc=90.9",
-      "ours": "mAP=99.06 / acc=91.64 / AUROC=98.08 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=89.48 / acc=71.19 / AUROC=79.51 \u00b7 official mAP=99.06 / acc=91.64 / AUROC=98.08",
+      "ours_synthscope": "mAP=89.48 / acc=71.19 / AUROC=79.51",
       "ours_official": "mAP=99.06 / acc=91.64 / AUROC=98.08",
       "status": "reference",
-      "note": "Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449)."
+      "note": "Trained r3e0 not reproduced (-19.7 acc); the served cure model is the official adapter. Official adapter through SynthScope: 91.64 balanced acc (mAP 99.06, AUROC 98.08) on the 807 of 1111 listed images still online (269 real / 538 fake), about 58% of the paper's set, so not a like-for-like comparison (tag cure_bfree_online, job 251449). SynthScope-trained: r3e0, the best checkpoint by the\u2026"
     },
     {
       "benchmark": "RRDataset (original / transfer / redigital)",
       "metric": "balanced accuracy",
       "paper": "acc=81.5",
-      "ours": "mAP=90.4 / acc=82.04 / AUROC=88.88 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=84.91 / acc=73.46 / AUROC=85.32 \u00b7 official mAP=90.4 / acc=82.04 / AUROC=88.88",
+      "ours_synthscope": "mAP=84.91 / acc=73.46 / AUROC=85.32",
       "ours_official": "mAP=90.4 / acc=82.04 / AUROC=88.88",
       "status": "official",
-      "note": "Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476)."
+      "note": "Trained r3e0 not reproduced (-8.0 acc); the served cure model is the official adapter. Official adapter through SynthScope: 82.04 balanced acc (mAP 90.40, AUROC 88.88) on the public test archive, 25,499 real / 25,500 fake (original 91.08, transfer 85.52, redigital 69.51) (tag cure_rrdataset, job 251476). SynthScope-trained: r3e0, the best checkpoint by the pre-registered non-benchmark selection\u2026"
     },
     {
       "benchmark": "RealChain (7 generators, full data)",
       "metric": "balanced accuracy",
       "paper": "acc=79.7",
-      "ours": "mAP=87.39 / acc=79.69 / AUROC=85.47 (official wts)",
-      "ours_synthscope": "",
+      "ours": "SynthScope mAP=83.67 / acc=72.75 / AUROC=84.7 \u00b7 official mAP=87.39 / acc=79.69 / AUROC=85.47",
+      "ours_synthscope": "mAP=83.67 / acc=72.75 / AUROC=84.7",
       "ours_official": "mAP=87.39 / acc=79.69 / AUROC=85.47",
       "status": "official",
-      "note": "Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one."
+      "note": "Trained r3e0 not reproduced (-7.0 acc); the served cure model is the official adapter. Official adapter through SynthScope: 79.69 balanced acc (mAP 87.39, AUROC 85.47) on the full released set (tag cure_realchain, job 251412). The release is one JPEG-q60 image set; the 7000 unpaired reals are split into 7 disjoint slices, so the mean per-generator balanced accuracy equals the pooled one.\u2026"
     },
     {
       "benchmark": "Chameleon",

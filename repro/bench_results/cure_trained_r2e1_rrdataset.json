@@ -1,0 +1,40 @@
+{
+  "tag": "cure_trained_r2e1_rrdataset",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23mc_r2e1/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 72.65,
+    "map": 86.06,
+    "mauroc": 84.82
+  },
+  "per_generator": {
+    "original": {
+      "ap": 93.12,
+      "auroc": 93.12,
+      "real_acc": 95.58,
+      "fake_acc": 69.08,
+      "acc": 82.33
+    },
+    "redigital": {
+      "ap": 76.5,
+      "auroc": 74.11,
+      "real_acc": 96.91,
+      "fake_acc": 25.94,
+      "acc": 61.42
+    },
+    "transfer": {
+      "ap": 88.56,
+      "auroc": 87.23,
+      "real_acc": 96.51,
+      "fake_acc": 51.89,
+      "acc": 74.2
+    }
+  },
+  "date": "2026-11-10T11:01:38",
+  "synthscope_version": "0.1.0"
+}

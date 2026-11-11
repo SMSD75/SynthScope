@@ -1,0 +1,40 @@
+{
+  "tag": "cure_hybB_synthwildx",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_trained/hybrid/B_releasedLoRA_trainedSubspaceHead.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/SynthWildX/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 38.44,
+    "map": 32.36,
+    "mauroc": 5.17
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 30.29,
+      "auroc": 4.05,
+      "real_acc": 76.51,
+      "fake_acc": 0.0,
+      "acc": 38.26
+    },
+    "firefly": {
+      "ap": 34.6,
+      "auroc": 8.08,
+      "real_acc": 76.51,
+      "fake_acc": 1.06,
+      "acc": 38.79
+    },
+    "midjourney_v5": {
+      "ap": 32.2,
+      "auroc": 3.39,
+      "real_acc": 76.51,
+      "fake_acc": 0.0,
+      "acc": 38.26
+    }
+  },
+  "date": "2026-11-09T06:40:24",
+  "synthscope_version": "0.1.0"
+}

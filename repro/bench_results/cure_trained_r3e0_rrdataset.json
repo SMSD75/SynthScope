@@ -1,0 +1,40 @@
+{
+  "tag": "cure_trained_r3e0_rrdataset",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/67200/s23_r3e0/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 73.46,
+    "map": 84.91,
+    "mauroc": 85.32
+  },
+  "per_generator": {
+    "original": {
+      "ap": 89.23,
+      "auroc": 90.3,
+      "real_acc": 88.52,
+      "fake_acc": 70.86,
+      "acc": 79.69
+    },
+    "redigital": {
+      "ap": 79.2,
+      "auroc": 79.12,
+      "real_acc": 94.15,
+      "fake_acc": 36.02,
+      "acc": 65.09
+    },
+    "transfer": {
+      "ap": 86.3,
+      "auroc": 86.53,
+      "real_acc": 90.01,
+      "fake_acc": 61.2,
+      "acc": 75.61
+    }
+  },
+  "date": "2026-11-10T21:24:22",
+  "synthscope_version": "0.1.0"
+}

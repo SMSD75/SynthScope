@@ -1,0 +1,26 @@
+{
+  "tag": "cure_trained_r1e0_bfree_online",
+  "model": "cure",
+  "ckpt": "/local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/cure_s1inv/s23_r1e0/cure_trained.pth",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 72.3,
+    "map": 90.78,
+    "mauroc": 81.8
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 90.78,
+      "auroc": 81.8,
+      "real_acc": 92.57,
+      "fake_acc": 52.04,
+      "acc": 72.3
+    }
+  },
+  "date": "2026-11-10T11:28:10",
+  "synthscope_version": "0.1.0"
+}

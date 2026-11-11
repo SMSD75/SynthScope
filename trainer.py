@@ -164,7 +164,13 @@ class SynthScopeModelTrainer:
 
     def _param_groups(self, config):
         """The trainable parameters; with ``TrainerConfig.no_weight_decay_1d`` the biases and 1-D parameters (norms, ...)
-        get no weight decay, as in the BEiT/MFM-style fine-tuning optimizers (SPAI's ``get_finetune_param_groups``)."""
+        get no weight decay, as in the BEiT/MFM-style fine-tuning optimizers (SPAI's ``get_finetune_param_groups``). A model
+        with an ``optimizer_param_groups()`` method that returns groups (e.g. CuRe stage 1: its own weight decay for the
+        LoRA tensors and for the head) uses those."""
+        model_groups = getattr(self.model, "optimizer_param_groups", None)
+        groups = model_groups() if callable(model_groups) else None
+        if groups is not None:
+            return groups
         if not config.TrainerConfig.get("no_weight_decay_1d", False):
             return self._filter_trainable_parameters()
         named = [(n, p) for n, p in self.model.named_parameters() if p.requires_grad]
@@ -490,13 +496,19 @@ class SynthScopeModelTrainer:
         fake_accuracy]``, a balanced validation set makes it the plain accuracy), and the accuracies are logged to
         ``val_losses.json`` as ``val_accuracy``. After
         every epoch the full training state (model, optimizer, loss scaler, RNGs) is saved to ``<save_path>/train_state``,
-        and a rerun with the same ``save_path`` resumes after the last finished epoch (runs longer than a job limit)."""
+        and a rerun with the same ``save_path`` resumes after the last finished epoch (runs longer than a job limit).
+        With ``warmup_prefix: true`` the cosine starts after the warmup, from the peak lr (MAE-style "N warmup epochs,
+        then cosine to min_lr", e.g. CuRe); by default (SPAI) the warmup overlaps the start of one cosine over all steps.
+        ``log_every`` (default 100) is the number of optimizer steps between loss / lr lines (the first step is logged)."""
         cfg = self.config.TrainerConfig
         accum = int(sched.get("grad_accum_steps", 1))
         n_iter = len(self.train_loader) // accum
-        scheduler = CosineLRScheduler(getattr(self.optimizer, "optimizer", self.optimizer), t_initial=int(cfg.epochs * n_iter),
+        warmup_t = int(float(sched.warmup_epochs) * n_iter)
+        prefix = bool(sched.get("warmup_prefix", False))
+        scheduler = CosineLRScheduler(getattr(self.optimizer, "optimizer", self.optimizer),
+                                      t_initial=int(cfg.epochs * n_iter) - (warmup_t if prefix else 0),
                                       lr_min=float(sched.min_lr), warmup_lr_init=float(sched.warmup_lr),
-                                      warmup_t=int(float(sched.warmup_epochs) * n_iter), cycle_limit=1, t_in_epochs=False)
+                                      warmup_t=warmup_t, warmup_prefix=prefix, cycle_limit=1, t_in_epochs=False)
         save_all = bool(sched.get("save_all", False))
         log_every = int(sched.get("log_every", 100))      # optimizer steps between loss / lr lines
         micro = self.train_loader.batch_sampler.batch_size     # DataLoaderShard.batch_size is None after prepare()

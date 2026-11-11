@@ -1,0 +1,549 @@
+{
+ "rule": "select_score = mean(Synthbuster bacc of the stage-1 ratio head direct, Synthbuster bacc of the SD1.4 linear probe); argmax over R1 epochs, ties within 0.5 -> earlier epoch; R2: final epoch",
+ "released_total_dW": 1.8575520282872215,
+ "rows": {
+  "released": {
+   "total_dW": 1.8576,
+   "dW_over_released": 1.0,
+   "mix_fit_fresh_head": {
+    "bce": 0.51163,
+    "excess_bce": 0.022,
+    "floor": 0.48963,
+    "mae": 0.0643,
+    "pearson": 0.9539,
+    "spearman": 0.9537
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.7,
+    "fake_recall": 99.95,
+    "bacc": 99.83,
+    "auroc": 100.0,
+    "mean_score_real": 0.003,
+    "mean_score_fake": 0.9992
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.7,
+    "fake_recall": 90.37,
+    "bacc": 95.03,
+    "auroc": 99.15,
+    "mean_score_real": 0.003,
+    "mean_score_fake": 0.8978
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 95.2,
+    "fake_recall": 98.08,
+    "bacc": 96.64,
+    "auroc": 99.28,
+    "mean_score_real": 0.0553,
+    "mean_score_fake": 0.9755
+   },
+   "direct_head": "fresh",
+   "direct_sd14_test": {
+    "real_acc": 99.6,
+    "fake_recall": 99.95,
+    "bacc": 99.78,
+    "auroc": 100.0,
+    "mean_score_real": 0.0584,
+    "mean_score_fake": 0.9545
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.6,
+    "fake_recall": 91.14,
+    "bacc": 95.37,
+    "auroc": 98.59,
+    "mean_score_real": 0.0584,
+    "mean_score_fake": 0.8345
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 92.57,
+    "fake_recall": 98.32,
+    "bacc": 95.44,
+    "auroc": 98.78,
+    "mean_score_real": 0.1462,
+    "mean_score_fake": 0.9049
+   },
+   "select_score": 95.2
+  },
+  "base": {
+   "mix_fit_fresh_head": {
+    "bce": 0.58778,
+    "excess_bce": 0.09815,
+    "floor": 0.48963,
+    "mae": 0.1486,
+    "pearson": 0.7623,
+    "spearman": 0.7614
+   },
+   "probe_sd14_test": {
+    "real_acc": 98.65,
+    "fake_recall": 98.9,
+    "bacc": 98.78,
+    "auroc": 99.93,
+    "mean_score_real": 0.0165,
+    "mean_score_fake": 0.9856
+   },
+   "probe_synthbuster": {
+    "real_acc": 98.65,
+    "fake_recall": 86.4,
+    "bacc": 92.53,
+    "auroc": 98.03,
+    "mean_score_real": 0.0165,
+    "mean_score_fake": 0.8578
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 84.81,
+    "fake_recall": 97.36,
+    "bacc": 91.09,
+    "auroc": 98.65,
+    "mean_score_real": 0.1626,
+    "mean_score_fake": 0.9731
+   },
+   "direct_head": "fresh",
+   "direct_sd14_test": {
+    "real_acc": 95.15,
+    "fake_recall": 97.45,
+    "bacc": 96.3,
+    "auroc": 99.48,
+    "mean_score_real": 0.1877,
+    "mean_score_fake": 0.8734
+   },
+   "direct_synthbuster": {
+    "real_acc": 95.15,
+    "fake_recall": 77.86,
+    "bacc": 86.5,
+    "auroc": 93.97,
+    "mean_score_real": 0.1877,
+    "mean_score_fake": 0.6901
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 88.17,
+    "fake_recall": 93.13,
+    "bacc": 90.65,
+    "auroc": 96.89,
+    "mean_score_real": 0.254,
+    "mean_score_fake": 0.8143
+   },
+   "select_score": 89.515
+  },
+  "orig": {
+   "total_dW": 3.1762,
+   "dW_over_released": 1.71,
+   "mix_fit_fresh_head": {
+    "bce": 0.4968,
+    "excess_bce": 0.00717,
+    "floor": 0.48963,
+    "mae": 0.0351,
+    "pearson": 0.9858,
+    "spearman": 0.9859
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.9,
+    "fake_recall": 100.0,
+    "bacc": 99.95,
+    "auroc": 100.0,
+    "mean_score_real": 0.0011,
+    "mean_score_fake": 0.9995
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.9,
+    "fake_recall": 62.0,
+    "bacc": 80.95,
+    "auroc": 96.27,
+    "mean_score_real": 0.0011,
+    "mean_score_fake": 0.6228
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 99.12,
+    "fake_recall": 73.4,
+    "bacc": 86.26,
+    "auroc": 98.2,
+    "mean_score_real": 0.0099,
+    "mean_score_fake": 0.7346
+   },
+   "mix_fit_own_head": {
+    "bce": 0.49458,
+    "excess_bce": 0.00495,
+    "floor": 0.48963,
+    "mae": 0.0269,
+    "pearson": 0.9902,
+    "spearman": 0.9903
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 99.9,
+    "fake_recall": 100.0,
+    "bacc": 99.95,
+    "auroc": 100.0,
+    "mean_score_real": 0.026,
+    "mean_score_fake": 0.9807
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.9,
+    "fake_recall": 69.7,
+    "bacc": 84.8,
+    "auroc": 97.61,
+    "mean_score_real": 0.026,
+    "mean_score_fake": 0.6842
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.48,
+    "fake_recall": 79.15,
+    "bacc": 88.82,
+    "auroc": 97.83,
+    "mean_score_real": 0.0529,
+    "mean_score_fake": 0.7629
+   },
+   "select_score": 82.875
+  },
+  "r1e0": {
+   "total_dW": 1.233,
+   "dW_over_released": 0.664,
+   "mix_fit_fresh_head": {
+    "bce": 0.53548,
+    "excess_bce": 0.04585,
+    "floor": 0.48963,
+    "mae": 0.0973,
+    "pearson": 0.8937,
+    "spearman": 0.8919
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.8,
+    "fake_recall": 99.85,
+    "bacc": 99.83,
+    "auroc": 100.0,
+    "mean_score_real": 0.0028,
+    "mean_score_fake": 0.9977
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.8,
+    "fake_recall": 81.27,
+    "bacc": 90.54,
+    "auroc": 99.3,
+    "mean_score_real": 0.0028,
+    "mean_score_fake": 0.8058
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 97.6,
+    "fake_recall": 89.22,
+    "bacc": 93.41,
+    "auroc": 98.91,
+    "mean_score_real": 0.0246,
+    "mean_score_fake": 0.8783
+   },
+   "mix_fit_own_head": {
+    "bce": 0.53161,
+    "excess_bce": 0.04198,
+    "floor": 0.48963,
+    "mae": 0.0931,
+    "pearson": 0.9058,
+    "spearman": 0.905
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 98.6,
+    "fake_recall": 99.85,
+    "bacc": 99.23,
+    "auroc": 99.99,
+    "mean_score_real": 0.1589,
+    "mean_score_fake": 0.9354
+   },
+   "direct_synthbuster": {
+    "real_acc": 98.6,
+    "fake_recall": 91.69,
+    "bacc": 95.14,
+    "auroc": 99.16,
+    "mean_score_real": 0.1589,
+    "mean_score_fake": 0.7918
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 95.92,
+    "fake_recall": 97.28,
+    "bacc": 96.6,
+    "auroc": 99.22,
+    "mean_score_real": 0.1995,
+    "mean_score_fake": 0.8319
+   },
+   "select_score": 92.84
+  },
+  "r1e1": {
+   "total_dW": 2.2824,
+   "dW_over_released": 1.229,
+   "mix_fit_fresh_head": {
+    "bce": 0.50427,
+    "excess_bce": 0.01464,
+    "floor": 0.48963,
+    "mae": 0.0519,
+    "pearson": 0.9694,
+    "spearman": 0.9695
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.9,
+    "fake_recall": 99.95,
+    "bacc": 99.92,
+    "auroc": 100.0,
+    "mean_score_real": 0.0014,
+    "mean_score_fake": 0.9993
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.9,
+    "fake_recall": 79.1,
+    "bacc": 89.5,
+    "auroc": 99.29,
+    "mean_score_real": 0.0014,
+    "mean_score_fake": 0.7876
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.24,
+    "fake_recall": 87.94,
+    "bacc": 93.09,
+    "auroc": 98.71,
+    "mean_score_real": 0.0213,
+    "mean_score_fake": 0.8675
+   },
+   "mix_fit_own_head": {
+    "bce": 0.5004,
+    "excess_bce": 0.01077,
+    "floor": 0.48963,
+    "mae": 0.0428,
+    "pearson": 0.9785,
+    "spearman": 0.9782
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 99.8,
+    "fake_recall": 99.9,
+    "bacc": 99.85,
+    "auroc": 100.0,
+    "mean_score_real": 0.0423,
+    "mean_score_fake": 0.9668
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.8,
+    "fake_recall": 79.72,
+    "bacc": 89.76,
+    "auroc": 99.07,
+    "mean_score_real": 0.0423,
+    "mean_score_fake": 0.7462
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.16,
+    "fake_recall": 87.22,
+    "bacc": 92.69,
+    "auroc": 98.54,
+    "mean_score_real": 0.0834,
+    "mean_score_fake": 0.8126
+   },
+   "select_score": 89.63
+  },
+  "r1e2": {
+   "total_dW": 2.846,
+   "dW_over_released": 1.532,
+   "mix_fit_fresh_head": {
+    "bce": 0.49901,
+    "excess_bce": 0.00938,
+    "floor": 0.48963,
+    "mae": 0.0404,
+    "pearson": 0.981,
+    "spearman": 0.9812
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.95,
+    "fake_recall": 99.95,
+    "bacc": 99.95,
+    "auroc": 100.0,
+    "mean_score_real": 0.0007,
+    "mean_score_fake": 0.9997
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.95,
+    "fake_recall": 64.88,
+    "bacc": 82.41,
+    "auroc": 95.98,
+    "mean_score_real": 0.0007,
+    "mean_score_fake": 0.646
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.8,
+    "fake_recall": 76.68,
+    "bacc": 87.74,
+    "auroc": 98.56,
+    "mean_score_real": 0.0116,
+    "mean_score_fake": 0.7638
+   },
+   "mix_fit_own_head": {
+    "bce": 0.4963,
+    "excess_bce": 0.00667,
+    "floor": 0.48963,
+    "mae": 0.0314,
+    "pearson": 0.9869,
+    "spearman": 0.9869
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 99.85,
+    "fake_recall": 99.95,
+    "bacc": 99.9,
+    "auroc": 100.0,
+    "mean_score_real": 0.0287,
+    "mean_score_fake": 0.9777
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.85,
+    "fake_recall": 74.2,
+    "bacc": 87.03,
+    "auroc": 98.13,
+    "mean_score_real": 0.0287,
+    "mean_score_fake": 0.7135
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.32,
+    "fake_recall": 83.15,
+    "bacc": 90.73,
+    "auroc": 98.22,
+    "mean_score_real": 0.0576,
+    "mean_score_fake": 0.7977
+   },
+   "select_score": 84.72
+  },
+  "r1e3": {
+   "total_dW": 3.0923,
+   "dW_over_released": 1.665,
+   "mix_fit_fresh_head": {
+    "bce": 0.49712,
+    "excess_bce": 0.00749,
+    "floor": 0.48963,
+    "mae": 0.0356,
+    "pearson": 0.9852,
+    "spearman": 0.9852
+   },
+   "probe_sd14_test": {
+    "real_acc": 100.0,
+    "fake_recall": 99.95,
+    "bacc": 99.98,
+    "auroc": 100.0,
+    "mean_score_real": 0.0004,
+    "mean_score_fake": 0.9995
+   },
+   "probe_synthbuster": {
+    "real_acc": 100.0,
+    "fake_recall": 61.77,
+    "bacc": 80.89,
+    "auroc": 95.71,
+    "mean_score_real": 0.0004,
+    "mean_score_fake": 0.616
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 99.28,
+    "fake_recall": 73.8,
+    "bacc": 86.54,
+    "auroc": 98.51,
+    "mean_score_real": 0.0077,
+    "mean_score_fake": 0.7356
+   },
+   "mix_fit_own_head": {
+    "bce": 0.49501,
+    "excess_bce": 0.00538,
+    "floor": 0.48963,
+    "mae": 0.028,
+    "pearson": 0.9896,
+    "spearman": 0.9895
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 99.9,
+    "fake_recall": 99.95,
+    "bacc": 99.92,
+    "auroc": 100.0,
+    "mean_score_real": 0.0263,
+    "mean_score_fake": 0.98
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.9,
+    "fake_recall": 67.68,
+    "bacc": 83.79,
+    "auroc": 97.44,
+    "mean_score_real": 0.0263,
+    "mean_score_fake": 0.67
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.8,
+    "fake_recall": 78.51,
+    "bacc": 88.66,
+    "auroc": 97.87,
+    "mean_score_real": 0.0495,
+    "mean_score_fake": 0.7588
+   },
+   "select_score": 82.34
+  },
+  "r1e4": {
+   "total_dW": 3.1685,
+   "dW_over_released": 1.706,
+   "mix_fit_fresh_head": {
+    "bce": 0.49656,
+    "excess_bce": 0.00693,
+    "floor": 0.48963,
+    "mae": 0.034,
+    "pearson": 0.9863,
+    "spearman": 0.9863
+   },
+   "probe_sd14_test": {
+    "real_acc": 99.9,
+    "fake_recall": 99.95,
+    "bacc": 99.92,
+    "auroc": 100.0,
+    "mean_score_real": 0.0007,
+    "mean_score_fake": 0.9995
+   },
+   "probe_synthbuster": {
+    "real_acc": 99.9,
+    "fake_recall": 63.79,
+    "bacc": 81.85,
+    "auroc": 95.44,
+    "mean_score_real": 0.0007,
+    "mean_score_fake": 0.6362
+   },
+   "probe_wildrf_DIAGNOSTIC": {
+    "real_acc": 99.12,
+    "fake_recall": 75.64,
+    "bacc": 87.38,
+    "auroc": 98.49,
+    "mean_score_real": 0.0097,
+    "mean_score_fake": 0.7571
+   },
+   "mix_fit_own_head": {
+    "bce": 0.49467,
+    "excess_bce": 0.00504,
+    "floor": 0.48963,
+    "mae": 0.0269,
+    "pearson": 0.9901,
+    "spearman": 0.9901
+   },
+   "direct_head": "own",
+   "direct_sd14_test": {
+    "real_acc": 99.85,
+    "fake_recall": 99.95,
+    "bacc": 99.9,
+    "auroc": 100.0,
+    "mean_score_real": 0.0257,
+    "mean_score_fake": 0.9805
+   },
+   "direct_synthbuster": {
+    "real_acc": 99.85,
+    "fake_recall": 68.69,
+    "bacc": 84.27,
+    "auroc": 97.29,
+    "mean_score_real": 0.0257,
+    "mean_score_fake": 0.6766
+   },
+   "direct_wildrf_DIAGNOSTIC": {
+    "real_acc": 98.64,
+    "fake_recall": 78.99,
+    "bacc": 88.82,
+    "auroc": 97.85,
+    "mean_score_real": 0.0505,
+    "mean_score_fake": 0.7669
+   },
+   "select_score": 83.06
+  }
+ },
+ "r1_selected": "r1e0"
+}

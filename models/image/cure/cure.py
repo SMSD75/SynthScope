@@ -15,9 +15,20 @@ from ``ModelConfig.base_checkpoint`` / ``$SYNTHSCOPE_PE_CORE_CKPT``), exactly as
 Input contract: ``forward`` takes the tensor produced by ``CuReTransform`` (``[B, 3, 336, 336]``,
 mean=std=0.5 normalized, after the official PNG->JPEG96 / 390-crop / JPEG70 pipeline).
 
-Training: the paper's two-stage mixing-ratio-regression recipe is NOT in the official release, so
-``compute_loss`` is plain cross-entropy on the 2-way head (LoRA + subspace + head trainable). It
-exists to satisfy SynthScope's trainer interface; it does not reproduce the paper's training.
+Training: the official release has no training code. SynthScope implements the paper's recipe
+(Sec. 3, 4.1-4.2, Appendix A; see README "Training recipe"):
+
+* Stage 1 (``ModelConfig.training_stage: ratio``, run through SynthScope's trainer): a linear ratio
+  head ``ratio_head`` (1024 -> 1, sigmoid) on the adapted features of real/generated pixel mixtures
+  x_a = (1 - a) x_r + a x_g, trained with BCE against the soft target a; only the LoRA tensors and the
+  ratio head are trainable, with their own weight decays (``optimizer_param_groups``). Optional
+  gradient checkpointing per transformer block (``grad_checkpointing``) for the per-GPU batch of 64.
+* Stages 2 and 3 (``train_stages.py``): the source-response subspace (``mu``, ``W``) from the frozen
+  stage-1 encoder (``subspace.py``) and the 128 -> 2 head; ``adapter_state_dict`` exports the result
+  with exactly the released adapter's 100 keys.
+
+Without ``training_stage`` ``compute_loss`` is plain cross-entropy on the 2-way head (LoRA + head
+trainable); it only satisfies the trainer interface and is not the paper's training.
 """
 import os
 from pathlib import Path
@@ -26,7 +37,9 @@ import _synthscope_env  # noqa: F401  (maps legacy AGID_* variables to SYNTHSCOP
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from huggingface_hub import hf_hub_download
+from torch.utils.checkpoint import checkpoint
 from omegaconf import DictConfig
 
 from .official_arch import PECore
@@ -36,6 +49,8 @@ BASE_FILENAME = "PE-Core-L14-336.pt"
 FEATURE_DIM = 1024
 SUBSPACE_DIM = 128
 _VISUAL_PREFIX = "visual."
+# The released adapter's tensors (cure_adapter.pt): 24 layers x (lora_A_q, lora_B_q, lora_A_v, lora_B_v), mu, W, head.
+ADAPTER_BUFFERS = ("mu", "W", "head.weight", "head.bias")
 
 
 def resolve_base_checkpoint(path=None, repo_id: str = BASE_REPO_ID, filename: str = BASE_FILENAME) -> Path:
@@ -67,6 +82,15 @@ class SynthScopeCuReModel(nn.Module):
         self.register_buffer("mu", torch.zeros(FEATURE_DIM))
         self.register_buffer("W", torch.zeros(FEATURE_DIM, SUBSPACE_DIM))
         self.head = nn.Linear(SUBSPACE_DIM, 2)
+        # Stage 1 of the paper's recipe: mixing-ratio regression with a linear ratio head (Appendix A).
+        self.training_stage = mc.get("training_stage", None)
+        if self.training_stage not in (None, "ratio"):
+            raise ValueError(f"CuRe training_stage must be null or 'ratio', got {self.training_stage!r}")
+        self.grad_checkpointing = bool(mc.get("grad_checkpointing", False))
+        self.lora_weight_decay = float(mc.get("lora_weight_decay", 0.1))
+        self.head_weight_decay = float(mc.get("head_weight_decay", 0.01))
+        if self.training_stage == "ratio":
+            self.ratio_head = nn.Linear(FEATURE_DIM, 1)   # PyTorch default init; discarded after stage 1
 
         if bool(mc.get("load_base_backbone", True)):
             self._load_base(resolve_base_checkpoint(mc.get("base_checkpoint", None),
@@ -76,9 +100,11 @@ class SynthScopeCuReModel(nn.Module):
             self._init_random_backbone()  # architecture-only mode (tests): official params are torch.empty
         self._init_trainable()
 
-        # Everything frozen except the LoRA tensors and the head (the adapter's trainable set).
+        # Everything frozen except the LoRA tensors and the head (the adapter's trainable set); in stage 1 the ratio
+        # head replaces the 2-way head (which is trained later, on the frozen subspace, by train_stages.py).
+        head_prefix = "ratio_head." if self.training_stage == "ratio" else "head."
         for name, param in self.named_parameters():
-            param.requires_grad = "lora_" in name or name.startswith("head.")
+            param.requires_grad = "lora_" in name or name.startswith(head_prefix)
         # The frozen PE-Core base is loaded above from its own release (``_load_base``), so the released adapter
         # (LoRA + subspace + head only) does not contain it: the engine accepts exactly these keys as missing.
         self.pretrained_prefixes = tuple(n for n, p in self.named_parameters() if not p.requires_grad)
@@ -124,7 +150,63 @@ class SynthScopeCuReModel(nn.Module):
             features = self.backbone(images)
         return self.head((features - self.mu) @ self.W)
 
+    def features(self, images: torch.Tensor) -> torch.Tensor:
+        """Adapted PE Core features ``[B, 1024]`` (fp16 autocast on CUDA, as ``forward``). With ``grad_checkpointing`` in
+        training each transformer block is recomputed in the backward pass (same values, less activation memory)."""
+        with torch.amp.autocast("cuda", enabled=images.is_cuda):
+            if self.grad_checkpointing and self.training and torch.is_grad_enabled():
+                return self._checkpointed_backbone(images)
+            return self.backbone(images)
+
+    def _checkpointed_backbone(self, images: torch.Tensor) -> torch.Tensor:
+        """``PECore.forward`` (official_arch.py) step for step, with ``torch.utils.checkpoint`` around every block."""
+        bb = self.backbone
+        if images.ndim != 4 or tuple(images.shape[1:]) != (3, 336, 336):
+            raise ValueError("Expected image tensors with shape [N, 3, 336, 336]")
+        batch = images.shape[0]
+        x = bb.conv1(images).permute(0, 2, 3, 1).reshape(batch, 576, 1024)
+        cls = bb.class_embedding.view(1, 1, -1).expand(batch, -1, -1)
+        x = torch.cat([cls, x], dim=1)
+        x = x + bb.positional_embedding[None]
+        x = bb.ln_pre(x)
+        for block in bb.transformer.resblocks:
+            x = checkpoint(block, x, use_reentrant=False)
+        return bb.ln_post(x)[:, 1:].mean(dim=1).float()
+
+    def optimizer_param_groups(self):
+        """Stage 1: AdamW groups with the paper's weight decays (0.1 on the LoRA tensors, 0.01 on the ratio head, all of
+        its parameters); used by the trainer instead of its single group. ``None`` otherwise (the trainer's default)."""
+        if self.training_stage != "ratio":
+            return None
+        named = [(n, p) for n, p in self.named_parameters() if p.requires_grad]
+        return [{"params": [p for n, p in named if "lora_" in n], "weight_decay": self.lora_weight_decay},
+                {"params": [p for n, p in named if "lora_" not in n], "weight_decay": self.head_weight_decay}]
+
+    @staticmethod
+    def _require_grad_scaler(images: torch.Tensor) -> None:
+        """``features`` always runs fp16 autocast on CUDA, so CUDA training needs a gradient scaler; ``accelerate launch
+        --mixed_precision fp16`` (exported as ACCELERATE_MIXED_PRECISION, which the trainer's Accelerator reads) provides it.
+        Without it the fp16 gradients would underflow silently, so fail loudly instead."""
+        if images.is_cuda and torch.is_grad_enabled() and os.environ.get("ACCELERATE_MIXED_PRECISION", "no") != "fp16":
+            raise RuntimeError("CuRe stage 1 runs the backbone in fp16 autocast and needs a gradient scaler: launch with "
+                               "`accelerate launch --mixed_precision fp16` (experiments/image/cure.sh does)")
+
     def compute_loss(self, batch):
-        images, labels, _folder_ids = batch
+        images, targets, _folder_ids = batch
+        if self.training_stage == "ratio":
+            # Eq. 3-4: sigmoid ratio head, BCE with the mixing ratio as the soft target (targets = alpha in [0, 1]).
+            self._require_grad_scaler(images)
+            logits = self.ratio_head(self.features(images)).squeeze(-1).float()
+            loss = F.binary_cross_entropy_with_logits(logits, targets.float())
+            return {"loss": loss, "outputs": torch.sigmoid(logits)}
         outputs = self.forward(images)
-        return {"loss": self.criterion(outputs, labels), "outputs": outputs}
+        return {"loss": self.criterion(outputs, targets), "outputs": outputs}
+
+    def adapter_state_dict(self) -> dict:
+        """The trained parameters in the released adapter's format: exactly its 100 keys (96 LoRA tensors, ``mu``,
+        ``W`` [1024, 128], ``head.weight``, ``head.bias``), fp32, so the file loads like ``cure_adapter.pt``."""
+        state = self.state_dict()
+        out = {k: v.detach().float().cpu().contiguous() for k, v in state.items()
+               if "lora_" in k or k in ADAPTER_BUFFERS}
+        assert len(out) == 100, f"expected the adapter's 100 tensors, got {len(out)}"
+        return out
