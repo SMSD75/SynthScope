@@ -67,8 +67,8 @@ class SynthScopeNSGVDModel(nn.Module):
         self.diffuse_steps = int(mc.get("diffuse_steps", 5))
         self.resolution_size = int(mc.get("resolution_size", 224))
         self.threshold = float(mc.get("threshold", THRESHOLD))
-        self.prob_scale = float(mc.get("prob_scale", 0.05))
-        self.process_batch = int(mc.get("process_batch", 1))   # videos per diffusion pass (memory only)
+        self.prob_scale = float(mc.get("prob_scale", 0.1))
+        self.process_batch = int(mc.get("process_batch", 1))   # videos per diffusion pass (official extraction: 3)
         self.cpu_fp32 = bool(mc.get("cpu_fp32", True))
         unet_overrides = dict(mc.get("unet_overrides") or {})   # tests: a tiny UNet
         self.use_fp16 = bool(unet_overrides.get("use_fp16", UNET_CONFIG["use_fp16"]))

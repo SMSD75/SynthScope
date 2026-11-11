@@ -218,8 +218,11 @@ def ffmpeg_select_frames(path: str | Path, num_frames: int = 8, timeout: float =
         ffmpeg -i <video> -vf select='not(mod(n\\,k))',setpts=N/FRAME_RATE/TB -vframes <num_frames> <dir>/frame%d.jpg
 
     and they are read back in sorted file-name order (``glob`` + ``sort``). The official dataset drops a video that does
-    not give exactly ``num_frames`` frames; here that is a ``VideoDecodeError``. The JPEG bytes depend on the ffmpeg
-    build (parity checked with the static ffmpeg 7.0.2). The frames are returned as decoded (the official code opens
+    not give exactly ``num_frames`` frames; here that is a ``VideoDecodeError``. The result depends on the ffmpeg build:
+    its JPEG encoder (parity with the official code checked with the static ffmpeg 4.2.2 of imageio-ffmpeg 0.4.2; 9.0.2
+    encodes the same frames ~0.8 grey levels apart on average, which moves NSG-VD scores by 0.04-0.19 on average), and
+    ffmpeg 7.0.x drops selected frames on some 50 / 30 fps clips (MoonValley, Sora), so fewer than 8 are written. Set
+    ``$SYNTHSCOPE_FFMPEG`` to the build to use. The frames are returned as decoded (the official code opens
     each JPEG and resizes it as is); a non-RGB JPEG (grayscale) is converted to RGB, where the official code would fail."""
     k = max(1, ffmpeg_frame_count(path) // num_frames)
     with tempfile.TemporaryDirectory() as tmp:
