@@ -16,10 +16,12 @@ ScoreFeaturesDataset (``process_batch_size=3``).
 version and the diffusion model's sha256 in the metadata.
 
 ffmpeg: the frames (JPEG encoder, frame selection) depend on the ffmpeg build, so the reference and the videos scored
-against it must be extracted with the same build. The shipped file was built with the static ffmpeg 4.2.2 (imageio-ffmpeg
-0.4.2), the build the registry pins for NSG-VD (``ffmpeg_version="4.2"``) and the one the official parity used; it is
-bit-identical to the official run's reference features with that build. The binary is $SYNTHSCOPE_FFMPEG_NSG_VD, else
-$SYNTHSCOPE_FFMPEG / ffmpeg on the PATH / imageio-ffmpeg.
+against it must be extracted with the same build. The reference file behind the documented results was built locally by
+this script (it is not distributed) with the static ffmpeg 4.2.2 (imageio-ffmpeg 0.4.2), the build the registry pins for
+NSG-VD (``ffmpeg_version="4.2"``) and the one the official parity used; it is bit-identical to the official run's
+reference features with that build. The binary is $SYNTHSCOPE_FFMPEG_NSG_VD, else $SYNTHSCOPE_FFMPEG / ffmpeg on the PATH
+/ imageio-ffmpeg. A build that is not the pinned 4.2.x is warned about loudly (the file is still written, with the
+version in its metadata, but it does not reproduce the official reference features).
 """
 import argparse
 import hashlib
@@ -27,6 +29,7 @@ import io
 import json
 import os
 import sys
+import warnings
 import zipfile
 from pathlib import Path
 
@@ -36,6 +39,7 @@ from safetensors.torch import save_file
 ROOT = Path(__file__).resolve().parents[3]
 sys.path[:0] = [str(ROOT), str(ROOT / "interface")]
 from backend import media                                         # noqa: E402
+from backend.registry import get_spec                             # noqa: E402
 from config_utils import compose_config                           # noqa: E402
 from models.video.nsg_vd.nsg_vd import SynthScopeNSGVDModel        # noqa: E402
 from models.video.nsg_vd.preprocess import NSGVDFrame              # noqa: E402
@@ -91,13 +95,22 @@ def main(argv=None):
 
     torch.backends.cudnn.deterministic = True      # as the official run (utils/experiment_utils.py set_seed)
     torch.backends.cudnn.benchmark = False
+    ffmpeg = os.environ.get("SYNTHSCOPE_FFMPEG_NSG_VD") or media.ffmpeg_exe()
+    version, pin = media.ffmpeg_version(ffmpeg), get_spec("nsg_vd").ffmpeg_version
+    print(f"ffmpeg {version} ({ffmpeg})")
+    if not (version == pin or version.startswith(pin + ".")):
+        bar = "!" * 100
+        print(f"{bar}\nWARNING: ffmpeg {version} is not the pinned {pin}.x. The reference frames (JPEG encoder, frame "
+              f"selection) depend on the build, so this file will NOT match the official reference features, and "
+              f"scoring videos against it needs this same build. Set SYNTHSCOPE_FFMPEG_NSG_VD to an ffmpeg {pin} "
+              f"binary and rebuild to reproduce the official results.\n{bar}", file=sys.stderr, flush=True)
+        warnings.warn(f"ffmpeg {version} is not the pinned {pin}.x: the reference file will not reproduce the official "
+                      "reference features", RuntimeWarning)
     ids = reference_ids(args.split_zip, args.ids)
     paths = find_videos(Path(args.videos), ids)
     cfg = compose_config(["model@ModelConfig=video/nsg_vd", f"ModelConfig.diffusion_weights={args.diffusion_weights}",
                           f"ModelConfig.process_batch={PROCESS_BATCH}"])
     model = SynthScopeNSGVDModel(cfg).to(args.device).eval()
-    ffmpeg = os.environ.get("SYNTHSCOPE_FFMPEG_NSG_VD") or media.ffmpeg_exe()
-    print(f"ffmpeg {media.ffmpeg_version(ffmpeg)} ({ffmpeg})")
     transform = NSGVDFrame(224)
     kept, clips, dropped = [], [], []
     for vid, p in zip(ids, paths):

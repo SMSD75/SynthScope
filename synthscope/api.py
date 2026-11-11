@@ -174,9 +174,7 @@ class Detector:
         if self.available or self._custom_ckpt or self.spec.checkpoint is None:
             return  # already present, user-managed, or training-free
         if self._engine.ffmpeg_missing(self.spec):
-            raise FileNotFoundError(
-                f"'{self.spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."
-            )
+            raise FileNotFoundError(self._engine.ffmpeg_missing_message(self.spec))
         if not self._auto_download:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "

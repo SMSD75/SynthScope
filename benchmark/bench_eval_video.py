@@ -27,7 +27,8 @@ training-free "raw" score, taken from the logit instead of a second diffusion pa
 (failed_to_decode: decode failures only, cached); any other error (OOM, I/O) is counted in failed_other, never cached
 and retried; both kinds are left out of the metrics. The cache directory carries cache_meta.json (model key, sha256 of
 the resolved checkpoint, frame count / sampler / transform, format version): a run whose setup differs is refused.
-The result JSON also records limit, reals, ckpt_sha256 and cache_dir.
+The result JSON also records limit, reals, ckpt_sha256 and cache_dir (and, for a detector with aux files or an ffmpeg
+pin, the aux-file sha256s and the ffmpeg version + binary sha256).
 
 Benchmark layouts:
   genvideo   <data>/Fake/<gen>/*.mp4 + <data>/Real/*.mp4 (shared real pool)   [GenVideo-Val]
@@ -150,13 +151,27 @@ def _sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+_SHA256_MEMO: dict = {}
+
+
+def _sha256_memo(path: Path) -> str:
+    """``_sha256`` memoized by (resolved path, size, mtime), so a run hashes each big file (the NSG-VD diffusion model and
+    reference set) at most once however often ``cache_meta`` is called; a file that changes is hashed again."""
+    path = Path(path).resolve()
+    st = path.stat()
+    key = (str(path), st.st_size, st.st_mtime_ns)
+    if key not in _SHA256_MEMO:
+        _SHA256_MEMO[key] = _sha256(path)
+    return _SHA256_MEMO[key]
+
+
 def cache_meta(engine, spec) -> dict:
     """What a score cache is valid for: the detector key, the sha256 of the resolved checkpoint, and every spec field that
     changes a video's score (frame count, sampler, preprocessing); for a detector that declares them, the sha256 of its
     extra files (``aux_files``) and its pinned ffmpeg build (version + binary sha256)."""
     ck = engine.checkpoint_path(spec)
     meta = {"model": spec.key,
-            "ckpt_sha256": _sha256(Path(ck).resolve()) if ck is not None else None,
+            "ckpt_sha256": _sha256_memo(Path(ck)) if ck is not None else None,
             "spec": {"num_frames": spec.num_frames, "video_sampler": spec.video_sampler,
                      "transform": repr(spec.transform),
                      **{k: repr(getattr(spec, k, None)) for k in ("fps", "frame_size", "window_center", "video_norm")}},
@@ -164,12 +179,12 @@ def cache_meta(engine, spec) -> dict:
     # Only for detectors that declare them (NSG-VD), so the caches of the others keep their identity: the extra files the
     # model reads (diffusion model, reference set) and the pinned ffmpeg build its frames depend on.
     if getattr(spec, "aux_files", None):
-        meta["aux_sha256"] = {name: _sha256((backend_config.CHECKPOINTS_DIR / name).resolve())
+        meta["aux_sha256"] = {name: _sha256_memo(backend_config.CHECKPOINTS_DIR / name)
                               for name in sorted(spec.aux_files.values())}
     if getattr(spec, "ffmpeg_version", ""):
         ff = spec_ffmpeg(spec)
         exe = shutil.which(ff["path"]) or ff["path"]     # a bare command name ("ffmpeg") is looked up on the PATH
-        meta["ffmpeg"] = {"version": ff["version"], "sha256": _sha256(Path(exe).resolve())}
+        meta["ffmpeg"] = {"version": ff["version"], "sha256": _sha256_memo(Path(exe))}
     return meta
 
 
@@ -477,6 +492,8 @@ def main(argv=None) -> int:
               "ckpt_sha256": meta["ckpt_sha256"], "cache_dir": args.cache_dir,
               "date": datetime.datetime.now().isoformat(timespec="seconds"),
               "synthscope_version": "video"}
+    # Provenance of detectors that declare aux files / an ffmpeg pin (NSG-VD); absent for the others, so their JSON is unchanged.
+    result.update({k: meta[k] for k in ("ffmpeg", "aux_sha256") if k in meta})
     out = Path(args.out) if args.out else (REPRO / "bench_results" / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2) + "\n")

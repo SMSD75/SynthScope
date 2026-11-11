@@ -156,8 +156,8 @@ def zero_shot(cache_root: Path, split_zip: str | None) -> dict:
     if split_zip:
         with zipfile.ZipFile(split_zip) as z:
             val = [x.strip() for x in z.read("split/real/MSR-VTT/val_ids.txt").decode().splitlines() if x.strip()]
-        ref = set([v.split(".")[0].lower() for v in val if v.endswith(".mp4")][:100])   # the shipped reference set
-    out = {"note": "ZERO-SHOT reference rows (not a paper protocol): nsg_vd (standard-SEINE-mp), the shipped reference "
+        ref = set([v.split(".")[0].lower() for v in val if v.endswith(".mp4")][:100])   # the reference set
+    out = {"note": "ZERO-SHOT reference rows (not a paper protocol): nsg_vd (standard-SEINE-mp), the reference "
                    "set (100 MSR-VTT val videos) for every dataset, ffmpeg 4.2.2, --limit 1000 per class per generator; "
                    "metrics as test_dMMD (fake iff MMD > 1, pooled accuracy)"}
     for ds in ("vidprom", "videophy", "evalcrafter"):

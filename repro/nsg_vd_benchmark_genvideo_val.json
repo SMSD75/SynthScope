@@ -5613,7 +5613,7 @@
   }
  },
  "zero_shot": {
-  "note": "ZERO-SHOT reference rows (not a paper protocol): nsg_vd (standard-SEINE-mp), the shipped reference set (100 MSR-VTT val videos) for every dataset, ffmpeg 4.2.2, --limit 1000 per class per generator; metrics as test_dMMD (fake iff MMD > 1, pooled accuracy)",
+  "note": "ZERO-SHOT reference rows (not a paper protocol): nsg_vd (standard-SEINE-mp), the reference set (100 MSR-VTT val videos) for every dataset, ffmpeg 4.2.2, --limit 1000 per class per generator; metrics as test_dMMD (fake iff MMD > 1, pooled accuracy)",
   "vidprom": {
    "n_reals": 1000,
    "reals_in_reference_set": 12,

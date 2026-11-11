@@ -51,7 +51,7 @@ video ─ moviepy frame count n = int(fps * duration); k = max(1, n // 8)       
 
 The reference set is the official one: the first 100 ids of `split/real/MSR-VTT/val_ids.txt` (released
 `assets/split.zip`; `test.yaml`: `ref_model: MSR-VTT`, `ref_mode: val`, `ref_load_len: 100`). Its NSG features
-(100 x 8 x 3 x 224 x 224 float32, 482 MB) are precomputed once with `build_reference.py` and shipped as
+(100 x 8 x 3 x 224 x 224 float32, 482 MB) are precomputed once with `build_reference.py` and kept as
 `nsg_vd_reference_msrvtt_val100.safetensors`, the same precedent as STALL's calibration statistics. The reference
 discriminator features depend on the checkpoint and are computed from the file at the first score.
 
@@ -69,19 +69,19 @@ Files in `$SYNTHSCOPE_CKPT_DIR`:
 |---|---|
 | `SynthScopeNSGVDModel` holds the official `deep_MMD` as `mmd` (`registry.remap_nsg_vd` adds `mmd.`) and the diffusion UNet as `unet` (loaded in `__init__` from its own file, declared in `pretrained_prefixes`) | The checkpoints hold only the kernel parameters and the discriminator; strict load of all 47 tensors. |
 | `official_tall.py`, `official_mmd.py`, `guided_diffusion/` vendored unchanged (only the needed parts; see headers); `official_nsg.py` ports `_get_score_features` / `_get_score_velocity` / `get_score_fn` line for line | `tests/test_nsg_vd_smoke.py` [D] checks them bit-identical against the official modules. |
-| reference features shipped as a file, built by `build_reference.py` | The official test recomputes them from the 100 videos on every run; a deterministic port needs them fixed. |
+| reference features kept in a precomputed file, built locally by `build_reference.py` (not distributed) | The official test recomputes them from the 100 videos on every run; a deterministic port needs them fixed. |
 | `media.ffmpeg_frame_count` re-implements moviepy's frame count; `media.ffmpeg_select_frames` runs the official ffmpeg command | SynthScope does not depend on moviepy; both checked against the official code (counts and decoded frames identical). |
 | a video that gives fewer than 8 frames is a `VideoDecodeError` | The official dataset silently drops it. |
 | the UNet's convolutions are converted to fp16 before each diffusion pass | The official `convert_to_fp16`; the engine casts models to fp32 after loading. On a CPU the UNet runs in fp32 (`cpu_fp32`), a deviation. |
 | P(fake) = sigmoid((MMD - 1) / `prob_scale`), `prob_scale` 0.1; verdict = MMD > 1 | The official output is the raw MMD thresholded at 1; the probability is for display (0.5 at the threshold). The verdict follows the official rule exactly (`raw_predict > 1`: a score of exactly 1 is real, although its P(fake) is 0.5). The engine reports the raw statistic as `logit`. |
-| ffmpeg pinned per detector: `ffmpeg_version="4.2"`, binary from `$SYNTHSCOPE_FFMPEG_NSG_VD` (else the global `$SYNTHSCOPE_FFMPEG` / PATH / imageio-ffmpeg) | The official code uses whatever ffmpeg is installed, and the build changes the frames (below). Each result records the ffmpeg path and version used (`ffmpeg`) and carries a `warning` (also logged, once per binary) when it is not 4.2.x; `bench_eval_video.py`'s cache identity includes the ffmpeg build and the sha256 of the diffusion model and the reference file. Other detectors are unaffected. |
+| ffmpeg pinned per detector: `ffmpeg_version="4.2"`, binary from `$SYNTHSCOPE_FFMPEG_NSG_VD` (else the global `$SYNTHSCOPE_FFMPEG` / PATH / imageio-ffmpeg) | The official code uses whatever ffmpeg is installed, and the build changes the frames (below). Each engine result records the ffmpeg path and version used (`ffmpeg`) and carries a `warning` (also logged, once per binary) when it is not 4.2.x; each `bench_eval_video.py` result JSON records the ffmpeg version and binary sha256 (`ffmpeg`) and the sha256 of the diffusion model and the reference file (`aux_sha256`), and its cache identity includes the same. The result JSONs under `repro/bench_results/nsg_vd*.json` were written before the bench recorded these: their `ffmpeg` / `aux_sha256` were added afterwards from each run's score-cache `cache_meta.json` (see `backfilled_from`). Other detectors are unaffected. |
 | no training (`compute_loss` raises) | Use the official `train_dMMD.py`. |
 
 ## Fidelity check
 
 The unmodified official code (`ZSHsh98/NSG-VD` @ `9a60f57`: `get_ref_dataloader` + `get_ref_features`,
 `get_score_datasets`, the body of `test_dMMD.test_dMMD`) against SynthScope's full pipeline (raw `.mp4` ->
-`media.ffmpeg_select_frames` -> `nsgvd_frame_224` -> engine-built model, strict load -> MMD against the shipped
+`media.ffmpeg_select_frames` -> `nsgvd_frame_224` -> engine-built model, strict load -> MMD against the locally built
 reference file), all six released checkpoints, on 75 GenVideo-Val test videos in the official test order (15 MSR-VTT
 reals from index 200 of the test ids, 15 ModelScope and 5 each of MorphStudio, MoonValley, HotShot, Show-1, Gen2,
 Crafter, LaVie, Sora, WildScrape), RTX A5000, same environment (torch 2.11), same ffmpeg (static 4.2.2) on both
@@ -90,7 +90,7 @@ sides. Record: `repro/nsg_vd_official_parity_genvideo75.json` (per-video scores;
 | check | result |
 |---|---|
 | state dict | all 47 tensors of each of the 6 checkpoints load strictly (0 missing / 0 unexpected) and equal the file |
-| reference set | the shipped file (`build_reference.py`) is bit-identical to the official `ref_data` (100 x 8 x 3 x 224 x 224, max abs diff 0.0), same 100 ids in the same order (none dropped) |
+| reference set | the file built locally by `build_reference.py` (not distributed) is bit-identical to the official `ref_data` (100 x 8 x 3 x 224 x 224, max abs diff 0.0), same 100 ids in the same order (none dropped) |
 | frames | 75/75 videos: the 8 decoded frames identical to the official `video_frames/` JPEGs |
 | frame count | `media.ffmpeg_frame_count` == moviepy 2.2.1 `int(fps * duration)` on all 18,228 val + test videos of the split (0 mismatches; job 286254, `repro/nsg_vd_framecount_genvideo_val.json`) |
 | NSG features, official grouping (3 videos per diffusion pass, the official order) | bit-identical on 75/75 videos |
@@ -360,12 +360,12 @@ re-encoded, but the NSG amplifies the JPEG difference. SynthScope, `nsg_vd`, job
 On the L120 ModelScope subset, accuracy is 87.50 against 86.67 and recall 97.50 against 99.17, with 18 of 240 verdicts flipped.
 The build changes per-video statistics about ten times more than the official-against-served batching does, and moves a
 generator's metrics by 0.1 to 1.7 points (most flips cancel). Run the detector with the 4.2 build; the registry warns, and
-every result records the ffmpeg path and version.
+every engine result records the ffmpeg path and version, and every benchmark result JSON the ffmpeg version and binary sha256 (`ffmpeg`).
 
 ### Zero-shot reference rows (NOT paper reproductions; `nsg_vd` only)
 
 The paper reports none of these sets. `benchmark/bench_eval_video.py --model nsg_vd --dataset <name> --limit 1000` (the
-first 1,000 clips per class per generator, as for WaveRep and D3), ffmpeg 4.2.2. **The reference set stays the shipped 100
+first 1,000 clips per class per generator, as for WaveRep and D3), ffmpeg 4.2.2. **The reference set stays the same 100
 MSR-VTT val videos for every dataset: nothing is re-referenced to the target domain**, and these are zero-shot rows
 for a detector whose reference statistics come from one real-video domain. The real pools are MSR-VTT clips: VidProM and
 VideoPhy use their own `0_real` (MSR-VTT, the first 1,000 by file name); EvalCrafter has no reals of its own and uses
@@ -416,7 +416,7 @@ mAUROC 95.49 / 97.88 / 97.79, mAP 93.63 / 90.91 / 94.71). Averages over the gene
 ## Availability
 
 **Not on the Space, not in `deploy/hf-space/fetch_weights.py`, not in the model zoo.** Serving it needs the user's approval
-and: a check of the MSR-VTT terms for the shipped reference file (derived from 100 MSR-VTT videos, released for research
+and: a check of the MSR-VTT terms for the reference file (built locally by `build_reference.py`, not distributed; derived from 100 MSR-VTT videos, released for research
 use); the 2.2 GB OpenAI diffusion model plus the 482 MB reference file on the hub (a hub upload; `synthscope push` uploads
 no aux files for it, `AUX_FILES` lists only D3's and STALL's); ffmpeg 4.2 in the image (the Dockerfile installs the distribution's ffmpeg with apt, which is not
 a 4.2 build; 7.0.x is unusable); and CPU time. Measured in a logged job (`repro/nsg_vd_cpu_timing.json`, `repro/nsg_vd_cpu_timing.py`,

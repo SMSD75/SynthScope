@@ -23,7 +23,7 @@ prob_scale: 0.1               # P(fake) = sigmoid((MMD - 1) / prob_scale): displ
                               # (official scores on GenVideo-Val span ~0.3-1.4: P(fake) ~0.001-0.98)
 process_batch: 1              # videos per diffusion pass (official extraction: 3; fp16 batch numerics move a score by <~0.04)
 cpu_fp32: true                # on a CPU run the UNet in float32 (the official run is float16 on CUDA)
-# The OpenAI guided-diffusion 256x256 unconditional model and the shipped reference NSG features; the registry points
+# The OpenAI guided-diffusion 256x256 unconditional model and the reference NSG features (built locally by build_reference.py, not distributed); the registry points
 # both at $SYNTHSCOPE_CKPT_DIR (256x256_diffusion_uncond.pt, nsg_vd_reference_msrvtt_val100.safetensors).
 diffusion_weights: null
 reference_path: null

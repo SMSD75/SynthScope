@@ -453,6 +453,62 @@ def test_cache_meta_bare_ffmpeg_name():
         assert meta["ffmpeg"] == {"version": "4.2.2", "sha256": bev._sha256(exe)}, meta["ffmpeg"]
 
 
+def test_result_records_ffmpeg_and_aux():
+    """A detector with aux files and an ffmpeg pin: the result JSON carries the aux sha256s and the ffmpeg build (also
+    without --cache-dir), each big file is hashed once per run; a detector without them gets neither key."""
+    class PinnedSpec(MmdSpec):
+        key, ffmpeg_version, ffmpeg_env = "mockpin2", "4.2", "SYNTHSCOPE_FFMPEG_BENCH_TEST"
+        aux_files = {"diffusion": "aux/diff.pt", "reference": "aux/ref.safetensors"}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        ckdir = tmp / "ckpts"
+        (ckdir / "aux").mkdir(parents=True)
+        (ckdir / "aux" / "diff.pt").write_bytes(b"diffusion")
+        (ckdir / "aux" / "ref.safetensors").write_bytes(b"reference")
+        exe = tmp / "ffmpeg-bench-test"
+        exe.write_text("#!/bin/sh\necho 'ffmpeg version 4.2.2 Copyright (c) 2000-2019'\n")
+        exe.chmod(exe.stat().st_mode | stat.S_IXUSR)
+        saved = (bev.backend_config.CHECKPOINTS_DIR, bev._sha256, bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG)
+        saved_env = os.environ.get(PinnedSpec.ffmpeg_env)
+        hashed = []
+        orig = bev._sha256
+        bev._sha256 = lambda path: (hashed.append(Path(path).name), orig(path))[1]
+        bev.backend_config.CHECKPOINTS_DIR = ckdir
+        os.environ[PinnedSpec.ffmpeg_env] = str(exe)
+        try:
+            eng = MmdEngine(ckpt)
+            bev.get_engine, bev.get_spec = (lambda: eng), (lambda key: PinnedSpec)
+            bev.REPRO, bev.RESULTS_LOG = tmp, tmp / "M.jsonl"
+            make_tree(tmp / "data", PinnedSpec)
+            out = tmp / "r.json"
+            assert bev.main(["-m", "waverep", "--benchmark", "pergen", "--data", str(tmp / "data"), "--tag", "t",
+                             "--out", str(out)]) == 0                    # no --cache-dir
+            res = json.loads(out.read_text())
+            assert res["ffmpeg"] == {"version": "4.2.2", "sha256": orig(exe)}, res.get("ffmpeg")
+            assert res["aux_sha256"] == {"aux/diff.pt": orig(ckdir / "aux" / "diff.pt"),
+                                         "aux/ref.safetensors": orig(ckdir / "aux" / "ref.safetensors")}, res.get("aux_sha256")
+            assert sorted(hashed) == sorted(["mock.pth", "diff.pt", "ref.safetensors", "ffmpeg-bench-test"]), hashed
+            bev.cache_meta(eng, PinnedSpec)
+            assert len(hashed) == 4, "a second cache_meta must not rehash an unchanged file"
+            (ckdir / "aux" / "diff.pt").write_bytes(b"diffusion-changed")           # size differs: hashed again
+            assert bev.cache_meta(eng, PinnedSpec)["aux_sha256"]["aux/diff.pt"] == orig(ckdir / "aux" / "diff.pt")
+            bev.get_spec = lambda key: MmdSpec                                      # no aux files / pin: neither key
+            out2 = tmp / "r2.json"
+            assert bev.main(["-m", "waverep", "--benchmark", "pergen", "--data", str(tmp / "data"), "--tag", "t2",
+                             "--out", str(out2)]) == 0
+            res2 = json.loads(out2.read_text())
+            assert "ffmpeg" not in res2 and "aux_sha256" not in res2, list(res2)
+        finally:
+            bev.backend_config.CHECKPOINTS_DIR, bev._sha256, bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG = saved
+            if saved_env is None:
+                os.environ.pop(PinnedSpec.ffmpeg_env, None)
+            else:
+                os.environ[PinnedSpec.ffmpeg_env] = saved_env
+
+
 if __name__ == "__main__":
     test_shards_and_resume()
     test_cache_meta_refusal()
@@ -463,4 +519,5 @@ if __name__ == "__main__":
     test_main_end_to_end()
     test_own_verdict()
     test_cache_meta_bare_ffmpeg_name()
+    test_result_records_ffmpeg_and_aux()
     print("OK")

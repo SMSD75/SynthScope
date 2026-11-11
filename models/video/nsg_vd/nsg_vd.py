@@ -15,7 +15,7 @@ Official repo: github.com/ZSHsh98/NSG-VD (Apache-2.0). A video is scored against
 
 The reference set is the official one: the first 100 ids of the released MSR-VTT val split (assets/split.zip,
 ``ref_mode: val``, ``ref_load_len: 100``) in the official loader's order. Its NSG features ``x`` (100 x 8 x 3 x 224 x 224
-float32, the end frames already scaled) ship as a precomputed file built by models/video/nsg_vd/build_reference.py; the
+float32, the end frames already scaled) are kept in a precomputed file that is built locally by models/video/nsg_vd/build_reference.py (not distributed); the
 reference discriminator features ``f`` depend on the checkpoint and are computed from it at the first score.
 
 ``SynthScopeNSGVDModel`` holds: ``unet`` - the diffusion model (weights from ``ModelConfig.diffusion_weights``, the
@@ -53,7 +53,7 @@ THRESHOLD = 1.0                # test_dMMD.py: predict = (raw_predict > 1)
 
 
 def load_reference(path: str) -> torch.Tensor:
-    """The shipped reference NSG features: a safetensors file with ``ref_data`` [N, 8, 3, 224, 224] float32."""
+    """The reference NSG features (a file built locally by build_reference.py, not distributed): a safetensors file with ``ref_data`` [N, 8, 3, 224, 224] float32."""
     return load_safetensors(path)["ref_data"]
 
 
@@ -127,8 +127,8 @@ class SynthScopeNSGVDModel(nn.Module):
     def reference_features(self) -> torch.Tensor:
         """get_ref_features: the discriminator features of the whole reference set in one pass [N, 300]."""
         if self.ref_data is None:
-            raise RuntimeError("NSG-VD needs its reference set: set ModelConfig.reference_path to the shipped "
-                               "nsg_vd_reference_msrvtt_val100.safetensors (models/video/nsg_vd/build_reference.py).")
+            raise RuntimeError("NSG-VD needs its reference set: set ModelConfig.reference_path to "
+                               "nsg_vd_reference_msrvtt_val100.safetensors, built locally by models/video/nsg_vd/build_reference.py (not distributed).")
         if self.feature_ref is None:
             _, self.feature_ref = self.mmd.net(self.ref_data, out_feature=True)
         return self.feature_ref

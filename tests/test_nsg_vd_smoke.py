@@ -319,6 +319,19 @@ def test_specs_and_engine() -> None:
         assert spec.transform is get_spec("nsg_vd").transform
     note = input_note(get_spec("nsg_vd"))
     assert "8 evenly spaced frames" in note["label"]
+    msg_engine, saved = Engine(device="cpu"), os.environ.get("SYNTHSCOPE_FFMPEG_NSG_VD")
+    try:                                         # the "needs ffmpeg" text (needs no ffmpeg itself)
+        os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = "/no/such/ffmpeg"
+        text = msg_engine.ffmpeg_missing_message(get_spec("nsg_vd"))
+        assert "SYNTHSCOPE_FFMPEG_NSG_VD" in text and "4.2" in text and "/no/such/ffmpeg" in text and "not an executable" in text, text
+        os.environ.pop("SYNTHSCOPE_FFMPEG_NSG_VD")
+        text = msg_engine.ffmpeg_missing_message(get_spec("nsg_vd"))
+        assert "SYNTHSCOPE_FFMPEG_NSG_VD" in text and "4.2" in text and "no ffmpeg was found" in text, text
+        assert msg_engine.ffmpeg_missing_message(get_spec("vina_video")) == \
+            "'vina_video' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."      # others: unchanged
+    finally:
+        if saved is not None:
+            os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = saved
     if nsg_ffmpeg() is None:
         print("    specs ok; engine path skipped (no ffmpeg for nsg_vd)")
         return
@@ -359,6 +372,24 @@ def test_specs_and_engine() -> None:
         os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = os.path.join(tmp, "no_such_ffmpeg")
         try:
             assert engine.ffmpeg_missing(spec)
+            msg = engine.ffmpeg_missing_message(spec)             # names the variable and the pin; a bad path is said to be bad
+            assert "SYNTHSCOPE_FFMPEG_NSG_VD" in msg and "4.2" in msg and "no_such_ffmpeg" in msg and "not an executable" in msg, msg
+            try:
+                spec_ffmpeg_exe(spec)
+            except FileNotFoundError as e:
+                assert str(e) == msg, e
+            else:
+                raise AssertionError("an invalid SYNTHSCOPE_FFMPEG_NSG_VD must not fall back to another ffmpeg")
+            try:
+                engine.video_clip(spec, clip)                         # the frames step: the same message, not a fallback
+            except FileNotFoundError as e:
+                assert "SYNTHSCOPE_FFMPEG_NSG_VD" in str(e), e
+            else:
+                raise AssertionError("frames were extracted with an invalid SYNTHSCOPE_FFMPEG_NSG_VD")
+            os.environ.pop("SYNTHSCOPE_FFMPEG_NSG_VD")
+            assert "SYNTHSCOPE_FFMPEG_NSG_VD" in engine.ffmpeg_missing_message(spec) and "4.2" in engine.ffmpeg_missing_message(spec)
+            assert engine.ffmpeg_missing_message(get_spec("vina_video")) == \
+                "'vina_video' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."   # others: unchanged
             os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = exe
             assert spec_ffmpeg_exe(spec) == exe and not engine.ffmpeg_missing(spec)
             # other detectors ignore the NSG-VD variable: they keep the global choice (or have none)

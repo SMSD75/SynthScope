@@ -204,5 +204,14 @@
   "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
   "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/cache_nsg_vd_videophy",
   "date": "2026-11-11T18:32:42",
-  "synthscope_version": "video"
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "sha256": "700073daef5c23bbcb18c2eae60553a454a5221ec19b4a88c8c367a664671a7c",
+    "version": "4.2.2"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  },
+  "backfilled_from": "added after the run (the result JSON did not record these then): ffmpeg and aux_sha256 copied from the cache_meta.json of this run's score cache (cache_nsg_vd_videophy/cache_meta.json, saved under SynthScope_shared/nsgvd_bench_out/ss_cache/ by the bench sbatch; its model and ckpt_sha256 equal this file's); the job log repro/logs/nsgvdzs_286718.out shows the same ffmpeg binary sha256 and checkpoint/reference hashes."
 }

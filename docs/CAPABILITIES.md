@@ -47,7 +47,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
 | `waverep` (+ `waverep_g4`) | video | video | official | – | DINOv2 ViT-B/14 + registers fine-tuned frame by frame with a wavelet-band augmentation; the first 64 frames (OpenCV), center 504 crop, sigmoid of the mean frame logit (`waverep` = trained on one generator, `waverep_g4` on four) |
-| `nsg_vd` (+ `nsg_vd_pika`, `nsg_vd_unbalance`) | video | video | official | – | Normalized spatiotemporal gradient of 8 ffmpeg-selected frames from a pre-trained 256x256 diffusion model, a deep-kernel MMD against 100 shipped MSR-VTT reference videos, fake iff the statistic is above 1 (needs ffmpeg 4.2 and two extra files, `aux_files`: the 2.2 GB diffusion model and the 482 MB reference) |
+| `nsg_vd` (+ `nsg_vd_pika`, `nsg_vd_unbalance`) | video | video | official | – | Normalized spatiotemporal gradient of 8 ffmpeg-selected frames from a pre-trained 256x256 diffusion model, a deep-kernel MMD against 100 MSR-VTT reference videos (their features are a file built locally by `build_reference.py`, not distributed), fake iff the statistic is above 1 (needs ffmpeg 4.2 and two extra files, `aux_files`: the 2.2 GB diffusion model and the 482 MB reference) |
 | `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score

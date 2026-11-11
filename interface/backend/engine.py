@@ -180,15 +180,38 @@ def _build_model(cfg):
     raise ValueError(f"Invalid model_type: {model_type}")
 
 
+def ffmpeg_missing_message(spec: ModelSpec) -> str:
+    """Why ``spec`` has no usable ffmpeg. For a detector with a pinned build and its own variable (NSG-VD) it names that
+    variable and the pin, and says so when the variable is set but is not an executable file; the other detectors keep
+    the global wording."""
+    generic = f"'{spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."
+    if not (spec.ffmpeg_env and spec.ffmpeg_version):
+        return generic
+    env = os.environ.get(spec.ffmpeg_env)
+    pin = (f"'{spec.key}' needs an ffmpeg {spec.ffmpeg_version} build (its scores depend on the build; another one is used "
+           f"with a warning and does not reproduce the official results)")
+    if env:
+        return (f"{pin}: ${spec.ffmpeg_env}={env!r} is set but is not an executable file or a command on the PATH. "
+                f"Point ${spec.ffmpeg_env} at an ffmpeg {spec.ffmpeg_version} binary.")
+    return (f"{pin}: no ffmpeg was found. Set ${spec.ffmpeg_env} to an ffmpeg {spec.ffmpeg_version} binary.")
+
+
 def spec_ffmpeg_exe(spec: ModelSpec) -> str:
     """The ffmpeg binary for ``spec``: its own ``ffmpeg_env`` variable when set (NSG-VD: $SYNTHSCOPE_FFMPEG_NSG_VD), else
-    the global choice (media.ffmpeg_exe). Raises FileNotFoundError when there is none."""
+    the global choice (media.ffmpeg_exe). Raises FileNotFoundError when there is none (for a detector with an
+    ``ffmpeg_env`` the message names that variable and the pin; a set but invalid variable is never replaced by the
+    global choice)."""
     env = os.environ.get(spec.ffmpeg_env) if spec.ffmpeg_env else None
     if env:
         if not os.path.isfile(env) and shutil.which(env) is None:
-            raise FileNotFoundError(f"{spec.ffmpeg_env}={env!r} is not an executable file")
+            raise FileNotFoundError(ffmpeg_missing_message(spec))
         return env
-    return media.ffmpeg_exe()
+    try:
+        return media.ffmpeg_exe()
+    except (FileNotFoundError, RuntimeError, OSError) as e:
+        if spec.ffmpeg_env and spec.ffmpeg_version:
+            raise FileNotFoundError(ffmpeg_missing_message(spec)) from e
+        raise
 
 
 _FFMPEG_WARNED: set = set()
@@ -313,6 +336,11 @@ class Engine:
                 return True
             return False
         return spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available()
+
+    @staticmethod
+    def ffmpeg_missing_message(spec: ModelSpec) -> str:
+        """The error text for ``ffmpeg_missing(spec)`` (see ``ffmpeg_missing_message``)."""
+        return ffmpeg_missing_message(spec)
 
     def is_available(self, spec: ModelSpec) -> bool:
         if spec.key == "stall":  # training-free, but needs the gated DINOv3 ViT-L/16 weights
