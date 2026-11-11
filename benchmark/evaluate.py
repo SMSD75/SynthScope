@@ -71,6 +71,8 @@ def score(det: "synthscope.Detector", paths: list[Path], batch_size: int) -> tor
     det._ensure_weights()
     model = det._engine._get_model(det.spec)          # build + load (verified path)
     spec, device = det.spec, det._engine.device
+    # native-resolution specs (LTF, B-Free, SPAI, PROBE) give variable-size tensors that cannot be stacked
+    batch_size = spec.eval_batch_size(batch_size)
     probs = []
     for i in range(0, len(paths), batch_size):
         batch = []

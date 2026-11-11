@@ -17,8 +17,11 @@ ROOT = str(Path(__file__).resolve().parents[2])   # the repository root, whereve
 VAL = {
     # AIGCDetect is the ProGAN-trained setting (B1); we only retrained the SDv1.4 setting, so no SynthScope_train here.
     ("aide", "AIGCDetect"):              {"official": {"map": 97.94, "acc": 91.89}},
-    # SynthScope_train = faithful native-res 5-view retrain (aide_native_v2/model_2) — reproduces the official mAP (acc is lower).
-    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 96.42, "acc": 77.87}},
+    # SynthScope_train = the official AIDE recipe in SynthScope (experiments/image/aide.sh; train job 281041, model_best = epoch 4,
+    # eval DAS6 job 66956, tag aide_trained_genimage8: the full GenImage_full/test, the same data as the official row). Below the
+    # paper (acc -6.15) and the official weights (mAP -3.22); the previous native-res retrain (aide_native_v2/model_2, 96.42 / 77.87 on
+    # 300 images per class) had the higher mAP and the lower accuracy.
+    ("aide", "GenImage"):                {"official": {"map": 97.12, "acc": 85.91}, "synthscope": {"map": 93.9, "acc": 80.73, "auroc": 91.66}},
     # ForenSynths = the paper's 11 generators (no StyleGAN2 / WhichFaceIsReal), recomputed from the per-generator entries
     # of {clip,cnn}_{synthscope,official}_forensynths.json; the 8-GAN subset gives clip 97.22 / 96.96, cnn 94.42 / 92.67.
     ("clip", "ForenSynths"):             {"synthscope": {"map": 92.83, "acc": 85.39}, "official": {"map": 92.33, "acc": 80.58}},

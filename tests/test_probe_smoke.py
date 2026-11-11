@@ -15,6 +15,9 @@ Checks:
 * the engine: ``_fake_prob`` = sigmoid(mean patch logit) for both keys, the strict ``official_probe`` load through
   ``remap_probe`` (``{"model_state_dict": ...}``) accepts the exact state dict and raises on a missing or an unexpected
   key, the model-input preview handles a patch bag, the input notes,
+* the patch-bag preview and ``input_size``: the real patch grid (rows x columns) and the padded image size of
+  ``predict_image`` for both keys, equal to the official padding + unfold on small, exact, non-square and wide images
+  (scores unchanged: ``p_fake`` is the engine's ``_fake_prob`` of the transform output),
 * the full-size models (built on the meta device) have exactly the keys and shapes of the released checkpoints, if
   ``$SYNTHSCOPE_CKPT_DIR/probe.pth`` / ``probe_resnet.pth`` exist (skipped otherwise).
 """
@@ -35,7 +38,7 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
 
-from backend.engine import Engine, _load_checkpoint                         # noqa: E402
+from backend.engine import Engine, _load_checkpoint, patch_layout                         # noqa: E402
 from backend.hf_compat import HF_RENAMES, translate_hf_keys                 # noqa: E402
 from backend.registry import get_spec, input_note, remap_probe              # noqa: E402
 from models.image.probe.official.dino_classifier import DINOV2_REG_LARGE, dino_classifier   # noqa: E402
@@ -208,6 +211,40 @@ def test_engine() -> None:
     print("    exact and renamed-key loads pass, missing / unexpected keys raise; preview of a 2-patch bag renders")
 
 
+def test_patch_layout() -> None:
+    print("[F] patch-bag preview: real nH x nW layout and padded input_size ...")
+    engine = Engine(device="cpu")
+    tiny = tiny_model()
+    engine._get_model = lambda spec: tiny
+    for key, ps, mode in (("probe", 336, "repeat"), ("probe_resnet", 224, "pad")):
+        spec = get_spec(key)
+        for size in ((128, 96), (200, 100), (ps, ps), (1700, 700), (300, 1200), (900, 400)):
+            pil = noise_image(size)
+            n = official_patches(pil, ps, mode).shape[0]
+            layout = patch_layout(spec, pil, n)
+            assert layout is not None, (key, size)
+            (w, h), (rows, cols) = layout
+            assert rows * cols == n and rows == h // ps and cols == w // ps, (key, size, layout)
+            if size[0] >= ps and size[1] >= ps:
+                assert (w, h) == size, (key, size, layout)       # nothing to pad
+            assert patch_layout(spec, pil, n + 1) is None
+            if n > 12:
+                continue                                          # the model run below stays tiny
+            res = engine.predict_image(spec, pil)
+            assert res["input_size"] == [w, h] and res["input_grid"] == [rows, cols] and res["input_patches"] == n, \
+                (key, size, res["input_size"], res["input_grid"])
+            x = spec.transform(pil).unsqueeze(0)
+            with torch.no_grad():
+                assert abs(res["fake_probability"] - float(engine._fake_prob(tiny, spec, x))) < 1e-6, (key, size)
+            url = engine._model_input_data_url(spec, x, max_side=10**6, cols=cols)
+            import base64, io
+            img = Image.open(io.BytesIO(base64.b64decode(url.split(",", 1)[1])))
+            assert img.size == (cols * ps, rows * ps), (key, size, img.size, (cols, rows))
+            print(f"    {key} {size}: input_size {res['input_size']}, {rows}x{cols} = {n} patches")
+    assert patch_layout(get_spec("clip"), noise_image((64, 64)), 1) is None
+    print("    other detectors are not patch bags: no layout")
+
+
 def test_released_layout() -> None:
     ckpt_dir = os.environ.get("SYNTHSCOPE_CKPT_DIR", "")
     for key, cls in (("probe", SynthScopePROBEModel), ("probe_resnet", SynthScopePROBEResNetModel)):
@@ -230,5 +267,6 @@ if __name__ == "__main__":
     test_dino_model()
     test_resnet_model()
     test_engine()
+    test_patch_layout()
     test_released_layout()
     print("PROBE smoke test passed")

@@ -6,7 +6,7 @@
   it was obtained (official weights / trained-from-scratch / training-free).
 
 Run:  conda run -n SynthScope python interface/scripts/collect_checkpoints.py
-Override the destination with SYNTHSCOPE_CKPT_DIR.
+Override the destination with SYNTHSCOPE_CKPT_DIR.  ``--check`` only verifies that the source files exist.
 """
 import json
 import os
@@ -18,13 +18,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from backend import config            # noqa: E402  (sets paths)
 from backend.registry import list_specs  # noqa: E402
 
-# Known source locations of the official weights on this node.
+# Known source locations of the official weights on this node. Every entry must be the file the registry (and the
+# public Space) actually serves under that name:
+#   fat_former.pth  official 4-class ProGAN FatFormer release
+#   aide.pth        official SD-v1.4 release (sd14_train.pth), not the ProGAN-trained progan_train.pth
+#   npr.pth         official NPR.pth with the DataParallel ``module.`` prefix stripped (NPR_table1.pth, linked 2026-06-09),
+#                   not the older model_epoch_last_3090.pth
 REPRO_CKPTS = Path("/hddstore/ssalehi/SynthScope/repro/ckpts")
+AIDE_OFFICIAL = Path("/hddstore/ssalehi/SynthScope/repro/official_ckpts/aide/AIDE_checkpoints")
 OFFICIAL_SOURCES = {
     "fat_former.pth": REPRO_CKPTS / "fatformer_official.pth",
-    "aide.pth": REPRO_CKPTS / "aide_progan_train.pth",
-    "npr.pth": REPRO_CKPTS / "NPR_model_epoch_last_3090.pth",
+    "aide.pth": AIDE_OFFICIAL / "sd14_train.pth",
+    "npr.pth": REPRO_CKPTS / "NPR_table1.pth",
 }
+
+
+def missing_sources(sources: dict = None) -> list:
+    """Names whose source file does not exist (on a node without /hddstore this is all of them)."""
+    sources = OFFICIAL_SOURCES if sources is None else sources
+    return [name for name, src in sources.items() if not src.exists()]
 
 
 def link(dest: Path, src: Path) -> str:
@@ -37,6 +49,15 @@ def link(dest: Path, src: Path) -> str:
 
 
 def main():
+    if "--check" in sys.argv[1:]:       # only verify that every source exists; link nothing, write nothing
+        missing = missing_sources()
+        for name in missing:
+            print(f"WARNING: source for {name} is missing: {OFFICIAL_SOURCES[name]}", file=sys.stderr)
+        print(f"{len(OFFICIAL_SOURCES) - len(missing)}/{len(OFFICIAL_SOURCES)} official sources present")
+        sys.exit(1 if missing else 0)
+    for name in missing_sources():
+        print(f"WARNING: source for {name} is missing: {OFFICIAL_SOURCES[name]} "
+              f"(an existing {name} link is left unchanged)", file=sys.stderr)
     dst = config.CHECKPOINTS_DIR
     dst.mkdir(parents=True, exist_ok=True)
     print(f"checkpoints dir: {dst}")

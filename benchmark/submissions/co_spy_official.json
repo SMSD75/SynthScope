@@ -7,31 +7,31 @@
   "url": "https://github.com/SMSD75/SynthScope",
   "evaluation": "official-weights",
   "metrics": {
-    "acc": 94.64,
-    "map": 98.5,
+    "acc": 95.12,
+    "map": 98.85,
     "ap": null,
-    "auroc": 98.8
+    "auroc": 99.03
   },
   "per_generator": {
     "biggan": {
-      "ap": 97.76,
-      "auroc": 98.18,
-      "acc": 93.95
+      "ap": 98.19,
+      "auroc": 98.47,
+      "acc": 94.6
     },
     "cyclegan": {
-      "ap": 99.43,
+      "ap": 99.38,
       "auroc": 99.74,
-      "acc": 99.25
+      "acc": 99.28
     },
     "deepfake": {
-      "ap": 93.4,
-      "auroc": 93.91,
-      "acc": 75.6
+      "ap": 95.15,
+      "auroc": 95.24,
+      "acc": 77.77
     },
     "gaugan": {
-      "ap": 97.49,
-      "auroc": 98.62,
-      "acc": 95.05
+      "ap": 98.1,
+      "auroc": 98.88,
+      "acc": 95.16
     },
     "progan": {
       "ap": 100.0,
@@ -41,23 +41,23 @@
     "stargan": {
       "ap": 100.0,
       "auroc": 100.0,
-      "acc": 99.4
+      "acc": 99.6
     },
     "stylegan": {
-      "ap": 99.94,
-      "auroc": 99.93,
-      "acc": 93.85
+      "ap": 99.97,
+      "auroc": 99.96,
+      "acc": 97.75
     },
     "stylegan2": {
-      "ap": 100.0,
-      "auroc": 100.0,
-      "acc": 100.0
+      "ap": 99.99,
+      "auroc": 99.99,
+      "acc": 96.78
     }
   },
   "submitted_by": "SynthScope",
-  "date": "2026-06-04",
+  "date": "2026-11-08",
   "verified": true,
-  "source": "repro/bench_results/cospy_official_forensynths.json (tag cospy_official_forensynths, 8 of its 13 generators); job log not kept on the shared filesystem; MASTER_RESULTS.jsonl row of the same tag",
-  "protocol_notes": "ForenSynths-8; official CO-SPY ProGAN checkpoint in the vendored official architecture (not the served co_spy.pth)",
+  "source": "repro/bench_results/cospy_official_fs8_nov.json (tag cospy_official_fs8_nov, all generators); DAS6 job 66671 (repro/logs/lbfu_cospyoff_das6_66671.out)",
+  "protocol_notes": "ForenSynths-8, full test sets; official CO-SPY ProGAN checkpoint in the vendored official architecture (not the served co_spy.pth)",
   "synthscope_version": "0.1.0"
 }

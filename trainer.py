@@ -37,6 +37,7 @@ from accelerate import Accelerator
 from transformers import get_scheduler
 from timm.scheduler.cosine_lr import CosineLRScheduler
 import json
+from contextlib import nullcontext
 import os
 from logger import build_logger
 from tqdm import tqdm
@@ -44,6 +45,10 @@ from tqdm import tqdm
 class SynthScopeModelTrainer:
     def __init__(self, config: DictConfig, dataset_module: AIGIDatasetModule):
         self.model = self._build_model(config)
+        # TrainerConfig.sync_batchnorm: batch statistics over all processes' micro-batches (a recipe whose official
+        # per-GPU batch does not fit one GPU keeps the BatchNorm batch it was tuned with). Only in a multi-process run.
+        if config.TrainerConfig.get("sync_batchnorm", False) and int(os.environ.get("WORLD_SIZE", "1")) > 1:
+            self.model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(self.model)
         self.optimizer = torch.optim.AdamW(
             self._param_groups(config),
             lr=config.TrainerConfig.lr,
@@ -342,7 +347,7 @@ class SynthScopeModelTrainer:
         real = [v for k, v in metrics_dict.items() if k.startswith("real_accuracy")]
         fake = [v for k, v in metrics_dict.items() if k.startswith("fake_accuracy")]
         if not real or not fake:
-            raise ValueError("the plateau schedule needs metrics=[real_accuracy,fake_accuracy]")
+            raise ValueError("validation accuracy (the plateau schedule, timm_cosine select: accuracy) needs metrics=[real_accuracy,fake_accuracy]")
         return (sum(real) / len(real) + sum(fake) / len(fake)) / 2
 
     def _train_with_plateau(self, plateau):
@@ -440,8 +445,12 @@ class SynthScopeModelTrainer:
         self.optimizer.zero_grad()
         while step < max_steps:
             for batch in tqdm(self.train_loader, desc="Training"):
-                loss = self.train_step(batch)
-                self.accelerator.backward(loss / accum)
+                # the micro-batches that do not step skip the DDP gradient all-reduce (a null context off DDP); the last
+                # micro-batch of the budget syncs, so a final partial accumulation is reduced too
+                at_step = (step + 1) % accum == 0 or step + 1 >= max_steps
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    self.accelerator.backward(loss / accum)
                 running += loss.detach().item()
                 step += 1
                 if step % accum == 0:
@@ -476,7 +485,10 @@ class SynthScopeModelTrainer:
         schedule counts official steps, so a smaller GPU follows the same LR curve. Validation after every epoch; as in
         the official code, a checkpoint is kept whenever the validation loss improves (``model_<epoch>.pth``, the
         selected one also as ``model_best.pth``; ``save_all`` keeps every epoch, as the official ``--save-all``), plus
-        ``model_last.pth``; the losses go to ``val_losses.json``. After
+        ``model_last.pth``; the losses go to ``val_losses.json``. With ``select: accuracy`` the selected epoch is the
+        first with the highest validation accuracy instead (AIDE's ``max_accuracy``; needs ``metrics=[real_accuracy,
+        fake_accuracy]``, a balanced validation set makes it the plain accuracy), and the accuracies are logged to
+        ``val_losses.json`` as ``val_accuracy``. After
         every epoch the full training state (model, optimizer, loss scaler, RNGs) is saved to ``<save_path>/train_state``,
         and a rerun with the same ``save_path`` resumes after the last finished epoch (runs longer than a job limit)."""
         cfg = self.config.TrainerConfig
@@ -486,32 +498,45 @@ class SynthScopeModelTrainer:
                                       lr_min=float(sched.min_lr), warmup_lr_init=float(sched.warmup_lr),
                                       warmup_t=int(float(sched.warmup_epochs) * n_iter), cycle_limit=1, t_in_epochs=False)
         save_all = bool(sched.get("save_all", False))
+        log_every = int(sched.get("log_every", 100))      # optimizer steps between loss / lr lines
+        micro = self.train_loader.batch_sampler.batch_size     # DataLoaderShard.batch_size is None after prepare()
+        self.accelerator.print(f"timm_cosine: {len(self.train_loader)} micro-batches per process and epoch -> {n_iter} optimizer steps per epoch "
+                               f"({self.accelerator.num_processes} processes x micro-batch {micro} x accumulation {accum} "
+                               f"= effective batch {self.accelerator.num_processes * micro * accum}), "
+                               f"lr {cfg.lr} -> {sched.min_lr} over {cfg.epochs} epochs")
         history, start = [], 0          # validation loss per epoch; None where it was not measured on this validation set
+        by_accuracy = str(sched.get("select", "loss")) == "accuracy"
+        accuracies = []                 # validation accuracy per epoch (select: accuracy)
         state_dir, log_path = f"{cfg.save_path}/train_state", f"{cfg.save_path}/val_losses.json"
         if cfg.save and os.path.isfile(f"{state_dir}/progress.json"):
             with open(f"{state_dir}/progress.json") as f:
                 progress = json.load(f)
             self.accelerator.load_state(state_dir)
             history, start = progress["val_loss"], progress["epoch"] + 1
+            accuracies = progress.get("val_accuracy", [])
             self.global_step = start * n_iter
             self.accelerator.print(f"Resuming after epoch {progress['epoch']}")
         measured = lambda: [v for v in history if v is not None]
         best = min(measured(), default=float("inf"))
+        best_accuracy = max(accuracies, default=float("-inf"))
         for epoch in range(start, cfg.epochs):
             self.model.train()
             self.optimizer.zero_grad()
             total, k = 0.0, 0
             for idx, batch in enumerate(tqdm(self.train_loader, desc=f"Training epoch {epoch}")):
-                loss = self.train_step(batch)
-                self.accelerator.backward(loss / accum)
+                at_step = (idx + 1) % accum == 0
+                # the micro-batches that do not step skip the DDP gradient all-reduce (a null context off DDP)
+                with (nullcontext() if at_step else self.accelerator.no_sync(self.model)):
+                    loss = self.train_step(batch)
+                    self.accelerator.backward(loss / accum)
                 total += loss.detach().item()
-                if (idx + 1) % accum == 0:
+                if at_step:
                     self.optimizer.step()
                     self.optimizer.zero_grad()
                     scheduler.step_update(epoch * n_iter + k)
                     k += 1
                     self.global_step += 1
-                    if k % 100 == 0:
+                    if k == 1 or k % log_every == 0:
                         self.accelerator.print(f"epoch {epoch} step {k}/{n_iter}: loss {total / (idx + 1):.4f}, "
                                                f"lr {self.optimizer.param_groups[0]['lr']:.3e}")
                     if k == n_iter:
@@ -522,20 +547,29 @@ class SynthScopeModelTrainer:
             best_epoch = history.index(min(measured()))
             self.accelerator.print(f"Epoch {epoch}, Val Loss: {val_loss:.4f} (best {history[best_epoch]:.4f} at epoch {best_epoch}), "
                                    f"Val Metrics: {val_metrics_dict}")
+            if by_accuracy:
+                accuracies.append(self._val_accuracy(val_metrics_dict))
+                improved = accuracies[-1] > best_accuracy        # strictly greater: the earliest of equal epochs, as AIDE
+                best_accuracy = max(accuracies)
+                best_epoch = accuracies.index(best_accuracy)
+                self.accelerator.print(f"Epoch {epoch}, Val Accuracy: {accuracies[-1]:.4f} (best {best_accuracy:.4f} at epoch {best_epoch})")
+            else:
+                improved = val_loss < best
             if cfg.save:
                 self._save_model("last", cfg.save_path)
-                if save_all or val_loss < best:   # the official --save-all keeps every epoch
+                if save_all or improved:   # the official --save-all keeps every epoch
                     self._save_model(epoch, cfg.save_path)
-                if val_loss < best:
-                    best = val_loss
+                if improved:
+                    best = min(best, val_loss)
                     self._save_model("best", cfg.save_path)
                 if self.accelerator.is_main_process:
                     with open(log_path, "w") as f:
-                        json.dump({"val_loss": history, "best_epoch": best_epoch}, f, indent=1)
+                        json.dump({"val_loss": history, **({"val_accuracy": accuracies} if by_accuracy else {}),
+                                   "best_epoch": best_epoch}, f, indent=1)
                 self.accelerator.save_state(state_dir)
                 if self.accelerator.is_main_process:
                     with open(f"{state_dir}/progress.json", "w") as f:
-                        json.dump({"epoch": epoch, "val_loss": history}, f)
+                        json.dump({"epoch": epoch, "val_loss": history, "val_accuracy": accuracies}, f)
         self.logger.finish()
 
     def train(self):

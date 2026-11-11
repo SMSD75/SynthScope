@@ -281,7 +281,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | CNNDetection | ForenSynths (the paper's 11 generators) | 90.8 | 90.44 | ✅ reproduced |
 | FatFormer | ForenSynths-8 | 99.7 | 99.70 (official); 99.56 (trained in SynthScope, 97.29 acc vs 98.4) | ✅ official weights match; our training reproduces the paper within the 2-pt tolerance (mAP -0.14, acc -1.1) |
 | NPR | GANGen-Detection | 96.6 | 96.49 (official) | ✅ official weights match |
-| AIDE | GenImage | 86.9 acc | 85.9 acc (official) | ✅ official weights match |
+| AIDE | GenImage | 86.9 acc | 85.9 acc (official); 80.7 acc / 93.9 mAP (trained in SynthScope with the official recipe) | ✅ official weights match; ⚠️ our training stays 6.2 pt below the paper on acc (outside the 2-pt tolerance): in-domain SD-v1.4 matches, transfer to ADM / Midjourney / VQDM is weaker |
 | SAFE | GenImage-8 | 99.3 | 99.51 | ✅ reproduced |
 | Co-Spy | Co-Spy-Bench | 96.0 | 96.70 | ✅ reproduced |
 | PGC | GenImage | 100 | 100 (official) | ✅ official weights match |

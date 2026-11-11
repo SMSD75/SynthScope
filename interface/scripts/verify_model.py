@@ -69,9 +69,10 @@ def main():
     random.Random(2).shuffle(items)
     print(f"{args.key}: scoring {len(items)} images from [{args.gens}] on {engine.device}")
 
+    bs = spec.eval_batch_size(args.bs)      # native-resolution specs cannot stack variable-size inputs
     probs, labels = [], []
-    for i in range(0, len(items), args.bs):
-        chunk = items[i:i + args.bs]
+    for i in range(0, len(items), bs):
+        chunk = items[i:i + bs]
         batch = torch.stack([spec.transform(media.open_rgb(p)) for p, _ in chunk]).to(engine.device)
         probs += engine._fake_prob(model, spec, batch).float().cpu().tolist()
         labels += [l for _, l in chunk]

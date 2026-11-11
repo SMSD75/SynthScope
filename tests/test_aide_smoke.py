@@ -6,7 +6,7 @@ Exercises, without any download (tiny ``convnext_base`` trunk, random ResNet-50s
 * ``DCT_base_Rec_Module`` picks 4 distinct native-res patches,
 * ``HPF`` (30 SRM kernels) shape + frozen weights,
 * ``SynthScopeAIDEModel`` forward / compute_loss on a ``[B, 5, 3, 256, 256]`` batch + backward,
-* the ConvNeXt trunk stays frozen.
+* the trainable set is the official one (two ResNet-50 streams + fc); the ConvNeXt trunk and convnext_proj stay frozen.
 """
 
 from __future__ import annotations
@@ -84,9 +84,17 @@ def main() -> None:
     trunk = [n for n, p in model.named_parameters()
              if p.requires_grad and "openclip_convnext_xxl" in n]
     assert not trunk, f"convnext leaked into trainable params: {trunk[:3]}"
-    for prefix in ("net.model_min", "net.model_max", "net.fc", "net.convnext_proj"):
+    # The official trainable set: the two ResNet-50 streams and the fc head. convnext_proj is computed inside torch.no_grad()
+    # in the official forward, so it keeps its random initialization (frozen here too); the ResNets' own fc heads are unused.
+    for prefix in ("net.model_min", "net.model_max", "net.fc"):
         assert any(n.startswith(prefix) and p.requires_grad
                    for n, p in model.named_parameters()), f"missing trainable module: {prefix}"
+    frozen = [n for n, p in model.named_parameters() if p.requires_grad and
+              (n.startswith("net.convnext_proj") or n.startswith("net.hpf")
+               or n.startswith("net.model_min.fc") or n.startswith("net.model_max.fc"))]
+    assert not frozen, f"must be frozen: {frozen}"
+    trainable = {n.split(".")[1] for n, p in model.named_parameters() if p.requires_grad}
+    assert trainable == {"model_min", "model_max", "fc"}, trainable
 
     bsz = 2
     images = torch.rand(bsz, 5, 3, 256, 256)  # the 5-view stack the transform produces
@@ -110,6 +118,13 @@ def main() -> None:
     no_grad = [n for n, p in model.named_parameters() if p.requires_grad and p.grad is None]
     assert not no_grad, f"trainable params with no grad: {no_grad[:5]}"
     print(f"    train loss = {out['loss'].item():.4f} | backward OK")
+
+    print("[5] registry remap_aide: official keys get net., a trained checkpoint's keys are kept ...")
+    from interface.backend.registry import remap_aide
+    assert set(remap_aide({"fc.weight": 0, "module.model_min.conv1.weight": 1})) == {"net.fc.weight", "net.model_min.conv1.weight"}
+    trained = model.state_dict()
+    assert list(remap_aide(trained)) == list(trained), "a SynthScope-trained state dict must pass through remap_aide unchanged"
+    print("    OK")
 
     print("\nAll AIDE smoke checks passed.")
 

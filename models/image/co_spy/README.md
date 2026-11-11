@@ -110,6 +110,8 @@ All benchmarks the paper reports, with our numbers (verified, traced to `repro/b
 | ForenSynths (CNNDetection test) | — | mAP=87.97 | mAP=96.17 | reference |
 | In-the-wild (Co-Spy-Bench in-the-wild) | map=84.65 / acc=77.41 | — | — | missing |
 
+The ForenSynths row of the official weights (`cospy_official_forensynths`, 13 sets, 87.97 mAP) is a 1000-per-class run (rates are multiples of 0.1; the June job log was not kept). The full ForenSynths-8 run with the same checkpoint and evaluator (`cospy_official_fs8_nov`, DAS6 job 66671, `repro/logs/lbfu_cospyoff_das6_66671.out`) gives 98.85 mAP / 95.12 acc / 99.03 mAUROC and is the leaderboard row.
+
 The served `co_spy.pth` is the SynthScope retrain on GenImage SD v1.4 (`repro/retrain_cospy_full_mgpu.sbatch`,
 `checkpoints_retrain/cospy_full/model_1.pth`), which gives the Co-Spy-Bench and GenImage SynthScope_train numbers. The
 AIGCDetect and ForenSynths SynthScope_train numbers are from earlier SynthScope checkpoints and have not been re-run with it.
