@@ -1,0 +1,73 @@
+{
+  "tag": "mx_probe_arforensics",
+  "model": "probe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/ARForensics/test",
+  "jpeg_fakes": null,
+  "n_generators": 7,
+  "means": {
+    "acc": 97.44,
+    "map": 99.79,
+    "mauroc": 99.8
+  },
+  "per_generator": {
+    "Infinity": {
+      "ap": 99.91,
+      "auroc": 99.92,
+      "real_acc": 98.72,
+      "fake_acc": 99.72,
+      "acc": 99.22
+    },
+    "Janus_Pro": {
+      "ap": 99.88,
+      "auroc": 99.89,
+      "real_acc": 98.83,
+      "fake_acc": 97.98,
+      "acc": 98.41
+    },
+    "LlamaGen": {
+      "ap": 99.9,
+      "auroc": 99.89,
+      "real_acc": 99.08,
+      "fake_acc": 97.53,
+      "acc": 98.31
+    },
+    "Open_MAGVIT2": {
+      "ap": 99.44,
+      "auroc": 99.46,
+      "real_acc": 98.73,
+      "fake_acc": 88.9,
+      "acc": 93.82
+    },
+    "RAR": {
+      "ap": 99.7,
+      "auroc": 99.73,
+      "real_acc": 98.77,
+      "fake_acc": 94.72,
+      "acc": 96.74
+    },
+    "Switti": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 98.83,
+      "fake_acc": 99.9,
+      "acc": 99.37
+    },
+    "VAR": {
+      "ap": 99.69,
+      "auroc": 99.7,
+      "real_acc": 98.75,
+      "fake_acc": 93.62,
+      "acc": 96.18
+    }
+  },
+  "date": "2026-11-10T14:45:24",
+  "synthscope_version": "0.1.0",
+  "merged_parts": [
+    "c00-9c5cdd",
+    "c01-30c4dd",
+    "c02-41fdf9"
+  ]
+}

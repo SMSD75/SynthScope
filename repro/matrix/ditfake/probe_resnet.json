@@ -1,0 +1,40 @@
+{
+  "tag": "mx_probe_resnet_ditfake",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 94.69,
+    "map": 99.61,
+    "mauroc": 99.63
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.16,
+      "auroc": 99.2,
+      "real_acc": 99.14,
+      "fake_acc": 81.02,
+      "acc": 90.08
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.89,
+      "auroc": 99.9,
+      "real_acc": 98.98,
+      "fake_acc": 97.2,
+      "acc": 98.09
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.79,
+      "auroc": 99.79,
+      "real_acc": 99.46,
+      "fake_acc": 92.32,
+      "acc": 95.89
+    }
+  },
+  "date": "2026-11-11T21:43:03",
+  "synthscope_version": "0.1.0"
+}

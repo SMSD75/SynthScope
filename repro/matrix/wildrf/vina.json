@@ -1,0 +1,40 @@
+{
+  "tag": "mx_vina_wildrf",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 95.87,
+    "map": 99.27,
+    "mauroc": 99.16
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 99.43,
+      "auroc": 99.33,
+      "real_acc": 94.38,
+      "fake_acc": 98.12,
+      "acc": 96.25
+    },
+    "reddit": {
+      "ap": 99.09,
+      "auroc": 98.96,
+      "real_acc": 94.53,
+      "fake_acc": 94.93,
+      "acc": 94.73
+    },
+    "twitter": {
+      "ap": 99.3,
+      "auroc": 99.2,
+      "real_acc": 95.01,
+      "fake_acc": 98.25,
+      "acc": 96.63
+    }
+  },
+  "date": "2026-11-09T20:18:48",
+  "synthscope_version": "0.1.0"
+}

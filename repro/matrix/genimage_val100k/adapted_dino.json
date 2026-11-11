@@ -1,0 +1,75 @@
+{
+  "tag": "mx_adapted_dino_genimage_val100k",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/GenImage_val_full/test",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 61.93,
+    "map": 79.58,
+    "mauroc": 79.5
+  },
+  "per_generator": {
+    "adm": {
+      "ap": 88.98,
+      "auroc": 88.15,
+      "real_acc": 100.0,
+      "fake_acc": 9.82,
+      "acc": 54.91
+    },
+    "biggan": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 100.0,
+      "fake_acc": 97.72,
+      "acc": 98.86
+    },
+    "glide": {
+      "ap": 92.59,
+      "auroc": 91.85,
+      "real_acc": 100.0,
+      "fake_acc": 13.82,
+      "acc": 56.91
+    },
+    "midjourney": {
+      "ap": 45.8,
+      "auroc": 45.72,
+      "real_acc": 99.97,
+      "fake_acc": 0.0,
+      "acc": 49.98
+    },
+    "sdv1.4": {
+      "ap": 69.47,
+      "auroc": 70.04,
+      "real_acc": 100.0,
+      "fake_acc": 0.77,
+      "acc": 50.38
+    },
+    "sdv1.5": {
+      "ap": 68.27,
+      "auroc": 68.87,
+      "real_acc": 100.0,
+      "fake_acc": 0.58,
+      "acc": 50.29
+    },
+    "vqdm": {
+      "ap": 99.27,
+      "auroc": 99.14,
+      "real_acc": 100.0,
+      "fake_acc": 66.83,
+      "acc": 83.42
+    },
+    "wukong": {
+      "ap": 72.29,
+      "auroc": 72.27,
+      "real_acc": 100.0,
+      "fake_acc": 1.4,
+      "acc": 50.7
+    }
+  },
+  "date": "2026-11-09T13:48:51",
+  "synthscope_version": "0.1.0"
+}

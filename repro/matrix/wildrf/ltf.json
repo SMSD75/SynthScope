@@ -1,0 +1,40 @@
+{
+  "tag": "mx_ltf_wildrf",
+  "model": "ltf",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 53.0,
+    "map": 71.95,
+    "mauroc": 67.5
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 63.29,
+      "auroc": 59.32,
+      "real_acc": 16.25,
+      "fake_acc": 87.5,
+      "acc": 51.87
+    },
+    "reddit": {
+      "ap": 84.59,
+      "auroc": 81.41,
+      "real_acc": 18.4,
+      "fake_acc": 97.87,
+      "acc": 58.13
+    },
+    "twitter": {
+      "ap": 67.96,
+      "auroc": 61.78,
+      "real_acc": 14.37,
+      "fake_acc": 83.63,
+      "acc": 49.0
+    }
+  },
+  "date": "2026-11-09T19:15:27",
+  "synthscope_version": "0.1.0"
+}

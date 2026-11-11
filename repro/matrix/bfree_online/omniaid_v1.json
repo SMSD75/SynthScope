@@ -1,0 +1,26 @@
+{
+  "tag": "mx_omniaid_v1_bfree_online",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 81.32,
+    "map": 95.74,
+    "mauroc": 94.46
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 95.74,
+      "auroc": 94.46,
+      "real_acc": 95.17,
+      "fake_acc": 67.47,
+      "acc": 81.32
+    }
+  },
+  "date": "2026-11-09T20:12:25",
+  "synthscope_version": "0.1.0"
+}

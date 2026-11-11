@@ -1,0 +1,26 @@
+{
+  "tag": "mx_npr_bfree_online",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 44.14,
+    "map": 55.11,
+    "mauroc": 32.23
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 55.11,
+      "auroc": 32.23,
+      "real_acc": 84.76,
+      "fake_acc": 3.53,
+      "acc": 44.14
+    }
+  },
+  "date": "2026-11-09T20:23:56",
+  "synthscope_version": "0.1.0"
+}

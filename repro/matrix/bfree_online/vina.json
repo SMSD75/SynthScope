@@ -1,0 +1,26 @@
+{
+  "tag": "mx_vina_bfree_online",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 87.73,
+    "map": 98.6,
+    "mauroc": 97.3
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 98.6,
+      "auroc": 97.3,
+      "real_acc": 95.91,
+      "fake_acc": 79.55,
+      "acc": 87.73
+    }
+  },
+  "date": "2026-11-09T20:23:34",
+  "synthscope_version": "0.1.0"
+}

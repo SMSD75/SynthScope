@@ -1,0 +1,40 @@
+{
+  "tag": "mx_ltf_ditfake",
+  "model": "ltf",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 97.99,
+    "map": 99.77,
+    "mauroc": 99.8
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.58,
+      "auroc": 99.62,
+      "real_acc": 96.52,
+      "fake_acc": 97.78,
+      "acc": 97.15
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.85,
+      "auroc": 99.88,
+      "real_acc": 97.02,
+      "fake_acc": 99.58,
+      "acc": 98.3
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.88,
+      "auroc": 99.91,
+      "real_acc": 97.04,
+      "fake_acc": 99.98,
+      "acc": 98.51
+    }
+  },
+  "date": "2026-11-11T01:13:48",
+  "synthscope_version": "0.1.0"
+}

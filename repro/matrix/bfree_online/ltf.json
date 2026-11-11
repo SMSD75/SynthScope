@@ -1,0 +1,26 @@
+{
+  "tag": "mx_ltf_bfree_online",
+  "model": "ltf",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/BFreeOnline/test",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 57.62,
+    "map": 88.11,
+    "mauroc": 77.6
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 88.11,
+      "auroc": 77.6,
+      "real_acc": 15.99,
+      "fake_acc": 99.26,
+      "acc": 57.62
+    }
+  },
+  "date": "2026-11-09T20:10:24",
+  "synthscope_version": "0.1.0"
+}

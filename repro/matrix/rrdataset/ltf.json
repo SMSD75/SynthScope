@@ -1,0 +1,44 @@
+{
+  "tag": "mx_ltf_rrdataset",
+  "model": "ltf",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 58.61,
+    "map": 65.56,
+    "mauroc": 63.94
+  },
+  "per_generator": {
+    "original": {
+      "ap": 89.44,
+      "auroc": 88.99,
+      "real_acc": 51.69,
+      "fake_acc": 94.11,
+      "acc": 72.9
+    },
+    "redigital": {
+      "ap": 50.26,
+      "auroc": 48.19,
+      "real_acc": 28.58,
+      "fake_acc": 66.15,
+      "acc": 47.37
+    },
+    "transfer": {
+      "ap": 56.99,
+      "auroc": 54.64,
+      "real_acc": 70.38,
+      "fake_acc": 40.75,
+      "acc": 55.56
+    }
+  },
+  "date": "2026-11-09T09:48:22",
+  "synthscope_version": "0.1.0",
+  "merged_parts": [
+    "c00-8f5518",
+    "c01-34420c"
+  ]
+}

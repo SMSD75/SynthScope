@@ -1,0 +1,44 @@
+{
+  "tag": "mx_spai_ditfake",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 93.91,
+    "map": 98.69,
+    "mauroc": 98.84
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 97.5,
+      "auroc": 97.81,
+      "real_acc": 97.02,
+      "fake_acc": 82.68,
+      "acc": 89.85
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.1,
+      "auroc": 99.18,
+      "real_acc": 96.56,
+      "fake_acc": 94.0,
+      "acc": 95.28
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.47,
+      "auroc": 99.52,
+      "real_acc": 97.22,
+      "fake_acc": 96.0,
+      "acc": 96.61
+    }
+  },
+  "date": "2026-11-11T16:41:00",
+  "synthscope_version": "0.1.0",
+  "merged_parts": [
+    "c00-0f8614",
+    "c01-96aa62"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "tag": "mx_omniaid_v1_wildrf",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/WildRF/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 88.28,
+    "map": 95.14,
+    "mauroc": 95.21
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 95.12,
+      "auroc": 94.85,
+      "real_acc": 86.87,
+      "fake_acc": 87.5,
+      "acc": 87.19
+    },
+    "reddit": {
+      "ap": 96.77,
+      "auroc": 96.72,
+      "real_acc": 89.87,
+      "fake_acc": 92.67,
+      "acc": 91.27
+    },
+    "twitter": {
+      "ap": 93.52,
+      "auroc": 94.06,
+      "real_acc": 83.58,
+      "fake_acc": 89.18,
+      "acc": 86.38
+    }
+  },
+  "date": "2026-11-09T19:48:21",
+  "synthscope_version": "0.1.0"
+}

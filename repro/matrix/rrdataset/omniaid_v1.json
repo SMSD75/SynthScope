@@ -1,0 +1,40 @@
+{
+  "tag": "mx_omniaid_v1_rrdataset",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 72.76,
+    "map": 83.43,
+    "mauroc": 80.88
+  },
+  "per_generator": {
+    "original": {
+      "ap": 98.8,
+      "auroc": 98.77,
+      "real_acc": 90.31,
+      "fake_acc": 97.46,
+      "acc": 93.88
+    },
+    "redigital": {
+      "ap": 78.58,
+      "auroc": 77.79,
+      "real_acc": 81.36,
+      "fake_acc": 57.94,
+      "acc": 69.65
+    },
+    "transfer": {
+      "ap": 72.92,
+      "auroc": 66.08,
+      "real_acc": 99.66,
+      "fake_acc": 9.85,
+      "acc": 54.75
+    }
+  },
+  "date": "2026-11-09T05:40:50",
+  "synthscope_version": "0.1.0"
+}
