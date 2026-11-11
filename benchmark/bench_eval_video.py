@@ -1,5 +1,5 @@
 """Unified VIDEO benchmark eval for SynthScope video detectors (d3, split, restrav, stall, vina_video, waverep,
-waverep_g4).
+waverep_g4, nsg_vd, nsg_vd_pika, nsg_vd_unbalance).
 
 Scores each video through the SAME verified synthscope engine path the web app uses
 (engine.predict_video_clip -> native clip pipeline + per-model norm + fake-prob), computes
@@ -19,7 +19,10 @@ Resumable / parallel scoring (long benchmarks): ``--cache-dir DIR`` stores every
 when the detector reports one, or the decode error) in DIR/scores.*.jsonl, keyed by the last three path components, and reuses it on the next run; ``--shard K/N`` scores only the K-th of N slices of the unique videos and stops
 (run the N slices on N GPUs, then one final run without ``--shard`` reads every slice and writes the metrics).
 A detector that reports a raw logit (WaveRep) is ranked by it (AP / AUROC), because the 6-dp rounded P(fake) ties
-very confident videos at 0 / 1; accuracy still thresholds P(fake) at 0.5. Videos that cannot be decoded
+very confident videos at 0 / 1; accuracy still thresholds P(fake) at 0.5, except for a detector with its own decision
+rule (``own_verdict``: NSG-VD, fake iff the MMD statistic > 1, so a statistic of exactly 1 is real although its P(fake)
+is 0.5), whose accuracy uses the engine's verdict (cached per video); for NSG-VD the raw statistic is also the
+training-free "raw" score, taken from the logit instead of a second diffusion pass. Videos that cannot be decoded
 (backend.media.VideoDecodeError) are counted per generator (failed_real / failed_fake) and in the result JSON
 (failed_to_decode: decode failures only, cached); any other error (OOM, I/O) is counted in failed_other, never cached
 and retried; both kinds are left out of the metrics. The cache directory carries cache_meta.json (model key, sha256 of
@@ -38,6 +41,7 @@ import datetime
 import hashlib
 import json
 import os
+import shutil
 import sys
 import time
 from pathlib import Path
@@ -107,10 +111,11 @@ def discover(benchmark: str, root: Path, shared_reals: Path | None, select):
     return out
 
 
-def metrics(fake_probs: torch.Tensor, labels: torch.Tensor, rank: np.ndarray | None = None):
-    """acc@0.5 on ``fake_probs``; AP / AP_real / AUROC on ``fake_probs`` (torchmetrics, unchanged) or, when ``rank`` (a
-    float64 raw score, higher = more likely fake, e.g. the logit) is given, on ``rank`` with scikit-learn, so that
-    saturated probabilities do not tie."""
+def metrics(fake_probs: torch.Tensor, labels: torch.Tensor, rank: np.ndarray | None = None,
+            preds: torch.Tensor | None = None):
+    """acc@0.5 on ``fake_probs`` (or on ``preds``, 0/1 fake decisions, for a detector with its own decision rule); AP /
+    AP_real / AUROC on ``fake_probs`` (torchmetrics, unchanged) or, when ``rank`` (a float64 raw score, higher = more
+    likely fake, e.g. the logit) is given, on ``rank`` with scikit-learn, so that saturated probabilities do not tie."""
     from torchmetrics.functional import auroc, average_precision
     if labels.unique().numel() < 2:
         return None
@@ -124,7 +129,7 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor, rank: np.ndarray | N
         ap = float(average_precision_score(y, rank)) * 100
         ap_real = float(average_precision_score(1 - y, -rank)) * 100
         au = float(roc_auc_score(y, rank)) * 100
-    preds = (fake_probs >= 0.5).int()
+    preds = (fake_probs >= 0.5).int() if preds is None else preds.int()
     real_acc = float((preds[labels == 0] == 0).float().mean()) * 100
     fake_acc = float((preds[labels == 1] == 1).float().mean()) * 100
     return {"ap": round(ap, 2), "ap_real": round(ap_real, 2), "auroc": round(au, 2), "real_acc": round(real_acc, 2),
@@ -163,8 +168,24 @@ def cache_meta(engine, spec) -> dict:
                               for name in sorted(spec.aux_files.values())}
     if getattr(spec, "ffmpeg_version", ""):
         ff = spec_ffmpeg(spec)
-        meta["ffmpeg"] = {"version": ff["version"], "sha256": _sha256(Path(ff["path"]).resolve())}
+        exe = shutil.which(ff["path"]) or ff["path"]     # a bare command name ("ffmpeg") is looked up on the PATH
+        meta["ffmpeg"] = {"version": ff["version"], "sha256": _sha256(Path(exe).resolve())}
     return meta
+
+
+def own_verdict(spec) -> bool:
+    """True for a detector whose decision is its engine ``verdict``, not P(fake) >= 0.5, and whose training-free raw score
+    is its reported logit: NSG-VD (``video_prob == "mmd"``; official test_dMMD.py: fake iff the MMD statistic > 1, so a
+    statistic of exactly 1 is real while P(fake) = sigmoid(0) = 0.5). False for every other detector (unchanged)."""
+    return getattr(spec, "video_prob", "") == "mmd"
+
+
+def verdict_preds(recs) -> torch.Tensor:
+    """The cached engine verdicts as 0/1 fake decisions (``own_verdict`` detectors); refuses records without one."""
+    if not all("verdict" in r for r in recs):
+        raise SystemExit("score records without an engine verdict (cache written before verdicts were stored): rescore "
+                         "into a new --cache-dir")
+    return torch.tensor([int(r["verdict"] == "fake") for r in recs])
 
 
 class ScoreCache:
@@ -222,9 +243,10 @@ def is_decode_error(r: dict) -> bool:
 
 @torch.no_grad()
 def score_one(engine, spec, p: Path, raw=False, cache: ScoreCache | None = None) -> dict:
-    """{"p": P(fake), "logit": raw logit (only if the detector reports one), "raw": training-free score (if ``raw``; if
-    only that raises, "raw_err" and the video still counts)} or {"err", "kind"} when the video cannot be scored
-    (kind "decode": cached; anything else, e.g. OOM / I/O: not cached, retried next time)."""
+    """{"p": P(fake), "logit": raw logit (only if the detector reports one), "verdict": the engine's "fake" / "real" (only
+    for an ``own_verdict`` detector), "raw": training-free score (if ``raw``; an ``own_verdict`` detector's logit, else
+    engine.video_raw_score; if only that raises, "raw_err" and the video still counts)} or {"err", "kind"} when the video
+    cannot be scored (kind "decode": cached; anything else, e.g. OOM / I/O: not cached, retried next time)."""
     r = cache.get(p) if cache else None
     if r is not None and ("err" in r or not raw or "raw" in r or "raw_err" in r):
         if "err" not in r or is_decode_error(r):
@@ -238,9 +260,11 @@ def score_one(engine, spec, p: Path, raw=False, cache: ScoreCache | None = None)
             r = {"p": res["fake_probability"]}
             if "logit" in res:
                 r["logit"] = res["logit"]
+            if own_verdict(spec):
+                r["verdict"] = res["verdict"]
         if raw:
             try:
-                r["raw"] = engine.video_raw_score(spec, str(p))
+                r["raw"] = r["logit"] if own_verdict(spec) else engine.video_raw_score(spec, str(p))
             except Exception as e:  # noqa: BLE001      # old behaviour: dropped from the raw scores only
                 r["raw_err"] = f"{type(e).__name__}: {e}"[:300]
                 print(f"    no raw score for {p.name}: {r['raw_err']}", flush=True)
@@ -299,7 +323,7 @@ def fake_recall_at_fpr(real_scores, fake_scores):
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-m", "--model", required=True, choices=["d3", "split", "restrav", "stall", "vina_video", "waverep",
-                                                                 "waverep_g4"])
+                                                                 "waverep_g4", "nsg_vd", "nsg_vd_pika", "nsg_vd_unbalance"])
     ap.add_argument("--benchmark", choices=["genvideo", "fakeonly", "pergen"], help="layout (not needed with --dataset)")
     ap.add_argument("--data", help="benchmark root (not needed with --dataset)")
     ap.add_argument("--dataset", help="a supported video dataset (genvideo, videophy, vidprom, evalcrafter, ...): downloads "
@@ -413,12 +437,15 @@ def main(argv=None) -> int:
         probs = torch.tensor([r["p"] for r in rrec + frec])
         labels = torch.tensor([0] * len(rrec) + [1] * len(frec))
         rank = rank_scores(rrec + frec)                    # the raw logit, not the rounded P(fake), when there is one
-        m = metrics(probs, labels, rank)
+        preds = verdict_preds(rrec + frec) if own_verdict(spec) else None     # NSG-VD: the official MMD > 1
+        m = metrics(probs, labels, rank, preds)
         if m is None:
             print(f"    skip {name}: one class"); continue
         m.update({"n_real": len(rrec), "n_fake": len(frec), "failed_real": rbad, "failed_fake": fbad,
                   "failed_other_real": rother, "failed_other_fake": fother,
                   "rank_by": "logit" if rank is not None else "fake_probability"})
+        if preds is not None:                              # only for own_verdict detectors (others: JSON unchanged)
+            m["acc_by"] = "engine_verdict"
         if raw:
             rraw = [r["raw"] for r in rrec if "raw" in r]
             fraw = [r["raw"] for r in frec if "raw" in r]

@@ -6,7 +6,8 @@ Checks:
 [B] media.ffmpeg_select_frames == the official ``process_video`` command (written out, run through a shell exactly as
     ``os.system`` does) on a synthetic clip, same decoded pixels; media.ffmpeg_frame_count == moviepy's
     ``int(fps * duration)`` when moviepy is importable; a clip shorter than 8 frames and an empty file are a
-    VideoDecodeError, a missing or unreadable file an OSError (skipped without ffmpeg);
+    VideoDecodeError, a missing or unreadable file an OSError (run with NSG-VD's binary, $SYNTHSCOPE_FFMPEG_NSG_VD or
+    else the global choice; skipped when there is none);
 [C] SynthScopeNSGVDModel with a small random UNet: NSG features [B, 8, 3, 224, 224] with the end frames x100, score
     [B] finite and per row independent of the batch, ``fake_probability`` = sigmoid((s - 1) / prob_scale); a released
     checkpoint layout (``deep_MMD`` keys) loads strictly through ``remap_nsg_vd``; a mismatch raises in the engine;
@@ -18,7 +19,8 @@ Checks:
     the input note, and the engine's predict_video_clip on a synthetic clip with a small model: P(fake) and the
     reported raw statistic (``logit``) equal the model's, the verdict is the official ``> 1`` (a score of exactly 1 is
     real), the ffmpeg build is recorded and a pin mismatch warned about, $SYNTHSCOPE_FFMPEG_NSG_VD selects the binary
-    (other detectors unaffected), and bench_eval_video's cache_meta carries the aux-file and ffmpeg identity;
+    (other detectors unaffected), and bench_eval_video's cache_meta carries the aux-file and ffmpeg identity (the
+    engine part runs when NSG-VD's binary resolves, even with no global ffmpeg);
 [F] with $SYNTHSCOPE_CKPT_DIR holding nsg_vd*.pth (the released checkpoints) + 256x256_diffusion_uncond.pt +
     nsg_vd_reference_msrvtt_val100.safetensors: every registered checkpoint loads strictly in the engine (0 missing /
     0 unexpected) and equals the file; the reference set is [100, 8, 3, 224, 224] (skipped otherwise).
@@ -88,6 +90,14 @@ def small_model(prob_scale: float | None = None) -> SynthScopeNSGVDModel:
     return model
 
 
+def nsg_ffmpeg() -> str | None:
+    """The ffmpeg binary NSG-VD uses ($SYNTHSCOPE_FFMPEG_NSG_VD, else the global choice), or None when there is none."""
+    try:
+        return spec_ffmpeg_exe(get_spec("nsg_vd"))
+    except (FileNotFoundError, RuntimeError, OSError):
+        return None
+
+
 def write_clip(path: str, n: int, size=(176, 144), fps=10.0) -> None:
     writer = cv2.VideoWriter(path, cv2.VideoWriter_fourcc(*"mp4v"), fps, size)
     assert writer.isOpened(), "OpenCV cannot write mp4v"
@@ -119,14 +129,15 @@ def test_transform() -> None:
 
 
 def test_frames() -> None:
-    if not media.ffmpeg_available():
-        print("[B] frame extraction: skipped (no ffmpeg)")
+    exe = nsg_ffmpeg()
+    if exe is None:
+        print("[B] frame extraction: skipped (no ffmpeg for nsg_vd)")
         return
-    print(f"[B] media.ffmpeg_select_frames == the official process_video ({media.ffmpeg_exe()}) ...")
+    print(f"[B] media.ffmpeg_select_frames == the official process_video ({exe}) ...")
     with tempfile.TemporaryDirectory() as tmp:
         clip = os.path.join(tmp, "clip.mp4")
         write_clip(clip, 43)
-        n = media.ffmpeg_frame_count(clip)
+        n = media.ffmpeg_frame_count(clip, exe=exe)
         try:
             from moviepy import VideoFileClip                                  # the official get_video_frame_count
             video = VideoFileClip(clip)
@@ -138,11 +149,11 @@ def test_frames() -> None:
         k = max(1, n // 8)
         out = os.path.join(tmp, "official")
         os.makedirs(out)
-        cmd = (f"{media.ffmpeg_exe()} -i {clip} -vf select='not(mod(n\\,{k}))',setpts=N/FRAME_RATE/TB "
+        cmd = (f"{exe} -i {clip} -vf select='not(mod(n\\,{k}))',setpts=N/FRAME_RATE/TB "
                f"-vframes 8 {out}/frame%d.jpg > /dev/null 2>&1")              # process_video's command line
         subprocess.run(cmd, shell=True, check=False)
         official = sorted(os.path.join(out, f) for f in os.listdir(out))
-        ours = media.ffmpeg_select_frames(clip, 8)
+        ours = media.ffmpeg_select_frames(clip, 8, exe=exe)
         assert len(official) == 8 and len(ours) == 8
         for path, frame in zip(official, ours):
             with Image.open(path) as im:
@@ -150,14 +161,14 @@ def test_frames() -> None:
         short = os.path.join(tmp, "short.mp4")
         write_clip(short, 5)
         try:
-            media.ffmpeg_select_frames(short, 8)
+            media.ffmpeg_select_frames(short, 8, exe=exe)
             raise AssertionError("a 5-frame clip gave 8 frames")
         except media.VideoDecodeError:
             pass
         # I/O problems are OSErrors (not cached as decode failures); an empty file is a decode failure
         for bad, err in [(os.path.join(tmp, "missing.mp4"), FileNotFoundError)]:
             try:
-                media.ffmpeg_select_frames(bad, 8)
+                media.ffmpeg_select_frames(bad, 8, exe=exe)
                 raise AssertionError(f"{bad} scored")
             except media.VideoDecodeError:
                 raise AssertionError("a missing file is a decode failure")
@@ -168,7 +179,7 @@ def test_frames() -> None:
         os.chmod(locked, 0)
         if not os.access(locked, os.R_OK):                 # (root can read it anyway)
             try:
-                media.ffmpeg_frame_count(locked)
+                media.ffmpeg_frame_count(locked, exe=exe)
                 raise AssertionError("an unreadable file was read")
             except media.VideoDecodeError:
                 raise AssertionError("an unreadable file is a decode failure")
@@ -177,7 +188,7 @@ def test_frames() -> None:
         empty = os.path.join(tmp, "empty.mp4")
         open(empty, "wb").close()
         try:
-            media.ffmpeg_select_frames(empty, 8)
+            media.ffmpeg_select_frames(empty, 8, exe=exe)
             raise AssertionError("an empty file scored")
         except media.VideoDecodeError:
             pass
@@ -302,8 +313,8 @@ def test_specs_and_engine() -> None:
         assert spec.transform is get_spec("nsg_vd").transform
     note = input_note(get_spec("nsg_vd"))
     assert "8 evenly spaced frames" in note["label"]
-    if not media.ffmpeg_available():
-        print("    specs ok; engine path skipped (no ffmpeg)")
+    if nsg_ffmpeg() is None:
+        print("    specs ok; engine path skipped (no ffmpeg for nsg_vd)")
         return
     engine = Engine(device="cpu")
     spec = get_spec("nsg_vd")
@@ -314,7 +325,7 @@ def test_specs_and_engine() -> None:
         clip = os.path.join(tmp, "clip.mp4")
         write_clip(clip, 43)
         res = engine.predict_video_clip(spec, clip)
-        frames = torch.stack([spec.transform(f) for f in media.ffmpeg_select_frames(clip, 8)])
+        frames = torch.stack([spec.transform(f) for f in media.ffmpeg_select_frames(clip, 8, exe=spec_ffmpeg_exe(spec))])
         assert torch.equal(engine.video_clip(spec, clip), frames)
         s = float(model.score(frames.unsqueeze(0))[0])
         assert res["num_frames"] == 8 and abs(res["logit"] - s) < 1e-6, (res, s)
@@ -338,14 +349,22 @@ def test_specs_and_engine() -> None:
             other = engine.predict_video_clip(pinned, clip)
         assert not other["ffmpeg"]["match"] and "warning" in other
         assert any(issubclass(w.category, RuntimeWarning) and "pinned 0.1" in str(w.message) for w in caught)
+        saved_env = os.environ.get("SYNTHSCOPE_FFMPEG_NSG_VD")
         os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = os.path.join(tmp, "no_such_ffmpeg")
         try:
             assert engine.ffmpeg_missing(spec)
             os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = exe
             assert spec_ffmpeg_exe(spec) == exe and not engine.ffmpeg_missing(spec)
+            # other detectors ignore the NSG-VD variable: they keep the global choice (or have none)
+            if media.ffmpeg_available():
+                assert spec_ffmpeg_exe(get_spec("vina_video")) == media.ffmpeg_exe()
+            else:
+                assert engine.ffmpeg_missing(get_spec("vina_video"))
         finally:
-            os.environ.pop("SYNTHSCOPE_FFMPEG_NSG_VD", None)
-        assert spec_ffmpeg_exe(get_spec("vina_video")) == media.ffmpeg_exe()      # other detectors: unchanged
+            if saved_env is None:
+                os.environ.pop("SYNTHSCOPE_FFMPEG_NSG_VD", None)
+            else:
+                os.environ["SYNTHSCOPE_FFMPEG_NSG_VD"] = saved_env
         # bench_eval_video's cache identity covers the extra files and the ffmpeg build
         ck = os.path.join(tmp, "ck")
         os.makedirs(ck)
