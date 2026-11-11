@@ -64,10 +64,10 @@ npm run dev
 * Models load lazily on first request and are kept in a small LRU (`SYNTHSCOPE_MAX_RESIDENT_MODELS`,
   default 2) so the GPU is not exhausted by the large backbones.
 
-## Detectors (16) & helper scripts
+## Detectors & helper scripts
 
 13 image (`clip`, `cnn`, `dinov2`, `dinov3`, `adapted_dino`, `safe`, `fat_former`, `co_spy`, `aide`,
-`spai`, `vib_net`, `npr`, `pgc`) + 3 video (`d3`, `restrav`, `stall`). Per-model held-out numbers and the
+`spai`, `vib_net`, `npr`, `pgc`) + 7 video (`d3`, `split`, `restrav`, `stall`, `vina_video`, `waverep`, `waverep_g4`); the image count is the 13 listed plus the other image keys in the registry (`interface/backend/registry.py`). Per-model held-out numbers and the
 checkpoint-zoo table are in the top-level [README](../README.md#web-interface--checkpoint-zoo).
 
 | script | purpose |

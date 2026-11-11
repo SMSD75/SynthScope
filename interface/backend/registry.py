@@ -507,8 +507,9 @@ _add(ModelSpec(
     notes=_VINA_NOTES + "Videos: the official protocol - ffmpeg writes the clip as JPEG frames at 2 fps and the "
                         "central frame is scored with the image preprocessing (needs ffmpeg).",
 ))
-# WaveRep: two released checkpoints. The paper's detector (Tables 1-2) is trained on ONE generator (Pyramid Flow), the
-# other on four (Pyramid Flow, CogVideoX 1.5, Allegro, Open-Sora Plan; Table 5); the demo's default is the latter.
+# WaveRep: two released checkpoints. The demo README says G1 is trained on "a single generator" and G4 on "four generators"
+# (the demo's default); we infer the paper's Pyramid Flow detector (Tables 1-2) and its Table 5 set (+ CogVideoX 1.5,
+# Allegro, Open-Sora Plan).
 _WAVEREP_NOTES = ("DINOv2 ViT-B/14 with registers, fine-tuned end to end on single video frames with a forensic "
                   "augmentation: a fake frame's low-pass and horizontal / vertical wavelet bands are replaced by a "
                   "real frame's, steering the detector to the diagonal high-frequency bands. Uses the OFFICIAL checkpoint "
@@ -516,7 +517,7 @@ _WAVEREP_NOTES = ("DINOv2 ViT-B/14 with registers, fine-tuned end to end on sing
                   "OpenCV; each frame's central 504x504 pixels are scored (no resize; a smaller frame is zero-padded) "
                   "and P(fake) is the sigmoid of the mean frame logit.")
 for _key, _name, _ckpt, _note in [
-    ("waverep", "WaveRep (video)", "waverep.pth", "weights_dinov2_G1, trained on one generator (Pyramid Flow)"),
+    ("waverep", "WaveRep (video)", "waverep.pth", "weights_dinov2_G1, trained on one generator (Pyramid Flow, as we infer)"),
     ("waverep_g4", "WaveRep-G4 (video)", "waverep_g4.pth", "weights_dinov2_G4, trained on four generators"),
 ]:
     _add(ModelSpec(
