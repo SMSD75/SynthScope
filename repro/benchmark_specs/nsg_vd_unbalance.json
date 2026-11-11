@@ -1,0 +1,408 @@
+{
+ "model": "nsg_vd_unbalance",
+ "paper": "Physics-Driven Spatiotemporal Modeling for AI-Generated Video Detection (NSG-VD, Zhang, Lian, Yang, Li, Pang, Liu, Han, Li, Tan, NeurIPS 2025 Spotlight, arXiv 2510.08073)",
+ "arxiv_id": "2510.08073",
+ "official_repo": "https://github.com/ZSHsh98/NSG-VD",
+ "training_set_in_paper": "Table 3 of the paper (the NSG-VD MMD-MP row): the deep kernel trained on 10,000 Kinetics-400 reals + 1,000 SEINE fakes. The key serves the official checkpoint unbalance-SEINE-mp.pth (no SynthScope-trained model; the official train_dMMD.py is not wrapped). The statistic is the deep-kernel MMD between a video's normalized spatiotemporal gradient features (guided-diffusion 256x256) and 100 MSR-VTT val reference videos; a video is generated iff it is > 1. The paper's subsets (~120 per generator) are unspecified, so the paper tables are NOT reproduced; the authors' released results CSV (500 per generator, Sora 51 + 56) is, with the official code on our data and with SynthScope. Metrics are the official ones: pooled accuracy (not balanced), recall / precision / F1 on the fake class, AUROC of the raw statistic. ffmpeg 4.2 is required (the build changes the frames). Exact parity with the official code at its own batching; the served path (1 video per diffusion pass) differs from the official 3-per-pass batching by up to 0.27 per video.",
+ "benchmarks": [
+  {
+   "name": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the authors' released results CSV",
+   "datasets": [
+    "GenVideo-Val"
+   ],
+   "subsets_or_generators": [
+    "ModelScope",
+    "MorphStudio",
+    "MoonValley",
+    "HotShot",
+    "Show-1",
+    "Gen2",
+    "Crafter",
+    "LaVie",
+    "Sora",
+    "WildScrape"
+   ],
+   "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
+   "paper_number": {
+    "acc": 90.37,
+    "auroc": 96.95,
+    "recall": 98.44,
+    "note": "NOT the paper: the 10-generator averages of the authors' released results CSV assets/nsg-vd-test_results/unbalance-SEINE-mmd-mp.csv (the released checkpoint on the released protocol)."
+   },
+   "our_status": "reproduced",
+   "our_number": {
+    "acc": 90.47,
+    "auroc": 96.9,
+    "recall": 98.46,
+    "f1": 91.12,
+    "precision": 84.82,
+    "official_code_on_our_data": {
+     "acc": 90.37,
+     "auroc": 96.83,
+     "recall": 98.44,
+     "f1": 91.04,
+     "precision": 84.68
+    },
+    "per_generator_synthscope": {
+     "ModelScope": {
+      "acc": 90.3,
+      "recall": 98.0,
+      "auroc": 95.84
+     },
+     "MorphStudio": {
+      "acc": 91.2,
+      "recall": 99.8,
+      "auroc": 98.1
+     },
+     "MoonValley": {
+      "acc": 91.3,
+      "recall": 100.0,
+      "auroc": 99.43
+     },
+     "HotShot": {
+      "acc": 91.3,
+      "recall": 100.0,
+      "auroc": 98.59
+     },
+     "Show_1": {
+      "acc": 90.8,
+      "recall": 99.0,
+      "auroc": 96.28
+     },
+     "Gen2": {
+      "acc": 90.0,
+      "recall": 97.4,
+      "auroc": 96.7
+     },
+     "Crafter": {
+      "acc": 91.2,
+      "recall": 99.8,
+      "auroc": 98.81
+     },
+     "Lavie": {
+      "acc": 90.1,
+      "recall": 97.6,
+      "auroc": 95.43
+     },
+     "Sora": {
+      "acc": 90.65,
+      "recall": 100.0,
+      "auroc": 95.5
+     },
+     "WildScrape": {
+      "acc": 87.8,
+      "recall": 93.0,
+      "auroc": 94.3
+     }
+    },
+    "per_generator_official_code_on_our_data": {
+     "ModelScope": {
+      "acc": 90.3,
+      "recall": 98.2,
+      "auroc": 95.83
+     },
+     "MorphStudio": {
+      "acc": 91.1,
+      "recall": 99.8,
+      "auroc": 98.06
+     },
+     "MoonValley": {
+      "acc": 91.2,
+      "recall": 100.0,
+      "auroc": 99.41
+     },
+     "HotShot": {
+      "acc": 91.2,
+      "recall": 100.0,
+      "auroc": 98.55
+     },
+     "Show_1": {
+      "acc": 90.7,
+      "recall": 99.0,
+      "auroc": 96.23
+     },
+     "Gen2": {
+      "acc": 89.9,
+      "recall": 97.4,
+      "auroc": 96.69
+     },
+     "Crafter": {
+      "acc": 91.1,
+      "recall": 99.8,
+      "auroc": 98.78
+     },
+     "Lavie": {
+      "acc": 90.0,
+      "recall": 97.6,
+      "auroc": 95.39
+     },
+     "Sora": {
+      "acc": 90.65,
+      "recall": 100.0,
+      "auroc": 95.03
+     },
+     "WildScrape": {
+      "acc": 87.5,
+      "recall": 92.6,
+      "auroc": 94.31
+     }
+    },
+    "per_generator_released_csv": {
+     "ModelScope": {
+      "acc": 90.2,
+      "recall": 98.0,
+      "auroc": 95.88
+     },
+     "MorphStudio": {
+      "acc": 91.1,
+      "recall": 99.8,
+      "auroc": 98.11
+     },
+     "MoonValley": {
+      "acc": 91.2,
+      "recall": 100.0,
+      "auroc": 99.42
+     },
+     "HotShot": {
+      "acc": 91.2,
+      "recall": 100.0,
+      "auroc": 98.59
+     },
+     "Show_1": {
+      "acc": 90.7,
+      "recall": 99.0,
+      "auroc": 96.33
+     },
+     "Gen2": {
+      "acc": 90.0,
+      "recall": 97.6,
+      "auroc": 96.73
+     },
+     "Crafter": {
+      "acc": 91.1,
+      "recall": 99.8,
+      "auroc": 98.8
+     },
+     "Lavie": {
+      "acc": 90.0,
+      "recall": 97.6,
+      "auroc": 95.47
+     },
+     "Sora": {
+      "acc": 90.65,
+      "recall": 100.0,
+      "auroc": 95.87
+     },
+     "WildScrape": {
+      "acc": 87.5,
+      "recall": 92.6,
+      "auroc": 94.35
+     }
+    },
+    "note": "Reproduces the authors' released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 90.47 SynthScope, 90.37 official code, CSV 90.37. Sora AUROC 0.37 below the CSV, unexplained. Needs ffmpeg 4.2."
+   },
+   "gap_cause": "Per generator, accuracy / recall / F1 / precision are within 0.43 of the CSV for both paths. Unexplained: Sora AUROC is below the CSV for every checkpoint (this key: official code 95.03, SynthScope 95.50, CSV 95.87). The served path scores one video per diffusion pass (official: 3), which flips about 30 of 9,107 verdicts (Avg accuracy differs by up to 0.27).",
+   "dataset_source": "GenVideo-Val (ModelScope cccnju/Gen-Video), reals = MSR-VTT; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.unbalance-SEINE-mp.L500), repro/bench_results/nsg_vd_unbalance_genvideo_split500.json"
+  },
+  {
+   "name": "GenVideo-Val, paper Table 3 (~120 per generator, subsets unspecified) vs the first-120 approximation",
+   "datasets": [
+    "GenVideo-Val"
+   ],
+   "subsets_or_generators": [
+    "ModelScope",
+    "MorphStudio",
+    "MoonValley",
+    "HotShot",
+    "Show-1",
+    "Gen2",
+    "Crafter",
+    "LaVie",
+    "Sora",
+    "WildScrape"
+   ],
+   "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+   "paper_number": {
+    "acc": 89.16,
+    "auroc": 94.91,
+    "recall": 93.21,
+    "f1": 89.48,
+    "note": "Paper Table 3 (trained on 10,000 Kinetics-400 reals + 1,000 SEINE fakes), NSG-VD (Ours) row, Avg. column; the test subsets are not specified."
+   },
+   "paper_per_generator": {
+    "ModelScope": {
+     "acc": 84.58,
+     "recall": 85.83,
+     "auroc": 90.76
+    },
+    "MorphStudio": {
+     "acc": 92.5,
+     "recall": 99.17,
+     "auroc": 98.18
+    },
+    "MoonValley": {
+     "acc": 93.75,
+     "recall": 100.0,
+     "auroc": 98.18
+    },
+    "HotShot": {
+     "acc": 89.58,
+     "recall": 99.17,
+     "auroc": 95.03
+    },
+    "Show_1": {
+     "acc": 89.58,
+     "recall": 97.5,
+     "auroc": 95.48
+    },
+    "Gen2": {
+     "acc": 90.83,
+     "recall": 95.83,
+     "auroc": 96.97
+    },
+    "Crafter": {
+     "acc": 92.5,
+     "recall": 99.17,
+     "auroc": 96.53
+    },
+    "Lavie": {
+     "acc": 90.0,
+     "recall": 91.67,
+     "auroc": 95.11
+    },
+    "Sora": {
+     "acc": 86.61,
+     "recall": 82.14,
+     "auroc": 95.73
+    },
+    "WildScrape": {
+     "acc": 81.67,
+     "recall": 81.67,
+     "auroc": 87.13
+    }
+   },
+   "our_status": "reference",
+   "our_number": {
+    "acc": 91.23,
+    "auroc": 96.39,
+    "recall": 98.58,
+    "f1": 91.78,
+    "precision": 85.88,
+    "official_code_on_our_data": {
+     "acc": 91.27,
+     "auroc": 96.26,
+     "recall": 98.67,
+     "f1": 91.82,
+     "precision": 85.89
+    },
+    "per_generator_synthscope": {
+     "ModelScope": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 95.87
+     },
+     "MorphStudio": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 97.69
+     },
+     "MoonValley": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 98.88
+     },
+     "HotShot": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 97.62
+     },
+     "Show_1": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 96.01
+     },
+     "Gen2": {
+      "acc": 90.0,
+      "recall": 95.83,
+      "auroc": 95.82
+     },
+     "Crafter": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 98.1
+     },
+     "Lavie": {
+      "acc": 90.83,
+      "recall": 97.5,
+      "auroc": 94.94
+     },
+     "Sora": {
+      "acc": 90.65,
+      "recall": 100.0,
+      "auroc": 95.5
+     },
+     "WildScrape": {
+      "acc": 88.33,
+      "recall": 92.5,
+      "auroc": 93.5
+     }
+    },
+    "per_generator_official_code_on_our_data": {
+     "ModelScope": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 95.78
+     },
+     "MorphStudio": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 97.57
+     },
+     "MoonValley": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 98.81
+     },
+     "HotShot": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 97.51
+     },
+     "Show_1": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 95.93
+     },
+     "Gen2": {
+      "acc": 90.42,
+      "recall": 96.67,
+      "auroc": 95.72
+     },
+     "Crafter": {
+      "acc": 92.08,
+      "recall": 100.0,
+      "auroc": 97.98
+     },
+     "Lavie": {
+      "acc": 90.83,
+      "recall": 97.5,
+      "auroc": 94.79
+     },
+     "Sora": {
+      "acc": 90.65,
+      "recall": 100.0,
+      "auroc": 95.03
+     },
+     "WildScrape": {
+      "acc": 88.33,
+      "recall": 92.5,
+      "auroc": 93.44
+     }
+    },
+    "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 91.23 vs 89.16, recall 98.58 vs 93.21. The authors' released CSV differs from the paper too (recall 98.44)."
+   },
+   "gap_cause": "The paper's NSG-VD rows imply 120 reals + 120 fakes per generator (68.33 = 82/120) and 56 + 56 for Sora, but Appendix C gives no counts or selection rule, test.yaml uses 500, and the released val splits have 62-140 ids; even the released CSVs differ from the paper by up to 5.23 points on average. Not reproduced.",
+   "dataset_source": "GenVideo-Val; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.unbalance-SEINE-mp.L120), repro/bench_results/nsg_vd_unbalance_genvideo_split120.json"
+  }
+ ]
+}

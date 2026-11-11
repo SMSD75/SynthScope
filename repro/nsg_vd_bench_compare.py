@@ -179,17 +179,17 @@ def zero_shot(cache_root: Path, split_zip: str | None) -> dict:
                 else:
                     fakes.setdefault(b if a in ("1_fake", "fake", "fakes", "Fake") else a, []).append(r["logit"])
         overlap = sorted(set(reals) & ref)
-        rows = {}
+        raw, rows = {}, {}                      # raw = unrounded metrics (the averages are taken over these)
         for g, fk in sorted(fakes.items()):
             rr = np.array(list(reals.values()))
-            rows[g] = {"all_reals": {k: round(v, 2) if isinstance(v, float) else v
-                                     for k, v in official_metrics(rr, np.array(fk)).items()}}
+            raw[g] = {"all_reals": official_metrics(rr, np.array(fk))}
             if overlap:
                 rr2 = np.array([v for k, v in reals.items() if k not in ref])
-                rows[g]["without_reference_reals"] = {k: round(v, 2) if isinstance(v, float) else v
-                                                      for k, v in official_metrics(rr2, np.array(fk)).items()}
-        avg = {variant: {m: round(float(np.mean([rows[g][variant][m] for g in rows])), 2) for m in METRICS}
-               for variant in ("all_reals", "without_reference_reals") if all(variant in rows[g] for g in rows)}
+                raw[g]["without_reference_reals"] = official_metrics(rr2, np.array(fk))
+            rows[g] = {variant: {k: round(v, 2) if isinstance(v, float) else v for k, v in m.items()}
+                       for variant, m in raw[g].items()}
+        avg = {variant: {m: round(float(np.mean([raw[g][variant][m] for g in raw])), 2) for m in METRICS}
+               for variant in ("all_reals", "without_reference_reals") if all(variant in raw[g] for g in raw)}
         out[ds] = {"n_reals": len(reals), "reals_in_reference_set": len(overlap), "decode_failures": failed,
                    "per_generator": rows, "Avg.": avg}
     return out if len(out) > 1 else {}
