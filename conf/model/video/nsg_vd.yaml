@@ -1,0 +1,33 @@
+defaults:
+  - /model/default
+  - _self_
+
+# NSG-VD (NeurIPS'25, ZSHsh98/NSG-VD): diffusion-estimated Normalized Spatiotemporal Gradient features of 8 frames,
+# scored by a deep-kernel MMD against a fixed set of 100 real reference videos (official test_dMMD.py; values from
+# configs/nsg-vd-224x224/test.yaml). The released {standard,unbalance}-{Pika,SEINE}-{mp,d}.pth hold the kernel
+# parameters + TALL discriminator (strict load, under mmd.); sigma / sigma0 / epsilon below only seed parameters that
+# the checkpoint overwrites.
+model_type: nsg_vd
+num_frames: 8                 # data.num_frames
+diffuse_steps: 5              # data.diffuse_steps: t = (5 + 1) / 1000
+resolution_size: 224          # data.resolution_size (the diffusion model sees 224x224)
+feature_dim: 300              # model.feature_dim
+img_size: 224
+sigma: 1000
+sigma0: 0.1
+epsilon: 10
+is_smooth: true               # model.is_smooth (the test statistic's smoothed kernel)
+is_yy_zero: true              # training-only (MMD-MP); the test statistic does not use it
+threshold: 1.0                # test_dMMD.py: fake if MMD > 1
+prob_scale: 0.1               # P(fake) = sigmoid((MMD - 1) / prob_scale): display only, 0.5 at the official threshold
+                              # (official scores on GenVideo-Val span ~0.3-1.4: P(fake) ~0.001-0.98)
+process_batch: 1              # videos per diffusion pass (official extraction: 3; fp16 batch numerics move a score by <~0.04)
+cpu_fp32: true                # on a CPU run the UNet in float32 (the official run is float16 on CUDA)
+# The OpenAI guided-diffusion 256x256 unconditional model and the reference NSG features (built locally by build_reference.py, not distributed); the registry points
+# both at $SYNTHSCOPE_CKPT_DIR (256x256_diffusion_uncond.pt, nsg_vd_reference_msrvtt_val100.safetensors).
+diffusion_weights: null
+reference_path: null
+
+# Per-frame test-time preprocessing (official _preprocess_frame_from_path): the ffmpeg JPEG frame resized to 224x224
+# with PIL LANCZOS, /255, no normalization. Frame extraction is the registry's video sampler "ffmpeg_select_jpeg".
+eval_transform_list: [nsgvd_frame_224]

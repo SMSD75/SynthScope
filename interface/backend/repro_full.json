@@ -1019,6 +1019,102 @@
       "note": "n/a \u2014 83.47 mAP / 79.13 acc \u2248 paper acc 80.1."
     }
   ],
+  "nsg_vd": [
+    {
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
+      "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
+      "paper": "acc=88.97 / auroc=97.68 / recall=98.54",
+      "ours": "SynthScope acc=88.96 / AUROC=97.5 \u00b7 official acc=89.22 / AUROC=97.51",
+      "ours_synthscope": "acc=88.96 / AUROC=97.5",
+      "ours_official": "acc=89.22 / AUROC=97.51",
+      "status": "reproduced",
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
+    },
+    {
+      "benchmark": "GenVideo-Val, paper Table 2 (~120 per generator, subsets unspecified) vs the first-120 approximation",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "paper": "acc=86.05 / auroc=95.46 / recall=97.13 / f1=87.45",
+      "ours": "SynthScope acc=86.52 / AUROC=97.18 \u00b7 official acc=86.9 / AUROC=97.16",
+      "ours_synthscope": "acc=86.52 / AUROC=97.18",
+      "ours_official": "acc=86.9 / AUROC=97.16",
+      "status": "reference",
+      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 86.52 vs 86.05, recall 98.72 vs 97.13. The authors' released CSV differs from the paper too (recall 98.54)."
+    },
+    {
+      "benchmark": "VidProM --limit 1000 (zero-shot reference)",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over generators; 4 generators (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); first 1,000 reals and fakes each (Pika 998: 2 empty files)",
+      "paper": "\u2014",
+      "ours": "acc=86.8 / AUROC=95.49",
+      "ours_synthscope": "acc=86.8 / AUROC=95.49",
+      "ours_official": "",
+      "status": "reference",
+      "note": "Zero-shot reference, NOT a paper result; the reference set stays the 100 MSR-VTT val videos. 22.2% of reals are called fake at s > 1, so accuracy (86.80) and precision (81.16) look low; AUROC 95.49. 12 reference reals are in the real pool."
+    },
+    {
+      "benchmark": "VideoPhy --limit 1000 (zero-shot reference)",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over generators; 8 of its 10 generators online; first 1,000 reals, up to 1,000 fakes each",
+      "paper": "\u2014",
+      "ours": "acc=83.17 / AUROC=97.88",
+      "ours_synthscope": "acc=83.17 / AUROC=97.88",
+      "ours_official": "",
+      "status": "reference",
+      "note": "Zero-shot reference, NOT a paper result; the reference set stays the 100 MSR-VTT val videos. 22.2% of reals are called fake at s > 1, so accuracy (83.17) and precision (59.87) look low; AUROC 97.88. 12 reference reals are in the real pool."
+    },
+    {
+      "benchmark": "EvalCrafter --limit 1000 (zero-shot reference)",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over generators; 14 generators; fakes vs the first 1,000 GenVideo-Val MSR-VTT reals (EvalCrafter has none of its own)",
+      "paper": "\u2014",
+      "ours": "acc=86.47 / AUROC=97.79",
+      "ours_synthscope": "acc=86.47 / AUROC=97.79",
+      "ours_official": "",
+      "status": "reference",
+      "note": "Zero-shot reference, NOT a paper result; the reference set stays the 100 MSR-VTT val videos. 22.2% of reals are called fake at s > 1, so accuracy (86.47) and precision (75.35) look low; AUROC 97.79. 12 reference reals are in the real pool."
+    }
+  ],
+  "nsg_vd_pika": [
+    {
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
+      "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
+      "paper": "acc=89.34 / auroc=96.8 / recall=95.86",
+      "ours": "SynthScope acc=89.15 / AUROC=96.75 \u00b7 official acc=89.42 / AUROC=96.69",
+      "ours_synthscope": "acc=89.15 / AUROC=96.75",
+      "ours_official": "acc=89.42 / AUROC=96.69",
+      "status": "reproduced",
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 89.15 SynthScope, 89.42 official code, CSV 89.34. Sora AUROC 0.32 below the CSV, unexplained. Needs ffmpeg 4.2."
+    },
+    {
+      "benchmark": "GenVideo-Val, paper Table 1 (~120 per generator, subsets unspecified) vs the first-120 approximation",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "paper": "acc=91.46 / auroc=96.14 / recall=88.02 / f1=90.87",
+      "ours": "SynthScope acc=89.75 / AUROC=97.01 \u00b7 official acc=89.71 / AUROC=96.88",
+      "ours_synthscope": "acc=89.75 / AUROC=97.01",
+      "ours_official": "acc=89.71 / AUROC=96.88",
+      "status": "reference",
+      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 89.75 vs 91.46, recall 96.75 vs 88.02. The authors' released CSV differs from the paper too (recall 95.86)."
+    }
+  ],
+  "nsg_vd_unbalance": [
+    {
+      "benchmark": "GenVideo-Val, released-CSV protocol (500 per generator; Sora 51 + 56) vs the released CSV (not the paper)",
+      "metric": "pooled accuracy and AUROC of the MMD statistic (fake iff statistic > 1), mean over the 10 generators; 500 MSR-VTT test reals (from index 200 of the split) + the first 500 test fakes per generator, Sora 56 reals + 51 fakes",
+      "paper": "acc=90.37 / auroc=96.95 / recall=98.44",
+      "ours": "SynthScope acc=90.47 / AUROC=96.9 \u00b7 official acc=90.37 / AUROC=96.83",
+      "ours_synthscope": "acc=90.47 / AUROC=96.9",
+      "ours_official": "acc=90.37 / AUROC=96.83",
+      "status": "reproduced",
+      "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 90.47 SynthScope, 90.37 official code, CSV 90.37. Sora AUROC 0.37 below the CSV, unexplained. Needs ffmpeg 4.2."
+    },
+    {
+      "benchmark": "GenVideo-Val, paper Table 3 (~120 per generator, subsets unspecified) vs the first-120 approximation",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "paper": "acc=89.16 / auroc=94.91 / recall=93.21 / f1=89.48",
+      "ours": "SynthScope acc=91.23 / AUROC=96.39 \u00b7 official acc=91.27 / AUROC=96.26",
+      "ours_synthscope": "acc=91.23 / AUROC=96.39",
+      "ours_official": "acc=91.27 / AUROC=96.26",
+      "status": "reference",
+      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 91.23 vs 89.16, recall 98.58 vs 93.21. The authors' released CSV differs from the paper too (recall 98.44)."
+    }
+  ],
   "omniaid": [
     {
       "benchmark": "GenImage (8 subsets) \u2014 GenImage-SD1.4 release",

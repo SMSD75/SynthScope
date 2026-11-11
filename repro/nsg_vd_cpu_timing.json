@@ -1,0 +1,57 @@
+{
+ "what": "engine.predict_video_clip, key nsg_vd, fp32 UNet on CPU, one clip, fresh process per thread count",
+ "clip": "clip.mp4",
+ "host": "ivi-cn029",
+ "cpu": "AMD EPYC 7453 28-Core Processor",
+ "cpus_allocated": 16,
+ "slurm_job": "286994",
+ "torch": "2.11.0+cu126",
+ "ffmpeg": "ffmpeg-linux64-v4.2.2",
+ "records": [
+  {
+   "threads": 2,
+   "torch_threads_effective": 2,
+   "first_call_s_incl_model_load": 106.79,
+   "first_logit": 1.106225,
+   "warm_s": [
+    75.51,
+    75.56
+   ],
+   "warm_logits": [
+    1.106225,
+    1.106225
+   ],
+   "verdict": "fake"
+  },
+  {
+   "threads": 8,
+   "torch_threads_effective": 8,
+   "first_call_s_incl_model_load": 37.54,
+   "first_logit": 1.106217,
+   "warm_s": [
+    31.59,
+    34.71
+   ],
+   "warm_logits": [
+    1.106217,
+    1.106217
+   ],
+   "verdict": "fake"
+  },
+  {
+   "threads": 16,
+   "torch_threads_effective": 16,
+   "first_call_s_incl_model_load": 31.16,
+   "first_logit": 1.093867,
+   "warm_s": [
+    24.52,
+    24.86
+   ],
+   "warm_logits": [
+    1.093867,
+    1.093867
+   ],
+   "verdict": "fake"
+  }
+ ]
+}

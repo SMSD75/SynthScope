@@ -235,6 +235,24 @@ VAL = {
     ("waverep_g4", "VideoPhy"):            {"official": {"map": 98.2, "acc": 95.73, "auroc": 99.29}},
     ("waverep_g4", "VidProM"):             {"official": {"map": 99.29, "acc": 95.8, "auroc": 99.25}},
     ("waverep_g4", "EvalCrafter"):         {"official": {"map": 99.19, "acc": 96.55, "auroc": 99.29}},
+    # NSG-VD (NeurIPS'25): the three official MMD-MP checkpoints (nsg_vd = standard-SEINE-mp, paper Table 2; nsg_vd_pika = Table 1;
+    # nsg_vd_unbalance = Table 3); no SynthScope-trained number. acc / auroc here are the OFFICIAL metrics (test_dMMD.py: pooled
+    # accuracy over real + fake at the statistic > 1, AUROC of the raw statistic; 10-generator means) from
+    # repro/nsg_vd_benchmark_genvideo_val.json, NOT bench_eval_video's balanced accuracy. "synthscope" = the served path
+    # (bench_eval_video), "official" = the unmodified official code on our data (as D3). "released-CSV protocol" = 500 per generator,
+    # Sora 51 + 56 (checkpoints.<ckpt>.L500; the "paper" column of that row is the authors' released CSV, not the paper). "paper Table N"
+    # = the first-120 approximation (L120) of the paper's unspecified ~120-per-generator subsets (NOT reproduced). The three
+    # zero-shot rows are nsg_vd only (--limit 1000, zero_shot.<set> all_reals). Jobs: SynthScope 286440-286442 / 286717-286719,
+    # official code 286533 / 286716 (frames 286532).
+    ("nsg_vd", "GenVideo-Val, released-CSV protocol"): {"synthscope": {"acc": 88.96, "auroc": 97.5}, "official": {"acc": 89.22, "auroc": 97.51}},
+    ("nsg_vd", "GenVideo-Val, paper Table 2"): {"synthscope": {"acc": 86.52, "auroc": 97.18}, "official": {"acc": 86.9, "auroc": 97.16}},
+    ("nsg_vd_pika", "GenVideo-Val, released-CSV protocol"): {"synthscope": {"acc": 89.15, "auroc": 96.75}, "official": {"acc": 89.42, "auroc": 96.69}},
+    ("nsg_vd_pika", "GenVideo-Val, paper Table 1"): {"synthscope": {"acc": 89.75, "auroc": 97.01}, "official": {"acc": 89.71, "auroc": 96.88}},
+    ("nsg_vd_unbalance", "GenVideo-Val, released-CSV protocol"): {"synthscope": {"acc": 90.47, "auroc": 96.9}, "official": {"acc": 90.37, "auroc": 96.83}},
+    ("nsg_vd_unbalance", "GenVideo-Val, paper Table 3"): {"synthscope": {"acc": 91.23, "auroc": 96.39}, "official": {"acc": 91.27, "auroc": 96.26}},
+    ("nsg_vd", "VidProM"): {"synthscope": {"acc": 86.8, "auroc": 95.49}},
+    ("nsg_vd", "VideoPhy"): {"synthscope": {"acc": 83.17, "auroc": 97.88}},
+    ("nsg_vd", "EvalCrafter"): {"synthscope": {"acc": 86.47, "auroc": 97.79}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

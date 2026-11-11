@@ -1,0 +1,3867 @@
+{
+ "official": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/parity/official_ffmpeg-linux64-v4.2.2_286253.pt",
+ "ckpt_dir": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/nsg_vd/serve",
+ "ffmpeg": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ffmpeg_pkg_nsgvd/ffmpeg-linux64-v4.2.2",
+ "n_videos": 75,
+ "videos": [
+  "MSRVTT_5677",
+  "MSRVTT_8960",
+  "MSRVTT_1230",
+  "MSRVTT_4409",
+  "MSRVTT_9280",
+  "MSRVTT_1436",
+  "MSRVTT_8114",
+  "MSRVTT_1464",
+  "MSRVTT_8506",
+  "MSRVTT_1278",
+  "MSRVTT_3906",
+  "MSRVTT_8137",
+  "MSRVTT_771",
+  "MSRVTT_9803",
+  "MSRVTT_5663",
+  "modelscope_241",
+  "modelscope_55",
+  "modelscope_456",
+  "modelscope_239",
+  "modelscope_389",
+  "modelscope_290",
+  "modelscope_31",
+  "modelscope_36",
+  "modelscope_37",
+  "modelscope_42",
+  "modelscope_75",
+  "modelscope_395",
+  "modelscope_279",
+  "modelscope_17",
+  "modelscope_639",
+  "MorphStudio_241",
+  "MorphStudio_55",
+  "MorphStudio_456",
+  "MorphStudio_239",
+  "MorphStudio_389",
+  "MoonValley_502",
+  "MoonValley_537",
+  "MoonValley_293",
+  "MoonValley_290",
+  "MoonValley_532",
+  "hotshot_86",
+  "hotshot_310",
+  "hotshot_511",
+  "hotshot_416",
+  "hotshot_169",
+  "show1_241",
+  "show1_55",
+  "show1_456",
+  "show1_239",
+  "show1_389",
+  "gen2_1338",
+  "gen2_249",
+  "gen2_637",
+  "gen2_791",
+  "gen2_189",
+  "Crafter_1069",
+  "Crafter_170",
+  "Crafter_1319",
+  "Crafter_275",
+  "Crafter_870",
+  "lavie_337",
+  "lavie_30",
+  "lavie_1101",
+  "lavie_169",
+  "lavie_1208",
+  "sora_1",
+  "sora_14",
+  "sora_4",
+  "sora_21",
+  "sora_27",
+  "D584",
+  "D134",
+  "D366",
+  "D375",
+  "D221"
+ ],
+ "ref": {
+  "shape": [
+   100,
+   8,
+   3,
+   224,
+   224
+  ],
+  "max_abs_diff": 0.0,
+  "max_abs_official": 612.684814453125,
+  "max_rel_diff": 0.0,
+  "ids_equal": true
+ },
+ "frames_identical": 75,
+ "nsg": {
+  "engine_1_per_pass": {
+   "max_abs_diff": 5.34185791015625,
+   "max_rel_l1": 0.05427618324756622,
+   "bit_identical_videos": 0
+  },
+  "official_grouping_3_per_pass": {
+   "max_abs_diff": 0.0,
+   "bit_identical_videos": 75
+  },
+  "max_abs_official": 95.16664123535156
+ },
+ "checkpoints": {
+  "standard-Pika-mp": {
+   "status": "loaded 47 tensors from nsg_vd_pika.pth (missing=0, unexpected=0)",
+   "max_abs_diff": 0.03828536334991456,
+   "mean_abs_diff": 0.0042193633204650775,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.03745424747467041,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.03745424747467041,
+   "official_self_spread_max": 0.03745424747467041,
+   "official_self_spread_mean": 0.00349080483118693,
+   "official_min_max": [
+    0.291314959526062,
+    1.4132071733474731
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.291314959526062,
+     "ours": 0.286933,
+     "official_spread": 0.02358222007751465
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.35669398307800293,
+     "ours": 0.393643,
+     "official_spread": 0.01840686798095703
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3234419822692871,
+     "ours": 0.330592,
+     "official_spread": 0.0006371736526489258
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.6671793460845947,
+     "ours": 0.652258,
+     "official_spread": 0.00961315631866455
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.6914103627204895,
+     "ours": 0.68766,
+     "official_spread": 0.011959433555603027
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.4959028363227844,
+     "ours": 0.528018,
+     "official_spread": 0.015751540660858154
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5881123542785645,
+     "ours": 0.57241,
+     "official_spread": 0.014404833316802979
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.31855309009552,
+     "ours": 1.321592,
+     "official_spread": 0.0012280941009521484
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3179323673248291,
+     "ours": 0.285994,
+     "official_spread": 0.011819005012512207
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.109482765197754,
+     "ours": 1.110016,
+     "official_spread": 0.008887410163879395
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.38150036334991455,
+     "ours": 0.343215,
+     "official_spread": 0.03745424747467041
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0967330932617188,
+     "ours": 1.095084,
+     "official_spread": 0.0011625289916992188
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.44002610445022583,
+     "ours": 0.446039,
+     "official_spread": 0.0011214017868041992
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.39400339126586914,
+     "ours": 0.360918,
+     "official_spread": 0.014163970947265625
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.3784153461456299,
+     "ours": 1.378484,
+     "official_spread": 0.0011905431747436523
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.407226324081421,
+     "ours": 1.407306,
+     "official_spread": 8.213520050048828e-05
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4121140241622925,
+     "ours": 1.412135,
+     "official_spread": 2.0265579223632812e-05
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3611983060836792,
+     "ours": 1.362136,
+     "official_spread": 0.0020459890365600586
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.0976026058197021,
+     "ours": 1.084987,
+     "official_spread": 0.005990743637084961
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3840973377227783,
+     "ours": 1.384105,
+     "official_spread": 0.0001016855239868164
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4119999408721924,
+     "ours": 1.412023,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4132070541381836,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4112262725830078,
+     "ours": 1.411257,
+     "official_spread": 7.462501525878906e-05
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4053010940551758,
+     "ours": 1.405328,
+     "official_spread": 3.063678741455078e-05
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3836302757263184,
+     "ours": 1.382774,
+     "official_spread": 0.0008805990219116211
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4122012853622437,
+     "ours": 1.4122,
+     "official_spread": 4.673004150390625e-05
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4115896224975586,
+     "ours": 1.411634,
+     "official_spread": 3.1828880310058594e-05
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.413203477859497,
+     "ours": 1.413203,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4132068157196045,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.8211236596107483,
+     "ours": 0.808823,
+     "official_spread": 0.008140981197357178
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.4131999015808105,
+     "ours": 1.4132,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3935842514038086,
+     "ours": 1.392582,
+     "official_spread": 0.0005068778991699219
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3879210948944092,
+     "ours": 1.386028,
+     "official_spread": 0.0007712841033935547
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.4110987186431885,
+     "ours": 1.410947,
+     "official_spread": 0.0001195669174194336
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.4132070541381836,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.4132068157196045,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.409529447555542,
+     "ours": 1.409541,
+     "official_spread": 3.814697265625e-06
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.4131091833114624,
+     "ours": 1.413109,
+     "official_spread": 3.2186508178710938e-06
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.3931427001953125,
+     "ours": 1.392941,
+     "official_spread": 0.0002951622009277344
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 0.9463790655136108,
+     "ours": 0.941067,
+     "official_spread": 0.009491145610809326
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.407095193862915,
+     "ours": 1.40712,
+     "official_spread": 0.00029659271240234375
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.305268406867981,
+     "ours": 1.305201,
+     "official_spread": 0.0014151334762573242
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.1082643270492554,
+     "ours": 1.110548,
+     "official_spread": 0.0002715587615966797
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 0.7414918541908264,
+     "ours": 0.721657,
+     "official_spread": 0.034933507442474365
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3860394954681396,
+     "ours": 1.385988,
+     "official_spread": 0.001378774642944336
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.2973096370697021,
+     "ours": 1.296251,
+     "official_spread": 0.00092315673828125
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3089072704315186,
+     "ours": 1.311964,
+     "official_spread": 0.003568410873413086
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.4132068157196045,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.411690354347229,
+     "ours": 1.411591,
+     "official_spread": 3.0159950256347656e-05
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3576478958129883,
+     "ours": 1.357882,
+     "official_spread": 3.647804260253906e-05
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.367020606994629,
+     "ours": 1.368895,
+     "official_spread": 0.0017167329788208008
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.4131927490234375,
+     "ours": 1.413193,
+     "official_spread": 9.5367431640625e-07
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.4132071733474731,
+     "ours": 1.413207,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.404500126838684,
+     "ours": 1.404858,
+     "official_spread": 3.5762786865234375e-06
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.4132052659988403,
+     "ours": 1.413205,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.1771676540374756,
+     "ours": 1.174377,
+     "official_spread": 0.002657651901245117
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3393466472625732,
+     "ours": 1.3391,
+     "official_spread": 0.0016772747039794922
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.4100239276885986,
+     "ours": 1.410014,
+     "official_spread": 8.821487426757812e-06
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.412735104560852,
+     "ours": 1.412761,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.2995049953460693,
+     "ours": 1.300576,
+     "official_spread": 0.0002040863037109375
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3727514743804932,
+     "ours": 1.373078,
+     "official_spread": 7.295608520507812e-05
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4128303527832031,
+     "ours": 1.412814,
+     "official_spread": 2.3365020751953125e-05
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4127743244171143,
+     "ours": 1.412765,
+     "official_spread": 3.540515899658203e-05
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3748786449432373,
+     "ours": 1.37513,
+     "official_spread": 0.00015819072723388672
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4132064580917358,
+     "ours": 1.413206,
+     "official_spread": 0.0
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.3986413478851318,
+     "ours": 1.398442,
+     "official_spread": 0.0006955862045288086
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.413158655166626,
+     "ours": 1.413158,
+     "official_spread": 1.6689300537109375e-06
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.4113121032714844,
+     "ours": 1.411301,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 0.9146246910095215,
+     "ours": 0.931915,
+     "official_spread": 0.011502385139465332
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.410578966140747,
+     "ours": 1.410422,
+     "official_spread": 0.00017702579498291016
+    }
+   ]
+  },
+  "standard-SEINE-mp": {
+   "status": "loaded 47 tensors from nsg_vd.pth (missing=0, unexpected=0)",
+   "max_abs_diff": 0.024471570285797162,
+   "mean_abs_diff": 0.002863784962463386,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.034549832344055176,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.034549832344055176,
+   "official_self_spread_max": 0.034549832344055176,
+   "official_self_spread_mean": 0.0028182649612426757,
+   "official_min_max": [
+    0.3510602116584778,
+    1.371990442276001
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3510602116584778,
+     "ours": 0.343774,
+     "official_spread": 0.008679628372192383
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.37885022163391113,
+     "ours": 0.358035,
+     "official_spread": 0.011254608631134033
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.9373823404312134,
+     "ours": 0.927578,
+     "official_spread": 0.007015705108642578
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5477081537246704,
+     "ours": 0.528555,
+     "official_spread": 0.034549832344055176
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.7055493593215942,
+     "ours": 0.706532,
+     "official_spread": 0.0024049878120422363
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.486663281917572,
+     "ours": 0.464712,
+     "official_spread": 0.007355690002441406
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3931751251220703,
+     "ours": 0.392717,
+     "official_spread": 0.004898190498352051
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0880436897277832,
+     "ours": 1.085265,
+     "official_spread": 0.0021598339080810547
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5834875702857971,
+     "ours": 0.559016,
+     "official_spread": 0.01249152421951294
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.119281530380249,
+     "ours": 1.130536,
+     "official_spread": 0.012009501457214355
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5505462288856506,
+     "ours": 0.549683,
+     "official_spread": 0.019347965717315674
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.312947154045105,
+     "ours": 1.314684,
+     "official_spread": 0.003564596176147461
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.39154577255249023,
+     "ours": 0.372904,
+     "official_spread": 0.010586857795715332
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.392488956451416,
+     "ours": 0.414618,
+     "official_spread": 0.03351235389709473
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.8399735689163208,
+     "ours": 0.852222,
+     "official_spread": 0.0034366846084594727
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3571197986602783,
+     "ours": 1.356193,
+     "official_spread": 0.0009268522262573242
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3629553318023682,
+     "ours": 1.362955,
+     "official_spread": 0.0005030632019042969
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.368045687675476,
+     "ours": 1.3678,
+     "official_spread": 0.000489354133605957
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.9560257196426392,
+     "ours": 0.961458,
+     "official_spread": 0.003426074981689453
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3546420335769653,
+     "ours": 1.353563,
+     "official_spread": 0.0010792016983032227
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3512742519378662,
+     "ours": 1.349701,
+     "official_spread": 0.0026657581329345703
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.343738079071045,
+     "ours": 1.343341,
+     "official_spread": 0.0010756254196166992
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.371382713317871,
+     "ours": 1.371382,
+     "official_spread": 0.0
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3457660675048828,
+     "ours": 1.345854,
+     "official_spread": 0.0007033348083496094
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3427228927612305,
+     "ours": 1.341813,
+     "official_spread": 4.0531158447265625e-05
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.342323660850525,
+     "ours": 1.341892,
+     "official_spread": 0.00045740604400634766
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3450927734375,
+     "ours": 1.34271,
+     "official_spread": 0.0023865699768066406
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3689961433410645,
+     "ours": 1.369002,
+     "official_spread": 0.00017917156219482422
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3414984941482544,
+     "ours": 1.338813,
+     "official_spread": 0.0014079809188842773
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3719630241394043,
+     "ours": 1.371961,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.371922254562378,
+     "ours": 1.371913,
+     "official_spread": 8.821487426757812e-06
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3719849586486816,
+     "ours": 1.371985,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3719744682312012,
+     "ours": 1.371974,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.3719902038574219,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.3543086051940918,
+     "ours": 1.35286,
+     "official_spread": 0.0019154548645019531
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.3718923330307007,
+     "ours": 1.371892,
+     "official_spread": 6.079673767089844e-06
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.368149757385254,
+     "ours": 1.367921,
+     "official_spread": 0.0002396106719970703
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3716384172439575,
+     "ours": 1.371638,
+     "official_spread": 2.1696090698242188e-05
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3443429470062256,
+     "ours": 1.342136,
+     "official_spread": 0.002692699432373047
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3514037132263184,
+     "ours": 1.352138,
+     "official_spread": 0.00024437904357910156
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3427071571350098,
+     "ours": 1.341052,
+     "official_spread": 0.0015228986740112305
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3517173528671265,
+     "ours": 1.350797,
+     "official_spread": 0.0012630224227905273
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3714168071746826,
+     "ours": 1.371416,
+     "official_spread": 7.152557373046875e-07
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3442389965057373,
+     "ours": 1.344598,
+     "official_spread": 0.0011649131774902344
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3291709423065186,
+     "ours": 1.329484,
+     "official_spread": 0.0002816915512084961
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3567523956298828,
+     "ours": 1.355807,
+     "official_spread": 0.0003743171691894531
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.3614903688430786,
+     "ours": 1.362107,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.3719850778579712,
+     "ours": 1.371985,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.3684042692184448,
+     "ours": 1.368396,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.371990442276001,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.3719629049301147,
+     "ours": 1.371959,
+     "official_spread": 1.6689300537109375e-06
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3428534269332886,
+     "ours": 1.342102,
+     "official_spread": 0.0009442567825317383
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3460993766784668,
+     "ours": 1.3445,
+     "official_spread": 0.0007152557373046875
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3524832725524902,
+     "ours": 1.351262,
+     "official_spread": 0.0008296966552734375
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3719903230667114,
+     "ours": 1.37199,
+     "official_spread": 0.0
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3460752964019775,
+     "ours": 1.342834,
+     "official_spread": 0.0015964508056640625
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3611053228378296,
+     "ours": 1.360427,
+     "official_spread": 0.0006791353225708008
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3677165508270264,
+     "ours": 1.367268,
+     "official_spread": 0.0002665519714355469
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3433983325958252,
+     "ours": 1.340682,
+     "official_spread": 0.001828312873840332
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.2523298263549805,
+     "ours": 1.254596,
+     "official_spread": 0.004874706268310547
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.3719892501831055,
+     "ours": 1.371989,
+     "official_spread": 0.0
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.3716795444488525,
+     "ours": 1.371679,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.3719770908355713,
+     "ours": 1.371976,
+     "official_spread": 7.152557373046875e-07
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.3708784580230713,
+     "ours": 1.371004,
+     "official_spread": 6.29425048828125e-05
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.326970100402832,
+     "ours": 1.32787,
+     "official_spread": 0.0005828142166137695
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.359936237335205,
+     "ours": 1.359295,
+     "official_spread": 0.0006411075592041016
+    }
+   ]
+  },
+  "unbalance-SEINE-mp": {
+   "status": "loaded 47 tensors from nsg_vd_unbalance.pth (missing=0, unexpected=0)",
+   "max_abs_diff": 0.021581039340972885,
+   "mean_abs_diff": 0.0019226576061503317,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.02222156524658203,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.02222156524658203,
+   "official_self_spread_max": 0.02222156524658203,
+   "official_self_spread_mean": 0.0020187783241271975,
+   "official_min_max": [
+    0.42982423305511475,
+    1.2896589040756226
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5071110725402832,
+     "ours": 0.515358,
+     "official_spread": 0.018069744110107422
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.4656033515930176,
+     "ours": 0.452488,
+     "official_spread": 0.01802694797515869
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.7625566720962524,
+     "ours": 0.760434,
+     "official_spread": 0.004760384559631348
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.42982423305511475,
+     "ours": 0.435319,
+     "official_spread": 0.007927179336547852
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.45343220233917236,
+     "ours": 0.462749,
+     "official_spread": 0.0029462575912475586
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.4478682279586792,
+     "ours": 0.463287,
+     "official_spread": 0.01041412353515625
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.7019147872924805,
+     "ours": 0.70775,
+     "official_spread": 0.02222156524658203
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0625743865966797,
+     "ours": 1.061056,
+     "official_spread": 0.0011317729949951172
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.7868945598602295,
+     "ours": 0.793757,
+     "official_spread": 0.0030462145805358887
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0908961296081543,
+     "ours": 1.095186,
+     "official_spread": 0.0043239593505859375
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5912681818008423,
+     "ours": 0.592658,
+     "official_spread": 0.0032862424850463867
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.2194898128509521,
+     "ours": 1.22054,
+     "official_spread": 0.002337217330932617
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.4673783779144287,
+     "ours": 0.472808,
+     "official_spread": 0.007686734199523926
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.6480475664138794,
+     "ours": 0.668025,
+     "official_spread": 0.008901715278625488
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.8178519606590271,
+     "ours": 0.839433,
+     "official_spread": 0.0066640377044677734
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2820886373519897,
+     "ours": 1.282234,
+     "official_spread": 0.00017213821411132812
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.289618730545044,
+     "ours": 1.289618,
+     "official_spread": 1.0728836059570312e-06
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2874031066894531,
+     "ours": 1.287472,
+     "official_spread": 3.790855407714844e-05
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.0553070306777954,
+     "ours": 1.056371,
+     "official_spread": 0.0012778043746948242
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.25906240940094,
+     "ours": 1.260022,
+     "official_spread": 0.0010780096054077148
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2673847675323486,
+     "ours": 1.266967,
+     "official_spread": 0.00029587745666503906
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2575219869613647,
+     "ours": 1.257017,
+     "official_spread": 1.6450881958007812e-05
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2881184816360474,
+     "ours": 1.28807,
+     "official_spread": 1.4781951904296875e-05
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2588597536087036,
+     "ours": 1.258476,
+     "official_spread": 0.00013196468353271484
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2429206371307373,
+     "ours": 1.24359,
+     "official_spread": 0.0010521411895751953
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2129688262939453,
+     "ours": 1.211685,
+     "official_spread": 0.00037658214569091797
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2215200662612915,
+     "ours": 1.222186,
+     "official_spread": 0.0011487007141113281
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2896348237991333,
+     "ours": 1.289635,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2291195392608643,
+     "ours": 1.226549,
+     "official_spread": 0.003062725067138672
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.287913203239441,
+     "ours": 1.287849,
+     "official_spread": 9.512901306152344e-05
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.2896454334259033,
+     "ours": 1.289646,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.2895143032073975,
+     "ours": 1.289518,
+     "official_spread": 2.384185791015625e-06
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.2856621742248535,
+     "ours": 1.285661,
+     "official_spread": 1.0848045349121094e-05
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.2896485328674316,
+     "ours": 1.289649,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.28407621383667,
+     "ours": 1.284099,
+     "official_spread": 0.0002200603485107422
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.2890723943710327,
+     "ours": 1.289024,
+     "official_spread": 2.3603439331054688e-05
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.2884671688079834,
+     "ours": 1.288425,
+     "official_spread": 6.365776062011719e-05
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.289655089378357,
+     "ours": 1.289655,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.2823244333267212,
+     "ours": 1.282314,
+     "official_spread": 0.00012195110321044922
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.2734739780426025,
+     "ours": 1.273436,
+     "official_spread": 0.00016546249389648438
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.053734540939331,
+     "ours": 1.050702,
+     "official_spread": 0.005705714225769043
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.1696200370788574,
+     "ours": 1.169172,
+     "official_spread": 0.0008246898651123047
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.1428186893463135,
+     "ours": 1.143774,
+     "official_spread": 0.0020093917846679688
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.2873398065567017,
+     "ours": 1.287296,
+     "official_spread": 4.792213439941406e-05
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.2878308296203613,
+     "ours": 1.287836,
+     "official_spread": 5.245208740234375e-05
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.269180178642273,
+     "ours": 1.269257,
+     "official_spread": 0.00021600723266601562
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.2580256462097168,
+     "ours": 1.258955,
+     "official_spread": 0.0004762411117553711
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.28789484500885,
+     "ours": 1.287802,
+     "official_spread": 9.763240814208984e-05
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.2896331548690796,
+     "ours": 1.289634,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.2896289825439453,
+     "ours": 1.28963,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.2866220474243164,
+     "ours": 1.286645,
+     "official_spread": 4.5418739318847656e-05
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.2896589040756226,
+     "ours": 1.289659,
+     "official_spread": 0.0
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.2240031957626343,
+     "ours": 1.223143,
+     "official_spread": 0.0006264448165893555
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.2886316776275635,
+     "ours": 1.288631,
+     "official_spread": 2.3484230041503906e-05
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.2614240646362305,
+     "ours": 1.260967,
+     "official_spread": 0.00030219554901123047
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.2896500825881958,
+     "ours": 1.289649,
+     "official_spread": 7.152557373046875e-07
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.205922245979309,
+     "ours": 1.206932,
+     "official_spread": 0.0011336803436279297
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.2896479368209839,
+     "ours": 1.289649,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.2642714977264404,
+     "ours": 1.263521,
+     "official_spread": 0.0004974603652954102
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.280623197555542,
+     "ours": 1.280574,
+     "official_spread": 7.82012939453125e-05
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.0894765853881836,
+     "ours": 1.084741,
+     "official_spread": 0.006102085113525391
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.2896509170532227,
+     "ours": 1.28965,
+     "official_spread": 0.0
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2896528244018555,
+     "ours": 1.289653,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2896565198898315,
+     "ours": 1.289656,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2843191623687744,
+     "ours": 1.284299,
+     "official_spread": 0.00018644332885742188
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2074168920516968,
+     "ours": 1.207449,
+     "official_spread": 0.0018506050109863281
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2866358757019043,
+     "ours": 1.286642,
+     "official_spread": 1.6689300537109375e-05
+    }
+   ]
+  },
+  "standard-Pika-d": {
+   "status": "direct",
+   "max_abs_diff": 0.014892578125,
+   "mean_abs_diff": 0.0009639271100362142,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.00012874603271484375,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.00012874603271484375,
+   "official_self_spread_max": 0.00012874603271484375,
+   "official_self_spread_mean": 2.2165775299072265e-05,
+   "official_min_max": [
+    0.06963354349136353,
+    1.7178555727005005
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.07061165571212769,
+     "ours": 0.07044368982315063,
+     "official_spread": 0.00012874603271484375
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.28963738679885864,
+     "ours": 0.2874172329902649,
+     "official_spread": 1.0728836059570312e-05
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.27046388387680054,
+     "ours": 0.27206987142562866,
+     "official_spread": 5.412101745605469e-05
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.8596944212913513,
+     "ours": 0.8745869994163513,
+     "official_spread": 2.199411392211914e-05
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.20930665731430054,
+     "ours": 0.2092399001121521,
+     "official_spread": 1.6570091247558594e-05
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.0777636170387268,
+     "ours": 0.07734900712966919,
+     "official_spread": 0.0001087188720703125
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.06963354349136353,
+     "ours": 0.06954807043075562,
+     "official_spread": 1.3589859008789062e-05
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5330622792243958,
+     "ours": 0.5324795842170715,
+     "official_spread": 7.05718994140625e-05
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.6026859879493713,
+     "ours": 0.6044809222221375,
+     "official_spread": 8.440017700195312e-05
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.774653971195221,
+     "ours": 0.779071033000946,
+     "official_spread": 2.0325183868408203e-05
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.23495668172836304,
+     "ours": 0.23439472913742065,
+     "official_spread": 6.67572021484375e-05
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.30870872735977173,
+     "ours": 0.30841273069381714,
+     "official_spread": 5.3048133850097656e-05
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.10253041982650757,
+     "ours": 0.10268038511276245,
+     "official_spread": 6.794929504394531e-06
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.09872335195541382,
+     "ours": 0.0986742377281189,
+     "official_spread": 2.1457672119140625e-05
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5582495331764221,
+     "ours": 0.5537092089653015,
+     "official_spread": 5.459785461425781e-05
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.434865951538086,
+     "ours": 1.4349299669265747,
+     "official_spread": 3.2186508178710938e-06
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5697214603424072,
+     "ours": 1.570592999458313,
+     "official_spread": 1.1920928955078125e-06
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.9501429796218872,
+     "ours": 0.9499571323394775,
+     "official_spread": 1.9729137420654297e-05
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.3562735915184021,
+     "ours": 0.35663241147994995,
+     "official_spread": 0.00010788440704345703
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3436256647109985,
+     "ours": 1.343069314956665,
+     "official_spread": 2.467632293701172e-05
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2320268154144287,
+     "ours": 1.232628583908081,
+     "official_spread": 3.5762786865234375e-07
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6048691272735596,
+     "ours": 1.6043927669525146,
+     "official_spread": 9.298324584960938e-06
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5132248401641846,
+     "ours": 1.5137913227081299,
+     "official_spread": 1.7881393432617188e-06
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.1799908876419067,
+     "ours": 1.17960786819458,
+     "official_spread": 1.8477439880371094e-05
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.6176771521568298,
+     "ours": 0.617798388004303,
+     "official_spread": 2.276897430419922e-05
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4196786880493164,
+     "ours": 1.4189003705978394,
+     "official_spread": 2.4318695068359375e-05
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6581013202667236,
+     "ours": 1.6581363677978516,
+     "official_spread": 3.5762786865234375e-06
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6913907527923584,
+     "ours": 1.6908198595046997,
+     "official_spread": 9.5367431640625e-07
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5134059190750122,
+     "ours": 1.5154139995574951,
+     "official_spread": 9.655952453613281e-06
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 0.8078826069831848,
+     "ours": 0.8070312142372131,
+     "official_spread": 3.88026237487793e-05
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.5617780685424805,
+     "ours": 1.5615068674087524,
+     "official_spread": 7.62939453125e-06
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.0608727931976318,
+     "ours": 1.05747389793396,
+     "official_spread": 6.568431854248047e-05
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.378875732421875,
+     "ours": 1.3794692754745483,
+     "official_spread": 1.8835067749023438e-05
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6525638103485107,
+     "ours": 1.6526240110397339,
+     "official_spread": 1.9073486328125e-06
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.7145705223083496,
+     "ours": 1.7145910263061523,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6067652702331543,
+     "ours": 1.607280969619751,
+     "official_spread": 5.4836273193359375e-06
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.706645131111145,
+     "ours": 1.7067015171051025,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.7178555727005005,
+     "ours": 1.7178555727005005,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.7161204814910889,
+     "ours": 1.7161571979522705,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.7177915573120117,
+     "ours": 1.7177907228469849,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.3616387844085693,
+     "ours": 1.36464524269104,
+     "official_spread": 2.86102294921875e-06
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.639460802078247,
+     "ours": 1.6393530368804932,
+     "official_spread": 1.1920928955078125e-06
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.1249291896820068,
+     "ours": 1.124434232711792,
+     "official_spread": 6.4373016357421875e-06
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 0.18930107355117798,
+     "ours": 0.189822256565094,
+     "official_spread": 6.711483001708984e-05
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.3318357467651367,
+     "ours": 1.3320369720458984,
+     "official_spread": 9.298324584960938e-06
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.2601561546325684,
+     "ours": 1.2568519115447998,
+     "official_spread": 1.33514404296875e-05
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 0.5655592083930969,
+     "ours": 0.5637344717979431,
+     "official_spread": 1.9550323486328125e-05
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.0933854579925537,
+     "ours": 1.0928220748901367,
+     "official_spread": 2.86102294921875e-05
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.17490816116333,
+     "ours": 1.174849033355713,
+     "official_spread": 0.0
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 0.9033845067024231,
+     "ours": 0.9043734669685364,
+     "official_spread": 6.902217864990234e-05
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 0.8455345630645752,
+     "ours": 0.8451554179191589,
+     "official_spread": 1.2814998626708984e-05
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.6446093320846558,
+     "ours": 1.6446285247802734,
+     "official_spread": 5.125999450683594e-06
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.6256192922592163,
+     "ours": 1.6255927085876465,
+     "official_spread": 5.602836608886719e-06
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.1098549365997314,
+     "ours": 1.109950304031372,
+     "official_spread": 5.507469177246094e-05
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.4004161357879639,
+     "ours": 1.400785207748413,
+     "official_spread": 9.298324584960938e-06
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6922709941864014,
+     "ours": 1.6922398805618286,
+     "official_spread": 1.1920928955078125e-06
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6530687808990479,
+     "ours": 1.65383780002594,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.71694016456604,
+     "ours": 1.7169432640075684,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.5453364849090576,
+     "ours": 1.5446057319641113,
+     "official_spread": 6.556510925292969e-06
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.7029273509979248,
+     "ours": 1.702854037284851,
+     "official_spread": 9.5367431640625e-07
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 0.6576343178749084,
+     "ours": 0.657908022403717,
+     "official_spread": 1.6570091247558594e-05
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.0526840686798096,
+     "ours": 1.0523183345794678,
+     "official_spread": 4.851818084716797e-05
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.4463908672332764,
+     "ours": 1.4457283020019531,
+     "official_spread": 1.3709068298339844e-05
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.4797956943511963,
+     "ours": 1.4794785976409912,
+     "official_spread": 2.86102294921875e-06
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.089182734489441,
+     "ours": 1.0900547504425049,
+     "official_spread": 3.325939178466797e-05
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.1174328327178955,
+     "ours": 1.1174979209899902,
+     "official_spread": 2.288818359375e-05
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.6197559833526611,
+     "ours": 1.6155858039855957,
+     "official_spread": 1.6689300537109375e-06
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4243717193603516,
+     "ours": 1.424153447151184,
+     "official_spread": 1.1920928955078125e-05
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 0.3629527688026428,
+     "ours": 0.36423259973526,
+     "official_spread": 3.540515899658203e-05
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.6974103450775146,
+     "ours": 1.697930097579956,
+     "official_spread": 9.5367431640625e-07
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.6397781372070312,
+     "ours": 1.639754056930542,
+     "official_spread": 1.6689300537109375e-06
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.5907106399536133,
+     "ours": 1.5900421142578125,
+     "official_spread": 8.821487426757812e-06
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.3230804204940796,
+     "ours": 1.3241413831710815,
+     "official_spread": 1.049041748046875e-05
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 0.8331261873245239,
+     "ours": 0.8304976224899292,
+     "official_spread": 1.5139579772949219e-05
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.6180411577224731,
+     "ours": 1.6176704168319702,
+     "official_spread": 5.125999450683594e-06
+    }
+   ]
+  },
+  "standard-SEINE-d": {
+   "status": "direct",
+   "max_abs_diff": 0.0018463134765625,
+   "mean_abs_diff": 0.00029173930486043297,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.0015243291854858398,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.0015243291854858398,
+   "official_self_spread_max": 0.0015243291854858398,
+   "official_self_spread_mean": 0.00013945420583089192,
+   "official_min_max": [
+    0.11546117067337036,
+    1.6679348945617676
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.16701942682266235,
+     "ours": 0.16517311334609985,
+     "official_spread": 0.0015243291854858398
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.1286969780921936,
+     "ours": 0.12705713510513306,
+     "official_spread": 0.0009263753890991211
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.2613897919654846,
+     "ours": 0.2596246600151062,
+     "official_spread": 0.0003930330276489258
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.30740171670913696,
+     "ours": 0.30863529443740845,
+     "official_spread": 0.00040471553802490234
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.24005919694900513,
+     "ours": 0.2398788332939148,
+     "official_spread": 0.0007342100143432617
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3448907732963562,
+     "ours": 0.3442869782447815,
+     "official_spread": 0.0004413127899169922
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.12124091386795044,
+     "ours": 0.1217847466468811,
+     "official_spread": 0.0006060600280761719
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5482280850410461,
+     "ours": 0.547528088092804,
+     "official_spread": 9.47713851928711e-05
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.504581868648529,
+     "ours": 0.5036689639091492,
+     "official_spread": 0.0008605718612670898
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.8259971737861633,
+     "ours": 0.8263528943061829,
+     "official_spread": 5.650520324707031e-05
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.4455469250679016,
+     "ours": 0.4443071484565735,
+     "official_spread": 0.000957489013671875
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.7289588451385498,
+     "ours": 0.7284019589424133,
+     "official_spread": 0.0004316568374633789
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.11546117067337036,
+     "ours": 0.1150771975517273,
+     "official_spread": 8.845329284667969e-05
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.11560779809951782,
+     "ours": 0.11393839120864868,
+     "official_spread": 0.0007575750350952148
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.6631589531898499,
+     "ours": 0.6625011563301086,
+     "official_spread": 0.0004686117172241211
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6212289333343506,
+     "ours": 1.621201992034912,
+     "official_spread": 2.2411346435546875e-05
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6419832706451416,
+     "ours": 1.641904354095459,
+     "official_spread": 2.3126602172851562e-05
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.571540355682373,
+     "ours": 1.5714259147644043,
+     "official_spread": 1.5497207641601562e-05
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.1031687259674072,
+     "ours": 1.1046583652496338,
+     "official_spread": 5.841255187988281e-05
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.576403260231018,
+     "ours": 1.5763336420059204,
+     "official_spread": 1.7881393432617188e-05
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6661769151687622,
+     "ours": 1.6661752462387085,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6328306198120117,
+     "ours": 1.6327502727508545,
+     "official_spread": 1.2993812561035156e-05
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5720665454864502,
+     "ours": 1.5719424486160278,
+     "official_spread": 3.62396240234375e-05
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.618480920791626,
+     "ours": 1.6185595989227295,
+     "official_spread": 2.9325485229492188e-05
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5196863412857056,
+     "ours": 1.519626259803772,
+     "official_spread": 1.5497207641601562e-05
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5420829057693481,
+     "ours": 1.5419169664382935,
+     "official_spread": 0.0001513957977294922
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6052488088607788,
+     "ours": 1.6052968502044678,
+     "official_spread": 3.135204315185547e-05
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.638380765914917,
+     "ours": 1.6385689973831177,
+     "official_spread": 6.198883056640625e-06
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.6483749151229858,
+     "ours": 1.648407220840454,
+     "official_spread": 3.337860107421875e-06
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4078344106674194,
+     "ours": 1.4078104496002197,
+     "official_spread": 1.1920928955078125e-05
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6584382057189941,
+     "ours": 1.6584181785583496,
+     "official_spread": 8.344650268554688e-06
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6586087942123413,
+     "ours": 1.658632755279541,
+     "official_spread": 3.4570693969726562e-06
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6613060235977173,
+     "ours": 1.6613454818725586,
+     "official_spread": 1.5020370483398438e-05
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6676560640335083,
+     "ours": 1.6676560640335083,
+     "official_spread": 5.960464477539062e-07
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.6637749671936035,
+     "ours": 1.663766622543335,
+     "official_spread": 6.318092346191406e-06
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6516084671020508,
+     "ours": 1.6515898704528809,
+     "official_spread": 8.821487426757812e-06
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6669703722000122,
+     "ours": 1.6669681072235107,
+     "official_spread": 9.5367431640625e-07
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6679332256317139,
+     "ours": 1.6679332256317139,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6679332256317139,
+     "ours": 1.6679332256317139,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.6679340600967407,
+     "ours": 1.6679340600967407,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.6677525043487549,
+     "ours": 1.6677531003952026,
+     "official_spread": 2.384185791015625e-07
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.6661872863769531,
+     "ours": 1.666191577911377,
+     "official_spread": 3.5762786865234375e-07
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.6674604415893555,
+     "ours": 1.6674575805664062,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.633901834487915,
+     "ours": 1.633908987045288,
+     "official_spread": 2.181529998779297e-05
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.6678085327148438,
+     "ours": 1.6678078174591064,
+     "official_spread": 0.0
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.6548004150390625,
+     "ours": 1.654778003692627,
+     "official_spread": 1.5497207641601562e-05
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.6070340871810913,
+     "ours": 1.6066707372665405,
+     "official_spread": 2.491474151611328e-05
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.6027816534042358,
+     "ours": 1.6028131246566772,
+     "official_spread": 2.8014183044433594e-05
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.5874577760696411,
+     "ours": 1.5872846841812134,
+     "official_spread": 2.5153160095214844e-05
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.632441759109497,
+     "ours": 1.632346272468567,
+     "official_spread": 4.76837158203125e-06
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.6256518363952637,
+     "ours": 1.6255841255187988,
+     "official_spread": 1.800060272216797e-05
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.6122499704360962,
+     "ours": 1.6121935844421387,
+     "official_spread": 2.491474151611328e-05
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.518923282623291,
+     "ours": 1.518913745880127,
+     "official_spread": 5.5789947509765625e-05
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.5968116521835327,
+     "ours": 1.5966566801071167,
+     "official_spread": 5.7697296142578125e-05
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.6128275394439697,
+     "ours": 1.6127487421035767,
+     "official_spread": 6.783008575439453e-05
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6595923900604248,
+     "ours": 1.6595889329910278,
+     "official_spread": 1.049041748046875e-05
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6349239349365234,
+     "ours": 1.6348059177398682,
+     "official_spread": 1.2874603271484375e-05
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6679348945617676,
+     "ours": 1.6679348945617676,
+     "official_spread": 0.0
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6671574115753174,
+     "ours": 1.667160987854004,
+     "official_spread": 1.430511474609375e-06
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.6621044874191284,
+     "ours": 1.6621057987213135,
+     "official_spread": 4.172325134277344e-06
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.4707534313201904,
+     "ours": 1.4712072610855103,
+     "official_spread": 9.119510650634766e-05
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.627318263053894,
+     "ours": 1.6272368431091309,
+     "official_spread": 5.519390106201172e-05
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.5301520824432373,
+     "ours": 1.5295827388763428,
+     "official_spread": 0.00014340877532958984
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.6612012386322021,
+     "ours": 1.6611759662628174,
+     "official_spread": 3.4570693969726562e-06
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.615733027458191,
+     "ours": 1.6160094738006592,
+     "official_spread": 8.344650268554688e-07
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.6300445795059204,
+     "ours": 1.6300151348114014,
+     "official_spread": 1.430511474609375e-05
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.6574370861053467,
+     "ours": 1.6569716930389404,
+     "official_spread": 1.6689300537109375e-05
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.597800850868225,
+     "ours": 1.5976241827011108,
+     "official_spread": 1.609325408935547e-05
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.111581563949585,
+     "ours": 1.1117572784423828,
+     "official_spread": 0.0003261566162109375
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.6656205654144287,
+     "ours": 1.6655935049057007,
+     "official_spread": 1.6689300537109375e-06
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.6583722829818726,
+     "ours": 1.6583385467529297,
+     "official_spread": 4.887580871582031e-06
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.666156530380249,
+     "ours": 1.666154146194458,
+     "official_spread": 3.337860107421875e-06
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.6406514644622803,
+     "ours": 1.6407766342163086,
+     "official_spread": 1.430511474609375e-06
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.2469717264175415,
+     "ours": 1.2481889724731445,
+     "official_spread": 0.0001575946807861328
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.64528489112854,
+     "ours": 1.6452436447143555,
+     "official_spread": 2.384185791015625e-05
+    }
+   ]
+  },
+  "unbalance-SEINE-d": {
+   "status": "direct",
+   "max_abs_diff": 0.0076558589935302734,
+   "mean_abs_diff": 0.0008764259020487467,
+   "verdict_agree": 75,
+   "max_abs_diff_ours_official_grouping_and_batches": 0.0,
+   "max_abs_diff_ours_official_grouping_batch1": 0.00502932071685791,
+   "official_features_ref_same_batches_max_abs_diff": 0.0,
+   "official_features_ref_batch1_max_abs_diff": 0.00502932071685791,
+   "official_self_spread_max": 0.00502932071685791,
+   "official_self_spread_mean": 0.0004795042673746745,
+   "official_min_max": [
+    0.19059592485427856,
+    1.5780885219573975
+   ],
+   "per_video": [
+    {
+     "id": "MSRVTT_5677",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3578175902366638,
+     "ours": 0.3553552031517029,
+     "official_spread": 0.000664830207824707
+    },
+    {
+     "id": "MSRVTT_8960",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.19059592485427856,
+     "ours": 0.18300336599349976,
+     "official_spread": 0.002135634422302246
+    },
+    {
+     "id": "MSRVTT_1230",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.42039841413497925,
+     "ours": 0.412742555141449,
+     "official_spread": 0.001292109489440918
+    },
+    {
+     "id": "MSRVTT_4409",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.3014848828315735,
+     "ours": 0.3031039834022522,
+     "official_spread": 0.0019475221633911133
+    },
+    {
+     "id": "MSRVTT_9280",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5627666115760803,
+     "ours": 0.5612534880638123,
+     "official_spread": 0.00013339519500732422
+    },
+    {
+     "id": "MSRVTT_1436",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.34153884649276733,
+     "ours": 0.3429831862449646,
+     "official_spread": 0.0028252601623535156
+    },
+    {
+     "id": "MSRVTT_8114",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.32811135053634644,
+     "ours": 0.3304874300956726,
+     "official_spread": 0.0005615949630737305
+    },
+    {
+     "id": "MSRVTT_1464",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0349657535552979,
+     "ours": 1.0343434810638428,
+     "official_spread": 0.0007359981536865234
+    },
+    {
+     "id": "MSRVTT_8506",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5494495034217834,
+     "ours": 0.5521494746208191,
+     "official_spread": 0.0004451274871826172
+    },
+    {
+     "id": "MSRVTT_1278",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.0306158065795898,
+     "ours": 1.0324510335922241,
+     "official_spread": 0.0005869865417480469
+    },
+    {
+     "id": "MSRVTT_3906",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.332597553730011,
+     "ours": 0.32961589097976685,
+     "official_spread": 0.00502932071685791
+    },
+    {
+     "id": "MSRVTT_8137",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 1.1134915351867676,
+     "ours": 1.1145505905151367,
+     "official_spread": 0.0005304813385009766
+    },
+    {
+     "id": "MSRVTT_771",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.2149612307548523,
+     "ours": 0.21774345636367798,
+     "official_spread": 0.0035947561264038086
+    },
+    {
+     "id": "MSRVTT_9803",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5166391730308533,
+     "ours": 0.5174168944358826,
+     "official_spread": 0.0013512372970581055
+    },
+    {
+     "id": "MSRVTT_5663",
+     "generator": "MSR-VTT",
+     "label": 0,
+     "official": 0.5470966696739197,
+     "ours": 0.5507171750068665,
+     "official_spread": 0.0011560916900634766
+    },
+    {
+     "id": "modelscope_241",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5437495708465576,
+     "ours": 1.5438827276229858,
+     "official_spread": 5.4836273193359375e-05
+    },
+    {
+     "id": "modelscope_55",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5707848072052002,
+     "ours": 1.570723533630371,
+     "official_spread": 6.175041198730469e-05
+    },
+    {
+     "id": "modelscope_456",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5022153854370117,
+     "ours": 1.5023446083068848,
+     "official_spread": 0.00047576427459716797
+    },
+    {
+     "id": "modelscope_239",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.2530739307403564,
+     "ours": 1.2552664279937744,
+     "official_spread": 0.0002130270004272461
+    },
+    {
+     "id": "modelscope_389",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.436802625656128,
+     "ours": 1.4376726150512695,
+     "official_spread": 0.0004839897155761719
+    },
+    {
+     "id": "modelscope_290",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.558016300201416,
+     "ours": 1.55814790725708,
+     "official_spread": 3.123283386230469e-05
+    },
+    {
+     "id": "modelscope_31",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.402191400527954,
+     "ours": 1.401421308517456,
+     "official_spread": 0.0001888275146484375
+    },
+    {
+     "id": "modelscope_36",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3564344644546509,
+     "ours": 1.3562264442443848,
+     "official_spread": 0.0002410411834716797
+    },
+    {
+     "id": "modelscope_37",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.468747615814209,
+     "ours": 1.4679783582687378,
+     "official_spread": 0.0003230571746826172
+    },
+    {
+     "id": "modelscope_42",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.4284451007843018,
+     "ours": 1.4283115863800049,
+     "official_spread": 0.0006172657012939453
+    },
+    {
+     "id": "modelscope_75",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.1407783031463623,
+     "ours": 1.1384506225585938,
+     "official_spread": 0.0003865957260131836
+    },
+    {
+     "id": "modelscope_395",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.293667197227478,
+     "ours": 1.2924106121063232,
+     "official_spread": 0.0008680820465087891
+    },
+    {
+     "id": "modelscope_279",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.5359439849853516,
+     "ours": 1.5364669561386108,
+     "official_spread": 0.0001863241195678711
+    },
+    {
+     "id": "modelscope_17",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.573602557182312,
+     "ours": 1.5736066102981567,
+     "official_spread": 2.8967857360839844e-05
+    },
+    {
+     "id": "modelscope_639",
+     "generator": "ModelScope",
+     "label": 1,
+     "official": 1.3389607667922974,
+     "ours": 1.3385229110717773,
+     "official_spread": 0.00015175342559814453
+    },
+    {
+     "id": "MorphStudio_241",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.556427001953125,
+     "ours": 1.5564521551132202,
+     "official_spread": 6.67572021484375e-06
+    },
+    {
+     "id": "MorphStudio_55",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.5763227939605713,
+     "ours": 1.576338291168213,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "MorphStudio_456",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.5633034706115723,
+     "ours": 1.5633673667907715,
+     "official_spread": 3.0040740966796875e-05
+    },
+    {
+     "id": "MorphStudio_239",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.5761375427246094,
+     "ours": 1.5761468410491943,
+     "official_spread": 2.86102294921875e-06
+    },
+    {
+     "id": "MorphStudio_389",
+     "generator": "MorphStudio",
+     "label": 1,
+     "official": 1.5498998165130615,
+     "ours": 1.5499753952026367,
+     "official_spread": 2.7418136596679688e-06
+    },
+    {
+     "id": "MoonValley_502",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.5750072002410889,
+     "ours": 1.5749874114990234,
+     "official_spread": 1.6927719116210938e-05
+    },
+    {
+     "id": "MoonValley_537",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.578047752380371,
+     "ours": 1.5780470371246338,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "MoonValley_293",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.5780878067016602,
+     "ours": 1.5780878067016602,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_290",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.5780882835388184,
+     "ours": 1.5780882835388184,
+     "official_spread": 0.0
+    },
+    {
+     "id": "MoonValley_532",
+     "generator": "MoonValley",
+     "label": 1,
+     "official": 1.5780885219573975,
+     "ours": 1.5780885219573975,
+     "official_spread": 0.0
+    },
+    {
+     "id": "hotshot_86",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.577808141708374,
+     "ours": 1.5778087377548218,
+     "official_spread": 7.152557373046875e-07
+    },
+    {
+     "id": "hotshot_310",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.5775153636932373,
+     "ours": 1.5775229930877686,
+     "official_spread": 4.76837158203125e-07
+    },
+    {
+     "id": "hotshot_511",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.5780526399612427,
+     "ours": 1.578052282333374,
+     "official_spread": 1.1920928955078125e-07
+    },
+    {
+     "id": "hotshot_416",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.3918418884277344,
+     "ours": 1.3929460048675537,
+     "official_spread": 0.00042688846588134766
+    },
+    {
+     "id": "hotshot_169",
+     "generator": "HotShot",
+     "label": 1,
+     "official": 1.5777878761291504,
+     "ours": 1.5777841806411743,
+     "official_spread": 2.1457672119140625e-06
+    },
+    {
+     "id": "show1_241",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.551724910736084,
+     "ours": 1.5517596006393433,
+     "official_spread": 8.869171142578125e-05
+    },
+    {
+     "id": "show1_55",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3411884307861328,
+     "ours": 1.3389461040496826,
+     "official_spread": 0.0010433197021484375
+    },
+    {
+     "id": "show1_456",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.5340385437011719,
+     "ours": 1.5341120958328247,
+     "official_spread": 0.0002970695495605469
+    },
+    {
+     "id": "show1_239",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.3654513359069824,
+     "ours": 1.3636515140533447,
+     "official_spread": 0.0007425546646118164
+    },
+    {
+     "id": "show1_389",
+     "generator": "Show_1",
+     "label": 1,
+     "official": 1.5706419944763184,
+     "ours": 1.5706379413604736,
+     "official_spread": 1.430511474609375e-05
+    },
+    {
+     "id": "gen2_1338",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.5736976861953735,
+     "ours": 1.5736502408981323,
+     "official_spread": 4.7326087951660156e-05
+    },
+    {
+     "id": "gen2_249",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.4874770641326904,
+     "ours": 1.487896203994751,
+     "official_spread": 0.0004379749298095703
+    },
+    {
+     "id": "gen2_637",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.4734883308410645,
+     "ours": 1.4745020866394043,
+     "official_spread": 0.0004671812057495117
+    },
+    {
+     "id": "gen2_791",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.540639877319336,
+     "ours": 1.5407867431640625,
+     "official_spread": 5.5789947509765625e-05
+    },
+    {
+     "id": "gen2_189",
+     "generator": "Gen2",
+     "label": 1,
+     "official": 1.5194246768951416,
+     "ours": 1.5195538997650146,
+     "official_spread": 0.00015592575073242188
+    },
+    {
+     "id": "Crafter_1069",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.569061040878296,
+     "ours": 1.5691146850585938,
+     "official_spread": 3.647804260253906e-05
+    },
+    {
+     "id": "Crafter_170",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.533298134803772,
+     "ours": 1.5331828594207764,
+     "official_spread": 0.0001150369644165039
+    },
+    {
+     "id": "Crafter_1319",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.5777778625488281,
+     "ours": 1.577785849571228,
+     "official_spread": 3.814697265625e-06
+    },
+    {
+     "id": "Crafter_275",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.5768383741378784,
+     "ours": 1.5768229961395264,
+     "official_spread": 8.940696716308594e-06
+    },
+    {
+     "id": "Crafter_870",
+     "generator": "Crafter",
+     "label": 1,
+     "official": 1.5733675956726074,
+     "ours": 1.5733838081359863,
+     "official_spread": 3.814697265625e-06
+    },
+    {
+     "id": "lavie_337",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.3819479942321777,
+     "ours": 1.3829753398895264,
+     "official_spread": 2.2649765014648438e-05
+    },
+    {
+     "id": "lavie_30",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.5522700548171997,
+     "ours": 1.5521774291992188,
+     "official_spread": 9.02414321899414e-05
+    },
+    {
+     "id": "lavie_1101",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.5357953310012817,
+     "ours": 1.5357270240783691,
+     "official_spread": 0.00018298625946044922
+    },
+    {
+     "id": "lavie_169",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.542516827583313,
+     "ours": 1.5425649881362915,
+     "official_spread": 0.00022113323211669922
+    },
+    {
+     "id": "lavie_1208",
+     "generator": "Lavie",
+     "label": 1,
+     "official": 1.5401263236999512,
+     "ours": 1.5403987169265747,
+     "official_spread": 8.273124694824219e-05
+    },
+    {
+     "id": "sora_1",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.5681884288787842,
+     "ours": 1.5682554244995117,
+     "official_spread": 1.5139579772949219e-05
+    },
+    {
+     "id": "sora_14",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4858989715576172,
+     "ours": 1.482125997543335,
+     "official_spread": 0.00028336048126220703
+    },
+    {
+     "id": "sora_4",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.4545292854309082,
+     "ours": 1.4544812440872192,
+     "official_spread": 3.647804260253906e-05
+    },
+    {
+     "id": "sora_21",
+     "generator": "Sora",
+     "label": 1,
+     "official": 0.7743594646453857,
+     "ours": 0.7734870314598083,
+     "official_spread": 0.0021740198135375977
+    },
+    {
+     "id": "sora_27",
+     "generator": "Sora",
+     "label": 1,
+     "official": 1.5766096115112305,
+     "ours": 1.5765879154205322,
+     "official_spread": 1.1682510375976562e-05
+    },
+    {
+     "id": "D584",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.575331449508667,
+     "ours": 1.5753555297851562,
+     "official_spread": 2.2649765014648438e-05
+    },
+    {
+     "id": "D134",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.5746245384216309,
+     "ours": 1.574615478515625,
+     "official_spread": 1.5497207641601562e-06
+    },
+    {
+     "id": "D366",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.4489209651947021,
+     "ours": 1.4496440887451172,
+     "official_spread": 0.0006663799285888672
+    },
+    {
+     "id": "D375",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.4298381805419922,
+     "ours": 1.4299646615982056,
+     "official_spread": 0.0008397102355957031
+    },
+    {
+     "id": "D221",
+     "generator": "WildScrape",
+     "label": 1,
+     "official": 1.5704014301300049,
+     "ours": 1.5702787637710571,
+     "official_spread": 4.76837158203125e-07
+    }
+   ]
+  }
+ },
+ "alt_ffmpeg": {
+  "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ffmpeg_pkg_nsgvd/ffmpeg-linux-x86_64-v9.0.2": {
+   "standard-SEINE-mp": {
+    "scored": 75,
+    "decode_failures": 0,
+    "max_abs_diff_vs_official": 0.7910603404312133,
+    "mean_abs_diff_vs_official": 0.19070484110809324,
+    "verdict_agree": 70
+   },
+   "standard-Pika-mp": {
+    "scored": 75,
+    "decode_failures": 0,
+    "max_abs_diff_vs_official": 0.8300247651977539,
+    "mean_abs_diff_vs_official": 0.06752636149266558,
+    "verdict_agree": 70
+   },
+   "unbalance-SEINE-mp": {
+    "scored": 75,
+    "decode_failures": 0,
+    "max_abs_diff_vs_official": 0.44380912960815433,
+    "mean_abs_diff_vs_official": 0.04242689942581177,
+    "verdict_agree": 73
+   }
+  },
+  "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ffmpeg_pkg/imageio_ffmpeg/binaries/ffmpeg-linux-x86_64-v7.0.2": {
+   "standard-SEINE-mp": {
+    "scored": 68,
+    "decode_failures": 7,
+    "max_abs_diff_vs_official": 0.9931397783660889,
+    "mean_abs_diff_vs_official": 0.1294506669580796,
+    "verdict_agree": 59
+   },
+   "standard-Pika-mp": {
+    "scored": 68,
+    "decode_failures": 7,
+    "max_abs_diff_vs_official": 1.089765017730713,
+    "mean_abs_diff_vs_official": 0.17413189578129268,
+    "verdict_agree": 57
+   },
+   "unbalance-SEINE-mp": {
+    "scored": 68,
+    "decode_failures": 7,
+    "max_abs_diff_vs_official": 0.8598347669448854,
+    "mean_abs_diff_vs_official": 0.12372962382378298,
+    "verdict_agree": 59
+   }
+  }
+ }
+}

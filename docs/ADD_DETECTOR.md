@@ -34,10 +34,12 @@ for the maintainers and stop.
    when a dataset list is shadowed. Validation and test pipelines run on PIL images like inference, so an
    end-of-training test with `eval_transform_list` preprocesses exactly as the benchmarks do.
    Video models are mostly out of scope for training: their preprocessing is the registry's video settings (frame
-   sampler, `num_frames`, window) plus the dataset lists, and most do not use `eval_transform_list`. `waverep` is the exception:
-   its frames go through a per-frame transform, so it sets `eval_transform_list` (`center_crop_504`,
-   `to_dtype`, `normalize_imagenet`) and the registry builds its `transform` from it with `model_transform`
-   like an image detector (`tests/test_model_transforms.py` checks video configs that have a list). Add
+   sampler, `num_frames`, window) plus the dataset lists, and most do not use `eval_transform_list`. `waverep` and `nsg_vd` are the
+   exceptions: their frames go through a per-frame transform, so they set `eval_transform_list` (WaveRep:
+   `center_crop_504`, `to_dtype`, `normalize_imagenet`; NSG-VD: `nsgvd_frame_224`) and the registry builds their
+   `transform` from it with `model_transform` like an image detector (`tests/test_model_transforms.py` checks video
+   configs that have a list). A model that reads extra files from the checkpoint folder (NSG-VD: its diffusion model and
+   reference set) lists them in the spec's `aux_files`; the engine passes their paths as config overrides. Add
    `conf/dataset/...` / `conf/trainer/...` only if a new recipe is needed.
 3. **Dispatch** — add a branch in `trainer.py` `_build_model` (the `if model_type == "<k>": return SynthScope<Name>Model(config)` chain, ~line 69+). The interface lazy-imports by `model_type` in `interface/backend/engine.py` — mirror it if needed.
 4. **Interface registry** — `interface/backend/registry.py` `_add(ModelSpec(...))`:

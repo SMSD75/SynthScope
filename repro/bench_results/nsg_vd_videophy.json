@@ -1,0 +1,217 @@
+{
+  "tag": "nsg_vd_videophy",
+  "model": "nsg_vd",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VideoPhy/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 88.51,
+    "map": 90.91,
+    "map_real": 99.26,
+    "mauroc": 97.88,
+    "fake_recall_at_fpr": {
+      "0.1": 28.22,
+      "1": 34.98,
+      "5": 94.51
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 27.9,
+      "1": 34.67,
+      "5": 94.54
+    }
+  },
+  "per_generator": {
+    "Dream-Machine": {
+      "ap": 91.67,
+      "ap_real": 99.26,
+      "auroc": 97.93,
+      "real_acc": 77.8,
+      "fake_acc": 99.41,
+      "acc": 88.61,
+      "n_real": 1000,
+      "n_fake": 339,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 26.55,
+        "1": 35.4,
+        "5": 95.58
+      }
+    },
+    "Gen-2": {
+      "ap": 85.26,
+      "ap_real": 98.44,
+      "auroc": 95.66,
+      "real_acc": 77.8,
+      "fake_acc": 96.15,
+      "acc": 86.98,
+      "n_real": 1000,
+      "n_fake": 312,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 17.31,
+        "1": 21.15,
+        "5": 84.94
+      }
+    },
+    "LaVie": {
+      "ap": 90.08,
+      "ap_real": 99.29,
+      "auroc": 97.79,
+      "real_acc": 77.8,
+      "fake_acc": 99.42,
+      "acc": 88.61,
+      "n_real": 1000,
+      "n_fake": 343,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 18.37,
+        "1": 25.36,
+        "5": 93.29
+      }
+    },
+    "OpenSora": {
+      "ap": 90.53,
+      "ap_real": 98.82,
+      "auroc": 97.37,
+      "real_acc": 77.8,
+      "fake_acc": 98.84,
+      "acc": 88.32,
+      "n_real": 1000,
+      "n_fake": 344,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 28.2,
+        "1": 33.43,
+        "5": 91.86
+      }
+    },
+    "Pika": {
+      "ap": 95.66,
+      "ap_real": 99.76,
+      "auroc": 99.23,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 304,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 58.55,
+        "1": 67.11,
+        "5": 100.0
+      }
+    },
+    "SVD": {
+      "ap": 95.38,
+      "ap_real": 99.69,
+      "auroc": 99.05,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 344,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 50.0,
+        "1": 58.43,
+        "5": 99.71
+      }
+    },
+    "VideoCrafter2": {
+      "ap": 88.08,
+      "ap_real": 99.38,
+      "auroc": 97.89,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 344,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 8.43,
+        "1": 13.95,
+        "5": 95.35
+      }
+    },
+    "ZeroScope": {
+      "ap": 90.66,
+      "ap_real": 99.42,
+      "auroc": 98.11,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 344,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 18.31,
+        "1": 25.0,
+        "5": 95.35
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/cache_nsg_vd_videophy",
+  "date": "2026-11-11T18:32:42",
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "sha256": "700073daef5c23bbcb18c2eae60553a454a5221ec19b4a88c8c367a664671a7c",
+    "version": "4.2.2"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  },
+  "backfilled_from": "added after the run (the result JSON did not record these then): ffmpeg and aux_sha256 copied from the cache_meta.json of this run's score cache (cache_nsg_vd_videophy/cache_meta.json, saved under SynthScope_shared/nsgvd_bench_out/ss_cache/ by the bench sbatch; its model and ckpt_sha256 equal this file's); the job log repro/logs/nsgvdzs_286718.out shows the same ffmpeg binary sha256 and checkpoint/reference hashes."
+}

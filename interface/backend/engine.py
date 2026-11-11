@@ -9,8 +9,11 @@ import gc
 import io
 import logging
 import math
+import os
+import shutil
 import threading
 import time
+import warnings
 from collections import OrderedDict
 
 import numpy as np
@@ -156,6 +159,9 @@ def _build_model(cfg):
     if model_type == "waverep":
         from models.video.waverep.waverep import SynthScopeWaveRepModel
         return SynthScopeWaveRepModel(cfg)
+    if model_type == "nsg_vd":
+        from models.video.nsg_vd.nsg_vd import SynthScopeNSGVDModel
+        return SynthScopeNSGVDModel(cfg)
     if model_type == "cnn":
         from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
         return SynthScopeCNNModel(cfg)
@@ -172,6 +178,66 @@ def _build_model(cfg):
         from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
         return SynthScopeCLIPModel(cfg)
     raise ValueError(f"Invalid model_type: {model_type}")
+
+
+def ffmpeg_missing_message(spec: ModelSpec) -> str:
+    """Why ``spec`` has no usable ffmpeg. For a detector with a pinned build and its own variable (NSG-VD) it names that
+    variable and the pin, and says so when the variable is set but is not an executable file; the other detectors keep
+    the global wording."""
+    generic = f"'{spec.key}' needs ffmpeg (set SYNTHSCOPE_FFMPEG or pip install imageio-ffmpeg)."
+    if not (spec.ffmpeg_env and spec.ffmpeg_version):
+        return generic
+    env = os.environ.get(spec.ffmpeg_env)
+    pin = (f"'{spec.key}' needs an ffmpeg {spec.ffmpeg_version} build (its scores depend on the build; another one is used "
+           f"with a warning and does not reproduce the official results)")
+    if env:
+        return (f"{pin}: ${spec.ffmpeg_env}={env!r} is set but is not an executable file or a command on the PATH. "
+                f"Point ${spec.ffmpeg_env} at an ffmpeg {spec.ffmpeg_version} binary.")
+    return (f"{pin}: no ffmpeg was found. Set ${spec.ffmpeg_env} to an ffmpeg {spec.ffmpeg_version} binary.")
+
+
+def spec_ffmpeg_exe(spec: ModelSpec) -> str:
+    """The ffmpeg binary for ``spec``: its own ``ffmpeg_env`` variable when set (NSG-VD: $SYNTHSCOPE_FFMPEG_NSG_VD), else
+    the global choice (media.ffmpeg_exe). Raises FileNotFoundError when there is none (for a detector with an
+    ``ffmpeg_env`` the message names that variable and the pin; a set but invalid variable is never replaced by the
+    global choice)."""
+    env = os.environ.get(spec.ffmpeg_env) if spec.ffmpeg_env else None
+    if env:
+        if not os.path.isfile(env) and shutil.which(env) is None:
+            raise FileNotFoundError(ffmpeg_missing_message(spec))
+        return env
+    try:
+        return media.ffmpeg_exe()
+    except (FileNotFoundError, RuntimeError, OSError) as e:
+        if spec.ffmpeg_env and spec.ffmpeg_version:
+            raise FileNotFoundError(ffmpeg_missing_message(spec)) from e
+        raise
+
+
+_FFMPEG_WARNED: set = set()
+
+
+def spec_ffmpeg(spec: ModelSpec) -> dict:
+    """{"path", "version", "required", "match"} of the ffmpeg build ``spec`` will use; warns (once per detector and
+    binary, through logging and ``warnings``) when it is not the pinned ``spec.ffmpeg_version``."""
+    exe = spec_ffmpeg_exe(spec)
+    version = media.ffmpeg_version(exe)
+    pin = spec.ffmpeg_version
+    match = not pin or version == pin or version.startswith(pin + ".")
+    if not match and (spec.key, exe) not in _FFMPEG_WARNED:
+        _FFMPEG_WARNED.add((spec.key, exe))
+        msg = (f"{spec.key}: ffmpeg {version} ({exe}) is not the pinned {pin}.x: this detector's frames (JPEG encoder, "
+               f"frame selection) and so its scores depend on the build; set {spec.ffmpeg_env or 'SYNTHSCOPE_FFMPEG'} "
+               f"to an ffmpeg {pin} binary to reproduce the official results.")
+        logger.warning(msg)
+        warnings.warn(msg, RuntimeWarning, stacklevel=2)
+    return {"path": exe, "version": version, "required": pin, "match": match}
+
+
+def aux_overrides(spec: ModelSpec) -> list[str]:
+    """Hydra overrides pointing a model at the extra files it reads from the checkpoint folder (``spec.aux_files``, e.g.
+    NSG-VD's diffusion model and reference set)."""
+    return [f"{key}={config.CHECKPOINTS_DIR / name}" for key, name in spec.aux_files.items()]
 
 
 def _load_checkpoint(model, spec: ModelSpec):
@@ -262,8 +328,19 @@ class Engine:
 
     @staticmethod
     def ffmpeg_missing(spec: ModelSpec) -> bool:
-        """True for a detector whose video protocol shells out to ffmpeg (vina_video) when none can be found."""
+        """True for a detector whose video protocol shells out to ffmpeg (vina_video, nsg_vd) when none can be found."""
+        if spec.video_sampler == "ffmpeg_select_jpeg":
+            try:
+                spec_ffmpeg_exe(spec)
+            except (FileNotFoundError, RuntimeError, OSError):
+                return True
+            return False
         return spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available()
+
+    @staticmethod
+    def ffmpeg_missing_message(spec: ModelSpec) -> str:
+        """The error text for ``ffmpeg_missing(spec)`` (see ``ffmpeg_missing_message``)."""
+        return ffmpeg_missing_message(spec)
 
     def is_available(self, spec: ModelSpec) -> bool:
         if spec.key == "stall":  # training-free, but needs the gated DINOv3 ViT-L/16 weights
@@ -271,6 +348,8 @@ class Engine:
             from .registry import DINOV3_WEIGHTS
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
         if self.ffmpeg_missing(spec):
+            return False
+        if not all((config.CHECKPOINTS_DIR / f).exists() for f in spec.aux_files.values()):
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
@@ -302,7 +381,7 @@ class Engine:
 
             from config_utils import compose_config
 
-            cfg = compose_config(spec.overrides)
+            cfg = compose_config(spec.overrides + aux_overrides(spec))
             model = _build_model(cfg)
             if spec.ckpt_kind != "none":
                 self._status[spec.key] = _load_checkpoint(model, spec)
@@ -484,6 +563,9 @@ class Engine:
         if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
             frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
             return torch.stack([spec.transform(f) for f in frames])
+        if spec.video_sampler == "ffmpeg_select_jpeg":  # NSG-VD: every k-th frame as ffmpeg JPEGs, per-frame transform
+            frames = media.ffmpeg_select_frames(path, num_frames=spec.num_frames, exe=spec_ffmpeg(spec)["path"])
+            return torch.stack([spec.transform(f) for f in frames])
         if spec.video_sampler == "cv2_frames":          # WaveRep: the first num_frames (0: all) OpenCV frames
             frames = [spec.transform(f) for f in media.cv2_frames(path, limit=spec.num_frames or None)]
             if not frames:
@@ -527,6 +609,20 @@ class Engine:
             res = self._result(spec, float(torch.sigmoid(logit)), time.time() - t0)   # official: scipy expit
             res["num_frames"] = int(logits.numel())
             res["logit"] = round(float(logit), 6)
+            return res
+        if spec.video_prob == "mmd":                   # NSG-VD: the official MMD statistic vs its reference set
+            model = self._get_model(spec)
+            t0 = time.time()
+            clip = self.video_clip(spec, path)
+            score = model.score(clip.unsqueeze(0).to(self.device)).double()
+            res = self._result(spec, float(model.fake_probability(score)), time.time() - t0)
+            res["verdict"] = "fake" if bool(model.is_fake(score)) else "real"   # official: fake iff MMD > 1
+            res["num_frames"] = int(clip.shape[0])
+            res["logit"] = round(float(score), 6)   # the raw statistic (fake if > 1): bench_eval_video ranks by it
+            res["ffmpeg"] = spec_ffmpeg(spec)
+            if not res["ffmpeg"]["match"]:
+                res["warning"] = (f"ffmpeg {res['ffmpeg']['version']} is not the pinned {spec.ffmpeg_version}.x; scores "
+                                  "depend on the build (see the detector README).")
             return res
         model = self._get_model(spec)
         clip = self.video_clip(spec, path)

@@ -1,0 +1,259 @@
+{
+  "tag": "nsg_vd_pika_genvideo_split500",
+  "model": "nsg_vd_pika",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/genvideo_val_split",
+  "n_generators": 10,
+  "means": {
+    "acc": 89.2,
+    "map": 96.59,
+    "map_real": 96.96,
+    "mauroc": 96.75,
+    "fake_recall_at_fpr": {
+      "0.1": 39.78,
+      "1": 62.26,
+      "5": 80.45
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 38.87,
+      "1": 63.77,
+      "5": 81.1
+    }
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 99.44,
+      "ap_real": 99.49,
+      "auroc": 99.45,
+      "real_acc": 83.0,
+      "fake_acc": 99.8,
+      "acc": 91.4,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 64.6,
+        "1": 88.6,
+        "5": 97.6
+      }
+    },
+    "Gen2": {
+      "ap": 98.24,
+      "ap_real": 98.53,
+      "auroc": 98.33,
+      "real_acc": 83.0,
+      "fake_acc": 99.2,
+      "acc": 91.1,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 42.8,
+        "1": 70.6,
+        "5": 89.0
+      }
+    },
+    "HotShot": {
+      "ap": 95.24,
+      "ap_real": 95.88,
+      "auroc": 95.43,
+      "real_acc": 83.0,
+      "fake_acc": 91.8,
+      "acc": 87.4,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 20.6,
+        "1": 50.6,
+        "5": 74.8
+      }
+    },
+    "Lavie": {
+      "ap": 94.38,
+      "ap_real": 95.53,
+      "auroc": 95.04,
+      "real_acc": 83.0,
+      "fake_acc": 94.0,
+      "acc": 88.5,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 12.0,
+        "1": 42.0,
+        "5": 65.8
+      }
+    },
+    "ModelScope": {
+      "ap": 94.26,
+      "ap_real": 93.06,
+      "auroc": 93.55,
+      "real_acc": 83.0,
+      "fake_acc": 86.4,
+      "acc": 84.7,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 31.2,
+        "1": 56.2,
+        "5": 73.4
+      }
+    },
+    "MoonValley": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 83.0,
+      "fake_acc": 100.0,
+      "acc": 91.5,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 98.8,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "MorphStudio": {
+      "ap": 97.97,
+      "ap_real": 98.31,
+      "auroc": 98.09,
+      "real_acc": 83.0,
+      "fake_acc": 99.4,
+      "acc": 91.2,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 34.4,
+        "1": 68.4,
+        "5": 87.6
+      }
+    },
+    "Show_1": {
+      "ap": 93.98,
+      "ap_real": 95.07,
+      "auroc": 94.65,
+      "real_acc": 83.0,
+      "fake_acc": 93.8,
+      "acc": 88.4,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 8.4,
+        "1": 37.2,
+        "5": 70.4
+      }
+    },
+    "Sora": {
+      "ap": 96.07,
+      "ap_real": 97.49,
+      "auroc": 96.67,
+      "real_acc": 78.57,
+      "fake_acc": 100.0,
+      "acc": 89.29,
+      "n_real": 56,
+      "n_fake": 51,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 49.02,
+        "1": 49.02,
+        "5": 66.67
+      }
+    },
+    "WildScrape": {
+      "ap": 96.34,
+      "ap_real": 96.25,
+      "auroc": 96.24,
+      "real_acc": 83.0,
+      "fake_acc": 94.0,
+      "acc": 88.5,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 36.0,
+        "1": 60.0,
+        "5": 79.2
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": null,
+  "reals": null,
+  "ckpt_sha256": "c1d2a9121f5172e79c47ceb15df29987c9828ee03e1fd8302477a8a12bf7599f",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/cache_nsg_vd_pika_ffmpeg-linux64-v4.2.2",
+  "date": "2026-11-11T14:45:48",
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "sha256": "700073daef5c23bbcb18c2eae60553a454a5221ec19b4a88c8c367a664671a7c",
+    "version": "4.2.2"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  },
+  "backfilled_from": "added after the run (the result JSON did not record these then): ffmpeg and aux_sha256 copied from the cache_meta.json of this run's score cache (cache_nsg_vd_pika_ffmpeg-linux64-v4.2.2/cache_meta.json, saved under SynthScope_shared/nsgvd_bench_out/ss_cache/ by the bench sbatch; its model and ckpt_sha256 equal this file's); the job log repro/logs/nsgvdss_286441.out shows the same ffmpeg binary sha256 and checkpoint/reference hashes."
+}

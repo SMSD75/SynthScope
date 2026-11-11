@@ -15,7 +15,13 @@ Checks:
 * the real reader ``media.cv2_frames``: a missing / unopenable file is an OSError (not cached, retried), an empty file a
   decode failure (cached),
 * ``main`` end to end with the mock engine: two shards, then a ``--cache-only`` aggregation with the same JSON means and
-  no ``scores.agg*.jsonl``; the output JSON carries limit / reals / ckpt_sha256 / failed_to_decode / failed_other.
+  no ``scores.agg*.jsonl``; the output JSON carries limit / reals / ckpt_sha256 / failed_to_decode / failed_other,
+* a detector with its own decision rule (``own_verdict``, NSG-VD: fake iff the MMD statistic > 1): accuracy from the
+  cached engine verdict (a statistic of exactly 1 is real although P(fake) = 0.5), the raw score is the logit (no second
+  pass), records without a verdict are refused; every other detector keeps P(fake) >= 0.5 (the old code, inline), no
+  verdict in its records and no ``acc_by`` in its JSON, also end to end,
+* ``cache_meta`` hashes the pinned ffmpeg binary when its variable holds a bare command name (looked up on the PATH, not
+  in the working directory).
 """
 
 from __future__ import annotations
@@ -24,6 +30,7 @@ import importlib.util
 import json
 import math
 import os
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -83,6 +90,32 @@ class MockEngine:
         if "rawfail" in Path(path).stem:
             raise RuntimeError("no raw score")
         return float(Path(path).stem.split("__")[1])
+
+
+class MmdSpec(MockSpec):
+    """An NSG-VD-like detector: the engine verdict is the official rule (statistic > 1)."""
+    key, video_prob = "mockmmd", "mmd"
+
+
+class MmdEngine(MockEngine):
+    """``<name>__<statistic>.mp4``: P(fake) = sigmoid((s - 1) / 0.1), logit = s, verdict = fake iff s > 1 (NSG-VD)."""
+
+    def predict_video_clip(self, spec, path):
+        self.calls.append(Path(path).name)
+        s = float(Path(path).stem.split("__")[1])
+        return {"fake_probability": round(1 / (1 + math.exp(-(s - 1) / 0.1)), 6), "logit": round(s, 6),
+                "verdict": "fake" if s > 1 else "real"}
+
+    def video_raw_score(self, spec, path):
+        raise AssertionError("an own_verdict detector's raw score is its logit: no second pass")
+
+
+def old_acc(probs: torch.Tensor, labels: torch.Tensor) -> dict:
+    """The accuracy code of bench_eval_video.metrics before own_verdict (9be402e), inline."""
+    preds = (probs >= 0.5).int()
+    real_acc = float((preds[labels == 0] == 0).float().mean()) * 100
+    fake_acc = float((preds[labels == 1] == 1).float().mean()) * 100
+    return {"real_acc": round(real_acc, 2), "fake_acc": round(fake_acc, 2), "acc": round((real_acc + fake_acc) / 2, 2)}
 
 
 def make_tree(root: Path, spec):
@@ -303,6 +336,7 @@ def test_main_end_to_end():
         assert res["limit"] is None and res["reals"] is None and res["ckpt_sha256"] == bev.cache_meta(eng, MockSpec)["ckpt_sha256"]
         for g in res["per_generator"].values():
             assert g["rank_by"] == "logit" and g["n_real"] == 6 and g["n_fake"] == 6 and g["failed_fake"] == 1
+            assert "acc_by" not in g                     # a detector without its own decision rule: JSON unchanged
             assert g["auroc"] == 100.0, g                # every fake logit (2..7) outranks every real logit (-3..-8)
         out2 = tmp / "agg2.json"
         assert bev.main(common + ["--tag", "t_full2", "--cache-only", "--out", str(out2)]) == 0
@@ -316,6 +350,165 @@ def test_main_end_to_end():
             assert "different setup" in str(e)
 
 
+def test_own_verdict():
+    assert bev.own_verdict(MmdSpec) and not bev.own_verdict(MockSpec)
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        # reals at 0.5 / 0.9 / exactly 1.0 (real by the official > 1), fakes just above 1, at 1.5 and 3
+        paths = ([tmp / f"r{i}__{v}.mp4" for i, v in enumerate((0.5, 0.9, 1.0))]
+                 + [tmp / f"f{i}__{v}.mp4" for i, v in enumerate((1.000001, 1.5, 3.0))])
+        labels = torch.tensor([0, 0, 0, 1, 1, 1])
+        eng = MmdEngine(ckpt, raw=True)
+        cache = bev.ScoreCache(tmp / "c", "t", bev.cache_meta(eng, MmdSpec))
+        recs, bad, other = bev.score_videos(eng, MmdSpec, paths, True, cache)
+        assert (len(recs), bad, other) == (6, 0, 0)
+        assert [r["verdict"] for r in recs] == ["real"] * 3 + ["fake"] * 3
+        assert all(r["raw"] == r["logit"] for r in recs)              # no video_raw_score call (it would raise)
+        probs = torch.tensor([r["p"] for r in recs])
+        assert float(probs[2]) == 0.5                                  # at the threshold P(fake) is 0.5 ...
+        by_verdict = bev.metrics(probs, labels, bev.rank_scores(recs), bev.verdict_preds(recs))
+        assert by_verdict["real_acc"] == 100.0 and by_verdict["acc"] == 100.0       # ... but the video is real
+        assert bev.metrics(probs, labels, bev.rank_scores(recs))["real_acc"] == 66.67  # P >= 0.5 would call it fake
+        # the verdicts are cached: a fresh cache reproduces them without scoring
+        eng2 = MmdEngine(ckpt, raw=True)
+        recs2, _, _ = bev.score_videos(eng2, MmdSpec, paths, True, bev.ScoreCache(tmp / "c", "t2", bev.cache_meta(eng2, MmdSpec)))
+        assert eng2.calls == [] and [r["verdict"] for r in recs2] == [r["verdict"] for r in recs]
+        try:                                                           # a record without a verdict is refused
+            bev.verdict_preds(recs + [{"p": 0.5, "logit": 1.0}])
+            raise AssertionError("records without a verdict must be refused")
+        except SystemExit as e:
+            assert "verdict" in str(e)
+        # every other detector: no verdict in its records, accuracy exactly the old P(fake) >= 0.5 code
+        eng3 = MockEngine(ckpt)
+        recs3, _, _ = bev.score_videos(eng3, MockSpec, [tmp / "a__0.0.mp4", tmp / "b__-1.0.mp4", tmp / "c__2.0.mp4",
+                                                        tmp / "d__0.0.mp4"], False, None)
+        assert all("verdict" not in r for r in recs3)
+        p3, y3 = torch.tensor([r["p"] for r in recs3]), torch.tensor([0, 0, 1, 1])
+        assert float(p3[0]) == 0.5
+        for rank in (None, bev.rank_scores(recs3)):
+            m3 = bev.metrics(p3, y3, rank)
+            assert {k: m3[k] for k in ("real_acc", "fake_acc", "acc")} == old_acc(p3, y3), (m3, old_acc(p3, y3))
+        rng = np.random.default_rng(1)
+        y = torch.tensor((rng.random(400) < 0.5).astype(int))
+        p = torch.round(torch.tensor(1 / (1 + np.exp(-rng.normal(0, 2, 400))), dtype=torch.float32) * 1e3) / 1e3
+        p[:20] = 0.5                                                    # ties at the threshold count fake, as before
+        m = bev.metrics(p, y)
+        assert {k: m[k] for k in ("real_acc", "fake_acc", "acc")} == old_acc(p, y)
+    # end to end: an own_verdict detector's JSON says how accuracy was computed
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        for cls, vals in (("0_real", (0.5, 1.0)), ("1_fake", (1.2, 0.8))):
+            d = tmp / "data" / "genA" / cls
+            d.mkdir(parents=True)
+            for i, v in enumerate(vals):
+                (d / f"{cls}{i}__{v}.mp4").write_bytes(b"")
+        eng = MmdEngine(ckpt, raw=True)
+        saved = bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG
+        bev.get_engine, bev.get_spec = (lambda: eng), (lambda key: MmdSpec)
+        bev.REPRO, bev.RESULTS_LOG = tmp, tmp / "MASTER_RESULTS.jsonl"
+        try:
+            out = tmp / "r.json"
+            assert bev.main(["-m", "nsg_vd", "--benchmark", "pergen", "--data", str(tmp / "data"), "--tag", "v",
+                             "--out", str(out)]) == 0
+        finally:
+            bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG = saved
+        g = json.loads(out.read_text())["per_generator"]["genA"]
+        assert g["acc_by"] == "engine_verdict" and g["real_acc"] == 100.0 and g["fake_acc"] == 50.0, g
+        assert g["fake_recall_at_fpr"] and g["rank_by"] == "logit"
+
+
+def test_cache_meta_bare_ffmpeg_name():
+    """$<ffmpeg_env> = a bare command name: cache_meta hashes the binary found on the PATH (not ./ffmpeg)."""
+    class PinnedSpec(MockSpec):
+        key, ffmpeg_version, ffmpeg_env = "mockpin", "4.2", "SYNTHSCOPE_FFMPEG_BENCH_TEST"
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        bindir, work = tmp / "bin", tmp / "work"
+        bindir.mkdir()
+        work.mkdir()
+        exe = bindir / "ffmpeg-bench-test"
+        exe.write_text("#!/bin/sh\necho 'ffmpeg version 4.2.2 Copyright (c) 2000-2019'\n")
+        exe.chmod(exe.stat().st_mode | stat.S_IXUSR)
+        saved_env = {k: os.environ.get(k) for k in ("PATH", PinnedSpec.ffmpeg_env)}
+        cwd = os.getcwd()
+        os.environ["PATH"] = f"{bindir}{os.pathsep}{os.environ.get('PATH', '')}"
+        os.environ[PinnedSpec.ffmpeg_env] = exe.name                  # bare name
+        os.chdir(work)                                                # no such file in the working directory
+        try:
+            meta = bev.cache_meta(MockEngine(ckpt), PinnedSpec)
+        finally:
+            os.chdir(cwd)
+            for k, v in saved_env.items():
+                if v is None:
+                    os.environ.pop(k, None)
+                else:
+                    os.environ[k] = v
+        assert meta["ffmpeg"] == {"version": "4.2.2", "sha256": bev._sha256(exe)}, meta["ffmpeg"]
+
+
+def test_result_records_ffmpeg_and_aux():
+    """A detector with aux files and an ffmpeg pin: the result JSON carries the aux sha256s and the ffmpeg build (also
+    without --cache-dir), each big file is hashed once per run; a detector without them gets neither key."""
+    class PinnedSpec(MmdSpec):
+        key, ffmpeg_version, ffmpeg_env = "mockpin2", "4.2", "SYNTHSCOPE_FFMPEG_BENCH_TEST"
+        aux_files = {"diffusion": "aux/diff.pt", "reference": "aux/ref.safetensors"}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        ckdir = tmp / "ckpts"
+        (ckdir / "aux").mkdir(parents=True)
+        (ckdir / "aux" / "diff.pt").write_bytes(b"diffusion")
+        (ckdir / "aux" / "ref.safetensors").write_bytes(b"reference")
+        exe = tmp / "ffmpeg-bench-test"
+        exe.write_text("#!/bin/sh\necho 'ffmpeg version 4.2.2 Copyright (c) 2000-2019'\n")
+        exe.chmod(exe.stat().st_mode | stat.S_IXUSR)
+        saved = (bev.backend_config.CHECKPOINTS_DIR, bev._sha256, bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG)
+        saved_env = os.environ.get(PinnedSpec.ffmpeg_env)
+        hashed = []
+        orig = bev._sha256
+        bev._sha256 = lambda path: (hashed.append(Path(path).name), orig(path))[1]
+        bev.backend_config.CHECKPOINTS_DIR = ckdir
+        os.environ[PinnedSpec.ffmpeg_env] = str(exe)
+        try:
+            eng = MmdEngine(ckpt)
+            bev.get_engine, bev.get_spec = (lambda: eng), (lambda key: PinnedSpec)
+            bev.REPRO, bev.RESULTS_LOG = tmp, tmp / "M.jsonl"
+            make_tree(tmp / "data", PinnedSpec)
+            out = tmp / "r.json"
+            assert bev.main(["-m", "waverep", "--benchmark", "pergen", "--data", str(tmp / "data"), "--tag", "t",
+                             "--out", str(out)]) == 0                    # no --cache-dir
+            res = json.loads(out.read_text())
+            assert res["ffmpeg"] == {"version": "4.2.2", "sha256": orig(exe)}, res.get("ffmpeg")
+            assert res["aux_sha256"] == {"aux/diff.pt": orig(ckdir / "aux" / "diff.pt"),
+                                         "aux/ref.safetensors": orig(ckdir / "aux" / "ref.safetensors")}, res.get("aux_sha256")
+            assert sorted(hashed) == sorted(["mock.pth", "diff.pt", "ref.safetensors", "ffmpeg-bench-test"]), hashed
+            bev.cache_meta(eng, PinnedSpec)
+            assert len(hashed) == 4, "a second cache_meta must not rehash an unchanged file"
+            (ckdir / "aux" / "diff.pt").write_bytes(b"diffusion-changed")           # size differs: hashed again
+            assert bev.cache_meta(eng, PinnedSpec)["aux_sha256"]["aux/diff.pt"] == orig(ckdir / "aux" / "diff.pt")
+            bev.get_spec = lambda key: MmdSpec                                      # no aux files / pin: neither key
+            out2 = tmp / "r2.json"
+            assert bev.main(["-m", "waverep", "--benchmark", "pergen", "--data", str(tmp / "data"), "--tag", "t2",
+                             "--out", str(out2)]) == 0
+            res2 = json.loads(out2.read_text())
+            assert "ffmpeg" not in res2 and "aux_sha256" not in res2, list(res2)
+        finally:
+            bev.backend_config.CHECKPOINTS_DIR, bev._sha256, bev.get_engine, bev.get_spec, bev.REPRO, bev.RESULTS_LOG = saved
+            if saved_env is None:
+                os.environ.pop(PinnedSpec.ffmpeg_env, None)
+            else:
+                os.environ[PinnedSpec.ffmpeg_env] = saved_env
+
+
 if __name__ == "__main__":
     test_shards_and_resume()
     test_cache_meta_refusal()
@@ -324,4 +517,7 @@ if __name__ == "__main__":
     test_missing_file_is_not_a_decode_failure()
     test_list_out_needs_shard_and_base()
     test_main_end_to_end()
+    test_own_verdict()
+    test_cache_meta_bare_ffmpeg_name()
+    test_result_records_ffmpeg_and_aux()
     print("OK")

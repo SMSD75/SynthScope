@@ -1,0 +1,91 @@
+{
+  "tag": "nsg_vd_genvideo_split120_ffmpeg902",
+  "model": "nsg_vd",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/genvideo_val_split",
+  "n_generators": 2,
+  "means": {
+    "acc": 87.91,
+    "map": 96.41,
+    "map_real": 97.93,
+    "mauroc": 97.32,
+    "fake_recall_at_fpr": {
+      "0.1": 26.79,
+      "1": 30.12,
+      "5": 90.66
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 25.15,
+      "1": 30.41,
+      "5": 91.81
+    }
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 96.01,
+      "ap_real": 97.56,
+      "auroc": 96.92,
+      "real_acc": 77.5,
+      "fake_acc": 97.5,
+      "acc": 87.5,
+      "n_real": 120,
+      "n_fake": 120,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 24.17,
+        "1": 30.83,
+        "5": 89.17
+      }
+    },
+    "Sora": {
+      "ap": 96.82,
+      "ap_real": 98.3,
+      "auroc": 97.72,
+      "real_acc": 78.57,
+      "fake_acc": 98.04,
+      "acc": 88.31,
+      "n_real": 56,
+      "n_fake": 51,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 29.41,
+        "1": 29.41,
+        "5": 92.16
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 120,
+  "reals": null,
+  "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/cache_nsg_vd_ffmpeg-linux-x86_64-v9.0.2",
+  "date": "2026-11-11T17:06:57",
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "sha256": "0d709a0bed1a43f24cd2c420878c63afea4580671b6949ad19ed124572f3bc3d",
+    "version": "9.0.2"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  },
+  "backfilled_from": "added after the run (the result JSON did not record these then): ffmpeg and aux_sha256 copied from the cache_meta.json of this run's score cache (cache_nsg_vd_ffmpeg-linux-x86_64-v9.0.2/cache_meta.json, saved under SynthScope_shared/nsgvd_bench_out/ss_cache/ by the bench sbatch; its model and ckpt_sha256 equal this file's); the job log repro/logs/nsgvdss_286453.out shows the same ffmpeg binary sha256 and checkpoint/reference hashes."
+}
