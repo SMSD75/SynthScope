@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import cv2
 import numpy as np
 import torch
 from PIL import Image, ImageFile
@@ -27,6 +28,11 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 # Faithful repo decoders.
 from dataset import sample_video_frames  # noqa: E402
 from models.image.cure.preprocess import SRC_FORMAT_KEY  # noqa: E402
+
+class VideoDecodeError(ValueError):
+    """The video file yields no decodable frame (corrupt / empty). A ValueError, so every existing handler still catches
+    it; benchmark/bench_eval_video.py counts and caches only these as failed-to-decode videos."""
+
 
 IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".jfif", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff"}
 VIDEO_EXTENSIONS = {".mp4", ".avi", ".mov", ".mkv", ".webm", ".m4v"}
@@ -81,7 +87,7 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
     reader = decord.VideoReader(str(path), ctx=decord.cpu(0))
     n_src = len(reader)
     if n_src == 0:
-        raise ValueError("Could not decode any frames from the video.")
+        raise VideoDecodeError("Could not decode any frames from the video.")
     n = max(1, min(num_frames, n_src))
     indices = np.linspace(0, n_src - 1, num=n)
     indices = np.clip(np.rint(indices).astype(np.int64), 0, n_src - 1).tolist()
@@ -93,7 +99,7 @@ def sample_video_pil(path: str | Path, num_frames: int) -> list[Image.Image]:
         except Exception:
             continue
     if not frames:
-        raise ValueError("Could not decode any frames from the video.")
+        raise VideoDecodeError("Could not decode any frames from the video.")
     return frames
 
 
@@ -142,13 +148,45 @@ def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int, timeout: fl
             raise ValueError(f"ffmpeg did not finish within {timeout:g} s for this video.") from e
         ids = sorted(int(p.stem) for p in Path(tmp).glob("*.jpg") if p.stem.isdigit())
         if not ids:
-            raise ValueError("ffmpeg wrote no frames for this video.")
+            raise VideoDecodeError("ffmpeg wrote no frames for this video.")
         if len(ids) >= num_frames:
             start = (len(ids) - num_frames) // 2
             ids = ids[start:start + num_frames]
         else:
             ids += [ids[-1]] * (num_frames - len(ids))
         return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
+
+
+def cv2_frames(path: str | Path, limit: int | None = None):
+    """WaveRep's official frame reader (demo/utils.py ``ReadVideoIteratorCV``, vendored in
+    models/video/waverep/official_utils.py): every frame OpenCV's ``VideoCapture`` decodes, in order, converted from BGR
+    to RGB, as PIL images; reading stops at the first failed read, and after ``limit`` frames when it is set (the demo's
+    ``--limit``). A generator, so a long video is never held in memory at once.
+
+    Errors (raised when the generator is first advanced): a path that does not exist is a ``FileNotFoundError`` and a
+    file OpenCV cannot open an ``OSError``; both are I/O problems, not a verdict on the video, so callers do not cache
+    them as decode failures. An existing but empty (0-byte) file is a ``VideoDecodeError``, as is a file that opens but
+    decodes no frame (raised by the caller, which sees the empty iterator)."""
+    path = str(path)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Video file not found: {path}")
+    if os.path.getsize(path) == 0:
+        raise VideoDecodeError("The video file is empty (0 bytes).")
+    cap = cv2.VideoCapture(path)
+    try:
+        if not cap.isOpened():
+            raise OSError(f"OpenCV could not open the video file: {path}")
+        idx = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+            yield Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            idx = idx + 1
+            if limit and idx >= limit:
+                break
+    finally:
+        cap.release()
 
 
 def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:
@@ -163,7 +201,7 @@ def thumbnail_bytes(path: str | Path, modality: str, size: int = 256) -> bytes:
         reader = decord.VideoReader(str(path), ctx=decord.cpu(0))
         n = len(reader)
         if n == 0:
-            raise ValueError("Could not decode any frames from the video.")
+            raise VideoDecodeError("Could not decode any frames from the video.")
         arr = reader[n // 2].asnumpy()             # [H,W,3] uint8, middle frame
         img = Image.fromarray(arr).convert("RGB")
     else:

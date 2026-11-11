@@ -1,0 +1,504 @@
+{
+ "model": "waverep_g4",
+ "paper": "Seeing What Matters: Generalizable AI-generated Video Detection with Forensic-Oriented Augmentation (WaveRep, Corvi, Cozzolino, Prashnani, De Mello, Nagano, Verdoliva, NeurIPS 2025, arXiv 2506.16802)",
+ "arxiv_id": "2506.16802",
+ "official_repo": "https://github.com/grip-unina/WaveRep-SyntheticVideoDetection",
+ "training_set_in_paper": "The paper's main detector is trained on ONE generator (Pyramid Flow) and Table 5 adds CogVideoX 1.5, Allegro and Open-Sora Plan. The official demo README only says that weights_dinov2_G1.ckpt (key waverep) is trained on \"a single generator\" and weights_dinov2_G4.ckpt (key waverep_g4, the demo's default) on \"four generators\"; reading G1 as the paper's Pyramid Flow detector and G4 as the Pyramid Flow + CogVideoX 1.5 + Allegro + Open-Sora Plan set of Table 5 is our inference, not stated in the release. Both are the official checkpoints (no training code released for the model; only the augmentation), so there is no SynthScope-trained number. Metrics: balanced accuracy at 0.5 and AUC (Tables 1-2 and 7); video score = mean logit of the first 64 frames, center-cropped to 504 (App. D). The paper's own test set (7 generators vs 300 Panda-70M YouTube reals) is NOT held: the reals need a YouTube downloader and were not scraped. The only paper-comparable numbers here are the paper's 8 GenVideo columns, scored on GenVideo-Val with its own 10,000 reals (the paper does not say which reals it paired). Everything else is a zero-shot reference row, not a paper reproduction. Protocol is the same for every row: official OpenCV reader, first 64 frames, 504 centre crop, mean logit, threshold logit 0; exact parity with the official demo (15 videos / 6 codecs: inputs bit-exact, video logit max diff 6e-7; 180 GenVideo-Val files, both checkpoints: max |logit diff| 1.05e-5, 0 sign flips).",
+ "benchmarks": [
+  {
+   "name": "GenVideo-Val, the paper's 8 GenVideo generators (reference only: G4 is not the paper's single-generator model)",
+   "datasets": [
+    "GenVideo-Val"
+   ],
+   "subsets_or_generators": [
+    "Crafter",
+    "Gen2",
+    "HotShot",
+    "LaVie",
+    "ModelScope",
+    "MorphStudio",
+    "Show-1",
+    "MoonValley"
+   ],
+   "metric": "balanced accuracy at 0.5 and AUC, mean over the paper's 8 GenVideo columns (full GenVideo-Val, 64 frames)",
+   "paper_number": null,
+   "paper_per_generator": "No paper cell: Table 5 trains G4 on four generators and reports other test sets. The paper's G1 per-generator values are in the waverep spec.",
+   "our_status": "reference",
+   "our_number": {
+    "acc": 96.3,
+    "auroc": 99.05,
+    "per_generator": {
+     "Crafter": {
+      "bacc": 98.9,
+      "auc": 99.98,
+      "n_fake": 1398
+     },
+     "Gen2": {
+      "bacc": 98.9,
+      "auc": 99.99,
+      "n_fake": 1380
+     },
+     "HotShot": {
+      "bacc": 83.4,
+      "auc": 94.15,
+      "n_fake": 700
+     },
+     "LaVie": {
+      "bacc": 97.33,
+      "auc": 99.26,
+      "n_fake": 1400
+     },
+     "ModelScope": {
+      "bacc": 97.54,
+      "auc": 99.69,
+      "n_fake": 700
+     },
+     "MorphStudio": {
+      "bacc": 98.61,
+      "auc": 99.94,
+      "n_fake": 700
+     },
+     "Show-1": {
+      "bacc": 96.83,
+      "auc": 99.43,
+      "n_fake": 700
+     },
+     "MoonValley": {
+      "bacc": 98.89,
+      "auc": 99.98,
+      "n_fake": 626
+     }
+    },
+    "note": "REFERENCE ONLY: G4 is trained on four generators, not the paper's single-generator setting (the paper's G1 values are in the waverep rows). PARTIAL as for G1: GenVideo-Val's own 10,000 reals (the paper's pairing is unstated). Above the paper's G1 on every column but Gen2 AUC, by up to 4.7 bAcc (Show-1)."
+   },
+   "dataset_source": "GenVideo-Val, reals = MSR-VTT; tag waverep_g4_genvideo_full."
+  },
+  {
+   "name": "GenVideo-Val full, 10 generators (zero-shot reference)",
+   "datasets": [
+    "GenVideo-Val"
+   ],
+   "subsets_or_generators": [
+    "Crafter",
+    "Gen2",
+    "HotShot",
+    "Lavie",
+    "ModelScope",
+    "MoonValley",
+    "MorphStudio",
+    "Show_1",
+    "Sora",
+    "WildScrape"
+   ],
+   "metric": "mean over 10 generators: balanced accuracy at 0.5, AP (fake positive), AUROC; 10,000 reals + all fakes",
+   "paper_number": null,
+   "our_status": "reference",
+   "our_number": {
+    "acc": 93.28,
+    "map": 88.88,
+    "auroc": 96.69,
+    "map_real_positive": 99.69,
+    "per_generator": {
+     "Crafter": {
+      "bacc": 98.9,
+      "auroc": 99.98,
+      "n_real": 10000,
+      "n_fake": 1398
+     },
+     "Gen2": {
+      "bacc": 98.9,
+      "auroc": 99.99,
+      "n_real": 10000,
+      "n_fake": 1380
+     },
+     "HotShot": {
+      "bacc": 83.4,
+      "auroc": 94.15,
+      "n_real": 10000,
+      "n_fake": 700
+     },
+     "Lavie": {
+      "bacc": 97.33,
+      "auroc": 99.26,
+      "n_real": 10000,
+      "n_fake": 1400
+     },
+     "ModelScope": {
+      "bacc": 97.54,
+      "auroc": 99.69,
+      "n_real": 10000,
+      "n_fake": 700
+     },
+     "MoonValley": {
+      "bacc": 98.89,
+      "auroc": 99.98,
+      "n_real": 10000,
+      "n_fake": 626
+     },
+     "MorphStudio": {
+      "bacc": 98.61,
+      "auroc": 99.94,
+      "n_real": 10000,
+      "n_fake": 700
+     },
+     "Show_1": {
+      "bacc": 96.83,
+      "auroc": 99.43,
+      "n_real": 10000,
+      "n_fake": 700
+     },
+     "Sora": {
+      "bacc": 76.65,
+      "auroc": 83.61,
+      "n_real": 10000,
+      "n_fake": 56
+     },
+     "WildScrape": {
+      "bacc": 85.77,
+      "auroc": 90.83,
+      "n_real": 10000,
+      "n_fake": 924
+     }
+    },
+    "note": "Zero-shot reference, NOT a paper reproduction (the 8 paper columns are in the row above; Sora and WildScrape have no paper cell). mAP (fake positive) is low because of the 10,000 : 56-1400 class imbalance; AUROC is not affected the same way."
+   },
+   "dataset_source": "tag waverep_g4_genvideo_full."
+  },
+  {
+   "name": "GenVideo-Val --limit 1000 (zero-shot reference)",
+   "datasets": [
+    "GenVideo-Val"
+   ],
+   "subsets_or_generators": [
+    "Crafter",
+    "Gen2",
+    "HotShot",
+    "Lavie",
+    "ModelScope",
+    "MoonValley",
+    "MorphStudio",
+    "Show_1",
+    "Sora",
+    "WildScrape"
+   ],
+   "metric": "mean over 10 generators; first 1000 reals and first 1000 fakes per generator (the D3 protocol)",
+   "paper_number": null,
+   "our_status": "reference",
+   "our_number": {
+    "acc": 92.65,
+    "map": 94.47,
+    "auroc": 96.53,
+    "map_real_positive": 97.33,
+    "per_generator": {
+     "Crafter": {
+      "bacc": 98.3,
+      "auroc": 99.97,
+      "n_real": 1000,
+      "n_fake": 1000
+     },
+     "Gen2": {
+      "bacc": 98.35,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 1000
+     },
+     "HotShot": {
+      "bacc": 82.83,
+      "auroc": 93.75,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "Lavie": {
+      "bacc": 96.15,
+      "auroc": 98.91,
+      "n_real": 1000,
+      "n_fake": 1000
+     },
+     "ModelScope": {
+      "bacc": 96.97,
+      "auroc": 99.61,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "MoonValley": {
+      "bacc": 98.32,
+      "auroc": 99.98,
+      "n_real": 1000,
+      "n_fake": 626
+     },
+     "MorphStudio": {
+      "bacc": 98.04,
+      "auroc": 99.93,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "Show_1": {
+      "bacc": 96.26,
+      "auroc": 99.35,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "Sora": {
+      "bacc": 76.08,
+      "auroc": 83.28,
+      "n_real": 1000,
+      "n_fake": 56
+     },
+     "WildScrape": {
+      "bacc": 85.2,
+      "auroc": 90.55,
+      "n_real": 1000,
+      "n_fake": 924
+     }
+    },
+    "note": "Zero-shot reference, NOT a paper reproduction: the first 1000 clips per class (--limit 1000), so up to 1000 fakes and exactly 1000 reals per generator."
+   },
+   "dataset_source": "tag waverep_g4_genvideo."
+  },
+  {
+   "name": "VideoPhy --limit 1000 (zero-shot reference)",
+   "datasets": [
+    "VideoPhy"
+   ],
+   "subsets_or_generators": [
+    "Dream-Machine",
+    "Gen-2",
+    "LaVie",
+    "OpenSora",
+    "Pika",
+    "SVD",
+    "VideoCrafter2",
+    "ZeroScope"
+   ],
+   "metric": "mean over the 8 generators online; first 1000 reals, up to 1000 fakes per generator",
+   "paper_number": null,
+   "our_status": "reference",
+   "our_number": {
+    "acc": 95.73,
+    "map": 98.2,
+    "auroc": 99.29,
+    "map_real_positive": 99.74,
+    "per_generator": {
+     "Dream-Machine": {
+      "bacc": 98.4,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 339
+     },
+     "Gen-2": {
+      "bacc": 98.4,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 312
+     },
+     "LaVie": {
+      "bacc": 98.4,
+      "auroc": 99.96,
+      "n_real": 1000,
+      "n_fake": 343
+     },
+     "OpenSora": {
+      "bacc": 83.43,
+      "auroc": 96.2,
+      "n_real": 1000,
+      "n_fake": 344
+     },
+     "Pika": {
+      "bacc": 98.4,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 304
+     },
+     "SVD": {
+      "bacc": 98.4,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 344
+     },
+     "VideoCrafter2": {
+      "bacc": 98.25,
+      "auroc": 99.96,
+      "n_real": 1000,
+      "n_fake": 344
+     },
+     "ZeroScope": {
+      "bacc": 92.15,
+      "auroc": 98.22,
+      "n_real": 1000,
+      "n_fake": 344
+     }
+    },
+    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 8 of the 10 VideoPhy generators (dead links skipped). Weakest: OpenSora and ZeroScope."
+   },
+   "dataset_source": "tag waverep_g4_videophy."
+  },
+  {
+   "name": "VidProM --limit 1000 (zero-shot reference)",
+   "datasets": [
+    "VidProM"
+   ],
+   "subsets_or_generators": [
+    "ModelScope",
+    "Pika",
+    "Text2Video-Zero",
+    "VideoCrafter2"
+   ],
+   "metric": "mean over 4 generators (ModelScope, Pika, Text2Video-Zero, VideoCrafter2); first 1000 clips per class",
+   "paper_number": null,
+   "our_status": "reference",
+   "our_number": {
+    "acc": 95.8,
+    "map": 99.29,
+    "auroc": 99.25,
+    "map_real_positive": 99.19,
+    "per_generator": {
+     "ModelScope": {
+      "bacc": 89.4,
+      "auroc": 97.59,
+      "n_real": 1000,
+      "n_fake": 1000
+     },
+     "Pika": {
+      "bacc": 98.35,
+      "auroc": 99.98,
+      "n_real": 1000,
+      "n_fake": 998
+     },
+     "Text2Video-Zero": {
+      "bacc": 97.35,
+      "auroc": 99.53,
+      "n_real": 1000,
+      "n_fake": 1000
+     },
+     "VideoCrafter2": {
+      "bacc": 98.1,
+      "auroc": 99.91,
+      "n_real": 1000,
+      "n_fake": 1000
+     }
+    },
+    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 Pika fakes (00642, 00891) are empty 0-byte files in our copy, so OpenCV decodes no frame; excluded (998 scored). VidProM is non-commercial."
+   },
+   "dataset_source": "tag waverep_g4_vidprom."
+  },
+  {
+   "name": "EvalCrafter (zero-shot reference)",
+   "datasets": [
+    "EvalCrafter"
+   ],
+   "subsets_or_generators": [
+    "MoonValley",
+    "floor33",
+    "gen2",
+    "gen2_december",
+    "hotshot",
+    "lavie-base",
+    "lavie-interpolation",
+    "mix-sr",
+    "modelscope",
+    "pika",
+    "pika_v1_december_1",
+    "show_1",
+    "videocrafter-v1.0",
+    "zeroscope"
+   ],
+   "metric": "mean over 14 generators; the fakes of each generator vs the first 1000 GenVideo-Val MSR-VTT reals",
+   "paper_number": null,
+   "our_status": "reference",
+   "our_number": {
+    "acc": 96.55,
+    "map": 99.19,
+    "auroc": 99.29,
+    "map_real_positive": 99.35,
+    "per_generator": {
+     "MoonValley": {
+      "bacc": 98.32,
+      "auroc": 99.98,
+      "n_real": 1000,
+      "n_fake": 626
+     },
+     "floor33": {
+      "bacc": 98.04,
+      "auroc": 99.93,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "gen2": {
+      "bacc": 98.25,
+      "auroc": 99.99,
+      "n_real": 1000,
+      "n_fake": 681
+     },
+     "gen2_december": {
+      "bacc": 98.4,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 699
+     },
+     "hotshot": {
+      "bacc": 82.83,
+      "auroc": 93.75,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "lavie-base": {
+      "bacc": 98.26,
+      "auroc": 99.94,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "lavie-interpolation": {
+      "bacc": 95.26,
+      "auroc": 98.46,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "mix-sr": {
+      "bacc": 98.4,
+      "auroc": 100.0,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "modelscope": {
+      "bacc": 96.97,
+      "auroc": 99.61,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "pika": {
+      "bacc": 97.97,
+      "auroc": 99.92,
+      "n_real": 1000,
+      "n_fake": 697
+     },
+     "pika_v1_december_1": {
+      "bacc": 98.19,
+      "auroc": 99.91,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "show_1": {
+      "bacc": 96.26,
+      "auroc": 99.35,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "videocrafter-v1.0": {
+      "bacc": 98.26,
+      "auroc": 99.96,
+      "n_real": 1000,
+      "n_fake": 700
+     },
+     "zeroscope": {
+      "bacc": 96.31,
+      "auroc": 99.32,
+      "n_real": 1000,
+      "n_fake": 598
+     }
+    },
+    "note": "Zero-shot reference, NOT a paper reproduction. EvalCrafter has no reals of its own: the reals are the first 1000 GenVideo-Val MSR-VTT videos (--limit 1000), the same for every generator."
+   },
+   "dataset_source": "tag waverep_g4_evalcrafter."
+  }
+ ]
+}

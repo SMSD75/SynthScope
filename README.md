@@ -5,7 +5,7 @@
 [![CI](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml/badge.svg)](https://github.com/SMSD75/SynthScope/actions/workflows/ci.yml)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-🔎 **Check whether an image or video is AI-generated, and see how well 25 published detectors (plus 3 DINO baselines) hold up against today's generators.**
+🔎 **Check whether an image or video is AI-generated, and see how well 26 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
 
 <p align="center">
@@ -185,6 +185,7 @@ methods freeze a large pretrained backbone and train a lightweight head/adapter;
 | `restrav` | **ReStraV** (Internò, 2025) | Geometry of the frame-embedding trajectory in a frozen DINOv2 space, scored by a small MLP. |
 | `stall` | **STALL** (Ben Hayun, CVPR'26) | Training-free: spatio-temporal whitened log-likelihoods under real-video statistics (DINOv3). |
 | `vina_video` | **VINA** (video) | The same model as `vina`, run with the paper's video protocol: ffmpeg writes the clip as JPEG frames at 2 fps and the central frame is scored like an image (sigmoid of the mean frame logit). Needs an ffmpeg binary. |
+| `waverep` / `waverep_g4` | **WaveRep** (Corvi, NeurIPS'25) | A DINOv2 ViT-B/14 with registers fine-tuned end to end on single video frames; the contribution is the training data and a wavelet-band augmentation that pushes the detector towards the diagonal mid-high frequencies generators leave behind. A clip is scored as the mean logit of its first 64 frames (OpenCV, 504 centre crop), `waverep` = "a single generator" per the official demo README (we infer Pyramid Flow, the paper's detector), `waverep_g4` = "four generators" (official weights; GRIP non-profit licence, so not redistributed and not on the Space). |
 
 Image detectors can also score a video: they run frame by frame and average the result.
 
@@ -296,6 +297,7 @@ released weights run through SynthScope; otherwise the number is from our own re
 | Effort | GenImage (8 subsets) · UniversalFakeDetect (19 subsets, ProGAN-trained) | 91.1 acc · 99.41 mAP / 95.19 acc | 89.83 acc (official) · 99.20 mAP / 94.81 acc (trained in SynthScope) | ✅ official weights match; our training reproduces the UFD table (the authors released no ProGAN checkpoint) |
 | MoE-JEPA | SID-Set (3-way: real / fully synthetic / tampered) | 95.54 acc | 96.37 acc (official) | ✅ official weights match |
 | STALL (video) | GenVideo-Val | 80 AUROC | 83.5 AUROC | ✅ reproduced |
+| WaveRep (video) | The 8 GenVideo generators of the paper's Tables 1 and 7 (GenVideo-Val, full data); the paper's own 7-generator test set is not held (YouTube reals) | 94.83 bAcc · 98.03 AUC (mean of the paper's printed per-generator values; `waverep` = the paper's single-generator model) | 90.30 bAcc · 95.73 AUC (official weights; `waverep_g4`, trained on four generators: 96.30 · 99.05) | ⚠️ partial: 5 of the 8 generators within about 2 points; HotShot (60.1 vs 81.4 bAcc), Show-1 (79.7 vs 92.1) and LaVie (92.1 vs 95.5) are **not reproduced** (HotShot: fake recall 21%, AUC 75.6 vs 91.0; cause untested, the paper does not say which reals it paired). The official demo and SynthScope agree on 180 of 180 files (max logit diff 1e-5). Zero-shot rows (VideoPhy, VidProM, EvalCrafter) are in the model README, not paper reproductions |
 | ReStraV (video) | GenVidBench | 93.0 avg. acc (4 Main-task generators) | 93.3 acc on those 4 generators; 92.7 mAP / 86.9 acc on all 8 | ✅ close on the paper's 4 generators (not the paper's train/test split); lower on all 8 (Text2Video-Zero 45.3) |
 | D3 (video) | GenVideo-Val · EvalCrafter · VideoPhy | 98.5 · 98.9 · 99.2 AP | 99.0 · 99.3 · 99.5 AP | ✅ reproduced (official code on our data: 97.9 · 98.7 · 98.8) |
 | SPLIT (video) | GenVideo-Val, MSR-VTT-calibrated (fake recall at FPR 0.1 / 1 / 5%) | 82.1 · 91.7 · 97.2 | 98.9 · 99.9 · 100.0 | ✅ reproduced (official code on our data: 82.2 · 90.2 · 96.9) |

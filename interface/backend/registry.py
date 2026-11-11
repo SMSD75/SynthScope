@@ -121,6 +121,15 @@ def remap_vina(sd: dict) -> dict:
     return {k.replace("module.", ""): v for k, v in sd.items()}
 
 
+def remap_waverep(sd: dict) -> dict:
+    """Official WaveRep checkpoint -> SynthScopeWaveRepModel: the released weights_dinov2_G{1,4}.ckpt are flat timm
+    state dicts; the official create_model also accepts a Lightning ``{"state_dict": {"model.<timm key>": ...}}`` (it keeps
+    the keys starting with ``model`` and drops that prefix). Either way the timm keys go under ``model.``."""
+    if "state_dict" in sd:
+        sd = {k[6:]: v for k, v in sd["state_dict"].items() if k.startswith("model")}
+    return {"model." + k: v for k, v in sd.items()}
+
+
 def remap_probe(sd: dict) -> dict:
     """Official PROBE checkpoint ({"model_state_dict": ...}) -> SynthScopePROBEModel / SynthScopePROBEResNetModel: the
     official evaluate_dino.py / evaluate_resnet.py load ``checkpoint['model_state_dict']`` strictly; the names are the
@@ -172,6 +181,8 @@ class ModelSpec:
     bgr: bool = False                   # feed BGR channels (D3's official reader never converts cv2's BGR)
     # "ffmpeg_fps_center" (VINA): ffmpeg writes JPEG frames at ``fps``, the central ``num_frames`` are read back and
     # each goes through ``transform`` (the image eval preprocessing) instead of the clip settings above.
+    # "cv2_frames" (WaveRep): the first ``num_frames`` frames OpenCV decodes (0: every frame), each through
+    # ``transform`` and scored on its own; P(fake) = sigmoid of the mean frame logit (Engine.video_frame_logits).
     video_sampler: str = ""
     video_prob: str = "softmax"         # video output -> P(fake): softmax[:, 1] of [1, 2] logits, or "sigmoid"
     notes: str = ""
@@ -496,6 +507,32 @@ _add(ModelSpec(
     notes=_VINA_NOTES + "Videos: the official protocol - ffmpeg writes the clip as JPEG frames at 2 fps and the "
                         "central frame is scored with the image preprocessing (needs ffmpeg).",
 ))
+# WaveRep: two released checkpoints. The demo README says G1 is trained on "a single generator" and G4 on "four generators"
+# (the demo's default); we infer the paper's Pyramid Flow detector (Tables 1-2) and its Table 5 set (+ CogVideoX 1.5,
+# Allegro, Open-Sora Plan).
+_WAVEREP_NOTES = ("DINOv2 ViT-B/14 with registers, fine-tuned end to end on single video frames with a forensic "
+                  "augmentation: a fake frame's low-pass and horizontal / vertical wavelet bands are replaced by a "
+                  "real frame's, steering the detector to the diagonal high-frequency bands. Uses the OFFICIAL checkpoint "
+                  "{ckpt} (GRIP license: nonprofit use). The first 64 frames (the paper's protocol) are decoded with "
+                  "OpenCV; each frame's central 504x504 pixels are scored (no resize; a smaller frame is zero-padded) "
+                  "and P(fake) is the sigmoid of the mean frame logit.")
+for _key, _name, _ckpt, _note in [
+    ("waverep", "WaveRep (video)", "waverep.pth", "weights_dinov2_G1, trained on one generator (Pyramid Flow, as we infer)"),
+    ("waverep_g4", "WaveRep-G4 (video)", "waverep_g4.pth", "weights_dinov2_G4, trained on four generators"),
+]:
+    _add(ModelSpec(
+        key=_key, name=_name, paper="Corvi et al., NeurIPS'25",
+        modality="video", predict_kind="video", checkpoint=_ckpt, ckpt_kind="official_waverep", remap=remap_waverep,
+        weights="official",
+        # <key>.pth = the official weights_dinov2_G{1,4}.ckpt unchanged (grip.unina.it, md5 as the demo README); a flat
+        # timm state dict holding the full model, strict load.
+        overrides=["model@ModelConfig=video/waverep"],
+        transform=model_transform("video/waverep"),   # official create_transform: CenterCrop(504), ToTensor, ImageNet
+        # official demo/utils.py: ReadVideoIteratorCV (every cv2 frame, BGR->RGB) limited to the paper's first 64
+        # frames (the demo's --limit 64; without it the demo scores every frame), mean logit, expit.
+        num_frames=64, fps=None, frame_size=504, video_sampler="cv2_frames", video_prob="sigmoid",
+        notes=_WAVEREP_NOTES.format(ckpt=_note),
+    ))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
 for _key, _name, _ckpt, _note in [
@@ -643,6 +680,13 @@ def input_note(spec: ModelSpec) -> dict:
                                f"them {'is' if one else 'are'} scored like an image: the shorter side is scaled to "
                                f"{spec.frame_size} px (bicubic) and the central {spec.frame_size}×{spec.frame_size} "
                                "square is used. This matches the paper's evaluation."}
+    if spec.video_sampler == "cv2_frames":
+        frames = f"The first {spec.num_frames} frames" if spec.num_frames else "Every frame"
+        return {"label": f"{frames}, center {spec.frame_size}",
+                "explanation": f"{frames} of the clip {'are' if spec.num_frames else 'is'} scored one by one: the "
+                               f"central {spec.frame_size}×{spec.frame_size} pixels of each frame are used exactly "
+                               "as they are (no scaling; a smaller frame is padded with black), and the frame scores "
+                               "are averaged. This matches the paper's evaluation."}
     if spec.modality == "video":
         crop = f", after trimming {int(spec.edge_crop * 100)}% off every edge" if spec.edge_crop else ""
         return {"label": f"{spec.num_frames} sampled frames",

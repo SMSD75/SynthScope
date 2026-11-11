@@ -51,6 +51,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | `d3` | D3 (ICCV'25) | Zig-HS/D3 | MIT (repo `LICENSE`) | training-free (no weights) | n/a |
 | `split` | SPLIT (ECCV'26) | mldljyh/SPLIT | MIT (LICENSE added 2026-11-02); no code copied: `models/video/split/split.py` is SynthScope's own implementation of the paper's equations | training-free (no weights) | n/a |
 | `restrav` | ReStraV | ⚠ verify (official repo) | ⚠ verify | — (SynthScope-trained) | n/a (backbone: see below) |
+| `waverep`, `waverep_g4` | WaveRep (NeurIPS'25) | grip-unina/WaveRep-SyntheticVideoDetection | GRIP-UNINA license (`LICENSE.md`): informational and **nonprofit use only** (notices kept, authors credited); `official_utils.py` vendors `demo/utils.py` — see its header | **official** checkpoints (`weights_dinov2_G1.ckpt` / `weights_dinov2_G4.ckpt` from grip.unina.it, md5 as the demo README, loaded as `waverep.pth` / `waverep_g4.pth`; they contain the DINOv2 ViT-B/14 + registers weights) | GRIP-UNINA license (nonprofit use only); not in the model zoo; not on the Space (pending user approval) |
 | `stall` | STALL (CVPR'26) | OmerBenHayun/STALL | CC BY-NC 4.0 (`LICENSE.txt`) | training-free; needs the DINOv3 backbone (and ships the VATEX calibration `.npz`) | DINOv3 License (gated download) |
 
 ## Backbones / foundation models (downloaded on first use)
@@ -61,6 +62,7 @@ third-party components, and every **pretrained checkpoint / backbone** SynthScop
 | OpenAI CLIP ViT-L/14@336 (HF `openai/clip-vit-large-patch14-336`) | `omniaid`, `omniaid_v1`, `omniaid_genimage` | MIT |
 | OpenCLIP (ConvNeXt-XXL, LAION) | `aide` | code MIT; weights per LAION / model card (verify) |
 | DINOv2 (ViT-L/14, ViT-S/14) | `dinov2`, `adapted_dino`, `restrav`, `dda` | Apache-2.0 (verify) |
+| DINOv2 with registers ViT-B/14 (timm `vit_base_patch14_reg4_dinov2.lvd142m`) | `bfree`, `waverep` / `waverep_g4` (their weights are inside the official checkpoints; the timm download is only needed for training) | Apache-2.0 (timm / DINOv2 model card) |
 | DINOv2 with registers ViT-L/14 (HF `facebook/dinov2-with-registers-large`) | `probe` (its weights are inside the PROBE checkpoint; the HF download is only needed for training) | Apache-2.0 (HF model card) |
 | DINOv3 (ViT-L/16) | `dinov3`, `stall`, `vina` / `vina_video` (its weights are inside the VINA checkpoint; the gated HF `facebook/dinov3-vitl16-pretrain-lvd1689m` is only needed for training) | **gated** download — DINOv3 License (use and redistribution allowed with the license and attribution; trade-control restrictions) |
 | DINOv3 ViT-H+/16 (HF `facebook/dinov3-vith16plus-pretrain-lvd1689m`) | `mirror` (its weights are inside the MIRROR checkpoint; the gated download is only needed for training) | **gated** - DINOv3 License |

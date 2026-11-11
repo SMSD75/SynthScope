@@ -12,8 +12,8 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ## 1. What's already integrated
 
-`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (34 registry keys on
-2026-11-10: 29 image, 5 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (36 registry keys on
+2026-11-11: 29 image, 7 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`.
 
@@ -46,6 +46,7 @@ matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch,
 | `split` | video | video | training-free | – | Temporal roughness x spatial patch-level motion incoherence (X-CLIP) |
 | `restrav` | video | video | synthscope | – | Representation-trajectory geometry (DINOv2) |
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
+| `waverep` (+ `waverep_g4`) | video | video | official | – | DINOv2 ViT-B/14 + registers fine-tuned frame by frame with a wavelet-band augmentation; the first 64 frames (OpenCV), center 504 crop, sigmoid of the mean frame logit (`waverep` = trained on one generator, `waverep_g4` on four) |
 | `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
@@ -96,7 +97,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 ## 4. Evaluation / benchmarking
 
 - **Image**: `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
-- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
+- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video|waverep|waverep_g4} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.

@@ -25,7 +25,7 @@ CLIP_MEAN, CLIP_STD = [0.48145466, 0.4578275, 0.40821073], [0.26862954, 0.261302
 DINOV3_MEAN, DINOV3_STD = [0.430, 0.411, 0.296], [0.213, 0.156, 0.143]
 SQUARE_RESIZES = (224, 256, 336, 512)        # resize_<n>: both sides to n (aspect not kept)
 SHORT_RESIZES = (256, 384, 448)              # resize_short_<n>: shorter side to n
-CROPS = (224, 256, 336, 384, 448)            # center_crop_<n> (zero-padded when the image is smaller)
+CROPS = (224, 256, 336, 384, 448, 504)       # center_crop_<n> (zero-padded when the image is smaller)
 # The sized resize / crop names and their allowed sizes; a resize may end in "_bicubic" (default: bilinear).
 _SIZED = re.compile(r"(resize_short|resize|center_crop)_([1-9]\d*)(_bicubic)?")
 _SIZES = {"resize_short": SHORT_RESIZES, "resize": SQUARE_RESIZES, "center_crop": CROPS}

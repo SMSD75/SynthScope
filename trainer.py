@@ -29,6 +29,7 @@ from models.video.d3.d3 import SynthScopeD3Model
 from models.video.split.split import SynthScopeSPLITModel
 from models.video.restrav.restrav import SynthScopeReStraVModel
 from models.video.stall.stall import SynthScopeSTALLModel
+from models.video.waverep.waverep import SynthScopeWaveRepModel
 from metrics import AIGIMetrics
 from dataset import AIGIDatasetModule
 from omegaconf import DictConfig
@@ -142,6 +143,8 @@ class SynthScopeModelTrainer:
             return SynthScopeReStraVModel(config)
         if model_type == "stall":
             return SynthScopeSTALLModel(config)
+        if model_type == "waverep":
+            return SynthScopeWaveRepModel(config)
         if model_type == "cnn":
             return SynthScopeCNNModel(config)
         if model_type == "adapted_dino":
