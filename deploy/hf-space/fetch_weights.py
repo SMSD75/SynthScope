@@ -17,10 +17,11 @@ sys.path.insert(0, str(ROOT))
 # written permission (2026-10-11) to use NPR.pth in this free, non-commercial demo with credit (see LICENSES.md).
 # B-Free's GRIP license allows informational and nonprofit use, which this free demo is; Effort and STALL are CC BY-NC
 # 4.0 (STALL's and the DINOv3 probe's backbone is under the DINOv3 License); SPAI is Apache-2.0 but its MFM backbone is
-# under the S-Lab License (non-commercial use, which this free demo is).
+# under the S-Lab License (non-commercial use, which this free demo is). WaveRep (G1 and G4) is under the same GRIP license as
+# B-Free (informational and nonprofit use); the maintainer approved serving it in this free demo on 2026-11-11.
 DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "dda", "d3qe", "omniaid", "omniaid_v1",
            "omniaid_genimage", "bfree", "effort", "effort_chameleon", "moejepa", "vib_net", "dinov2", "dinov3", "adapted_dino", "spai",
-           "restrav", "stall"]
+           "restrav", "stall", "waverep", "waverep_g4"]
 DINOV3_FILE = "dinov3/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 # Backbones that are not a detector's own <key>.pth, fetched with their licenses when one of those detectors is served.
 BACKBONES = {"stall": [DINOV3_FILE, "dinov3/LICENSE.md"], "dinov3": [DINOV3_FILE, "dinov3/LICENSE.md"],
