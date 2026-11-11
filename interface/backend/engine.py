@@ -156,6 +156,9 @@ def _build_model(cfg):
     if model_type == "waverep":
         from models.video.waverep.waverep import SynthScopeWaveRepModel
         return SynthScopeWaveRepModel(cfg)
+    if model_type == "nsg_vd":
+        from models.video.nsg_vd.nsg_vd import SynthScopeNSGVDModel
+        return SynthScopeNSGVDModel(cfg)
     if model_type == "cnn":
         from models.image.cnn_detection.cnn_detection import SynthScopeCNNModel
         return SynthScopeCNNModel(cfg)
@@ -172,6 +175,12 @@ def _build_model(cfg):
         from models.image.clip_detection.clip_detection import SynthScopeCLIPModel
         return SynthScopeCLIPModel(cfg)
     raise ValueError(f"Invalid model_type: {model_type}")
+
+
+def aux_overrides(spec: ModelSpec) -> list[str]:
+    """Hydra overrides pointing a model at the extra files it reads from the checkpoint folder (``spec.aux_files``, e.g.
+    NSG-VD's diffusion model and reference set)."""
+    return [f"{key}={config.CHECKPOINTS_DIR / name}" for key, name in spec.aux_files.items()]
 
 
 def _load_checkpoint(model, spec: ModelSpec):
@@ -262,8 +271,8 @@ class Engine:
 
     @staticmethod
     def ffmpeg_missing(spec: ModelSpec) -> bool:
-        """True for a detector whose video protocol shells out to ffmpeg (vina_video) when none can be found."""
-        return spec.video_sampler == "ffmpeg_fps_center" and not media.ffmpeg_available()
+        """True for a detector whose video protocol shells out to ffmpeg (vina_video, nsg_vd) when none can be found."""
+        return spec.video_sampler in ("ffmpeg_fps_center", "ffmpeg_select_jpeg") and not media.ffmpeg_available()
 
     def is_available(self, spec: ModelSpec) -> bool:
         if spec.key == "stall":  # training-free, but needs the gated DINOv3 ViT-L/16 weights
@@ -271,6 +280,8 @@ class Engine:
             from .registry import DINOV3_WEIGHTS
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
         if self.ffmpeg_missing(spec):
+            return False
+        if not all((config.CHECKPOINTS_DIR / f).exists() for f in spec.aux_files.values()):
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
@@ -302,7 +313,7 @@ class Engine:
 
             from config_utils import compose_config
 
-            cfg = compose_config(spec.overrides)
+            cfg = compose_config(spec.overrides + aux_overrides(spec))
             model = _build_model(cfg)
             if spec.ckpt_kind != "none":
                 self._status[spec.key] = _load_checkpoint(model, spec)
@@ -484,6 +495,9 @@ class Engine:
         if spec.video_sampler == "ffmpeg_fps_center":   # VINA: ffmpeg JPEG frames, central window, image transform
             frames = media.ffmpeg_fps_frames(path, fps=spec.fps, num_frames=spec.num_frames)
             return torch.stack([spec.transform(f) for f in frames])
+        if spec.video_sampler == "ffmpeg_select_jpeg":  # NSG-VD: every k-th frame as ffmpeg JPEGs, per-frame transform
+            frames = media.ffmpeg_select_frames(path, num_frames=spec.num_frames)
+            return torch.stack([spec.transform(f) for f in frames])
         if spec.video_sampler == "cv2_frames":          # WaveRep: the first num_frames (0: all) OpenCV frames
             frames = [spec.transform(f) for f in media.cv2_frames(path, limit=spec.num_frames or None)]
             if not frames:
@@ -527,6 +541,15 @@ class Engine:
             res = self._result(spec, float(torch.sigmoid(logit)), time.time() - t0)   # official: scipy expit
             res["num_frames"] = int(logits.numel())
             res["logit"] = round(float(logit), 6)
+            return res
+        if spec.video_prob == "mmd":                   # NSG-VD: the official MMD statistic vs its reference set
+            model = self._get_model(spec)
+            t0 = time.time()
+            clip = self.video_clip(spec, path)
+            score = model.score(clip.unsqueeze(0).to(self.device)).double()
+            res = self._result(spec, float(model.fake_probability(score)), time.time() - t0)
+            res["num_frames"] = int(clip.shape[0])
+            res["logit"] = round(float(score), 6)   # the raw statistic (fake if > 1): bench_eval_video ranks by it
             return res
         model = self._get_model(spec)
         clip = self.video_clip(spec, path)

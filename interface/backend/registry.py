@@ -130,6 +130,13 @@ def remap_waverep(sd: dict) -> dict:
     return {"model." + k: v for k, v in sd.items()}
 
 
+def remap_nsg_vd(sd: dict) -> dict:
+    """Official NSG-VD checkpoint ({standard,unbalance}-{Pika,SEINE}-{mp,d}.pth: a ``deep_MMD`` state dict, the kernel
+    parameters + buffers and the TALL discriminator under ``net.``) -> SynthScopeNSGVDModel, which holds the official
+    ``deep_MMD`` as ``mmd``: add the ``mmd.`` prefix (test_dMMD.py loads the same dict strictly)."""
+    return {"mmd." + k: v for k, v in sd.items()}
+
+
 def remap_probe(sd: dict) -> dict:
     """Official PROBE checkpoint ({"model_state_dict": ...}) -> SynthScopePROBEModel / SynthScopePROBEResNetModel: the
     official evaluate_dino.py / evaluate_resnet.py load ``checkpoint['model_state_dict']`` strictly; the names are the
@@ -183,8 +190,15 @@ class ModelSpec:
     # each goes through ``transform`` (the image eval preprocessing) instead of the clip settings above.
     # "cv2_frames" (WaveRep): the first ``num_frames`` frames OpenCV decodes (0: every frame), each through
     # ``transform`` and scored on its own; P(fake) = sigmoid of the mean frame logit (Engine.video_frame_logits).
+    # "ffmpeg_select_jpeg" (NSG-VD): ffmpeg writes every k-th frame (k = frame count // num_frames) as JPEGs, the first
+    # ``num_frames`` are read back and each goes through ``transform``.
     video_sampler: str = ""
-    video_prob: str = "softmax"         # video output -> P(fake): softmax[:, 1] of [1, 2] logits, or "sigmoid"
+    # video output -> P(fake): softmax[:, 1] of [1, 2] logits, "sigmoid", or "mmd" (NSG-VD: the model's raw statistic
+    # through ``model.fake_probability``; the statistic is reported as ``logit``).
+    video_prob: str = "softmax"
+    # Extra files the model reads from the checkpoint folder: {Hydra config key: file name in CHECKPOINTS_DIR}; the
+    # engine passes their paths as overrides and reports the detector unavailable while one is missing.
+    aux_files: dict = field(default_factory=dict)
     notes: str = ""
     # Which weights back the DEFAULT inference checkpoint, surfaced in the web UI:
     #   "official"      = authors' released weights (loaded into the SynthScope class)
@@ -533,6 +547,32 @@ for _key, _name, _ckpt, _note in [
         num_frames=64, fps=None, frame_size=504, video_sampler="cv2_frames", video_prob="sigmoid",
         notes=_WAVEREP_NOTES.format(ckpt=_note),
     ))
+# NSG-VD: the paper's main method is MMD-MP (Eq. 13); its three tables are the three released MMD-MP checkpoints:
+# Table 1 Kinetics-400 + Pika, Table 2 Kinetics-400 + SEINE, Table 3 data-imbalanced (Kinetics-400 + 1,000 SEINE).
+# Default: SEINE (the best released results, assets/nsg-vd-test_results). The MMD-D checkpoints are not registered.
+_NSGVD_NOTES = ("Physics-driven: a pre-trained diffusion model (guided-diffusion 256 uncond) estimates the Normalized "
+                "Spatiotemporal Gradient (spatial score over temporal change) of 8 frames; a deep-kernel MMD between the "
+                "clip's NSG features and 100 real MSR-VTT reference videos (the official reference set) is the score, "
+                "fake above 1. Uses the OFFICIAL checkpoint {ckpt}. Every k-th frame (k = frames // 8) is extracted as "
+                "JPEG by ffmpeg and resized to 224x224 (LANCZOS); needs ffmpeg.")
+for _key, _name, _ckpt, _note in [
+    ("nsg_vd", "NSG-VD (video)", "nsg_vd.pth", "standard-SEINE-mp (Kinetics-400 + SEINE, MMD-MP)"),
+    ("nsg_vd_pika", "NSG-VD-Pika (video)", "nsg_vd_pika.pth", "standard-Pika-mp (Kinetics-400 + Pika, MMD-MP)"),
+    ("nsg_vd_unbalance", "NSG-VD-unbalanced (video)", "nsg_vd_unbalance.pth",
+     "unbalance-SEINE-mp (Kinetics-400 + 1,000 SEINE, MMD-MP)"),
+]:
+    _add(ModelSpec(
+        key=_key, name=_name, paper="Zhang et al., NeurIPS'25",
+        modality="video", predict_kind="video", checkpoint=_ckpt, ckpt_kind="official_nsg_vd", remap=remap_nsg_vd,
+        weights="official",
+        # <key>.pth = the official ckpts/<name>.pth unchanged (a deep_MMD state dict, strict load under mmd.).
+        overrides=["model@ModelConfig=video/nsg_vd"],
+        aux_files={"ModelConfig.diffusion_weights": "256x256_diffusion_uncond.pt",
+                   "ModelConfig.reference_path": "nsg_vd_reference_msrvtt_val100.safetensors"},
+        transform=model_transform("video/nsg_vd"),   # official _preprocess_frame_from_path: LANCZOS 224, /255
+        num_frames=8, fps=None, frame_size=224, video_sampler="ffmpeg_select_jpeg", video_prob="mmd",
+        notes=_NSGVD_NOTES.format(ckpt=_note),
+    ))
 # OmniAID's official eval preprocessing: v2 resizes straight to 336 (data/datasets.py); the v1-era releases used a
 # double resize (512x512, then 336x336) - the commented-out pipeline that the official code says to use for v1 weights.
 for _key, _name, _ckpt, _note in [
@@ -680,6 +720,13 @@ def input_note(spec: ModelSpec) -> dict:
                                f"them {'is' if one else 'are'} scored like an image: the shorter side is scaled to "
                                f"{spec.frame_size} px (bicubic) and the central {spec.frame_size}×{spec.frame_size} "
                                "square is used. This matches the paper's evaluation."}
+    if spec.video_sampler == "ffmpeg_select_jpeg":
+        return {"label": f"{spec.num_frames} evenly spaced frames, {spec.frame_size}×{spec.frame_size}",
+                "explanation": f"{spec.num_frames} frames are taken at an even spacing from the start of the clip "
+                               "(every k-th frame, k = number of frames ÷ "
+                               f"{spec.num_frames}), saved as JPEG by ffmpeg and stretched to "
+                               f"{spec.frame_size}×{spec.frame_size} (the aspect ratio changes). A clip with fewer than "
+                               f"{spec.num_frames} frames cannot be scored. This matches the paper's evaluation."}
     if spec.video_sampler == "cv2_frames":
         frames = f"The first {spec.num_frames} frames" if spec.num_frames else "Every frame"
         return {"label": f"{frames}, center {spec.frame_size}",

@@ -7,6 +7,7 @@ training/eval pipeline does:
 """
 import io
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -155,6 +156,90 @@ def ffmpeg_fps_frames(path: str | Path, fps: float, num_frames: int, timeout: fl
         else:
             ids += [ids[-1]] * (num_frames - len(ids))
         return [open_rgb(Path(tmp) / f"{i}.jpg") for i in ids]
+
+
+def _moviepy_seconds(stamp: str) -> float:
+    """moviepy.tools.convert_to_seconds for an ``HH:MM:SS.ss`` string (same float operations, same order)."""
+    return sum(mult * part for mult, part in zip((1, 60, 3600), reversed([float(p.replace(",", ".")) for p in stamp.split(":")])))
+
+
+def ffmpeg_frame_count(path: str | Path, timeout: float = 60.0) -> int:
+    """The frame count NSG-VD's official code computes for a video (data/video_frames_dataset.py
+    ``get_video_frame_count``: ``int(VideoFileClip(path).fps * VideoFileClip(path).duration)``, moviepy 2.x), without
+    moviepy: moviepy runs ``ffmpeg -hide_banner -i <video>`` and parses its stderr (video/io/ffmpeg_reader.py
+    ``FFmpegInfosParser``); this follows the same rules:
+      * duration: the container's ``  Duration: HH:MM:SS.ss`` line (``convert_to_seconds``);
+      * fps: of the default video stream (the first ``Stream ... Video:`` line ending in ``(default)``, else the first
+        video stream): ``<x> fps``, else ``<x> tbr`` (``k`` = x1000); a value within 0.01 of n*1000/1001 for n in
+        23, 24, 25, 30, 50 becomes exactly n*1000/1001.
+    A file with no duration or no video stream raises ``VideoDecodeError`` (moviepy fails on it and the official code
+    skips the video)."""
+    cmd = [ffmpeg_exe(), "-hide_banner", "-i", str(path)]
+    try:
+        proc = subprocess.run(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+                              timeout=timeout, check=False)
+    except subprocess.TimeoutExpired as e:
+        raise ValueError(f"ffmpeg did not finish within {timeout:g} s for this video.") from e
+    duration, video_lines = None, []
+    for line in proc.stderr.decode("utf8", errors="ignore").splitlines()[1:]:
+        if not line or line[0] != " ":
+            continue
+        if line.startswith("  Duration:") and duration is None:
+            stamp = re.search(r"([0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9])", line.split("Duration: ")[-1])
+            if stamp is None:
+                raise VideoDecodeError("The video has no duration (moviepy, as the official code, cannot read it).")
+            duration = _moviepy_seconds(stamp.group(1))
+        elif re.search(r"^Stream\s#(\d+):(\d+)(?:\[\w+\])?\(?(\w+)?\)?:\sVideo:", line.lstrip()):
+            video_lines.append(line)
+    if duration is None or not video_lines:
+        raise VideoDecodeError("ffmpeg found no video stream / duration in this file.")
+    line = next((v for v in video_lines if v.endswith("(default)")), video_lines[0])
+    fps = re.search(r" (\d+.?\d*) fps", line)
+    if fps is not None:
+        fps = float(fps.group(1))
+    else:
+        tbr = re.search(r" (\d+.?\d*k?) tbr", line)
+        if tbr is None:
+            raise VideoDecodeError("ffmpeg reports no frame rate for this video.")
+        tbr = tbr.group(1)
+        fps = float(tbr[:-1]) * 1000 if tbr[-1] == "k" else float(tbr)
+    coef = 1000.0 / 1001.0
+    for x in [23, 24, 25, 30, 50]:
+        if (fps != x) and abs(fps - x * coef) < 0.01:
+            fps = x * coef
+    return int(fps * duration)
+
+
+def ffmpeg_select_frames(path: str | Path, num_frames: int = 8, timeout: float = 300.0) -> list[Image.Image]:
+    """NSG-VD's official frame extraction (data/video_frames_dataset.py ``process_video``): with ``n`` the moviepy frame
+    count (``ffmpeg_frame_count``) and ``k = max(1, n // num_frames)``, ffmpeg writes the first ``num_frames`` frames
+    whose index is a multiple of ``k`` as JPEGs with its default settings::
+
+        ffmpeg -i <video> -vf select='not(mod(n\\,k))',setpts=N/FRAME_RATE/TB -vframes <num_frames> <dir>/frame%d.jpg
+
+    and they are read back in sorted file-name order (``glob`` + ``sort``). The official dataset drops a video that does
+    not give exactly ``num_frames`` frames; here that is a ``VideoDecodeError``. The JPEG bytes depend on the ffmpeg
+    build (parity checked with the static ffmpeg 7.0.2). The frames are returned as decoded (the official code opens
+    each JPEG and resizes it as is); a non-RGB JPEG (grayscale) is converted to RGB, where the official code would fail."""
+    k = max(1, ffmpeg_frame_count(path) // num_frames)
+    with tempfile.TemporaryDirectory() as tmp:
+        cmd = [ffmpeg_exe(), "-i", str(path), "-vf", f"select=not(mod(n\\,{k})),setpts=N/FRAME_RATE/TB",
+               "-vframes", str(num_frames), os.path.join(tmp, "frame%d.jpg")]
+        try:
+            subprocess.run(cmd, check=False, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL, timeout=timeout)
+        except subprocess.TimeoutExpired as e:
+            raise ValueError(f"ffmpeg did not finish within {timeout:g} s for this video.") from e
+        files = sorted(str(p) for p in Path(tmp).glob("*"))
+        if len(files) != num_frames:
+            raise VideoDecodeError(f"ffmpeg wrote {len(files)} frames for this video; NSG-VD needs {num_frames} "
+                                   "(the official code skips such videos).")
+        frames = []
+        for f in files:
+            with Image.open(f) as im:
+                im.load()
+                frames.append(im.copy() if im.mode == "RGB" else im.convert("RGB"))
+        return frames
 
 
 def cv2_frames(path: str | Path, limit: int | None = None):
