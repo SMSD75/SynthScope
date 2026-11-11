@@ -1,0 +1,82 @@
+{
+  "tag": "nsg_vd_genvideo_split500_ffmpeg902",
+  "model": "nsg_vd",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/genvideo_val_split",
+  "n_generators": 2,
+  "means": {
+    "acc": 88.41,
+    "map": 96.03,
+    "map_real": 97.56,
+    "mauroc": 97.06,
+    "fake_recall_at_fpr": {
+      "0.1": 17.61,
+      "1": 26.11,
+      "5": 88.88
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 5.81,
+      "1": 28.13,
+      "5": 85.84
+    }
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 95.23,
+      "ap_real": 96.81,
+      "auroc": 96.39,
+      "real_acc": 79.8,
+      "fake_acc": 97.2,
+      "acc": 88.5,
+      "n_real": 500,
+      "n_fake": 500,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 5.8,
+        "1": 22.8,
+        "5": 85.6
+      }
+    },
+    "Sora": {
+      "ap": 96.82,
+      "ap_real": 98.3,
+      "auroc": 97.72,
+      "real_acc": 78.57,
+      "fake_acc": 98.04,
+      "acc": 88.31,
+      "n_real": 56,
+      "n_fake": 51,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 29.41,
+        "1": 29.41,
+        "5": 92.16
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": null,
+  "reals": null,
+  "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/nsgvd/bench_ss/cache_nsg_vd_ffmpeg-linux-x86_64-v9.0.2",
+  "date": "2026-11-11T17:06:36",
+  "synthscope_version": "video"
+}
