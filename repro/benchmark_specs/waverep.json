@@ -24,7 +24,7 @@
    "paper_number": {
     "acc": 94.83,
     "auroc": 98.03,
-    "note": "Derived: mean of the 8 printed per-generator values (Table 1 bAcc, Table 7 AUC), 'Ours' = trained on Pyramid Flow only (= waverep, G1)."
+    "note": "Derived: mean of the 8 printed per-generator values (Table 1 bAcc, Table 7 AUC), 'Ours' = the paper's single-generator (Pyramid Flow) detector, which we infer is waverep (G1); the release says only 'a single generator'."
    },
    "paper_per_generator": {
     "Crafter": {
@@ -415,7 +415,7 @@
       "n_fake": 1000
      }
     },
-    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 undecodable Pika fakes (00642, 00891) excluded (998 scored). VidProM is non-commercial."
+    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 Pika fakes (00642, 00891) are empty 0-byte files in our copy, so OpenCV decodes no frame; excluded (998 scored). VidProM is non-commercial."
    },
    "dataset_source": "tag waverep_vidprom."
   },

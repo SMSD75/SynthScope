@@ -377,7 +377,7 @@
       "n_fake": 1000
      }
     },
-    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 undecodable Pika fakes (00642, 00891) excluded (998 scored). VidProM is non-commercial."
+    "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 Pika fakes (00642, 00891) are empty 0-byte files in our copy, so OpenCV decodes no frame; excluded (998 scored). VidProM is non-commercial."
    },
    "dataset_source": "tag waverep_g4_vidprom."
   },

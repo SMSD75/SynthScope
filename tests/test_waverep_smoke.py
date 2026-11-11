@@ -147,8 +147,28 @@ def test_reader() -> None:
         ref64 = [f for _, f in vendored(clip, limit=64)] if vendored else list(official_reader(clip, 64))
         assert len(limited) == len(ref64) == 64
         assert all(np.array_equal(np.asarray(o), np.asarray(r)) for o, r in zip(limited, ref64))
-        assert len(list(media.cv2_frames(os.path.join(tmp, "missing.mp4")))) == 0
-    print("    70 frames bit-exact, limit 64 -> the first 64, a missing file -> no frames")
+        try:
+            list(media.cv2_frames(os.path.join(tmp, "missing.mp4")))
+            raise AssertionError("a missing file must raise FileNotFoundError")
+        except FileNotFoundError:
+            pass
+        empty = os.path.join(tmp, "empty.mp4")
+        open(empty, "wb").close()
+        try:
+            list(media.cv2_frames(empty))
+            raise AssertionError("an empty file must raise VideoDecodeError")
+        except media.VideoDecodeError:
+            pass
+        junk = os.path.join(tmp, "junk.mp4")
+        with open(junk, "wb") as fh:
+            fh.write(b"not a video")
+        try:
+            list(media.cv2_frames(junk))
+            raise AssertionError("an unopenable file must raise OSError")
+        except OSError:
+            pass
+    print("    70 frames bit-exact, limit 64 -> the first 64; missing -> FileNotFoundError, unopenable -> OSError, "
+          "empty -> VideoDecodeError")
 
 
 def test_model_and_loader() -> None:
@@ -191,6 +211,37 @@ def test_model_and_loader() -> None:
           f"strict loads, loss outputs (6, 2) + backward")
 
 
+def test_strict_load_rejects_mismatch() -> None:
+    print("[C2] the strict official load raises on a dropped key, an extra key and a wrong shape ...")
+    spec = get_spec("waverep")
+    assert spec.ckpt_kind.startswith("official")
+    model = model_with(crop=56, tiny=False)
+    flat = {k[len("model."):]: v.clone() for k, v in model.state_dict().items()}
+    dropped = {k: v for k, v in flat.items() if k != "head.weight"}
+    extra = dict(flat, bogus=torch.zeros(1))
+    reshaped = dict(flat, **{"head.weight": torch.zeros(2, flat["head.weight"].shape[1])})
+    saved = backend_config.CHECKPOINTS_DIR
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            backend_config.CHECKPOINTS_DIR = type(saved)(tmp)
+            path = os.path.join(tmp, spec.checkpoint)
+            torch.save(flat, path)
+            assert "(missing=0, unexpected=0)" in _load_checkpoint(model_with(crop=56, tiny=False), spec)   # control
+            for name, sd, needle in (("dropped key", dropped, "missing=['model.head.weight']"),
+                                     ("extra key", extra, "unexpected=['model.bogus']"),
+                                     ("wrong shape", reshaped, "size mismatch")):
+                torch.save(sd, path)
+                try:
+                    _load_checkpoint(model_with(crop=56, tiny=False), spec)
+                except RuntimeError as e:
+                    assert needle in str(e), (name, str(e)[:300])
+                else:
+                    raise AssertionError(f"a {name} must make the strict official load raise")
+    finally:
+        backend_config.CHECKPOINTS_DIR = saved
+    print("    dropped key / extra key / wrong shape -> RuntimeError (control checkpoint loads strictly)")
+
+
 def test_specs_and_engine() -> None:
     print("[D] specs, engine video path == official evaluate, input note, API image guard ...")
     for key in KEYS:
@@ -230,15 +281,29 @@ def test_specs_and_engine() -> None:
             with torch.no_grad():                    # the generic clip path (model(clip) -> mean) agrees
                 p = engine._video_fake_prob(model, spec, stacked)
             assert abs(float(p) - want) < 1e-5
-        empty = os.path.join(tmp, "empty.mp4")
-        with open(empty, "wb") as fh:
+        broken = os.path.join(tmp, "broken.mp4")
+        with open(broken, "wb") as fh:
             fh.write(b"not a video" * 100)
         try:
-            engine.predict_video_clip(get_spec("waverep"), empty)
-        except ValueError as e:
-            assert "Could not decode any frames" in str(e), e
+            engine.predict_video_clip(get_spec("waverep"), broken)
+        except OSError as e:                                # an unopenable file is an I/O error, not a decode verdict
+            assert "could not open" in str(e) and not isinstance(e, media.VideoDecodeError), e
         else:
             raise AssertionError("a broken clip was scored")
+        empty = os.path.join(tmp, "empty0.mp4")
+        open(empty, "wb").close()
+        try:
+            engine.predict_video_clip(get_spec("waverep"), empty)
+        except media.VideoDecodeError as e:                 # a 0-byte file is a (cached) decode failure
+            assert "empty" in str(e), e
+        else:
+            raise AssertionError("an empty clip was scored")
+        try:
+            engine.predict_video_clip(get_spec("waverep"), os.path.join(tmp, "missing.mp4"))
+        except FileNotFoundError:
+            pass
+        else:
+            raise AssertionError("a missing clip was scored")
         open(os.path.join(tmp, "waverep.pth"), "wb").close()
         api = Detector(get_spec("waverep"), checkpoint=os.path.join(tmp, "waverep.pth"), device="cpu")
         try:
@@ -281,6 +346,7 @@ if __name__ == "__main__":
     test_transform()
     test_reader()
     test_model_and_loader()
+    test_strict_load_rejects_mismatch()
     test_specs_and_engine()
     test_released_checkpoints()
     print("OK")

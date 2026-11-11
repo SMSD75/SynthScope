@@ -161,9 +161,21 @@ def cv2_frames(path: str | Path, limit: int | None = None):
     """WaveRep's official frame reader (demo/utils.py ``ReadVideoIteratorCV``, vendored in
     models/video/waverep/official_utils.py): every frame OpenCV's ``VideoCapture`` decodes, in order, converted from BGR
     to RGB, as PIL images; reading stops at the first failed read, and after ``limit`` frames when it is set (the demo's
-    ``--limit``). A generator, so a long video is never held in memory at once."""
-    cap = cv2.VideoCapture(str(path))
+    ``--limit``). A generator, so a long video is never held in memory at once.
+
+    Errors (raised when the generator is first advanced): a path that does not exist is a ``FileNotFoundError`` and a
+    file OpenCV cannot open an ``OSError``; both are I/O problems, not a verdict on the video, so callers do not cache
+    them as decode failures. An existing but empty (0-byte) file is a ``VideoDecodeError``, as is a file that opens but
+    decodes no frame (raised by the caller, which sees the empty iterator)."""
+    path = str(path)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Video file not found: {path}")
+    if os.path.getsize(path) == 0:
+        raise VideoDecodeError("The video file is empty (0 bytes).")
+    cap = cv2.VideoCapture(path)
     try:
+        if not cap.isOpened():
+            raise OSError(f"OpenCV could not open the video file: {path}")
         idx = 0
         while cap.isOpened():
             ret, frame = cap.read()

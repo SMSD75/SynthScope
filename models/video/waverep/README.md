@@ -97,7 +97,7 @@ SynthScope_train is "-": the paper's training code is not released (only the aug
 ### Partial comparison: the paper's 8 GenVideo generators (GenVideo-Val, full data)
 
 Full GenVideo-Val per generator (10,000 reals + all fakes of that generator), 64 frames. Paper = "Ours" in Table 1 (bAcc) and
-Table 7 (AUC), the detector trained on ONE generator (Pyramid Flow) = `waverep` (G1). **G4 has no paper cell in these columns**
+Table 7 (AUC), the paper's single-generator detector (Pyramid Flow) = `waverep` (G1; the release says only "a single generator", so this identity is our inference). **G4 has no paper cell in these columns**
 (Table 5 trains it on four generators and reports other test sets); its columns are for reference only, and G4 is trained on four
 generators, so its numbers are not single-generator generalization.
 
@@ -149,7 +149,7 @@ Caveats:
 * `--limit 1000`: the first 1000 clips per class per generator (the D3 protocol), so exactly 1000 reals and up to 1000 fakes; the full-data GenVideo-Val row has 10,000 reals.
 * **EvalCrafter has no reals of its own.** Its fakes (up to 700 per generator, 14 generators) are scored against the first 1000 GenVideo-Val MSR-VTT reals, the same for every generator; its HotShot, ModelScope, Show-1, MorphStudio and MoonValley cells equal the GenVideo `--limit 1000` cells (same videos).
 * VideoPhy: 8 of its 10 generators are online (dead links skipped). VidProM: ModelScope, Pika, Text2Video-Zero and VideoCrafter2 (the first 1000 clips each; the full set is terabytes); non-commercial licence.
-* **2 undecodable VidProM fakes are excluded** (Pika `00642_pika-9e93dcfc...`, `00891_pika-e025f9ee...`: OpenCV decodes no frame; the official demo would write NaN for them), so Pika has 998 fakes. All other sets: 0 decode failures. Per key the four per-set caches hold 37,859 entries (GenVideo-Val 18,584, VideoPhy 3,674, VidProM 5,000, EvalCrafter 10,601), i.e. 37,857 scored videos plus the 2 undecodable ones; this is a sum over sets, not a unique count (the 1000 EvalCrafter reals are the first 1000 GenVideo-Val reals).
+* **2 empty VidProM fakes are excluded** (Pika `00642_pika-9e93dcfc...`, `00891_pika-e025f9ee...`: 0-byte files in our VidProM copy, so OpenCV decodes no frame; the official demo would write NaN for them), so Pika has 998 fakes. All other sets: 0 decode failures. Per key the four per-set caches hold 37,859 entries (GenVideo-Val 18,584, VideoPhy 3,674, VidProM 5,000, EvalCrafter 10,601), i.e. 37,857 scored videos plus the 2 undecodable ones; this is a sum over sets, not a unique count (the 1000 EvalCrafter reals are the first 1000 GenVideo-Val reals).
 * Weakest cells (G1): VideoPhy OpenSora 62.15 and ZeroScope 63.75 bAcc, VidProM ModelScope 71.55, GenVideo HotShot 60.10 and Sora 67.46. G4 is better on every one of these.
 
 Per generator (bAcc at 0.5 with real / fake accuracy in brackets; AUC):

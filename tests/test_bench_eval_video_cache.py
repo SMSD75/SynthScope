@@ -12,6 +12,8 @@ Checks:
 * decode failures (``VideoDecodeError``) are counted and cached; any other exception (OOM, I/O) is counted separately,
   not cached and retried; a legacy error record (no ``kind``) is classified by its message; a failing raw score of a
   training-free detector drops the video from the raw list only,
+* the real reader ``media.cv2_frames``: a missing / unopenable file is an OSError (not cached, retried), an empty file a
+  decode failure (cached),
 * ``main`` end to end with the mock engine: two shards, then a ``--cache-only`` aggregation with the same JSON means and
   no ``scores.agg*.jsonl``; the output JSON carries limit / reals / ckpt_sha256 / failed_to_decode / failed_other.
 """
@@ -32,6 +34,7 @@ import torch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT), str(ROOT / "interface"), str(ROOT / "benchmark")]
 
+from backend import media                                                        # noqa: E402
 from backend.media import VideoDecodeError                                       # noqa: E402
 
 _spec = importlib.util.spec_from_file_location("bench_eval_video", ROOT / "benchmark" / "bench_eval_video.py")
@@ -231,6 +234,50 @@ def test_failure_kinds():
         assert bev.rank_scores(recs) is None                                                # no logit: P(fake) ranking
 
 
+def test_missing_file_is_not_a_decode_failure():
+    """The real reader (media.cv2_frames) separates I/O problems from decode failures: a missing or unopenable file is an
+    OSError (not cached, retried), an empty file is a VideoDecodeError (cached)."""
+    class ReaderEngine(MockEngine):
+        def predict_video_clip(self, spec, path):               # the engine's check: no frame -> VideoDecodeError
+            self.calls.append(Path(path).name)
+            if not list(media.cv2_frames(path, limit=1)):
+                raise VideoDecodeError("Could not decode any frames from the video.")
+            return {"fake_probability": 0.5, "logit": 0.0}
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        ckpt = tmp / "mock.pth"
+        ckpt.write_bytes(b"w")
+        missing, empty, garbage = tmp / "missing.mp4", tmp / "empty.mp4", tmp / "garbage.mp4"
+        empty.write_bytes(b"")
+        garbage.write_bytes(b"this is not a video file")
+        for p, exc in ((missing, FileNotFoundError), (garbage, OSError), (empty, VideoDecodeError)):
+            try:
+                list(media.cv2_frames(p))
+                raise AssertionError(f"{p.name}: expected {exc.__name__}")
+            except exc as e:
+                assert exc is VideoDecodeError or not isinstance(e, VideoDecodeError), p.name
+        assert issubclass(FileNotFoundError, OSError) and not issubclass(VideoDecodeError, OSError)
+        eng = ReaderEngine(ckpt)
+        cache = bev.ScoreCache(tmp / "c", "t", bev.cache_meta(eng, MockSpec))
+        recs, bad, other = bev.score_videos(eng, MockSpec, [missing, garbage, empty], False, cache)
+        assert (len(recs), bad, other) == (0, 1, 2), (bad, other)          # only the empty file is a decode failure
+        lines = [json.loads(line) for line in (tmp / "c" / "scores.t.jsonl").read_text().splitlines()]
+        assert {r["k"].split("/")[-1]: r["kind"] for r in lines} == {"empty.mp4": "decode"}   # missing / unopenable: not cached
+        eng.calls.clear()
+        bev.score_videos(eng, MockSpec, [missing, garbage, empty], False, cache)
+        assert sorted(eng.calls) == ["garbage.mp4", "missing.mp4"], eng.calls            # retried; the decode failure is not
+
+
+def test_list_out_needs_shard_and_base():
+    for extra in ([], ["--shard", "0/2"], ["--base", "/x"]):
+        try:
+            bev.main(["-m", "waverep", "--benchmark", "pergen", "--data", "/nonexistent", "--list-out", "l.txt"] + extra)
+            raise AssertionError(f"--list-out {extra}: expected an argparse error")
+        except SystemExit as e:
+            assert e.code == 2, (extra, e.code)                  # parser.error, not an AttributeError / TypeError
+
+
 def test_main_end_to_end():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -274,5 +321,7 @@ if __name__ == "__main__":
     test_cache_meta_refusal()
     test_ranking_and_metrics()
     test_failure_kinds()
+    test_missing_file_is_not_a_decode_failure()
+    test_list_out_needs_shard_and_base()
     test_main_end_to_end()
     print("OK")

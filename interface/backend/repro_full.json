@@ -1790,7 +1790,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=98.11 / acc=89.85 / AUROC=98.06",
       "status": "reference",
-      "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 undecodable Pika fakes (00642, 00891) excluded (998 scored). VidProM is non-commercial."
+      "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 Pika fakes (00642, 00891) are empty 0-byte files in our copy, so OpenCV decodes no frame; excluded (998 scored). VidProM is non-commercial."
     },
     {
       "benchmark": "EvalCrafter (zero-shot reference)",
@@ -1862,7 +1862,7 @@
       "ours_synthscope": "",
       "ours_official": "mAP=99.29 / acc=95.8 / AUROC=99.25",
       "status": "reference",
-      "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 undecodable Pika fakes (00642, 00891) excluded (998 scored). VidProM is non-commercial."
+      "note": "Zero-shot reference, NOT a paper reproduction; first 1000 clips per class (--limit 1000); 2 Pika fakes (00642, 00891) are empty 0-byte files in our copy, so OpenCV decodes no frame; excluded (998 scored). VidProM is non-commercial."
     },
     {
       "benchmark": "EvalCrafter (zero-shot reference)",

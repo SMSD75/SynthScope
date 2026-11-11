@@ -313,6 +313,8 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     if args.shard and not (args.cache_dir or args.list_out):
         raise SystemExit("--shard needs --cache-dir (or --list-out)")
+    if args.list_out and not (args.shard and args.base):
+        ap.error("--list-out needs --shard K/N and --base")
 
     if args.score_list:
         if not (args.cache_dir and args.base):
