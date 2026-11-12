@@ -1,0 +1,40 @@
+{
+  "tag": "mx_cure_ditfake",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 93.4,
+    "map": 98.25,
+    "mauroc": 97.48
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 95.19,
+      "auroc": 93.01,
+      "real_acc": 99.66,
+      "fake_acc": 68.5,
+      "acc": 84.08
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 99.6,
+      "fake_acc": 99.96,
+      "acc": 99.78
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.57,
+      "auroc": 99.43,
+      "real_acc": 99.54,
+      "fake_acc": 93.12,
+      "acc": 96.33
+    }
+  },
+  "date": "2026-11-12T03:57:01",
+  "synthscope_version": "0.1.0"
+}

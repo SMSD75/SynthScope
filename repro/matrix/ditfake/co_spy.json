@@ -1,0 +1,40 @@
+{
+  "tag": "mx_co_spy_ditfake",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 96.39,
+    "map": 99.4,
+    "mauroc": 99.41
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.18,
+      "auroc": 99.15,
+      "real_acc": 97.42,
+      "fake_acc": 93.32,
+      "acc": 95.37
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.55,
+      "auroc": 99.6,
+      "real_acc": 97.6,
+      "fake_acc": 96.78,
+      "acc": 97.19
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.48,
+      "auroc": 99.49,
+      "real_acc": 97.32,
+      "fake_acc": 95.9,
+      "acc": 96.61
+    }
+  },
+  "date": "2026-11-12T03:28:32",
+  "synthscope_version": "0.1.0"
+}

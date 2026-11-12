@@ -1,0 +1,40 @@
+{
+  "tag": "mx_adapted_dino_ditfake",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 50.02,
+    "map": 58.36,
+    "mauroc": 59.82
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 49.42,
+      "auroc": 49.8,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 65.16,
+      "auroc": 66.63,
+      "real_acc": 100.0,
+      "fake_acc": 0.06,
+      "acc": 50.03
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 60.5,
+      "auroc": 63.02,
+      "real_acc": 100.0,
+      "fake_acc": 0.06,
+      "acc": 50.03
+    }
+  },
+  "date": "2026-11-12T00:59:40",
+  "synthscope_version": "0.1.0"
+}

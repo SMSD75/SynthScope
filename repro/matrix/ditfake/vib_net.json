@@ -1,0 +1,40 @@
+{
+  "tag": "mx_vib_net_ditfake",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data023/DiTFake/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 88.91,
+    "map": 98.37,
+    "mauroc": 98.27
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 97.03,
+      "auroc": 96.75,
+      "real_acc": 98.78,
+      "fake_acc": 67.74,
+      "acc": 83.26
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 98.96,
+      "auroc": 98.86,
+      "real_acc": 99.02,
+      "fake_acc": 83.94,
+      "acc": 91.48
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.13,
+      "auroc": 99.19,
+      "real_acc": 98.98,
+      "fake_acc": 84.98,
+      "acc": 91.98
+    }
+  },
+  "date": "2026-11-12T01:42:16",
+  "synthscope_version": "0.1.0"
+}
