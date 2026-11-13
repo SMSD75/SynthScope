@@ -1,0 +1,68 @@
+{
+  "tag": "mx_probe_resnet_realchain",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RealChain/test",
+  "jpeg_fakes": null,
+  "n_generators": 7,
+  "means": {
+    "acc": 78.52,
+    "map": 87.79,
+    "mauroc": 88.8
+  },
+  "per_generator": {
+    "Flux1": {
+      "ap": 95.76,
+      "auroc": 95.78,
+      "real_acc": 91.3,
+      "fake_acc": 84.5,
+      "acc": 87.9
+    },
+    "Hunyuan3": {
+      "ap": 88.32,
+      "auroc": 91.06,
+      "real_acc": 91.5,
+      "fake_acc": 65.2,
+      "acc": 78.35
+    },
+    "NanoBanana": {
+      "ap": 89.92,
+      "auroc": 90.93,
+      "real_acc": 89.5,
+      "fake_acc": 72.0,
+      "acc": 80.75
+    },
+    "QwenImage": {
+      "ap": 83.43,
+      "auroc": 87.46,
+      "real_acc": 87.9,
+      "fake_acc": 60.8,
+      "acc": 74.35
+    },
+    "SDv3.5": {
+      "ap": 87.27,
+      "auroc": 89.57,
+      "real_acc": 91.1,
+      "fake_acc": 61.0,
+      "acc": 76.05
+    },
+    "Seedream4": {
+      "ap": 85.34,
+      "auroc": 85.26,
+      "real_acc": 82.4,
+      "fake_acc": 72.9,
+      "acc": 77.65
+    },
+    "i2i": {
+      "ap": 84.46,
+      "auroc": 81.54,
+      "real_acc": 82.9,
+      "fake_acc": 66.3,
+      "acc": 74.6
+    }
+  },
+  "date": "2026-11-13T19:58:47",
+  "synthscope_version": "0.1.0"
+}
