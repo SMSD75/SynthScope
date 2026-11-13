@@ -1,0 +1,44 @@
+{
+  "tag": "mx_probe_rrdataset",
+  "model": "probe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/cache/data029/RRDataset/test",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 76.43,
+    "map": 84.07,
+    "mauroc": 78.84
+  },
+  "per_generator": {
+    "original": {
+      "ap": 95.41,
+      "auroc": 94.3,
+      "real_acc": 97.54,
+      "fake_acc": 76.19,
+      "acc": 86.86
+    },
+    "redigital": {
+      "ap": 71.29,
+      "auroc": 63.54,
+      "real_acc": 98.35,
+      "fake_acc": 29.06,
+      "acc": 63.71
+    },
+    "transfer": {
+      "ap": 85.5,
+      "auroc": 78.67,
+      "real_acc": 93.49,
+      "fake_acc": 63.93,
+      "acc": 78.71
+    }
+  },
+  "date": "2026-11-13T13:45:56",
+  "synthscope_version": "0.1.0",
+  "merged_parts": [
+    "c00-8f5518",
+    "c01-34420c"
+  ]
+}
