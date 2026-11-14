@@ -3,6 +3,10 @@
 **MIRROR: Manifold Ideal Reference ReconstructOR for Generalizable AI-Generated Image Detection** (NeurIPS 2026) —
 [paper (arXiv 2602.02222)](https://arxiv.org/abs/2602.02222) · [official code](https://github.com/handsome-rich/MIRROR)
 
+> **Note (2026-11-14):** the official repository `github.com/handsome-rich/MIRROR` has returned 404 since 2026-11-12
+> (no renamed copy found). The authors' Google Drive checkpoint links still work. SynthScope's integration does not
+> depend on the repository: the model code it needs is vendored in `official_arch.py` (from commit 7f108fd).
+
 MIRROR does not hunt for generator artifacts. It compares the image with what a real image "should" look like: a
 memory bank of real-image prototypes rebuilds an *ideal reference* of the input's DINOv3 features by sparse attention,
 and the gap between the input and its reference (plus how uncertain the retrieval was, plus the global CLS token)
