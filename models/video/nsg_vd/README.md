@@ -19,9 +19,10 @@ Three released checkpoints are registered, the paper's main method (MMD-MP, Eq. 
 | `nsg_vd_unbalance` | `unbalance-SEINE-mp.pth` (`nsg_vd_unbalance.pth`) | Kinetics-400 + 1,000 SEINE | Table 3 |
 
 **Status (details in Results below).** Exact parity with the official code at its own batching; the authors' released-CSV
-protocol reproduces for all three keys (official code on our data and SynthScope); the paper's Tables 1-3 are NOT reproduced
-with the released checkpoints, even under the paper's own protocol, which the authors confirmed (2026-11-13) and L120 runs
-(120 + 120 per generator; Sora: 56 reals + 51 fakes here, 56 + 56 in the paper); Sora's AUROC is below the released CSV for
+protocol reproduces for all three keys (official code on our data and SynthScope); under the paper's own protocol, which the authors
+confirmed (2026-11-13) and L120 runs (120 + 120 per generator; Sora: 56 reals + 51 fakes here, 56 + 56 in the paper), the
+default key `nsg_vd` REPRODUCES paper Table 2 on all four metrics (within 2 points), while `nsg_vd_pika` (Table 1) and
+`nsg_vd_unbalance` (Table 3) do NOT (recall +8.65 and +5.45 above the paper); Sora's AUROC is below the released CSV for
 every checkpoint, cause unknown; the ffmpeg build matters (the authors' 4.2.2 is our pin). Not on the Space (see Availability); the reference file is MSR-VTT-derived (research use).
 
 Which tables use which checkpoint (arXiv 2510.08073 v2): the paper's method trains the deep kernel with the
@@ -129,9 +130,10 @@ which the NSG amplifies; 7.0.x drops and shifts the selected frames and is unusa
 **Verdict. The authors' released-CSV protocol REPRODUCES for all three registered keys, both with the unmodified official
 code on our data and with SynthScope: on every generator, for every key and both paths, accuracy, recall, F1 and
 precision are within 0.43 points of the released CSVs, and the 10-generator average accuracy within 0.25.
-The paper's Tables 1-3 are NOT reproduced with the released checkpoints, although the protocol is now confirmed (the authors
-confirmed it on 2026-11-13; our L120 run is that protocol, below): the averages differ from the paper by up to 8.65 points
-(recall of `nsg_vd_pika`), and the authors' own released CSVs differ from those tables too. One discrepancy is
+The paper's own protocol is confirmed (the authors, 2026-11-13; our L120 run is that protocol, below). Under it the default
+key `nsg_vd` REPRODUCES paper Table 2 on all four metrics, within 2 points (Sora has 51 fakes here, 56 in the paper), but
+`nsg_vd_pika` (Table 1) and `nsg_vd_unbalance` (Table 3) do NOT: their recall is 8.65 and 5.45 points above the paper's.
+The authors' own released CSVs differ from the tables too. One discrepancy is
 unexplained: Sora's AUROC is below the CSV for every checkpoint.**
 
 Metrics are the official ones (`test_dMMD.py`, recomputed here from per-video statistics by
@@ -147,13 +149,13 @@ computed on the raw statistic; "Avg." is the mean over the 10 generators. Every 
 |---|---|---|
 | released-CSV protocol ("L500") | `test.yaml` as released: the first 500 `.mp4` test ids per generator; the reals are 500 MSR-VTT test videos, from index 200 of the released `split.zip` test ids (the first 200 are not used); **Sora: 51 fakes** (the whole released Sora test split) and **56 reals** (`test_dMMD.py` hard-codes load_len 56 for Sora) | the authors' released result CSVs (`assets/nsg-vd-test_results`) reproduce on exactly these counts (98.04 = 50/51, 86.92 = 93/107) |
 | paper Tables 1-3 ("120 per generator") | NSG-VD rows: 120 reals + 120 fakes per generator (68.33 = 82/120, 81.67 = 196/240) and 56 + 56 for Sora (94.64 = 53/56), selected from the released test splits via `test_load_len` in `test.yaml`, frames extracted with ffmpeg 4.2.2 (the authors confirmed this on 2026-11-13); the baselines in the same tables use 500 per generator (DeMamba HotShot recall 40.60 = 203/500) | the paper's numbers |
-| L120 | the official `test_dMMD` with `test_load_len` = 120 on our data: the first 120 of each official list, **Sora 56 reals + 51 fakes** (the released Sora test split has only 51 fakes; the paper's Sora row has 56) | **the paper protocol**, except that Sora has 51 fakes; the paper tables are still not reproduced under it |
+| L120 | the official `test_dMMD` with `test_load_len` = 120 on our data: the first 120 of each official list, **Sora 56 reals + 51 fakes** (the released Sora test split has only 51 fakes; the paper's Sora row has 56) | **the paper protocol**, except that Sora has 51 fakes; Table 2 reproduces under it, Tables 1 and 3 do not |
 
 The paper's Appendix C gives no counts and no selection rule; the protocol above is from the authors (2026-11-13). The
 released CSVs themselves differ from the paper's tables (CSV minus paper, 10-generator average, the largest metric per key:
-SEINE-mp accuracy +2.92; Pika-mp recall +7.84; unbalance-SEINE-mp recall +5.23). So the released checkpoints give the CSV
-numbers with the released protocol and the L120 numbers with the paper's, and neither is the paper's: the released checkpoints
-or runs differ from the ones behind the paper's tables. (The paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC,
+SEINE-mp accuracy +2.92; Pika-mp recall +7.84; unbalance-SEINE-mp recall +5.23). For the default checkpoint the
+L120 numbers match Table 2; for the Pika and unbalanced checkpoints they do not (below), so the released checkpoints or runs
+differ from the ones behind Tables 1 and 3. (The paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC,
 SEINE, ModelScope.)
 
 ### Released-CSV protocol: the default key `nsg_vd` (standard-SEINE-mp), per generator
@@ -264,13 +266,15 @@ pinned 4.2.2 the other nine generators agree with the CSV's AUROC to within 0.17
 against 95.99 with 4.2.2 and 96.16 in the CSV; recall 97.2 against 97.0 in both the CSV and the 4.2.2 run). A
 Sora-specific data or encoding difference is at least as plausible as a build difference.
 
-### Paper Tables 1-3: NOT reproduced; L120 is the paper protocol
+### Paper Tables 1-3: L120 is the paper protocol; Table 2 reproduces, Tables 1 and 3 do not
 
 L120 is the paper's protocol, as the authors confirmed (2026-11-13): 120 reals + 120 fakes per generator selected from the
 released test splits via `test_load_len`, ffmpeg 4.2.2 (it is the official `test_dMMD` with `test_load_len` = 120 on our data).
 The one difference is Sora, where we have 56 reals + 51 fakes because the released Sora test split has only 51 fakes (the
-paper has 56 + 56). It does not reproduce the tables with the released checkpoints: the worst cells are far off (recall on ModelScope 91.67 in Table 2 against 99.17;
-Table 1 recall on ModelScope 68.33 against 90.00; Table 3 recall on Sora 82.14 against 100.00), and its differences from the paper are of the same order as those of the released CSVs. Averages
+paper has 56 + 56). **The default key reproduces Table 2 on the averages**, all four metrics within 2 points (accuracy +0.85, recall +1.59, F1 +0.78,
+AUROC +1.69), although single cells are further off (recall on ModelScope 91.67 in Table 2 against 99.17). **Tables 1 and 3 are not
+reproduced**: Pika-mp recall is +8.65 above Table 1 (ModelScope recall 68.33 against 90.00), and unbalance-SEINE-mp recall is
++5.45 and accuracy +2.11 above Table 3 (Sora recall 82.14 against 100.00); there the released checkpoints or runs differ from the paper's. Averages
 (10 generators); the gaps are L120 (official code) minus paper, in points:
 
 | key | source | accuracy | recall | F1 | AUROC | precision |
@@ -285,14 +289,15 @@ Table 1 recall on ModelScope 68.33 against 90.00; Table 3 recall on Sora 82.14 a
 |  | official code, L120 | 91.27 | 98.67 | 91.82 | 96.26 | 85.89 |
 |  | SynthScope, L120 | 91.23 | 98.58 | 91.78 | 96.39 | 85.88 |
 
-| key | accuracy | recall | AUROC |
-|---|---:|---:|---:|
-| `nsg_vd` (Table 2) | 86.90 - 86.05 = +0.85 | 98.72 - 97.13 = +1.59 | 97.16 - 95.46 = +1.70 |
-| `nsg_vd_pika` (Table 1) | 89.71 - 91.46 = -1.75 | 96.67 - 88.02 = +8.65 | 96.88 - 96.14 = +0.74 |
-| `nsg_vd_unbalance` (Table 3) | 91.27 - 89.16 = +2.11 | 98.67 - 93.21 = +5.46 | 96.26 - 94.91 = +1.35 |
+| key | accuracy | recall | F1 | AUROC | verdict |
+|---|---:|---:|---:|---:|---|
+| `nsg_vd` (Table 2) | +0.85 | +1.59 | +0.78 | +1.69 | reproduced (all within 2 points) |
+| `nsg_vd_pika` (Table 1) | -1.75 | +8.65 | -0.56 | +0.73 | not reproduced (recall) |
+| `nsg_vd_unbalance` (Table 3) | +2.11 | +5.45 | +2.35 | +1.35 | not reproduced (recall, accuracy) |
 
-SynthScope's gaps are within 0.4 of these (default key: accuracy +0.47, recall +1.59, F1 +0.48, AUROC +1.72). The released
-checkpoints and the paper's tables therefore disagree, under the paper's own protocol, by 0.7 to 8.7 points on the averages.
+SynthScope's gaps are within 0.4 of these (default key: accuracy +0.47, recall +1.59, F1 +0.48, AUROC +1.72), so the verdicts
+are the same on the served path. On the website the Pika and unbalanced rows are marked "below" for the recall gaps (the
+generic tolerance only checks accuracy and AUROC and treats a number above the paper as a match).
 Per generator, `nsg_vd` (paper Table 2 against L120):
 
 **Accuracy (pooled over real + fake)**

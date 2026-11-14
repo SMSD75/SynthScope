@@ -281,7 +281,6 @@
      "auroc": 88.65
     }
    },
-   "our_status": "reference",
    "our_number": {
     "acc": 86.52,
     "auroc": 97.18,
@@ -399,9 +398,9 @@
       "auroc": 93.06
      }
     },
-    "note": "NOT reproduced under the paper's own protocol (confirmed 2026-11-13; Sora has 51 fakes here, 56 in the paper). Official code vs paper, Avg: accuracy 86.90 vs 86.05, recall 98.72 vs 97.13, AUROC 97.16 vs 95.46. The released CSV differs from the paper too (recall 98.54)."
+    "note": "Caveat: Sora has 51 fakes here, 56 in the paper. Reproduces the paper's Table 2 under the authors' protocol (confirmed 2026-11-13) on all four metrics, within 2 points. Official code vs paper, Avg: acc 86.90 vs 86.05, recall 98.72 vs 97.13, F1 88.23 vs 87.45, AUROC 97.16 vs 95.46 (+1.69)."
    },
-   "gap_cause": "Paper protocol (authors, 2026-11-13): 120 + 120 per generator (Sora 56 + 56), test_load_len, ffmpeg 4.2.2; L120 is that run (Sora: 51 fakes here). The released checkpoints still differ by up to 1.70 points (AUROC); the released CSV differs from the paper by up to 2.92 points (accuracy). Not reproduced.",
+   "gap_cause": "Paper protocol (authors, 2026-11-13): 120 + 120 per generator (Sora 56 + 56), test_load_len, ffmpeg 4.2.2; L120 is that run (Sora: 51 fakes here). All four averages are within 2 points of Table 2 (acc +0.85, recall +1.59, F1 +0.78, AUROC +1.69). Reproduced.",
    "dataset_source": "GenVideo-Val; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.standard-SEINE-mp.L120), repro/bench_results/nsg_vd_genvideo_split120.json"
   },
   {

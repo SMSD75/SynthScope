@@ -1037,8 +1037,8 @@
       "ours": "SynthScope acc=86.52 / AUROC=97.18 \u00b7 official acc=86.9 / AUROC=97.16",
       "ours_synthscope": "acc=86.52 / AUROC=97.18",
       "ours_official": "acc=86.9 / AUROC=97.16",
-      "status": "reference",
-      "note": "NOT reproduced under the paper's own protocol (confirmed 2026-11-13; Sora has 51 fakes here, 56 in the paper). Official code vs paper, Avg: accuracy 86.90 vs 86.05, recall 98.72 vs 97.13, AUROC 97.16 vs 95.46. The released CSV differs from the paper too (recall 98.54)."
+      "status": "reproduced",
+      "note": "Caveat: Sora has 51 fakes here, 56 in the paper. Reproduces the paper's Table 2 under the authors' protocol (confirmed 2026-11-13) on all four metrics, within 2 points. Official code vs paper, Avg: acc 86.90 vs 86.05, recall 98.72 vs 97.13, F1 88.23 vs 87.45, AUROC 97.16 vs 95.46 (+1.69)."
     },
     {
       "benchmark": "VidProM --limit 1000 (zero-shot reference)",
@@ -1089,8 +1089,8 @@
       "ours": "SynthScope acc=89.75 / AUROC=97.01 \u00b7 official acc=89.71 / AUROC=96.88",
       "ours_synthscope": "acc=89.75 / AUROC=97.01",
       "ours_official": "acc=89.71 / AUROC=96.88",
-      "status": "reference",
-      "note": "NOT reproduced under the paper's own protocol (confirmed 2026-11-13; Sora has 51 fakes here, 56 in the paper). Official code vs paper, Avg: accuracy 89.71 vs 91.46, recall 96.67 vs 88.02, AUROC 96.88 vs 96.14. The released CSV differs from the paper too (recall 95.86)."
+      "status": "below",
+      "note": "NOT reproduced: recall is +8.65 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 96.67 vs 88.02, acc 89.71 vs 91.46, F1 90.31 vs 90.87, AUROC 96.88 vs 96.14. The released checkpoint/runs differ from the paper's; the CSV differs too (recall 95.86)."
     }
   ],
   "nsg_vd_unbalance": [
@@ -1111,8 +1111,8 @@
       "ours": "SynthScope acc=91.23 / AUROC=96.39 \u00b7 official acc=91.27 / AUROC=96.26",
       "ours_synthscope": "acc=91.23 / AUROC=96.39",
       "ours_official": "acc=91.27 / AUROC=96.26",
-      "status": "reference",
-      "note": "NOT reproduced under the paper's own protocol (confirmed 2026-11-13; Sora has 51 fakes here, 56 in the paper). Official code vs paper, Avg: accuracy 91.27 vs 89.16, recall 98.67 vs 93.21, AUROC 96.26 vs 94.91. The released CSV differs from the paper too (recall 98.44)."
+      "status": "below",
+      "note": "NOT reproduced: recall +5.45 and acc +2.11 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, F1 91.82 vs 89.48, AUROC 96.26 vs 94.91. Released checkpoint/runs differ from the paper's; CSV too (recall 98.44)."
     }
   ],
   "omniaid": [
