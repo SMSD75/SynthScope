@@ -241,7 +241,7 @@ VAL = {
     # repro/nsg_vd_benchmark_genvideo_val.json, NOT bench_eval_video's balanced accuracy. "synthscope" = the served path
     # (bench_eval_video), "official" = the unmodified official code on our data (as D3). "released-CSV protocol" = 500 per generator,
     # Sora 51 + 56 (checkpoints.<ckpt>.L500; the "paper" column of that row is the authors' released CSV, not the paper). "paper Table N"
-    # = the first-120 approximation (L120) of the paper's unspecified ~120-per-generator subsets (NOT reproduced). The three
+    # = L120, the paper's own protocol (authors, 2026-11-13: 120 + 120 per generator, Sora 56 + 56, ffmpeg 4.2.2; Sora has 51 fakes here), NOT reproduced. The three
     # zero-shot rows are nsg_vd only (--limit 1000, zero_shot.<set> all_reals). Jobs: SynthScope 286440-286442 / 286717-286719,
     # official code 286533 / 286716 (frames 286532).
     ("nsg_vd", "GenVideo-Val, released-CSV protocol"): {"synthscope": {"acc": 88.96, "auroc": 97.5}, "official": {"acc": 89.22, "auroc": 97.51}},
@@ -266,9 +266,15 @@ VAL = {
 # VINA SynthWildX and WildRF: the paper prints per-subset values only; SynthScope is below it on both (and the unmodified
 # official eval.py gives the same scores on our files, so the gap is the data). The means of the printed values (92.8,
 # 97.13) are within the generic +-2.0 tolerance, which would label them "official".
+# NSG-VD Tables 1 and 3, under the authors' protocol (L120, confirmed 2026-11-13; the SEINE Table 2 row reproduces and needs no
+# override). The tolerance is one-sided (ours >= paper - TOL) and checks only acc and AUROC, so a number ABOVE the paper counts as
+# reproduced. Table 1: acc and AUROC are within tolerance, but recall is +8.65 above the paper, so it is not a reproduction.
+# Table 3: recall is +5.45 and acc +2.11 above the paper, so it is not a reproduction either.
 STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below",
                    ("vina", "SynthWildX (dalle3 / firefly / midjourney_v5)"): "below",
-                   ("vina", "WildRF (facebook / reddit / twitter)"): "below"}
+                   ("vina", "WildRF (facebook / reddit / twitter)"): "below",
+                   ("nsg_vd_pika", "GenVideo-Val, paper Table 1 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below",
+                   ("nsg_vd_unbalance", "GenVideo-Val, paper Table 3 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below"}
 
 # Tolerance (percentage points) for calling a number a reproduction of the paper.
 TOL = {"map": 2.0, "acc": 2.0, "auroc": 2.5}

@@ -10,9 +10,10 @@ Inputs
 Protocols
   L500  test.yaml as released: first 500 test ids per generator, MSR-VTT test reals from index 200 (500), Sora: 51 test
         fakes (the whole released Sora test split) + 56 reals. = the released CSVs' protocol.
-  L120  first 120 of every list (Sora 51 + 56): the per-generator count of the paper's NSG-VD rows (Tables 1-3: e.g.
-        68.33 = 82/120), an APPROXIMATION - the paper does not say how its 120 were chosen, and its Sora row has 56 fakes
-        (94.64 = 53/56) while the released Sora test split has 51.
+  L120  the paper protocol (the authors confirmed, 2026-11-13: Tables 1-3 used 120 reals + 120 fakes per generator, 56 each
+        for Sora, selected from the released test splits via test_load_len in test.yaml, ffmpeg 4.2.2): the official
+        test_dMMD with test_load_len=120 on our data. Our Sora has 56 reals + 51 fakes, because the released Sora test
+        split has only 51 fakes (the paper's Sora row has 56 fakes: 94.64 = 53/56).
 
 Metrics as test_dMMD.py: verdict fake iff statistic > 1; recall / precision / F1 on the fake class; accuracy pooled over
 real + fake; AUROC of the raw statistic; the "Avg." column is the mean over the 10 generators. SynthScope's metrics are
@@ -216,7 +217,7 @@ def main():
     args = ap.parse_args()
     off_dir, lists = Path(args.official), json.loads(Path(args.lists).read_text())
     res = {"protocols": {"L500": "test.yaml: 500 per generator (Sora 51 + 56)",
-                         "L120": "first 120 of every list (Sora 51 + 56): paper per-generator count, approximation"},
+                         "L120": "the paper protocol (test_load_len=120, ffmpeg 4.2.2; authors confirmed 2026-11-13): first 120 of every list, Sora 56 reals + 51 fakes (the released Sora test split has 51 fakes; the paper has 56)"},
            "metric_definitions": "test_dMMD.py: fake iff statistic > 1; recall/precision/F1 on fakes; pooled accuracy; "
                                  "AUROC of the statistic; Avg. = mean of the 10 generators",
            "checkpoints": {}}

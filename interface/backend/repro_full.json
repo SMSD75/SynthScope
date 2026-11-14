@@ -1031,14 +1031,14 @@
       "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 88.96 SynthScope, 89.22 official code, CSV 88.97. Sora AUROC 0.84 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
-      "benchmark": "GenVideo-Val, paper Table 2 (~120 per generator, subsets unspecified) vs the first-120 approximation",
-      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "benchmark": "GenVideo-Val, paper Table 2 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the paper protocol (test_load_len 120, ffmpeg 4.2.2; authors confirmed 2026-11-13), Sora 56 reals + 51 fakes (the paper 56 + 56)",
       "paper": "acc=86.05 / auroc=95.46 / recall=97.13 / f1=87.45",
       "ours": "SynthScope acc=86.52 / AUROC=97.18 \u00b7 official acc=86.9 / AUROC=97.16",
       "ours_synthscope": "acc=86.52 / AUROC=97.18",
       "ours_official": "acc=86.9 / AUROC=97.16",
-      "status": "reference",
-      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 86.52 vs 86.05, recall 98.72 vs 97.13. The authors' released CSV differs from the paper too (recall 98.54)."
+      "status": "reproduced",
+      "note": "Caveat: Sora has 51 fakes here, 56 in the paper. Reproduces the paper's Table 2 under the authors' protocol (confirmed 2026-11-13) on all four metrics, within 2 points. Official code vs paper, Avg: acc 86.90 vs 86.05, recall 98.72 vs 97.13, F1 88.23 vs 87.45, AUROC 97.16 vs 95.46 (+1.69)."
     },
     {
       "benchmark": "VidProM --limit 1000 (zero-shot reference)",
@@ -1083,14 +1083,14 @@
       "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 89.15 SynthScope, 89.42 official code, CSV 89.34. Sora AUROC 0.32 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
-      "benchmark": "GenVideo-Val, paper Table 1 (~120 per generator, subsets unspecified) vs the first-120 approximation",
-      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "benchmark": "GenVideo-Val, paper Table 1 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the paper protocol (test_load_len 120, ffmpeg 4.2.2; authors confirmed 2026-11-13), Sora 56 reals + 51 fakes (the paper 56 + 56)",
       "paper": "acc=91.46 / auroc=96.14 / recall=88.02 / f1=90.87",
       "ours": "SynthScope acc=89.75 / AUROC=97.01 \u00b7 official acc=89.71 / AUROC=96.88",
       "ours_synthscope": "acc=89.75 / AUROC=97.01",
       "ours_official": "acc=89.71 / AUROC=96.88",
-      "status": "reference",
-      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 89.75 vs 91.46, recall 96.75 vs 88.02. The authors' released CSV differs from the paper too (recall 95.86)."
+      "status": "below",
+      "note": "NOT reproduced: recall is +8.65 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 96.67 vs 88.02, acc 89.71 vs 91.46, F1 90.31 vs 90.87, AUROC 96.88 vs 96.14. The released checkpoint/runs differ from the paper's; the CSV differs too (recall 95.86)."
     }
   ],
   "nsg_vd_unbalance": [
@@ -1105,14 +1105,14 @@
       "note": "'Paper' column = the released CSV, not the paper. Reproduces the released CSV (500/generator, Sora 51+56), not the paper's tables. Avg accuracy 90.47 SynthScope, 90.37 official code, CSV 90.37. Sora AUROC 0.37 below the CSV, unexplained. Needs ffmpeg 4.2."
     },
     {
-      "benchmark": "GenVideo-Val, paper Table 3 (~120 per generator, subsets unspecified) vs the first-120 approximation",
-      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+      "benchmark": "GenVideo-Val, paper Table 3 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints",
+      "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the paper protocol (test_load_len 120, ffmpeg 4.2.2; authors confirmed 2026-11-13), Sora 56 reals + 51 fakes (the paper 56 + 56)",
       "paper": "acc=89.16 / auroc=94.91 / recall=93.21 / f1=89.48",
       "ours": "SynthScope acc=91.23 / AUROC=96.39 \u00b7 official acc=91.27 / AUROC=96.26",
       "ours_synthscope": "acc=91.23 / AUROC=96.39",
       "ours_official": "acc=91.27 / AUROC=96.26",
-      "status": "reference",
-      "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 91.23 vs 89.16, recall 98.58 vs 93.21. The authors' released CSV differs from the paper too (recall 98.44)."
+      "status": "below",
+      "note": "NOT reproduced: recall +5.45 and acc +2.11 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, F1 91.82 vs 89.48, AUROC 96.26 vs 94.91. Released checkpoint/runs differ from the paper's; CSV too (recall 98.44)."
     }
   ],
   "omniaid": [
