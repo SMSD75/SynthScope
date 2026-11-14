@@ -241,7 +241,7 @@ VAL = {
     # repro/nsg_vd_benchmark_genvideo_val.json, NOT bench_eval_video's balanced accuracy. "synthscope" = the served path
     # (bench_eval_video), "official" = the unmodified official code on our data (as D3). "released-CSV protocol" = 500 per generator,
     # Sora 51 + 56 (checkpoints.<ckpt>.L500; the "paper" column of that row is the authors' released CSV, not the paper). "paper Table N"
-    # = the first-120 approximation (L120) of the paper's unspecified ~120-per-generator subsets (NOT reproduced). The three
+    # = L120, the paper's own protocol (authors, 2026-11-13: 120 + 120 per generator, Sora 56 + 56, ffmpeg 4.2.2; Sora has 51 fakes here), NOT reproduced. The three
     # zero-shot rows are nsg_vd only (--limit 1000, zero_shot.<set> all_reals). Jobs: SynthScope 286440-286442 / 286717-286719,
     # official code 286533 / 286716 (frames 286532).
     ("nsg_vd", "GenVideo-Val, released-CSV protocol"): {"synthscope": {"acc": 88.96, "auroc": 97.5}, "official": {"acc": 89.22, "auroc": 97.51}},

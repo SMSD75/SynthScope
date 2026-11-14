@@ -205,7 +205,7 @@
    "dataset_source": "GenVideo-Val (ModelScope cccnju/Gen-Video), reals = MSR-VTT; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.unbalance-SEINE-mp.L500), repro/bench_results/nsg_vd_unbalance_genvideo_split500.json"
   },
   {
-   "name": "GenVideo-Val, paper Table 3 (~120 per generator, subsets unspecified) vs the first-120 approximation",
+   "name": "GenVideo-Val, paper Table 3 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints",
    "datasets": [
     "GenVideo-Val"
    ],
@@ -221,13 +221,13 @@
     "Sora",
     "WildScrape"
    ],
-   "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the first 120 of each official list (Sora 51 + 56), an APPROXIMATION of the paper's subsets",
+   "metric": "pooled accuracy and AUROC (fake iff statistic > 1), mean over the 10 generators; L120 = the paper protocol (test_load_len 120, ffmpeg 4.2.2; authors confirmed 2026-11-13), Sora 56 reals + 51 fakes (the paper 56 + 56)",
    "paper_number": {
     "acc": 89.16,
     "auroc": 94.91,
     "recall": 93.21,
     "f1": 89.48,
-    "note": "Paper Table 3 (trained on 10,000 Kinetics-400 reals + 1,000 SEINE fakes), NSG-VD (Ours) row, Avg. column; the test subsets are not specified."
+    "note": "Paper Table 3 (trained on 10,000 Kinetics-400 reals + 1,000 SEINE fakes), NSG-VD (Ours) row, Avg. column; 120 + 120 per generator, Sora 56 + 56 (authors, 2026-11-13)."
    },
    "paper_per_generator": {
     "ModelScope": {
@@ -399,9 +399,9 @@
       "auroc": 93.44
      }
     },
-    "note": "NOT reproduced: the paper's ~120-per-generator subsets are unspecified; first-120 approximation only. Avg accuracy 91.23 vs 89.16, recall 98.58 vs 93.21. The authors' released CSV differs from the paper too (recall 98.44)."
+    "note": "NOT reproduced under the paper's own protocol (confirmed 2026-11-13; Sora has 51 fakes here, 56 in the paper). Official code vs paper, Avg: accuracy 91.27 vs 89.16, recall 98.67 vs 93.21, AUROC 96.26 vs 94.91. The released CSV differs from the paper too (recall 98.44)."
    },
-   "gap_cause": "The paper's NSG-VD rows imply 120 reals + 120 fakes per generator (68.33 = 82/120) and 56 + 56 for Sora, but Appendix C gives no counts or selection rule, test.yaml uses 500, and the released val splits have 62-140 ids for the nine generators other than Sora (Sora's has 5); even the released CSVs differ from the paper by up to 5.23 points on average. Not reproduced.",
+   "gap_cause": "Paper protocol (authors, 2026-11-13): 120 + 120 per generator (Sora 56 + 56), test_load_len, ffmpeg 4.2.2; L120 is that run (Sora: 51 fakes here). The released checkpoints still differ by up to 5.46 points (recall); the released CSV differs from the paper by up to 5.23 points (recall). Not reproduced.",
    "dataset_source": "GenVideo-Val; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.unbalance-SEINE-mp.L120), repro/bench_results/nsg_vd_unbalance_genvideo_split120.json"
   }
  ]

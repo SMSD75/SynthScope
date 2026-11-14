@@ -20,8 +20,9 @@ Three released checkpoints are registered, the paper's main method (MMD-MP, Eq. 
 
 **Status (details in Results below).** Exact parity with the official code at its own batching; the authors' released-CSV
 protocol reproduces for all three keys (official code on our data and SynthScope); the paper's Tables 1-3 are NOT reproduced
-(their ~120-per-generator subsets are unspecified); Sora's AUROC is below the released CSV for every checkpoint, cause unknown;
-the ffmpeg build matters (pinned to 4.2). Not on the Space (see Availability); the reference file is MSR-VTT-derived (research use).
+with the released checkpoints, even under the paper's own protocol, which the authors confirmed (2026-11-13) and L120 runs
+(120 + 120 per generator; Sora: 56 reals + 51 fakes here, 56 + 56 in the paper); Sora's AUROC is below the released CSV for
+every checkpoint, cause unknown; the ffmpeg build matters (the authors' 4.2.2 is our pin). Not on the Space (see Availability); the reference file is MSR-VTT-derived (research use).
 
 Which tables use which checkpoint (arXiv 2510.08073 v2): the paper's method trains the deep kernel with the
 multi-population objective ("we adopt a multi-population aware optimization for the kernel training", Sec. 3.3, Eq. 13),
@@ -121,15 +122,16 @@ scores: `alt_ffmpeg` in `repro/nsg_vd_official_parity_genvideo75.json`, job 2863
 
 The frame counts (`n`, hence the step `k`) are the same under all three builds; 9.0.2 changes only the JPEG encoding,
 which the NSG amplifies; 7.0.x drops and shifts the selected frames and is unusable for this protocol. The registry pins
-4.2 and warns otherwise; which build the authors used is unknown.
+4.2 and warns otherwise; the authors confirmed (2026-11-13) that they used 4.2.2 for frame extraction, which is our pin.
 
 ## Results
 
 **Verdict. The authors' released-CSV protocol REPRODUCES for all three registered keys, both with the unmodified official
 code on our data and with SynthScope: on every generator, for every key and both paths, accuracy, recall, F1 and
 precision are within 0.43 points of the released CSVs, and the 10-generator average accuracy within 0.25.
-The paper's Tables 1-3 are NOT reproduced: the roughly 120-per-generator subsets they were computed on are not specified
-and cannot be reconstructed (below), and even the authors' own released CSVs differ from those tables. One discrepancy is
+The paper's Tables 1-3 are NOT reproduced with the released checkpoints, although the protocol is now confirmed (the authors
+confirmed it on 2026-11-13; our L120 run is that protocol, below): the averages differ from the paper by up to 8.65 points
+(recall of `nsg_vd_pika`), and the authors' own released CSVs differ from those tables too. One discrepancy is
 unexplained: Sora's AUROC is below the CSV for every checkpoint.**
 
 Metrics are the official ones (`test_dMMD.py`, recomputed here from per-video statistics by
@@ -144,29 +146,28 @@ computed on the raw statistic; "Avg." is the mean over the 10 generators. Every 
 | name | what | used for |
 |---|---|---|
 | released-CSV protocol ("L500") | `test.yaml` as released: the first 500 `.mp4` test ids per generator; the reals are 500 MSR-VTT test videos, from index 200 of the released `split.zip` test ids (the first 200 are not used); **Sora: 51 fakes** (the whole released Sora test split) and **56 reals** (`test_dMMD.py` hard-codes load_len 56 for Sora) | the authors' released result CSVs (`assets/nsg-vd-test_results`) reproduce on exactly these counts (98.04 = 50/51, 86.92 = 93/107) |
-| paper Tables 1-3 ("~120 per generator") | NSG-VD rows: the percentages imply 120 reals + 120 fakes per generator (68.33 = 82/120, 81.67 = 196/240) and 56 + 56 for Sora (94.64 = 53/56); the baselines in the same tables use 500 per generator (DeMamba HotShot recall 40.60 = 203/500) | the paper's numbers |
-| L120 (our approximation) | the first 120 of each official list (Sora 51 + 56) | **a labelled approximation of the paper's subsets, not the paper's protocol** |
+| paper Tables 1-3 ("120 per generator") | NSG-VD rows: 120 reals + 120 fakes per generator (68.33 = 82/120, 81.67 = 196/240) and 56 + 56 for Sora (94.64 = 53/56), selected from the released test splits via `test_load_len` in `test.yaml`, frames extracted with ffmpeg 4.2.2 (the authors confirmed this on 2026-11-13); the baselines in the same tables use 500 per generator (DeMamba HotShot recall 40.60 = 203/500) | the paper's numbers |
+| L120 | the official `test_dMMD` with `test_load_len` = 120 on our data: the first 120 of each official list, **Sora 56 reals + 51 fakes** (the released Sora test split has only 51 fakes; the paper's Sora row has 56) | **the paper protocol**, except that Sora has 51 fakes; the paper tables are still not reproduced under it |
 
-The paper's subsets cannot be reconstructed: Appendix C gives no counts and no selection rule, `test.yaml` uses 500, the
-released val splits do not have 120 ids either (62 to 140 per generator for the nine generators other than Sora; Sora's val split has 5), the paper's Sora column has 56 fakes against
-51 in the released test split, and the checkpoint path in `test.yaml` is dated 2025-07-01. The released CSVs themselves differ from the paper's
-tables (CSV minus paper, 10-generator average, the largest metric per key: SEINE-mp accuracy +2.92; Pika-mp recall
-+7.84; unbalance-SEINE-mp recall +5.23). So the released checkpoints with the released protocol give the CSV numbers,
-not the paper's; the paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC (SEINE, ModelScope), so its rows are probably
-other training runs (not verifiable).
+The paper's Appendix C gives no counts and no selection rule; the protocol above is from the authors (2026-11-13). The
+released CSVs themselves differ from the paper's tables (CSV minus paper, 10-generator average, the largest metric per key:
+SEINE-mp accuracy +2.92; Pika-mp recall +7.84; unbalance-SEINE-mp recall +5.23). So the released checkpoints give the CSV
+numbers with the released protocol and the L120 numbers with the paper's, and neither is the paper's: the released checkpoints
+or runs differ from the ones behind the paper's tables. (The paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC,
+SEINE, ModelScope.)
 
 ### Released-CSV protocol: the default key `nsg_vd` (standard-SEINE-mp), per generator
 
 "official code, our data" = the unmodified `test_dMMD.main` (Hydra entry point, the README's command, seed 42, shuffled
 24-video batches, 3 videos per diffusion pass) on our copy of GenVideo-Val; "SynthScope" = `benchmark/bench_eval_video.py`
-(the served path: raw file, one video per pass); the paper row is Table 2 with its unspecified ~120-per-generator subsets
+(the served path: raw file, one video per pass); the paper row is Table 2 (120 per generator, a different protocol)
 and is shown for scale only. The ModelScope .. WildScrape columns use 500 + 500 videos, Sora 56 reals + 51 fakes.
 
 **Accuracy (pooled over real + fake)**
 
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| paper Table 2 (~120 per generator, subset unspecified) | 82.50 | 88.33 | 89.58 | 84.58 | 86.25 | 87.08 | 86.67 | 87.92 | 89.29 | 78.33 | 86.05 |
+| paper Table 2 (120 per generator) | 82.50 | 88.33 | 89.58 | 84.58 | 86.25 | 87.08 | 86.67 | 87.92 | 89.29 | 78.33 | 86.05 |
 | released CSV (authors) | 88.40 | 89.70 | 89.90 | 89.90 | 89.90 | 89.20 | 89.80 | 89.40 | 86.92 | 86.60 | 88.97 |
 | official code, our data | 88.70 | 89.90 | 90.20 | 90.20 | 90.20 | 89.50 | 90.10 | 89.70 | 86.92 | 86.80 | 89.22 |
 | SynthScope | 88.40 | 89.70 | 89.90 | 89.90 | 89.90 | 89.20 | 89.80 | 89.40 | 86.92 | 86.50 | 88.96 |
@@ -175,7 +176,7 @@ and is shown for scale only. The ModelScope .. WildScrape columns use 500 + 500 
 
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| paper Table 2 (~120 per generator, subset unspecified) | 91.67 | 100.00 | 100.00 | 100.00 | 100.00 | 98.33 | 100.00 | 97.50 | 94.64 | 89.17 | 97.13 |
+| paper Table 2 (120 per generator) | 91.67 | 100.00 | 100.00 | 100.00 | 100.00 | 98.33 | 100.00 | 97.50 | 94.64 | 89.17 | 97.13 |
 | released CSV (authors) | 97.00 | 99.60 | 100.00 | 100.00 | 100.00 | 98.60 | 99.80 | 99.00 | 98.04 | 93.40 | 98.54 |
 | official code, our data | 97.00 | 99.40 | 100.00 | 100.00 | 100.00 | 98.60 | 99.80 | 99.00 | 98.04 | 93.20 | 98.50 |
 | SynthScope | 97.00 | 99.60 | 100.00 | 100.00 | 100.00 | 98.60 | 99.80 | 99.00 | 98.04 | 93.20 | 98.52 |
@@ -184,7 +185,7 @@ and is shown for scale only. The ModelScope .. WildScrape columns use 500 + 500 
 
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| paper Table 2 (~120 per generator, subset unspecified) | 83.97 | 89.55 | 90.57 | 86.64 | 87.91 | 88.39 | 88.24 | 88.97 | 89.83 | 80.45 | 87.45 |
+| paper Table 2 (120 per generator) | 83.97 | 89.55 | 90.57 | 86.64 | 87.91 | 88.39 | 88.24 | 88.97 | 89.83 | 80.45 | 87.45 |
 | released CSV (authors) | 89.32 | 90.63 | 90.83 | 90.83 | 90.83 | 90.13 | 90.73 | 90.33 | 87.72 | 87.45 | 89.88 |
 | official code, our data | 89.57 | 90.78 | 91.07 | 91.07 | 91.07 | 90.38 | 90.98 | 90.58 | 87.72 | 87.59 | 90.08 |
 | SynthScope | 89.32 | 90.63 | 90.83 | 90.83 | 90.83 | 90.13 | 90.73 | 90.33 | 87.72 | 87.35 | 89.87 |
@@ -193,7 +194,7 @@ and is shown for scale only. The ModelScope .. WildScrape columns use 500 + 500 
 
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| paper Table 2 (~120 per generator, subset unspecified) | 90.67 | 97.62 | 98.38 | 95.88 | 96.69 | 97.87 | 97.64 | 95.09 | 96.14 | 88.65 | 95.46 |
+| paper Table 2 (120 per generator) | 90.67 | 97.62 | 98.38 | 95.88 | 96.69 | 97.87 | 97.64 | 95.09 | 96.14 | 88.65 | 95.46 |
 | released CSV (authors) | 96.16 | 98.34 | 99.73 | 99.22 | 98.34 | 97.76 | 99.13 | 96.81 | 96.92 | 94.41 | 97.68 |
 | official code, our data | 96.04 | 98.26 | 99.71 | 99.16 | 98.20 | 97.66 | 99.08 | 96.68 | 96.04 | 94.30 | 97.51 |
 | SynthScope | 95.99 | 98.26 | 99.73 | 99.18 | 98.19 | 97.64 | 99.08 | 96.65 | 96.08 | 94.25 | 97.50 |
@@ -211,20 +212,20 @@ Per-generator tables for `nsg_vd_pika`, `nsg_vd_unbalance` and the three unregis
 
 ### Released-CSV protocol: averages for all three registered keys
 
-10-generator averages. The paper rows are the Avg. column of Tables 1-3 (~120 per generator, unspecified subsets; precision
+10-generator averages. The paper rows are the Avg. column of Tables 1-3 (120 per generator; precision
 is not printed).
 
 | key = checkpoint | source | accuracy | recall | F1 | AUROC | precision |
 |---|---|---:|---:|---:|---:|---:|
-| `nsg_vd` = standard-SEINE-mp | paper Table 2 (~120/gen) | 86.05 | 97.13 | 87.45 | 95.46 | - |
+| `nsg_vd` = standard-SEINE-mp | paper Table 2 (120/gen) | 86.05 | 97.13 | 87.45 | 95.46 | - |
 |  | released CSV | 88.97 | 98.54 | 89.88 | 97.68 | 82.63 |
 |  | official code, our data | 89.22 | 98.50 | 90.08 | 97.51 | 83.00 |
 |  | SynthScope | 88.96 | 98.52 | 89.87 | 97.50 | 82.63 |
-| `nsg_vd_pika` = standard-Pika-mp | paper Table 1 (~120/gen) | 91.46 | 88.02 | 90.87 | 96.14 | - |
+| `nsg_vd_pika` = standard-Pika-mp | paper Table 1 (120/gen) | 91.46 | 88.02 | 90.87 | 96.14 | - |
 |  | released CSV | 89.34 | 95.86 | 89.90 | 96.80 | 84.73 |
 |  | official code, our data | 89.42 | 95.84 | 89.97 | 96.69 | 84.87 |
 |  | SynthScope | 89.15 | 95.84 | 89.74 | 96.75 | 84.46 |
-| `nsg_vd_unbalance` = unbalance-SEINE-mp | paper Table 3 (~120/gen) | 89.16 | 93.21 | 89.48 | 94.91 | - |
+| `nsg_vd_unbalance` = unbalance-SEINE-mp | paper Table 3 (120/gen) | 89.16 | 93.21 | 89.48 | 94.91 | - |
 |  | released CSV | 90.37 | 98.44 | 91.04 | 96.95 | 84.68 |
 |  | official code, our data | 90.37 | 98.44 | 91.04 | 96.83 | 84.68 |
 |  | SynthScope | 90.47 | 98.46 | 91.12 | 96.90 | 84.82 |
@@ -256,19 +257,21 @@ Sora's recall and accuracy equal the CSV (the same 56 + 51 videos), but its AURO
 
 The gap is 0.84 to 0.88 below the CSV for five of the six checkpoints on the official path, and 0.46 for standard-Pika-mp;
 SynthScope's gaps are 0.84 (SEINE-mp), 0.32 (Pika-mp) and 0.37 (unbalance-SEINE-mp). **We do not know the cause.** Candidates,
-none verified: the authors' ffmpeg build (with 9.0.2 instead of 4.2.2 the SEINE-mp Sora AUROC is 97.72, above the CSV's 96.92,
+none verified: the ffmpeg build (the authors confirmed 4.2.2 for the paper's frames, our pin, so a different version is not the explanation if the CSVs used it too; with 9.0.2 instead of 4.2.2 the SEINE-mp Sora AUROC is 97.72, above the CSV's 96.92,
 against 96.08 with 4.2.2); a different copy or encode of the Sora files (they are long, high-resolution clips, and
 GenVideo has several copies); a different reference or score cache state. Counter-evidence against a global build effect: under the
 pinned 4.2.2 the other nine generators agree with the CSV's AUROC to within 0.17, and with 9.0.2 ModelScope moves away from the CSV, not towards it (AUROC 96.39
 against 95.99 with 4.2.2 and 96.16 in the CSV; recall 97.2 against 97.0 in both the CSV and the 4.2.2 run). A
 Sora-specific data or encoding difference is at least as plausible as a build difference.
 
-### Paper Tables 1-3: NOT reproduced; L120 approximation
+### Paper Tables 1-3: NOT reproduced; L120 is the paper protocol
 
-L120 is our approximation of the paper's ~120-per-generator subsets (the first 120 of each official list; Sora 51 + 56).
-It does not reproduce the tables either: the worst cells are far off (recall on ModelScope 91.67 in Table 2 against 99.17;
+L120 is the paper's protocol, as the authors confirmed (2026-11-13): 120 reals + 120 fakes per generator selected from the
+released test splits via `test_load_len`, ffmpeg 4.2.2 (it is the official `test_dMMD` with `test_load_len` = 120 on our data).
+The one difference is Sora, where we have 56 reals + 51 fakes because the released Sora test split has only 51 fakes (the
+paper has 56 + 56). It does not reproduce the tables with the released checkpoints: the worst cells are far off (recall on ModelScope 91.67 in Table 2 against 99.17;
 Table 1 recall on ModelScope 68.33 against 90.00; Table 3 recall on Sora 82.14 against 100.00), and its differences from the paper are of the same order as those of the released CSVs. Averages
-(10 generators):
+(10 generators); the gaps are L120 (official code) minus paper, in points:
 
 | key | source | accuracy | recall | F1 | AUROC | precision |
 |---|---|---:|---:|---:|---:|---:|
@@ -282,16 +285,23 @@ Table 1 recall on ModelScope 68.33 against 90.00; Table 3 recall on Sora 82.14 a
 |  | official code, L120 | 91.27 | 98.67 | 91.82 | 96.26 | 85.89 |
 |  | SynthScope, L120 | 91.23 | 98.58 | 91.78 | 96.39 | 85.88 |
 
-L120 minus paper for the default key (average, official code / SynthScope): accuracy +0.85 / +0.47, recall +1.59 / +1.59,
-F1 +0.78 / +0.48, AUROC +1.70 / +1.72. Per generator, `nsg_vd` (paper Table 2 against the approximation):
+| key | accuracy | recall | AUROC |
+|---|---:|---:|---:|
+| `nsg_vd` (Table 2) | 86.90 - 86.05 = +0.85 | 98.72 - 97.13 = +1.59 | 97.16 - 95.46 = +1.70 |
+| `nsg_vd_pika` (Table 1) | 89.71 - 91.46 = -1.75 | 96.67 - 88.02 = +8.65 | 96.88 - 96.14 = +0.74 |
+| `nsg_vd_unbalance` (Table 3) | 91.27 - 89.16 = +2.11 | 98.67 - 93.21 = +5.46 | 96.26 - 94.91 = +1.35 |
+
+SynthScope's gaps are within 0.4 of these (default key: accuracy +0.47, recall +1.59, F1 +0.48, AUROC +1.72). The released
+checkpoints and the paper's tables therefore disagree, under the paper's own protocol, by 0.7 to 8.7 points on the averages.
+Per generator, `nsg_vd` (paper Table 2 against L120):
 
 **Accuracy (pooled over real + fake)**
 
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | paper Table 2 | 82.50 | 88.33 | 89.58 | 84.58 | 86.25 | 87.08 | 86.67 | 87.92 | 89.29 | 78.33 | 86.05 |
-| official code, L120 approximation | 87.08 | 87.50 | 87.50 | 87.50 | 87.50 | 86.25 | 87.50 | 87.08 | 86.92 | 84.17 | 86.90 |
-| SynthScope, L120 approximation | 86.67 | 87.08 | 87.08 | 87.08 | 87.08 | 85.83 | 87.08 | 86.67 | 86.92 | 83.75 | 86.52 |
+| official code, L120 | 87.08 | 87.50 | 87.50 | 87.50 | 87.50 | 86.25 | 87.50 | 87.08 | 86.92 | 84.17 | 86.90 |
+| SynthScope, L120 | 86.67 | 87.08 | 87.08 | 87.08 | 87.08 | 85.83 | 87.08 | 86.67 | 86.92 | 83.75 | 86.52 |
 | released CSV (L500, for scale) | 88.40 | 89.70 | 89.90 | 89.90 | 89.90 | 89.20 | 89.80 | 89.40 | 86.92 | 86.60 | 88.97 |
 
 **Recall (fake class)**
@@ -299,8 +309,8 @@ F1 +0.78 / +0.48, AUROC +1.70 / +1.72. Per generator, `nsg_vd` (paper Table 2 ag
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | paper Table 2 | 91.67 | 100.00 | 100.00 | 100.00 | 100.00 | 98.33 | 100.00 | 97.50 | 94.64 | 89.17 | 97.13 |
-| official code, L120 approximation | 99.17 | 100.00 | 100.00 | 100.00 | 100.00 | 97.50 | 100.00 | 99.17 | 98.04 | 93.33 | 98.72 |
-| SynthScope, L120 approximation | 99.17 | 100.00 | 100.00 | 100.00 | 100.00 | 97.50 | 100.00 | 99.17 | 98.04 | 93.33 | 98.72 |
+| official code, L120 | 99.17 | 100.00 | 100.00 | 100.00 | 100.00 | 97.50 | 100.00 | 99.17 | 98.04 | 93.33 | 98.72 |
+| SynthScope, L120 | 99.17 | 100.00 | 100.00 | 100.00 | 100.00 | 97.50 | 100.00 | 99.17 | 98.04 | 93.33 | 98.72 |
 | released CSV (L500, for scale) | 97.00 | 99.60 | 100.00 | 100.00 | 100.00 | 98.60 | 99.80 | 99.00 | 98.04 | 93.40 | 98.54 |
 
 **AUROC**
@@ -308,8 +318,8 @@ F1 +0.78 / +0.48, AUROC +1.70 / +1.72. Per generator, `nsg_vd` (paper Table 2 ag
 | source | ModelScope | MorphStudio | MoonValley | HotShot | Show-1 | Gen2 | Crafter | LaVie | Sora | WildScrape | **Avg.** |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | paper Table 2 | 90.67 | 97.62 | 98.38 | 95.88 | 96.69 | 97.87 | 97.64 | 95.09 | 96.14 | 88.65 | 95.46 |
-| official code, L120 approximation | 96.42 | 98.35 | 99.78 | 98.93 | 97.84 | 96.29 | 98.74 | 96.10 | 96.04 | 93.06 | 97.16 |
-| SynthScope, L120 approximation | 96.44 | 98.40 | 99.79 | 98.98 | 97.88 | 96.28 | 98.82 | 96.11 | 96.08 | 93.01 | 97.18 |
+| official code, L120 | 96.42 | 98.35 | 99.78 | 98.93 | 97.84 | 96.29 | 98.74 | 96.10 | 96.04 | 93.06 | 97.16 |
+| SynthScope, L120 | 96.44 | 98.40 | 99.79 | 98.98 | 97.88 | 96.28 | 98.82 | 96.11 | 96.08 | 93.01 | 97.18 |
 | released CSV (L500, for scale) | 96.16 | 98.34 | 99.73 | 99.22 | 98.34 | 97.76 | 99.13 | 96.81 | 96.92 | 94.41 | 97.68 |
 
 
@@ -347,7 +357,7 @@ and shuffled batches of 24 for the net and the MMD, so a video's statistic diffe
 
 ### ffmpeg build sensitivity (9.0.2 against the pinned 4.2.2)
 
-The official code uses whatever ffmpeg is on the PATH; the authors' build is unknown. The pin (`$SYNTHSCOPE_FFMPEG_NSG_VD`, 4.2.x)
+The official code uses whatever ffmpeg is on the PATH; the authors used 4.2.2 for the paper (confirmed 2026-11-13). The pin (`$SYNTHSCOPE_FFMPEG_NSG_VD`, 4.2.x)
 is ours. 7.0.2 is unusable: it drops frames and selects different ones (68 of 75 parity videos give 8 frames, and on those
 the frames differ by 25 grey levels on average; `repro/nsg_vd_ffmpeg_builds_genvideo75.json`). 9.0.2 gives the same frames
 re-encoded, but the NSG amplifies the JPEG difference. SynthScope, `nsg_vd`, job 286453 (the only generators scored with 9.0.2):
@@ -409,8 +419,8 @@ mAUROC 95.49 / 97.88 / 97.79, mAP 93.63 / 90.91 / 94.71). Averages over the gene
   zero-shot 286717-286719, ffmpeg builds 286412, parity 286253 / 286389. The `data_root` / `cache_dir` paths in `repro/bench_results/nsg_vd*.json`
   point at node-local scratch (`.../_tmp/nsgvd/...`) of ivi-cn029, which is not part of the repository; the comparison JSON is
   regenerated from the per-video caches by `repro/nsg_vd_bench_compare.py`. Logs: `repro/logs/nsgvd*`.
-* **Result files.** `repro/bench_results/nsg_vd{,_pika,_unbalance}_genvideo_split{500,120}.json` (the `split120` files are the L120 approximation of
-  the same cache, not the paper's protocol), `..._ffmpeg902.json`, `nsg_vd_{vidprom,videophy,evalcrafter}.json`; website data in
+* **Result files.** `repro/bench_results/nsg_vd{,_pika,_unbalance}_genvideo_split{500,120}.json` (the `split120` files are L120, the paper protocol, scored from
+  the same cache), `..._ffmpeg902.json`, `nsg_vd_{vidprom,videophy,evalcrafter}.json`; website data in
   `repro/benchmark_specs/nsg_vd*.json`.
 
 ## Availability

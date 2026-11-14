@@ -1,7 +1,7 @@
 {
  "protocols": {
   "L500": "test.yaml: 500 per generator (Sora 51 + 56)",
-  "L120": "first 120 of every list (Sora 51 + 56): paper per-generator count, approximation"
+  "L120": "the paper protocol (test_load_len=120, ffmpeg 4.2.2; authors confirmed 2026-11-13): first 120 of every list, Sora 56 reals + 51 fakes (the released Sora test split has 51 fakes; the paper has 56)"
  },
  "metric_definitions": "test_dMMD.py: fake iff statistic > 1; recall/precision/F1 on fakes; pooled accuracy; AUROC of the statistic; Avg. = mean of the 10 generators",
  "checkpoints": {
