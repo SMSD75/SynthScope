@@ -22,7 +22,7 @@ Three released checkpoints are registered, the paper's main method (MMD-MP, Eq. 
 protocol reproduces for all three keys (official code on our data and SynthScope); under the paper's own protocol, which the authors
 confirmed (2026-11-13) and L120 runs (120 + 120 per generator; Sora: 56 reals + 51 fakes here, 56 + 56 in the paper), the
 default key `nsg_vd` REPRODUCES paper Table 2 on all four metrics (within 2 points), while `nsg_vd_pika` (Table 1) and
-`nsg_vd_unbalance` (Table 3) do NOT (recall +8.65 and +5.45 above the paper); Sora's AUROC is below the released CSV for
+`nsg_vd_unbalance` (Table 3) do NOT (recall +8.65 and +5.45 above the paper; the released checkpoints are separate runs, not those behind the tables, the authors confirmed 2026-11-15); Sora's AUROC is below the released CSV for
 every checkpoint, cause unknown; the ffmpeg build matters (the authors' 4.2.2 is our pin). Not on the Space (see Availability); the reference file is MSR-VTT-derived (research use).
 
 Which tables use which checkpoint (arXiv 2510.08073 v2): the paper's method trains the deep kernel with the
@@ -133,7 +133,8 @@ precision are within 0.43 points of the released CSVs, and the 10-generator aver
 The paper's own protocol is confirmed (the authors, 2026-11-13; our L120 run is that protocol, below). Under it the default
 key `nsg_vd` REPRODUCES paper Table 2 on all four metrics, within 2 points (Sora has 51 fakes here, 56 in the paper), but
 `nsg_vd_pika` (Table 1) and `nsg_vd_unbalance` (Table 3) do NOT: their recall is 8.65 and 5.45 points above the paper's.
-The authors' own released CSVs differ from the tables too. One discrepancy is
+The authors' own released CSVs differ from the tables too, because the released checkpoints are separate training runs, not the ones behind
+the paper (the authors, 2026-11-15). One discrepancy is
 unexplained: Sora's AUROC is below the CSV for every checkpoint.**
 
 Metrics are the official ones (`test_dMMD.py`, recomputed here from per-video statistics by
@@ -154,8 +155,7 @@ computed on the raw statistic; "Avg." is the mean over the 10 generators. Every 
 The paper's Appendix C gives no counts and no selection rule; the protocol above is from the authors (2026-11-13). The
 released CSVs themselves differ from the paper's tables (CSV minus paper, 10-generator average, the largest metric per key:
 SEINE-mp accuracy +2.92; Pika-mp recall +7.84; unbalance-SEINE-mp recall +5.23). For the default checkpoint the
-L120 numbers match Table 2; for the Pika and unbalanced checkpoints they do not (below), so the released checkpoints or runs
-differ from the ones behind Tables 1 and 3. (The paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC,
+L120 numbers match Table 2; for the Pika and unbalanced checkpoints they do not (below), so the reason is the checkpoints, not the protocol. The authors confirmed (2026-11-15) that the released checkpoints come from separate training runs made after they moved to a different machine, so they are not the exact checkpoints behind Tables 1-3; they verified that the released checkpoints and evaluation code reproduce the CSVs in their repository, which matches our reproduction. Their stated paper-vs-CSV gaps: average recall in the CSVs is higher by 1.41-7.84 points and average AUROC differs by 0.66-2.22; recall is measured at a fixed threshold and is more sensitive to run-to-run variation. (The paper's Table 5 reports a 3-seed spread of up to 3.07 AUROC,
 SEINE, ModelScope.)
 
 ### Released-CSV protocol: the default key `nsg_vd` (standard-SEINE-mp), per generator
@@ -274,7 +274,7 @@ The one difference is Sora, where we have 56 reals + 51 fakes because the releas
 paper has 56 + 56). **The default key reproduces Table 2 on the averages**, all four metrics within 2 points (accuracy +0.85, recall +1.59, F1 +0.78,
 AUROC +1.69), although single cells are further off (recall on ModelScope 91.67 in Table 2 against 99.17). **Tables 1 and 3 are not
 reproduced**: Pika-mp recall is +8.65 above Table 1 (ModelScope recall 68.33 against 90.00), and unbalance-SEINE-mp recall is
-+5.45 and accuracy +2.11 above Table 3 (Sora recall 82.14 against 100.00); there the released checkpoints or runs differ from the paper's. Averages
++5.45 and accuracy +2.11 above Table 3 (Sora recall 82.14 against 100.00); the released checkpoints are separate training runs, not those behind the paper's tables (authors, 2026-11-15; above). Averages
 (10 generators); the gaps are L120 (official code) minus paper, in points:
 
 | key | source | accuracy | recall | F1 | AUROC | precision |

@@ -1090,7 +1090,7 @@
       "ours_synthscope": "acc=89.75 / AUROC=97.01",
       "ours_official": "acc=89.71 / AUROC=96.88",
       "status": "below",
-      "note": "NOT reproduced: recall is +8.65 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 96.67 vs 88.02, acc 89.71 vs 91.46, F1 90.31 vs 90.87, AUROC 96.88 vs 96.14. The released checkpoint/runs differ from the paper's; the CSV differs too (recall 95.86)."
+      "note": "NOT reproduced: recall +8.65 above Table 1 (Sora 51 fakes here, 56 there). The released checkpoint is a separate run, not the one behind the table (authors, 2026-11-15). Official code vs paper, Avg: recall 96.67 vs 88.02, acc 89.71 vs 91.46, AUROC 96.88 vs 96.14. CSV recall 95.86."
     }
   ],
   "nsg_vd_unbalance": [
@@ -1112,7 +1112,7 @@
       "ours_synthscope": "acc=91.23 / AUROC=96.39",
       "ours_official": "acc=91.27 / AUROC=96.26",
       "status": "below",
-      "note": "NOT reproduced: recall +5.45 and acc +2.11 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, F1 91.82 vs 89.48, AUROC 96.26 vs 94.91. Released checkpoint/runs differ from the paper's; CSV too (recall 98.44)."
+      "note": "NOT reproduced: recall +5.45, acc +2.11 above Table 3 (Sora 51 fakes here, 56 there). The released checkpoint is a separate run, not the one behind the table (authors, 2026-11-15). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, AUROC 96.26 vs 94.91. CSV recall 98.44."
     }
   ],
   "omniaid": [

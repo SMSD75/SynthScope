@@ -398,9 +398,9 @@
       "auroc": 93.44
      }
     },
-    "note": "NOT reproduced: recall +5.45 and acc +2.11 above the paper (Sora: 51 fakes here, 56 there; authors' protocol, 2026-11-13). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, F1 91.82 vs 89.48, AUROC 96.26 vs 94.91. Released checkpoint/runs differ from the paper's; CSV too (recall 98.44)."
+    "note": "NOT reproduced: recall +5.45, acc +2.11 above Table 3 (Sora 51 fakes here, 56 there). The released checkpoint is a separate run, not the one behind the table (authors, 2026-11-15). Official code vs paper, Avg: recall 98.67 vs 93.21, acc 91.27 vs 89.16, AUROC 96.26 vs 94.91. CSV recall 98.44."
    },
-   "gap_cause": "Paper protocol (authors, 2026-11-13): 120 + 120 per generator (Sora 56 + 56), ffmpeg 4.2.2; L120 is that run (Sora: 51 fakes here). Recall is +5.45 above Table 3 (acc +2.11, F1 +2.35, AUROC +1.35). The released checkpoint/runs differ from the paper's; the CSV differs by up to 5.23 (recall). Not reproduced.",
+   "gap_cause": "Cause (authors, 2026-11-15): the released checkpoints are separate training runs, not those behind Tables 1-3; recall at a fixed threshold is run-sensitive. L120 (120 + 120 per generator, ffmpeg 4.2.2; Sora 51 fakes here): recall +5.45, acc +2.11 vs Table 3. Not reproduced.",
    "dataset_source": "GenVideo-Val; result file repro/nsg_vd_benchmark_genvideo_val.json (checkpoints.unbalance-SEINE-mp.L120), repro/bench_results/nsg_vd_unbalance_genvideo_split120.json"
   }
  ]
