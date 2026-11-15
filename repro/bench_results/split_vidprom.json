@@ -1,0 +1,120 @@
+{
+  "tag": "split_vidprom",
+  "model": "split",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 99.28,
+    "map": 99.47,
+    "map_real": 99.63,
+    "mauroc": 99.81,
+    "fake_recall_at_fpr": {
+      "0.1": 60.92,
+      "1": 99.58,
+      "5": 99.95
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 60.92,
+      "1": 99.58,
+      "5": 99.95
+    }
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "Pika": {
+      "ap": 99.83,
+      "ap_real": 98.79,
+      "auroc": 99.75,
+      "real_acc": 98.6,
+      "fake_acc": 99.8,
+      "acc": 99.2,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 49.2,
+        "1": 99.8,
+        "5": 99.8
+      }
+    },
+    "Text2Video-Zero": {
+      "ap": 98.04,
+      "ap_real": 99.74,
+      "auroc": 99.52,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 0.0,
+        "1": 98.5,
+        "5": 100.0
+      }
+    },
+    "VideoCrafter2": {
+      "ap": 99.99,
+      "ap_real": 99.99,
+      "auroc": 99.99,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 94.5,
+        "1": 100.0,
+        "5": 100.0
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": null,
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/video_matrix/cache/split_vidprom",
+  "date": "2026-11-14T20:26:19",
+  "synthscope_version": "video"
+}
