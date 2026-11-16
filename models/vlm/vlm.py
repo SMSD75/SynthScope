@@ -5,9 +5,11 @@ One loader / scorer (``SynthScopeVLM``) serves every such detector. What differs
 * ``VLMFamily``: how a model family is loaded and fed. The base class covers a Hugging Face processor that takes
   ``text=[prompt], images=[image]`` (LLaVA-style models); ``QwenVLFamily`` adds the Qwen-VL specifics (a pixel cap
   through the processor's ``size``, the input size from ``image_grid_thw``). A family decides:
-    - ``load_model``: the folder loaded strictly into the official transformers class, or a LoRA adapter kept
-      unmerged on a LOCAL base folder (``base_model``; nothing is fetched from the Hub);
+    - ``load_model``: the folder loaded strictly into the official transformers class, or a LoRA adapter folder
+      (``adapter_config.json``) kept unmerged on a LOCAL base folder (``base_model``; nothing is fetched from the Hub);
     - ``load_processor``: the processor folder plus attribute overrides;
+    - ``verdict_sequences``: the fake / real answers as token sequences (configurable, ``VLMConfig.verdict_sequences``);
+      the score is read at their first differing token;
     - ``prompt``: the chat template on (``chat_template=True``) or the raw prompt as the official code sends it;
     - ``inputs`` / ``input_size``: the processor call and what the vision encoder saw.
 * ``VLMConfig`` (the registry spec's ``vlm``): one detector's official request and score rule: the family, model class,
@@ -24,17 +26,20 @@ Score (one image at a time; ``score`` holds a lock because the logit recorder ho
         logits       = "raw": the LM head's output of that step (a forward hook, = ``output_logits``), or
                        "processed": the scores after generate's logits processors (e.g. a repetition penalty) and
                        before the sampling warpers, i.e. what greedy decoding takes the argmax of
-    "teacher_forced" mode (the verdict is the first answer token): one forward pass on prompt + ``teacher_forced_suffix``,
-        the logits of the next token
-    logit   = l(fake) - l(real) for the emitted verdict token and its same-spelling counterpart ("Ġreal" <-> "Ġfake";
-              teacher-forced: the first pair with a leading space); P(fake) = sigmoid(logit)
+    "teacher_forced" mode (the verdict is the first answer token): one forward pass on prompt + ``teacher_forced_suffix``
+        + the tokens the two verdict sequences share (e.g. a SentencePiece "▁" before "▁fake" / "▁real"), the logits
+        of the next token, i.e. at their first differing token
+    logit   = l(fake) - l(real): generate mode, the emitted verdict token and its same-spelling counterpart ("Ġreal" <->
+              "Ġfake"; the first differing tokens of the verdict sequences count too); teacher-forced, the first
+              differing tokens of the verdict sequences; P(fake) = sigmoid(logit)
     verdict = the official parser on the generated text (teacher-forced: the sign of the logit)
 
 No verdict token (no marker generated, e.g. a truncated output, or no verdict word between the marker and the end tag):
 P(fake) = 0.5, logit 0, ``score_source="unparsed"`` (ruling U1). Under greedy decoding with ``logits="processed"`` (or
 raw logits without a logits processor) the emitted token is the argmax, so the sign of the logit is the emitted word.
 
-Batch size 1 only. Inference only: there is no training path.
+Relative ``base_model`` / ``processor`` folders are resolved against the checkpoint root (``SynthScopeVLM(root=...)``;
+the engine passes ``$SYNTHSCOPE_CKPT_DIR``). Batch size 1 only. Inference only: there is no training path.
 """
 import importlib
 import threading
@@ -54,9 +59,10 @@ from models.vlm.image import vllm_rgb
 class VLMFamily:
     """Loading and input building of a model family whose processor takes ``text=[prompt], images=[image]``."""
 
-    def load_model(self, path: Path, cfg: "VLMConfig", device: str):
+    def load_model(self, path: Path, cfg: "VLMConfig", device: str, root: Path):
         """The model on ``device``, strictly loaded: the folder ``path`` into ``cfg.model_class``; or, with
-        ``cfg.base_model``, the local base folder into it and ``path`` as a LoRA adapter kept unmerged (peft)."""
+        ``cfg.base_model`` (a local folder, relative names under ``root``), the base into it and ``path`` as a LoRA
+        adapter kept unmerged (peft)."""
         model_cls = getattr(transformers, cfg.model_class)
         kwargs = dict(dtype=getattr(torch, cfg.dtype), attn_implementation=cfg.attn_implementation, device_map=device,
                       local_files_only=True, output_loading_info=True)
@@ -67,14 +73,23 @@ class VLMFamily:
             model, info = model_cls.from_pretrained(str(path), **kwargs)
             check_loading_info(info, f"{path} ({cfg.model_class})")
             return model.eval()
-        base = resolve_local(path.parent, cfg.base_model)
+        if not (path / "adapter_config.json").exists():
+            raise FileNotFoundError(f"{path}: no adapter_config.json, but VLMConfig.base_model is set (a LoRA detector)")
+        base = resolve_local(root, cfg.base_model)
         model, info = model_cls.from_pretrained(str(base), **kwargs)
         check_loading_info(info, f"{base} ({cfg.model_class})")
         return load_lora_unmerged(model, path).eval()
 
-    def load_processor(self, path: Path, cfg: "VLMConfig"):
-        processor = transformers.AutoProcessor.from_pretrained(
-            str(resolve_local(path, cfg.processor) if cfg.processor else path), local_files_only=True)
+    def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
+        """``cfg.processor`` (relative names under ``root``), else the weights folder if it holds processor files,
+        else (a LoRA adapter folder) the base folder."""
+        if cfg.processor:
+            folder = resolve_local(root, cfg.processor)
+        elif cfg.base_model and not has_processor(path):
+            folder = resolve_local(root, cfg.base_model)
+        else:
+            folder = path
+        processor = transformers.AutoProcessor.from_pretrained(str(folder), local_files_only=True)
         for name, value in cfg.processor_overrides.items():
             setattr(processor, name, value)
         return processor
@@ -92,6 +107,33 @@ class VLMFamily:
 
     def inputs(self, processor, prompt: str, image: Image.Image, cfg: "VLMConfig", device) -> dict:
         return processor(text=[prompt], images=[image], return_tensors="pt", **cfg.processor_kwargs).to(device)
+
+    def verdict_sequences(self, tokenizer, cfg: "VLMConfig") -> tuple:
+        """(fake ids, real ids): ``cfg.verdict_sequences`` (token strings) if set, else the first verdict pair's words
+        with a leading space, as the tokenizer encodes them (SentencePiece / Llama: ["▁", "▁fake"])."""
+        if cfg.verdict_sequences:
+            seqs = tuple(tokenizer.convert_tokens_to_ids(list(seq)) for seq in cfg.verdict_sequences)
+            unk = getattr(tokenizer, "unk_token_id", None)
+            if any(i is None or i == unk for seq in seqs for i in seq):
+                raise ValueError(f"verdict_sequences {cfg.verdict_sequences} contain tokens outside the vocabulary")
+            return seqs
+        fake, real = cfg.verdict_pairs[0]
+        return (tokenizer.encode(" " + fake, add_special_tokens=False),
+                tokenizer.encode(" " + real, add_special_tokens=False))
+
+    def extend_inputs(self, inputs: dict, ids: list) -> dict:
+        """``inputs`` with the text tokens ``ids`` appended (teacher forcing a shared prefix)."""
+        if not ids:
+            return inputs
+        n = inputs["input_ids"].shape[1]
+        extra = torch.tensor([ids], dtype=inputs["input_ids"].dtype, device=inputs["input_ids"].device)
+        out = dict(inputs)
+        for key, value in inputs.items():
+            if torch.is_tensor(value) and value.dim() == 2 and value.shape == (1, n):
+                fill = extra if key == "input_ids" else (torch.ones_like(extra) if key == "attention_mask"
+                                                         else torch.zeros_like(extra))
+                out[key] = torch.cat([value, fill.to(value.dtype)], dim=1)
+        return out
 
     def input_size(self, processor, inputs) -> Optional[list]:
         """[width, height] the vision encoder saw: the processed pixel tensor's size ([B, 3, H, W]), else None."""
@@ -130,6 +172,8 @@ class VLMConfig:
     answer_marker: Optional[str] = None               # the verdict is the first verdict word after it (None: from the start)
     answer_end: Optional[str] = None                  # ... and before this text (e.g. "</answer>")
     verdict_pairs: tuple = (("fake", "real"),)        # (fake word, real word) with the same spelling
+    verdict_sequences: Optional[tuple] = None         # ((fake tokens...), (real tokens...)) as token strings; None =
+                                                      # the family's (the first pair with a leading space, encoded)
     verdict_mode: str = "generate"                    # "generate" | "teacher_forced" (one forward pass)
     teacher_forced_suffix: str = ""                   # appended to the prompt in teacher_forced mode
     logits: str = "raw"                               # "raw" LM-head logits | "processed" (after logits processors)
@@ -139,7 +183,8 @@ class VLMConfig:
     chat_template_kwargs: dict = field(default_factory=dict)
     image_loader: Callable[[Image.Image], Image.Image] = vllm_rgb   # decoded file -> RGB, as the official server
     preprocess: Optional[Callable[[Image.Image], Image.Image]] = None   # PIL pre-resize hook (e.g. fetch_image)
-    processor: Optional[str] = None                   # processor folder (relative to the weights folder); None = it
+    processor: Optional[str] = None                   # processor folder (relative to CHECKPOINTS_DIR); None = the
+                                                      # weights folder, or the base folder for a LoRA adapter
     processor_overrides: dict = field(default_factory=dict)   # attributes set on the loaded processor
     processor_kwargs: dict = field(default_factory=dict)      # extra kwargs of the processor call
     base_model: Optional[str] = None                  # LoRA: the local base folder (relative to CHECKPOINTS_DIR)
@@ -148,6 +193,10 @@ class VLMConfig:
     attn_implementation: str = "sdpa"
     hf_repo: str = ""                                 # official weights (for the download hint)
     hf_revision: str = ""
+
+
+def has_processor(folder: Path) -> bool:
+    return any((Path(folder) / f).exists() for f in ("preprocessor_config.json", "processor_config.json"))
 
 
 def resolve_local(root: Path, name: str) -> Path:
@@ -205,12 +254,12 @@ def verdict_pair_map(tokenizer, pairs) -> dict:
     return out
 
 
-def default_pair(tokenizer, pairs) -> Optional[tuple]:
-    """(fake id, real id) of the first pair spelled with a leading space; None if either is not one token."""
-    fake, real = pairs[0]
-    f = tokenizer.encode(" " + fake, add_special_tokens=False)
-    r = tokenizer.encode(" " + real, add_special_tokens=False)
-    return (f[0], r[0]) if len(f) == 1 and len(r) == 1 else None
+def divergence(fake: list, real: list) -> int:
+    """Index of the first token where the two verdict sequences differ (the shared prefix is teacher-forced)."""
+    k = next((i for i, (f, r) in enumerate(zip(fake, real)) if f != r), None)
+    if k is None:
+        raise ValueError(f"verdict sequences {fake} / {real}: one is a prefix of the other, no token tells them apart")
+    return k
 
 
 def marker_end(pieces: list, marker: Optional[str]) -> Optional[int]:
@@ -302,17 +351,22 @@ class ProcessedLogitRecorder(LogitsProcessor):
 class SynthScopeVLM(torch.nn.Module):
     """A released VLM detector loaded from its local folder(s), scored as described in the module docstring."""
 
-    def __init__(self, path, cfg: VLMConfig, device: str = "cuda"):
+    def __init__(self, path, cfg: VLMConfig, device: str = "cuda", root=None):
         super().__init__()
         path = Path(path)
+        root = Path(root) if root is not None else path.parent      # where relative base / processor names live
         self.cfg, self.path, self.family = cfg, path, cfg.family
-        self.hf = self.family.load_model(path, cfg, device)
-        self.processor = self.family.load_processor(path, cfg)
+        self.hf = self.family.load_model(path, cfg, device, root)
+        self.processor = self.family.load_processor(path, cfg, root)
         self.tokenizer = getattr(self.processor, "tokenizer", self.processor)
         self.prompt = self.family.prompt(self.processor, cfg)
         self.pair_map = verdict_pair_map(self.tokenizer, cfg.verdict_pairs)
-        self.default = default_pair(self.tokenizer, cfg.verdict_pairs)
-        ids = sorted({i for pair in self.pair_map.values() for i in pair} | set(self.default or ()))
+        self.sequences = self.family.verdict_sequences(self.tokenizer, cfg)
+        self.split = divergence(*self.sequences)
+        self.pair = (self.sequences[0][self.split], self.sequences[1][self.split])   # first differing tokens
+        for tid in self.pair:                         # e.g. a word that only exists as a subtoken
+            self.pair_map.setdefault(tid, self.pair)
+        ids = sorted({i for pair in self.pair_map.values() for i in pair})
         self.record_ids, self.column = ids, {tid: c for c, tid in enumerate(ids)}
         eos = self.hf.generation_config.eos_token_id
         self.eos = {eos} if isinstance(eos, int) else set(eos or [])
@@ -369,15 +423,16 @@ class SynthScopeVLM(torch.nn.Module):
             return self._common(out, inputs, n_prompt, decoding)
 
     def _single_pass(self, image: Image.Image) -> dict:
-        """teacher_forced mode: the next-token logits after prompt + suffix, for the leading-space pair."""
-        if self.default is None:
-            raise ValueError("teacher_forced mode needs a verdict pair whose ' word' spellings are single tokens")
-        inputs = self.inputs(image, self.cfg.teacher_forced_suffix)
+        """teacher_forced mode: prompt + suffix + the verdict sequences' shared prefix, then the next-token logits of
+        their first differing tokens."""
+        prefix = list(self.sequences[0][:self.split])
+        inputs = self.family.extend_inputs(self.inputs(image, self.cfg.teacher_forced_suffix), prefix)
         row = self.hf(**inputs, logits_to_keep=1).logits[0, -1].float()
-        out = gap_fields(float(row[self.default[0]] - row[self.default[1]]))
+        out = gap_fields(float(row[self.pair[0]] - row[self.pair[1]]))
         out.update({"score_source": "teacher_forced", "verdict_step": None,
-                    "verdict": "fake" if out["logit"] > 0 else "real",
-                    "verdict_token": None, "pair_tokens": self.tokenizer.convert_ids_to_tokens(list(self.default)),
+                    "verdict": "fake" if out["logit"] > 0 else "real", "verdict_token": None,
+                    "pair_tokens": self.tokenizer.convert_ids_to_tokens(list(self.pair)),
+                    "forced_prefix": self.tokenizer.convert_ids_to_tokens(prefix),
                     "response": "", "rationale": "", "new_tokens": 0, "finished": True, "generated_ids": []})
         return self._common(out, inputs, inputs["input_ids"].shape[1], "teacher_forced")
 

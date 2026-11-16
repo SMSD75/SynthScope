@@ -53,7 +53,7 @@ import torch
 import transformers
 from PIL import Image
 from safetensors.torch import load_file, save_file
-from tokenizers import Tokenizer, decoders, models as tok_models, pre_tokenizers
+from tokenizers import Tokenizer, decoders, models as tok_models, normalizers, pre_tokenizers
 from transformers import (CLIPImageProcessor, LlavaConfig, LlavaForConditionalGeneration, LlavaProcessor,
                           LogitsProcessor, LogitsProcessorList, PreTrainedTokenizerFast, Qwen2VLImageProcessor,
                           Qwen3VLConfig, Qwen3VLForConditionalGeneration, Qwen3VLProcessor)
@@ -71,7 +71,7 @@ from models.image.veritaspp.veritaspp import SYSTEM_PROMPT, USER_PROMPT, VERITAS
 from models.vlm.image import vllm_rgb                                              # noqa: E402
 from models.vlm.parsers import parse_veritas_v1                                    # noqa: E402
 from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, VLMConfig,   # noqa: E402
-                            VLMFamily, check_loading_info, default_pair, locate_verdict, marker_end,
+                            VLMFamily, check_loading_info, divergence, locate_verdict, marker_end,
                             verdict_pair_map, verdict_score)
 from synthscope import hub                                                         # noqa: E402
 from synthscope.api import Detector                                                # noqa: E402
@@ -184,8 +184,24 @@ def tiny_qwen_folder(folder: Path, seed: int = 0) -> Path:
     return folder
 
 
+SP_PIECES = ["<unk>", "<s>", "</s>", "▁", "▁This", "▁is", "▁a", "▁fake", "▁real", "▁Does", "▁the", "▁image", "▁looks",
+             "/", "fake", "▁?", "?", ".", "x"]
+
+
+def sentencepiece_tokenizer() -> PreTrainedTokenizerFast:
+    """A synthetic SentencePiece / Llama-style tokenizer (Unigram over "▁"-joined text, no "▁▁" piece) that reproduces
+    the LLaVA-1.5 (Llama) tokenizer's splits checked on cn029: " real" -> ["▁", "▁real"], "real" -> ["▁real"],
+    "This is a fake" -> ["▁This", "▁is", "▁a", "▁fake"]. (The real tokenizer is Llama 2-licensed, so it is not copied.)"""
+    vocab = [(piece, -2.0 if piece == "▁" else -1.0) for piece in SP_PIECES]
+    backend = Tokenizer(tok_models.Unigram(vocab, unk_id=0, byte_fallback=False))
+    backend.normalizer = normalizers.Sequence([normalizers.Prepend("▁"), normalizers.Replace(" ", "▁")])
+    backend.decoder = decoders.Sequence([decoders.Replace("▁", " "), decoders.Fuse(), decoders.Strip(" ", 1, 0)])
+    return PreTrainedTokenizerFast(tokenizer_object=backend, unk_token="<unk>", bos_token="<s>", eos_token="</s>",
+                                   pad_token="<unk>", additional_special_tokens=["<image>"])
+
+
 def tiny_llava_folder(folder: Path) -> Path:
-    tok = tiny_tokenizer()
+    tok = sentencepiece_tokenizer()
     processor = LlavaProcessor(image_processor=CLIPImageProcessor(size={"shortest_edge": 32},
                                                                   crop_size={"height": 32, "width": 32}),
                                tokenizer=tok, patch_size=16, vision_feature_select_strategy="default",
@@ -195,7 +211,7 @@ def tiny_llava_folder(folder: Path) -> Path:
                        "num_hidden_layers": 2, "num_attention_heads": 2, "image_size": 32, "patch_size": 16},
         text_config={"model_type": "llama", "hidden_size": 32, "intermediate_size": 64, "num_hidden_layers": 2,
                      "num_attention_heads": 2, "num_key_value_heads": 1, "vocab_size": len(tok),
-                     "eos_token_id": tok.convert_tokens_to_ids("<|im_end|>")},
+                     "eos_token_id": tok.convert_tokens_to_ids("</s>")},
         image_token_id=tok.convert_tokens_to_ids("<image>"), vision_feature_select_strategy="default",
         vision_feature_layer=-2)
     torch.manual_seed(1)
@@ -307,7 +323,14 @@ def test_score_math() -> None:
     pairs = VERITASPP.verdict_pairs
     pair_map = verdict_pair_map(tok, pairs)
     assert pair_map == {3: (4, 3), 4: (4, 3), 5: (6, 5), 6: (6, 5), 8: (9, 8), 9: (9, 8)}, pair_map   # no 'ĉfake'
-    assert default_pair(tok, pairs) == (4, 3)
+    assert VLMFamily().verdict_sequences(tok, VERITASPP) == ([4], [3]) and divergence([4], [3]) == 0
+    assert divergence([7, 4, 1], [7, 3]) == 1
+    try:
+        divergence([7, 4], [7, 4, 1])
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("a prefix pair was accepted")
     ids = sorted({i for p in pair_map.values() for i in p})
     column = {t: c for c, t in enumerate(ids)}
     torch.manual_seed(0)
@@ -569,7 +592,10 @@ def test_tiny_qwen() -> None:
 
 
 def check_lora(tmp: Path, cfg: VLMConfig, image: Image.Image) -> str:
-    """An unmerged LoRA on a local base folder (needs peft; $VLM_PYDEPS is added to the path when it holds peft)."""
+    """An unmerged LoRA (task_type CAUSAL_LM, as swift saves them) on a local base folder, through the registry /
+    engine path: Engine._load_vlm on the adapter folder (adapter_config.json, no config.json, no processor; the base is
+    named relative to CHECKPOINTS_DIR and supplies the processor). score() / generate / the LM-head hook run on the
+    PeftModel and equal a direct peft load. Needs peft ($VLM_PYDEPS is added to the path when it holds peft)."""
     if PYDEPS and Path(PYDEPS, "peft").exists() and PYDEPS not in sys.path:
         sys.path.append(PYDEPS)
     try:
@@ -580,34 +606,74 @@ def check_lora(tmp: Path, cfg: VLMConfig, image: Image.Image) -> str:
     adapter = tmp / "tiny_adapter"
     with quiet():
         model = Qwen3VLForConditionalGeneration.from_pretrained(str(base), dtype=torch.bfloat16)
-        lora_cfg = peft.LoraConfig(r=4, lora_alpha=8, target_modules=["q_proj", "v_proj"], init_lora_weights=False)
+        lora_cfg = peft.LoraConfig(r=4, lora_alpha=8, target_modules=["q_proj", "v_proj"], init_lora_weights=False,
+                                   task_type="CAUSAL_LM")
         torch.manual_seed(5)
         peft.get_peft_model(model, lora_cfg).save_pretrained(str(adapter))
-        for f in base.iterdir():                           # the adapter folder carries the processor, like a release
-            if f.suffix in (".json", ".jinja") and f.name != "config.json":
-                shutil.copy(f, adapter / f.name)
-        adapter_cfg = dataclasses.replace(cfg, base_model="tiny_base")
-        vlm = SynthScopeVLM(adapter, adapter_cfg, device="cpu")
-        direct = peft.PeftModel.from_pretrained(
-            Qwen3VLForConditionalGeneration.from_pretrained(str(base), dtype=torch.bfloat16), str(adapter)).eval()
-        inputs = vlm.inputs(vlm.image(image))
-        with torch.inference_mode():
-            same = torch.equal(vlm.hf(**inputs).logits, direct(**inputs).logits)
-    assert isinstance(vlm.hf, peft.PeftModel) and same
-    assert any(n.endswith("lora_A.default") for n, _ in vlm.hf.named_modules())     # unmerged
-    weights = adapter / "adapter_model.safetensors"
-    tensors = {k: v.clone() for k, v in load_file(str(weights)).items()}
-    first = sorted(tensors)[0]
-    tensors[first.replace("lora_A", "lora_Z")] = tensors[first].clone()
-    save_file(tensors, str(weights))
+    assert (adapter / "adapter_config.json").exists() and not (adapter / "config.json").exists()
+    assert not (adapter / "preprocessor_config.json").exists()
+    direct = peft.PeftModel.from_pretrained(Qwen3VLForConditionalGeneration.from_pretrained(str(base), dtype=torch.bfloat16),
+                                            str(adapter)).eval()
+    tok = tiny_tokenizer()
+    adapter_cfg = dataclasses.replace(cfg, base_model="tiny_base")
+    original = backend_config.CHECKPOINTS_DIR
+    backend_config.CHECKPOINTS_DIR = tmp
     try:
+        spec = dataclasses.replace(get_spec("veritaspp"), checkpoint="tiny_adapter", vlm=adapter_cfg)
+        engine = Engine(device="cpu")
         with quiet():
-            SynthScopeVLM(adapter, adapter_cfg, device="cpu")
-    except RuntimeError as e:
-        assert "LoRA adapter mismatch" in str(e), e
-    else:
-        raise AssertionError("a tampered adapter was accepted")
-    return f"unmerged on a local base, == direct peft (peft {peft.__version__}), tampered adapter raises"
+            vlm = engine._get_model(spec)
+        assert isinstance(vlm.hf, peft.PeftModelForCausalLM), type(vlm.hf)
+        assert any(n.endswith("lora_A.default") for n, _ in vlm.hf.named_modules())          # unmerged
+        assert "missing=0, unexpected=0" in engine._status[spec.key]
+        inputs = vlm.inputs(vlm.image(image))
+        n_prompt = inputs["input_ids"].shape[1]
+        with torch.inference_mode():
+            assert torch.equal(vlm.hf(**inputs).logits, direct(**inputs).logits)
+        # score() through the engine with a forced answer == a direct peft generate (tokens, gap); hook == output_logits
+        script = tok.convert_tokens_to_ids(["y", "<", "answer", ">", "real", "</", "answer", ">"])
+        forcing = LogitsProcessorList([ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)])
+        vlm.cfg = dataclasses.replace(adapter_cfg, decoding={**adapter_cfg.decoding, "logits_processor": forcing})
+        with quiet():
+            out = engine.vlm_score(spec, image)
+            with torch.inference_mode(), LogitRecorder(direct.get_output_embeddings(), vlm.record_ids) as rec:
+                ref = direct.generate(**inputs, **vlm.cfg.decoding, output_logits=True, return_dict_in_generate=True)
+        real_id, fake_id = tok.convert_tokens_to_ids(["real", "fake"])
+        assert out["generated_ids"] == ref.sequences[0, n_prompt:].tolist()
+        assert (out["score_source"], out["verdict_step"], out["verdict"]) == ("verdict_token", 4, "real"), out
+        assert out["logit"] == float(ref.logits[4][0, fake_id] - ref.logits[4][0, real_id])
+        assert torch.equal(rec.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.logits]).cpu())
+        # free greedy generation on the PeftModel through the engine == direct peft generate
+        vlm.cfg = adapter_cfg
+        with quiet():
+            free = engine.vlm_score(spec, image)
+            with torch.inference_mode():
+                ref = direct.generate(**inputs, **adapter_cfg.decoding)
+        assert free["generated_ids"] == ref[0, n_prompt:].tolist()
+        # a tampered adapter (an extra tensor) raises in the engine
+        weights = adapter / "adapter_model.safetensors"
+        tensors = {k: v.clone() for k, v in load_file(str(weights)).items()}
+        first = sorted(tensors)[0]
+        tensors[first.replace("lora_A", "lora_Z")] = tensors[first].clone()
+        save_file(tensors, str(weights))
+        try:
+            with quiet():
+                Engine(device="cpu")._get_model(spec)
+        except RuntimeError as e:
+            assert "LoRA adapter mismatch" in str(e), e
+        else:
+            raise AssertionError("a tampered adapter was accepted")
+        # the adapter folder without base_model in the config: refused (no Hub fetch of the base)
+        try:
+            SynthScopeVLM(adapter, cfg, device="cpu", root=tmp)
+        except (RuntimeError, FileNotFoundError):
+            pass
+        else:
+            raise AssertionError("an adapter folder loaded without base_model")
+    finally:
+        backend_config.CHECKPOINTS_DIR = original
+    return (f"CAUSAL_LM adapter via the engine (adapter_config.json only, base + processor from CHECKPOINTS_DIR), "
+            f"unmerged, forward / score / generate / hook == direct peft (peft {peft.__version__}), tampered adapter raises")
 
 
 class LlavaStyleFamily(VLMFamily):
@@ -616,32 +682,50 @@ class LlavaStyleFamily(VLMFamily):
 
 
 def test_llava_family() -> None:
-    print("[G] a dummy LLaVA-style family (no grid, no chat template, no marker, single pass) plugs in ...")
-    cfg = VLMConfig(family=LlavaStyleFamily(), model_class="LlavaForConditionalGeneration", system_prompt="",
-                    user_prompt="<image>Does the image looks real/fake ?", parser=parse_veritas_v1, chat_template=False,
-                    answer_marker=None, verdict_mode="teacher_forced", teacher_forced_suffix=" This is a",
-                    verdict_pairs=(("fake", "real"),), image_loader=vllm_rgb,
-                    decoding={"do_sample": False, "max_new_tokens": 6})
+    print("[G] a dummy LLaVA-style family (SentencePiece tokenizer, no grid / chat template / marker, single pass) ...")
+    base = VLMConfig(family=LlavaStyleFamily(), model_class="LlavaForConditionalGeneration", system_prompt="",
+                     user_prompt="<image>Does the image looks real/fake ?", parser=parse_veritas_v1, chat_template=False,
+                     answer_marker=None, verdict_mode="teacher_forced", teacher_forced_suffix=" This is a",
+                     verdict_pairs=(("fake", "real"),), image_loader=vllm_rgb,
+                     decoding={"do_sample": False, "max_new_tokens": 6})
     image = rgb_image(50, 40)
+    sp = sentencepiece_tokenizer()
+    tokens = sp.convert_ids_to_tokens
+    assert tokens(sp.encode(" real", add_special_tokens=False)) == ["▁", "▁real"]          # the Llama split
+    assert tokens(sp.encode("This is a fake", add_special_tokens=False)) == ["▁This", "▁is", "▁a", "▁fake"]
     with tempfile.TemporaryDirectory() as tmp:
         folder = tiny_llava_folder(Path(tmp) / "fakevlm_like")
-        with quiet():
-            vlm = SynthScopeVLM(folder, cfg, device="cpu")
-            out = vlm.score(image)
-            inputs = vlm.processor(text=[cfg.user_prompt + cfg.teacher_forced_suffix], images=[image], return_tensors="pt")
-            with torch.inference_mode():
-                row = vlm.hf(**inputs).logits[0, -1].float()
-        f, r = vlm.tokenizer.convert_tokens_to_ids(["fake", "real"])
-        assert vlm.prompt == cfg.user_prompt and "image_grid_thw" not in inputs
-        assert out["score_source"] == "teacher_forced" and out["input_size"] == [32, 32]
-        assert math.isclose(out["logit"], float(row[f] - row[r]), abs_tol=1e-4)
-        assert out["verdict"] == ("fake" if out["logit"] > 0 else "real")
-        vlm.cfg = dataclasses.replace(cfg, verdict_mode="generate")
+        cases = []
+        # (config, expected forced prefix): the family default encodes " fake" / " real" -> ["▁", "▁fake"] /
+        # ["▁", "▁real"], so "▁" is teacher-forced and the score is read at the next token; explicit token sequences
+        # (["▁fake"] / ["▁real"]) are read right after the suffix
+        for cfg, prefix in ((base, ["▁"]), (dataclasses.replace(base, verdict_sequences=(("▁fake",), ("▁real",))), [])):
+            with quiet():
+                vlm = SynthScopeVLM(folder, cfg, device="cpu")
+                out = vlm.score(image)
+                inputs = vlm.processor(text=[cfg.user_prompt + cfg.teacher_forced_suffix], images=[image],
+                                       return_tensors="pt")
+                ids = torch.cat([inputs["input_ids"], torch.tensor([sp.convert_tokens_to_ids(prefix)], dtype=torch.long)
+                                 .reshape(1, -1)], dim=1)
+                with torch.inference_mode():
+                    row = vlm.hf(input_ids=ids, attention_mask=torch.ones_like(ids),
+                                 pixel_values=inputs["pixel_values"]).logits[0, -1].float()
+            f, r = sp.convert_tokens_to_ids(["▁fake", "▁real"])
+            assert vlm.prompt == cfg.user_prompt and "image_grid_thw" not in inputs
+            assert out["forced_prefix"] == prefix and out["pair_tokens"] == ["▁fake", "▁real"], out
+            assert out["score_source"] == "teacher_forced" and out["input_size"] == [32, 32]
+            assert math.isclose(out["logit"], float(row[f] - row[r]), abs_tol=1e-4), (out["logit"], float(row[f] - row[r]))
+            assert out["verdict"] == ("fake" if out["logit"] > 0 else "real")
+            cases.append(out["logit"])
+        assert cases[0] != cases[1]                          # the forced "▁" changes the context
+        vlm.cfg = dataclasses.replace(base, verdict_mode="generate")
         with quiet():
             gen = vlm.score(image)
         assert gen["new_tokens"] > 0 and gen["score_source"] in ("verdict_token", "unparsed")
         assert gen["rationale"] == gen["response"] and gen["input_size"] == [32, 32]
-    print("    teacher-forced gap == direct forward; input size from pixel_values; generate without a marker runs")
+        assert vlm.pair_map[sp.convert_tokens_to_ids("▁real")] == (f, r)
+    print("    Llama-style split reproduced; teacher-forced score at the first differing token (\"▁\" forced by default, "
+          "none with explicit sequences) == direct forward; input size from pixel_values; generate without a marker")
 
 
 def test_released_weights() -> None:

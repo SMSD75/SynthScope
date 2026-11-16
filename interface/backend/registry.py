@@ -225,7 +225,8 @@ class ModelSpec:
     # Its preprocessing is the official image loader + the model's own processor, so ``transform`` is None and
     # ``overrides`` is empty: the config (with its model family) carries the processor, prompt, decoding, answer
     # marker, verdict words, parser and pixel cap. ``checkpoint`` is the Hugging Face folder under CHECKPOINTS_DIR
-    # (ckpt_kind "official_vlm": strict ``from_pretrained``, local files only). Still images only.
+    # (ckpt_kind "official_vlm": strict ``from_pretrained``, local files only), or a LoRA adapter folder when the config
+    # names a local ``base_model`` (relative to CHECKPOINTS_DIR; kept unmerged). Still images only.
     vlm: Optional[VLMConfig] = field(default=None, repr=False)
 
     def eval_batch_size(self, batch_size: int) -> int:

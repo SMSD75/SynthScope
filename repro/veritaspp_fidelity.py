@@ -101,8 +101,9 @@ def verdict_ids(tok, word: str) -> list:
     return sorted(i for t, i in tok.get_vocab().items() if tok.convert_tokens_to_string([t]).strip().lower() == word)
 
 
-def verdict_position(tok, gen: list, fake_ids: list, real_ids: list, marker: str):
-    """First generated step whose token is a verdict token after ``marker``; gate_common.verdict_position."""
+def verdict_position(tok, gen: list, fake_ids: list, real_ids: list, marker: str, end: str = "</answer>"):
+    """First generated step whose token is a verdict token after ``marker`` and before ``end`` (gate_common.
+    verdict_position, bounded by the closing tag as the engine is)."""
     verdict, start = set(fake_ids) | set(real_ids), None
     for t in range(1, len(gen) + 1):
         if marker in tok.decode(gen[:t], skip_special_tokens=False):
@@ -110,7 +111,12 @@ def verdict_position(tok, gen: list, fake_ids: list, real_ids: list, marker: str
             break
     if start is None:
         return None
-    return next((t for t in range(start, len(gen)) if int(gen[t]) in verdict), None)
+    for t in range(start, len(gen)):
+        if int(gen[t]) in verdict:
+            return t
+        if end in tok.decode(gen[start:t + 1], skip_special_tokens=False):
+            return None
+    return None
 
 
 def paired_ids(tok, tid: int):

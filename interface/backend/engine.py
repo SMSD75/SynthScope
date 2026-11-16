@@ -316,13 +316,15 @@ def vlm_images_only(spec: ModelSpec) -> str:
 
 
 def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
-    """Load a VLM detector's Hugging Face folder strictly (``SynthScopeVLM`` raises on any missing / unexpected /
-    mismatched tensor)."""
-    if path is None or not (path / "config.json").exists():
+    """Load a VLM detector strictly (``SynthScopeVLM`` raises on any missing / unexpected / mismatched tensor): a
+    Hugging Face model folder (``config.json``), or a LoRA adapter folder (``adapter_config.json``) on the local
+    ``base_model`` folder. Relative base / processor names are resolved under CHECKPOINTS_DIR; nothing is downloaded."""
+    marker = "adapter_config.json" if spec.vlm.base_model else "config.json"
+    if path is None or not (path / marker).exists():
         hint = (f" Download the official weights: hf download {spec.vlm.hf_repo} --revision {spec.vlm.hf_revision} "
                 f"--local-dir {path}" if spec.vlm.hf_repo else "")
-        raise FileNotFoundError(f"{spec.key}: no Hugging Face model folder at {path}.{hint}")
-    return SynthScopeVLM(path, spec.vlm, device=device)
+        raise FileNotFoundError(f"{spec.key}: no {marker} in {path}.{hint}")
+    return SynthScopeVLM(path, spec.vlm, device=device, root=config.CHECKPOINTS_DIR)
 
 
 class Engine:
