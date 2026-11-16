@@ -22,6 +22,7 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from models.image.probe.preprocess import ProbePad, SlidingPatches
+from models.vlm.vlm import SynthScopeVLM
 from . import config
 from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
@@ -309,6 +310,16 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
     return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
+def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
+    """Load a VLM detector's Hugging Face folder strictly (``SynthScopeVLM`` raises on any missing / unexpected /
+    mismatched tensor)."""
+    if path is None or not (path / "config.json").exists():
+        hint = (f" Download the official weights: hf download {spec.vlm.hf_repo} --revision {spec.vlm.hf_revision} "
+                f"--local-dir {path}" if spec.vlm.hf_repo else "")
+        raise FileNotFoundError(f"{spec.key}: no Hugging Face model folder at {path}.{hint}")
+    return SynthScopeVLM(path, spec.vlm, device=device)
+
+
 class Engine:
     """Lazily builds, caches, and runs the detectors."""
 
@@ -379,6 +390,13 @@ class Engine:
                 if self.device == "cuda":
                     torch.cuda.empty_cache()
 
+            if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
+                model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
+                self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
+                                          f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype})")
+                self._cache[spec.key] = model
+                return model
+
             from config_utils import compose_config
 
             cfg = compose_config(spec.overrides + aux_overrides(spec))
@@ -407,6 +425,9 @@ class Engine:
             out = model(x)
             logit = out[1] if isinstance(out, (tuple, list)) else out
             return torch.sigmoid(logit.reshape(x.shape[0]))
+        if kind == "vlm":
+            raise ValueError(f"'{spec.key}' is a VLM detector: it scores PIL images one at a time (Engine.vlm_score), "
+                             "not preprocessed tensors.")
         raise ValueError(f"Unexpected image predict_kind: {kind}")
 
     def _video_calibration(self, key: str):
@@ -514,7 +535,32 @@ class Engine:
         buf = io.BytesIO(); img.save(buf, "PNG")
         return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
 
+    def vlm_score(self, spec: ModelSpec, pil: Image.Image, decoding: str = "greedy", seed: int | None = None) -> dict:
+        """A VLM detector's full output for one image (``SynthScopeVLM.score``): ``fake_probability`` (sigmoid of
+        ``logit``, the fake-minus-real logit at the answer token), the parsed ``verdict`` ("fake" / "real" / None),
+        the ``rationale`` and ``response`` text, the verdict token and step, and the generation length.
+        ``decoding="official"`` uses the authors' sampling (seeded with ``seed``) instead of greedy decoding."""
+        return self._get_model(spec).score(pil, decoding=decoding, seed=seed)
+
+    def _predict_vlm(self, spec: ModelSpec, pil: Image.Image) -> dict:
+        self._get_model(spec)                       # load first: elapsed covers scoring only
+        t0 = time.time()
+        out = self.vlm_score(spec, pil)
+        res = self._result(spec, out["fake_probability"], time.time() - t0)
+        # The official parser's answer; under greedy decoding it agrees with the sign of the logit, except for an
+        # answer naming both words (the parser checks "real" first) or none ("unparsed": P(fake) as in score_source).
+        res["verdict"] = out["verdict"] or "unparsed"
+        res["logit"] = round(out["logit"], 6)
+        for key in ("rationale", "response", "verdict_token", "score_source", "new_tokens", "finished", "decoding"):
+            res[key] = out[key]
+        res["orig_size"] = [pil.width, pil.height]
+        res["input_size"] = out["input_size"]
+        res["input_note"] = input_note(spec)
+        return res
+
     def predict_image(self, spec: ModelSpec, pil: Image.Image) -> dict:
+        if spec.predict_kind == "vlm":
+            return self._predict_vlm(spec, pil)
         model = self._get_model(spec)
         x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
@@ -544,9 +590,13 @@ class Engine:
     def predict_video_frames(self, spec: ModelSpec, frames: list[Image.Image]) -> dict:
         """Run an *image* detector on sampled video frames and aggregate (mean P(fake))."""
         model = self._get_model(spec)
-        batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
         t0 = time.time()
-        per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
+        if spec.predict_kind == "vlm":              # one generation per frame
+            per_frame = [self.vlm_score(spec, f)["fake_probability"] for f in frames]
+        else:
+            batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
+            t0 = time.time()
+            per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
         elapsed = time.time() - t0
         mean_p = sum(per_frame) / len(per_frame)
         res = self._result(spec, mean_p, elapsed)

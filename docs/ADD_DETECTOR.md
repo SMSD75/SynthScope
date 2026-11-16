@@ -50,6 +50,22 @@ for the maintainers and stop.
    - `weights`: `"official"` | `"synthscope_trained"` | `"training_free"` (shown in the web UI badge).
 5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 
+### VLM detectors (a released vision-language model that answers "real or fake")
+A detector that is a released Hugging Face VLM (e.g. Veritas++) uses the shared `vlm` kind instead of steps 1-3:
+- no model class, model config or `trainer.py` dispatch: `models/vlm/vlm.py` (`SynthScopeVLM`) loads the folder with
+  `from_pretrained` into the official transformers class and raises on any missing / unexpected / mismatched tensor;
+  these detectors are inference-only;
+- `models/image/<k>/<k>.py` holds a `VLMConfig`: the transformers class, the official system / user prompt (verbatim),
+  the chat-template kwargs, the decoding (`decoding` = greedy for benchmarks, `official_decoding` = the authors'
+  setting), the answer marker, the verdict word pairs, the official verdict parser (`models/vlm/parsers.py`, vendored
+  with attribution), and `max_pixels` (None = the processor's default; set a cap only if an image does not fit, and
+  document it);
+- the spec: `predict_kind="vlm"`, `ckpt_kind="official_vlm"`, `checkpoint="<folder>"`, `vlm=<config>`, `overrides=[]`,
+  no `transform` (the model's own processor is the preprocessing), `native_res=True`;
+- score: P(fake) = sigmoid(l(fake) - l(real)) at the first verdict token after the answer marker, `logit` = that gap,
+  plus the parsed verdict and the rationale (`Engine.vlm_score`);
+- a multi-GB folder does not fit the one-file zoo: add the key to `NEVER_REDISTRIBUTE` with the reason.
+
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:
 ```

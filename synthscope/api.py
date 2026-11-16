@@ -175,6 +175,13 @@ class Detector:
             return  # already present, user-managed, or training-free
         if self._engine.ffmpeg_missing(self.spec):
             raise FileNotFoundError(self._engine.ffmpeg_missing_message(self.spec))
+        if self.spec.vlm is not None:               # a multi-GB Hugging Face folder, not in the model zoo
+            vlm = self.spec.vlm
+            raise FileNotFoundError(
+                f"'{self.spec.key}' loads the official Hugging Face folder {vlm.hf_repo} (not in the model zoo): "
+                f"hf download {vlm.hf_repo} --revision {vlm.hf_revision} "
+                f"--local-dir {_config.CHECKPOINTS_DIR / self.spec.checkpoint}, or pass checkpoint=FOLDER."
+            )
         if not self._auto_download:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "
