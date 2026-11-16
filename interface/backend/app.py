@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from . import config, datasets, media
-from .engine import get_engine
+from .engine import get_engine, vlm_images_only
 from .registry import REPRO, REPRO_FULL, get_spec, input_note, list_specs
 
 app = FastAPI(title="SynthScope Detector Interface", version="1.0")
@@ -101,9 +101,14 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
                     status_code=400,
                     detail=f"'{spec.name}' is a video detector; please upload a video.",
                 )
-            result = engine.predict_image(spec, media.decode_image(data))
+            if spec.vlm is not None:          # seconds per image: run off the event loop; the raw file (official loader)
+                result = await asyncio.to_thread(engine.predict_image, spec, media.decode_image_raw(data))
+            else:
+                result = engine.predict_image(spec, media.decode_image(data))
             result["media_type"] = "image"
             return result
+        if spec.vlm is not None:
+            raise HTTPException(status_code=400, detail=vlm_images_only(spec))
 
         # video upload -> write to a temp file for the decoder
         suffix = Path(file.filename or "video.mp4").suffix or ".mp4"
@@ -469,6 +474,8 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
     path = datasets.resolve_media(dataset, rel)          # may raise Permission/FileNotFound
     d = datasets.get_def(dataset)
     if d.modality == "video":
+        if spec.vlm is not None:
+            raise HTTPException(status_code=400, detail=vlm_images_only(spec))
         if spec.modality == "video":
             result = engine.predict_video_clip(spec, str(path))
         else:
@@ -479,7 +486,8 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
         if spec.modality == "video":
             raise HTTPException(status_code=400, detail=f"'{spec.name}' is a video detector; pick a video dataset.")
         with open(path, "rb") as fh:
-            result = engine.predict_image(spec, media.decode_image(fh.read()))
+            data = fh.read()
+        result = engine.predict_image(spec, media.decode_image_raw(data) if spec.vlm is not None else media.decode_image(data))
         result["media_type"] = "image"
     gt = datasets.label_of(Path(rel))
     result["ground_truth"] = gt
@@ -507,6 +515,10 @@ def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str =
         raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
 
 
+# Items scored per /api/score_batch call; a VLM detector writes a rationale per image (seconds each on a GPU).
+SCORE_BATCH_CAP, SCORE_BATCH_CAP_VLM = 200, 20
+
+
 @app.post("/api/score_batch")
 def score_batch(payload: dict = Body(...)):
     """Score many dataset items at once (for threshold calibration). Body: {dataset, model, rels:[...]}.
@@ -522,7 +534,7 @@ def score_batch(payload: dict = Body(...)):
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
     out = []
-    for rel in rels[:200]:
+    for rel in rels[:SCORE_BATCH_CAP_VLM if spec.vlm is not None else SCORE_BATCH_CAP]:
         try:
             r = _run_on_dataset_item(engine, spec, dataset, rel)
             out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})

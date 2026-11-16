@@ -310,6 +310,11 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
     return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
+def vlm_images_only(spec: ModelSpec) -> str:
+    return (f"'{spec.key}' is a VLM detector that writes a rationale per image (seconds per image on a GPU): it scores "
+            "still images only, not videos.")
+
+
 def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
     """Load a VLM detector's Hugging Face folder strictly (``SynthScopeVLM`` raises on any missing / unexpected /
     mismatched tensor)."""
@@ -537,9 +542,12 @@ class Engine:
 
     def vlm_score(self, spec: ModelSpec, pil: Image.Image, decoding: str = "greedy", seed: int | None = None) -> dict:
         """A VLM detector's full output for one image (``SynthScopeVLM.score``): ``fake_probability`` (sigmoid of
-        ``logit``, the fake-minus-real logit at the answer token), the parsed ``verdict`` ("fake" / "real" / None),
-        the ``rationale`` and ``response`` text, the verdict token and step, and the generation length.
-        ``decoding="official"`` uses the authors' sampling (seeded with ``seed``) instead of greedy decoding."""
+        ``logit``, the fake-minus-real logit at the answer token; 0.5 with ``score_source="unparsed"`` when no verdict
+        token was generated), the parsed ``verdict`` ("fake" / "real" / None), the ``rationale`` and ``response`` text,
+        the verdict token and step, and the generation length. ``decoding="official"`` uses the authors' sampling
+        (seeded with ``seed``) instead of greedy decoding. Pass the decoded file without an RGB conversion
+        (``media.decode_image_raw``): the config's ``image_loader`` reproduces the official server's EXIF / alpha
+        handling."""
         return self._get_model(spec).score(pil, decoding=decoding, seed=seed)
 
     def _predict_vlm(self, spec: ModelSpec, pil: Image.Image) -> dict:
@@ -548,7 +556,7 @@ class Engine:
         out = self.vlm_score(spec, pil)
         res = self._result(spec, out["fake_probability"], time.time() - t0)
         # The official parser's answer; under greedy decoding it agrees with the sign of the logit, except for an
-        # answer naming both words (the parser checks "real" first) or none ("unparsed": P(fake) as in score_source).
+        # answer naming both words (the parser checks "real" first). No parsable answer: "unparsed".
         res["verdict"] = out["verdict"] or "unparsed"
         res["logit"] = round(out["logit"], 6)
         for key in ("rationale", "response", "verdict_token", "score_source", "new_tokens", "finished", "decoding"):
@@ -589,14 +597,12 @@ class Engine:
 
     def predict_video_frames(self, spec: ModelSpec, frames: list[Image.Image]) -> dict:
         """Run an *image* detector on sampled video frames and aggregate (mean P(fake))."""
+        if spec.predict_kind == "vlm":
+            raise ValueError(vlm_images_only(spec))
         model = self._get_model(spec)
+        batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
         t0 = time.time()
-        if spec.predict_kind == "vlm":              # one generation per frame
-            per_frame = [self.vlm_score(spec, f)["fake_probability"] for f in frames]
-        else:
-            batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
-            t0 = time.time()
-            per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
+        per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
         elapsed = time.time() - t0
         mean_p = sum(per_frame) / len(per_frame)
         res = self._result(spec, mean_p, elapsed)

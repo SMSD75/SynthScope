@@ -222,9 +222,10 @@ class ModelSpec:
     interpret: str = ""
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
     # predict_kind "vlm": a released vision-language model that writes a rationale and a verdict (models/vlm/vlm.py).
-    # Its preprocessing is the model's own processor, so ``transform`` is None and ``overrides`` is empty: the config
-    # carries the processor, prompt, decoding, answer marker, verdict words, parser and pixel cap. ``checkpoint`` is
-    # the Hugging Face folder under CHECKPOINTS_DIR (ckpt_kind "official_vlm": strict ``from_pretrained``).
+    # Its preprocessing is the official image loader + the model's own processor, so ``transform`` is None and
+    # ``overrides`` is empty: the config (with its model family) carries the processor, prompt, decoding, answer
+    # marker, verdict words, parser and pixel cap. ``checkpoint`` is the Hugging Face folder under CHECKPOINTS_DIR
+    # (ckpt_kind "official_vlm": strict ``from_pretrained``, local files only). Still images only.
     vlm: Optional[VLMConfig] = field(default=None, repr=False)
 
     def eval_batch_size(self, batch_size: int) -> int:
@@ -630,8 +631,9 @@ _add(ModelSpec(
     notes="Qwen3-VL-8B trained to reason about an image (a written rationale, about 400-650 tokens) and then answer "
           "<answer> real/fake </answer>. Uses the OFFICIAL weights and the official prompt; scored with greedy "
           "decoding (the authors sample at temperature 0.7). P(fake) = sigmoid of the fake-minus-real logit at the "
-          "answer token, so it is near 0 or 1; the verdict is the parsed answer. About 15-20 s per image on a 24 GB "
-          "GPU (bf16, 18.5 GB); not on the Space.",
+          "answer token, so it is near 0 or 1; the verdict is the parsed answer. Still images only. Provisional cost "
+          "(gate check, 6 images up to 1024x1024, RTX A5000): about 17 s per image, 18.5 GB peak in bf16; larger "
+          "images cost more. Not on the Space.",
 ))
 
 # --- Video detectors ---------------------------------------------------------
@@ -737,9 +739,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "vina": ("Resize + center-crop 256 (bicubic)", "The shorter side is scaled to 256 px (bicubic) and the central "
              "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the "
              "detector."),
-    "veritaspp": ("Native resolution (Qwen3-VL processor)", "The whole image goes to the vision-language model at its "
-                  "own resolution, resized only to a multiple of 32 px (between 0.07 and 16.8 megapixels), as in the "
-                  "official inference."),
+    "veritaspp": ("Native resolution (Qwen3-VL processor)", "As the official server loads it, the image is turned "
+                  "upright by its EXIF orientation and any transparency is filled with white; then the whole image goes "
+                  "to the vision-language model at its own resolution, resized only to a multiple of 32 px (between "
+                  "0.07 and 16.8 megapixels)."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }

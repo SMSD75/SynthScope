@@ -17,7 +17,7 @@ from PIL import Image
 # torch/torchvision and the repo decoders, so keep it at module scope (this is an ML library).
 from interface.backend import config as _config
 from interface.backend import media as _media
-from interface.backend.engine import Engine, get_engine
+from interface.backend.engine import Engine, get_engine, vlm_images_only
 from interface.backend.registry import ModelSpec, get_spec, list_specs
 
 PathOrImage = Union[str, Path, bytes, Image.Image]
@@ -154,6 +154,8 @@ class Detector:
             return result
 
         # kind == "video"
+        if self.spec.vlm is not None:
+            raise ValueError(vlm_images_only(self.spec))
         if self.spec.modality == "video":
             return self._engine.predict_video_clip(self.spec, path)
         # An image detector on a video: sample frames and aggregate.
@@ -194,13 +196,15 @@ class Detector:
 
     # -- helpers ------------------------------------------------------------
     def _classify(self, source: PathOrImage):
-        """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``."""
+        """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``. A VLM detector gets the decoded file
+        without an RGB conversion (its own loader applies the official EXIF / transparency handling)."""
+        vlm = self.spec.vlm is not None
         if isinstance(source, Image.Image):
-            return "image", _media.to_rgb(source), None
+            return "image", (source if vlm else _media.to_rgb(source)), None
         if isinstance(source, (bytes, bytearray)):
-            return "image", _media.decode_image(bytes(source)), None
+            return "image", (_media.decode_image_raw if vlm else _media.decode_image)(bytes(source)), None
         path = Path(source)
         kind = _media.media_kind(path.name)
         if kind == "image":
-            return "image", _media.decode_image(path.read_bytes()), None
+            return "image", (_media.decode_image_raw if vlm else _media.decode_image)(path.read_bytes()), None
         return "video", None, path

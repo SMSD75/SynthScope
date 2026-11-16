@@ -51,19 +51,29 @@ for the maintainers and stop.
 5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 
 ### VLM detectors (a released vision-language model that answers "real or fake")
-A detector that is a released Hugging Face VLM (e.g. Veritas++) uses the shared `vlm` kind instead of steps 1-3:
-- no model class, model config or `trainer.py` dispatch: `models/vlm/vlm.py` (`SynthScopeVLM`) loads the folder with
-  `from_pretrained` into the official transformers class and raises on any missing / unexpected / mismatched tensor;
-  these detectors are inference-only;
-- `models/image/<k>/<k>.py` holds a `VLMConfig`: the transformers class, the official system / user prompt (verbatim),
-  the chat-template kwargs, the decoding (`decoding` = greedy for benchmarks, `official_decoding` = the authors'
-  setting), the answer marker, the verdict word pairs, the official verdict parser (`models/vlm/parsers.py`, vendored
-  with attribution), and `max_pixels` (None = the processor's default; set a cap only if an image does not fit, and
-  document it);
+A detector that is a released Hugging Face VLM (Veritas++ so far) uses the `vlm` kind (`models/vlm/vlm.py`) instead of
+steps 1-3. It is a family-adapter design:
+- a **family** (`VLMFamily`) says how a model family is loaded and fed: the strict `from_pretrained` load into the
+  official transformers class (local files only; a LoRA adapter is kept unmerged on a local `base_model` folder, needs
+  peft), the processor (+ `processor_overrides`), the prompt (chat template on, or the raw prompt with
+  `chat_template=False`), the processor call and the input size. `QwenVLFamily` (`QWEN_VL`) is implemented; the base
+  class fits processors that take `text=[prompt], images=[image]` (LLaVA-style; `tests/test_veritaspp_smoke.py` plugs a
+  dummy one in). A family whose loading or inputs differ (e.g. FakeVLM's processor from another repo) overrides the
+  methods it needs;
+- `models/image/<k>/<k>.py` holds the detector's `VLMConfig`: the family and transformers class, the official prompts
+  (verbatim), the image loader (`models/vlm/image.py`: vLLM's EXIF transpose + white alpha composite, when the official
+  inference is a vLLM server), an optional PIL `preprocess` hook (e.g. `qwen_vl_utils.fetch_image`), the decoding
+  (`decoding` = greedy for benchmarks, `official_decoding` = the authors' setting), the answer marker and end tag (both
+  optional), the verdict word pairs, the verdict mode (`generate`, or `teacher_forced`: one forward pass on the prompt +
+  `teacher_forced_suffix`), raw or processed logits (processed = after a repetition penalty, what greedy decoding
+  picks from), the official verdict parser (`models/vlm/parsers.py`, vendored with attribution) and `max_pixels`
+  (None = the processor's default; set a cap only if an image does not fit, and document it);
 - the spec: `predict_kind="vlm"`, `ckpt_kind="official_vlm"`, `checkpoint="<folder>"`, `vlm=<config>`, `overrides=[]`,
-  no `transform` (the model's own processor is the preprocessing), `native_res=True`;
-- score: P(fake) = sigmoid(l(fake) - l(real)) at the first verdict token after the answer marker, `logit` = that gap,
-  plus the parsed verdict and the rationale (`Engine.vlm_score`);
+  no `transform`, `native_res=True`; no model config and no `trainer.py` dispatch (inference only);
+- score: P(fake) = sigmoid(l(fake) - l(real)) at the verdict token (`logit` = that gap), 0.5 with
+  `score_source="unparsed"` when no verdict token was generated, plus the parsed verdict and the rationale
+  (`Engine.vlm_score`); pass the decoded file without an RGB conversion (`media.decode_image_raw`);
+- not supported yet: batching (one image per call), video;
 - a multi-GB folder does not fit the one-file zoo: add the key to `NEVER_REDISTRIBUTE` with the reason.
 
 ## Verify reproduction (required)

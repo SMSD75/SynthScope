@@ -1,24 +1,33 @@
-"""Smoke test for the shared VLM detector kind and Veritas++ (``veritaspp``); CPU, no downloads.
+"""Smoke test for the shared VLM detector kind and Veritas++ (``veritaspp``); CPU, no downloads, no released files needed.
 
 Checks:
 [A] the verdict parser = the authors' Veritas v1 ``get_metrics`` answer rule ("real" before "fake", unparsed is None);
     with the official clone ($VERITAS_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/Veritas) the official function
     itself is run on every case (skipped otherwise);
 [B] the prompt: the system / user prompts equal ``SYSTEM_PROMPT`` / ``USER_PROMPT`` of the official client (with
-    $VERITASPP_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/VeritasPP; skipped otherwise); ``build_prompt`` sends
-    [system, user: [image, text]] with ``add_generation_prompt`` and ``enable_thinking=False``; with the released
-    processor files ($SYNTHSCOPE_CKPT_DIR/veritaspp) the rendered request equals the gate check's text;
-[C] the score math on a stub tokenizer: verdict-token pairs (same spelling, counterpart must be one token), the
-    marker search, the verdict step (first verdict token after "<answer>"), logit = l(fake) - l(real) of that pair,
-    P(fake) = sigmoid(logit); the "after_marker" fallback and the "none" case (P 0.5, logit 0); the LM-head hook keeps
-    the last position's logits at the verdict ids of every forward;
-[D] the registry spec (vlm kind, official folder, greedy + official decoding, no pixel cap, one image at a time), the
-    input note, the zoo block list, ``_fake_prob`` refusing tensors, the download hint when the folder is missing;
-[E] strict loading: ``check_loading_info`` raises on any missing / unexpected / mismatched key; a tiny random
-    Qwen3-VL saved with transformers loads through ``SynthScopeVLM`` and raises once a tensor is removed or added;
-    with the released processor files: the tiny model scores an image end to end (engine path), the hooked logits
-    equal ``generate(output_logits=True)`` exactly and the tokens equal a direct ``generate``;
-[F] with the released weights and a GPU: the engine loads all 750 tensors strictly and scores one image with a parsed
+    $VERITASPP_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/VeritasPP; skipped otherwise); ``VLMFamily.prompt``
+    sends [system, user: [image, text]] with ``add_generation_prompt`` and ``enable_thinking=False``, or the raw prompt
+    with ``chat_template=False``; with the released processor files ($SYNTHSCOPE_CKPT_DIR/veritaspp) the rendered
+    request equals the gate check's text (skipped otherwise);
+[C] the score math on a stub tokenizer: verdict-token pairs, the marker search, the verdict step (first verdict token
+    after "<answer>", none after "</answer>"; from the start without a marker), logit = l(fake) - l(real) of that pair,
+    P(fake) = sigmoid(logit); no verdict token -> P 0.5, logit 0, "unparsed" (ruling U1); the LM-head hook;
+[D] the image loader = vLLM's (EXIF transpose, transparency on white, RGB) on every branch; the recorded comparison
+    with vLLM itself (repro/vlm_image_vllm_parity.json) is all identical; VLM inputs are decoded without an RGB
+    conversion (``media.decode_image_raw``, ``Detector._classify``);
+[E] the registry spec, the input note, the zoo block list, the engine guards (``_fake_prob``, video refused in the
+    engine and the API, the download hint), the web app's 20-item batch cap; /api/predict scores a VLM in a worker
+    thread on the raw file and refuses a video;
+[F] a tiny random Qwen3-VL with a tiny local processor (no released files): strict load, a removed / added tensor
+    raises, an adapter folder without a base raises; ``score`` end to end (forced answer: verdict step, logit ==
+    ``output_logits`` gap, parsed verdict), hooked logits == ``output_logits``, tokens == a direct ``generate``,
+    processed logits == ``output_scores`` under a repetition penalty, two threads give the sequential result (lock),
+    the engine's ``predict_image``; with peft importable ($VLM_PYDEPS adds a path): an unmerged LoRA on a local base
+    loads strictly, matches a direct peft load, and a tampered adapter raises;
+[G] a dummy LLaVA-style family (no ``image_grid_thw``, no chat template, no answer marker, teacher-forced single pass)
+    plugs in: P(fake) = sigmoid of a direct forward's gap, input size from the pixel tensor, generate mode without a
+    marker runs;
+[H] with the released weights and a GPU: the engine loads all 750 tensors strictly and scores one image with a parsed
     verdict whose sign agrees with the logit (skipped otherwise).
 """
 
@@ -29,38 +38,51 @@ import contextlib
 import dataclasses
 import io
 import json
+import logging
 import math
 import os
 import shutil
 import sys
 import tempfile
+import threading
 import warnings
 from pathlib import Path
 
 import numpy as np
 import torch
+import transformers
 from PIL import Image
 from safetensors.torch import load_file, save_file
+from tokenizers import Tokenizer, decoders, models as tok_models, pre_tokenizers
+from transformers import (CLIPImageProcessor, LlavaConfig, LlavaForConditionalGeneration, LlavaProcessor,
+                          LogitsProcessor, LogitsProcessorList, PreTrainedTokenizerFast, Qwen2VLImageProcessor,
+                          Qwen3VLConfig, Qwen3VLForConditionalGeneration, Qwen3VLProcessor)
+from transformers.models.qwen3_vl.video_processing_qwen3_vl import Qwen3VLVideoProcessor
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path[:0] = [ROOT, os.path.join(ROOT, "interface")]
 
-from interface.backend import config as backend_config                                 # noqa: E402
-from interface.backend.engine import Engine                                              # noqa: E402
-from interface.backend.registry import get_spec, input_note                              # noqa: E402
+from interface.backend import app as web_app                                       # noqa: E402
+from interface.backend import config as backend_config                             # noqa: E402
+from interface.backend import media                                                # noqa: E402
+from interface.backend.engine import Engine                                        # noqa: E402
+from interface.backend.registry import get_spec, input_note                        # noqa: E402
 from models.image.veritaspp.veritaspp import SYSTEM_PROMPT, USER_PROMPT, VERITASPP   # noqa: E402
-from models.vlm.parsers import parse_veritas_v1                                  # noqa: E402
-from models.vlm.vlm import (LogitRecorder, SynthScopeVLM, build_prompt, check_loading_info,   # noqa: E402
-                            default_pair, locate_verdict, marker_end, verdict_pair_map, verdict_score)
-from synthscope import hub                                                       # noqa: E402
-from synthscope.api import Detector                                              # noqa: E402
+from models.vlm.image import vllm_rgb                                              # noqa: E402
+from models.vlm.parsers import parse_veritas_v1                                    # noqa: E402
+from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, VLMConfig,   # noqa: E402
+                            VLMFamily, check_loading_info, default_pair, locate_verdict, marker_end,
+                            verdict_pair_map, verdict_score)
+from synthscope import hub                                                         # noqa: E402
+from synthscope.api import Detector                                                # noqa: E402
 
-SHARED = Path(ROOT).parent if Path(ROOT).name == "vlm_wt" else Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared")
+SHARED = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared")
 VERITAS_DIR = Path(os.environ.get("VERITAS_OFFICIAL_DIR", SHARED / "vlm_ref" / "Veritas"))
 VERITASPP_DIR = Path(os.environ.get("VERITASPP_OFFICIAL_DIR", SHARED / "vlm_ref" / "VeritasPP"))
+PYDEPS = os.environ.get("VLM_PYDEPS", str(SHARED / "vlm_pydeps"))
 WEIGHTS = backend_config.CHECKPOINTS_DIR / "veritaspp"
 PROCESSOR_FILES = ("chat_template.jinja", "preprocessor_config.json", "processor_config.json", "tokenizer.json",
-                   "tokenizer_config.json", "generation_config.json")
+                   "tokenizer_config.json")
 # The request the 2026-11-16 gate check sent (vlm_gate/out/veritaspp_score.json, "prompt_text").
 GATE_PROMPT = ("<|im_start|>system\n" + SYSTEM_PROMPT + "<|im_end|>\n<|im_start|>user\n"
                "<|vision_start|><|image_pad|><|vision_end|>Is this image real or fake?<|im_end|>\n<|im_start|>assistant\n")
@@ -75,15 +97,43 @@ PARSER_CASES = {
     "no answer at all": None,
     "<answer> fake </answer> then <answer> real </answer>": "fake",   # the first answer counts
 }
-# A tiny Qwen3-VL (random weights) with the released vocabulary and token ids.
+# Tiny word-level tokenizer shared by the tiny Qwen3-VL and LLaVA fixtures.
+SPECIAL = ["<|endoftext|>", "<|im_start|>", "<|im_end|>", "<|vision_start|>", "<|vision_end|>", "<|image_pad|>",
+           "<|video_pad|>", "<image>", "<unk>"]
+WORDS = ("system user assistant You are an expert visual analyst . Please think Is this image real or fake ? Real Fake "
+         "REAL FAKE < answer > </ the a it looks Does This is / x y z").split()
+QWEN_TEMPLATE = ("{% for m in messages %}<|im_start|>{{ m.role }}\n{% if m.content is string %}{{ m.content }}{% else %}"
+                 "{% for c in m.content %}{% if c.type == 'image' %}<|vision_start|><|image_pad|><|vision_end|>"
+                 "{% else %}{{ c.text }}{% endif %}{% endfor %}{% endif %}<|im_end|>\n{% endfor %}"
+                 "{% if add_generation_prompt %}<|im_start|>assistant\n{% endif %}")
 TINY_TEXT = {"hidden_size": 32, "intermediate_size": 64, "num_hidden_layers": 2, "num_attention_heads": 2,
-             "num_key_value_heads": 1, "head_dim": 16, "vocab_size": 151936, "max_position_embeddings": 4096,
+             "num_key_value_heads": 1, "head_dim": 16, "max_position_embeddings": 4096,
              "rope_parameters": {"mrope_interleaved": True, "mrope_section": [4, 2, 2], "rope_theta": 5000000,
-                                 "rope_type": "default"}, "tie_word_embeddings": False, "pad_token_id": 151643,
-             "bos_token_id": 151643, "eos_token_id": 151645}
+                                 "rope_type": "default"}, "tie_word_embeddings": False}
 TINY_VISION = {"depth": 2, "hidden_size": 32, "intermediate_size": 64, "num_heads": 2, "out_hidden_size": 32,
                "deepstack_visual_indexes": [0], "patch_size": 16, "spatial_merge_size": 2, "temporal_patch_size": 2,
                "num_position_embeddings": 2304, "hidden_act": "gelu_pytorch_tanh"}
+
+
+@contextlib.contextmanager
+def quiet():
+    """Silence transformers' load reports, progress bars and library warnings (stdout / stderr at the fd level)."""
+    sys.stdout.flush()
+    sys.stderr.flush()
+    saved = os.dup(1), os.dup(2)
+    with open(os.devnull, "w") as null, warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        os.dup2(null.fileno(), 1)
+        os.dup2(null.fileno(), 2)
+        try:
+            yield
+        finally:
+            sys.stdout.flush()
+            sys.stderr.flush()
+            os.dup2(saved[0], 1)
+            os.dup2(saved[1], 2)
+            os.close(saved[0])
+            os.close(saved[1])
 
 
 def official_constants(path: Path) -> dict:
@@ -100,6 +150,77 @@ def official_get_metrics(path: Path):
                  "accuracy_score": accuracy_score}
     exec(compile(ast.Module(body=[fn], type_ignores=[]), str(path), "exec"), namespace)
     return namespace["get_metrics"]
+
+
+def tiny_tokenizer() -> PreTrainedTokenizerFast:
+    vocab = {t: i for i, t in enumerate(SPECIAL + WORDS)}
+    backend = Tokenizer(tok_models.WordLevel(vocab=vocab, unk_token="<unk>"))
+    backend.pre_tokenizer = pre_tokenizers.Whitespace()
+    backend.decoder = decoders.Fuse()                     # decode joins tokens without spaces: "<answer>fake</answer>"
+    return PreTrainedTokenizerFast(tokenizer_object=backend, unk_token="<unk>", pad_token="<|endoftext|>",
+                                   eos_token="<|im_end|>", additional_special_tokens=SPECIAL[1:8])
+
+
+def tiny_qwen_folder(folder: Path, seed: int = 0) -> Path:
+    """A tiny random Qwen3-VL + a tiny local Qwen3-VL processor, saved with transformers."""
+    tok = tiny_tokenizer()
+    ids = tok.convert_tokens_to_ids
+    processor = Qwen3VLProcessor(
+        image_processor=Qwen2VLImageProcessor(size={"shortest_edge": 65536, "longest_edge": 16777216}, patch_size=16,
+                                              merge_size=2, temporal_patch_size=2, image_mean=[0.5] * 3,
+                                              image_std=[0.5] * 3),
+        tokenizer=tok, video_processor=Qwen3VLVideoProcessor(patch_size=16, merge_size=2, temporal_patch_size=2),
+        chat_template=QWEN_TEMPLATE)
+    config = Qwen3VLConfig(
+        text_config={**TINY_TEXT, "vocab_size": len(tok), "pad_token_id": ids("<|endoftext|>"),
+                     "eos_token_id": ids("<|im_end|>")},
+        vision_config=TINY_VISION, image_token_id=ids("<|image_pad|>"), video_token_id=ids("<|video_pad|>"),
+        vision_start_token_id=ids("<|vision_start|>"), vision_end_token_id=ids("<|vision_end|>"),
+        tie_word_embeddings=False)
+    torch.manual_seed(seed)
+    with quiet():
+        Qwen3VLForConditionalGeneration(config).to(torch.bfloat16).save_pretrained(folder)
+        processor.save_pretrained(folder)
+    return folder
+
+
+def tiny_llava_folder(folder: Path) -> Path:
+    tok = tiny_tokenizer()
+    processor = LlavaProcessor(image_processor=CLIPImageProcessor(size={"shortest_edge": 32},
+                                                                  crop_size={"height": 32, "width": 32}),
+                               tokenizer=tok, patch_size=16, vision_feature_select_strategy="default",
+                               num_additional_image_tokens=1)
+    config = LlavaConfig(
+        vision_config={"model_type": "clip_vision_model", "hidden_size": 32, "intermediate_size": 64,
+                       "num_hidden_layers": 2, "num_attention_heads": 2, "image_size": 32, "patch_size": 16},
+        text_config={"model_type": "llama", "hidden_size": 32, "intermediate_size": 64, "num_hidden_layers": 2,
+                     "num_attention_heads": 2, "num_key_value_heads": 1, "vocab_size": len(tok),
+                     "eos_token_id": tok.convert_tokens_to_ids("<|im_end|>")},
+        image_token_id=tok.convert_tokens_to_ids("<image>"), vision_feature_select_strategy="default",
+        vision_feature_layer=-2)
+    torch.manual_seed(1)
+    with quiet():
+        LlavaForConditionalGeneration(config).to(torch.bfloat16).save_pretrained(folder)
+        processor.save_pretrained(folder)
+    return folder
+
+
+class ForceTokens(LogitsProcessor):
+    """Test-only: make generate emit ``script`` (token ids) step by step, then EOS; raw logits are left untouched."""
+
+    def __init__(self, script: list, eos: int, n_prompt: int):
+        self.script, self.eos, self.n_prompt = script, eos, n_prompt
+
+    def __call__(self, input_ids, scores):
+        step = input_ids.shape[1] - self.n_prompt
+        target = self.script[step] if step < len(self.script) else self.eos
+        forced = torch.full_like(scores, -1e9)
+        forced[:, target] = 0.0
+        return forced
+
+
+def rgb_image(w: int = 300, h: int = 200, seed: int = 0) -> Image.Image:
+    return Image.fromarray((np.random.RandomState(seed).rand(h, w, 3) * 255).astype("uint8"))
 
 
 def test_parser() -> None:
@@ -121,7 +242,7 @@ def test_parser() -> None:
             acc = get_metrics([{"result": text, "label": 1}] + anchors)["acc"]
         official = next(v for k, v in outcome.items() if abs(k - acc) < 1e-3)
         assert official == parse_veritas_v1(text), (text, official)
-    print(f"    {len(PARSER_CASES)} cases, identical to the official get_metrics ({script.parent.parent.parent.name})")
+    print(f"    {len(PARSER_CASES)} cases, identical to the official get_metrics")
 
 
 class StubProcessor:
@@ -145,17 +266,20 @@ def test_prompt() -> None:
     assert VERITASPP.system_prompt == SYSTEM_PROMPT and VERITASPP.user_prompt == USER_PROMPT
     assert "’" in SYSTEM_PROMPT                   # "It’s" with the official curly apostrophe
     stub = StubProcessor()
-    assert build_prompt(stub, VERITASPP) == "rendered"
+    assert QWEN_VL.prompt(stub, VERITASPP) == "rendered"
     messages, kwargs = stub.calls[0]
     assert messages == [{"role": "system", "content": SYSTEM_PROMPT},
                         {"role": "user", "content": [{"type": "image"}, {"type": "text", "text": USER_PROMPT}]}]
     assert kwargs == {"tokenize": False, "add_generation_prompt": True, "enable_thinking": False}, kwargs
+    raw = dataclasses.replace(VERITASPP, chat_template=False, user_prompt="<image>Does the image looks real/fake?")
+    assert QWEN_VL.prompt(stub, raw) == "<image>Does the image looks real/fake?" and len(stub.calls) == 1
     if all((WEIGHTS / f).exists() for f in PROCESSOR_FILES):
-        from transformers import AutoProcessor
-        assert build_prompt(AutoProcessor.from_pretrained(str(WEIGHTS)), VERITASPP) == GATE_PROMPT
+        with quiet():
+            processor = transformers.AutoProcessor.from_pretrained(str(WEIGHTS), local_files_only=True)
+        assert QWEN_VL.prompt(processor, VERITASPP) == GATE_PROMPT
         print("    rendered request == the gate check's request (released processor)")
     else:
-        print("    released processor not found, rendered-request check skipped")
+        print("    released processor not found here, rendered-request check skipped (tiny processor: [F])")
 
 
 class StubTokenizer:
@@ -178,7 +302,7 @@ class StubTokenizer:
 
 
 def test_score_math() -> None:
-    print("[C] verdict step, token pair, logit gap, fallbacks, LM-head hook ...")
+    print("[C] verdict step, token pair, logit gap, U1, LM-head hook ...")
     tok = StubTokenizer()
     pairs = VERITASPP.verdict_pairs
     pair_map = verdict_pair_map(tok, pairs)
@@ -186,60 +310,99 @@ def test_score_math() -> None:
     assert default_pair(tok, pairs) == (4, 3)
     ids = sorted({i for p in pair_map.values() for i in p})
     column = {t: c for c, t in enumerate(ids)}
+    torch.manual_seed(0)
+    rows = torch.randn(12, len(ids))
+
+    def run(gen, marker="<answer>", end="</answer>"):
+        return verdict_score(gen, [tok.decode([t]) for t in gen], rows[:len(gen)], column, marker, pair_map, end)
+
     gen = [11, 5, 11, 0, 1, 2, 3, 7, 1, 2]                 # "x real x<answer> real </answer>": 'real' before the marker
     pieces = [tok.decode([t]) for t in gen]
     assert marker_end(pieces, "<answer>") == 6 and locate_verdict(gen, pieces, "<answer>", pair_map) == (6, 6)
-    torch.manual_seed(0)
-    rows = torch.randn(len(gen), len(ids))
-    out = verdict_score(gen, pieces, rows, column, "<answer>", pair_map, (4, 3))
+    out = run(gen)
     gap = float(rows[6, column[4]] - rows[6, column[3]])
     assert out["score_source"] == "verdict_token" and out["verdict_step"] == 6 and out["pair_ids"] == (4, 3)
     assert math.isclose(out["logit"], gap) and math.isclose(out["fake_probability"], 1 / (1 + math.exp(-gap)))
-    # an upper-case verdict uses its own pair
-    gen2 = [0, 1, 2, 9]
-    out2 = verdict_score(gen2, [tok.decode([t]) for t in gen2], rows[:4], column, "<answer>", pair_map, (4, 3))
-    assert out2["pair_ids"] == (9, 8) and math.isclose(out2["logit"], float(rows[3, column[9]] - rows[3, column[8]]))
-    # marker but no verdict word: read at the step after the marker with the default pair
-    gen3 = [0, 1, 2, 12, 7, 1, 2]
-    out3 = verdict_score(gen3, [tok.decode([t]) for t in gen3], rows[:7], column, "<answer>", pair_map, (4, 3))
-    assert out3["score_source"] == "after_marker" and out3["verdict_step"] == 3
-    assert math.isclose(out3["logit"], float(rows[3, column[4]] - rows[3, column[3]]))
-    # no marker (e.g. truncated): P 0.5, logit 0
-    out4 = verdict_score([11, 3, 4], [tok.decode([t]) for t in (11, 3, 4)], rows[:3], column, "<answer>", pair_map,
-                         (4, 3))
-    assert out4["score_source"] == "none" and out4["fake_probability"] == 0.5 and out4["logit"] == 0.0
+    out = run([0, 1, 2, 9])                                # an upper-case verdict uses its own pair
+    assert out["pair_ids"] == (9, 8) and math.isclose(out["logit"], float(rows[3, column[9]] - rows[3, column[8]]))
+    # no verdict word inside the answer (U1): 0.5 / 0 / unparsed, even if one follows the closing tag
+    for gen in ([0, 1, 2, 12, 7, 1, 2], [0, 1, 2, 12, 7, 1, 2, 11, 4], [11, 3, 4]):
+        out = run(gen)
+        assert (out["score_source"], out["fake_probability"], out["logit"]) == ("unparsed", 0.5, 0.0), gen
+    # without a marker the first verdict word counts (from step 0)
+    out = run([11, 4, 3], marker=None, end=None)
+    assert out["verdict_step"] == 1 and out["pair_ids"] == (4, 3) and marker_end(["x"], None) == 0
     # the hook keeps out[:, -1, ids] of every forward
     head = torch.nn.Linear(8, 13)
     with LogitRecorder(head, ids) as rec:
-        xs = [torch.randn(1, n, 8) for n in (5, 1, 1)]
-        outs = [head(x) for x in xs]
+        outs = [head(torch.randn(1, n, 8)) for n in (5, 1, 1)]
     assert torch.equal(rec.stacked(), torch.cat([o[:, -1, ids] for o in outs]).detach())
     assert not head._forward_hooks                          # removed on exit
-    print("    pairs, verdict step, logit / P(fake), fallbacks and hook all as specified")
+    print("    pairs, verdict step (bounded by </answer>), logit / P(fake), U1 and hook as specified")
 
 
-def test_registry() -> None:
-    print("[D] registry spec, input note, zoo block list, engine guards ...")
+def test_image_loader() -> None:
+    print("[D] image loader = vLLM's (EXIF, transparency on white) ...")
+    rng = np.random.RandomState(0)
+    rgba = Image.fromarray((rng.rand(5, 7, 4) * 255).astype("uint8"), "RGBA")
+    out = vllm_rgb(rgba)
+    a, rgb_a = np.asarray(rgba).astype(float), np.asarray(out).astype(float)
+    expected = a[..., :3] * a[..., 3:] / 255 + 255 * (1 - a[..., 3:] / 255)    # alpha over white
+    assert out.mode == "RGB" and np.abs(rgb_a - expected).max() <= 1.0
+    clear = Image.new("RGBA", (4, 4), (10, 20, 30, 0))
+    assert vllm_rgb(clear).getpixel((0, 0)) == (255, 255, 255)          # PIL convert("RGB") would give (10, 20, 30)
+    assert vllm_rgb(Image.new("LA", (3, 3), (0, 0))).getpixel((1, 1)) == (255, 255, 255)
+    pal = Image.new("P", (3, 3), 3)
+    pal.info["transparency"] = 3
+    assert vllm_rgb(pal).getpixel((0, 0)) == (255, 255, 255)
+    exif = Image.Exif()
+    exif[0x0112] = 6                                        # rotate 90 degrees clockwise to display
+    buf = io.BytesIO()
+    rgb_image(53, 37).save(buf, "JPEG", exif=exif.tobytes())
+    raw = media.decode_image_raw(buf.getvalue())
+    assert raw.size == (53, 37) and vllm_rgb(raw).size == (37, 53)
+    assert media.decode_image(buf.getvalue()).size == (53, 37)          # the other detectors: unchanged
+    png = io.BytesIO()
+    clear.save(png, "PNG")
+    assert media.decode_image_raw(png.getvalue()).mode == "RGBA"
+    det = Detector(get_spec("veritaspp"), device="cpu")
+    assert det._classify(png.getvalue())[1].mode == "RGBA"
+    assert Detector(get_spec("clip"), device="cpu")._classify(png.getvalue())[1].mode == "RGB"
+    record = Path(ROOT) / "repro" / "vlm_image_vllm_parity.json"
+    parity = json.loads(record.read_text())
+    assert parity["all_identical"] and len(parity["files"]) == 16
+    print(f"    every branch as vLLM; recorded vs vLLM {parity['vllm']}: {len(parity['files'])}/16 files identical; "
+          "VLM inputs decoded without RGB conversion")
+
+
+def test_registry_and_guards() -> None:
+    print("[E] registry spec, note, block list, engine / API / web guards ...")
     spec = get_spec("veritaspp")
     assert (spec.predict_kind, spec.ckpt_kind, spec.checkpoint, spec.weights) == ("vlm", "official_vlm", "veritaspp",
                                                                                   "official")
     assert spec.transform is None and spec.overrides == [] and spec.modality == "image"
-    assert spec.vlm is VERITASPP and spec.eval_batch_size(32) == 1
-    assert VERITASPP.model_class == "Qwen3VLForConditionalGeneration" and VERITASPP.answer_marker == "<answer>"
+    assert spec.vlm is VERITASPP and spec.eval_batch_size(32) == 1 and VERITASPP.family is QWEN_VL
+    assert VERITASPP.model_class == "Qwen3VLForConditionalGeneration"
+    assert (VERITASPP.answer_marker, VERITASPP.answer_end, VERITASPP.verdict_mode, VERITASPP.logits) == \
+        ("<answer>", "</answer>", "generate", "raw")
     assert VERITASPP.decoding == {"do_sample": False, "max_new_tokens": 2048, "repetition_penalty": 1.0}
     assert VERITASPP.official_decoding == {"do_sample": True, "temperature": 0.7, "top_p": 0.8, "top_k": 20,
                                            "max_new_tokens": 2048, "repetition_penalty": 1.0}
     assert VERITASPP.max_pixels is None and VERITASPP.chat_template_kwargs == {"enable_thinking": False}
-    assert VERITASPP.parser is parse_veritas_v1 and VERITASPP.hf_repo == "EricTan7/VeritasPP"
-    assert input_note(spec)["label"].startswith("Native resolution")
+    assert VERITASPP.parser is parse_veritas_v1 and VERITASPP.image_loader is vllm_rgb and VERITASPP.base_model is None
+    assert VERITASPP.hf_repo == "EricTan7/VeritasPP"
+    assert input_note(spec)["label"].startswith("Native resolution") and "EXIF" in input_note(spec)["explanation"]
     assert "veritaspp" in hub.NEVER_REDISTRIBUTE
     engine = Engine(device="cpu")
-    try:
-        engine._fake_prob(None, spec, torch.zeros(1, 3, 8, 8))
-    except ValueError as e:
-        assert "VLM" in str(e)
-    else:
-        raise AssertionError("_fake_prob accepted a VLM spec")
+    for call in (lambda: engine._fake_prob(None, spec, torch.zeros(1, 3, 8, 8)),
+                 lambda: engine.predict_video_frames(spec, [rgb_image()])):
+        try:
+            call()
+        except ValueError as e:
+            assert "VLM" in str(e)
+        else:
+            raise AssertionError("a VLM spec was accepted")
+    assert (web_app.SCORE_BATCH_CAP, web_app.SCORE_BATCH_CAP_VLM) == (200, 20)
     with tempfile.TemporaryDirectory() as tmp:
         original = backend_config.CHECKPOINTS_DIR
         backend_config.CHECKPOINTS_DIR = Path(tmp)
@@ -252,27 +415,50 @@ def test_registry() -> None:
                 assert "hf download EricTan7/VeritasPP --revision 22ba6c6b" in str(e), e
             else:
                 raise AssertionError("missing folder not reported")
+            Path(tmp, "veritaspp").mkdir()                  # present: the API refuses a video before decoding it
+            Path(tmp, "veritaspp", "config.json").write_text("{}")
+            try:
+                Detector(spec, device="cpu").predict(Path(tmp) / "clip.mp4")
+            except ValueError as e:
+                assert "still images only" in str(e), e
+            else:
+                raise AssertionError("a video was accepted")
         finally:
             backend_config.CHECKPOINTS_DIR = original
-    print("    vlm spec, decoding, note, NEVER_REDISTRIBUTE, _fake_prob guard, download hint")
+    test_web_threadpool()
+    print("    vlm spec, decoding, note, NEVER_REDISTRIBUTE, _fake_prob / video refused, download hint, cap 20; "
+          "/api/predict: worker thread, raw RGBA file, video upload -> 400")
 
 
-def tiny_model_dir(tmp: Path, with_processor: bool) -> Path:
-    from transformers import Qwen3VLConfig, Qwen3VLForConditionalGeneration
-    torch.manual_seed(0)
-    config = Qwen3VLConfig(text_config=TINY_TEXT, vision_config=TINY_VISION, image_token_id=151655,
-                           video_token_id=151656, vision_start_token_id=151652, vision_end_token_id=151653,
-                           tie_word_embeddings=False)
-    model = Qwen3VLForConditionalGeneration(config).to(torch.bfloat16)
-    model.save_pretrained(tmp)
-    if with_processor:
-        for name in PROCESSOR_FILES:
-            shutil.copy(WEIGHTS / name, tmp / name)
-    return tmp
+def test_web_threadpool() -> None:
+    """/api/predict scores a VLM off the event loop, on the raw file; a video upload is refused."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        from fastapi.testclient import TestClient
+    seen = {}
+    engine = web_app.get_engine()
+    original = (engine.is_available, engine.predict_image)
+
+    def fake_predict(spec, pil):
+        seen["main_thread"], seen["mode"] = threading.current_thread() is threading.main_thread(), pil.mode
+        return {"fake_probability": 0.9, "verdict": "fake"}
+
+    engine.is_available, engine.predict_image = (lambda spec: True), fake_predict
+    try:
+        png = io.BytesIO()
+        Image.new("RGBA", (8, 8), (1, 2, 3, 0)).save(png, "PNG")
+        client = TestClient(web_app.app)
+        r = client.post("/api/predict", data={"model": "veritaspp"}, files={"file": ("x.png", png.getvalue(), "image/png")})
+        assert r.status_code == 200, r.text
+        assert seen == {"main_thread": False, "mode": "RGBA"}, seen
+        r = client.post("/api/predict", data={"model": "veritaspp"}, files={"file": ("v.mp4", b"00000000", "video/mp4")})
+        assert r.status_code == 400 and "still images only" in r.json()["detail"], r.text
+    finally:
+        engine.is_available, engine.predict_image = original
 
 
-def test_strict_load() -> None:
-    print("[E] strict load (tiny random Qwen3-VL) ...")
+def test_tiny_qwen() -> None:
+    print("[F] tiny random Qwen3-VL + tiny local processor: strict load, score, hook, lock, engine, LoRA ...")
     check_loading_info({"missing_keys": set(), "unexpected_keys": set(), "mismatched_keys": set(), "error_msgs": []}, "x")
     for bad in ({"missing_keys": {"lm_head.weight"}}, {"unexpected_keys": {"extra"}},
                 {"mismatched_keys": {("a", (1,), (2,))}}, {"error_msgs": ["boom"]}):
@@ -282,69 +468,197 @@ def test_strict_load() -> None:
             assert "checkpoint mismatch" in str(e)
         else:
             raise AssertionError(bad)
-    with_processor = all((WEIGHTS / f).exists() for f in PROCESSOR_FILES)
+    cfg = dataclasses.replace(VERITASPP, decoding={"do_sample": False, "max_new_tokens": 16, "repetition_penalty": 1.0})
+    image = rgb_image()
     with tempfile.TemporaryDirectory() as tmp:
-        folder = tiny_model_dir(Path(tmp) / "veritaspp", with_processor)
-        shard = next(folder.glob("*.safetensors"))
-        tensors = {k: v.clone() for k, v in load_file(str(shard)).items()}   # not views of the file rewritten below
-        n = len(tensors)
-        cfg = dataclasses.replace(VERITASPP, decoding={"do_sample": False, "max_new_tokens": 24,
-                                                       "repetition_penalty": 1.0})
-        if with_processor:
+        folder = tiny_qwen_folder(Path(tmp) / "veritaspp")
+        with quiet():
             vlm = SynthScopeVLM(folder, cfg, device="cpu")
-            assert len(vlm.hf.state_dict()) == n
-            image = Image.fromarray((np.random.RandomState(0).rand(200, 300, 3) * 255).astype("uint8"))
+        tok = vlm.tokenizer
+        n_tensors = len(load_file(str(next(folder.glob("*.safetensors")))))
+        assert len(vlm.hf.state_dict()) == n_tensors
+        assert vlm.prompt.startswith("<|im_start|>system\n") and vlm.prompt.endswith("<|im_start|>assistant\n")
+        # free generation: hooked raw logits == output_logits, same tokens as a direct generate
+        with quiet():
             out = vlm.score(image)
-            inputs = vlm.inputs(image)
+            inputs = vlm.inputs(vlm.image(image))
             with torch.inference_mode(), LogitRecorder(vlm.hf.get_output_embeddings(), vlm.record_ids) as rec:
                 ref = vlm.hf.generate(**inputs, **cfg.decoding, output_logits=True, return_dict_in_generate=True)
-            assert ref.sequences[0, inputs["input_ids"].shape[1]:].tolist() == out["generated_ids"]
-            assert torch.equal(rec.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.logits]).cpu())
-            assert out["input_size"] == [320, 224] and out["new_tokens"] == 24 and out["decoding"] == "greedy"
-            # the engine path on the same folder
-            original = backend_config.CHECKPOINTS_DIR
-            backend_config.CHECKPOINTS_DIR = Path(tmp)
-            try:
-                spec = dataclasses.replace(get_spec("veritaspp"), vlm=cfg)
-                engine = Engine(device="cpu")
-                res = engine.predict_image(spec, image)
-                assert res["fake_probability"] == round(out["fake_probability"], 6) and res["logit"] == round(out["logit"], 6)
-                assert "missing=0, unexpected=0" in res["checkpoint_status"] and res["input_size"] == [320, 224]
-            finally:
-                backend_config.CHECKPOINTS_DIR = original
-            print(f"    tiny model: {n} tensors strict; hooked logits == output_logits; tokens == direct generate; engine")
-        else:
-            from transformers import Qwen3VLForConditionalGeneration
-            _, info = Qwen3VLForConditionalGeneration.from_pretrained(str(folder), output_loading_info=True)
-            check_loading_info(info, "tiny")
-            print(f"    tiny model: {n} tensors strict (released processor not found: scoring skipped)")
+        n_prompt = inputs["input_ids"].shape[1]
+        assert ref.sequences[0, n_prompt:].tolist() == out["generated_ids"]
+        assert torch.equal(rec.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.logits]).cpu())
+        assert out["input_size"] == [320, 224] and out["decoding"] == "greedy"
+        # a forced answer: verdict step, gap == output_logits, parsed verdict
+        script = tok.convert_tokens_to_ids(["x", "<", "answer", ">", "fake", "</", "answer", ">"])
+        forcing = ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)
+        forced_cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "logits_processor": LogitsProcessorList([forcing])})
+        vlm.cfg = forced_cfg
+        with quiet():
+            out = vlm.score(image)
+            with torch.inference_mode():
+                ref = vlm.hf.generate(**inputs, **forced_cfg.decoding, output_logits=True, return_dict_in_generate=True)
+        fake_id, real_id = tok.convert_tokens_to_ids(["fake", "real"])
+        gap = float(ref.logits[4][0, fake_id] - ref.logits[4][0, real_id])
+        assert (out["score_source"], out["verdict_step"], out["verdict"], out["verdict_token"]) == \
+            ("verdict_token", 4, "fake", "fake"), out
+        assert out["logit"] == gap and out["finished"] and out["new_tokens"] == len(script) + 1
+        # two threads at once give the sequential result (the lock serializes the shared LM-head hook)
+        results = [None, None]
+
+        def worker(i):
+            results[i] = vlm.score(image)
+
+        threads = [threading.Thread(target=worker, args=(i,)) for i in range(2)]
+        with quiet():
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        assert all(r["logit"] == out["logit"] and r["generated_ids"] == out["generated_ids"] for r in results)
+        # processed logits (after a repetition penalty) == output_scores
+        rp = dataclasses.replace(cfg, logits="processed", decoding={**cfg.decoding, "repetition_penalty": 1.3})
+        with quiet(), torch.inference_mode():
+            rec2 = ProcessedLogitRecorder(vlm.record_ids)
+            ref = vlm.hf.generate(**inputs, **rp.decoding, logits_processor=LogitsProcessorList([rec2]),
+                                  output_scores=True, return_dict_in_generate=True)
+        assert torch.equal(rec2.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.scores]).cpu())
+        vlm.cfg = rp
+        with quiet():
+            assert vlm.score(image)["generated_ids"] == ref.sequences[0, n_prompt:].tolist()
+        vlm.cfg = cfg
+        # the engine path on the same folder
+        original = backend_config.CHECKPOINTS_DIR
+        backend_config.CHECKPOINTS_DIR = Path(tmp)
+        try:
+            spec = dataclasses.replace(get_spec("veritaspp"), vlm=cfg)
+            with quiet():
+                res = Engine(device="cpu").predict_image(spec, image)
+                plain = vlm.score(image)
+            assert res["fake_probability"] == round(plain["fake_probability"], 6) and res["logit"] == round(plain["logit"], 6)
+            assert "missing=0, unexpected=0" in res["checkpoint_status"] and res["input_size"] == [320, 224]
+            assert res["verdict"] == (plain["verdict"] or "unparsed")
+        finally:
+            backend_config.CHECKPOINTS_DIR = original
+        # strictness: a removed or an added tensor raises; an adapter folder needs a local base
+        shard = next(folder.glob("*.safetensors"))
+        tensors = {k: v.clone() for k, v in load_file(str(shard)).items()}   # not views of the file rewritten below
         for name, edit in (("missing", lambda t: t.pop("lm_head.weight")),
                            ("unexpected", lambda t: t.__setitem__("model.extra_tensor", torch.zeros(2)))):
             broken = dict(tensors)
             edit(broken)
             save_file(broken, str(shard), metadata={"format": "pt"})
             try:
-                SynthScopeVLM(folder, cfg, device="cpu")
+                with quiet():
+                    SynthScopeVLM(folder, cfg, device="cpu")
             except RuntimeError as e:
                 assert "checkpoint mismatch" in str(e), e
             else:
                 raise AssertionError(f"a {name} tensor was accepted")
-        print("    a removed or an added tensor raises")
+        save_file(tensors, str(shard), metadata={"format": "pt"})
+        Path(folder, "adapter_config.json").write_text("{}")
+        try:
+            SynthScopeVLM(folder, cfg, device="cpu")
+        except RuntimeError as e:
+            assert "LoRA adapter" in str(e)
+        else:
+            raise AssertionError("an adapter folder without a base was loaded")
+        Path(folder, "adapter_config.json").unlink()
+        lora = check_lora(Path(tmp), cfg, image)
+    print(f"    {n_tensors} tensors strict; score / hook / tokens / forced verdict / processed logits / lock / engine; "
+          f"removed or added tensor raises; adapter needs a base; LoRA: {lora}")
+
+
+def check_lora(tmp: Path, cfg: VLMConfig, image: Image.Image) -> str:
+    """An unmerged LoRA on a local base folder (needs peft; $VLM_PYDEPS is added to the path when it holds peft)."""
+    if PYDEPS and Path(PYDEPS, "peft").exists() and PYDEPS not in sys.path:
+        sys.path.append(PYDEPS)
+    try:
+        import peft
+    except ImportError:
+        return "skipped (peft not importable)"
+    base = tiny_qwen_folder(tmp / "tiny_base", seed=3)
+    adapter = tmp / "tiny_adapter"
+    with quiet():
+        model = Qwen3VLForConditionalGeneration.from_pretrained(str(base), dtype=torch.bfloat16)
+        lora_cfg = peft.LoraConfig(r=4, lora_alpha=8, target_modules=["q_proj", "v_proj"], init_lora_weights=False)
+        torch.manual_seed(5)
+        peft.get_peft_model(model, lora_cfg).save_pretrained(str(adapter))
+        for f in base.iterdir():                           # the adapter folder carries the processor, like a release
+            if f.suffix in (".json", ".jinja") and f.name != "config.json":
+                shutil.copy(f, adapter / f.name)
+        adapter_cfg = dataclasses.replace(cfg, base_model="tiny_base")
+        vlm = SynthScopeVLM(adapter, adapter_cfg, device="cpu")
+        direct = peft.PeftModel.from_pretrained(
+            Qwen3VLForConditionalGeneration.from_pretrained(str(base), dtype=torch.bfloat16), str(adapter)).eval()
+        inputs = vlm.inputs(vlm.image(image))
+        with torch.inference_mode():
+            same = torch.equal(vlm.hf(**inputs).logits, direct(**inputs).logits)
+    assert isinstance(vlm.hf, peft.PeftModel) and same
+    assert any(n.endswith("lora_A.default") for n, _ in vlm.hf.named_modules())     # unmerged
+    weights = adapter / "adapter_model.safetensors"
+    tensors = {k: v.clone() for k, v in load_file(str(weights)).items()}
+    first = sorted(tensors)[0]
+    tensors[first.replace("lora_A", "lora_Z")] = tensors[first].clone()
+    save_file(tensors, str(weights))
+    try:
+        with quiet():
+            SynthScopeVLM(adapter, adapter_cfg, device="cpu")
+    except RuntimeError as e:
+        assert "LoRA adapter mismatch" in str(e), e
+    else:
+        raise AssertionError("a tampered adapter was accepted")
+    return f"unmerged on a local base, == direct peft (peft {peft.__version__}), tampered adapter raises"
+
+
+class LlavaStyleFamily(VLMFamily):
+    """A second family for the test: everything from the base class (processor ``text=[...], images=[...]``, input
+    size from ``pixel_values``); no ``image_grid_thw``."""
+
+
+def test_llava_family() -> None:
+    print("[G] a dummy LLaVA-style family (no grid, no chat template, no marker, single pass) plugs in ...")
+    cfg = VLMConfig(family=LlavaStyleFamily(), model_class="LlavaForConditionalGeneration", system_prompt="",
+                    user_prompt="<image>Does the image looks real/fake ?", parser=parse_veritas_v1, chat_template=False,
+                    answer_marker=None, verdict_mode="teacher_forced", teacher_forced_suffix=" This is a",
+                    verdict_pairs=(("fake", "real"),), image_loader=vllm_rgb,
+                    decoding={"do_sample": False, "max_new_tokens": 6})
+    image = rgb_image(50, 40)
+    with tempfile.TemporaryDirectory() as tmp:
+        folder = tiny_llava_folder(Path(tmp) / "fakevlm_like")
+        with quiet():
+            vlm = SynthScopeVLM(folder, cfg, device="cpu")
+            out = vlm.score(image)
+            inputs = vlm.processor(text=[cfg.user_prompt + cfg.teacher_forced_suffix], images=[image], return_tensors="pt")
+            with torch.inference_mode():
+                row = vlm.hf(**inputs).logits[0, -1].float()
+        f, r = vlm.tokenizer.convert_tokens_to_ids(["fake", "real"])
+        assert vlm.prompt == cfg.user_prompt and "image_grid_thw" not in inputs
+        assert out["score_source"] == "teacher_forced" and out["input_size"] == [32, 32]
+        assert math.isclose(out["logit"], float(row[f] - row[r]), abs_tol=1e-4)
+        assert out["verdict"] == ("fake" if out["logit"] > 0 else "real")
+        vlm.cfg = dataclasses.replace(cfg, verdict_mode="generate")
+        with quiet():
+            gen = vlm.score(image)
+        assert gen["new_tokens"] > 0 and gen["score_source"] in ("verdict_token", "unparsed")
+        assert gen["rationale"] == gen["response"] and gen["input_size"] == [32, 32]
+    print("    teacher-forced gap == direct forward; input size from pixel_values; generate without a marker runs")
 
 
 def test_released_weights() -> None:
     if not (WEIGHTS / "model.safetensors.index.json").exists() or not torch.cuda.is_available():
-        print("[F] released weights + GPU not available here: skipped")
+        print("[H] released weights + GPU not available here: skipped")
         return
-    print("[F] released weights: strict engine load and one image ...")
+    print("[H] released weights: strict engine load and one image ...")
     spec = get_spec("veritaspp")
     engine = Engine(device="cuda")
-    model = engine._get_model(spec)
+    with quiet():
+        model = engine._get_model(spec)
     n = len(json.loads((WEIGHTS / "model.safetensors.index.json").read_text())["weight_map"])
     assert n == 750 and len(model.hf.state_dict()) == n, (n, len(model.hf.state_dict()))
     gate = Path("/ssdstore/ssalehi/SynthScope/GenImage_val_full/test/adm/1_fake/0_adm_153.PNG")
-    image = Image.open(gate).convert("RGB") if gate.exists() else Image.new("RGB", (256, 256), (90, 120, 200))
-    out = engine.vlm_score(spec, image)
+    image = media.decode_image_raw(gate.read_bytes()) if gate.exists() else Image.new("RGB", (256, 256), (90, 120, 200))
+    with quiet():
+        out = engine.vlm_score(spec, image)
     assert out["verdict"] in ("real", "fake") and out["score_source"] == "verdict_token"
     assert (out["logit"] > 0) == (out["verdict"] == "fake")
     print(f"    750 tensors strict; {gate.name if gate.exists() else 'synthetic'}: {out['verdict']} "
@@ -352,10 +666,16 @@ def test_released_weights() -> None:
 
 
 if __name__ == "__main__":
+    transformers.logging.set_verbosity_error()
+    transformers.utils.logging.disable_progress_bar()
+    logging.getLogger("DeepSpeed").setLevel(logging.ERROR)
+    warnings.filterwarnings("ignore", message="Can't initialize NVML")
     test_parser()
     test_prompt()
     test_score_math()
-    test_registry()
-    test_strict_load()
+    test_image_loader()
+    test_registry_and_guards()
+    test_tiny_qwen()
+    test_llava_family()
     test_released_weights()
     print("veritaspp smoke test passed")

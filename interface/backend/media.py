@@ -71,6 +71,15 @@ def decode_image(data: bytes) -> Image.Image:
     return to_rgb(Image.open(io.BytesIO(data)))
 
 
+def decode_image_raw(data: bytes) -> Image.Image:
+    """Decode raw bytes WITHOUT the RGB conversion (EXIF and transparency kept), for detectors whose official loader
+    handles them itself (VLM detectors: ``models/vlm/image.py``); the source-format hint is recorded."""
+    image = Image.open(io.BytesIO(data))
+    image.load()
+    image.info.setdefault(SRC_FORMAT_KEY, image.format)
+    return image
+
+
 def open_rgb(path: str | Path) -> Image.Image:
     """Open an image file as RGB (with the source-format hint, see ``to_rgb``)."""
     with Image.open(path) as source:
