@@ -1,0 +1,258 @@
+{
+  "tag": "nsg_vd_genvideo_lim1000",
+  "model": "nsg_vd",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/GenVideo/test",
+  "n_generators": 10,
+  "means": {
+    "acc": 87.84,
+    "map": 90.15,
+    "map_real": 97.66,
+    "mauroc": 96.93,
+    "fake_recall_at_fpr": {
+      "0.1": 23.13,
+      "1": 28.94,
+      "5": 90.43
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 23.23,
+      "1": 29.09,
+      "5": 90.35
+    }
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 97.79,
+      "ap_real": 98.72,
+      "auroc": 98.54,
+      "real_acc": 77.8,
+      "fake_acc": 99.5,
+      "acc": 88.65,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 42.1,
+        "1": 50.9,
+        "5": 97.3
+      }
+    },
+    "Gen2": {
+      "ap": 95.1,
+      "ap_real": 96.57,
+      "auroc": 96.55,
+      "real_acc": 77.8,
+      "fake_acc": 97.5,
+      "acc": 87.65,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 15.0,
+        "1": 21.1,
+        "5": 89.4
+      }
+    },
+    "HotShot": {
+      "ap": 96.99,
+      "ap_real": 99.37,
+      "auroc": 98.83,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 35.57,
+        "1": 44.71,
+        "5": 99.14
+      }
+    },
+    "Lavie": {
+      "ap": 93.28,
+      "ap_real": 97.07,
+      "auroc": 96.39,
+      "real_acc": 77.8,
+      "fake_acc": 98.8,
+      "acc": 88.3,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 4.3,
+        "1": 7.8,
+        "5": 84.6
+      }
+    },
+    "ModelScope": {
+      "ap": 89.89,
+      "ap_real": 96.96,
+      "auroc": 95.34,
+      "real_acc": 77.8,
+      "fake_acc": 96.14,
+      "acc": 86.97,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 4.71,
+        "1": 7.0,
+        "5": 81.57
+      }
+    },
+    "MoonValley": {
+      "ap": 98.32,
+      "ap_real": 99.64,
+      "auroc": 99.41,
+      "real_acc": 77.8,
+      "fake_acc": 100.0,
+      "acc": 88.9,
+      "n_real": 1000,
+      "n_fake": 626,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 74.12,
+        "1": 80.67,
+        "5": 99.84
+      }
+    },
+    "MorphStudio": {
+      "ap": 95.55,
+      "ap_real": 98.87,
+      "auroc": 98.03,
+      "real_acc": 77.8,
+      "fake_acc": 99.71,
+      "acc": 88.76,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 26.43,
+        "1": 33.43,
+        "5": 94.0
+      }
+    },
+    "Show_1": {
+      "ap": 93.83,
+      "ap_real": 98.98,
+      "auroc": 97.97,
+      "real_acc": 77.8,
+      "fake_acc": 99.86,
+      "acc": 88.83,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 8.57,
+        "1": 12.71,
+        "5": 97.29
+      }
+    },
+    "Sora": {
+      "ap": 50.37,
+      "ap_real": 99.8,
+      "auroc": 96.55,
+      "real_acc": 77.8,
+      "fake_acc": 98.21,
+      "acc": 88.01,
+      "n_real": 1000,
+      "n_fake": 56,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 8.93,
+        "1": 14.29,
+        "5": 85.71
+      }
+    },
+    "WildScrape": {
+      "ap": 90.4,
+      "ap_real": 90.64,
+      "auroc": 91.65,
+      "real_acc": 77.8,
+      "fake_acc": 88.95,
+      "acc": 83.38,
+      "n_real": 1000,
+      "n_fake": 896,
+      "failed_real": 0,
+      "failed_fake": 28,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 11.61,
+        "1": 16.74,
+        "5": 75.45
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 28,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/video_matrix/cache/nsg_vd_genvideo",
+  "date": "2026-11-15T03:17:11",
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "version": "4.2.2",
+    "sha256": "700073daef5c23bbcb18c2eae60553a454a5221ec19b4a88c8c367a664671a7c"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  }
+}

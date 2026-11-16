@@ -1,0 +1,90 @@
+{
+  "tag": "stall_vidprom",
+  "model": "stall",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 56.94,
+    "map": 80.49,
+    "map_real": 83.38,
+    "mauroc": 82.53
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 83.47,
+      "ap_real": 87.53,
+      "auroc": 86.41,
+      "real_acc": 14.7,
+      "fake_acc": 99.5,
+      "acc": 57.1,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "Pika": {
+      "ap": 81.38,
+      "ap_real": 84.31,
+      "auroc": 83.12,
+      "real_acc": 14.7,
+      "fake_acc": 99.4,
+      "acc": 57.05,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "Text2Video-Zero": {
+      "ap": 74.23,
+      "ap_real": 74.48,
+      "auroc": 75.35,
+      "real_acc": 14.7,
+      "fake_acc": 97.8,
+      "acc": 56.25,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "VideoCrafter2": {
+      "ap": 82.87,
+      "ap_real": 87.2,
+      "auroc": 85.26,
+      "real_acc": 14.7,
+      "fake_acc": 100.0,
+      "acc": 57.35,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": null,
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/video_matrix/cache/stall_vidprom",
+  "date": "2026-11-14T23:25:19",
+  "synthscope_version": "video"
+}

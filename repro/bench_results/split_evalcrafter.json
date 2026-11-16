@@ -1,0 +1,320 @@
+{
+  "tag": "split_evalcrafter",
+  "model": "split",
+  "ckpt": "registry-default",
+  "benchmark": "video:fakeonly",
+  "data_root": "/ssdstore/ssalehi/SynthScope/EvalCrafter/test/1_fake",
+  "n_generators": 14,
+  "means": {
+    "acc": 99.29,
+    "map": 99.96,
+    "map_real": 99.99,
+    "mauroc": 99.98,
+    "fake_recall_at_fpr": {
+      "0.1": 78.51,
+      "1": 99.98,
+      "5": 100.0
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 78.52,
+      "1": 99.98,
+      "5": 100.0
+    }
+  },
+  "per_generator": {
+    "MoonValley": {
+      "ap": 99.9,
+      "ap_real": 99.98,
+      "auroc": 99.95,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 626,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 53.51,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "floor33": {
+      "ap": 99.99,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 95.57,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "gen2": {
+      "ap": 99.94,
+      "ap_real": 99.98,
+      "auroc": 99.97,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 681,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 66.67,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "gen2_december": {
+      "ap": 99.9,
+      "ap_real": 99.97,
+      "auroc": 99.95,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 699,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 49.64,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "hotshot": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "lavie-base": {
+      "ap": 99.97,
+      "ap_real": 99.99,
+      "auroc": 99.98,
+      "real_acc": 98.6,
+      "fake_acc": 99.86,
+      "acc": 99.23,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 85.86,
+        "1": 99.86,
+        "5": 100.0
+      }
+    },
+    "lavie-interpolation": {
+      "ap": 99.99,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 95.71,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "mix-sr": {
+      "ap": 99.99,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 95.71,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "modelscope": {
+      "ap": 99.98,
+      "ap_real": 99.99,
+      "auroc": 99.98,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 85.86,
+        "1": 99.86,
+        "5": 100.0
+      }
+    },
+    "pika": {
+      "ap": 99.83,
+      "ap_real": 99.97,
+      "auroc": 99.93,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 697,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 30.99,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "pika_v1_december_1": {
+      "ap": 99.9,
+      "ap_real": 99.97,
+      "auroc": 99.95,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 51.14,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "show_1": {
+      "ap": 99.99,
+      "ap_real": 100.0,
+      "auroc": 99.99,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 94.29,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "videocrafter-v1.0": {
+      "ap": 99.99,
+      "ap_real": 100.0,
+      "auroc": 99.99,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 700,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 94.86,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "zeroscope": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 98.6,
+      "fake_acc": 100.0,
+      "acc": 99.3,
+      "n_real": 1000,
+      "n_fake": 598,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 99.33,
+        "1": 100.0,
+        "5": 100.0
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": "/ssdstore/ssalehi/SynthScope/GenVideo/test/Crafter/0_real",
+  "ckpt_sha256": null,
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/video_matrix/cache/split_evalcrafter",
+  "date": "2026-11-14T21:10:46",
+  "synthscope_version": "video"
+}

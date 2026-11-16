@@ -1,0 +1,90 @@
+{
+  "tag": "restrav_vidprom",
+  "model": "restrav",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/ssdstore/ssalehi/SynthScope/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 36.14,
+    "map": 65.88,
+    "map_real": 63.76,
+    "mauroc": 53.78
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 97.03,
+      "ap_real": 94.28,
+      "auroc": 96.43,
+      "real_acc": 0.9,
+      "fake_acc": 100.0,
+      "acc": 50.45,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "Pika": {
+      "ap": 39.91,
+      "ap_real": 35.18,
+      "auroc": 22.82,
+      "real_acc": 0.9,
+      "fake_acc": 84.5,
+      "acc": 42.7,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "Text2Video-Zero": {
+      "ap": 30.71,
+      "ap_real": 30.88,
+      "auroc": 0.04,
+      "real_acc": 0.9,
+      "fake_acc": 1.0,
+      "acc": 0.95,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "VideoCrafter2": {
+      "ap": 95.86,
+      "ap_real": 94.68,
+      "auroc": 95.82,
+      "real_acc": 0.9,
+      "fake_acc": 100.0,
+      "acc": 50.45,
+      "n_real": 1000,
+      "n_fake": 1000,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 1000,
+  "reals": null,
+  "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+  "cache_dir": "/ssdstore/ssalehi/SynthScope/_tmp/video_matrix/cache/restrav_vidprom",
+  "date": "2026-11-14T22:00:19",
+  "synthscope_version": "video"
+}
