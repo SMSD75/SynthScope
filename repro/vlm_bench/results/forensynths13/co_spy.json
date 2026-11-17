@@ -1,0 +1,111 @@
+{
+  "tag": "vb_forensynths13_co_spy",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "forensynths",
+  "data_root": "/local/ssalehid/vpp/subsets/forensynths13/data",
+  "jpeg_fakes": null,
+  "n_generators": 13,
+  "means": {
+    "acc": 58.78,
+    "map": 68.8,
+    "mauroc": 68.99
+  },
+  "per_generator": {
+    "biggan": {
+      "ap": 84.37,
+      "auroc": 87.11,
+      "real_acc": 94.87,
+      "fake_acc": 30.77,
+      "acc": 62.82
+    },
+    "crn": {
+      "ap": 42.32,
+      "auroc": 39.32,
+      "real_acc": 82.05,
+      "fake_acc": 2.56,
+      "acc": 42.31
+    },
+    "cyclegan": {
+      "ap": 45.55,
+      "auroc": 48.45,
+      "real_acc": 76.92,
+      "fake_acc": 5.13,
+      "acc": 41.03
+    },
+    "deepfake": {
+      "ap": 66.34,
+      "auroc": 68.84,
+      "real_acc": 58.97,
+      "fake_acc": 74.36,
+      "acc": 66.67
+    },
+    "gaugan": {
+      "ap": 67.55,
+      "auroc": 76.07,
+      "real_acc": 82.05,
+      "fake_acc": 38.46,
+      "acc": 60.26
+    },
+    "imle": {
+      "ap": 35.39,
+      "auroc": 20.51,
+      "real_acc": 82.05,
+      "fake_acc": 0.0,
+      "acc": 41.03
+    },
+    "progan": {
+      "ap": 82.32,
+      "auroc": 85.01,
+      "real_acc": 82.05,
+      "fake_acc": 74.36,
+      "acc": 78.21
+    },
+    "san": {
+      "ap": 97.29,
+      "auroc": 97.11,
+      "real_acc": 100.0,
+      "fake_acc": 35.9,
+      "acc": 67.95
+    },
+    "seeingdark": {
+      "ap": 50.81,
+      "auroc": 48.19,
+      "real_acc": 64.1,
+      "fake_acc": 33.33,
+      "acc": 48.72
+    },
+    "stargan": {
+      "ap": 84.28,
+      "auroc": 85.8,
+      "real_acc": 97.44,
+      "fake_acc": 10.26,
+      "acc": 53.85
+    },
+    "stylegan": {
+      "ap": 78.35,
+      "auroc": 74.03,
+      "real_acc": 82.05,
+      "fake_acc": 51.28,
+      "acc": 66.67
+    },
+    "stylegan2": {
+      "ap": 86.27,
+      "auroc": 87.51,
+      "real_acc": 94.87,
+      "fake_acc": 33.33,
+      "acc": 64.1
+    },
+    "whichfaceisreal": {
+      "ap": 73.58,
+      "auroc": 78.9,
+      "real_acc": 76.92,
+      "fake_acc": 64.1,
+      "acc": 70.51
+    }
+  },
+  "date": "2026-11-17T10:08:03",
+  "synthscope_version": "0.1.0",
+  "limit": 39
+}

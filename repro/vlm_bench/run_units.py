@@ -4,7 +4,9 @@ A unit is one ``benchmark/bench_eval.py`` subprocess:
 
     vlm:<bench>[:<variant>]     the VLM (--vlm-model, default veritaspp); variant clean (default) | jpeg95 | official
                                 (the authors' sampling, seed --seed) | full (the benchmark's FULL data from --full-data, no
-                                --limit; same per-image cache as clean, so the subset images are not scored twice)
+                                --limit; same per-image cache as clean, so the subset images are not scored twice);
+                                full:<gen> scores only that generator (bench_eval --select), so several workers of one node
+                                can fill the shared cache in parallel before the whole full unit reads it back
     cmp:<det>:<bench>[:jpeg95]  a comparator detector on the same subset (bs 32)
 
 Every unit scores ``<subsets-root>/<bench>/data`` (+ ``reals``) with ``--limit L`` of the spec (a no-op on the subset, recorded in
@@ -62,7 +64,8 @@ def command(unit: str, spec: dict, args) -> tuple[list[str], Path]:
     else:
         raise ValueError(f"unit {unit!r}: expected vlm:<bench>[:variant] or cmp:<det>:<bench>[:jpeg95]")
     b = next(x for x in spec["benchmarks"] if x["key"] == bench)
-    stem = model + ("" if variant == "clean" else f"__{variant}")
+    gen = parts[3] if kind == "vlm" and variant == "full" and len(parts) > 3 else None
+    stem = model + ("" if variant == "clean" else f"__{variant}") + (f"__{gen}" if gen else "")
     out = Path(args.out_root) / bench / f"{stem}.json"
     sub = Path(args.subsets_root) / bench
     if variant == "full":
@@ -77,6 +80,8 @@ def command(unit: str, spec: dict, args) -> tuple[list[str], Path]:
            str(Path(args.out_root) / f"RESULTS.{HOST}.{os.getpid()}.jsonl")] + cmd_limit
     if reals:
         cmd += ["--reals", str(reals)]
+    if gen:
+        cmd += ["--select", gen]
     if variant == "jpeg95":
         cmd += ["--degrade", "jpeg95"]
     elif variant not in ("clean", "official", "full"):

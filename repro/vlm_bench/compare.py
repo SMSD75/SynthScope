@@ -124,6 +124,9 @@ def main(argv=None) -> int:
     paper = {}
     for b, p in PAPER.items():
         full = load(res / b / f"{args.model}__full.json")
+        parts = sorted((res / b).glob(f"{args.model}__full__*.json"))
+        if full is None and parts:       # per-generator parts of the full run: pool their images
+            full = {"per_image": [r for p in parts for r in load(p)["per_image"]]}
         sub = load(res / b / f"{args.model}.json")
         entry = {"paper": p["paper_acc"], "paper_table": p["table"], "metric": p["metric"]}
         for name, r in (("full", full), ("subset", sub)):
