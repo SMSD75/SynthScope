@@ -45,6 +45,7 @@ echo "node=$(hostname) job=$SLURM_JOB_ID $(date) code=$(git -C $WT log --oneline
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 echo "UNITS=$UNITS"
 cd $W
+export PYTHONPATH=$W     # the env has the main SynthScope checkout installed in editable mode: import this copy instead
 
 echo "=== Veritas++ weights: pinned revision (hf download metadata) + sha256 ==="
 $PY - <<'EOF'
