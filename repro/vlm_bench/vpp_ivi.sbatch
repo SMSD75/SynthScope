@@ -13,8 +13,8 @@
 # /nvmestore or /hddstore) and copies the weights folder and the subset files from ivi-cn029 over ssh (needs one of our jobs
 # there, e.g. keep029); the checks below then run on the copies.
 # The worktree's clean HEAD is copied to /ssdstore first (later edits of the worktree do not change a running job). Subsets: the
-# manifest's files (repro/vlm_bench/subsets/<bench>.json) copied from the cn029 originals and sha1-verified; only cn029-site
-# benchmarks. Per-image VLM caches, locks and staged subsets stay under /ssdstore/ssalehi/SynthScope/vpp; result JSONs go to the
+# manifest's files (repro/vlm_bench/subsets/<bench>.json) copied from the originals (cn029, or cn023 for its sets) and
+# sha1-verified. Per-image VLM caches, locks and staged subsets stay under /ssdstore/ssalehi/SynthScope/vpp; result JSONs go to the
 # worktree's repro/vlm_bench/results/. Any failed check (weights revision / sha256, subset verification) stops the job.
 set -euo pipefail
 unset HF_TOKEN HUGGING_FACE_HUB_TOKEN
@@ -74,20 +74,21 @@ import sys; print(' '.join(sorted({u.split(':')[1] for u in sys.argv[1].split(',
   read -r site data reals < <($PY -c "
 import json; b=[x for x in json.load(open('repro/vlm_bench/spec.json'))['benchmarks'] if x['key']=='$b'][0]
 print(b['site'], b['data'], b.get('reals', '-'))")
-  [ "$site" = 029 ] || { echo "$b is not a cn029 benchmark"; exit 4; }
+  if [ "$site" = 023 ]; then SRCH=ssalehi@ivi-cn023:/hddstore/ssalehi/SynthScope; LOC=0     # cn023 originals (needs keep023)
+  else SRCH=ssalehi@ivi-cn029:$SRC; LOC=$ONSRC; fi
   d=$V/subsets/$b
   exec 8>$V/locks/subset_$b.lock; flock -w 7200 8
   if [ -f $d/.verified ] && [ "$(cat $d/.verified)" = "$(sha1sum repro/vlm_bench/subsets/$b.json | cut -c1-40)" ]; then
     echo "subset $b: verified earlier"; flock -u 8; continue; fi
   mkdir -p $d/data
   $PY repro/vlm_bench/make_subsets.py files $b data > $d/files_data.txt
-  if [ $ONSRC = 1 ]; then rsync -a --files-from=$d/files_data.txt $SRC/$data/ $d/data/
-  else rsync -a --files-from=$d/files_data.txt ssalehi@ivi-cn029:$SRC/$data/ $d/data/; fi
+  if [ $LOC = 1 ]; then rsync -a --files-from=$d/files_data.txt $SRC/$data/ $d/data/
+  else rsync -a --files-from=$d/files_data.txt $SRCH/$data/ $d/data/; fi
   if [ "$reals" != - ]; then
     mkdir -p $d/reals
     $PY repro/vlm_bench/make_subsets.py files $b reals > $d/files_reals.txt
-    if [ $ONSRC = 1 ]; then rsync -a --files-from=$d/files_reals.txt $SRC/$reals/ $d/reals/
-    else rsync -a --files-from=$d/files_reals.txt ssalehi@ivi-cn029:$SRC/$reals/ $d/reals/; fi
+    if [ $LOC = 1 ]; then rsync -a --files-from=$d/files_reals.txt $SRC/$reals/ $d/reals/
+    else rsync -a --files-from=$d/files_reals.txt $SRCH/$reals/ $d/reals/; fi
   fi
   $PY repro/vlm_bench/make_subsets.py verify $b $d 2>&1 | grep -v -i warning
   sha1sum repro/vlm_bench/subsets/$b.json | cut -c1-40 > $d/.verified
