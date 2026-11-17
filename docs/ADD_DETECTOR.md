@@ -80,6 +80,18 @@ steps 1-3. It is a family-adapter design:
   (`Engine.vlm_score`); pass the decoded file without an RGB conversion (`media.decode_image_raw`);
 - not supported yet: batching (one image per call), video;
 - a multi-GB folder does not fit the one-file zoo: add the key to `NEVER_REDISTRIBUTE` with the reason.
+- benchmarking: `bench_eval` scores a `vlm` spec one image at a time through `Engine.vlm_score` (greedy by default;
+  `--vlm-decoding official --vlm-seed N` for the authors' sampling). An unparsed answer counts as wrong for accuracy
+  (the `*_drop` fields leave it out, as the authors' scripts usually do) and gets logit 0 for AUROC; report the unparsed
+  count. A VLM costs seconds per image, so benchmarks are subsampled (`--limit L`, the same files for every detector it is
+  compared with; `repro/vlm_bench/` holds the subset manifests, the unit runner and `compare.py`). `--vlm-cache DIR`
+  resumes an interrupted run; its folder is keyed by the weights revision, `max_new_tokens`, the prompts and the VLM code
+  version, so it never returns records written under another setting;
+- documentation: the model README states the official request, the greedy-versus-official decoding choice (say where each
+  sampling setting comes from: a script, the model's `generation_config.json` or the paper), the unparsed policy, the
+  fidelity check against a direct transformers call (identical tokens and logit gap), memory and speed, and the licence.
+  Compare with the paper only on the paper's own data and metric; a subset or a metric you had to guess is "reference",
+  never "reproduced".
 
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:

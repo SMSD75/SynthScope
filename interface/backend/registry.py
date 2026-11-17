@@ -631,7 +631,7 @@ _add(ModelSpec(
     overrides=[], vlm=VERITASPP, native_res=True,
     notes="Qwen3-VL-8B trained to reason about an image (a written rationale, about 400-650 tokens) and then answer "
           "<answer> real/fake </answer>. Uses the OFFICIAL weights and the official prompt; scored with greedy "
-          "decoding (the authors sample at temperature 0.7). P(fake) = sigmoid of the fake-minus-real logit at the "
+          "decoding (the authors' inference script samples at temperature 0.7). P(fake) = sigmoid of the fake-minus-real logit at the "
           "answer token, so it is near 0 or 1; the verdict is the parsed answer. Still images only. On an RTX A5000 "
           "(bf16): about 17 s per image and 18.9 GB peak up to 2048x2048, about 38 s and 23 GB at the processor's "
           "16.8 MP cap (repro/veritaspp_fidelity.json). Not on the Space.",

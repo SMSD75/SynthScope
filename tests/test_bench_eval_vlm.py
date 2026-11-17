@@ -38,6 +38,7 @@ from models.vlm.image import vllm_rgb                                 # noqa: E4
 OUTPUTS = {"r0": (-8.0, "real", 400), "r1": (-30.0, "real", 410), "r2": (0.0, None, 2048), "r3": (3.0, "fake", 500),
            "f0": (9.0, "fake", 450), "f1": (-1.0, "real", 460), "f2": (40.0, "fake", 470), "f3": (41.0, "fake", 480)}
 STEMS = ["r0", "r1", "r2", "r3", "f0", "f1", "f2", "f3"]
+SPEC: dict = {}                                                      # the stub spec of the latest ``patched`` run
 
 
 class StubEngine:
@@ -71,8 +72,12 @@ def patched(engine: StubEngine, stem_of: dict, loader_modes: list):
     def loader(image):
         loader_modes.append(image.mode)
         return keep_stem(vllm_rgb)(image)
-    spec = types.SimpleNamespace(predict_kind="vlm", transform=None, vlm=types.SimpleNamespace(image_loader=loader),
-                                 eval_batch_size=lambda b: 1)
+    cfg = types.SimpleNamespace(image_loader=loader, hf_revision=SPEC.get("revision", "rev1"), system_prompt="sys", user_prompt="usr",
+                                chat_template=True, chat_template_kwargs={"enable_thinking": False},
+                                decoding={"do_sample": False, "max_new_tokens": 2048},
+                                official_decoding={"do_sample": True, "temperature": 0.7, "max_new_tokens": 2048})
+    spec = types.SimpleNamespace(predict_kind="vlm", transform=None, vlm=cfg, eval_batch_size=lambda b: 1)
+    SPEC["spec"] = spec
     det = types.SimpleNamespace(_engine=engine, spec=spec, _ensure_weights=lambda: None)
     real = (bench_eval.synthscope, bench_eval.media, bench_eval._jpeg)
     raw = bench_eval.media.decode_image_raw
@@ -124,6 +129,50 @@ def expected() -> dict:
             "n_logit_verdict_disagree": 0, "mean_tokens": round(sum(OUTPUTS[s][2] for s in STEMS) / 8, 1)}
 
 
+def check_identity(tmp: Path, stem_of: dict) -> None:
+    """The cache folder is keyed by the weights revision, max_new_tokens, the prompts and the code version: changing any
+    of them (each alone) gives an empty cache, so stale records are never returned; restoring it finds them again."""
+    ident = bench_eval.vlm_identity(SPEC["spec"], "greedy")
+    assert ident["weights_revision"] == "rev1" and ident["max_new_tokens"] == 2048 and ident["code_version"]
+    assert len(ident["prompt_sha1"]) == 10
+    variants = {}
+    base = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, ident)
+    cfg = SPEC["spec"].vlm
+    changes = {
+        "weights revision": lambda: setattr(cfg, "hf_revision", "rev2"),
+        "max_new_tokens": lambda: cfg.decoding.__setitem__("max_new_tokens", 4096),
+        "system prompt": lambda: setattr(cfg, "system_prompt", "sys2"),
+        "user prompt": lambda: setattr(cfg, "user_prompt", "usr2"),
+        "chat template kwargs": lambda: cfg.chat_template_kwargs.__setitem__("enable_thinking", True),
+    }
+    for name, change in changes.items():
+        saved = (cfg.hf_revision, cfg.system_prompt, cfg.user_prompt, dict(cfg.chat_template_kwargs), dict(cfg.decoding))
+        change()
+        variants[name] = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, bench_eval.vlm_identity(SPEC["spec"], "greedy"))
+        cfg.hf_revision, cfg.system_prompt, cfg.user_prompt, cfg.chat_template_kwargs, cfg.decoding = saved
+    real_version = bench_eval.vlm_code_version
+    try:
+        bench_eval.vlm_code_version = lambda: "other-code"
+        variants["code version"] = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None,
+                                                          bench_eval.vlm_identity(SPEC["spec"], "greedy"))
+    finally:
+        bench_eval.vlm_code_version = real_version
+    variants["--ckpt"] = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None,
+                                                bench_eval.vlm_identity(SPEC["spec"], "greedy", "/other/weights"))
+    assert all(v != base for v in variants.values()) and len(set(variants.values())) == len(variants), variants
+    assert bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, bench_eval.vlm_identity(SPEC["spec"], "greedy")) == base
+    # end to end: a run after a revision change finds an empty cache folder and scores every image again
+    cache = ["--vlm-cache", str(tmp / "cache")]
+    _, eng, _ = run(tmp, stem_of, "same", cache)
+    assert eng.calls == []                                           # same identity: all from the cache
+    SPEC["revision"] = "rev2"
+    try:
+        _, eng, _ = run(tmp, stem_of, "newrev", cache)
+    finally:
+        SPEC["revision"] = "rev1"
+    assert len(eng.calls) == 8                                       # new weights revision: nothing reused
+
+
 def main() -> None:
     with tempfile.TemporaryDirectory() as tmp_:
         tmp = Path(tmp_)
@@ -160,12 +209,23 @@ def main() -> None:
         assert len(eng.calls) == 8 and modes[0] == "RGBA" and all(c["mode"] == "RGB" for c in eng.calls)
         assert eng.calls[0]["pixels"].min() > 240                        # transparent -> white, then JPEG q95
         assert e["degrade"] == "jpeg95"
-        assert sorted(p.name for p in (tmp / "cache").iterdir()) == \
-            ["stubvlm__greedy", "stubvlm__greedy__jpeg95", "stubvlm__official_seed7"]
+        ident = lambda decoding="greedy": bench_eval.vlm_identity(SPEC["spec"], decoding)    # noqa: E731
+        assert sorted(p.name for p in (tmp / "cache").iterdir()) == sorted([
+            bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, ident()),
+            bench_eval.vlm_variant("stubvlm", "greedy", None, "jpeg95", None, ident()),
+            bench_eval.vlm_variant("stubvlm", "official", 7, None, None, ident("official"))])
+        folder = tmp / "cache" / bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, ident())
+        assert json.loads((folder / "identity.json").read_text()) == ident()
+        assert a["vlm"]["identity"] == ident() and "once per generator" in a["vlm"]["metric_note"]
+        check_identity(tmp, stem_of)
 
         plain = bench_eval.metrics(torch.tensor([0.1, 0.9]), torch.tensor([0, 1]))
         assert list(plain) == ["ap", "auroc", "real_acc", "fake_acc", "acc"]   # the non-VLM metrics are unchanged
     print("bench_eval VLM path: all checks passed")
+
+
+def test_bench_eval_vlm_path() -> None:      # pytest entry point; the file also runs as a script
+    main()
 
 
 if __name__ == "__main__":

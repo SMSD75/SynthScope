@@ -1,0 +1,82 @@
+{
+  "model": "veritaspp",
+  "paper": "Veritas++ (Tan et al., arXiv 2607.27113, July 2026)",
+  "arxiv_id": "2607.27113",
+  "official_repo": "https://github.com/EricTan7/VeritasPP",
+  "training_set_in_paper": "Not trained in SynthScope. Only the official weights are evaluated (EricTan7/VeritasPP @ 22ba6c6b, Qwen3-VL-8B fine-tuned by the authors; inference only, greedy decoding, unparsed answers counted wrong). The paper's tables 2 and 3 are the reference; the benchmark subsets of the SynthScope matrix (L = ceil(500 / generators) per class and generator, identical images for 27 other detectors) are in repro/vlm_bench/.",
+  "benchmarks": [
+    {
+      "name": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
+      "datasets": [
+        "WildRF"
+      ],
+      "metric": "accuracy over all images (unparsed answers dropped, as the authors' script; 0 here)",
+      "paper_number": {
+        "acc": 96.4,
+        "note": "Veritas++ paper Table III, VERITAS++ row (not the dagger row)."
+      },
+      "our_status": "official",
+      "our_number": {
+        "note": "Greedy decoding, official weights, full data: 95.65 acc (-0.75). On a 988-image subset: greedy 95.65, the authors' sampled setting (T 0.7) 96.46 (+0.06). The paper states no temperature. Full run 13.8 GPU-h (judgement call: above the 12 h guideline)."
+      }
+    },
+    {
+      "name": "RealChain (7 generators), 1,008-image subset",
+      "datasets": [
+        "RealChain"
+      ],
+      "metric": "accuracy over all images (unparsed dropped; 0 here)",
+      "paper_number": {
+        "acc": 82.3,
+        "note": "Veritas++ paper Table III, VERITAS++ row."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subset only (72 reals + 72 fakes per generator, 7% of the data), greedy: 82.74 acc (+0.44), close but not a full-data run. Weak generators: Seedream4 fake acc 31.9, image-to-image 22.2. Ranks 1st of 28 detectors on the same images."
+      }
+    },
+    {
+      "name": "EvalGEN (5 generators), 500-fake subset",
+      "datasets": [
+        "EvalGEN"
+      ],
+      "metric": "accuracy on the fakes only (our inference of the paper's metric, from DDA's row 97.2)",
+      "paper_number": {
+        "acc": 99.5,
+        "note": "Veritas++ paper Table II, VERITAS++ row. The paper does not say how EvalGen is scored; fakes-only is our inference."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "NOT reproduced on full data: 500-fake subset (of 55,298), greedy. 98.20 fakes only (-1.30), 99.10 balanced with MSCOCO reals (-0.40). NOVA is the only weak generator (91.0, 100 fakes)."
+      }
+    },
+    {
+      "name": "15 held benchmarks, subsampled (L = ceil(500 / generators)), vs 27 detectors on identical images",
+      "datasets": [
+        "GenImage",
+        "ForenSynths",
+        "UniversalFakeDetect",
+        "AIGCDetect",
+        "Synthbuster",
+        "EvalGEN",
+        "SynthWildX",
+        "WildRF",
+        "AIGIBench",
+        "RRDataset",
+        "BFree-Online",
+        "Co-Spy-Bench",
+        "DiTFake",
+        "ARForensics",
+        "RealChain"
+      ],
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subsampled, official weights, greedy, unparsed counted wrong (10 of 17,935); mean of the 15 accuracies 84.70 (median detector 76.25, best public CuRe 89.27, MIRROR 95.30). 1st of 28 on RRDataset and RealChain, weak on GANs (ForenSynths 25th). JPEG95: UFD-8 -5.26 acc, DiTFake +0.10."
+      }
+    }
+  ]
+}

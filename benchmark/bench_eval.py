@@ -37,7 +37,9 @@ accuracy from the parsed verdict (an unparsed answer counts as wrong; ``*_drop``
 AUROC / AP from the fake-minus-real logit, plus the unparsed count and the mean generated tokens; the per-image records go into the
 output JSON (``per_image``). --vlm-decoding official samples with the authors' settings, seeded per image with --vlm-seed.
 --vlm-cache DIR keeps every scored image as a JSON line (one file per writer, keyed by its path relative to --data and checked
-against the file's sha1), so a preempted or repeated run only scores what is missing.
+against the file's sha1), so a preempted or repeated run only scores what is missing. The cache folder is also keyed by a hash of
+the weights revision (or --ckpt), max_new_tokens and sampling settings, the prompts and the VLM code version (``vlm_identity``,
+written to ``identity.json`` in the folder), so a cache reused after any of them changed starts empty.
 """
 from __future__ import annotations
 
@@ -334,10 +336,41 @@ def image_key(path: Path, data_root: Path, reals_root: Path | None) -> str:
     return path.as_posix()
 
 
-def vlm_variant(model: str, decoding: str, seed: int | None, degrade: str | None, jpeg_q: int | None) -> str:
-    """The cache folder name of one scoring setup: records of different setups never mix."""
+VLM_CODE_DIR = Path(__file__).resolve().parents[1] / "models" / "vlm"
+
+
+def vlm_code_version() -> str:
+    """Short hash of the VLM scoring code (``models/vlm/*.py``: family adapters, parsers, image loading): an edit to any
+    of it changes the cache identity, so records written by other code are never reused. A comment-only edit also
+    invalidates a cache; that is the price of not trusting a hand-kept version number."""
+    h = hashlib.sha1()
+    for f in sorted(VLM_CODE_DIR.glob("*.py")):
+        h.update(f.name.encode() + b"\0" + f.read_bytes() + b"\0")
+    return h.hexdigest()[:10]
+
+
+def vlm_identity(spec, decoding: str, ckpt: str | None = None) -> dict:
+    """Everything besides the image that determines a cached record: the weights (pinned HF revision, or the explicit
+    ``--ckpt`` path), the generation limit and sampling settings of the active decoding, a hash of the prompts and chat
+    template arguments, and the code version. A cache folder is keyed by a hash of this dict."""
+    cfg = spec.vlm
+    dec = dict(cfg.official_decoding if decoding == "official" else cfg.decoding)
+    prompts = json.dumps([cfg.system_prompt, cfg.user_prompt, cfg.chat_template_kwargs, cfg.chat_template],
+                         sort_keys=True, default=str)
+    return {"weights_revision": cfg.hf_revision or None, "ckpt": ckpt, "max_new_tokens": dec.get("max_new_tokens"),
+            "generation": dec, "prompt_sha1": hashlib.sha1(prompts.encode()).hexdigest()[:10],
+            "code_version": vlm_code_version()}
+
+
+def vlm_variant(model: str, decoding: str, seed: int | None, degrade: str | None, jpeg_q: int | None,
+                identity: dict | None = None) -> str:
+    """The cache folder name of one scoring setup: records of different setups never mix. ``identity`` (``vlm_identity``)
+    adds a hash of the weights revision, max_new_tokens, prompt and code version, so a cache reused after any of them
+    changed starts empty instead of returning stale records."""
     return (f"{model}__{decoding}" + (f"_seed{seed}" if decoding == "official" else "")
-            + (f"__{degrade}" if degrade else "") + (f"__jpegfakes{jpeg_q}" if jpeg_q is not None else ""))
+            + (f"__{degrade}" if degrade else "") + (f"__jpegfakes{jpeg_q}" if jpeg_q is not None else "")
+            + ("" if identity is None else
+               "__" + hashlib.sha1(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:10]))
 
 
 class VLMCache:
@@ -345,13 +378,15 @@ class VLMCache:
     (``<host>.<pid>.jsonl``, flushed per line) and reads every file there, so several writers never share a file and a
     preempted run resumes from what any earlier run stored. A record is used only when the file's sha1 matches."""
 
-    def __init__(self, directory: Path | None, variant: str):
+    def __init__(self, directory: Path | None, variant: str, identity: dict | None = None):
         self.records: dict[str, dict] = {}
         self.folder = None if directory is None else Path(directory) / variant
         self._fh = None
         if self.folder is None:
             return
         self.folder.mkdir(parents=True, exist_ok=True)
+        if identity is not None:                   # human-readable record of what the folder's hash stands for
+            (self.folder / "identity.json").write_text(json.dumps(identity, indent=1) + "\n")
         for f in sorted(self.folder.glob("*.jsonl")):
             for line in f.read_text().splitlines():
                 try:
@@ -559,7 +594,9 @@ def main(argv=None) -> int:
           + (f" | degrade {args.degrade}" if args.degrade is not None else "") + " ===", flush=True)
     if is_vlm:
         vlm_seed = args.vlm_seed if args.vlm_decoding == "official" else None
-        cache = VLMCache(args.vlm_cache, vlm_variant(args.model, args.vlm_decoding, vlm_seed, args.degrade, args.jpeg_fakes))
+        identity = vlm_identity(spec, args.vlm_decoding, args.ckpt)
+        cache = VLMCache(args.vlm_cache, vlm_variant(args.model, args.vlm_decoding, vlm_seed, args.degrade, args.jpeg_fakes,
+                                                     identity), identity)
         per_image = []
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
@@ -633,9 +670,12 @@ def main(argv=None) -> int:
             "acc_pooled": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image) / n, 2),
             "acc_pooled_drop": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image)
                                      / (n - unparsed), 2) if n > unparsed else None,
-            "cache": str(cache.folder) if cache.folder else None,
+            "cache": str(cache.folder) if cache.folder else None, "identity": identity,
             "metric_note": "acc / real_acc / fake_acc from the parsed verdict, unparsed = wrong; *_drop leave unparsed "
-                           "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit"}
+                           "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit. "
+                           "acc_pooled counts every scored (generator, image) pair once: a real pool shared by several "
+                           "generators (ufd, synthbuster layouts) is counted once per generator; the headline acc is the "
+                           "balanced mean over generators and is unaffected"}
         result["per_image"] = per_image
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")

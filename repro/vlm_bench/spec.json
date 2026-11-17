@@ -48,6 +48,14 @@
   "omniaid_genimage",
   "npr"
  ],
+ "internal_only": [
+  "ltf",
+  "mirror",
+  "vina",
+  "probe",
+  "probe_resnet"
+ ],
+ "internal_only_note": "Comparators whose weights are not publicly licensed (no LICENSE / unclear terms; the keys of synthscope.hub.NEVER_REDISTRIBUTE that are comparators here), restored from the field-report matrix spec (repro/matrix/spec.json on fieldreport/harness @ 2691337). They are scored like the rest but are not servable, so compare.py reports a best overall detector and a best publicly licensed / servable one (ruling T2-C2).",
  "benchmarks": [
   {
    "key": "genimage_val100k",

@@ -253,6 +253,15 @@ VAL = {
     ("nsg_vd", "VidProM"): {"synthscope": {"acc": 86.8, "auroc": 95.49}},
     ("nsg_vd", "VideoPhy"): {"synthscope": {"acc": 83.17, "auroc": 97.88}},
     ("nsg_vd", "EvalCrafter"): {"synthscope": {"acc": 86.47, "auroc": 97.79}},
+    # Veritas++ (Tan et al., arXiv 2607.27113): official weights only, inference only, greedy decoding, no SynthScope-trained number.
+    # "official" = the official weights through SynthScope. Every value traces to repro/vlm_bench/comparison.json (results/<bench>/
+    # veritaspp*.json; logs repro/logs/vpp_*.out). WildRF = FULL data (2,503 images, results/wildrf/veritaspp__full*.json); RealChain
+    # and EvalGEN = 500/1,008-image SUBSETS (status forced to "reference" by the spec; EvalGEN is the fakes-only accuracy, our inference
+    # of the paper's metric, balanced 99.10); the last row is the unweighted mean of the 15 subsampled benchmark accuracies / AUROCs.
+    ("veritaspp", "WildRF"): {"official": {"acc": 95.65}},
+    ("veritaspp", "RealChain"): {"official": {"acc": 82.74}},
+    ("veritaspp", "EvalGEN"): {"official": {"acc": 98.2}},
+    ("veritaspp", "15 held benchmarks"): {"official": {"acc": 84.7, "auroc": 91.33}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

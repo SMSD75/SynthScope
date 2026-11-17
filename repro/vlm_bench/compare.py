@@ -5,12 +5,17 @@ Reads ``repro/vlm_bench/results/<bench>/<model>[__variant].json`` (bench_eval ou
 
 * per subset (clean, and jpeg95 on the probe benchmarks): the VLM's acc (bench_eval's balanced mean over generators, from the
   parsed verdict, unparsed = wrong), pooled acc, mAUROC, mAP, unparsed count and mean tokens; every comparator's acc / mAUROC /
-  mAP; the best and median comparator, and the VLM's rank among all scored detectors;
+  mAP; the best comparator overall, the best PUBLICLY LICENSED one (not in spec.json's ``internal_only``: ruling T2-C2), the
+  median comparator, and the VLM's rank among all scored detectors. Ties for best (equal rounded value) are broken
+  deterministically: the alphabetically first detector key is named and every tied key is listed under ``tied``.
+  ``acc_pooled`` counts each (generator, image) pair, so a real pool shared by several generators (ufd8, synthbuster_coco) is
+  counted once per generator; ``acc_pooled_distinct`` counts each image once;
 * the JPEG95 probe: per detector acc / mAUROC on jpeg95 minus clean, on the same subset;
-* greedy vs sampled (the authors' T=0.7 decoding, fixed seed) on the sampled benchmark: verdict agreement, metric deltas;
-* the paper rows (Veritas++ Tables II / III, Acc.): EvalGen = accuracy on the fakes (DDA's protocol, which the paper's
-  DDA row 97.2 matches), RealChain / WildRF = accuracy over all images, each with unparsed answers dropped as in the authors'
-  cal_metrics.py (and with them counted wrong, for reference); WildRF from the full-data run when it exists.
+* greedy vs sampled (the authors' inference-script T=0.7 decoding, fixed seed) on the sampled benchmark: verdict agreement, metric deltas;
+* the paper rows (Veritas++ Tables II / III, Acc.): EvalGen = accuracy on the fakes only, which is OUR INFERENCE (the paper's
+  table does not say; the paper's DDA row 97.2 matches DDA's fakes-only EvalGEN accuracy), reported next to the balanced
+  accuracy (fakes + MSCOCO reals); RealChain / WildRF = accuracy over all images, each with unparsed answers dropped as in
+  the authors' cal_metrics.py (and with them counted wrong, for reference); WildRF from the full-data run when it exists.
 """
 from __future__ import annotations
 
@@ -21,6 +26,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PAPER = {  # arXiv 2607.27113 v1, Table II (standard OOD) and Table III (in-the-wild), Acc. (%), VERITAS++ row (not the dagger row)
+    # EvalGen: fakes-only accuracy is an inference from DDA's row (97.2), not something the paper states.
     "evalgen": {"paper_acc": 99.5, "table": "II", "metric": "fake_acc"},
     "realchain": {"paper_acc": 82.3, "table": "III", "metric": "acc_pooled"},
     "wildrf": {"paper_acc": 96.4, "table": "III", "metric": "acc_pooled"},
@@ -31,11 +37,20 @@ def load(path: Path) -> dict | None:
     return json.loads(path.read_text()) if path.exists() else None
 
 
+ACC_POOLED_NOTE = ("acc_pooled counts every scored (generator, image) pair once: a real pool shared by several generators "
+                   "(ufd8, synthbuster_coco; bench_eval's shared-reals layout) is counted once per generator, so reals and "
+                   "fakes keep the 1:1 balance of the subset. acc_pooled_distinct counts each image once, so the shared "
+                   "reals count once and the fakes dominate (ufd8: 630 distinct images, 504 of them fake); it is not "
+                   "comparable with acc. The headline acc (balanced mean over generators) is unaffected by either.")
+
+
 def summary(r: dict) -> dict:
     out = {"acc": r["means"]["acc"], "mauroc": r["means"]["mauroc"], "map": r["means"]["map"]}
     if "vlm" in r:
         v = r["vlm"]
-        out.update({"acc_pooled": v["acc_pooled"], "acc_pooled_drop": v["acc_pooled_drop"], "n_images": v["n_images"],
+        distinct = pooled(r["per_image"])
+        out.update({"acc_pooled": v["acc_pooled"], "acc_pooled_distinct": distinct["acc_unparsed_wrong"],
+                    "n_distinct_images": distinct["n"], "acc_pooled_drop": v["acc_pooled_drop"], "n_images": v["n_images"],
                     "n_unparsed": v["n_unparsed"], "n_unfinished": v["n_unfinished"], "mean_tokens": v["mean_tokens"],
                     "mean_seconds": v["mean_seconds_scored"]})
     return out
@@ -55,22 +70,48 @@ def pooled(per_image: list[dict], fakes_only: bool = False) -> dict:
             "acc_unparsed_wrong": round(100 * sum(ok) / len(rows), 2) if rows else None}
 
 
-def subset_row(bench: str, variant: str, model: str, dets: list[str], res: Path) -> dict | None:
+def balance(r: dict) -> dict:
+    """Where the VLM's errors are: mean real / fake accuracy over the generators (parsed verdict, unparsed = wrong) and the
+    per-generator extremes of the fake accuracy (a generator with a shared real pool still has its own fake accuracy)."""
+    pg = r["per_generator"]
+    fake = {g: m["fake_acc"] for g, m in pg.items()}
+    lo, hi = min(fake, key=lambda g: (fake[g], g)), max(fake, key=lambda g: (fake[g], g))
+    return {"mean_real_acc": round(statistics.mean(m["real_acc"] for m in pg.values()), 2),
+            "mean_fake_acc": round(statistics.mean(fake.values()), 2),
+            "lowest_fake_acc": {"generator": lo, "value": fake[lo]}, "highest_fake_acc": {"generator": hi, "value": fake[hi]},
+            "n_generators": len(pg), "n_generators_fake_acc_below_50": sum(v < 50 for v in fake.values()),
+            "per_generator_fake_acc": fake}
+
+
+def best_of(vals: list[tuple[float, str]]) -> dict | None:
+    """The best (value, detector) with a deterministic tie break: among equal values the alphabetically first detector key is
+    named, and every tied key is listed."""
+    if not vals:
+        return None
+    top = max(v for v, _ in vals)
+    tied = sorted(d for v, d in vals if v == top)
+    return {"detector": tied[0], "value": top, "tied": tied}
+
+
+def subset_row(bench: str, variant: str, model: str, dets: list[str], res: Path, internal_only: set[str] = frozenset()) -> dict | None:
     suffix = "" if variant == "clean" else f"__{variant}"
     vlm = load(res / bench / f"{model}{suffix}.json")
     comps = {d: load(res / bench / f"{d}{suffix}.json") for d in dets}
-    comps = {d: summary(r) for d, r in comps.items() if r is not None}
+    comps = {d: dict(summary(r), internal_only=d in internal_only) for d, r in comps.items() if r is not None}
     if vlm is None and not comps:
         return None
     row = {"benchmark": bench, "variant": variant, "n_comparators": len(comps), "comparators": comps,
            "missing_comparators": sorted(set(dets) - set(comps))}
     if vlm is not None:
         row["vlm"] = summary(vlm)
+        row["vlm_balance"] = balance(vlm)
         row["limit"] = vlm.get("limit")
     for metric in ("acc", "mauroc"):
-        vals = sorted(((c[metric], d) for d, c in comps.items()), reverse=True)
+        vals = [(c[metric], d) for d, c in comps.items()]
+        public = [(v, d) for v, d in vals if d not in internal_only]
         if vals:
-            row[f"best_{metric}"] = {"detector": vals[0][1], "value": vals[0][0]}
+            row[f"best_{metric}"] = best_of(vals)
+            row[f"best_public_{metric}"] = best_of(public)
             row[f"median_{metric}"] = round(statistics.median(v for v, _ in vals), 2)
             if vlm is not None:
                 row[f"vlm_rank_{metric}"] = 1 + sum(v > row["vlm"][metric] for v, _ in vals)
@@ -85,8 +126,10 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     spec = json.loads((HERE / "spec.json").read_text())
     res, dets = Path(args.results), spec["detectors"]
-    rows = [r for b in spec["benchmarks"] for r in [subset_row(b["key"], "clean", args.model, dets, res)] if r]
-    rows += [r for b in spec["jpeg95_benchmarks"] for r in [subset_row(b, "jpeg95", args.model, dets, res)] if r]
+    internal = set(spec.get("internal_only", []))
+    assert internal <= set(dets), internal - set(dets)
+    rows = [r for b in spec["benchmarks"] for r in [subset_row(b["key"], "clean", args.model, dets, res, internal)] if r]
+    rows += [r for b in spec["jpeg95_benchmarks"] for r in [subset_row(b, "jpeg95", args.model, dets, res, internal)] if r]
 
     probe = {}
     for b in spec["jpeg95_benchmarks"]:
@@ -129,12 +172,20 @@ def main(argv=None) -> int:
             full = {"per_image": [r for p in parts for r in load(p)["per_image"]]}
         sub = load(res / b / f"{args.model}.json")
         entry = {"paper": p["paper_acc"], "paper_table": p["table"], "metric": p["metric"]}
+        if p["metric"] == "fake_acc":
+            entry["metric_note"] = ("fakes-only accuracy is our inference (the paper does not say how EvalGEN is scored; its "
+                                    "DDA row, 97.2, matches DDA's fakes-only EvalGEN accuracy); balanced_acc is the "
+                                    "benchmark's balanced accuracy (fakes + MSCOCO reals) on the same images. Ours is a "
+                                    "500-fake subset, not the full set.")
         for name, r in (("full", full), ("subset", sub)):
             if r is None:
                 continue
             m = pooled(r["per_image"], fakes_only=p["metric"] == "fake_acc")
             entry[name] = dict(m, delta_vs_paper=None if m["acc_drop"] is None else round(m["acc_drop"] - p["paper_acc"], 2),
                                greedy=True)
+            if p["metric"] == "fake_acc" and "means" in r:        # balanced accuracy of the same run (fakes + the reals)
+                entry[name]["balanced_acc"] = r["means"]["acc"]
+                entry[name]["balanced_delta_vs_paper"] = round(r["means"]["acc"] - p["paper_acc"], 2)
         sampled_r = load(res / b / f"{args.model}__official.json")
         if sampled_r is not None:
             m = pooled(sampled_r["per_image"], fakes_only=p["metric"] == "fake_acc")
@@ -142,20 +193,28 @@ def main(argv=None) -> int:
                                            round(m["acc_drop"] - p["paper_acc"], 2))
         paper[b] = entry
 
-    out = {"model": args.model, "protocol": spec["protocol"], "subsets": rows, "jpeg95_probe": probe,
-           "greedy_vs_sampled": sampling, "paper_comparison": paper,
-           "paper_note": "Veritas++ arXiv 2607.27113 v1; the paper samples at T 0.7 (official setting) and reports Acc.; "
-                         "EvalGen there is scored on fakes only (its DDA row 97.2 = DDA's fake-only EvalGEN accuracy)."}
+    out = {"model": args.model, "protocol": spec["protocol"], "internal_only": sorted(internal),
+           "internal_only_note": spec.get("internal_only_note"),
+           "best_tie_break": "equal values (rounded to 2 decimals): the alphabetically first detector key is named, every "
+                             "tied key is listed under `tied`",
+           "acc_pooled_note": ACC_POOLED_NOTE,
+           "subsets": rows, "jpeg95_probe": probe, "greedy_vs_sampled": sampling, "paper_comparison": paper,
+           "paper_note": "Veritas++ arXiv 2607.27113 v1, Acc. column. Decoding: the paper's text does not state a sampling "
+                         "temperature; T 0.7 is the setting of the authors' official inference script (infer_vllm_single.py), "
+                         "with top-p 0.8 / top-k 20 from the released generation_config.json, and 'sampled' below means that "
+                         "setting. EvalGEN: fakes-only scoring is our inference from the DDA row (97.2), not stated in the "
+                         "paper; the balanced accuracy is reported next to it."}
     Path(args.out).write_text(json.dumps(out, indent=1) + "\n")
 
-    print(f"{'subset':24s} {'VLM acc':>8s} {'AUROC':>6s} {'unp':>4s} {'tok':>5s} | {'best acc (det)':>24s} {'med':>6s} | "
+    print(f"{'subset':24s} {'VLM acc':>8s} {'AUROC':>6s} {'unp':>4s} {'tok':>5s} | {'best acc (det)':>24s} {'best public':>26s} {'med':>6s} | "
           f"{'best AUROC (det)':>24s} {'med':>6s} | rank acc/AUROC  n")
     for r in rows:
         v = r.get("vlm", {})
         name = r["benchmark"] + ("" if r["variant"] == "clean" else f" {r['variant']}")
-        ba, bu = r.get("best_acc", {}), r.get("best_mauroc", {})
+        ba, bu, bp = r.get("best_acc", {}), r.get("best_mauroc", {}), r.get("best_public_acc", {})
         print(f"{name:24s} {v.get('acc', float('nan')):8.2f} {v.get('mauroc', float('nan')):6.2f} {v.get('n_unparsed', -1):4d} "
               f"{v.get('mean_tokens', float('nan')):5.0f} | {ba.get('value', float('nan')):7.2f} ({ba.get('detector', '-'):>14s}) "
+              f"{bp.get('value', float('nan')):7.2f} ({bp.get('detector', '-'):>15s}) "
               f"{r.get('median_acc', float('nan')):6.2f} | {bu.get('value', float('nan')):7.2f} ({bu.get('detector', '-'):>14s}) "
               f"{r.get('median_mauroc', float('nan')):6.2f} | {r.get('vlm_rank_acc', '-')}/{r.get('vlm_rank_mauroc', '-')} "
               f"{r['n_comparators']}")

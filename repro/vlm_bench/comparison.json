@@ -1,6 +1,16 @@
 {
  "model": "veritaspp",
  "protocol": "per benchmark bench_eval --limit L, L = ceil(500 / n_generators): the first L sorted reals and the first L sorted fakes of every generator (bench_eval.discover order), a fixed subset (repro/vlm_bench/subsets/<bench>.json lists every file with its sha1). The same subset is used for every VLM and for the comparator detectors (user decision 2026-11-16: subsampled).",
+ "internal_only": [
+  "ltf",
+  "mirror",
+  "probe",
+  "probe_resnet",
+  "vina"
+ ],
+ "internal_only_note": "Comparators whose weights are not publicly licensed (no LICENSE / unclear terms; the keys of synthscope.hub.NEVER_REDISTRIBUTE that are comparators here), restored from the field-report matrix spec (repro/matrix/spec.json on fieldreport/harness @ 2691337). They are scored like the rest but are not servable, so compare.py reports a best overall detector and a best publicly licensed / servable one (ruling T2-C2).",
+ "best_tie_break": "equal values (rounded to 2 decimals): the alphabetically first detector key is named, every tied key is listed under `tied`",
+ "acc_pooled_note": "acc_pooled counts every scored (generator, image) pair once: a real pool shared by several generators (ufd8, synthbuster_coco; bench_eval's shared-reals layout) is counted once per generator, so reals and fakes keep the 1:1 balance of the subset. acc_pooled_distinct counts each image once, so the shared reals count once and the fakes dominate (ufd8: 630 distinct images, 504 of them fake); it is not comparable with acc. The headline acc (balanced mean over generators) is unaffected by either.",
  "subsets": [
   {
    "benchmark": "genimage_val100k",
@@ -10,137 +20,164 @@
     "clip": {
      "acc": 64.59,
      "mauroc": 74.43,
-     "map": 76.36
+     "map": 76.36,
+     "internal_only": false
     },
     "cnn": {
      "acc": 51.88,
      "mauroc": 70.84,
-     "map": 69.66
+     "map": 69.66,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 71.33,
      "mauroc": 83.13,
-     "map": 82.66
+     "map": 82.66,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 75.6,
      "mauroc": 84.69,
-     "map": 85.58
+     "map": 85.58,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 58.43,
      "mauroc": 85.76,
-     "map": 84.75
+     "map": 84.75,
+     "internal_only": false
     },
     "safe": {
      "acc": 93.85,
      "mauroc": 98.59,
-     "map": 99.02
+     "map": 99.02,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 73.11,
      "mauroc": 86.25,
-     "map": 87.1
+     "map": 87.1,
+     "internal_only": false
     },
     "aide": {
      "acc": 86.9,
      "mauroc": 94.25,
-     "map": 96.08
+     "map": 96.08,
+     "internal_only": false
     },
     "spai": {
      "acc": 88.99,
      "mauroc": 95.27,
-     "map": 95.32
+     "map": 95.32,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 82.14,
      "mauroc": 91.18,
-     "map": 92.0
+     "map": 92.0,
+     "internal_only": false
     },
     "bfree": {
      "acc": 84.62,
      "mauroc": 95.48,
-     "map": 95.32
+     "map": 95.32,
+     "internal_only": false
     },
     "effort": {
      "acc": 89.48,
      "mauroc": 99.83,
-     "map": 99.83
+     "map": 99.83,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 52.38,
      "mauroc": 51.17,
-     "map": 53.49
+     "map": 53.49,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 75.5,
      "mauroc": 90.06,
-     "map": 89.5
+     "map": 89.5,
+     "internal_only": false
     },
     "pgc": {
      "acc": 76.39,
      "mauroc": 99.76,
-     "map": 99.71
+     "map": 99.71,
+     "internal_only": false
     },
     "cure": {
      "acc": 82.14,
      "mauroc": 95.27,
-     "map": 95.31
+     "map": 95.31,
+     "internal_only": false
     },
     "dda": {
      "acc": 83.23,
      "mauroc": 96.13,
-     "map": 95.34
+     "map": 95.34,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 80.95,
      "mauroc": 91.77,
-     "map": 92.21
+     "map": 92.21,
+     "internal_only": false
     },
     "ltf": {
      "acc": 97.82,
      "mauroc": 99.9,
-     "map": 99.9
+     "map": 99.9,
+     "internal_only": true
     },
     "mirror": {
      "acc": 99.5,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "vina": {
      "acc": 91.27,
      "mauroc": 96.91,
-     "map": 97.37
+     "map": 97.37,
+     "internal_only": true
     },
     "probe": {
      "acc": 93.45,
      "mauroc": 99.7,
-     "map": 99.7
+     "map": 99.7,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 76.49,
      "mauroc": 80.66,
-     "map": 82.64
+     "map": 82.64,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 86.11,
      "mauroc": 92.73,
-     "map": 94.22
+     "map": 94.22,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 96.03,
      "mauroc": 97.86,
-     "map": 98.24
+     "map": 98.24,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 94.55,
      "mauroc": 99.1,
-     "map": 99.09
+     "map": 99.09,
+     "internal_only": false
     },
     "npr": {
      "acc": 76.39,
      "mauroc": 87.32,
-     "map": 82.36
+     "map": 82.36,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -149,6 +186,8 @@
     "mauroc": 90.17,
     "map": 91.58,
     "acc_pooled": 76.88,
+    "acc_pooled_distinct": 76.88,
+    "n_distinct_images": 1008,
     "acc_pooled_drop": 76.96,
     "n_images": 1008,
     "n_unparsed": 1,
@@ -156,16 +195,60 @@
     "mean_tokens": 510.1,
     "mean_seconds": 17.14
    },
+   "vlm_balance": {
+    "mean_real_acc": 99.6,
+    "mean_fake_acc": 54.17,
+    "lowest_fake_acc": {
+     "generator": "biggan",
+     "value": 15.87
+    },
+    "highest_fake_acc": {
+     "generator": "sdv1.5",
+     "value": 90.48
+    },
+    "n_generators": 8,
+    "n_generators_fake_acc_below_50": 4,
+    "per_generator_fake_acc": {
+     "adm": 19.05,
+     "biggan": 15.87,
+     "glide": 31.75,
+     "midjourney": 77.78,
+     "sdv1.4": 85.71,
+     "sdv1.5": 90.48,
+     "vqdm": 25.4,
+     "wukong": 87.3
+    }
+   },
    "limit": 63,
    "best_acc": {
     "detector": "mirror",
-    "value": 99.5
+    "value": 99.5,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "omniaid_v1",
+    "value": 96.03,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_acc": 82.14,
    "vlm_rank_acc": 17,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 100.0
+    "value": 100.0,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "effort",
+    "value": 99.83,
+    "tied": [
+     "effort"
+    ]
    },
    "median_mauroc": 94.25,
    "vlm_rank_mauroc": 18
@@ -178,137 +261,164 @@
     "clip": {
      "acc": 81.75,
      "mauroc": 92.82,
-     "map": 93.44
+     "map": 93.44,
+     "internal_only": false
     },
     "cnn": {
      "acc": 70.12,
      "mauroc": 89.42,
-     "map": 90.31
+     "map": 90.31,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 71.89,
      "mauroc": 86.59,
-     "map": 86.45
+     "map": 86.45,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 76.33,
      "mauroc": 83.46,
-     "map": 85.56
+     "map": 85.56,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 73.96,
      "mauroc": 94.97,
-     "map": 96.1
+     "map": 96.1,
+     "internal_only": false
     },
     "safe": {
      "acc": 82.74,
      "mauroc": 87.91,
-     "map": 86.99
+     "map": 86.99,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 90.34,
      "mauroc": 98.08,
-     "map": 98.58
+     "map": 98.58,
+     "internal_only": false
     },
     "aide": {
      "acc": 63.61,
      "mauroc": 77.37,
-     "map": 79.28
+     "map": 79.28,
+     "internal_only": false
     },
     "spai": {
      "acc": 73.67,
      "mauroc": 85.55,
-     "map": 84.78
+     "map": 84.78,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 76.04,
      "mauroc": 82.23,
-     "map": 84.17
+     "map": 84.17,
+     "internal_only": false
     },
     "bfree": {
      "acc": 87.48,
      "mauroc": 94.23,
-     "map": 94.25
+     "map": 94.25,
+     "internal_only": false
     },
     "effort": {
      "acc": 75.54,
      "mauroc": 88.32,
-     "map": 85.76
+     "map": 85.76,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 49.7,
      "mauroc": 51.41,
-     "map": 56.12
+     "map": 56.12,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 58.78,
      "mauroc": 68.99,
-     "map": 68.8
+     "map": 68.8,
+     "internal_only": false
     },
     "pgc": {
      "acc": 82.05,
      "mauroc": 96.38,
-     "map": 95.58
+     "map": 95.58,
+     "internal_only": false
     },
     "cure": {
      "acc": 83.14,
      "mauroc": 96.08,
-     "map": 95.76
+     "map": 95.76,
+     "internal_only": false
     },
     "dda": {
      "acc": 79.29,
      "mauroc": 89.79,
-     "map": 90.14
+     "map": 90.14,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 76.92,
      "mauroc": 84.88,
-     "map": 85.98
+     "map": 85.98,
+     "internal_only": false
     },
     "ltf": {
      "acc": 78.5,
      "mauroc": 96.4,
-     "map": 94.97
+     "map": 94.97,
+     "internal_only": true
     },
     "mirror": {
      "acc": 89.15,
      "mauroc": 96.6,
-     "map": 97.12
+     "map": 97.12,
+     "internal_only": true
     },
     "vina": {
      "acc": 87.18,
      "mauroc": 98.89,
-     "map": 99.03
+     "map": 99.03,
+     "internal_only": true
     },
     "probe": {
      "acc": 85.9,
      "mauroc": 95.99,
-     "map": 95.14
+     "map": 95.14,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 53.55,
      "mauroc": 58.1,
-     "map": 60.47
+     "map": 60.47,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 89.15,
      "mauroc": 96.39,
-     "map": 96.37
+     "map": 96.37,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 83.33,
      "mauroc": 96.5,
-     "map": 96.48
+     "map": 96.48,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 79.29,
      "mauroc": 98.18,
-     "map": 98.12
+     "map": 98.12,
+     "internal_only": false
     },
     "npr": {
      "acc": 79.59,
      "mauroc": 83.05,
-     "map": 81.05
+     "map": 81.05,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -317,6 +427,8 @@
     "mauroc": 74.82,
     "map": 76.1,
     "acc_pooled": 63.51,
+    "acc_pooled_distinct": 63.51,
+    "n_distinct_images": 1014,
     "acc_pooled_drop": 63.51,
     "n_images": 1014,
     "n_unparsed": 0,
@@ -324,16 +436,65 @@
     "mean_tokens": 502.2,
     "mean_seconds": 17.92
    },
+   "vlm_balance": {
+    "mean_real_acc": 89.35,
+    "mean_fake_acc": 37.67,
+    "lowest_fake_acc": {
+     "generator": "seeingdark",
+     "value": 0.0
+    },
+    "highest_fake_acc": {
+     "generator": "progan",
+     "value": 89.74
+    },
+    "n_generators": 13,
+    "n_generators_fake_acc_below_50": 9,
+    "per_generator_fake_acc": {
+     "biggan": 51.28,
+     "crn": 17.95,
+     "cyclegan": 66.67,
+     "deepfake": 15.38,
+     "gaugan": 87.18,
+     "imle": 28.21,
+     "progan": 89.74,
+     "san": 38.46,
+     "seeingdark": 0.0,
+     "stargan": 30.77,
+     "stylegan": 28.21,
+     "stylegan2": 7.69,
+     "whichfaceisreal": 28.21
+    }
+   },
    "limit": 39,
    "best_acc": {
     "detector": "fat_former",
-    "value": 90.34
+    "value": 90.34,
+    "tied": [
+     "fat_former"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "fat_former",
+    "value": 90.34,
+    "tied": [
+     "fat_former"
+    ]
    },
    "median_acc": 79.29,
    "vlm_rank_acc": 25,
    "best_mauroc": {
     "detector": "vina",
-    "value": 98.89
+    "value": 98.89,
+    "tied": [
+     "vina"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "omniaid_genimage",
+    "value": 98.18,
+    "tied": [
+     "omniaid_genimage"
+    ]
    },
    "median_mauroc": 89.79,
    "vlm_rank_mauroc": 25
@@ -346,137 +507,164 @@
     "clip": {
      "acc": 85.71,
      "mauroc": 94.89,
-     "map": 95.04
+     "map": 95.04,
+     "internal_only": false
     },
     "cnn": {
      "acc": 53.77,
      "mauroc": 81.02,
-     "map": 79.4
+     "map": 79.4,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 82.84,
      "mauroc": 90.82,
-     "map": 91.66
+     "map": 91.66,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 87.2,
      "mauroc": 96.5,
-     "map": 97.31
+     "map": 97.31,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 75.1,
      "mauroc": 98.13,
-     "map": 98.29
+     "map": 98.29,
+     "internal_only": false
     },
     "safe": {
      "acc": 92.56,
      "mauroc": 97.72,
-     "map": 98.25
+     "map": 98.25,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 93.35,
      "mauroc": 98.45,
-     "map": 98.58
+     "map": 98.58,
+     "internal_only": false
     },
     "aide": {
      "acc": 91.37,
      "mauroc": 96.97,
-     "map": 97.91
+     "map": 97.91,
+     "internal_only": false
     },
     "spai": {
      "acc": 85.51,
      "mauroc": 94.25,
-     "map": 94.38
+     "map": 94.38,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 82.34,
      "mauroc": 92.49,
-     "map": 93.92
+     "map": 93.92,
+     "internal_only": false
     },
     "bfree": {
      "acc": 91.87,
      "mauroc": 96.78,
-     "map": 97.33
+     "map": 97.33,
+     "internal_only": false
     },
     "effort": {
      "acc": 93.16,
      "mauroc": 98.9,
-     "map": 99.1
+     "map": 99.1,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 63.0,
      "mauroc": 68.37,
-     "map": 69.78
+     "map": 69.78,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 71.92,
      "mauroc": 86.33,
-     "map": 85.76
+     "map": 85.76,
+     "internal_only": false
     },
     "pgc": {
      "acc": 93.85,
      "mauroc": 99.1,
-     "map": 99.26
+     "map": 99.26,
+     "internal_only": false
     },
     "cure": {
      "acc": 93.45,
      "mauroc": 98.35,
-     "map": 98.7
+     "map": 98.7,
+     "internal_only": false
     },
     "dda": {
      "acc": 80.06,
      "mauroc": 92.22,
-     "map": 94.15
+     "map": 94.15,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 84.72,
      "mauroc": 90.94,
-     "map": 92.38
+     "map": 92.38,
+     "internal_only": false
     },
     "ltf": {
      "acc": 92.06,
      "mauroc": 99.77,
-     "map": 99.79
+     "map": 99.79,
+     "internal_only": true
     },
     "mirror": {
      "acc": 97.92,
      "mauroc": 99.97,
-     "map": 99.98
+     "map": 99.98,
+     "internal_only": true
     },
     "vina": {
      "acc": 93.95,
      "mauroc": 97.89,
-     "map": 98.46
+     "map": 98.46,
+     "internal_only": true
     },
     "probe": {
      "acc": 91.96,
      "mauroc": 98.15,
-     "map": 98.35
+     "map": 98.35,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 74.41,
      "mauroc": 85.28,
-     "map": 86.0
+     "map": 86.0,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 82.93,
      "mauroc": 95.29,
-     "map": 95.61
+     "map": 95.61,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 87.4,
      "mauroc": 99.51,
-     "map": 99.61
+     "map": 99.61,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 91.66,
      "mauroc": 99.38,
-     "map": 99.39
+     "map": 99.39,
+     "internal_only": false
     },
     "npr": {
      "acc": 95.83,
      "mauroc": 98.57,
-     "map": 98.28
+     "map": 98.28,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -485,6 +673,8 @@
     "mauroc": 84.94,
     "map": 86.82,
     "acc_pooled": 73.12,
+    "acc_pooled_distinct": 58.89,
+    "n_distinct_images": 630,
     "acc_pooled_drop": 73.33,
     "n_images": 1008,
     "n_unparsed": 3,
@@ -492,16 +682,60 @@
     "mean_tokens": 496.9,
     "mean_seconds": 16.82
    },
+   "vlm_balance": {
+    "mean_real_acc": 97.03,
+    "mean_fake_acc": 49.21,
+    "lowest_fake_acc": {
+     "generator": "ldm_200_cfg",
+     "value": 36.51
+    },
+    "highest_fake_acc": {
+     "generator": "ldm_100",
+     "value": 60.32
+    },
+    "n_generators": 8,
+    "n_generators_fake_acc_below_50": 5,
+    "per_generator_fake_acc": {
+     "dalle": 53.97,
+     "glide_100_10": 57.14,
+     "glide_100_27": 46.03,
+     "glide_50_27": 49.21,
+     "guided": 42.86,
+     "ldm_100": 60.32,
+     "ldm_200": 47.62,
+     "ldm_200_cfg": 36.51
+    }
+   },
    "limit": 63,
    "best_acc": {
     "detector": "mirror",
-    "value": 97.92
+    "value": 97.92,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "npr",
+    "value": 95.83,
+    "tied": [
+     "npr"
+    ]
    },
    "median_acc": 87.4,
    "vlm_rank_acc": 25,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.97
+    "value": 99.97,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "omniaid_v1",
+    "value": 99.51,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_mauroc": 96.97,
    "vlm_rank_mauroc": 26
@@ -514,137 +748,164 @@
     "clip": {
      "acc": 72.65,
      "mauroc": 81.98,
-     "map": 83.77
+     "map": 83.77,
+     "internal_only": false
     },
     "cnn": {
      "acc": 62.26,
      "mauroc": 80.71,
-     "map": 80.25
+     "map": 80.25,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 73.92,
      "mauroc": 84.0,
-     "map": 83.77
+     "map": 83.77,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 79.12,
      "mauroc": 89.1,
-     "map": 89.59
+     "map": 89.59,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 67.55,
      "mauroc": 89.18,
-     "map": 88.5
+     "map": 88.5,
+     "internal_only": false
     },
     "safe": {
      "acc": 93.53,
      "mauroc": 96.14,
-     "map": 96.27
+     "map": 96.27,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 84.12,
      "mauroc": 92.56,
-     "map": 93.04
+     "map": 93.04,
+     "internal_only": false
     },
     "aide": {
      "acc": 81.76,
      "mauroc": 91.22,
-     "map": 91.76
+     "map": 91.76,
+     "internal_only": false
     },
     "spai": {
      "acc": 80.69,
      "mauroc": 89.22,
-     "map": 88.79
+     "map": 88.79,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 86.18,
      "mauroc": 94.44,
-     "map": 94.93
+     "map": 94.93,
+     "internal_only": false
     },
     "bfree": {
      "acc": 86.37,
      "mauroc": 94.7,
-     "map": 94.54
+     "map": 94.54,
+     "internal_only": false
     },
     "effort": {
      "acc": 87.94,
      "mauroc": 95.12,
-     "map": 93.58
+     "map": 93.58,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 54.61,
      "mauroc": 52.81,
-     "map": 56.67
+     "map": 56.67,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 71.76,
      "mauroc": 87.29,
-     "map": 86.28
+     "map": 86.28,
+     "internal_only": false
     },
     "pgc": {
      "acc": 77.06,
      "mauroc": 98.18,
-     "map": 98.2
+     "map": 98.2,
+     "internal_only": false
     },
     "cure": {
      "acc": 87.84,
      "mauroc": 97.17,
-     "map": 97.54
+     "map": 97.54,
+     "internal_only": false
     },
     "dda": {
      "acc": 82.94,
      "mauroc": 93.92,
-     "map": 93.9
+     "map": 93.9,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 77.55,
      "mauroc": 86.72,
-     "map": 87.83
+     "map": 87.83,
+     "internal_only": false
     },
     "ltf": {
      "acc": 91.67,
      "mauroc": 99.5,
-     "map": 99.35
+     "map": 99.35,
+     "internal_only": true
     },
     "mirror": {
      "acc": 96.86,
      "mauroc": 99.29,
-     "map": 99.42
+     "map": 99.42,
+     "internal_only": true
     },
     "vina": {
      "acc": 93.72,
      "mauroc": 97.99,
-     "map": 98.35
+     "map": 98.35,
+     "internal_only": true
     },
     "probe": {
      "acc": 88.63,
      "mauroc": 96.76,
-     "map": 95.96
+     "map": 95.96,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 68.63,
      "mauroc": 73.41,
-     "map": 74.63
+     "map": 74.63,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 89.9,
      "mauroc": 95.78,
-     "map": 96.58
+     "map": 96.58,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 93.73,
      "mauroc": 97.69,
-     "map": 97.63
+     "map": 97.63,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 88.63,
      "mauroc": 98.64,
-     "map": 98.57
+     "map": 98.57,
+     "internal_only": false
     },
     "npr": {
      "acc": 83.63,
      "mauroc": 91.81,
-     "map": 88.14
+     "map": 88.14,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -653,6 +914,8 @@
     "mauroc": 89.11,
     "map": 89.42,
     "acc_pooled": 78.04,
+    "acc_pooled_distinct": 78.04,
+    "n_distinct_images": 1020,
     "acc_pooled_drop": 78.04,
     "n_images": 1020,
     "n_unparsed": 0,
@@ -660,16 +923,69 @@
     "mean_tokens": 500.9,
     "mean_seconds": 16.76
    },
+   "vlm_balance": {
+    "mean_real_acc": 95.1,
+    "mean_fake_acc": 60.98,
+    "lowest_fake_acc": {
+     "generator": "stylegan2",
+     "value": 10.0
+    },
+    "highest_fake_acc": {
+     "generator": "sd_xl",
+     "value": 96.67
+    },
+    "n_generators": 17,
+    "n_generators_fake_acc_below_50": 7,
+    "per_generator_fake_acc": {
+     "ADM": 30.0,
+     "DALLE2": 66.67,
+     "Glide": 43.33,
+     "Midjourney": 90.0,
+     "VQDM": 33.33,
+     "biggan": 53.33,
+     "cyclegan": 76.67,
+     "gaugan": 83.33,
+     "progan": 90.0,
+     "sd_xl": 96.67,
+     "stable_diffusion_v_1_4": 90.0,
+     "stable_diffusion_v_1_5": 93.33,
+     "stargan": 30.0,
+     "stylegan": 30.0,
+     "stylegan2": 10.0,
+     "whichfaceisreal": 26.67,
+     "wukong": 93.33
+    }
+   },
    "limit": 30,
    "best_acc": {
     "detector": "mirror",
-    "value": 96.86
+    "value": 96.86,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "omniaid_v1",
+    "value": 93.73,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_acc": 83.63,
    "vlm_rank_acc": 19,
    "best_mauroc": {
     "detector": "ltf",
-    "value": 99.5
+    "value": 99.5,
+    "tied": [
+     "ltf"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "omniaid_genimage",
+    "value": 98.64,
+    "tied": [
+     "omniaid_genimage"
+    ]
    },
    "median_mauroc": 93.92,
    "vlm_rank_mauroc": 20
@@ -682,137 +998,164 @@
     "clip": {
      "acc": 58.93,
      "mauroc": 70.51,
-     "map": 73.16
+     "map": 73.16,
+     "internal_only": false
     },
     "cnn": {
      "acc": 51.49,
      "mauroc": 58.64,
-     "map": 62.67
+     "map": 62.67,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 64.98,
      "mauroc": 81.29,
-     "map": 83.0
+     "map": 83.0,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 87.8,
      "mauroc": 96.52,
-     "map": 96.77
+     "map": 96.77,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.89,
      "mauroc": 70.4,
-     "map": 70.83
+     "map": 70.83,
+     "internal_only": false
     },
     "safe": {
      "acc": 86.71,
      "mauroc": 92.49,
-     "map": 94.76
+     "map": 94.76,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 68.16,
      "mauroc": 73.11,
-     "map": 78.29
+     "map": 78.29,
+     "internal_only": false
     },
     "aide": {
      "acc": 81.55,
      "mauroc": 95.88,
-     "map": 95.35
+     "map": 95.35,
+     "internal_only": false
     },
     "spai": {
      "acc": 93.65,
      "mauroc": 98.54,
-     "map": 98.37
+     "map": 98.37,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 90.18,
      "mauroc": 99.23,
-     "map": 99.34
+     "map": 99.34,
+     "internal_only": false
     },
     "bfree": {
      "acc": 96.23,
      "mauroc": 99.79,
-     "map": 99.78
+     "map": 99.78,
+     "internal_only": false
     },
     "effort": {
      "acc": 90.18,
      "mauroc": 98.81,
-     "map": 98.59
+     "map": 98.59,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 39.68,
      "mauroc": 38.33,
-     "map": 45.66
+     "map": 45.66,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 90.97,
      "mauroc": 97.26,
-     "map": 97.46
+     "map": 97.46,
+     "internal_only": false
     },
     "pgc": {
      "acc": 86.9,
      "mauroc": 99.99,
-     "map": 99.99
+     "map": 99.99,
+     "internal_only": false
     },
     "cure": {
      "acc": 91.97,
      "mauroc": 97.73,
-     "map": 98.44
+     "map": 98.44,
+     "internal_only": false
     },
     "dda": {
      "acc": 95.44,
      "mauroc": 99.0,
-     "map": 99.21
+     "map": 99.21,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 65.68,
      "mauroc": 83.58,
-     "map": 81.07
+     "map": 81.07,
+     "internal_only": false
     },
     "ltf": {
      "acc": 97.02,
      "mauroc": 99.9,
-     "map": 99.91
+     "map": 99.91,
+     "internal_only": true
     },
     "mirror": {
      "acc": 98.81,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "vina": {
      "acc": 99.01,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "probe": {
      "acc": 99.31,
      "mauroc": 99.96,
-     "map": 99.97
+     "map": 99.97,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 83.83,
      "mauroc": 95.3,
-     "map": 94.5
+     "map": 94.5,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 83.73,
      "mauroc": 93.32,
-     "map": 92.61
+     "map": 92.61,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 96.63,
      "mauroc": 99.61,
-     "map": 99.57
+     "map": 99.57,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 89.29,
      "mauroc": 96.52,
-     "map": 96.91
+     "map": 96.91,
+     "internal_only": false
     },
     "npr": {
      "acc": 81.55,
      "mauroc": 90.71,
-     "map": 87.74
+     "map": 87.74,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -821,6 +1164,8 @@
     "mauroc": 98.43,
     "map": 98.68,
     "acc_pooled": 89.98,
+    "acc_pooled_distinct": 81.96,
+    "n_distinct_images": 560,
     "acc_pooled_drop": 89.98,
     "n_images": 1008,
     "n_unparsed": 0,
@@ -828,16 +1173,62 @@
     "mean_tokens": 512.0,
     "mean_seconds": 17.61
    },
+   "vlm_balance": {
+    "mean_real_acc": 100.0,
+    "mean_fake_acc": 79.96,
+    "lowest_fake_acc": {
+     "generator": "firefly",
+     "value": 42.86
+    },
+    "highest_fake_acc": {
+     "generator": "dalle3",
+     "value": 100.0
+    },
+    "n_generators": 9,
+    "n_generators_fake_acc_below_50": 1,
+    "per_generator_fake_acc": {
+     "dalle2": 82.14,
+     "dalle3": 100.0,
+     "firefly": 42.86,
+     "glide": 60.71,
+     "midjourney-v5": 78.57,
+     "stable-diffusion-1-3": 96.43,
+     "stable-diffusion-1-4": 96.43,
+     "stable-diffusion-2": 67.86,
+     "stable-diffusion-xl": 94.64
+    }
+   },
    "limit": 56,
    "best_acc": {
     "detector": "probe",
-    "value": 99.31
+    "value": 99.31,
+    "tied": [
+     "probe"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "omniaid_v1",
+    "value": 96.63,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_acc": 87.8,
    "vlm_rank_acc": 13,
    "best_mauroc": {
-    "detector": "vina",
-    "value": 100.0
+    "detector": "mirror",
+    "value": 100.0,
+    "tied": [
+     "mirror",
+     "vina"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "pgc",
+    "value": 99.99,
+    "tied": [
+     "pgc"
+    ]
    },
    "median_mauroc": 96.52,
    "vlm_rank_mauroc": 12
@@ -850,137 +1241,164 @@
     "clip": {
      "acc": 52.6,
      "mauroc": 64.29,
-     "map": 62.75
+     "map": 62.75,
+     "internal_only": false
     },
     "cnn": {
      "acc": 53.1,
      "mauroc": 65.97,
-     "map": 66.69
+     "map": 66.69,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 55.1,
      "mauroc": 68.26,
-     "map": 66.01
+     "map": 66.01,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 83.4,
      "mauroc": 93.64,
-     "map": 92.62
+     "map": 92.62,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.4,
      "mauroc": 66.59,
-     "map": 64.29
+     "map": 64.29,
+     "internal_only": false
     },
     "safe": {
      "acc": 50.1,
      "mauroc": 70.32,
-     "map": 76.84
+     "map": 76.84,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 64.0,
      "mauroc": 63.64,
-     "map": 66.03
+     "map": 66.03,
+     "internal_only": false
     },
     "aide": {
      "acc": 59.8,
      "mauroc": 95.59,
-     "map": 96.27
+     "map": 96.27,
+     "internal_only": false
     },
     "spai": {
      "acc": 93.5,
      "mauroc": 98.18,
-     "map": 97.77
+     "map": 97.77,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 87.1,
      "mauroc": 99.48,
-     "map": 99.47
+     "map": 99.47,
+     "internal_only": false
     },
     "bfree": {
      "acc": 92.9,
      "mauroc": 98.61,
-     "map": 98.65
+     "map": 98.65,
+     "internal_only": false
     },
     "effort": {
      "acc": 95.0,
      "mauroc": 99.43,
-     "map": 99.42
+     "map": 99.42,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 68.8,
      "mauroc": 85.37,
-     "map": 86.41
+     "map": 86.41,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 95.9,
      "mauroc": 98.76,
-     "map": 98.67
+     "map": 98.67,
+     "internal_only": false
     },
     "pgc": {
      "acc": 53.3,
      "mauroc": 85.29,
-     "map": 82.66
+     "map": 82.66,
+     "internal_only": false
     },
     "cure": {
      "acc": 98.4,
      "mauroc": 99.11,
-     "map": 99.45
+     "map": 99.45,
+     "internal_only": false
     },
     "dda": {
      "acc": 96.5,
      "mauroc": 99.7,
-     "map": 99.67
+     "map": 99.67,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 58.0,
      "mauroc": 83.0,
-     "map": 75.27
+     "map": 75.27,
+     "internal_only": false
     },
     "ltf": {
      "acc": 97.8,
      "mauroc": 99.77,
-     "map": 99.77
+     "map": 99.77,
+     "internal_only": true
     },
     "mirror": {
      "acc": 99.9,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "vina": {
      "acc": 99.8,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "probe": {
      "acc": 91.4,
      "mauroc": 99.56,
-     "map": 98.92
+     "map": 98.92,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 83.7,
      "mauroc": 97.19,
-     "map": 97.02
+     "map": 97.02,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 71.3,
      "mauroc": 89.99,
-     "map": 88.2
+     "map": 88.2,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 79.4,
      "mauroc": 97.71,
-     "map": 96.76
+     "map": 96.76,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 87.4,
      "mauroc": 93.71,
-     "map": 93.84
+     "map": 93.84,
+     "internal_only": false
     },
     "npr": {
      "acc": 44.2,
      "mauroc": 38.07,
-     "map": 45.49
+     "map": 45.49,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -989,6 +1407,8 @@
     "mauroc": 99.95,
     "map": 99.94,
     "acc_pooled": 99.1,
+    "acc_pooled_distinct": 99.1,
+    "n_distinct_images": 1000,
     "acc_pooled_drop": 99.1,
     "n_images": 1000,
     "n_unparsed": 0,
@@ -996,16 +1416,58 @@
     "mean_tokens": 488.4,
     "mean_seconds": 17.2
    },
+   "vlm_balance": {
+    "mean_real_acc": 100.0,
+    "mean_fake_acc": 98.2,
+    "lowest_fake_acc": {
+     "generator": "NOVA",
+     "value": 91.0
+    },
+    "highest_fake_acc": {
+     "generator": "OmniGen",
+     "value": 100.0
+    },
+    "n_generators": 5,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "Flux": 100.0,
+     "GoT": 100.0,
+     "Infinity": 100.0,
+     "NOVA": 91.0,
+     "OmniGen": 100.0
+    }
+   },
    "limit": 100,
    "best_acc": {
     "detector": "mirror",
-    "value": 99.9
+    "value": 99.9,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 98.4,
+    "tied": [
+     "cure"
+    ]
    },
    "median_acc": 83.4,
    "vlm_rank_acc": 3,
    "best_mauroc": {
-    "detector": "vina",
-    "value": 100.0
+    "detector": "mirror",
+    "value": 100.0,
+    "tied": [
+     "mirror",
+     "vina"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "dda",
+    "value": 99.7,
+    "tied": [
+     "dda"
+    ]
    },
    "median_mauroc": 95.59,
    "vlm_rank_mauroc": 3
@@ -1018,137 +1480,164 @@
     "clip": {
      "acc": 49.0,
      "mauroc": 52.64,
-     "map": 53.15
+     "map": 53.15,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.2,
      "mauroc": 53.45,
-     "map": 52.46
+     "map": 52.46,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 54.49,
      "mauroc": 59.02,
-     "map": 62.96
+     "map": 62.96,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 74.55,
      "mauroc": 85.56,
-     "map": 85.21
+     "map": 85.21,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 60.26,
-     "map": 57.5
+     "map": 57.5,
+     "internal_only": false
     },
     "safe": {
      "acc": 49.8,
      "mauroc": 52.66,
-     "map": 52.67
+     "map": 52.67,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 54.29,
      "mauroc": 54.06,
-     "map": 56.31
+     "map": 56.31,
+     "internal_only": false
     },
     "aide": {
      "acc": 58.68,
      "mauroc": 66.23,
-     "map": 67.17
+     "map": 67.17,
+     "internal_only": false
     },
     "spai": {
      "acc": 77.05,
      "mauroc": 85.52,
-     "map": 83.27
+     "map": 83.27,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 57.29,
      "mauroc": 59.9,
-     "map": 59.16
+     "map": 59.16,
+     "internal_only": false
     },
     "bfree": {
      "acc": 96.31,
      "mauroc": 98.96,
-     "map": 99.09
+     "map": 99.09,
+     "internal_only": false
     },
     "effort": {
      "acc": 57.29,
      "mauroc": 65.99,
-     "map": 61.43
+     "map": 61.43,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 77.45,
      "mauroc": 84.51,
-     "map": 86.31
+     "map": 86.31,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 64.87,
      "mauroc": 72.41,
-     "map": 68.15
+     "map": 68.15,
+     "internal_only": false
     },
     "pgc": {
      "acc": 59.38,
      "mauroc": 73.27,
-     "map": 74.08
+     "map": 74.08,
+     "internal_only": false
     },
     "cure": {
      "acc": 94.21,
      "mauroc": 97.16,
-     "map": 95.66
+     "map": 95.66,
+     "internal_only": false
     },
     "dda": {
      "acc": 90.62,
      "mauroc": 96.18,
-     "map": 96.25
+     "map": 96.25,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 51.1,
      "mauroc": 56.46,
-     "map": 57.01
+     "map": 57.01,
+     "internal_only": false
     },
     "ltf": {
      "acc": 56.19,
      "mauroc": 58.51,
-     "map": 55.32
+     "map": 55.32,
+     "internal_only": true
     },
     "mirror": {
      "acc": 96.5,
      "mauroc": 98.97,
-     "map": 98.37
+     "map": 98.37,
+     "internal_only": true
     },
     "vina": {
      "acc": 93.71,
      "mauroc": 98.17,
-     "map": 98.45
+     "map": 98.45,
+     "internal_only": true
     },
     "probe": {
      "acc": 97.7,
      "mauroc": 99.55,
-     "map": 99.57
+     "map": 99.57,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 76.05,
      "mauroc": 84.35,
-     "map": 84.82
+     "map": 84.82,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 88.62,
      "mauroc": 96.04,
-     "map": 96.27
+     "map": 96.27,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 87.53,
      "mauroc": 94.15,
-     "map": 94.09
+     "map": 94.09,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 61.28,
      "mauroc": 66.17,
-     "map": 63.76
+     "map": 63.76,
+     "internal_only": false
     },
     "npr": {
      "acc": 55.29,
      "mauroc": 57.47,
-     "map": 54.44
+     "map": 54.44,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1157,6 +1646,8 @@
     "mauroc": 97.34,
     "map": 97.52,
     "acc_pooled": 92.12,
+    "acc_pooled_distinct": 92.12,
+    "n_distinct_images": 1002,
     "acc_pooled_drop": 92.21,
     "n_images": 1002,
     "n_unparsed": 1,
@@ -1164,16 +1655,55 @@
     "mean_tokens": 503.8,
     "mean_seconds": 17.68
    },
+   "vlm_balance": {
+    "mean_real_acc": 90.42,
+    "mean_fake_acc": 93.81,
+    "lowest_fake_acc": {
+     "generator": "firefly",
+     "value": 83.83
+    },
+    "highest_fake_acc": {
+     "generator": "dalle3",
+     "value": 100.0
+    },
+    "n_generators": 3,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "dalle3": 100.0,
+     "firefly": 83.83,
+     "midjourney_v5": 97.6
+    }
+   },
    "limit": 167,
    "best_acc": {
     "detector": "probe",
-    "value": 97.7
+    "value": 97.7,
+    "tied": [
+     "probe"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "bfree",
+    "value": 96.31,
+    "tied": [
+     "bfree"
+    ]
    },
    "median_acc": 61.28,
    "vlm_rank_acc": 6,
    "best_mauroc": {
     "detector": "probe",
-    "value": 99.55
+    "value": 99.55,
+    "tied": [
+     "probe"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "bfree",
+    "value": 98.96,
+    "tied": [
+     "bfree"
+    ]
    },
    "median_mauroc": 72.41,
    "vlm_rank_mauroc": 5
@@ -1186,137 +1716,164 @@
     "clip": {
      "acc": 54.09,
      "mauroc": 67.6,
-     "map": 69.29
+     "map": 69.29,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.3,
      "mauroc": 60.0,
-     "map": 60.72
+     "map": 60.72,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 61.43,
      "mauroc": 67.02,
-     "map": 70.52
+     "map": 70.52,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 78.87,
      "mauroc": 88.33,
-     "map": 89.16
+     "map": 89.16,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.9,
      "mauroc": 68.25,
-     "map": 69.22
+     "map": 69.22,
+     "internal_only": false
     },
     "safe": {
      "acc": 56.8,
      "mauroc": 57.3,
-     "map": 63.64
+     "map": 63.64,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 60.54,
      "mauroc": 72.95,
-     "map": 75.55
+     "map": 75.55,
+     "internal_only": false
     },
     "aide": {
      "acc": 61.89,
      "mauroc": 68.35,
-     "map": 72.09
+     "map": 72.09,
+     "internal_only": false
     },
     "spai": {
      "acc": 80.29,
      "mauroc": 88.35,
-     "map": 87.97
+     "map": 87.97,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 67.16,
      "mauroc": 72.81,
-     "map": 74.95
+     "map": 74.95,
+     "internal_only": false
     },
     "bfree": {
      "acc": 92.15,
      "mauroc": 96.75,
-     "map": 97.28
+     "map": 97.28,
+     "internal_only": false
     },
     "effort": {
      "acc": 72.53,
      "mauroc": 79.37,
-     "map": 82.16
+     "map": 82.16,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 66.06,
      "mauroc": 71.12,
-     "map": 74.52
+     "map": 74.52,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 61.49,
      "mauroc": 71.19,
-     "map": 70.42
+     "map": 70.42,
+     "internal_only": false
     },
     "pgc": {
      "acc": 69.31,
      "mauroc": 85.35,
-     "map": 87.21
+     "map": 87.21,
+     "internal_only": false
     },
     "cure": {
      "acc": 96.24,
      "mauroc": 99.3,
-     "map": 99.22
+     "map": 99.22,
+     "internal_only": false
     },
     "dda": {
      "acc": 87.83,
      "mauroc": 93.64,
-     "map": 94.8
+     "map": 94.8,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 53.01,
      "mauroc": 64.65,
-     "map": 63.82
+     "map": 63.82,
+     "internal_only": false
     },
     "ltf": {
      "acc": 53.32,
      "mauroc": 68.41,
-     "map": 73.28
+     "map": 73.28,
+     "internal_only": true
     },
     "mirror": {
      "acc": 97.47,
      "mauroc": 99.79,
-     "map": 99.8
+     "map": 99.8,
+     "internal_only": true
     },
     "vina": {
      "acc": 95.76,
      "mauroc": 99.11,
-     "map": 99.15
+     "map": 99.15,
+     "internal_only": true
     },
     "probe": {
      "acc": 95.09,
      "mauroc": 98.46,
-     "map": 98.67
+     "map": 98.67,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 74.48,
      "mauroc": 76.55,
-     "map": 80.85
+     "map": 80.85,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 84.69,
      "mauroc": 95.67,
-     "map": 96.28
+     "map": 96.28,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 86.65,
      "mauroc": 94.21,
-     "map": 94.13
+     "map": 94.13,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 58.54,
      "mauroc": 68.23,
-     "map": 72.59
+     "map": 72.59,
+     "internal_only": false
     },
     "npr": {
      "acc": 64.76,
      "mauroc": 70.86,
-     "map": 69.29
+     "map": 69.29,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1325,6 +1882,8 @@
     "mauroc": 99.25,
     "map": 99.25,
     "acc_pooled": 95.65,
+    "acc_pooled_distinct": 95.65,
+    "n_distinct_images": 988,
     "acc_pooled_drop": 95.65,
     "n_images": 988,
     "n_unparsed": 0,
@@ -1332,16 +1891,55 @@
     "mean_tokens": 502.5,
     "mean_seconds": 18.9
    },
+   "vlm_balance": {
+    "mean_real_acc": 94.49,
+    "mean_fake_acc": 96.8,
+    "lowest_fake_acc": {
+     "generator": "reddit",
+     "value": 92.81
+    },
+    "highest_fake_acc": {
+     "generator": "facebook",
+     "value": 99.38
+    },
+    "n_generators": 3,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "facebook": 99.38,
+     "reddit": 92.81,
+     "twitter": 98.2
+    }
+   },
    "limit": 167,
    "best_acc": {
     "detector": "mirror",
-    "value": 97.47
+    "value": 97.47,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 96.24,
+    "tied": [
+     "cure"
+    ]
    },
    "median_acc": 67.16,
    "vlm_rank_acc": 4,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.79
+    "value": 99.79,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "cure",
+    "value": 99.3,
+    "tied": [
+     "cure"
+    ]
    },
    "median_mauroc": 72.95,
    "vlm_rank_mauroc": 3
@@ -1354,137 +1952,164 @@
     "clip": {
      "acc": 65.8,
      "mauroc": 78.07,
-     "map": 78.84
+     "map": 78.84,
+     "internal_only": false
     },
     "cnn": {
      "acc": 52.5,
      "mauroc": 62.65,
-     "map": 66.17
+     "map": 66.17,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 55.9,
      "mauroc": 59.43,
-     "map": 63.38
+     "map": 63.38,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 75.6,
      "mauroc": 87.14,
-     "map": 87.68
+     "map": 87.68,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 55.5,
      "mauroc": 79.2,
-     "map": 80.05
+     "map": 80.05,
+     "internal_only": false
     },
     "safe": {
      "acc": 79.2,
      "mauroc": 78.88,
-     "map": 81.65
+     "map": 81.65,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 73.9,
      "mauroc": 79.97,
-     "map": 82.31
+     "map": 82.31,
+     "internal_only": false
     },
     "aide": {
      "acc": 81.0,
      "mauroc": 91.64,
-     "map": 92.1
+     "map": 92.1,
+     "internal_only": false
     },
     "spai": {
      "acc": 72.4,
      "mauroc": 79.18,
-     "map": 80.57
+     "map": 80.57,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 83.2,
      "mauroc": 90.48,
-     "map": 91.29
+     "map": 91.29,
+     "internal_only": false
     },
     "bfree": {
      "acc": 84.8,
      "mauroc": 97.54,
-     "map": 97.31
+     "map": 97.31,
+     "internal_only": false
     },
     "effort": {
      "acc": 87.1,
      "mauroc": 93.68,
-     "map": 93.46
+     "map": 93.46,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 59.3,
      "mauroc": 64.24,
-     "map": 66.42
+     "map": 66.42,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 77.8,
      "mauroc": 86.99,
-     "map": 85.66
+     "map": 85.66,
+     "internal_only": false
     },
     "pgc": {
      "acc": 70.7,
      "mauroc": 94.33,
-     "map": 93.43
+     "map": 93.43,
+     "internal_only": false
     },
     "cure": {
      "acc": 87.8,
      "mauroc": 93.46,
-     "map": 94.44
+     "map": 94.44,
+     "internal_only": false
     },
     "dda": {
      "acc": 83.4,
      "mauroc": 92.65,
-     "map": 92.31
+     "map": 92.31,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 66.7,
      "mauroc": 74.75,
-     "map": 79.25
+     "map": 79.25,
+     "internal_only": false
     },
     "ltf": {
      "acc": 79.2,
      "mauroc": 91.15,
-     "map": 92.42
+     "map": 92.42,
+     "internal_only": true
     },
     "mirror": {
      "acc": 89.0,
      "mauroc": 98.78,
-     "map": 98.49
+     "map": 98.49,
+     "internal_only": true
     },
     "vina": {
      "acc": 86.9,
      "mauroc": 96.09,
-     "map": 95.09
+     "map": 95.09,
+     "internal_only": true
     },
     "probe": {
      "acc": 81.7,
      "mauroc": 96.48,
-     "map": 95.49
+     "map": 95.49,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 69.6,
      "mauroc": 75.84,
-     "map": 78.12
+     "map": 78.12,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 84.0,
      "mauroc": 91.58,
-     "map": 91.24
+     "map": 91.24,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 87.8,
      "mauroc": 96.3,
-     "map": 95.33
+     "map": 95.33,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 86.5,
      "mauroc": 95.09,
-     "map": 94.3
+     "map": 94.3,
+     "internal_only": false
     },
     "npr": {
      "acc": 62.8,
      "mauroc": 64.91,
-     "map": 65.97
+     "map": 65.97,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1493,6 +2118,8 @@
     "mauroc": 90.53,
     "map": 89.21,
     "acc_pooled": 82.4,
+    "acc_pooled_distinct": 82.4,
+    "n_distinct_images": 1000,
     "acc_pooled_drop": 82.4,
     "n_images": 1000,
     "n_unparsed": 0,
@@ -1500,16 +2127,78 @@
     "mean_tokens": 503.1,
     "mean_seconds": 17.24
    },
+   "vlm_balance": {
+    "mean_real_acc": 95.2,
+    "mean_fake_acc": 69.6,
+    "lowest_fake_acc": {
+     "generator": "BlendFace",
+     "value": 0.0
+    },
+    "highest_fake_acc": {
+     "generator": "SocialRF",
+     "value": 100.0
+    },
+    "n_generators": 25,
+    "n_generators_fake_acc_below_50": 7,
+    "per_generator_fake_acc": {
+     "BLIP": 100.0,
+     "BlendFace": 0.0,
+     "CommunityAI": 100.0,
+     "DALLE-3": 100.0,
+     "E4S": 45.0,
+     "FLUX1-dev": 100.0,
+     "FaceSwap": 10.0,
+     "GLIDE": 60.0,
+     "IP_Adapter": 100.0,
+     "Imagen3": 100.0,
+     "InSwap": 0.0,
+     "Infinite_ID": 100.0,
+     "InstantID": 100.0,
+     "Midjourney": 100.0,
+     "PhotoMaker": 90.0,
+     "ProGAN": 95.0,
+     "R3GAN": 60.0,
+     "SD3": 100.0,
+     "SDXL": 100.0,
+     "SimSwap": 0.0,
+     "SocialRF": 100.0,
+     "StyleGAN-XL": 45.0,
+     "StyleGAN3": 50.0,
+     "StyleSwim": 60.0,
+     "WFIR": 25.0
+    }
+   },
    "limit": 20,
    "best_acc": {
     "detector": "mirror",
-    "value": 89.0
+    "value": 89.0,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 87.8,
+    "tied": [
+     "cure",
+     "omniaid_v1"
+    ]
    },
    "median_acc": 79.2,
    "vlm_rank_acc": 11,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 98.78
+    "value": 98.78,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "bfree",
+    "value": 97.54,
+    "tied": [
+     "bfree"
+    ]
    },
    "median_mauroc": 90.48,
    "vlm_rank_mauroc": 14
@@ -1522,137 +2211,164 @@
     "clip": {
      "acc": 48.6,
      "mauroc": 40.28,
-     "map": 41.42
+     "map": 41.42,
+     "internal_only": false
     },
     "cnn": {
      "acc": 49.8,
      "mauroc": 21.49,
-     "map": 34.95
+     "map": 34.95,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 52.99,
      "mauroc": 50.23,
-     "map": 53.85
+     "map": 53.85,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 69.26,
      "mauroc": 87.15,
-     "map": 87.14
+     "map": 87.14,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 68.48,
-     "map": 63.91
+     "map": 63.91,
+     "internal_only": false
     },
     "safe": {
      "acc": 65.87,
      "mauroc": 70.71,
-     "map": 69.78
+     "map": 69.78,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 49.3,
      "mauroc": 37.01,
-     "map": 42.68
+     "map": 42.68,
+     "internal_only": false
     },
     "aide": {
      "acc": 60.28,
      "mauroc": 68.13,
-     "map": 67.89
+     "map": 67.89,
+     "internal_only": false
     },
     "spai": {
      "acc": 73.85,
      "mauroc": 81.09,
-     "map": 81.07
+     "map": 81.07,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 43.21,
      "mauroc": 37.34,
-     "map": 44.3
+     "map": 44.3,
+     "internal_only": false
     },
     "bfree": {
      "acc": 51.8,
      "mauroc": 53.48,
-     "map": 54.07
+     "map": 54.07,
+     "internal_only": false
     },
     "effort": {
      "acc": 68.16,
      "mauroc": 64.14,
-     "map": 67.26
+     "map": 67.26,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 64.77,
      "mauroc": 73.5,
-     "map": 73.92
+     "map": 73.92,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 56.09,
      "mauroc": 58.33,
-     "map": 59.55
+     "map": 59.55,
+     "internal_only": false
     },
     "pgc": {
      "acc": 48.2,
      "mauroc": 49.51,
-     "map": 50.02
+     "map": 50.02,
+     "internal_only": false
     },
     "cure": {
      "acc": 76.84,
      "mauroc": 75.58,
-     "map": 81.14
+     "map": 81.14,
+     "internal_only": false
     },
     "dda": {
      "acc": 64.87,
      "mauroc": 64.62,
-     "map": 66.27
+     "map": 66.27,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 50.8,
      "mauroc": 49.57,
-     "map": 52.62
+     "map": 52.62,
+     "internal_only": false
     },
     "ltf": {
      "acc": 43.41,
      "mauroc": 39.25,
-     "map": 49.51
+     "map": 49.51,
+     "internal_only": true
     },
     "mirror": {
      "acc": 86.73,
      "mauroc": 91.69,
-     "map": 93.81
+     "map": 93.81,
+     "internal_only": true
     },
     "vina": {
      "acc": 88.72,
      "mauroc": 95.6,
-     "map": 95.78
+     "map": 95.78,
+     "internal_only": true
     },
     "probe": {
      "acc": 54.59,
      "mauroc": 60.79,
-     "map": 60.65
+     "map": 60.65,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 71.66,
      "mauroc": 78.89,
-     "map": 79.19
+     "map": 79.19,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 70.26,
      "mauroc": 76.89,
-     "map": 77.37
+     "map": 77.37,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 68.66,
      "mauroc": 75.7,
-     "map": 75.97
+     "map": 75.97,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 56.09,
      "mauroc": 51.55,
-     "map": 54.12
+     "map": 54.12,
+     "internal_only": false
     },
     "npr": {
      "acc": 63.57,
      "mauroc": 69.99,
-     "map": 67.42
+     "map": 67.42,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1661,6 +2377,8 @@
     "mauroc": 91.56,
     "map": 93.27,
     "acc_pooled": 89.92,
+    "acc_pooled_distinct": 89.92,
+    "n_distinct_images": 1002,
     "acc_pooled_drop": 90.1,
     "n_images": 1002,
     "n_unparsed": 2,
@@ -1668,16 +2386,55 @@
     "mean_tokens": 539.9,
     "mean_seconds": 17.96
    },
+   "vlm_balance": {
+    "mean_real_acc": 97.8,
+    "mean_fake_acc": 82.03,
+    "lowest_fake_acc": {
+     "generator": "redigital",
+     "value": 47.9
+    },
+    "highest_fake_acc": {
+     "generator": "original",
+     "value": 100.0
+    },
+    "n_generators": 3,
+    "n_generators_fake_acc_below_50": 1,
+    "per_generator_fake_acc": {
+     "original": 100.0,
+     "redigital": 47.9,
+     "transfer": 98.2
+    }
+   },
    "limit": 167,
    "best_acc": {
     "detector": "vina",
-    "value": 88.72
+    "value": 88.72,
+    "tied": [
+     "vina"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 76.84,
+    "tied": [
+     "cure"
+    ]
    },
    "median_acc": 60.28,
    "vlm_rank_acc": 1,
    "best_mauroc": {
     "detector": "vina",
-    "value": 95.6
+    "value": 95.6,
+    "tied": [
+     "vina"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "dinov3",
+    "value": 87.15,
+    "tied": [
+     "dinov3"
+    ]
    },
    "median_mauroc": 64.62,
    "vlm_rank_mauroc": 3
@@ -1690,137 +2447,164 @@
     "clip": {
      "acc": 50.4,
      "mauroc": 43.53,
-     "map": 64.29
+     "map": 64.29,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.0,
      "mauroc": 63.01,
-     "map": 70.54
+     "map": 70.54,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 50.0,
      "mauroc": 16.52,
-     "map": 47.66
+     "map": 47.66,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 57.9,
      "mauroc": 76.52,
-     "map": 84.32
+     "map": 84.32,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 20.21,
-     "map": 48.32
+     "map": 48.32,
+     "internal_only": false
     },
     "safe": {
      "acc": 50.13,
      "mauroc": 47.08,
-     "map": 63.87
+     "map": 63.87,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 50.0,
      "mauroc": 51.01,
-     "map": 65.61
+     "map": 65.61,
+     "internal_only": false
     },
     "aide": {
      "acc": 52.47,
      "mauroc": 61.84,
-     "map": 74.35
+     "map": 74.35,
+     "internal_only": false
     },
     "spai": {
      "acc": 59.69,
      "mauroc": 60.16,
-     "map": 75.09
+     "map": 75.09,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 60.66,
      "mauroc": 67.75,
-     "map": 79.17
+     "map": 79.17,
+     "internal_only": false
     },
     "bfree": {
      "acc": 92.2,
      "mauroc": 97.03,
-     "map": 98.64
+     "map": 98.64,
+     "internal_only": false
     },
     "effort": {
      "acc": 68.0,
      "mauroc": 94.88,
-     "map": 96.27
+     "map": 96.27,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 58.03,
      "mauroc": 87.1,
-     "map": 92.2
+     "map": 92.2,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 56.04,
      "mauroc": 73.85,
-     "map": 86.08
+     "map": 86.08,
+     "internal_only": false
     },
     "pgc": {
      "acc": 50.31,
      "mauroc": 59.21,
-     "map": 70.75
+     "map": 70.75,
+     "internal_only": false
     },
     "cure": {
      "acc": 91.43,
      "mauroc": 97.98,
-     "map": 98.94
+     "map": 98.94,
+     "internal_only": false
     },
     "dda": {
      "acc": 94.93,
      "mauroc": 98.82,
-     "map": 99.36
+     "map": 99.36,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 47.1,
      "mauroc": 63.9,
-     "map": 67.25
+     "map": 67.25,
+     "internal_only": false
     },
     "ltf": {
      "acc": 57.59,
      "mauroc": 79.68,
-     "map": 88.61
+     "map": 88.61,
+     "internal_only": true
     },
     "mirror": {
      "acc": 97.67,
      "mauroc": 99.5,
-     "map": 99.77
+     "map": 99.77,
+     "internal_only": true
     },
     "vina": {
      "acc": 87.36,
      "mauroc": 97.21,
-     "map": 98.45
+     "map": 98.45,
+     "internal_only": true
     },
     "probe": {
      "acc": 90.68,
      "mauroc": 95.56,
-     "map": 97.98
+     "map": 97.98,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 68.08,
      "mauroc": 78.6,
-     "map": 84.89
+     "map": 84.89,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 71.9,
      "mauroc": 88.17,
-     "map": 91.84
+     "map": 91.84,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 82.28,
      "mauroc": 94.61,
-     "map": 95.62
+     "map": 95.62,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 64.48,
      "mauroc": 77.81,
-     "map": 88.13
+     "map": 88.13,
+     "internal_only": false
     },
     "npr": {
      "acc": 44.28,
      "mauroc": 32.94,
-     "map": 53.65
+     "map": 53.65,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1829,6 +2613,8 @@
     "mauroc": 86.32,
     "map": 93.5,
     "acc_pooled": 76.72,
+    "acc_pooled_distinct": 76.72,
+    "n_distinct_images": 769,
     "acc_pooled_drop": 76.72,
     "n_images": 769,
     "n_unparsed": 0,
@@ -1836,16 +2622,53 @@
     "mean_tokens": 498.4,
     "mean_seconds": 17.28
    },
+   "vlm_balance": {
+    "mean_real_acc": 88.1,
+    "mean_fake_acc": 70.6,
+    "lowest_fake_acc": {
+     "generator": "viral",
+     "value": 70.6
+    },
+    "highest_fake_acc": {
+     "generator": "viral",
+     "value": 70.6
+    },
+    "n_generators": 1,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "viral": 70.6
+    }
+   },
    "limit": 500,
    "best_acc": {
     "detector": "mirror",
-    "value": 97.67
+    "value": 97.67,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "dda",
+    "value": 94.93,
+    "tied": [
+     "dda"
+    ]
    },
    "median_acc": 58.03,
    "vlm_rank_acc": 8,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.5
+    "value": 99.5,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "dda",
+    "value": 98.82,
+    "tied": [
+     "dda"
+    ]
    },
    "median_mauroc": 76.52,
    "vlm_rank_mauroc": 11
@@ -1858,137 +2681,164 @@
     "clip": {
      "acc": 60.0,
      "mauroc": 72.73,
-     "map": 80.08
+     "map": 80.08,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.82,
      "mauroc": 68.0,
-     "map": 73.6
+     "map": 73.6,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 54.64,
      "mauroc": 69.89,
-     "map": 75.92
+     "map": 75.92,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 73.45,
      "mauroc": 85.31,
-     "map": 88.13
+     "map": 88.13,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 52.0,
      "mauroc": 81.27,
-     "map": 84.35
+     "map": 84.35,
+     "internal_only": false
     },
     "safe": {
      "acc": 98.18,
      "mauroc": 99.85,
-     "map": 99.92
+     "map": 99.92,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 68.64,
      "mauroc": 82.76,
-     "map": 87.27
+     "map": 87.27,
+     "internal_only": false
     },
     "aide": {
      "acc": 86.55,
      "mauroc": 96.87,
-     "map": 97.53
+     "map": 97.53,
+     "internal_only": false
     },
     "spai": {
      "acc": 82.36,
      "mauroc": 91.02,
-     "map": 92.27
+     "map": 92.27,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 89.45,
      "mauroc": 95.13,
-     "map": 95.54
+     "map": 95.54,
+     "internal_only": false
     },
     "bfree": {
      "acc": 91.64,
      "mauroc": 98.29,
-     "map": 98.75
+     "map": 98.75,
+     "internal_only": false
     },
     "effort": {
      "acc": 92.55,
      "mauroc": 98.65,
-     "map": 98.94
+     "map": 98.94,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 65.18,
      "mauroc": 65.2,
-     "map": 73.22
+     "map": 73.22,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 89.27,
      "mauroc": 95.49,
-     "map": 96.34
+     "map": 96.34,
+     "internal_only": false
     },
     "pgc": {
      "acc": 84.55,
      "mauroc": 98.15,
-     "map": 98.52
+     "map": 98.52,
+     "internal_only": false
     },
     "cure": {
      "acc": 96.64,
      "mauroc": 97.82,
-     "map": 98.72
+     "map": 98.72,
+     "internal_only": false
     },
     "dda": {
      "acc": 93.82,
      "mauroc": 98.8,
-     "map": 99.12
+     "map": 99.12,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 63.91,
      "mauroc": 77.49,
-     "map": 83.72
+     "map": 83.72,
+     "internal_only": false
     },
     "ltf": {
      "acc": 93.64,
      "mauroc": 98.8,
-     "map": 98.99
+     "map": 98.99,
+     "internal_only": true
     },
     "mirror": {
      "acc": 99.73,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "vina": {
      "acc": 98.55,
      "mauroc": 99.71,
-     "map": 99.77
+     "map": 99.77,
+     "internal_only": true
     },
     "probe": {
      "acc": 98.36,
      "mauroc": 99.64,
-     "map": 99.73
+     "map": 99.73,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 86.82,
      "mauroc": 94.04,
-     "map": 95.31
+     "map": 95.31,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 93.82,
      "mauroc": 97.85,
-     "map": 98.39
+     "map": 98.39,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 93.91,
      "mauroc": 97.71,
-     "map": 97.49
+     "map": 97.49,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 92.82,
      "mauroc": 96.47,
-     "map": 96.59
+     "map": 96.59,
+     "internal_only": false
     },
     "npr": {
      "acc": 76.09,
      "mauroc": 82.04,
-     "map": 80.73
+     "map": 80.73,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -1997,6 +2847,8 @@
     "mauroc": 98.0,
     "map": 98.5,
     "acc_pooled": 93.82,
+    "acc_pooled_distinct": 93.82,
+    "n_distinct_images": 1100,
     "acc_pooled_drop": 93.82,
     "n_images": 1100,
     "n_unparsed": 0,
@@ -2004,16 +2856,162 @@
     "mean_tokens": 505.7,
     "mean_seconds": 17.38
    },
+   "vlm_balance": {
+    "mean_real_acc": 96.0,
+    "mean_fake_acc": 91.64,
+    "lowest_fake_acc": {
+     "generator": "cc3m__CompVis@ldm-text2im-large-256",
+     "value": 20.0
+    },
+    "highest_fake_acc": {
+     "generator": "textcaps__stabilityai@stable-diffusion-xl-base-1.0",
+     "value": 100.0
+    },
+    "n_generators": 110,
+    "n_generators_fake_acc_below_50": 3,
+    "per_generator_fake_acc": {
+     "cc3m__CompVis@ldm-text2im-large-256": 20.0,
+     "cc3m__CompVis@stable-diffusion-v1-4": 80.0,
+     "cc3m__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+     "cc3m__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+     "cc3m__black-forest-labs@FLUX.1-dev": 100.0,
+     "cc3m__black-forest-labs@FLUX.1-schnell": 80.0,
+     "cc3m__latent-consistency@lcm-lora-sdv1-5": 100.0,
+     "cc3m__latent-consistency@lcm-lora-sdxl": 100.0,
+     "cc3m__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+     "cc3m__playgroundai@playground-v2-256px-base": 60.0,
+     "cc3m__playgroundai@playground-v2-512px-base": 80.0,
+     "cc3m__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+     "cc3m__runwayml@stable-diffusion-v1-5": 80.0,
+     "cc3m__segmind@SSD-1B": 100.0,
+     "cc3m__segmind@SegMoE-SD-4x2-v0": 100.0,
+     "cc3m__segmind@small-sd": 100.0,
+     "cc3m__segmind@tiny-sd": 100.0,
+     "cc3m__stabilityai@sdxl-turbo": 100.0,
+     "cc3m__stabilityai@stable-diffusion-2": 100.0,
+     "cc3m__stabilityai@stable-diffusion-2-1": 100.0,
+     "cc3m__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+     "cc3m__stabilityai@stable-diffusion-xl-base-1.0": 80.0,
+     "flickr__CompVis@ldm-text2im-large-256": 60.0,
+     "flickr__CompVis@stable-diffusion-v1-4": 100.0,
+     "flickr__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+     "flickr__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+     "flickr__black-forest-labs@FLUX.1-dev": 100.0,
+     "flickr__black-forest-labs@FLUX.1-schnell": 100.0,
+     "flickr__latent-consistency@lcm-lora-sdv1-5": 100.0,
+     "flickr__latent-consistency@lcm-lora-sdxl": 100.0,
+     "flickr__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+     "flickr__playgroundai@playground-v2-256px-base": 60.0,
+     "flickr__playgroundai@playground-v2-512px-base": 100.0,
+     "flickr__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+     "flickr__runwayml@stable-diffusion-v1-5": 100.0,
+     "flickr__segmind@SSD-1B": 100.0,
+     "flickr__segmind@SegMoE-SD-4x2-v0": 100.0,
+     "flickr__segmind@small-sd": 100.0,
+     "flickr__segmind@tiny-sd": 100.0,
+     "flickr__stabilityai@sdxl-turbo": 100.0,
+     "flickr__stabilityai@stable-diffusion-2": 100.0,
+     "flickr__stabilityai@stable-diffusion-2-1": 100.0,
+     "flickr__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+     "flickr__stabilityai@stable-diffusion-xl-base-1.0": 80.0,
+     "mscoco__CompVis@ldm-text2im-large-256": 60.0,
+     "mscoco__CompVis@stable-diffusion-v1-4": 100.0,
+     "mscoco__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+     "mscoco__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+     "mscoco__black-forest-labs@FLUX.1-dev": 100.0,
+     "mscoco__black-forest-labs@FLUX.1-schnell": 100.0,
+     "mscoco__latent-consistency@lcm-lora-sdv1-5": 100.0,
+     "mscoco__latent-consistency@lcm-lora-sdxl": 100.0,
+     "mscoco__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+     "mscoco__playgroundai@playground-v2-256px-base": 60.0,
+     "mscoco__playgroundai@playground-v2-512px-base": 100.0,
+     "mscoco__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+     "mscoco__runwayml@stable-diffusion-v1-5": 100.0,
+     "mscoco__segmind@SSD-1B": 100.0,
+     "mscoco__segmind@SegMoE-SD-4x2-v0": 100.0,
+     "mscoco__segmind@small-sd": 60.0,
+     "mscoco__segmind@tiny-sd": 100.0,
+     "mscoco__stabilityai@sdxl-turbo": 80.0,
+     "mscoco__stabilityai@stable-diffusion-2": 100.0,
+     "mscoco__stabilityai@stable-diffusion-2-1": 100.0,
+     "mscoco__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+     "mscoco__stabilityai@stable-diffusion-xl-base-1.0": 100.0,
+     "sbu__CompVis@ldm-text2im-large-256": 40.0,
+     "sbu__CompVis@stable-diffusion-v1-4": 80.0,
+     "sbu__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+     "sbu__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+     "sbu__black-forest-labs@FLUX.1-dev": 80.0,
+     "sbu__black-forest-labs@FLUX.1-schnell": 100.0,
+     "sbu__latent-consistency@lcm-lora-sdv1-5": 100.0,
+     "sbu__latent-consistency@lcm-lora-sdxl": 100.0,
+     "sbu__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+     "sbu__playgroundai@playground-v2-256px-base": 40.0,
+     "sbu__playgroundai@playground-v2-512px-base": 80.0,
+     "sbu__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+     "sbu__runwayml@stable-diffusion-v1-5": 80.0,
+     "sbu__segmind@SSD-1B": 100.0,
+     "sbu__segmind@SegMoE-SD-4x2-v0": 100.0,
+     "sbu__segmind@small-sd": 100.0,
+     "sbu__segmind@tiny-sd": 100.0,
+     "sbu__stabilityai@sdxl-turbo": 80.0,
+     "sbu__stabilityai@stable-diffusion-2": 100.0,
+     "sbu__stabilityai@stable-diffusion-2-1": 100.0,
+     "sbu__stabilityai@stable-diffusion-3-medium-diffusers": 80.0,
+     "sbu__stabilityai@stable-diffusion-xl-base-1.0": 80.0,
+     "textcaps__CompVis@ldm-text2im-large-256": 60.0,
+     "textcaps__CompVis@stable-diffusion-v1-4": 80.0,
+     "textcaps__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+     "textcaps__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+     "textcaps__black-forest-labs@FLUX.1-dev": 100.0,
+     "textcaps__black-forest-labs@FLUX.1-schnell": 100.0,
+     "textcaps__latent-consistency@lcm-lora-sdv1-5": 100.0,
+     "textcaps__latent-consistency@lcm-lora-sdxl": 100.0,
+     "textcaps__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+     "textcaps__playgroundai@playground-v2-256px-base": 60.0,
+     "textcaps__playgroundai@playground-v2-512px-base": 80.0,
+     "textcaps__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+     "textcaps__runwayml@stable-diffusion-v1-5": 80.0,
+     "textcaps__segmind@SSD-1B": 100.0,
+     "textcaps__segmind@SegMoE-SD-4x2-v0": 100.0,
+     "textcaps__segmind@small-sd": 100.0,
+     "textcaps__segmind@tiny-sd": 100.0,
+     "textcaps__stabilityai@sdxl-turbo": 80.0,
+     "textcaps__stabilityai@stable-diffusion-2": 80.0,
+     "textcaps__stabilityai@stable-diffusion-2-1": 80.0,
+     "textcaps__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+     "textcaps__stabilityai@stable-diffusion-xl-base-1.0": 100.0
+    }
+   },
    "limit": 5,
    "best_acc": {
     "detector": "mirror",
-    "value": 99.73
+    "value": 99.73,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "safe",
+    "value": 98.18,
+    "tied": [
+     "safe"
+    ]
    },
    "median_acc": 89.27,
    "vlm_rank_acc": 7,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 100.0
+    "value": 100.0,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "safe",
+    "value": 99.85,
+    "tied": [
+     "safe"
+    ]
    },
    "median_mauroc": 96.47,
    "vlm_rank_mauroc": 10
@@ -2026,137 +3024,164 @@
     "clip": {
      "acc": 50.6,
      "mauroc": 46.46,
-     "map": 50.67
+     "map": 50.67,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.0,
      "mauroc": 48.53,
-     "map": 49.16
+     "map": 49.16,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 50.4,
      "mauroc": 51.99,
-     "map": 52.8
+     "map": 52.8,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 64.77,
      "mauroc": 79.42,
-     "map": 78.46
+     "map": 78.46,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 60.59,
-     "map": 59.25
+     "map": 59.25,
+     "internal_only": false
     },
     "safe": {
      "acc": 99.1,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 60.48,
      "mauroc": 66.87,
-     "map": 70.9
+     "map": 70.9,
+     "internal_only": false
     },
     "aide": {
      "acc": 84.83,
      "mauroc": 99.49,
-     "map": 99.53
+     "map": 99.53,
+     "internal_only": false
     },
     "spai": {
      "acc": 95.01,
      "mauroc": 99.28,
-     "map": 99.26
+     "map": 99.26,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 88.92,
      "mauroc": 98.47,
-     "map": 98.64
+     "map": 98.64,
+     "internal_only": false
     },
     "bfree": {
      "acc": 95.81,
      "mauroc": 99.38,
-     "map": 99.36
+     "map": 99.36,
+     "internal_only": false
     },
     "effort": {
      "acc": 94.31,
      "mauroc": 99.49,
-     "map": 99.51
+     "map": 99.51,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 69.46,
      "mauroc": 82.99,
-     "map": 83.7
+     "map": 83.7,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 97.11,
      "mauroc": 99.58,
-     "map": 99.57
+     "map": 99.57,
+     "internal_only": false
     },
     "pgc": {
      "acc": 61.18,
      "mauroc": 99.03,
-     "map": 97.65
+     "map": 97.65,
+     "internal_only": false
     },
     "cure": {
      "acc": 93.01,
      "mauroc": 97.98,
-     "map": 98.56
+     "map": 98.56,
+     "internal_only": false
     },
     "dda": {
      "acc": 97.8,
      "mauroc": 99.84,
-     "map": 99.85
+     "map": 99.85,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 55.69,
      "mauroc": 69.91,
-     "map": 72.03
+     "map": 72.03,
+     "internal_only": false
     },
     "ltf": {
      "acc": 97.9,
      "mauroc": 99.73,
-     "map": 99.67
+     "map": 99.67,
+     "internal_only": true
     },
     "mirror": {
      "acc": 100.0,
      "mauroc": 100.0,
-     "map": 100.0
+     "map": 100.0,
+     "internal_only": true
     },
     "vina": {
      "acc": 97.81,
      "mauroc": 99.94,
-     "map": 99.94
+     "map": 99.94,
+     "internal_only": true
     },
     "probe": {
      "acc": 97.5,
      "mauroc": 99.92,
-     "map": 99.93
+     "map": 99.93,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 94.31,
      "mauroc": 99.71,
-     "map": 99.71
+     "map": 99.71,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 94.91,
      "mauroc": 99.31,
-     "map": 99.33
+     "map": 99.33,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 98.8,
      "mauroc": 99.89,
-     "map": 99.88
+     "map": 99.88,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 95.01,
      "mauroc": 98.76,
-     "map": 98.02
+     "map": 98.02,
+     "internal_only": false
     },
     "npr": {
      "acc": 79.34,
      "mauroc": 92.65,
-     "map": 87.56
+     "map": 87.56,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -2165,6 +3190,8 @@
     "mauroc": 99.9,
     "map": 99.87,
     "acc_pooled": 99.5,
+    "acc_pooled_distinct": 99.5,
+    "n_distinct_images": 1002,
     "acc_pooled_drop": 99.5,
     "n_images": 1002,
     "n_unparsed": 0,
@@ -2172,16 +3199,56 @@
     "mean_tokens": 507.8,
     "mean_seconds": 18.27
    },
+   "vlm_balance": {
+    "mean_real_acc": 99.8,
+    "mean_fake_acc": 99.2,
+    "lowest_fake_acc": {
+     "generator": "FLUX.1-schnell",
+     "value": 98.8
+    },
+    "highest_fake_acc": {
+     "generator": "PixArt-Sigma-XL-2-1024-MS",
+     "value": 100.0
+    },
+    "n_generators": 3,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "FLUX.1-schnell": 98.8,
+     "PixArt-Sigma-XL-2-1024-MS": 100.0,
+     "stable-diffusion-3-medium-diffusers": 98.8
+    }
+   },
    "limit": 167,
    "best_acc": {
     "detector": "mirror",
-    "value": 100.0
+    "value": 100.0,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "safe",
+    "value": 99.1,
+    "tied": [
+     "safe"
+    ]
    },
    "median_acc": 94.31,
    "vlm_rank_acc": 2,
    "best_mauroc": {
+    "detector": "mirror",
+    "value": 100.0,
+    "tied": [
+     "mirror",
+     "safe"
+    ]
+   },
+   "best_public_mauroc": {
     "detector": "safe",
-    "value": 100.0
+    "value": 100.0,
+    "tied": [
+     "safe"
+    ]
    },
    "median_mauroc": 99.28,
    "vlm_rank_mauroc": 5
@@ -2194,137 +3261,164 @@
     "clip": {
      "acc": 60.52,
      "mauroc": 70.95,
-     "map": 70.36
+     "map": 70.36,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.1,
      "mauroc": 54.54,
-     "map": 54.36
+     "map": 54.36,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 56.95,
      "mauroc": 73.57,
-     "map": 70.86
+     "map": 70.86,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 69.94,
      "mauroc": 79.83,
-     "map": 80.54
+     "map": 80.54,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 57.24,
      "mauroc": 89.02,
-     "map": 89.46
+     "map": 89.46,
+     "internal_only": false
     },
     "safe": {
      "acc": 95.64,
      "mauroc": 99.02,
-     "map": 99.35
+     "map": 99.35,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 68.06,
      "mauroc": 80.18,
-     "map": 79.5
+     "map": 79.5,
+     "internal_only": false
     },
     "aide": {
      "acc": 79.96,
      "mauroc": 96.12,
-     "map": 97.15
+     "map": 97.15,
+     "internal_only": false
     },
     "spai": {
      "acc": 91.87,
      "mauroc": 97.79,
-     "map": 97.71
+     "map": 97.71,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 83.04,
      "mauroc": 94.8,
-     "map": 94.2
+     "map": 94.2,
+     "internal_only": false
     },
     "bfree": {
      "acc": 86.71,
      "mauroc": 96.12,
-     "map": 96.05
+     "map": 96.05,
+     "internal_only": false
     },
     "effort": {
      "acc": 93.95,
      "mauroc": 99.7,
-     "map": 99.71
+     "map": 99.71,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 55.56,
      "mauroc": 57.0,
-     "map": 58.06
+     "map": 58.06,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 73.21,
      "mauroc": 86.26,
-     "map": 84.22
+     "map": 84.22,
+     "internal_only": false
     },
     "pgc": {
      "acc": 72.72,
      "mauroc": 99.08,
-     "map": 98.78
+     "map": 98.78,
+     "internal_only": false
     },
     "cure": {
      "acc": 87.8,
      "mauroc": 98.09,
-     "map": 98.39
+     "map": 98.39,
+     "internal_only": false
     },
     "dda": {
      "acc": 81.25,
      "mauroc": 93.25,
-     "map": 92.57
+     "map": 92.57,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 83.73,
      "mauroc": 94.73,
-     "map": 94.17
+     "map": 94.17,
+     "internal_only": false
     },
     "ltf": {
      "acc": 96.93,
      "mauroc": 99.74,
-     "map": 99.73
+     "map": 99.73,
+     "internal_only": true
     },
     "mirror": {
      "acc": 99.5,
      "mauroc": 99.76,
-     "map": 99.85
+     "map": 99.85,
+     "internal_only": true
     },
     "vina": {
      "acc": 93.55,
      "mauroc": 98.07,
-     "map": 98.6
+     "map": 98.6,
+     "internal_only": true
     },
     "probe": {
      "acc": 94.84,
      "mauroc": 99.42,
-     "map": 99.38
+     "map": 99.38,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 74.8,
      "mauroc": 88.08,
-     "map": 88.26
+     "map": 88.26,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 90.08,
      "mauroc": 96.68,
-     "map": 96.99
+     "map": 96.99,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 97.72,
      "mauroc": 99.67,
-     "map": 99.67
+     "map": 99.67,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 96.93,
      "mauroc": 99.45,
-     "map": 99.35
+     "map": 99.35,
+     "internal_only": false
     },
     "npr": {
      "acc": 77.38,
      "mauroc": 87.01,
-     "map": 81.85
+     "map": 81.85,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -2333,6 +3427,8 @@
     "mauroc": 84.49,
     "map": 85.5,
     "acc_pooled": 74.4,
+    "acc_pooled_distinct": 74.4,
+    "n_distinct_images": 1008,
     "acc_pooled_drop": 74.4,
     "n_images": 1008,
     "n_unparsed": 0,
@@ -2340,16 +3436,59 @@
     "mean_tokens": 509.3,
     "mean_seconds": 16.77
    },
+   "vlm_balance": {
+    "mean_real_acc": 99.4,
+    "mean_fake_acc": 49.4,
+    "lowest_fake_acc": {
+     "generator": "VAR",
+     "value": 8.33
+    },
+    "highest_fake_acc": {
+     "generator": "Infinity",
+     "value": 100.0
+    },
+    "n_generators": 7,
+    "n_generators_fake_acc_below_50": 4,
+    "per_generator_fake_acc": {
+     "Infinity": 100.0,
+     "Janus_Pro": 91.67,
+     "LlamaGen": 23.61,
+     "Open_MAGVIT2": 12.5,
+     "RAR": 15.28,
+     "Switti": 94.44,
+     "VAR": 8.33
+    }
+   },
    "limit": 72,
    "best_acc": {
     "detector": "mirror",
-    "value": 99.5
+    "value": 99.5,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "omniaid_v1",
+    "value": 97.72,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_acc": 83.04,
    "vlm_rank_acc": 19,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.76
+    "value": 99.76,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "effort",
+    "value": 99.7,
+    "tied": [
+     "effort"
+    ]
    },
    "median_mauroc": 96.12,
    "vlm_rank_mauroc": 22
@@ -2362,137 +3501,164 @@
     "clip": {
      "acc": 50.0,
      "mauroc": 39.65,
-     "map": 47.05
+     "map": 47.05,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.0,
      "mauroc": 44.39,
-     "map": 46.59
+     "map": 46.59,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 49.11,
      "mauroc": 45.93,
-     "map": 49.01
+     "map": 49.01,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 51.49,
      "mauroc": 56.67,
-     "map": 60.34
+     "map": 60.34,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 48.65,
-     "map": 51.46
+     "map": 51.46,
+     "internal_only": false
     },
     "safe": {
      "acc": 49.5,
      "mauroc": 51.95,
-     "map": 53.86
+     "map": 53.86,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 48.81,
      "mauroc": 49.75,
-     "map": 55.03
+     "map": 55.03,
+     "internal_only": false
     },
     "aide": {
      "acc": 55.75,
      "mauroc": 77.52,
-     "map": 76.94
+     "map": 76.94,
+     "internal_only": false
     },
     "spai": {
      "acc": 63.49,
      "mauroc": 74.21,
-     "map": 69.45
+     "map": 69.45,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 75.1,
      "mauroc": 81.89,
-     "map": 80.54
+     "map": 80.54,
+     "internal_only": false
     },
     "bfree": {
      "acc": 69.05,
      "mauroc": 72.92,
-     "map": 77.75
+     "map": 77.75,
+     "internal_only": false
     },
     "effort": {
      "acc": 50.89,
      "mauroc": 70.7,
-     "map": 71.36
+     "map": 71.36,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 61.71,
      "mauroc": 69.38,
-     "map": 69.65
+     "map": 69.65,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 73.31,
      "mauroc": 78.0,
-     "map": 78.94
+     "map": 78.94,
+     "internal_only": false
     },
     "pgc": {
      "acc": 49.4,
      "mauroc": 44.16,
-     "map": 49.73
+     "map": 49.73,
+     "internal_only": false
     },
     "cure": {
      "acc": 78.17,
      "mauroc": 83.89,
-     "map": 85.09
+     "map": 85.09,
+     "internal_only": false
     },
     "dda": {
      "acc": 69.64,
      "mauroc": 80.6,
-     "map": 83.06
+     "map": 83.06,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 49.51,
      "mauroc": 44.7,
-     "map": 50.35
+     "map": 50.35,
+     "internal_only": false
     },
     "ltf": {
      "acc": 65.18,
      "mauroc": 76.72,
-     "map": 76.55
+     "map": 76.55,
+     "internal_only": true
     },
     "mirror": {
      "acc": 80.75,
      "mauroc": 88.56,
-     "map": 90.81
+     "map": 90.81,
+     "internal_only": true
     },
     "vina": {
      "acc": 80.75,
      "mauroc": 88.68,
-     "map": 91.26
+     "map": 91.26,
+     "internal_only": true
     },
     "probe": {
      "acc": 73.21,
      "mauroc": 85.34,
-     "map": 85.22
+     "map": 85.22,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 78.77,
      "mauroc": 89.62,
-     "map": 88.85
+     "map": 88.85,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 62.4,
      "mauroc": 83.81,
-     "map": 85.65
+     "map": 85.65,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 61.11,
      "mauroc": 89.81,
-     "map": 90.05
+     "map": 90.05,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 69.15,
      "mauroc": 79.13,
-     "map": 79.5
+     "map": 79.5,
+     "internal_only": false
     },
     "npr": {
      "acc": 50.89,
      "mauroc": 65.2,
-     "map": 63.64
+     "map": 63.64,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -2501,6 +3667,8 @@
     "mauroc": 85.08,
     "map": 87.57,
     "acc_pooled": 82.74,
+    "acc_pooled_distinct": 82.74,
+    "n_distinct_images": 1008,
     "acc_pooled_drop": 82.74,
     "n_images": 1008,
     "n_unparsed": 0,
@@ -2508,16 +3676,60 @@
     "mean_tokens": 517.6,
     "mean_seconds": 20.57
    },
+   "vlm_balance": {
+    "mean_real_acc": 96.03,
+    "mean_fake_acc": 69.44,
+    "lowest_fake_acc": {
+     "generator": "i2i",
+     "value": 22.22
+    },
+    "highest_fake_acc": {
+     "generator": "QwenImage",
+     "value": 97.22
+    },
+    "n_generators": 7,
+    "n_generators_fake_acc_below_50": 2,
+    "per_generator_fake_acc": {
+     "Flux1": 94.44,
+     "Hunyuan3": 86.11,
+     "NanoBanana": 91.67,
+     "QwenImage": 97.22,
+     "SDv3.5": 62.5,
+     "Seedream4": 31.94,
+     "i2i": 22.22
+    }
+   },
    "limit": 72,
    "best_acc": {
-    "detector": "vina",
-    "value": 80.75
+    "detector": "mirror",
+    "value": 80.75,
+    "tied": [
+     "mirror",
+     "vina"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 78.17,
+    "tied": [
+     "cure"
+    ]
    },
    "median_acc": 61.71,
    "vlm_rank_acc": 1,
    "best_mauroc": {
     "detector": "omniaid_v1",
-    "value": 89.81
+    "value": 89.81,
+    "tied": [
+     "omniaid_v1"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "omniaid_v1",
+    "value": 89.81,
+    "tied": [
+     "omniaid_v1"
+    ]
    },
    "median_mauroc": 74.21,
    "vlm_rank_mauroc": 6
@@ -2530,137 +3742,164 @@
     "clip": {
      "acc": 50.7,
      "mauroc": 46.78,
-     "map": 50.26
+     "map": 50.26,
+     "internal_only": false
     },
     "cnn": {
      "acc": 50.1,
      "mauroc": 53.73,
-     "map": 53.5
+     "map": 53.5,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 50.3,
      "mauroc": 51.24,
-     "map": 52.14
+     "map": 52.14,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 64.77,
      "mauroc": 79.53,
-     "map": 78.63
+     "map": 78.63,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 50.0,
      "mauroc": 61.13,
-     "map": 59.93
+     "map": 59.93,
+     "internal_only": false
     },
     "safe": {
      "acc": 50.2,
      "mauroc": 52.35,
-     "map": 54.3
+     "map": 54.3,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 54.59,
      "mauroc": 63.0,
-     "map": 64.72
+     "map": 64.72,
+     "internal_only": false
     },
     "aide": {
      "acc": 57.09,
      "mauroc": 87.77,
-     "map": 90.99
+     "map": 90.99,
+     "internal_only": false
     },
     "spai": {
      "acc": 91.42,
      "mauroc": 98.01,
-     "map": 97.97
+     "map": 97.97,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 77.75,
      "mauroc": 95.88,
-     "map": 96.07
+     "map": 96.07,
+     "internal_only": false
     },
     "bfree": {
      "acc": 95.41,
      "mauroc": 99.24,
-     "map": 99.22
+     "map": 99.22,
+     "internal_only": false
     },
     "effort": {
      "acc": 84.83,
      "mauroc": 98.63,
-     "map": 98.62
+     "map": 98.62,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 67.97,
      "mauroc": 79.09,
-     "map": 79.23
+     "map": 79.23,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 96.51,
      "mauroc": 99.46,
-     "map": 99.43
+     "map": 99.43,
+     "internal_only": false
     },
     "pgc": {
      "acc": 51.0,
      "mauroc": 70.98,
-     "map": 70.59
+     "map": 70.59,
+     "internal_only": false
     },
     "cure": {
      "acc": 93.41,
      "mauroc": 97.78,
-     "map": 98.56
+     "map": 98.56,
+     "internal_only": false
     },
     "dda": {
      "acc": 96.6,
      "mauroc": 99.63,
-     "map": 99.66
+     "map": 99.66,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 54.89,
      "mauroc": 65.4,
-     "map": 67.51
+     "map": 67.51,
+     "internal_only": false
     },
     "ltf": {
      "acc": 93.11,
      "mauroc": 98.06,
-     "map": 97.7
+     "map": 97.7,
+     "internal_only": true
     },
     "mirror": {
      "acc": 99.5,
      "mauroc": 99.99,
-     "map": 99.99
+     "map": 99.99,
+     "internal_only": true
     },
     "vina": {
      "acc": 95.81,
      "mauroc": 99.69,
-     "map": 99.69
+     "map": 99.69,
+     "internal_only": true
     },
     "probe": {
      "acc": 96.81,
      "mauroc": 99.73,
-     "map": 99.69
+     "map": 99.69,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 92.12,
      "mauroc": 98.57,
-     "map": 98.54
+     "map": 98.54,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 80.74,
      "mauroc": 89.36,
-     "map": 90.19
+     "map": 90.19,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 90.82,
      "mauroc": 96.92,
-     "map": 95.98
+     "map": 95.98,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 90.72,
      "mauroc": 96.31,
-     "map": 95.28
+     "map": 95.28,
+     "internal_only": false
     },
     "npr": {
      "acc": 66.07,
      "mauroc": 68.39,
-     "map": 68.01
+     "map": 68.01,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -2669,6 +3908,8 @@
     "mauroc": 99.96,
     "map": 99.95,
     "acc_pooled": 99.6,
+    "acc_pooled_distinct": 99.6,
+    "n_distinct_images": 1002,
     "acc_pooled_drop": 99.6,
     "n_images": 1002,
     "n_unparsed": 0,
@@ -2676,16 +3917,55 @@
     "mean_tokens": 505.7,
     "mean_seconds": 17.83
    },
+   "vlm_balance": {
+    "mean_real_acc": 99.4,
+    "mean_fake_acc": 99.8,
+    "lowest_fake_acc": {
+     "generator": "FLUX.1-schnell",
+     "value": 99.4
+    },
+    "highest_fake_acc": {
+     "generator": "stable-diffusion-3-medium-diffusers",
+     "value": 100.0
+    },
+    "n_generators": 3,
+    "n_generators_fake_acc_below_50": 0,
+    "per_generator_fake_acc": {
+     "FLUX.1-schnell": 99.4,
+     "PixArt-Sigma-XL-2-1024-MS": 100.0,
+     "stable-diffusion-3-medium-diffusers": 100.0
+    }
+   },
    "limit": 167,
    "best_acc": {
     "detector": "mirror",
-    "value": 99.5
+    "value": 99.5,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "dda",
+    "value": 96.6,
+    "tied": [
+     "dda"
+    ]
    },
    "median_acc": 80.74,
    "vlm_rank_acc": 1,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.99
+    "value": 99.99,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "dda",
+    "value": 99.63,
+    "tied": [
+     "dda"
+    ]
    },
    "median_mauroc": 95.88,
    "vlm_rank_mauroc": 2
@@ -2698,137 +3978,164 @@
     "clip": {
      "acc": 82.74,
      "mauroc": 93.3,
-     "map": 93.61
+     "map": 93.61,
+     "internal_only": false
     },
     "cnn": {
      "acc": 51.29,
      "mauroc": 75.88,
-     "map": 73.96
+     "map": 73.96,
+     "internal_only": false
     },
     "dinov2": {
      "acc": 83.43,
      "mauroc": 90.77,
-     "map": 91.52
+     "map": 91.52,
+     "internal_only": false
     },
     "dinov3": {
      "acc": 85.42,
      "mauroc": 96.21,
-     "map": 97.05
+     "map": 97.05,
+     "internal_only": false
     },
     "adapted_dino": {
      "acc": 73.81,
      "mauroc": 98.14,
-     "map": 98.34
+     "map": 98.34,
+     "internal_only": false
     },
     "safe": {
      "acc": 48.02,
      "mauroc": 41.17,
-     "map": 45.23
+     "map": 45.23,
+     "internal_only": false
     },
     "fat_former": {
      "acc": 71.92,
      "mauroc": 87.97,
-     "map": 90.39
+     "map": 90.39,
+     "internal_only": false
     },
     "aide": {
      "acc": 54.66,
      "mauroc": 69.43,
-     "map": 70.54
+     "map": 70.54,
+     "internal_only": false
     },
     "spai": {
      "acc": 83.43,
      "mauroc": 93.06,
-     "map": 91.89
+     "map": 91.89,
+     "internal_only": false
     },
     "vib_net": {
      "acc": 71.23,
      "mauroc": 86.7,
-     "map": 89.13
+     "map": 89.13,
+     "internal_only": false
     },
     "bfree": {
      "acc": 91.86,
      "mauroc": 97.27,
-     "map": 97.65
+     "map": 97.65,
+     "internal_only": false
     },
     "effort": {
      "acc": 62.3,
      "mauroc": 88.69,
-     "map": 89.81
+     "map": 89.81,
+     "internal_only": false
     },
     "moejepa": {
      "acc": 56.84,
      "mauroc": 60.4,
-     "map": 62.39
+     "map": 62.39,
+     "internal_only": false
     },
     "co_spy": {
      "acc": 70.04,
      "mauroc": 87.46,
-     "map": 86.92
+     "map": 86.92,
+     "internal_only": false
     },
     "pgc": {
      "acc": 77.88,
      "mauroc": 88.27,
-     "map": 90.68
+     "map": 90.68,
+     "internal_only": false
     },
     "cure": {
      "acc": 92.56,
      "mauroc": 98.34,
-     "map": 98.74
+     "map": 98.74,
+     "internal_only": false
     },
     "dda": {
      "acc": 81.94,
      "mauroc": 92.92,
-     "map": 94.23
+     "map": 94.23,
+     "internal_only": false
     },
     "d3qe": {
      "acc": 80.85,
      "mauroc": 87.82,
-     "map": 88.84
+     "map": 88.84,
+     "internal_only": false
     },
     "ltf": {
      "acc": 90.67,
      "mauroc": 98.21,
-     "map": 98.36
+     "map": 98.36,
+     "internal_only": true
     },
     "mirror": {
      "acc": 97.92,
      "mauroc": 99.97,
-     "map": 99.98
+     "map": 99.98,
+     "internal_only": true
     },
     "vina": {
      "acc": 96.43,
      "mauroc": 98.91,
-     "map": 99.19
+     "map": 99.19,
+     "internal_only": true
     },
     "probe": {
      "acc": 91.97,
      "mauroc": 98.32,
-     "map": 98.48
+     "map": 98.48,
+     "internal_only": true
     },
     "probe_resnet": {
      "acc": 73.71,
      "mauroc": 84.78,
-     "map": 84.23
+     "map": 84.23,
+     "internal_only": true
     },
     "omniaid": {
      "acc": 64.88,
      "mauroc": 76.66,
-     "map": 78.12
+     "map": 78.12,
+     "internal_only": false
     },
     "omniaid_v1": {
      "acc": 76.59,
      "mauroc": 84.48,
-     "map": 85.92
+     "map": 85.92,
+     "internal_only": false
     },
     "omniaid_genimage": {
      "acc": 91.67,
      "mauroc": 97.57,
-     "map": 97.71
+     "map": 97.71,
+     "internal_only": false
     },
     "npr": {
      "acc": 50.5,
      "mauroc": 33.45,
-     "map": 44.1
+     "map": 44.1,
+     "internal_only": false
     }
    },
    "missing_comparators": [],
@@ -2837,6 +4144,8 @@
     "mauroc": 79.26,
     "map": 80.5,
     "acc_pooled": 67.86,
+    "acc_pooled_distinct": 50.48,
+    "n_distinct_images": 630,
     "acc_pooled_drop": 68.06,
     "n_images": 1008,
     "n_unparsed": 3,
@@ -2844,16 +4153,60 @@
     "mean_tokens": 497.6,
     "mean_seconds": 16.8
    },
+   "vlm_balance": {
+    "mean_real_acc": 97.23,
+    "mean_fake_acc": 38.49,
+    "lowest_fake_acc": {
+     "generator": "ldm_200_cfg",
+     "value": 25.4
+    },
+    "highest_fake_acc": {
+     "generator": "glide_100_10",
+     "value": 49.21
+    },
+    "n_generators": 8,
+    "n_generators_fake_acc_below_50": 8,
+    "per_generator_fake_acc": {
+     "dalle": 41.27,
+     "glide_100_10": 49.21,
+     "glide_100_27": 39.68,
+     "glide_50_27": 44.44,
+     "guided": 31.75,
+     "ldm_100": 42.86,
+     "ldm_200": 33.33,
+     "ldm_200_cfg": 25.4
+    }
+   },
    "limit": 63,
    "best_acc": {
     "detector": "mirror",
-    "value": 97.92
+    "value": 97.92,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "cure",
+    "value": 92.56,
+    "tied": [
+     "cure"
+    ]
    },
    "median_acc": 77.88,
    "vlm_rank_acc": 21,
    "best_mauroc": {
     "detector": "mirror",
-    "value": 99.97
+    "value": 99.97,
+    "tied": [
+     "mirror"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "cure",
+    "value": 98.34,
+    "tied": [
+     "cure"
+    ]
    },
    "median_mauroc": 88.69,
    "vlm_rank_mauroc": 22
@@ -3331,6 +4684,8 @@
    "mauroc": 99.25,
    "map": 99.25,
    "acc_pooled": 95.65,
+   "acc_pooled_distinct": 95.65,
+   "n_distinct_images": 988,
    "acc_pooled_drop": 95.65,
    "n_images": 988,
    "n_unparsed": 0,
@@ -3343,6 +4698,8 @@
    "mauroc": 99.49,
    "map": 99.5,
    "acc_pooled": 96.46,
+   "acc_pooled_distinct": 96.46,
+   "n_distinct_images": 988,
    "acc_pooled_drop": 96.46,
    "n_images": 988,
    "n_unparsed": 0,
@@ -3358,13 +4715,16 @@
    "paper": 99.5,
    "paper_table": "II",
    "metric": "fake_acc",
+   "metric_note": "fakes-only accuracy is our inference (the paper does not say how EvalGEN is scored; its DDA row, 97.2, matches DDA's fakes-only EvalGEN accuracy); balanced_acc is the benchmark's balanced accuracy (fakes + MSCOCO reals) on the same images. Ours is a 500-fake subset, not the full set.",
    "subset": {
     "n": 500,
     "n_unparsed": 0,
     "acc_drop": 98.2,
     "acc_unparsed_wrong": 98.2,
     "delta_vs_paper": -1.3,
-    "greedy": true
+    "greedy": true,
+    "balanced_acc": 99.1,
+    "balanced_delta_vs_paper": -0.4
    }
   },
   "realchain": {
@@ -3409,5 +4769,5 @@
    }
   }
  },
- "paper_note": "Veritas++ arXiv 2607.27113 v1; the paper samples at T 0.7 (official setting) and reports Acc.; EvalGen there is scored on fakes only (its DDA row 97.2 = DDA's fake-only EvalGEN accuracy)."
+ "paper_note": "Veritas++ arXiv 2607.27113 v1, Acc. column. Decoding: the paper's text does not state a sampling temperature; T 0.7 is the setting of the authors' official inference script (infer_vllm_single.py), with top-p 0.8 / top-k 20 from the released generation_config.json, and 'sampled' below means that setting. EvalGEN: fakes-only scoring is our inference from the DDA row (97.2), not stated in the paper; the balanced accuracy is reported next to it."
 }
