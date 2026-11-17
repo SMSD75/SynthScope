@@ -1,0 +1,92 @@
+node=ivi-cn029 Tue Nov 17 06:21:09 CET 2026 commit=bd4d8d2
+NVIDIA RTX A5000, 24564 MiB
+=== revision: every file of the folder was downloaded from the pinned commit (hf download metadata) ===
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+=== sha256 of the released files (SHA256SUMS written at download) ===
+.gitattributes: OK
+README.md: OK
+args.json: OK
+chat_template.jinja: OK
+config.json: OK
+generation_config.json: OK
+model-00001-of-00004.safetensors: OK
+model-00002-of-00004.safetensors: OK
+model-00003-of-00004.safetensors: OK
+model-00004-of-00004.safetensors: OK
+model.safetensors.index.json: OK
+preprocessor_config.json: OK
+processor_config.json: OK
+tokenizer.json: OK
+tokenizer_config.json: OK
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]Loading weights:   0%|          | 1/750 [00:00<11:13,  1.11it/s]Loading weights:   4%|▍         | 32/750 [00:01<00:16, 43.18it/s]Loading weights:   8%|▊         | 60/750 [00:01<00:08, 79.22it/s]Loading weights:  12%|█▏        | 91/750 [00:01<00:05, 121.29it/s]Loading weights:  15%|█▌        | 116/750 [00:01<00:04, 146.06it/s]Loading weights:  20%|█▉        | 147/750 [00:01<00:03, 181.79it/s]Loading weights:  23%|██▎       | 174/750 [00:01<00:02, 200.77it/s]Loading weights:  27%|██▋       | 201/750 [00:01<00:02, 217.05it/s]Loading weights:  30%|███       | 228/750 [00:01<00:02, 228.50it/s]Loading weights:  34%|███▍      | 254/750 [00:01<00:02, 198.85it/s]Loading weights:  37%|███▋      | 280/750 [00:02<00:02, 210.37it/s]Loading weights:  42%|████▏     | 312/750 [00:02<00:01, 233.70it/s]Loading weights:  45%|████▌     | 340/750 [00:02<00:01, 244.59it/s]Loading weights:  49%|████▉     | 367/750 [00:02<00:01, 250.09it/s]Loading weights:  53%|█████▎    | 394/750 [00:02<00:01, 249.93it/s]Loading weights:  84%|████████▍ | 633/750 [00:02<00:00, 849.65it/s]Loading weights: 100%|██████████| 750/750 [00:02<00:00, 286.06it/s]
+Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[ref] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG (500, 375) tokens=653 parse=real gap=-7.375
+[ref] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG (500, 333) tokens=602 parse=real gap=-8.75
+[ref] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG (500, 333) tokens=510 parse=real gap=-7.875
+[ref] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png (1024, 1024) tokens=401 parse=fake gap=9.625
+[ref] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png (512, 512) tokens=411 parse=fake gap=8.625
+[ref] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG (256, 256) tokens=477 parse=fake gap=7.5
+[ref] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg (662, 1000) tokens=530 parse=real gap=-8.125
+[ref] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg (1024, 682) tokens=443 parse=real gap=-8.0
+[ref] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg (2048, 1365) tokens=479 parse=real gap=-7.75
+[ref] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg (1024, 1024) tokens=613 parse=fake gap=10.375
+[ref] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg (2048, 2048) tokens=530 parse=fake gap=8.5
+[ref] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg (1200, 686) tokens=477 parse=fake gap=8.0
+[ref] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg (1344, 896) tokens=341 parse=fake gap=10.25
+[ref] WildRF/test/reddit/0_real/000219_0219.png (643, 481) tokens=557 parse=real gap=-7.875
+[ref] WildRF/test/reddit/0_real/000032_0032.png (720, 962) tokens=585 parse=real gap=-8.375
+Loading weights:   0%|          | 0/750 [00:00<?, ?it/s]Loading weights:   0%|          | 2/750 [00:00<01:14, 10.07it/s]Loading weights:   4%|▎         | 28/750 [00:00<00:06, 111.39it/s]Loading weights:   8%|▊         | 59/750 [00:00<00:03, 180.67it/s]Loading weights:  11%|█         | 83/750 [00:00<00:03, 197.84it/s]Loading weights:  15%|█▌        | 114/750 [00:00<00:02, 231.27it/s]Loading weights:  19%|█▊        | 139/750 [00:00<00:02, 232.79it/s]Loading weights:  23%|██▎       | 169/750 [00:00<00:02, 251.89it/s]Loading weights:  26%|██▌       | 196/750 [00:00<00:02, 250.91it/s]Loading weights:  30%|███       | 225/750 [00:01<00:02, 256.87it/s]Loading weights:  34%|███▎      | 252/750 [00:01<00:02, 212.29it/s]Loading weights:  37%|███▋      | 279/750 [00:01<00:02, 226.33it/s]Loading weights:  40%|████      | 303/750 [00:01<00:01, 229.70it/s]Loading weights:  45%|████▍     | 335/750 [00:01<00:01, 249.45it/s]Loading weights:  48%|████▊     | 362/750 [00:01<00:01, 254.39it/s]Loading weights:  52%|█████▏    | 390/750 [00:01<00:01, 253.12it/s]Loading weights:  79%|███████▉  | 595/750 [00:01<00:00, 758.80it/s]Loading weights: 100%|██████████| 750/750 [00:01<00:00, 387.85it/s]
+Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[load] {'status': 'loaded 750 tensors from veritaspp (missing=0, unexpected=0; Qwen3VLForConditionalGeneration, bfloat16)', 'seconds': 3.9, 'weights_GB': 17.54, 'tensors': {'checkpoint_tensors': 750, 'model_tensors': 750, 'equal': 750, 'differ_or_absent': [], 'model_only': []}}
+[engine] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG tokens=653 verdict=real logit=-7.3750 21.75s 17.69GB
+[engine] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG tokens=602 verdict=real logit=-8.7500 20.02s 17.67GB
+[engine] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG tokens=510 verdict=real logit=-7.8750 16.92s 17.66GB
+[engine] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png tokens=401 verdict=fake logit=9.6250 13.67s 17.9GB
+[engine] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png tokens=411 verdict=fake logit=8.6250 13.72s 17.66GB
+[engine] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG tokens=477 verdict=fake logit=7.5000 15.84s 17.64GB
+[engine] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg tokens=530 verdict=real logit=-8.1250 17.78s 17.78GB
+[engine] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg tokens=443 verdict=real logit=-8.0000 14.9s 17.78GB
+[engine] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg tokens=479 verdict=real logit=-7.7500 17.0s 18.47GB
+[engine] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg tokens=613 verdict=fake logit=10.3750 20.94s 17.9GB
+[engine] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg tokens=530 verdict=fake logit=8.5000 19.95s 18.91GB
+[engine] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg tokens=477 verdict=fake logit=8.0000 16.57s 17.83GB
+[engine] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg tokens=341 verdict=fake logit=10.2500 12.23s 17.95GB
+[engine] WildRF/test/reddit/0_real/000219_0219.png tokens=557 verdict=real logit=-7.8750 19.1s 17.69GB
+[engine] WildRF/test/reddit/0_real/000032_0032.png tokens=585 verdict=real logit=-8.3750 19.81s 17.78GB
+[sampled] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG tokens=505 verdict=real logit=-8.3750
+[sampled] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG tokens=430 verdict=real logit=-8.6250
+[sampled] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG tokens=527 verdict=real logit=-8.1250
+[sampled] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png tokens=413 verdict=fake logit=9.6250
+[sampled] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png tokens=461 verdict=fake logit=7.1250
+[sampled] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG tokens=492 verdict=fake logit=7.1250
+[sampled] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg tokens=549 verdict=real logit=-7.6250
+[sampled] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg tokens=563 verdict=real logit=-8.0000
+[sampled] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg tokens=535 verdict=real logit=-8.3750
+[sampled] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg tokens=372 verdict=fake logit=10.0000
+[sampled] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg tokens=572 verdict=fake logit=8.7500
+[sampled] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg tokens=489 verdict=fake logit=8.0000
+[sampled] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg tokens=423 verdict=fake logit=9.3750
+[sampled] WildRF/test/reddit/0_real/000219_0219.png tokens=614 verdict=real logit=-7.7500
+[sampled] WildRF/test/reddit/0_real/000032_0032.png tokens=558 verdict=real logit=-7.5000
+[probe] {'input_size': [2432, 3264], 'prompt_tokens': 7826, 'new_tokens': 513, 'verdict': 'real', 'logit': -8.125, 'oom': False, 'image': 'WildRF/test/reddit/0_real/000030_0030.jpg', 'size': [2448, 3264], 'seconds': 22.75, 'peak_GB': 20.12}
+[probe] {'input_size': [4096, 4096], 'prompt_tokens': 16458, 'new_tokens': 544, 'verdict': 'real', 'logit': -6.375, 'oom': False, 'image': 'WildRF/test/reddit/1_fake/000325_0325.jpg', 'size': [4096, 4096], 'seconds': 37.8, 'peak_GB': 22.96}
+[probe] {'input_size': [3520, 4704], 'prompt_tokens': 16244, 'new_tokens': 563, 'verdict': 'real', 'logit': -7.5, 'oom': False, 'image': 'WildRF/test/reddit/0_real/000516_0516.jpg', 'size': [6936, 9248], 'seconds': 38.75, 'peak_GB': 22.89}
+[summary] {
+ "n_images": 15,
+ "identical_greedy_tokens": "15/15",
+ "identical_parsed_verdict": "15/15",
+ "max_abs_logit_gap_diff": 0.0,
+ "reference_verdict_steps_equal": true,
+ "greedy_unparsed_score": 0,
+ "greedy_correct": 15,
+ "sampled_correct": 15,
+ "greedy_vs_sampled_verdict_agreement": "15/15",
+ "engine_greedy_images_per_s": 0.0576,
+ "engine_greedy_seconds_per_image": 17.35,
+ "engine_greedy_tokens_per_s": 29.2,
+ "engine_peak_GB_max": 18.91,
+ "probe_peak_GB_max": 22.96,
+ "probe_oom": false
+}
+rc=0 Tue Nov 17 06:37:01 CET 2026

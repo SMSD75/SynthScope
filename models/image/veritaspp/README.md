@@ -12,8 +12,8 @@ Still images only (no video).
 
 **Status.** Inference only, with the official weights (no training path in SynthScope: the official training runs in
 the authors' ms-swift fork). Not on the Space (an 8B model does not run on the CPU Space) and not in the model
-zoo (a 17.5 GB folder). Fidelity against a direct transformers call with the official request: see
-[Fidelity check](#fidelity-check). Benchmark results: pending (the subsampled VLM protocol, a later task).
+zoo (a 17.5 GB folder). Fidelity against a direct transformers call with the official request: 15 / 15 identical greedy
+tokens and verdicts, max |logit-gap diff| 0.0 ([Fidelity check](#fidelity-check)). Benchmark results: pending (the subsampled VLM protocol, a later task).
 
 ## Pipeline (official request, reproduced)
 
@@ -92,22 +92,50 @@ r = det.predict("photo.jpg")                   # fake_probability, logit, verdic
 
 ## Fidelity check
 
-Pending (job on ivi-cn029): `repro/veritaspp_fidelity.py` (`repro/veritaspp_fidelity.sbatch`, which first checks that
-every file of the folder came from the pinned revision and passes its sha256) compares the engine path with a direct
-transformers `generate` that uses the official prompt, processor and vLLM image loading on 15 images (GenImage val,
-SynthWildX and two transparent WildRF PNGs, real and fake, 256x256 to 2048x2048): strict load (750 tensors), identical
-greedy tokens and verdict, the max |diff| of the verdict logit gap, greedy vs the official sampling, throughput and peak
-memory on an RTX A5000, and a memory probe at 8, 16.8 and 64 MP.
+`repro/veritaspp_fidelity.py` (`repro/veritaspp_fidelity.sbatch`, job 292005 on ivi-cn029, commit bd4d8d2, RTX A5000,
+torch 2.11, transformers 5.5.4, bf16, SDPA; results `repro/veritaspp_fidelity.json`, log
+`repro/logs/veritaspp_fidelity_292005.out`) compares SynthScope's engine path (`Engine._get_model` + `Engine.vlm_score`
+on the file decoded as the API decodes it) with an independent reference: a direct transformers `generate` with the
+official prompts (read from `infer_vllm_single.py`), the released processor and vLLM's image loading written out.
+The job first checked that every file of the folder came from the pinned revision 22ba6c6b (hf download metadata; the
+shard etags equal `SHA256SUMS`) and that all 15 files pass `sha256sum -c`.
 
-## Speed and memory (provisional)
+Images: 15 (8 real, 7 fake) from GenImage val (the gate check's 3 real + 3 fake, 256x256 to
+1024x1024), SynthWildX (3 real + 4 fake, 662x1000 to 2048x2048) and WildRF (2 real RGBA PNGs, transparency composited
+on white).
 
-Until that job reports, the only measurement is the gate check's (6 GenImage images up to 1024x1024, RTX A5000, bf16,
-a different script): about 17 s per image (0.057 images/s, about 29 tokens/s for 400-650-token rationales) and 18.5 GB
-peak. Larger images cost more (a 16.8 MP image is about 16k visual tokens).
+| check | result |
+|---|---|
+| (a) strict load | `from_pretrained` loading info empty (missing 0, unexpected 0, mismatched 0); 750 / 750 tensors of the four shards equal to the loaded parameters (`torch.equal`), no other parameter |
+| request | the engine's rendered prompt == the reference's |
+| (b) greedy tokens | **15 / 15 identical** to the reference (341-653 new tokens each) |
+| (b) parsed verdict | **15 / 15 identical**; verdict step identical on all 15; 0 unparsed |
+| (c) verdict logit gap | **max \|diff\| 0.0** (engine hook vs reference `output_logits`) |
+| accuracy, greedy | 15 / 15 correct; P(fake) 0.00016-0.00063 on the 8 reals, 0.99945-0.99997 on the 7 fakes |
+| (d) official sampling (T 0.7, top-p 0.8, top-k 20, seed 0) | 15 / 15 correct; verdict agreement with greedy **15 / 15** |
+| `predict_image` wrapper | same P(fake) and verdict as `vlm_score` |
+
+## Speed and memory (RTX A5000, bf16, one image at a time)
+
+| | measured |
+|---|---|
+| weights resident | 17.54 GB; engine load 3.9 s (node-local SSD, files already in the page cache from the reference run) |
+| 15 fidelity images (up to 2048x2048, about 4.2k visual tokens) | **17.35 s per image (0.0576 images/s)**, 12.2-21.8 s, 29.2 generated tokens/s, 341-653 tokens per answer; peak allocated **18.91 GB** (at 2048x2048) |
+| memory probe, WildRF 2448x3264 (8.0 MP) | 22.8 s, 7,826 prompt tokens, peak 20.12 GB |
+| memory probe, WildRF 4096x4096 (16.8 MP, the processor's cap) | 37.8 s, 16,458 prompt tokens, peak **22.96 GB**, no OOM |
+| memory probe, WildRF 6936x9248 (64 MP; the processor resizes it to 3520x4704) | 38.8 s, 16,244 prompt tokens, peak 22.89 GB, no OOM |
+
+Nothing ran out of memory on the 24 GB card, so `max_pixels` stays at the processor's default (16,777,216 pixels): no
+cap and no deviation from the official preprocessing. The cost grows with the image: about 17 s per image up to 4 MP,
+about 38 s at the 16.8 MP cap.
+
+One probe image is a model error, not a fidelity issue: the WildRF fake `reddit/1_fake/000325_0325.jpg` (4096x4096) was
+called "real" (logit -6.375). The probe images are not part of the parity comparison (engine path only).
 
 ## Availability
 
-- Not on the Hugging Face Space: an 8B model needs a GPU (18.5 GB in bf16 at 1024x1024, provisional).
+- Not on the Hugging Face Space: an 8B model needs a GPU (17.5 GB of weights in bf16; 18.9 GB peak at 2048x2048, 23.0 GB at the
+  16.8 MP processor cap).
 - Not in the model zoo: the weights are Apache-2.0, so redistribution is allowed, but the release is a 17.5 GB
   multi-file folder that the zoo's one-file-per-key layout does not hold (`NEVER_REDISTRIBUTE` in
   `synthscope/hub.py`); `synthscope.load("veritaspp")` without the folder prints the download command above.
