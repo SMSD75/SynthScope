@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_vina",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 87.36,
+    "map": 98.45,
+    "mauroc": 97.21
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 98.45,
+      "auroc": 97.21,
+      "real_acc": 95.91,
+      "fake_acc": 78.8,
+      "acc": 87.36
+    }
+  },
+  "date": "2026-11-17T19:26:09",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

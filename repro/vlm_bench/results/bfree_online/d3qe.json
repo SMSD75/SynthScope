@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_d3qe",
+  "model": "d3qe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 47.1,
+    "map": 67.25,
+    "mauroc": 63.9
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 67.25,
+      "auroc": 63.9,
+      "real_acc": 92.19,
+      "fake_acc": 2.0,
+      "acc": 47.1
+    }
+  },
+  "date": "2026-11-17T19:16:26",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

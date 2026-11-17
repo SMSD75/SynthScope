@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_omniaid_genimage",
+  "model": "omniaid_genimage",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 56.09,
+    "map": 54.12,
+    "mauroc": 51.55
+  },
+  "per_generator": {
+    "original": {
+      "ap": 81.21,
+      "auroc": 85.38,
+      "real_acc": 68.86,
+      "fake_acc": 88.62,
+      "acc": 78.74
+    },
+    "redigital": {
+      "ap": 43.83,
+      "auroc": 41.91,
+      "real_acc": 49.1,
+      "fake_acc": 41.92,
+      "acc": 45.51
+    },
+    "transfer": {
+      "ap": 37.31,
+      "auroc": 27.35,
+      "real_acc": 83.23,
+      "fake_acc": 4.79,
+      "acc": 44.01
+    }
+  },
+  "date": "2026-11-17T18:46:12",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

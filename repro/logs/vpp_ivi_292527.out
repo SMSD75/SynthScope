@@ -1,0 +1,104 @@
+staging the weights from ivi-cn029 to /ssdstore/ssalehi/SynthScope/vlm_ckpts/veritaspp 08:39:22
+staged 17G 08:39:22
+node=ivi-cn027 job=292527 Tue Nov 17 08:39:23 CET 2026 code=3c4b8cc vlm_bench: vpp_ivi.sbatch stages from cn029 by host, not path (cn026 also has /ssdstore); ol (3c4b8ccee5878db0b69065b05defb543072b8add, copied to /ssdstore/ssalehi/SynthScope/vpp/code_292527)
+NVIDIA RTX A5000, 24564 MiB
+UNITS=vlm:aigcdetect17,vlm:arforensics
+=== Veritas++ weights: pinned revision (hf download metadata) + sha256 ===
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+sha256 OK
+=== subsets ===
+aigcdetect17: verified /ssdstore/ssalehi/SynthScope/vpp/subsets/aigcdetect17: 17 generators, 1020 scored images, 1020 files sha1-identical to the manifest
+arforensics: verified /ssdstore/ssalehi/SynthScope/vpp/subsets/arforensics: 7 generators, 1008 scored images, 1008 files sha1-identical to the manifest
+=== run_units 08:40:16
+=== unit vlm:aigcdetect17 START 2026-11-17 08:40:16 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/aigcdetect17/data --tag vb_aigcdetect17_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/aigcdetect17/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 30 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/aigcdetect17
+[vlm:aigcdetect17] Traceback (most recent call last):
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:aigcdetect17]     raise SystemExit(main())
+[vlm:aigcdetect17]                      ^^^^^^
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:aigcdetect17]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:aigcdetect17]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:aigcdetect17]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:aigcdetect17]                     ^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:aigcdetect17]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:aigcdetect17] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:aigcdetect17 FAILED rc=1 after 0.2 min
+=== unit vlm:arforensics START 2026-11-17 08:40:26 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/arforensics/data --tag vb_arforensics_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/arforensics/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 72 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/arforensics
+[vlm:arforensics] Traceback (most recent call last):
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:arforensics]     raise SystemExit(main())
+[vlm:arforensics]                      ^^^^^^
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:arforensics]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:arforensics]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:arforensics]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:arforensics]                     ^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:arforensics]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:arforensics] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:arforensics FAILED rc=1 after 0.1 min
+=== unit vlm:aigcdetect17 START 2026-11-17 08:40:33 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/aigcdetect17/data --tag vb_aigcdetect17_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/aigcdetect17/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 30 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/aigcdetect17
+[vlm:aigcdetect17] Traceback (most recent call last):
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:aigcdetect17]     raise SystemExit(main())
+[vlm:aigcdetect17]                      ^^^^^^
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:aigcdetect17]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:aigcdetect17]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:aigcdetect17]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:aigcdetect17]                     ^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:aigcdetect17]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:aigcdetect17] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:aigcdetect17 FAILED rc=1 after 0.1 min
+=== unit vlm:arforensics START 2026-11-17 08:40:40 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/arforensics/data --tag vb_arforensics_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/arforensics/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 72 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/arforensics
+[vlm:arforensics] Traceback (most recent call last):
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:arforensics]     raise SystemExit(main())
+[vlm:arforensics]                      ^^^^^^
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:arforensics]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:arforensics]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:arforensics]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:arforensics]                     ^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:arforensics]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:arforensics] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:arforensics FAILED rc=1 after 0.1 min
+=== unit vlm:aigcdetect17 START 2026-11-17 08:40:47 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/aigcdetect17/data --tag vb_aigcdetect17_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/aigcdetect17/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 30 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/aigcdetect17
+[vlm:aigcdetect17] Traceback (most recent call last):
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:aigcdetect17]     raise SystemExit(main())
+[vlm:aigcdetect17]                      ^^^^^^
+[vlm:aigcdetect17]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:aigcdetect17]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:aigcdetect17]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:aigcdetect17]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:aigcdetect17]                     ^^^^^^^^^^^^^^^
+[vlm:aigcdetect17]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:aigcdetect17]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:aigcdetect17] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:aigcdetect17 FAILED rc=1 after 0.1 min
+=== unit vlm:arforensics START 2026-11-17 08:40:54 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/arforensics/data --tag vb_arforensics_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/arforensics/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1474992.jsonl --limit 72 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/arforensics
+[vlm:arforensics] Traceback (most recent call last):
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 659, in <module>
+[vlm:arforensics]     raise SystemExit(main())
+[vlm:arforensics]                      ^^^^^^
+[vlm:arforensics]   File "/ssdstore/ssalehi/SynthScope/vpp/code_292527/benchmark/bench_eval.py", line 537, in main
+[vlm:arforensics]     det = synthscope.load(args.model, device=args.device, **load_kw)
+[vlm:arforensics]           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope/synthscope/api.py", line 74, in load
+[vlm:arforensics]     return Detector(get_spec(model), checkpoint=checkpoint, device=device,
+[vlm:arforensics]                     ^^^^^^^^^^^^^^^
+[vlm:arforensics]   File "/ivi/zfs/s0/original_homes/ssalehi/AGID/interface/backend/registry.py", line 816, in get_spec
+[vlm:arforensics]     raise KeyError(f"Unknown model '{key}'. Available: {sorted(MODELS)}")
+[vlm:arforensics] KeyError: "Unknown model 'veritaspp'. Available: ['adapted_dino', 'aide', 'bfree', 'clip', 'cnn', 'co_spy', 'cure', 'd3', 'd3qe', 'dda', 'dinov2', 'dinov3', 'effort', 'effort_chameleon', 'fat_former', 'ltf', 'mirror', 'moejepa', 'npr', 'nsg_vd', 'nsg_vd_pika', 'nsg_vd_unbalance', 'omniaid', 'omniaid_genimage', 'omniaid_v1', 'pgc', 'probe', 'probe_resnet', 'restrav', 'safe', 'spai', 'split', 'stall', 'vib_net', 'vib_net_official', 'vina', 'vina_video', 'waverep', 'waverep_g4']"
+=== unit vlm:arforensics FAILED rc=1 after 0.1 min
+=== run_units: 0/2 unit results present; failed: ['vlm:aigcdetect17', 'vlm:arforensics']; not present: ['vlm:aigcdetect17', 'vlm:arforensics']
+=== run_units rc=3 Tue Nov 17 08:41:01 CET 2026

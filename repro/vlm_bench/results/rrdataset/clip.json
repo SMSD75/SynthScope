@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_clip",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 48.6,
+    "map": 41.42,
+    "mauroc": 40.28
+  },
+  "per_generator": {
+    "original": {
+      "ap": 41.4,
+      "auroc": 40.17,
+      "real_acc": 99.4,
+      "fake_acc": 0.0,
+      "acc": 49.7
+    },
+    "redigital": {
+      "ap": 42.44,
+      "auroc": 42.77,
+      "real_acc": 95.81,
+      "fake_acc": 0.0,
+      "acc": 47.9
+    },
+    "transfer": {
+      "ap": 40.42,
+      "auroc": 37.9,
+      "real_acc": 96.41,
+      "fake_acc": 0.0,
+      "acc": 48.2
+    }
+  },
+  "date": "2026-11-17T17:53:20",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

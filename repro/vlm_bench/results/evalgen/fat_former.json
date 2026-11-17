@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_fat_former",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 64.0,
+    "map": 66.03,
+    "mauroc": 63.64
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 40.23,
+      "auroc": 36.79,
+      "real_acc": 98.0,
+      "fake_acc": 0.0,
+      "acc": 49.0
+    },
+    "GoT": {
+      "ap": 75.05,
+      "auroc": 72.22,
+      "real_acc": 98.0,
+      "fake_acc": 31.0,
+      "acc": 64.5
+    },
+    "Infinity": {
+      "ap": 71.74,
+      "auroc": 68.37,
+      "real_acc": 98.0,
+      "fake_acc": 26.0,
+      "acc": 62.0
+    },
+    "NOVA": {
+      "ap": 98.5,
+      "auroc": 98.4,
+      "real_acc": 98.0,
+      "fake_acc": 91.0,
+      "acc": 94.5
+    },
+    "OmniGen": {
+      "ap": 44.63,
+      "auroc": 42.42,
+      "real_acc": 98.0,
+      "fake_acc": 2.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-11-17T13:05:49",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

@@ -1,0 +1,195 @@
+{
+  "tag": "vb_aigibench25_npr",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/aigibench25/data",
+  "jpeg_fakes": null,
+  "n_generators": 25,
+  "means": {
+    "acc": 62.8,
+    "map": 65.97,
+    "mauroc": 64.91
+  },
+  "per_generator": {
+    "BLIP": {
+      "ap": 83.33,
+      "auroc": 90.0,
+      "real_acc": 70.0,
+      "fake_acc": 100.0,
+      "acc": 85.0
+    },
+    "BlendFace": {
+      "ap": 34.77,
+      "auroc": 14.88,
+      "real_acc": 55.0,
+      "fake_acc": 0.0,
+      "acc": 27.5
+    },
+    "CommunityAI": {
+      "ap": 65.07,
+      "auroc": 50.75,
+      "real_acc": 95.0,
+      "fake_acc": 25.0,
+      "acc": 60.0
+    },
+    "DALLE-3": {
+      "ap": 65.64,
+      "auroc": 68.5,
+      "real_acc": 65.0,
+      "fake_acc": 65.0,
+      "acc": 65.0
+    },
+    "E4S": {
+      "ap": 35.75,
+      "auroc": 9.12,
+      "real_acc": 40.0,
+      "fake_acc": 0.0,
+      "acc": 20.0
+    },
+    "FLUX1-dev": {
+      "ap": 74.07,
+      "auroc": 82.5,
+      "real_acc": 35.0,
+      "fake_acc": 100.0,
+      "acc": 67.5
+    },
+    "FaceSwap": {
+      "ap": 36.07,
+      "auroc": 20.5,
+      "real_acc": 50.0,
+      "fake_acc": 5.0,
+      "acc": 27.5
+    },
+    "GLIDE": {
+      "ap": 81.17,
+      "auroc": 87.75,
+      "real_acc": 70.0,
+      "fake_acc": 95.0,
+      "acc": 82.5
+    },
+    "IP_Adapter": {
+      "ap": 65.75,
+      "auroc": 72.5,
+      "real_acc": 40.0,
+      "fake_acc": 95.0,
+      "acc": 67.5
+    },
+    "Imagen3": {
+      "ap": 75.9,
+      "auroc": 84.0,
+      "real_acc": 45.0,
+      "fake_acc": 100.0,
+      "acc": 72.5
+    },
+    "InSwap": {
+      "ap": 32.41,
+      "auroc": 3.75,
+      "real_acc": 45.0,
+      "fake_acc": 0.0,
+      "acc": 22.5
+    },
+    "Infinite_ID": {
+      "ap": 66.53,
+      "auroc": 73.62,
+      "real_acc": 50.0,
+      "fake_acc": 100.0,
+      "acc": 75.0
+    },
+    "InstantID": {
+      "ap": 71.49,
+      "auroc": 76.13,
+      "real_acc": 50.0,
+      "fake_acc": 80.0,
+      "acc": 65.0
+    },
+    "Midjourney": {
+      "ap": 68.77,
+      "auroc": 76.5,
+      "real_acc": 30.0,
+      "fake_acc": 95.0,
+      "acc": 62.5
+    },
+    "PhotoMaker": {
+      "ap": 46.17,
+      "auroc": 49.37,
+      "real_acc": 45.0,
+      "fake_acc": 50.0,
+      "acc": 47.5
+    },
+    "ProGAN": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "R3GAN": {
+      "ap": 86.49,
+      "auroc": 92.25,
+      "real_acc": 70.0,
+      "fake_acc": 100.0,
+      "acc": 85.0
+    },
+    "SD3": {
+      "ap": 86.96,
+      "auroc": 92.5,
+      "real_acc": 50.0,
+      "fake_acc": 100.0,
+      "acc": 75.0
+    },
+    "SDXL": {
+      "ap": 85.38,
+      "auroc": 90.38,
+      "real_acc": 50.0,
+      "fake_acc": 100.0,
+      "acc": 75.0
+    },
+    "SimSwap": {
+      "ap": 33.68,
+      "auroc": 9.0,
+      "real_acc": 45.0,
+      "fake_acc": 0.0,
+      "acc": 22.5
+    },
+    "SocialRF": {
+      "ap": 58.01,
+      "auroc": 57.0,
+      "real_acc": 70.0,
+      "fake_acc": 55.0,
+      "acc": 62.5
+    },
+    "StyleGAN-XL": {
+      "ap": 75.65,
+      "auroc": 81.75,
+      "real_acc": 45.0,
+      "fake_acc": 95.0,
+      "acc": 70.0
+    },
+    "StyleGAN3": {
+      "ap": 80.75,
+      "auroc": 87.63,
+      "real_acc": 75.0,
+      "fake_acc": 100.0,
+      "acc": 87.5
+    },
+    "StyleSwim": {
+      "ap": 78.66,
+      "auroc": 84.0,
+      "real_acc": 45.0,
+      "fake_acc": 100.0,
+      "acc": 72.5
+    },
+    "WFIR": {
+      "ap": 60.75,
+      "auroc": 68.37,
+      "real_acc": 45.0,
+      "fake_acc": 100.0,
+      "acc": 72.5
+    }
+  },
+  "date": "2026-11-17T17:52:06",
+  "synthscope_version": "0.1.0",
+  "limit": 20
+}

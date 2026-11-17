@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_probe_resnet",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 71.66,
+    "map": 79.19,
+    "mauroc": 78.89
+  },
+  "per_generator": {
+    "original": {
+      "ap": 96.37,
+      "auroc": 96.07,
+      "real_acc": 92.22,
+      "fake_acc": 86.83,
+      "acc": 89.52
+    },
+    "redigital": {
+      "ap": 57.87,
+      "auroc": 55.47,
+      "real_acc": 83.83,
+      "fake_acc": 26.35,
+      "acc": 55.09
+    },
+    "transfer": {
+      "ap": 83.34,
+      "auroc": 85.14,
+      "real_acc": 94.61,
+      "fake_acc": 46.11,
+      "acc": 70.36
+    }
+  },
+  "date": "2026-11-17T18:38:07",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

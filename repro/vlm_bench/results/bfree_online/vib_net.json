@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_vib_net",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 60.66,
+    "map": 79.17,
+    "mauroc": 67.75
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 79.17,
+      "auroc": 67.75,
+      "real_acc": 40.52,
+      "fake_acc": 80.8,
+      "acc": 60.66
+    }
+  },
+  "date": "2026-11-17T19:03:57",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

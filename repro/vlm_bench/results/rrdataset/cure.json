@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_cure",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 76.84,
+    "map": 81.14,
+    "mauroc": 75.58
+  },
+  "per_generator": {
+    "original": {
+      "ap": 97.19,
+      "auroc": 95.99,
+      "real_acc": 96.41,
+      "fake_acc": 89.82,
+      "acc": 93.11
+    },
+    "redigital": {
+      "ap": 54.72,
+      "auroc": 43.51,
+      "real_acc": 89.22,
+      "fake_acc": 18.56,
+      "acc": 53.89
+    },
+    "transfer": {
+      "ap": 91.52,
+      "auroc": 87.24,
+      "real_acc": 94.61,
+      "fake_acc": 72.46,
+      "acc": 83.53
+    }
+  },
+  "date": "2026-11-17T18:21:14",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

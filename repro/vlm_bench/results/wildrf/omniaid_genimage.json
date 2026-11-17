@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_omniaid_genimage",
+  "model": "omniaid_genimage",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 58.54,
+    "map": 72.59,
+    "mauroc": 68.23
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 69.54,
+      "auroc": 65.13,
+      "real_acc": 31.87,
+      "fake_acc": 76.88,
+      "acc": 54.38
+    },
+    "reddit": {
+      "ap": 76.03,
+      "auroc": 72.43,
+      "real_acc": 48.5,
+      "fake_acc": 78.44,
+      "acc": 63.47
+    },
+    "twitter": {
+      "ap": 72.2,
+      "auroc": 67.14,
+      "real_acc": 38.92,
+      "fake_acc": 76.65,
+      "acc": 57.78
+    }
+  },
+  "date": "2026-11-17T16:47:48",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,11 @@
+staging the weights from ivi-cn029 to /ssdstore/ssalehi/SynthScope/vlm_ckpts/veritaspp 08:28:40
+staged 17G 08:33:21
+node=ivi-cn026 job=292524 Tue Nov 17 08:33:32 CET 2026 code=4d460be vlm_bench: vpp_ivi.sbatch (any cees node: weights + subsets staged from ivi-cn029, flock-ed) (4d460be3c084353bf0e2a8f0a8288bc5946da222, copied to /ssdstore/ssalehi/SynthScope/vpp/code_292524)
+NVIDIA RTX A5000, 24564 MiB
+UNITS=vlm:genimage_val100k,vlm:synthbuster_coco,vlm:rrdataset
+=== Veritas++ weights: pinned revision (hf download metadata) + sha256 ===
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+sha256 OK
+=== subsets ===
+rsync: change_dir "/ssdstore/ssalehi/SynthScope/GenImage_val_full/test/" failed: No such file or directory (2)
+rsync error: errors selecting input/output files, dirs (code 3) at flist.c(2113) [sender=3.1.3]

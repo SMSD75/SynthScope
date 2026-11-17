@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_clip",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 52.6,
+    "map": 62.75,
+    "mauroc": 64.29
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 48.97,
+      "auroc": 49.95,
+      "real_acc": 97.0,
+      "fake_acc": 1.0,
+      "acc": 49.0
+    },
+    "GoT": {
+      "ap": 64.81,
+      "auroc": 67.92,
+      "real_acc": 97.0,
+      "fake_acc": 2.0,
+      "acc": 49.5
+    },
+    "Infinity": {
+      "ap": 60.81,
+      "auroc": 67.68,
+      "real_acc": 97.0,
+      "fake_acc": 0.0,
+      "acc": 48.5
+    },
+    "NOVA": {
+      "ap": 81.7,
+      "auroc": 81.11,
+      "real_acc": 97.0,
+      "fake_acc": 30.0,
+      "acc": 63.5
+    },
+    "OmniGen": {
+      "ap": 57.48,
+      "auroc": 54.81,
+      "real_acc": 97.0,
+      "fake_acc": 8.0,
+      "acc": 52.5
+    }
+  },
+  "date": "2026-11-17T13:00:59",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_ditfake_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 69.46,
+    "map": 83.7,
+    "mauroc": 82.99
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 82.61,
+      "auroc": 82.71,
+      "real_acc": 49.7,
+      "fake_acc": 90.42,
+      "acc": 70.06
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 96.24,
+      "auroc": 95.27,
+      "real_acc": 52.1,
+      "fake_acc": 97.6,
+      "acc": 74.85
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 72.26,
+      "auroc": 70.98,
+      "real_acc": 47.9,
+      "fake_acc": 79.04,
+      "acc": 63.47
+    }
+  },
+  "date": "2026-11-17T20:50:05",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

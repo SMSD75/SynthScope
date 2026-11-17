@@ -1,0 +1,83 @@
+{
+  "tag": "vb_synthbuster_coco_mirror",
+  "model": "mirror",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthbuster_coco/data",
+  "jpeg_fakes": null,
+  "n_generators": 9,
+  "means": {
+    "acc": 98.81,
+    "map": 100.0,
+    "mauroc": 100.0
+  },
+  "per_generator": {
+    "dalle2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.21,
+      "acc": 99.11
+    },
+    "dalle3": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.21,
+      "acc": 99.11
+    },
+    "firefly": {
+      "ap": 99.97,
+      "auroc": 99.97,
+      "real_acc": 100.0,
+      "fake_acc": 85.71,
+      "acc": 92.86
+    },
+    "glide": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "midjourney-v5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.21,
+      "acc": 99.11
+    },
+    "stable-diffusion-1-3": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stable-diffusion-1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stable-diffusion-2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 98.21,
+      "acc": 99.11
+    },
+    "stable-diffusion-xl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    }
+  },
+  "date": "2026-11-17T12:45:50",
+  "synthscope_version": "0.1.0",
+  "limit": 56
+}

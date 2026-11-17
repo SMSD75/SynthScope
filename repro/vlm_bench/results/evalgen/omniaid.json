@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_omniaid",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 71.3,
+    "map": 88.2,
+    "mauroc": 89.99
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 82.17,
+      "auroc": 85.07,
+      "real_acc": 93.0,
+      "fake_acc": 36.0,
+      "acc": 64.5
+    },
+    "GoT": {
+      "ap": 93.92,
+      "auroc": 95.04,
+      "real_acc": 93.0,
+      "fake_acc": 64.0,
+      "acc": 78.5
+    },
+    "Infinity": {
+      "ap": 92.68,
+      "auroc": 94.16,
+      "real_acc": 93.0,
+      "fake_acc": 58.0,
+      "acc": 75.5
+    },
+    "NOVA": {
+      "ap": 84.45,
+      "auroc": 85.85,
+      "real_acc": 93.0,
+      "fake_acc": 41.0,
+      "acc": 67.0
+    },
+    "OmniGen": {
+      "ap": 87.78,
+      "auroc": 89.83,
+      "real_acc": 93.0,
+      "fake_acc": 49.0,
+      "acc": 71.0
+    }
+  },
+  "date": "2026-11-17T13:45:18",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

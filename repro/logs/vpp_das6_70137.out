@@ -1,0 +1,314 @@
+log mirror: /var/scratch/ssalehid/synthscope_das6/logs/vpp_das6_das6_70137.out -> ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/vpp_das6_70137.out
+DAS6 job=70137 name=vpp_das6 node=node409 cpus=8 mem=32768M Tue Nov 17 07:44:36 CET 2026
+gpu=NVIDIA RTX A6000, 49140 MiB, 580.95.05; CUDA_VISIBLE_DEVICES=0
+python=/var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python torch 2.11.0+cu126 cuda_ok True
+/local free: 2.1T
+UNITS=vlm:wildrf,vlm:evalgen,vlm:realchain,vlm:ditfake,vlm:ufd8,vlm:ditfake:jpeg95,vlm:ufd8:jpeg95,vlm:wildrf:official,vlm:bfree_online,vlm:forensynths13,vlm:aigibench25,vlm:cospybench,vlm:synthwildx OLDNEW=0
+code=cf8c496 bench_eval VLM path (per-image Engine.vlm_score, resumable cache, verdict/logit metrics) + Veritas++ b branch=detector/veritaspp sha=cf8c496687969b16ae755134bbcbb6b4d4baa21f src=github uncommitted_tracked_files=0 (IVI wt /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt clean)
+benchmarks: forensynths13 ufd8 evalgen synthwildx wildrf aigibench25 bfree_online cospybench ditfake realchain
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+forensynths13: verified /local/ssalehid/vpp/subsets/forensynths13: 13 generators, 1014 scored images, 1014 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+ufd8: verified /local/ssalehid/vpp/subsets/ufd8: 8 generators, 1008 scored images, 630 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+evalgen: verified /local/ssalehid/vpp/subsets/evalgen: 5 generators, 1000 scored images, 1000 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+synthwildx: verified /local/ssalehid/vpp/subsets/synthwildx: 3 generators, 1002 scored images, 1002 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+wildrf: verified /local/ssalehid/vpp/subsets/wildrf: 3 generators, 988 scored images, 988 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+aigibench25: verified /local/ssalehid/vpp/subsets/aigibench25: 25 generators, 1000 scored images, 1000 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+bfree_online: verified /local/ssalehid/vpp/subsets/bfree_online: 1 generators, 769 scored images, 769 files sha1-identical to the manifest
+subset cospybench: verified earlier
+subset ditfake: verified earlier
+subset realchain: verified earlier
+staging cn029:vlm_ckpts/veritaspp -> /local/ssalehid/cache/data029/vlm_ckpts/veritaspp/ 07:53:42
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn029:vlm_ckpts/veritaspp: 33 files, 17G 07:53:43
+veritaspp weights verified earlier (Tue Nov 17 07:54:02 CET 2026)
+=== run_units 07:54:05
+=== unit vlm:evalgen START 2026-11-17 07:54:05 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70137/code/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /local/ssalehid/vpp/subsets/evalgen/data --tag vb_evalgen_veritaspp --out /local/ssalehid/vpp/out/evalgen/veritaspp.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.265529.jsonl --limit 100 --vlm-cache /local/ssalehid/vpp/cache/evalgen
+[vlm:evalgen] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[vlm:evalgen] === bench_eval vb_evalgen_veritaspp | model=veritaspp ckpt=registry-default | pergen | 5 generators | device=cuda ===
+[vlm:evalgen] [vlm-cache] /local/ssalehid/vpp/cache/evalgen/veritaspp__greedy: 0 cached images
+[vlm:evalgen]   Flux: 100 real + 100 fake ...
+[vlm:evalgen] The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[vlm:evalgen]     vlm Flux/0_real/00000_000000000139.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=515 25.9s
+[vlm:evalgen]     vlm Flux/0_real/00001_000000000285.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=515 18.1s
+[vlm:evalgen]     vlm Flux/0_real/00002_000000000632.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=523 18.4s
+[vlm:evalgen]     vlm Flux/0_real/00003_000000000724.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=487 17.1s
+[vlm:evalgen]     vlm Flux/0_real/00004_000000000776.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=506 17.8s
+[vlm:evalgen]     vlm Flux/0_real/00005_000000000785.jpg label=0 verdict=real logit=-9.1250 src=verdict_token tok=440 15.5s
+[vlm:evalgen]     vlm Flux/0_real/00006_000000000802.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=519 18.3s
+[vlm:evalgen]     vlm Flux/0_real/00007_000000000872.jpg label=0 verdict=real logit=-9.3750 src=verdict_token tok=530 18.6s
+[vlm:evalgen]     vlm Flux/0_real/00008_000000000885.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=548 19.3s
+[vlm:evalgen]     vlm Flux/0_real/00009_000000001000.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=610 21.5s
+[vlm:evalgen]     vlm Flux/0_real/00010_000000001268.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=564 19.9s
+[vlm:evalgen]     vlm Flux/0_real/00011_000000001296.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=573 20.1s
+[vlm:evalgen]     vlm Flux/0_real/00012_000000001353.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=584 20.5s
+[vlm:evalgen]     vlm Flux/0_real/00013_000000001425.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=552 19.4s
+[vlm:evalgen]     vlm Flux/0_real/00014_000000001490.jpg label=0 verdict=real logit=-9.1250 src=verdict_token tok=421 14.8s
+[vlm:evalgen]     vlm Flux/0_real/00015_000000001503.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=571 20.2s
+[vlm:evalgen]     vlm Flux/0_real/00016_000000001532.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=693 24.3s
+[vlm:evalgen]     vlm Flux/0_real/00017_000000001584.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=592 20.9s
+[vlm:evalgen]     vlm Flux/0_real/00018_000000001675.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=519 18.3s
+[vlm:evalgen]     vlm Flux/0_real/00019_000000001761.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=550 19.4s
+[vlm:evalgen]     vlm Flux/0_real/00020_000000001818.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=558 19.6s
+[vlm:evalgen]     vlm Flux/0_real/00021_000000001993.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=553 19.4s
+[vlm:evalgen]     vlm Flux/0_real/00022_000000002006.jpg label=0 verdict=real logit=-9.3750 src=verdict_token tok=578 20.3s
+[vlm:evalgen]     vlm Flux/0_real/00023_000000002149.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=513 18.0s
+[vlm:evalgen]     vlm Flux/0_real/00024_000000002153.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=507 17.8s
+[vlm:evalgen]     vlm Flux/0_real/00025_000000002157.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=610 21.4s
+[vlm:evalgen]     vlm Flux/0_real/00026_000000002261.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=457 16.1s
+[vlm:evalgen]     vlm Flux/0_real/00027_000000002299.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=559 19.6s
+[vlm:evalgen]     vlm Flux/0_real/00028_000000002431.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=541 19.0s
+[vlm:evalgen]     vlm Flux/0_real/00029_000000002473.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=591 20.8s
+[vlm:evalgen]     vlm Flux/0_real/00030_000000002532.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=559 19.7s
+[vlm:evalgen]     vlm Flux/0_real/00031_000000002587.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=547 19.2s
+[vlm:evalgen]     vlm Flux/0_real/00032_000000002592.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=488 17.2s
+[vlm:evalgen]     vlm Flux/0_real/00033_000000002685.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=534 18.7s
+[vlm:evalgen]     vlm Flux/0_real/00034_000000002923.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=632 22.2s
+[vlm:evalgen]     vlm Flux/0_real/00035_000000003156.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=612 21.5s
+[vlm:evalgen]     vlm Flux/0_real/00036_000000003255.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=542 19.1s
+[vlm:evalgen]     vlm Flux/0_real/00037_000000003501.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=513 18.1s
+[vlm:evalgen]     vlm Flux/0_real/00038_000000003553.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=501 17.6s
+[vlm:evalgen]     vlm Flux/0_real/00039_000000003661.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 19.2s
+[vlm:evalgen]     vlm Flux/0_real/00040_000000003845.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=548 19.3s
+[vlm:evalgen]     vlm Flux/0_real/00041_000000003934.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=563 19.8s
+[vlm:evalgen]     vlm Flux/0_real/00042_000000004134.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=560 19.7s
+[vlm:evalgen]     vlm Flux/0_real/00043_000000004395.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=541 19.0s
+[vlm:evalgen]     vlm Flux/0_real/00044_000000004495.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=651 22.8s
+[vlm:evalgen]     vlm Flux/0_real/00045_000000004765.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=497 17.5s
+[vlm:evalgen]     vlm Flux/0_real/00046_000000004795.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=670 23.5s
+[vlm:evalgen]     vlm Flux/0_real/00047_000000005001.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=545 19.2s
+[vlm:evalgen]     vlm Flux/0_real/00048_000000005037.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=513 18.0s
+[vlm:evalgen]     vlm Flux/0_real/00049_000000005060.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=470 16.5s
+[vlm:evalgen]     vlm Flux/0_real/00050_000000005193.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=565 19.9s
+[vlm:evalgen]     vlm Flux/0_real/00051_000000005477.jpg label=0 verdict=real logit=-8.7500 src=verdict_token tok=486 17.1s
+[vlm:evalgen]     vlm Flux/0_real/00052_000000005503.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=598 21.0s
+[vlm:evalgen]     vlm Flux/0_real/00053_000000005529.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=526 18.5s
+[vlm:evalgen]     vlm Flux/0_real/00054_000000005586.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=507 17.8s
+[vlm:evalgen]     vlm Flux/0_real/00055_000000005600.jpg label=0 verdict=real logit=-8.7500 src=verdict_token tok=488 17.2s
+[vlm:evalgen]     vlm Flux/0_real/00056_000000005992.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=567 19.9s
+[vlm:evalgen]     vlm Flux/0_real/00057_000000006012.jpg label=0 verdict=real logit=-2.7500 src=verdict_token tok=603 21.2s
+[vlm:evalgen]     vlm Flux/0_real/00058_000000006040.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=509 17.9s
+[vlm:evalgen]     vlm Flux/0_real/00059_000000006213.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=521 18.3s
+[vlm:evalgen]     vlm Flux/0_real/00060_000000006460.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=619 21.7s
+[vlm:evalgen]     vlm Flux/0_real/00061_000000006471.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=643 22.5s
+[vlm:evalgen]     vlm Flux/0_real/00062_000000006614.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=483 16.9s
+[vlm:evalgen]     vlm Flux/0_real/00063_000000006723.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=602 21.1s
+[vlm:evalgen]     vlm Flux/0_real/00064_000000006763.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=566 19.8s
+[vlm:evalgen]     vlm Flux/0_real/00065_000000006771.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=496 17.4s
+[vlm:evalgen]     vlm Flux/0_real/00066_000000006818.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=608 21.3s
+[vlm:evalgen]     vlm Flux/0_real/00067_000000006894.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=577 20.2s
+[vlm:evalgen]     vlm Flux/0_real/00068_000000006954.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=628 22.0s
+[vlm:evalgen]     vlm Flux/0_real/00069_000000007088.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=555 19.4s
+[vlm:evalgen]     vlm Flux/0_real/00070_000000007108.jpg label=0 verdict=real logit=-9.3750 src=verdict_token tok=592 20.7s
+[vlm:evalgen]     vlm Flux/0_real/00071_000000007278.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=558 19.5s
+[vlm:evalgen]     vlm Flux/0_real/00072_000000007281.jpg label=0 verdict=real logit=-8.7500 src=verdict_token tok=533 18.6s
+[vlm:evalgen]     vlm Flux/0_real/00073_000000007386.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=540 18.9s
+[vlm:evalgen]     vlm Flux/0_real/00074_000000007511.jpg label=0 verdict=real logit=-9.2500 src=verdict_token tok=526 18.4s
+[vlm:evalgen]     vlm Flux/0_real/00075_000000007574.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=463 16.2s
+[vlm:evalgen]     vlm Flux/0_real/00076_000000007784.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=564 19.7s
+[vlm:evalgen]     vlm Flux/0_real/00077_000000007795.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=568 19.8s
+[vlm:evalgen]     vlm Flux/0_real/00078_000000007816.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=489 17.1s
+[vlm:evalgen]     vlm Flux/0_real/00079_000000007818.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=458 16.0s
+[vlm:evalgen]     vlm Flux/0_real/00080_000000007888.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=620 21.7s
+[vlm:evalgen]     vlm Flux/0_real/00081_000000007977.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=493 17.2s
+[vlm:evalgen]     vlm Flux/0_real/00082_000000007991.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=490 17.1s
+[vlm:evalgen]     vlm Flux/0_real/00083_000000008021.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=580 20.2s
+[vlm:evalgen]     vlm Flux/0_real/00084_000000008211.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=570 19.9s
+[vlm:evalgen]     vlm Flux/0_real/00085_000000008277.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=530 18.5s
+[vlm:evalgen]     vlm Flux/0_real/00086_000000008532.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=496 17.3s
+[vlm:evalgen]     vlm Flux/0_real/00087_000000008629.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=579 20.2s
+[vlm:evalgen]     vlm Flux/0_real/00088_000000008690.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=670 23.4s
+[vlm:evalgen]     vlm Flux/0_real/00089_000000008762.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=490 17.1s
+[vlm:evalgen]     vlm Flux/0_real/00090_000000008844.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=502 17.5s
+[vlm:evalgen]     vlm Flux/0_real/00091_000000008899.jpg label=0 verdict=real logit=-9.2500 src=verdict_token tok=594 20.7s
+[vlm:evalgen]     vlm Flux/0_real/00092_000000009378.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=542 18.9s
+[vlm:evalgen]     vlm Flux/0_real/00093_000000009400.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=582 20.3s
+[vlm:evalgen]     vlm Flux/0_real/00094_000000009448.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=529 18.4s
+[vlm:evalgen]     vlm Flux/0_real/00095_000000009483.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=539 18.8s
+[vlm:evalgen]     vlm Flux/0_real/00096_000000009590.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=704 24.5s
+[vlm:evalgen]     vlm Flux/0_real/00097_000000009769.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=523 18.2s
+[vlm:evalgen]     vlm Flux/0_real/00098_000000009772.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=503 17.5s
+[vlm:evalgen]     vlm Flux/0_real/00099_000000009891.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=636 22.1s
+[vlm:evalgen]     vlm Flux/1_fake/00000_a_photo_of_a_backpack_0.jpg label=1 verdict=fake logit=9.7500 src=verdict_token tok=382 13.5s
+[vlm:evalgen]     vlm Flux/1_fake/00001_a_photo_of_a_backpack_1.jpg label=1 verdict=fake logit=8.3750 src=verdict_token tok=463 16.3s
+[vlm:evalgen]     vlm Flux/1_fake/00002_a_photo_of_a_backpack_10.jpg label=1 verdict=fake logit=7.2500 src=verdict_token tok=334 11.9s
+[vlm:evalgen]     vlm Flux/1_fake/00003_a_photo_of_a_backpack_11.jpg label=1 verdict=fake logit=10.1250 src=verdict_token tok=574 20.2s
+[vlm:evalgen]     vlm Flux/1_fake/00004_a_photo_of_a_backpack_12.jpg label=1 verdict=fake logit=8.0000 src=verdict_token tok=509 17.9s
+[vlm:evalgen]     vlm Flux/1_fake/00005_a_photo_of_a_backpack_13.jpg label=1 verdict=fake logit=7.6250 src=verdict_token tok=500 17.6s
+[vlm:evalgen]     vlm Flux/1_fake/00006_a_photo_of_a_backpack_14.jpg label=1 verdict=fake logit=8.1250 src=verdict_token tok=449 15.8s
+[vlm:evalgen]     vlm Flux/1_fake/00007_a_photo_of_a_backpack_15.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=367 13.0s
+[vlm:evalgen]     vlm Flux/1_fake/00008_a_photo_of_a_backpack_16.jpg label=1 verdict=fake logit=8.0000 src=verdict_token tok=459 16.2s
+[vlm:evalgen]     vlm Flux/1_fake/00009_a_photo_of_a_backpack_17.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=371 13.1s
+[vlm:evalgen]     vlm Flux/1_fake/00010_a_photo_of_a_backpack_18.jpg label=1 verdict=fake logit=8.0000 src=verdict_token tok=511 18.0s
+[vlm:evalgen]     vlm Flux/1_fake/00011_a_photo_of_a_backpack_19.jpg label=1 verdict=fake logit=8.7500 src=verdict_token tok=477 16.8s
+[vlm:evalgen]     vlm Flux/1_fake/00012_a_photo_of_a_backpack_2.jpg label=1 verdict=fake logit=9.5000 src=verdict_token tok=517 18.2s
+[vlm:evalgen]     vlm Flux/1_fake/00013_a_photo_of_a_backpack_3.jpg label=1 verdict=fake logit=9.0000 src=verdict_token tok=498 17.5s
+[vlm:evalgen]     vlm Flux/1_fake/00014_a_photo_of_a_backpack_4.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=413 14.6s
+[vlm:evalgen]     vlm Flux/1_fake/00015_a_photo_of_a_backpack_5.jpg label=1 verdict=fake logit=7.8750 src=verdict_token tok=427 15.1s
+[vlm:evalgen]     vlm Flux/1_fake/00016_a_photo_of_a_backpack_6.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=415 14.7s
+[vlm:evalgen]     vlm Flux/1_fake/00017_a_photo_of_a_backpack_7.jpg label=1 verdict=fake logit=8.5000 src=verdict_token tok=455 16.0s
+[vlm:evalgen]     vlm Flux/1_fake/00018_a_photo_of_a_backpack_8.jpg label=1 verdict=fake logit=7.7500 src=verdict_token tok=378 13.4s
+[vlm:evalgen]     vlm Flux/1_fake/00019_a_photo_of_a_backpack_9.jpg label=1 verdict=fake logit=8.7500 src=verdict_token tok=439 15.5s
+[vlm:evalgen]     vlm Flux/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=429 15.1s
+[vlm:evalgen]     vlm Flux/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg label=1 verdict=fake logit=8.7500 src=verdict_token tok=430 15.2s
+[vlm:evalgen]     vlm Flux/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg label=1 verdict=fake logit=10.0000 src=verdict_token tok=495 17.4s
+[vlm:evalgen]     vlm Flux/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=344 12.2s
+[vlm:evalgen]     vlm Flux/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg label=1 verdict=fake logit=9.1250 src=verdict_token tok=550 19.3s
+[vlm:evalgen]     vlm Flux/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg label=1 verdict=fake logit=10.6250 src=verdict_token tok=477 16.8s
+[vlm:evalgen]     vlm Flux/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=481 17.0s
+[vlm:evalgen]     vlm Flux/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=491 17.3s
+[vlm:evalgen]     vlm Flux/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=525 18.4s
+[vlm:evalgen]     vlm Flux/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=447 15.7s
+[vlm:evalgen]     vlm Flux/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg label=1 verdict=fake logit=8.3750 src=verdict_token tok=445 15.6s
+[vlm:evalgen]     vlm Flux/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=451 15.7s
+[vlm:evalgen]     vlm Flux/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg label=1 verdict=fake logit=9.5000 src=verdict_token tok=476 16.6s
+[vlm:evalgen]     vlm Flux/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg label=1 verdict=fake logit=9.5000 src=verdict_token tok=548 19.1s
+[vlm:evalgen]     vlm Flux/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=455 15.9s
+[vlm:evalgen]     vlm Flux/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg label=1 verdict=fake logit=8.6250 src=verdict_token tok=460 16.1s
+[vlm:evalgen]     vlm Flux/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=443 15.6s
+[vlm:evalgen]     vlm Flux/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg label=1 verdict=fake logit=8.1250 src=verdict_token tok=514 18.1s
+[vlm:evalgen]     vlm Flux/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg label=1 verdict=fake logit=9.6250 src=verdict_token tok=428 15.2s
+[vlm:evalgen]     vlm Flux/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg label=1 verdict=fake logit=9.8750 src=verdict_token tok=446 15.8s
+[vlm:evalgen]     vlm Flux/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg label=1 verdict=fake logit=8.8750 src=verdict_token tok=380 13.5s
+[vlm:evalgen]     vlm Flux/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg label=1 verdict=fake logit=9.5000 src=verdict_token tok=429 15.2s
+[vlm:evalgen]     vlm Flux/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=348 12.3s
+[vlm:evalgen]     vlm Flux/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=473 16.6s
+[vlm:evalgen]     vlm Flux/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg label=1 verdict=fake logit=8.5000 src=verdict_token tok=498 17.5s
+[vlm:evalgen]     vlm Flux/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg label=1 verdict=fake logit=8.6250 src=verdict_token tok=361 12.8s
+[vlm:evalgen]     vlm Flux/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg label=1 verdict=fake logit=9.1250 src=verdict_token tok=334 11.9s
+[vlm:evalgen]     vlm Flux/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=387 13.7s
+[vlm:evalgen]     vlm Flux/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg label=1 verdict=fake logit=10.5000 src=verdict_token tok=403 14.3s
+[vlm:evalgen]     vlm Flux/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=476 16.8s
+[vlm:evalgen]     vlm Flux/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg label=1 verdict=fake logit=9.7500 src=verdict_token tok=424 15.0s
+[vlm:evalgen]     vlm Flux/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg label=1 verdict=fake logit=10.5000 src=verdict_token tok=389 13.7s
+[vlm:evalgen]     vlm Flux/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=384 13.6s
+[vlm:evalgen]     vlm Flux/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=379 13.4s
+[vlm:evalgen]     vlm Flux/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=413 14.6s
+[vlm:evalgen]     vlm Flux/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg label=1 verdict=fake logit=9.2500 src=verdict_token tok=462 16.3s
+[vlm:evalgen]     vlm Flux/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg label=1 verdict=fake logit=8.5000 src=verdict_token tok=431 15.2s
+[vlm:evalgen]     vlm Flux/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg label=1 verdict=fake logit=9.8750 src=verdict_token tok=482 17.0s
+[vlm:evalgen]     vlm Flux/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg label=1 verdict=fake logit=8.5000 src=verdict_token tok=361 12.8s
+[vlm:evalgen]     vlm Flux/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg label=1 verdict=fake logit=8.6250 src=verdict_token tok=365 13.0s
+[vlm:evalgen]     vlm Flux/1_fake/00060_a_photo_of_a_banana_0.jpg label=1 verdict=fake logit=8.2500 src=verdict_token tok=385 13.7s
+[vlm:evalgen]     vlm Flux/1_fake/00061_a_photo_of_a_banana_1.jpg label=1 verdict=fake logit=8.0000 src=verdict_token tok=364 12.9s
+[vlm:evalgen]     vlm Flux/1_fake/00062_a_photo_of_a_banana_10.jpg label=1 verdict=fake logit=8.5000 src=verdict_token tok=422 14.9s
+[vlm:evalgen]     vlm Flux/1_fake/00063_a_photo_of_a_banana_11.jpg label=1 verdict=fake logit=8.3750 src=verdict_token tok=439 15.5s
+[vlm:evalgen]     vlm Flux/1_fake/00064_a_photo_of_a_banana_12.jpg label=1 verdict=fake logit=9.6250 src=verdict_token tok=455 16.1s
+[vlm:evalgen]     vlm Flux/1_fake/00065_a_photo_of_a_banana_13.jpg label=1 verdict=fake logit=8.0000 src=verdict_token tok=435 15.4s
+[vlm:evalgen]     vlm Flux/1_fake/00066_a_photo_of_a_banana_14.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=396 14.0s
+[vlm:evalgen]     vlm Flux/1_fake/00067_a_photo_of_a_banana_15.jpg label=1 verdict=fake logit=8.3750 src=verdict_token tok=403 14.2s
+[vlm:evalgen]     vlm Flux/1_fake/00068_a_photo_of_a_banana_16.jpg label=1 verdict=fake logit=9.3750 src=verdict_token tok=355 12.6s
+slurmstepd: error: *** JOB 70137 ON node409 CANCELLED AT 2026-11-17T08:44:24 ***
+exit rc=0: final sync 08:44:24
+/var/scratch/ssalehid/synthscope_das6/das6_lib.sh: line 28: 265526 Terminated              ( while sleep $SYNC_SECONDS; do
+    sync_results;
+done )

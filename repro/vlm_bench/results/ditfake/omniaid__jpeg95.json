@@ -1,0 +1,42 @@
+{
+  "tag": "vb_ditfake_omniaid__jpeg95",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 80.74,
+    "map": 90.19,
+    "mauroc": 89.36
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 83.55,
+      "auroc": 82.0,
+      "real_acc": 94.61,
+      "fake_acc": 47.31,
+      "acc": 70.96
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.57,
+      "auroc": 99.55,
+      "real_acc": 96.41,
+      "fake_acc": 97.01,
+      "acc": 96.71
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 87.45,
+      "auroc": 86.53,
+      "real_acc": 95.81,
+      "fake_acc": 53.29,
+      "acc": 74.55
+    }
+  },
+  "date": "2026-11-17T22:38:52",
+  "synthscope_version": "0.1.0",
+  "degrade": "jpeg95",
+  "limit": 167
+}

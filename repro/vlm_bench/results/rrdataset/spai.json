@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_spai",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 73.85,
+    "map": 81.07,
+    "mauroc": 81.09
+  },
+  "per_generator": {
+    "original": {
+      "ap": 91.64,
+      "auroc": 89.74,
+      "real_acc": 82.04,
+      "fake_acc": 83.83,
+      "acc": 82.93
+    },
+    "redigital": {
+      "ap": 72.38,
+      "auroc": 72.92,
+      "real_acc": 72.46,
+      "fake_acc": 62.28,
+      "acc": 67.37
+    },
+    "transfer": {
+      "ap": 79.2,
+      "auroc": 80.61,
+      "real_acc": 88.02,
+      "fake_acc": 54.49,
+      "acc": 71.26
+    }
+  },
+  "date": "2026-11-17T18:09:16",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

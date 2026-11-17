@@ -1,0 +1,41 @@
+{
+  "tag": "vb_synthwildx_fat_former",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthwildx/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 54.29,
+    "map": 56.31,
+    "mauroc": 54.06
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 40.98,
+      "auroc": 38.27,
+      "real_acc": 96.41,
+      "fake_acc": 0.6,
+      "acc": 48.5
+    },
+    "firefly": {
+      "ap": 74.51,
+      "auroc": 71.53,
+      "real_acc": 96.41,
+      "fake_acc": 28.74,
+      "acc": 62.57
+    },
+    "midjourney_v5": {
+      "ap": 53.44,
+      "auroc": 52.37,
+      "real_acc": 96.41,
+      "fake_acc": 7.19,
+      "acc": 51.8
+    }
+  },
+  "date": "2026-11-17T14:02:33",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

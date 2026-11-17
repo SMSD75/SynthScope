@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 68.8,
+    "map": 86.41,
+    "mauroc": 85.37
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 92.77,
+      "auroc": 92.05,
+      "real_acc": 51.0,
+      "fake_acc": 95.0,
+      "acc": 73.0
+    },
+    "GoT": {
+      "ap": 94.63,
+      "auroc": 95.27,
+      "real_acc": 51.0,
+      "fake_acc": 100.0,
+      "acc": 75.5
+    },
+    "Infinity": {
+      "ap": 74.77,
+      "auroc": 69.18,
+      "real_acc": 51.0,
+      "fake_acc": 63.0,
+      "acc": 57.0
+    },
+    "NOVA": {
+      "ap": 74.47,
+      "auroc": 75.15,
+      "real_acc": 51.0,
+      "fake_acc": 76.0,
+      "acc": 63.5
+    },
+    "OmniGen": {
+      "ap": 95.39,
+      "auroc": 95.18,
+      "real_acc": 51.0,
+      "fake_acc": 99.0,
+      "acc": 75.0
+    }
+  },
+  "date": "2026-11-17T13:22:41",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

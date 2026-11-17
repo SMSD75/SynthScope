@@ -1,0 +1,41 @@
+{
+  "tag": "vb_synthwildx_dinov3",
+  "model": "dinov3",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthwildx/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 74.55,
+    "map": 85.21,
+    "mauroc": 85.56
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 82.34,
+      "auroc": 83.83,
+      "real_acc": 92.22,
+      "fake_acc": 49.7,
+      "acc": 70.96
+    },
+    "firefly": {
+      "ap": 85.49,
+      "auroc": 83.76,
+      "real_acc": 92.22,
+      "fake_acc": 58.08,
+      "acc": 75.15
+    },
+    "midjourney_v5": {
+      "ap": 87.79,
+      "auroc": 89.08,
+      "real_acc": 92.22,
+      "fake_acc": 62.87,
+      "acc": 77.54
+    }
+  },
+  "date": "2026-11-17T13:57:50",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_effort",
+  "model": "effort",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 68.0,
+    "map": 96.27,
+    "mauroc": 94.88
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 96.27,
+      "auroc": 94.88,
+      "real_acc": 97.4,
+      "fake_acc": 38.6,
+      "acc": 68.0
+    }
+  },
+  "date": "2026-11-17T19:07:50",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

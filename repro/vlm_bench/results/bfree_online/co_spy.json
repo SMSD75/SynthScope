@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_co_spy",
+  "model": "co_spy",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 56.04,
+    "map": 86.08,
+    "mauroc": 73.85
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 86.08,
+      "auroc": 73.85,
+      "real_acc": 30.48,
+      "fake_acc": 81.6,
+      "acc": 56.04
+    }
+  },
+  "date": "2026-11-17T19:11:52",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

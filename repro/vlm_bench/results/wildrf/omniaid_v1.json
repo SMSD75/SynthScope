@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_omniaid_v1",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 86.65,
+    "map": 94.13,
+    "mauroc": 94.21
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 95.12,
+      "auroc": 94.85,
+      "real_acc": 86.87,
+      "fake_acc": 87.5,
+      "acc": 87.19
+    },
+    "reddit": {
+      "ap": 94.44,
+      "auroc": 94.54,
+      "real_acc": 89.82,
+      "fake_acc": 85.63,
+      "acc": 87.72
+    },
+    "twitter": {
+      "ap": 92.82,
+      "auroc": 93.24,
+      "real_acc": 83.23,
+      "fake_acc": 86.83,
+      "acc": 85.03
+    }
+  },
+  "date": "2026-11-17T16:44:48",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

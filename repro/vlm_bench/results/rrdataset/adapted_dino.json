@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_adapted_dino",
+  "model": "adapted_dino",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 50.0,
+    "map": 63.91,
+    "mauroc": 68.48
+  },
+  "per_generator": {
+    "original": {
+      "ap": 66.4,
+      "auroc": 70.63,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "redigital": {
+      "ap": 60.16,
+      "auroc": 65.81,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "transfer": {
+      "ap": 65.16,
+      "auroc": 69.01,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-11-17T17:57:28",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

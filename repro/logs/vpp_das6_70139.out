@@ -1,0 +1,808 @@
+log mirror: /var/scratch/ssalehid/synthscope_das6/logs/vpp_das6_das6_70139.out -> ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/vpp_das6_70139.out
+DAS6 job=70139 name=vpp_das6 node=node409 cpus=8 mem=40960M Tue Nov 17 08:17:03 CET 2026
+gpu=NVIDIA RTX A6000, 49140 MiB, 580.95.05; CUDA_VISIBLE_DEVICES=0
+python=/var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python torch 2.11.0+cu126 cuda_ok True
+/local free: 2.1T
+UNITS=all-cmp,vlm:wildrf,vlm:evalgen,vlm:realchain,vlm:ditfake,vlm:ufd8,vlm:ditfake:jpeg95,vlm:ufd8:jpeg95,vlm:wildrf:official,vlm:bfree_online,vlm:forensynths13,vlm:aigibench25,vlm:cospybench,vlm:synthwildx OLDNEW=1
+code=cf8c496 bench_eval VLM path (per-image Engine.vlm_score, resumable cache, verdict/logit metrics) + Veritas++ b branch=detector/veritaspp sha=cf8c496687969b16ae755134bbcbb6b4d4baa21f src=github uncommitted_tracked_files=0 (IVI wt /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt clean)
+benchmarks: genimage_val100k forensynths13 ufd8 aigcdetect17 synthbuster_coco evalgen synthwildx wildrf aigibench25 rrdataset bfree_online cospybench ditfake arforensics realchain
+subset genimage_val100k: verified earlier
+subset forensynths13: verified earlier
+subset ufd8: verified earlier
+subset aigcdetect17: verified earlier
+subset synthbuster_coco: verified earlier
+subset evalgen: verified earlier
+subset synthwildx: verified earlier
+subset wildrf: verified earlier
+subset aigibench25: verified earlier
+subset rrdataset: verified earlier
+subset bfree_online: verified earlier
+subset cospybench: verified earlier
+subset ditfake: verified earlier
+subset arforensics: verified earlier
+subset realchain: verified earlier
+staging cn029:vlm_ckpts/veritaspp -> /local/ssalehid/cache/data029/vlm_ckpts/veritaspp/ 08:17:15
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn029:vlm_ckpts/veritaspp: 34 files, 17G 08:17:16
+veritaspp weights verified earlier (Tue Nov 17 07:54:02 CET 2026)
+staging cn023:zoo_ckpts/clip.pth -> /local/ssalehid/cache/data023/zoo_ckpts/clip.pth 08:17:27
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/clip.pth: 1 files, 890M 08:17:28
+ckpt: clip -> clip.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/clip.pth (932233793 bytes)
+dep: clipL
+staging ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/clip/ViT-L-14.pt 08:17:28
+staged ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt: 1 files, 890M 08:17:29
+  sha256 OK ViT-L-14.pt b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836 (932768134 bytes)
+staging cn023:zoo_ckpts/cnn.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth 08:17:39
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cnn.pth: 1 files, 90M 08:17:39
+ckpt: cnn -> cnn.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth (94339007 bytes)
+dep: resnet50
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth 08:17:39
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth: 1 files, 98M 08:17:40
+  sha256 prefix 11ad3fa6 OK
+staging cn023:zoo_ckpts/dinov2.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth 08:17:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov2.pth: 1 files, 1.2G 08:17:51
+ckpt: dinov2 -> dinov2.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth (1217613135 bytes)
+dep: dinov2hub
+  already in the node torch cache
+dep: dinov2w
+  dinov2_vitl14_pretrain.pth sha256=d5383ea8f4877b2472eb973e0fd72d557c7da5d3611bd527ceeb1d7162cbf428 (1217586395 bytes)
+staging cn023:zoo_ckpts/dinov3.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth 08:18:04
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov3.pth: 1 files, 1.2G 08:18:05
+ckpt: dinov3 -> dinov3.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth (1213057245 bytes)
+dep: dinov3
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3 -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/ 08:18:05
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3: 337 files, 33M 08:18:06
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth 08:18:06
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth: 1 files, 1.2G 08:18:07
+  sha256 prefix 8aa4cbdd OK
+staging cn023:zoo_ckpts/adapted_dino.pth -> /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth 08:18:17
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/adapted_dino.pth: 1 files, 1.2G 08:18:18
+ckpt: adapted_dino -> adapted_dino.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth (1230317327 bytes)
+staging cn023:zoo_ckpts/safe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/safe.pth 08:18:28
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/safe.pth: 1 files, 5.6M 08:18:29
+ckpt: safe -> safe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/safe.pth (5828943 bytes)
+staging cn023:zoo_ckpts/fat_former.pth -> /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth 08:18:39
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/fat_former.pth: 1 files, 1.9G 08:18:40
+ckpt: fat_former -> fat_former.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth (1971052681 bytes)
+staging cn023:zoo_ckpts/aide.pth -> /local/ssalehid/cache/data023/zoo_ckpts/aide.pth 08:18:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/aide.pth: 1 files, 3.4G 08:18:51
+ckpt: aide -> aide.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/aide.pth (3592077976 bytes)
+staging cn023:zoo_ckpts/spai.pth -> /local/ssalehid/cache/data023/zoo_ckpts/spai.pth 08:19:02
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/spai.pth: 1 files, 534M 08:19:02
+ckpt: spai -> spai.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/spai.pth (559607690 bytes)
+dep: mfm
+staging cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth -> /local/ssalehid/cache/data023/zoo_ckpts/mfm/mfm_pretrain_vit_base.pth 08:19:03
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth: 1 files, 328M 08:19:03
+  sha256 OK mfm_pretrain_vit_base.pth 3dc31520f8971c64f06a6924c2a5e738b25db06d06c9b58853d7b13c60af7c80 (343213629 bytes)
+staging cn023:zoo_ckpts/vib_net.pth -> /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth 08:19:13
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/vib_net.pth: 1 files, 1.7G 08:19:13
+ckpt: vib_net -> vib_net.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth (1720094231 bytes)
+staging cn023:zoo_ckpts/bfree.pth -> /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth 08:19:21
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/bfree.pth: 1 files, 331M 08:19:22
+ckpt: bfree -> bfree.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth (346171370 bytes)
+staging cn023:zoo_ckpts/effort.pth -> /local/ssalehid/cache/data023/zoo_ckpts/effort.pth 08:19:32
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/effort.pth: 1 files, 1.2G 08:19:33
+ckpt: effort -> effort.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/effort.pth (1213769519 bytes)
+dep: hf:models--openai--clip-vit-large-patch14
+staging cn023:zoo_ckpts/moejepa.safetensors -> /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors 08:19:41
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/moejepa.safetensors: 1 files, 590M 08:19:41
+ckpt: moejepa -> moejepa.safetensors staged at /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors (617963532 bytes)
+dep: hf:models--facebook--vjepa2-vitl-fpc64-256
+staging cn023:zoo_ckpts/co_spy.pth -> /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth 08:19:52
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/co_spy.pth: 1 files, 3.6G 08:19:52
+ckpt: co_spy -> co_spy.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth (3852684857 bytes)
+dep: hf:models--CompVis--stable-diffusion-v1-4
+dep: hf:models--timm--ViT-SO400M-14-SigLIP-384
+staging cn023:zoo_ckpts/pgc.pth -> /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth 08:20:01
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/pgc.pth: 1 files, 1.2G 08:20:02
+ckpt: pgc -> pgc.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth (1245911754 bytes)
+dep: hf:models--facebook--dinov2-large
+staging cn023:zoo_ckpts/cure.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cure.pth 08:20:12
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cure.pth: 1 files, 25M 08:20:12
+ckpt: cure -> cure.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cure.pth (25728649 bytes)
+dep: pecore
+staging cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt -> /local/ssalehid/cache/data023/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt 08:20:13
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt: 1 files, 2.6G 08:20:13
+  PE-Core-L14-336.pt sha256=0cdab5b338cbaa1e7a5dcd1b2fb4c9f4d5df1abd289564658edbab64a650e7e8 (2684747432 bytes)
+staging cn023:zoo_ckpts/dda.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dda.pth 08:20:26
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dda.pth: 1 files, 1.2G 08:20:27
+ckpt: dda -> dda.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dda.pth (1255621296 bytes)
+staging cn023:zoo_ckpts/d3qe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth 08:20:37
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/d3qe.pth: 1 files, 89M 08:20:38
+ckpt: d3qe -> d3qe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth (92395435 bytes)
+dep: hf:models--FoundationVision--LlamaGen
+  SYNTHSCOPE_LLAMAGEN_VQ=/local/ssalehid/cache/hf/hub/models--FoundationVision--LlamaGen/snapshots/81e41139272c038412e4fe8f1c52a51ebbf95b8b/vq_ds16_c2i.pt
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth 08:20:47
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth: 1 files, 60M 08:20:48
+ckpt: ltf -> ltf.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth (62249626 bytes)
+  sha256 OK ltf.pth 32e9fa2e38e04d6d0221c844d650f0d45f7235bbf898b5ad665543d8be580031 (62249626 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth 08:20:57
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth: 1 files, 3.3G 08:20:58
+ckpt: mirror -> mirror.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth (3453063720 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth 08:21:07
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth: 1 files, 1.2G 08:21:08
+ckpt: vina -> vina.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth (1212678500 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth 08:21:16
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth: 1 files, 1.2G 08:21:17
+ckpt: probe -> probe.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth (1217679947 bytes)
+  sha256 OK DINOv2_best_model_step_34999.pth c8caa9bad54c029e4d22e1909c4673e46a239d8419a986e0ab461d423a450156 (1217679947 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth 08:21:29
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth: 1 files, 90M 08:21:30
+ckpt: probe_resnet -> probe_resnet.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth (94362899 bytes)
+  sha256 OK ResNet50_best_model_step_19343.pth 71ef257eb288ae17c6ad3348085f2ca1ce1a2cfa4273d69ef47b5d3420f0507c (94362899 bytes)
+staging cn023:zoo_ckpts/omniaid.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth 08:21:41
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid.pth: 1 files, 3.1G 08:21:42
+ckpt: omniaid -> omniaid.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth (3241518989 bytes)
+dep: hf:models--openai--clip-vit-large-patch14-336
+staging cn023:zoo_ckpts/omniaid_v1.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth 08:21:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_v1.pth: 1 files, 3.1G 08:21:51
+ckpt: omniaid_v1 -> omniaid_v1.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth (3269036790 bytes)
+staging cn023:zoo_ckpts/omniaid_genimage.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth 08:22:02
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_genimage.pth: 1 files, 3.1G 08:22:02
+ckpt: omniaid_genimage -> omniaid_genimage.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth (3241198710 bytes)
+staging cn023:zoo_ckpts/npr.pth -> /local/ssalehid/cache/data023/zoo_ckpts/npr.pth 08:22:13
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/npr.pth: 1 files, 5.6M 08:22:14
+ckpt: npr -> npr.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/npr.pth (5835619 bytes)
+preflight: clip OK (marker offline 2026-11-17)
+preflight: cnn OK (marker offline 2026-11-17)
+preflight: dinov2 OK (marker offline 2026-11-17)
+preflight: dinov3 OK (marker offline 2026-11-17)
+preflight: adapted_dino OK (marker offline 2026-11-17)
+preflight: safe OK (marker offline 2026-11-17)
+preflight: fat_former OK (marker offline 2026-11-17)
+preflight: aide OK (marker offline 2026-11-17)
+preflight: spai OK (marker offline 2026-11-17)
+preflight: vib_net OK (marker offline 2026-11-17)
+preflight: bfree OK (marker offline 2026-11-17)
+preflight: effort OK (marker offline 2026-11-17)
+preflight: moejepa OK (marker offline 2026-11-17)
+preflight: co_spy OK (marker offline 2026-11-17)
+preflight: pgc OK (marker offline 2026-11-17)
+preflight: cure OK (marker offline 2026-11-17)
+preflight: dda OK (marker offline 2026-11-17)
+preflight: d3qe OK (marker offline 2026-11-17)
+preflight: ltf OK (marker offline 2026-11-17)
+preflight: mirror OK (marker offline 2026-11-17)
+preflight: vina OK (marker offline 2026-11-17)
+preflight: probe OK (marker offline 2026-11-17)
+preflight: probe_resnet OK (marker offline 2026-11-17)
+preflight: omniaid OK (marker offline 2026-11-17)
+preflight: omniaid_v1 OK (marker offline 2026-11-17)
+preflight: omniaid_genimage OK (marker offline 2026-11-17)
+preflight: npr OK (marker offline 2026-11-17)
+detectors requested: clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+detectors to run (27): clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+old-vs-new: old tree = 9f8b45c Veritas++ fidelity results (job 292005, bd4d8d2): 15/15 identical greedy tokens and verdicts
+old-vs-new: ref tree = 2691337 Matrix results: robustness slice COMPLETE (9 detectors x 9 degradations x synthwildx / wildr
+npr          wildrf       old vs new (clean)          DIFFERENT {"facebook": {"ap": 83.57, "auroc": 83.33, "real_acc": 83.33, "fake_acc": 33.33, "acc": 58.33}}
+npr          wildrf       ref vs new --degrade jpeg95 DIFFERENT {"facebook": {"ap": 81.35, "auroc": 80.56, "real_acc": 83.33, "fake_acc": 50.0, "acc": 66.67}}
+clip         wildrf       old vs new (clean)          DIFFERENT {"facebook": {"ap": 59.31, "auroc": 58.33, "real_acc": 100.0, "fake_acc": 0.0, "acc": 50.0}}
+clip         wildrf       ref vs new --degrade jpeg95 DIFFERENT {"facebook": {"ap": 60.22, "auroc": 58.33, "real_acc": 100.0, "fake_acc": 0.0, "acc": 50.0}}
+safe         ufd8         old vs new (clean)          DIFFERENT {"dalle": {"ap": 100.0, "auroc": 100.0, "real_acc": 100.0, "fake_acc": 100.0, "acc": 100.0}}
+safe         ufd8         ref vs new --degrade jpeg95 DIFFERENT {"dalle": {"ap": 56.08, "auroc": 38.89, "real_acc": 100.0, "fake_acc": 0.0, "acc": 50.0}}
+spai         wildrf       old vs new (clean)          DIFFERENT {"facebook": {"ap": 87.34, "auroc": 88.89, "real_acc": 83.33, "fake_acc": 66.67, "acc": 75.0}}
+spai         wildrf       ref vs new --degrade jpeg95 DIFFERENT {"facebook": {"ap": 91.51, "auroc": 91.67, "real_acc": 83.33, "fake_acc": 100.0, "acc": 91.67}}
+cure         evalgen      old vs new (clean)          DIFFERENT {"Flux": {"ap": 85.42, "auroc": 75.0, "real_acc": 100.0, "fake_acc": 66.67, "acc": 83.33}}
+cure         evalgen      ref vs new --degrade jpeg95 DIFFERENT {"Flux": {"ap": 89.68, "auroc": 86.11, "real_acc": 100.0, "fake_acc": 66.67, "acc": 83.33}}
+old_vs_new: DIFFERENCES FOUND (10 comparisons) -> /local/ssalehid/vpp/out/old_vs_new_70139.json
+old-vs-new rc=1
+=== run_units 08:28:21
+=== unit cmp:clip:genimage_val100k START 2026-11-17 08:28:21 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model clip --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_clip --out /local/ssalehid/vpp/out/genimage_val100k/clip.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:clip:genimage_val100k] === bench_eval vb_genimage_val100k_clip | model=clip ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:clip:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     adm: acc=64.29 AP=80.78 AUROC=80.75 (real_acc=96.83 fake_acc=31.75)
+[cmp:clip:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     biggan: acc=79.37 AP=90.71 AUROC=88.59 (real_acc=95.24 fake_acc=63.49)
+[cmp:clip:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     glide: acc=57.14 AP=73.45 AUROC=70.32 (real_acc=96.83 fake_acc=17.46)
+[cmp:clip:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     midjourney: acc=51.59 AP=50.98 AUROC=46.11 (real_acc=100.0 fake_acc=3.17)
+[cmp:clip:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     sdv1.4: acc=60.32 AP=75.77 AUROC=70.22 (real_acc=100.0 fake_acc=20.63)
+[cmp:clip:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     sdv1.5: acc=61.11 AP=70.25 AUROC=72.49 (real_acc=93.65 fake_acc=28.57)
+[cmp:clip:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     vqdm: acc=84.13 AP=95.67 AUROC=95.29 (real_acc=95.24 fake_acc=73.02)
+[cmp:clip:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:clip:genimage_val100k]     wukong: acc=58.73 AP=73.25 AUROC=71.68 (real_acc=96.83 fake_acc=20.63)
+[cmp:clip:genimage_val100k] === RESULT vb_genimage_val100k_clip: mAP=76.36 mAUROC=74.43 acc=64.59 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/clip.json.partial ===
+=== unit cmp:clip:genimage_val100k DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/genimage_val100k/clip.json
+=== unit cmp:cnn:genimage_val100k START 2026-11-17 08:29:24 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model cnn --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_cnn --out /local/ssalehid/vpp/out/genimage_val100k/cnn.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:cnn:genimage_val100k] === bench_eval vb_genimage_val100k_cnn | model=cnn ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:cnn:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     adm: acc=50.0 AP=70.76 AUROC=67.93 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     biggan: acc=61.9 AP=92.57 AUROC=92.62 (real_acc=100.0 fake_acc=23.81)
+[cmp:cnn:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     glide: acc=50.79 AP=57.11 AUROC=59.96 (real_acc=100.0 fake_acc=1.59)
+[cmp:cnn:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     midjourney: acc=50.0 AP=52.09 AUROC=52.28 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     sdv1.4: acc=50.0 AP=64.96 AUROC=63.34 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     sdv1.5: acc=52.38 AP=77.67 AUROC=78.89 (real_acc=98.41 fake_acc=6.35)
+[cmp:cnn:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     vqdm: acc=49.21 AP=70.05 AUROC=76.59 (real_acc=96.83 fake_acc=1.59)
+[cmp:cnn:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:cnn:genimage_val100k]     wukong: acc=50.79 AP=72.04 AUROC=75.11 (real_acc=100.0 fake_acc=1.59)
+[cmp:cnn:genimage_val100k] === RESULT vb_genimage_val100k_cnn: mAP=69.66 mAUROC=70.84 acc=51.88 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/cnn.json.partial ===
+=== unit cmp:cnn:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/cnn.json
+=== unit cmp:dinov2:genimage_val100k START 2026-11-17 08:29:52 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model dinov2 --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_dinov2 --out /local/ssalehid/vpp/out/genimage_val100k/dinov2.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:dinov2:genimage_val100k] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dinov2:genimage_val100k] === bench_eval vb_genimage_val100k_dinov2 | model=dinov2 ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:dinov2:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     adm: acc=59.52 AP=70.06 AUROC=71.03 (real_acc=90.48 fake_acc=28.57)
+[cmp:dinov2:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     biggan: acc=88.1 AP=96.36 AUROC=96.3 (real_acc=92.06 fake_acc=84.13)
+[cmp:dinov2:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     glide: acc=73.02 AP=84.8 AUROC=85.29 (real_acc=93.65 fake_acc=52.38)
+[cmp:dinov2:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     midjourney: acc=49.21 AP=54.9 AUROC=60.49 (real_acc=90.48 fake_acc=7.94)
+[cmp:dinov2:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     sdv1.4: acc=80.16 AP=93.22 AUROC=91.38 (real_acc=100.0 fake_acc=60.32)
+[cmp:dinov2:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     sdv1.5: acc=82.54 AP=94.17 AUROC=94.08 (real_acc=93.65 fake_acc=71.43)
+[cmp:dinov2:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     vqdm: acc=81.75 AP=93.2 AUROC=91.64 (real_acc=90.48 fake_acc=73.02)
+[cmp:dinov2:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:dinov2:genimage_val100k]     wukong: acc=56.35 AP=74.55 AUROC=74.83 (real_acc=95.24 fake_acc=17.46)
+[cmp:dinov2:genimage_val100k] === RESULT vb_genimage_val100k_dinov2: mAP=82.66 mAUROC=83.13 acc=71.33 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/dinov2.json.partial ===
+=== unit cmp:dinov2:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/dinov2.json
+=== unit cmp:dinov3:genimage_val100k START 2026-11-17 08:30:41 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model dinov3 --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_dinov3 --out /local/ssalehid/vpp/out/genimage_val100k/dinov3.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:dinov3:genimage_val100k] === bench_eval vb_genimage_val100k_dinov3 | model=dinov3 ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:dinov3:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     adm: acc=69.05 AP=82.6 AUROC=79.26 (real_acc=90.48 fake_acc=47.62)
+[cmp:dinov3:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     biggan: acc=79.37 AP=88.91 AUROC=84.98 (real_acc=84.13 fake_acc=74.6)
+[cmp:dinov3:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     glide: acc=74.6 AP=85.07 AUROC=82.16 (real_acc=87.3 fake_acc=61.9)
+[cmp:dinov3:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     midjourney: acc=51.59 AP=61.63 AUROC=69.36 (real_acc=84.13 fake_acc=19.05)
+[cmp:dinov3:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     sdv1.4: acc=79.37 AP=87.96 AUROC=86.72 (real_acc=88.89 fake_acc=69.84)
+[cmp:dinov3:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     sdv1.5: acc=84.13 AP=92.93 AUROC=92.49 (real_acc=92.06 fake_acc=76.19)
+[cmp:dinov3:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     vqdm: acc=87.3 AP=95.3 AUROC=94.36 (real_acc=90.48 fake_acc=84.13)
+[cmp:dinov3:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:dinov3:genimage_val100k]     wukong: acc=79.37 AP=90.26 AUROC=88.16 (real_acc=82.54 fake_acc=76.19)
+[cmp:dinov3:genimage_val100k] === RESULT vb_genimage_val100k_dinov3: mAP=85.58 mAUROC=84.69 acc=75.6 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/dinov3.json.partial ===
+=== unit cmp:dinov3:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/dinov3.json
+=== unit cmp:adapted_dino:genimage_val100k START 2026-11-17 08:31:31 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model adapted_dino --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_adapted_dino --out /local/ssalehid/vpp/out/genimage_val100k/adapted_dino.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:adapted_dino:genimage_val100k] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:adapted_dino:genimage_val100k] === bench_eval vb_genimage_val100k_adapted_dino | model=adapted_dino ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:adapted_dino:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     adm: acc=50.79 AP=86.1 AUROC=88.54 (real_acc=100.0 fake_acc=1.59)
+[cmp:adapted_dino:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     biggan: acc=94.44 AP=99.95 AUROC=99.95 (real_acc=100.0 fake_acc=88.89)
+[cmp:adapted_dino:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     glide: acc=53.17 AP=87.02 AUROC=86.92 (real_acc=100.0 fake_acc=6.35)
+[cmp:adapted_dino:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     midjourney: acc=50.0 AP=64.53 AUROC=64.73 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     sdv1.4: acc=50.79 AP=80.52 AUROC=83.32 (real_acc=100.0 fake_acc=1.59)
+[cmp:adapted_dino:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     sdv1.5: acc=50.0 AP=76.61 AUROC=78.89 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     vqdm: acc=68.25 AP=98.37 AUROC=98.46 (real_acc=100.0 fake_acc=36.51)
+[cmp:adapted_dino:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:adapted_dino:genimage_val100k]     wukong: acc=50.0 AP=84.87 AUROC=85.24 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:genimage_val100k] === RESULT vb_genimage_val100k_adapted_dino: mAP=84.75 mAUROC=85.76 acc=58.43 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/adapted_dino.json.partial ===
+=== unit cmp:adapted_dino:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/adapted_dino.json
+=== unit cmp:safe:genimage_val100k START 2026-11-17 08:32:20 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model safe --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_safe --out /local/ssalehid/vpp/out/genimage_val100k/safe.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:safe:genimage_val100k]   from pkg_resources import resource_stream
+[cmp:safe:genimage_val100k] === bench_eval vb_genimage_val100k_safe | model=safe ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:safe:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     adm: acc=76.19 AP=97.33 AUROC=96.62 (real_acc=100.0 fake_acc=52.38)
+[cmp:safe:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     biggan: acc=94.44 AP=99.21 AUROC=98.41 (real_acc=100.0 fake_acc=88.89)
+[cmp:safe:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     glide: acc=95.24 AP=98.14 AUROC=96.6 (real_acc=100.0 fake_acc=90.48)
+[cmp:safe:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     midjourney: acc=95.24 AP=99.62 AUROC=99.57 (real_acc=100.0 fake_acc=90.48)
+[cmp:safe:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     sdv1.4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:safe:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     sdv1.5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:safe:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     vqdm: acc=93.65 AP=98.65 AUROC=99.07 (real_acc=98.41 fake_acc=88.89)
+[cmp:safe:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:safe:genimage_val100k]     wukong: acc=96.03 AP=99.21 AUROC=98.44 (real_acc=100.0 fake_acc=92.06)
+[cmp:safe:genimage_val100k] === RESULT vb_genimage_val100k_safe: mAP=99.02 mAUROC=98.59 acc=93.85 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/safe.json.partial ===
+=== unit cmp:safe:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/safe.json
+=== unit cmp:fat_former:genimage_val100k START 2026-11-17 08:32:45 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model fat_former --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_fat_former --out /local/ssalehid/vpp/out/genimage_val100k/fat_former.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:fat_former:genimage_val100k]   from pkg_resources import resource_stream
+[cmp:fat_former:genimage_val100k] === bench_eval vb_genimage_val100k_fat_former | model=fat_former ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:fat_former:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     adm: acc=61.9 AP=80.56 AUROC=81.53 (real_acc=96.83 fake_acc=26.98)
+[cmp:fat_former:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     biggan: acc=92.06 AP=98.52 AUROC=98.44 (real_acc=96.83 fake_acc=87.3)
+[cmp:fat_former:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     glide: acc=80.16 AP=93.79 AUROC=93.17 (real_acc=98.41 fake_acc=61.9)
+[cmp:fat_former:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     midjourney: acc=55.56 AP=64.63 AUROC=62.23 (real_acc=96.83 fake_acc=14.29)
+[cmp:fat_former:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     sdv1.4: acc=70.63 AP=88.31 AUROC=86.32 (real_acc=98.41 fake_acc=42.86)
+[cmp:fat_former:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     sdv1.5: acc=74.6 AP=90.97 AUROC=91.89 (real_acc=98.41 fake_acc=50.79)
+[cmp:fat_former:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     vqdm: acc=78.57 AP=95.04 AUROC=95.01 (real_acc=98.41 fake_acc=58.73)
+[cmp:fat_former:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:fat_former:genimage_val100k]     wukong: acc=71.43 AP=84.99 AUROC=81.43 (real_acc=98.41 fake_acc=44.44)
+[cmp:fat_former:genimage_val100k] === RESULT vb_genimage_val100k_fat_former: mAP=87.1 mAUROC=86.25 acc=73.11 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/fat_former.json.partial ===
+=== unit cmp:fat_former:genimage_val100k DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/genimage_val100k/fat_former.json
+=== unit cmp:aide:genimage_val100k START 2026-11-17 08:33:46 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model aide --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_aide --out /local/ssalehid/vpp/out/genimage_val100k/aide.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:aide:genimage_val100k] WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+[cmp:aide:genimage_val100k] === bench_eval vb_genimage_val100k_aide | model=aide ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:aide:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     adm: acc=65.08 AP=85.52 AUROC=79.67 (real_acc=100.0 fake_acc=30.16)
+[cmp:aide:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     biggan: acc=70.63 AP=90.66 AUROC=85.26 (real_acc=100.0 fake_acc=41.27)
+[cmp:aide:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     glide: acc=92.06 AP=98.75 AUROC=97.98 (real_acc=100.0 fake_acc=84.13)
+[cmp:aide:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     midjourney: acc=85.71 AP=98.92 AUROC=98.94 (real_acc=100.0 fake_acc=71.43)
+[cmp:aide:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     sdv1.4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:aide:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     sdv1.5: acc=99.21 AP=100.0 AUROC=100.0 (real_acc=98.41 fake_acc=100.0)
+[cmp:aide:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     vqdm: acc=83.33 AP=94.8 AUROC=92.11 (real_acc=98.41 fake_acc=68.25)
+[cmp:aide:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:aide:genimage_val100k]     wukong: acc=99.21 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=98.41)
+[cmp:aide:genimage_val100k] === RESULT vb_genimage_val100k_aide: mAP=96.08 mAUROC=94.25 acc=86.9 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/aide.json.partial ===
+=== unit cmp:aide:genimage_val100k DONE rc=0 in 0.05 h -> /local/ssalehid/vpp/out/genimage_val100k/aide.json
+=== unit cmp:spai:genimage_val100k START 2026-11-17 08:36:30 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model spai --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_spai --out /local/ssalehid/vpp/out/genimage_val100k/spai.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:spai:genimage_val100k] [SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+[cmp:spai:genimage_val100k] === bench_eval vb_genimage_val100k_spai | model=spai ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:spai:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     adm: acc=69.84 AP=83.12 AUROC=83.37 (real_acc=90.48 fake_acc=49.21)
+[cmp:spai:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     biggan: acc=84.13 AP=91.53 AUROC=89.63 (real_acc=93.65 fake_acc=74.6)
+[cmp:spai:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     glide: acc=88.1 AP=95.64 AUROC=96.37 (real_acc=92.06 fake_acc=84.13)
+[cmp:spai:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     midjourney: acc=88.89 AP=97.1 AUROC=96.98 (real_acc=88.89 fake_acc=88.89)
+[cmp:spai:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     sdv1.4: acc=97.62 AP=99.77 AUROC=99.8 (real_acc=95.24 fake_acc=100.0)
+[cmp:spai:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     sdv1.5: acc=96.03 AP=98.26 AUROC=99.11 (real_acc=92.06 fake_acc=100.0)
+[cmp:spai:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     vqdm: acc=92.06 AP=97.74 AUROC=97.51 (real_acc=93.65 fake_acc=90.48)
+[cmp:spai:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:spai:genimage_val100k]     wukong: acc=95.24 AP=99.38 AUROC=99.36 (real_acc=92.06 fake_acc=98.41)
+[cmp:spai:genimage_val100k] === RESULT vb_genimage_val100k_spai: mAP=95.32 mAUROC=95.27 acc=88.99 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/spai.json.partial ===
+=== unit cmp:spai:genimage_val100k DONE rc=0 in 0.06 h -> /local/ssalehid/vpp/out/genimage_val100k/spai.json
+=== unit cmp:vib_net:genimage_val100k START 2026-11-17 08:39:50 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model vib_net --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_vib_net --out /local/ssalehid/vpp/out/genimage_val100k/vib_net.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:vib_net:genimage_val100k] === bench_eval vb_genimage_val100k_vib_net | model=vib_net ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:vib_net:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     adm: acc=64.29 AP=93.47 AUROC=92.77 (real_acc=100.0 fake_acc=28.57)
+[cmp:vib_net:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     biggan: acc=50.0 AP=55.91 AUROC=52.15 (real_acc=100.0 fake_acc=0.0)
+[cmp:vib_net:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     glide: acc=70.63 AP=91.05 AUROC=88.76 (real_acc=98.41 fake_acc=42.86)
+[cmp:vib_net:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     midjourney: acc=89.68 AP=98.19 AUROC=98.49 (real_acc=96.83 fake_acc=82.54)
+[cmp:vib_net:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     sdv1.4: acc=98.41 AP=100.0 AUROC=100.0 (real_acc=96.83 fake_acc=100.0)
+[cmp:vib_net:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     sdv1.5: acc=98.41 AP=100.0 AUROC=100.0 (real_acc=96.83 fake_acc=100.0)
+[cmp:vib_net:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     vqdm: acc=88.89 AP=97.53 AUROC=97.43 (real_acc=96.83 fake_acc=80.95)
+[cmp:vib_net:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:vib_net:genimage_val100k]     wukong: acc=96.83 AP=99.88 AUROC=99.87 (real_acc=95.24 fake_acc=98.41)
+[cmp:vib_net:genimage_val100k] === RESULT vb_genimage_val100k_vib_net: mAP=92.0 mAUROC=91.18 acc=82.14 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/vib_net.json.partial ===
+=== unit cmp:vib_net:genimage_val100k DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/genimage_val100k/vib_net.json
+=== unit cmp:bfree:genimage_val100k START 2026-11-17 08:40:35 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model bfree --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_bfree --out /local/ssalehid/vpp/out/genimage_val100k/bfree.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:bfree:genimage_val100k] === bench_eval vb_genimage_val100k_bfree | model=bfree ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:bfree:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     adm: acc=65.08 AP=85.06 AUROC=83.6 (real_acc=98.41 fake_acc=31.75)
+[cmp:bfree:genimage_val100k]   biggan: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     biggan: acc=70.63 AP=96.89 AUROC=97.25 (real_acc=98.41 fake_acc=42.86)
+[cmp:bfree:genimage_val100k]   glide: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     glide: acc=64.29 AP=86.31 AUROC=88.59 (real_acc=95.24 fake_acc=33.33)
+[cmp:bfree:genimage_val100k]   midjourney: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     midjourney: acc=94.44 AP=97.42 AUROC=97.88 (real_acc=96.83 fake_acc=92.06)
+[cmp:bfree:genimage_val100k]   sdv1.4: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     sdv1.4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:bfree:genimage_val100k]   sdv1.5: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     sdv1.5: acc=99.21 AP=100.0 AUROC=100.0 (real_acc=98.41 fake_acc=100.0)
+[cmp:bfree:genimage_val100k]   vqdm: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     vqdm: acc=83.33 AP=96.84 AUROC=96.55 (real_acc=96.83 fake_acc=69.84)
+[cmp:bfree:genimage_val100k]   wukong: 63 real + 63 fake ...
+[cmp:bfree:genimage_val100k]     wukong: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:bfree:genimage_val100k] === RESULT vb_genimage_val100k_bfree: mAP=95.32 mAUROC=95.48 acc=84.62 over 8 generators -> /local/ssalehid/vpp/out/genimage_val100k/bfree.json.partial ===
+=== unit cmp:bfree:genimage_val100k DONE rc=0 in 0.05 h -> /local/ssalehid/vpp/out/genimage_val100k/bfree.json
+=== unit cmp:effort:genimage_val100k START 2026-11-17 08:43:33 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70139/code/benchmark/bench_eval.py --model effort --benchmark pergen --data /local/ssalehid/vpp/subsets/genimage_val100k/data --tag vb_genimage_val100k_effort --out /local/ssalehid/vpp/out/genimage_val100k/effort.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.271796.jsonl --limit 63 --bs 32
+[cmp:effort:genimage_val100k] [1mCLIPVisionModel LOAD REPORT[0m from: openai/clip-vit-large-patch14
+[cmp:effort:genimage_val100k] Key                                                          | Status     |  |
+[cmp:effort:genimage_val100k] -------------------------------------------------------------+------------+--+-
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.layer_norm1.weight        | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.v_proj.bias     | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.layer_norm2.weight        | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.layer_norm2.bias          | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.q_proj.weight   | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.layer_norm1.bias          | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.k_proj.bias     | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.q_proj.bias     | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.mlp.fc1.bias              | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.mlp.fc2.weight            | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.out_proj.bias   | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.out_proj.weight | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] logit_scale                                                  | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.mlp.fc2.bias              | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] vision_model.embeddings.position_ids                         | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.final_layer_norm.bias                             | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.mlp.fc1.weight            | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.embeddings.token_embedding.weight                 | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.embeddings.position_embedding.weight              | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.v_proj.weight   | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.embeddings.position_ids                           | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.encoder.layers.{0...11}.self_attn.k_proj.weight   | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] visual_projection.weight                                     | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_projection.weight                                       | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] text_model.final_layer_norm.weight                           | UNEXPECTED |  |
+[cmp:effort:genimage_val100k] Notes:
+[cmp:effort:genimage_val100k] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:effort:genimage_val100k] === bench_eval vb_genimage_val100k_effort | model=effort ckpt=registry-default | pergen | 8 generators | device=cuda ===
+[cmp:effort:genimage_val100k]   adm: 63 real + 63 fake ...
+[cmp:effort:genimage_val100k]     adm: acc=73.02 AP=99.74 AUROC=99.72 (real_acc=100.0 fake_acc=46.03)
+[cmp:effort:genimage_val100k]   biggan: 63 real + 63 fake ...
+slurmstepd: error: *** JOB 70139 ON node409 CANCELLED AT 2026-11-17T08:44:24 ***
+exit rc=0: final sync 08:44:24
+[cmp:effort:genimage_val100k]     biggan: acc=74.6 AP=99.08 AUROC=99.12 (real_acc=100.0 fake_acc=49.21)
+[cmp:effort:genimage_val100k]   glide: 63 real + 63 fake ...
+/var/scratch/ssalehid/synthscope_das6/das6_lib.sh: line 28: 271793 Terminated              ( while sleep $SYNC_SECONDS; do
+    sync_results;
+done )
+[cmp:effort:genimage_val100k]     glide: acc=96.03 AP=99.98 AUROC=99.97 (real_acc=100.0 fake_acc=92.06)
+[cmp:effort:genimage_val100k]   midjourney: 63 real + 63 fake ...

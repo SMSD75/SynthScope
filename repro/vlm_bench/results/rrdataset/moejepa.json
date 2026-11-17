@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 64.77,
+    "map": 73.92,
+    "mauroc": 73.5
+  },
+  "per_generator": {
+    "original": {
+      "ap": 95.54,
+      "auroc": 94.43,
+      "real_acc": 90.42,
+      "fake_acc": 85.63,
+      "acc": 88.02
+    },
+    "redigital": {
+      "ap": 55.97,
+      "auroc": 51.38,
+      "real_acc": 98.2,
+      "fake_acc": 9.58,
+      "acc": 53.89
+    },
+    "transfer": {
+      "ap": 70.26,
+      "auroc": 74.68,
+      "real_acc": 97.6,
+      "fake_acc": 7.19,
+      "acc": 52.4
+    }
+  },
+  "date": "2026-11-17T18:16:16",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

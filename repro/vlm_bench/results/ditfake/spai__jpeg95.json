@@ -1,0 +1,42 @@
+{
+  "tag": "vb_ditfake_spai__jpeg95",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 91.42,
+    "map": 97.97,
+    "mauroc": 98.01
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 95.97,
+      "auroc": 96.13,
+      "real_acc": 92.81,
+      "fake_acc": 79.64,
+      "acc": 86.23
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 98.6,
+      "auroc": 98.59,
+      "real_acc": 96.41,
+      "fake_acc": 91.62,
+      "acc": 94.01
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.33,
+      "auroc": 99.31,
+      "real_acc": 95.21,
+      "fake_acc": 92.81,
+      "acc": 94.01
+    }
+  },
+  "date": "2026-11-17T22:22:27",
+  "synthscope_version": "0.1.0",
+  "degrade": "jpeg95",
+  "limit": 167
+}

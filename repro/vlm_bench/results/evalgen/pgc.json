@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_pgc",
+  "model": "pgc",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 53.3,
+    "map": 82.66,
+    "mauroc": 85.29
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 59.29,
+      "auroc": 62.55,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "GoT": {
+      "ap": 88.92,
+      "auroc": 92.41,
+      "real_acc": 100.0,
+      "fake_acc": 3.0,
+      "acc": 51.5
+    },
+    "Infinity": {
+      "ap": 86.96,
+      "auroc": 89.44,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "NOVA": {
+      "ap": 97.75,
+      "auroc": 97.98,
+      "real_acc": 100.0,
+      "fake_acc": 30.0,
+      "acc": 65.0
+    },
+    "OmniGen": {
+      "ap": 80.4,
+      "auroc": 84.08,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-11-17T13:26:24",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

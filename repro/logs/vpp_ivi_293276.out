@@ -1,0 +1,1052 @@
+staging the weights from ivi-cn029 to /ssdstore/ssalehi/SynthScope/vlm_ckpts/veritaspp 18:20:44
+staged 17G 18:20:44
+node=ivi-cn027 job=293276 Tue Nov 17 18:20:46 CET 2026 code=7de4a1e vlm_bench: untrack the in-progress results swept into 4112db8 (they are committed when the r (7de4a1ea841d89755d8baf2400e4153d519c44be, copied to /ssdstore/ssalehi/SynthScope/vpp/code_293276)
+NVIDIA RTX A5000, 24564 MiB
+UNITS=vlm:ufd8:jpeg95
+=== Veritas++ weights: pinned revision (hf download metadata) + sha256 ===
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+sha256 OK
+=== subsets ===
+subset ufd8: verified earlier
+=== run_units 18:21:03
+=== unit vlm:ufd8:jpeg95 START 2026-11-17 18:21:03 on ivi-cn027: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_293276/benchmark/bench_eval.py --model veritaspp --benchmark ufd --data /ssdstore/ssalehi/SynthScope/vpp/subsets/ufd8/data --tag vb_ufd8_veritaspp__jpeg95 --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/ufd8/veritaspp__jpeg95.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn027.1569640.jsonl --limit 63 --degrade jpeg95 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/ufd8
+[vlm:ufd8:jpeg95] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[vlm:ufd8:jpeg95] === bench_eval vb_ufd8_veritaspp__jpeg95 | model=veritaspp ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[vlm:ufd8:jpeg95] [vlm-cache] /ssdstore/ssalehi/SynthScope/vpp/cache/ufd8/veritaspp__greedy__jpeg95: 0 cached images
+[vlm:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95] The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aadlygmazf.png label=1 verdict=real logit=-3.1250 src=verdict_token tok=561 19.1s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=399 13.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aaksjqrtil.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=446 15.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aakydlwfer.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/abaxzegfoi.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=361 12.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/abzfomfxjd.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=413 14.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/acpwmtyztu.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=481 16.4s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/adizyjvxam.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=433 14.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/adkpoxtrlp.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=510 17.4s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aesvfgnjye.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=366 12.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/afwwethmvf.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=539 18.4s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/agjsmczzat.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=403 13.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ahbiztymlj.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=566 19.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ahnijblsap.png label=1 verdict=fake logit=5.2500 src=verdict_token tok=366 12.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ahwxcijnxm.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=447 15.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aieykhstre.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=495 16.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ajaqvfgsih.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=521 17.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ajdylzvnwn.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=422 14.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ajefhvvxek.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=445 15.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ajldduomvc.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=518 17.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ajwadbiyry.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=451 15.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aksszgcpfr.png label=1 verdict=real logit=-8.5000 src=verdict_token tok=424 14.4s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/albdpubxka.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=558 19.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/alzrdyourf.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=546 18.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/amcjhcqbxr.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=400 13.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/amthaokcfg.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=494 16.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/annkzxvqsz.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=348 11.9s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aociqzuesd.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=615 21.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aofcqpcyfk.png label=1 verdict=real logit=-5.3750 src=verdict_token tok=478 16.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aowpbzokmp.png label=1 verdict=fake logit=3.5000 src=verdict_token tok=463 15.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aoyyeorqer.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=404 13.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/apdgetedbs.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=455 15.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/apfyxprqpm.png label=1 verdict=fake logit=4.0000 src=verdict_token tok=385 13.1s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/apwufqzgrg.png label=1 verdict=fake logit=5.6250 src=verdict_token tok=460 15.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=540 18.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aqdcxmcowi.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=443 15.1s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aqfnjpltvb.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=397 13.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/arfbiucpar.png label=1 verdict=real logit=-8.6250 src=verdict_token tok=426 14.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/arjjdokwee.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=430 14.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/arnnhazyia.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=405 13.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ascyfbgfmn.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=368 12.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/asxtxajrfc.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=549 18.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/attqnlwqgz.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=465 15.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/auannvrmrm.png label=1 verdict=real logit=-8.5000 src=verdict_token tok=435 14.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aujwkgbadp.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/awjhtixyqd.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=458 15.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ayibbogxvl.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=504 17.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/aynkpajrmy.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=478 16.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/ayzndlluru.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=496 16.9s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=509 17.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bbmeviacjm.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=552 18.8s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bbqlufpjnl.png label=1 verdict=real logit=-4.1250 src=verdict_token tok=594 20.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bbsnktsonl.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=516 17.6s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bbupregfhp.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=593 20.1s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bcdxmvfonp.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=440 15.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bcqofpsyca.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=485 16.5s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bdwbeyarpc.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=433 14.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bebadtkmes.png label=1 verdict=real logit=-5.3750 src=verdict_token tok=481 16.3s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bfczagsxfw.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=444 15.2s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bfiknazsha.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=469 16.0s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=616 20.9s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bghliglwng.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=610 20.7s
+[vlm:ufd8:jpeg95]     vlm dalle/1_fake/bhlyixirpi.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=444 15.1s
+[vlm:ufd8:jpeg95]     scored 126 new image(s), 16.44 s/img; 0 from the cache
+[vlm:ufd8:jpeg95]     dalle: acc=69.05 AP=77.85 AUROC=72.74 (real_acc=96.83 fake_acc=41.27) unparsed=0 mean_tokens=483.6
+[vlm:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aadlygmazf.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=369 12.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=376 12.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aaksjqrtil.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=383 13.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aakydlwfer.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=457 15.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/abaxzegfoi.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=474 16.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/abzfomfxjd.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=489 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/acpwmtyztu.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=475 16.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/adizyjvxam.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/adkpoxtrlp.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=427 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aesvfgnjye.png label=1 verdict=fake logit=3.1250 src=verdict_token tok=500 17.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/afwwethmvf.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=398 13.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/agjsmczzat.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=404 13.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ahbiztymlj.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=449 15.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ahnijblsap.png label=1 verdict=fake logit=3.7500 src=verdict_token tok=517 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ahwxcijnxm.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=444 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aieykhstre.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=441 15.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ajaqvfgsih.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=516 17.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ajdylzvnwn.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=437 14.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ajefhvvxek.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=470 16.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ajldduomvc.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=639 21.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ajwadbiyry.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=535 18.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aksszgcpfr.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=448 15.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/albdpubxka.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=474 16.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/alzrdyourf.png label=1 verdict=fake logit=5.5000 src=verdict_token tok=395 13.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/amcjhcqbxr.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=431 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/amthaokcfg.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=521 17.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/annkzxvqsz.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=494 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aociqzuesd.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=440 14.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aofcqpcyfk.png label=1 verdict=real logit=-5.2500 src=verdict_token tok=556 18.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aowpbzokmp.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=433 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aoyyeorqer.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=330 11.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/apdgetedbs.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=483 16.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/apfyxprqpm.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=499 16.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/apwufqzgrg.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=358 12.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=469 15.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aqdcxmcowi.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=375 12.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=492 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/arfbiucpar.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=501 17.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/arjjdokwee.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/arnnhazyia.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=428 14.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ascyfbgfmn.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=577 19.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/asxtxajrfc.png label=1 verdict=real logit=-3.6250 src=verdict_token tok=461 15.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/attqnlwqgz.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=519 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/auannvrmrm.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=499 16.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aujwkgbadp.png label=1 verdict=fake logit=5.2500 src=verdict_token tok=494 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/awjhtixyqd.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=543 18.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ayibbogxvl.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=463 15.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/aynkpajrmy.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=494 16.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/ayzndlluru.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=454 15.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=495 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bbmeviacjm.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=407 13.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bbqlufpjnl.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=460 15.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bbsnktsonl.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=403 13.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bbupregfhp.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=509 17.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bcdxmvfonp.png label=1 verdict=fake logit=4.2500 src=verdict_token tok=432 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bcqofpsyca.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=523 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bdwbeyarpc.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=375 12.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bebadtkmes.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=432 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bfczagsxfw.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=435 14.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bfiknazsha.png label=1 verdict=fake logit=5.5000 src=verdict_token tok=471 15.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bfuqjvwwlk.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=439 14.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bghliglwng.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=375 12.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_10/1_fake/bhlyixirpi.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=547 18.8s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 15.67 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     glide_100_10: acc=73.02 AP=85.03 AUROC=85.46 (real_acc=96.83 fake_acc=49.21) unparsed=0 mean_tokens=479.1
+[vlm:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aadlygmazf.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=470 16.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=418 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aaksjqrtil.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=486 16.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aakydlwfer.png label=1 verdict=real logit=-4.5000 src=verdict_token tok=497 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/abaxzegfoi.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=543 18.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/abzfomfxjd.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=536 18.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/acpwmtyztu.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=509 17.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/adizyjvxam.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=528 18.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/adkpoxtrlp.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=541 18.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aesvfgnjye.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=621 21.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/afwwethmvf.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=462 15.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/agjsmczzat.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=405 13.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ahbiztymlj.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=486 17.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ahnijblsap.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=423 14.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ahwxcijnxm.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=417 13.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aieykhstre.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=518 17.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ajaqvfgsih.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=558 18.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ajdylzvnwn.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=447 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ajefhvvxek.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=519 17.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ajldduomvc.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=439 14.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ajwadbiyry.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=519 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aksszgcpfr.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=344 11.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/albdpubxka.png label=1 verdict=real logit=-4.3750 src=verdict_token tok=496 16.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/alzrdyourf.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=497 16.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=502 16.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/amthaokcfg.png label=1 verdict=real logit=-5.2500 src=verdict_token tok=534 17.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/annkzxvqsz.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=440 14.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aociqzuesd.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=511 17.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aofcqpcyfk.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=481 16.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aowpbzokmp.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=391 13.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aoyyeorqer.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=464 15.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/apdgetedbs.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=502 16.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/apfyxprqpm.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=451 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/apwufqzgrg.png label=1 verdict=fake logit=5.1250 src=verdict_token tok=354 12.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aqawlsbyzw.png label=1 verdict=fake logit=3.1250 src=verdict_token tok=362 12.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=547 18.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=549 18.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/arfbiucpar.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=489 16.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/arjjdokwee.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=492 16.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/arnnhazyia.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=544 18.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ascyfbgfmn.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=466 15.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/asxtxajrfc.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=451 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/attqnlwqgz.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=462 15.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/auannvrmrm.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=442 14.8s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aujwkgbadp.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=460 15.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/awjhtixyqd.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=514 17.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ayibbogxvl.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=418 14.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/aynkpajrmy.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=419 14.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/ayzndlluru.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=358 12.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=554 18.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bbmeviacjm.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=428 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bbqlufpjnl.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=401 13.5s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bbsnktsonl.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=502 16.9s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bbupregfhp.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=343 11.6s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bcdxmvfonp.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=401 13.4s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bcqofpsyca.png label=1 verdict=real logit=-3.6250 src=verdict_token tok=510 17.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bdwbeyarpc.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=409 13.7s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bebadtkmes.png label=1 verdict=real logit=-4.3750 src=verdict_token tok=419 14.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bfczagsxfw.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=516 17.3s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bfiknazsha.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=509 17.0s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=485 16.2s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bghliglwng.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=450 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_100_27/1_fake/bhlyixirpi.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=529 17.7s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 15.92 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     glide_100_27: acc=68.25 AP=81.74 AUROC=83.33 (real_acc=96.83 fake_acc=39.68) unparsed=0 mean_tokens=484.0
+[vlm:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aadlygmazf.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=516 17.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=353 11.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aaksjqrtil.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=426 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aakydlwfer.png label=1 verdict=fake logit=4.7500 src=verdict_token tok=488 16.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/abaxzegfoi.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=490 16.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/abzfomfxjd.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=425 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/acpwmtyztu.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=503 16.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/adizyjvxam.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=381 12.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/adkpoxtrlp.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=572 19.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aesvfgnjye.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=427 14.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/afwwethmvf.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=396 13.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/agjsmczzat.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=431 14.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ahbiztymlj.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=466 15.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ahnijblsap.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=652 21.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ahwxcijnxm.png label=1 verdict=fake logit=4.2500 src=verdict_token tok=450 15.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aieykhstre.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=487 16.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ajaqvfgsih.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=458 15.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ajdylzvnwn.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=433 14.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ajefhvvxek.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=604 20.2s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ajldduomvc.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=542 18.2s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ajwadbiyry.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=437 14.7s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aksszgcpfr.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=407 13.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/albdpubxka.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=531 17.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/alzrdyourf.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=569 19.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=473 15.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/amthaokcfg.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=471 15.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/annkzxvqsz.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=495 16.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aociqzuesd.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=448 15.0s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aofcqpcyfk.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=461 15.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aowpbzokmp.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=483 16.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aoyyeorqer.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=472 15.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/apdgetedbs.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=421 14.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/apfyxprqpm.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=487 16.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/apwufqzgrg.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=423 14.2s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=590 19.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=422 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=541 18.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/arfbiucpar.png label=1 verdict=fake logit=5.6250 src=verdict_token tok=464 15.7s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/arjjdokwee.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=492 16.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/arnnhazyia.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=498 16.8s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ascyfbgfmn.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=427 14.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/asxtxajrfc.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=525 17.7s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/attqnlwqgz.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=632 21.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/auannvrmrm.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=522 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aujwkgbadp.png label=1 verdict=real logit=-5.2500 src=verdict_token tok=527 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/awjhtixyqd.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=416 13.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ayibbogxvl.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=438 14.7s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/aynkpajrmy.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=455 15.2s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/ayzndlluru.png label=1 verdict=fake logit=4.3750 src=verdict_token tok=360 12.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=506 16.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bbmeviacjm.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=436 14.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bbqlufpjnl.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=527 17.6s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bbsnktsonl.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=507 17.0s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bbupregfhp.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=544 18.2s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bcdxmvfonp.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=460 15.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bcqofpsyca.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=391 13.1s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bdwbeyarpc.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=477 16.0s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bebadtkmes.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=426 14.3s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bfczagsxfw.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=429 14.4s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bfiknazsha.png label=1 verdict=real logit=-3.6250 src=verdict_token tok=582 19.5s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=533 17.9s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bghliglwng.png label=1 verdict=fake logit=5.5000 src=verdict_token tok=468 15.7s
+[vlm:ufd8:jpeg95]     vlm glide_50_27/1_fake/bhlyixirpi.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=410 13.7s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 16.02 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     glide_50_27: acc=70.63 AP=79.85 AUROC=79.29 (real_acc=96.83 fake_acc=44.44) unparsed=0 mean_tokens=486.7
+[vlm:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aadlygmazf.JPEG label=0 verdict=real logit=-7.7500 src=verdict_token tok=445 14.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aahxgrlfqt.JPEG label=0 verdict=real logit=-8.3750 src=verdict_token tok=452 15.2s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aaksjqrtil.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=558 18.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aakydlwfer.JPEG label=0 verdict=real logit=-7.2500 src=verdict_token tok=563 18.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/abaxzegfoi.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=496 16.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/abzfomfxjd.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=507 17.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/acpwmtyztu.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=463 15.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/adizyjvxam.JPEG label=0 verdict=real logit=-8.8750 src=verdict_token tok=546 18.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/adkpoxtrlp.JPEG label=0 verdict=real logit=-7.6250 src=verdict_token tok=621 20.8s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aesvfgnjye.JPEG label=0 verdict=real logit=-8.5000 src=verdict_token tok=525 17.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/afwwethmvf.JPEG label=0 verdict=real logit=-7.2500 src=verdict_token tok=649 21.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/agjsmczzat.JPEG label=0 verdict=real logit=-7.3750 src=verdict_token tok=614 20.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ahbiztymlj.JPEG label=0 verdict=real logit=-7.8750 src=verdict_token tok=545 18.2s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ahnijblsap.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=541 18.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ahwxcijnxm.JPEG label=0 verdict=real logit=-7.7500 src=verdict_token tok=462 15.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aieykhstre.JPEG label=0 verdict=real logit=-7.8750 src=verdict_token tok=543 18.2s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ajaqvfgsih.JPEG label=0 verdict=real logit=-8.5000 src=verdict_token tok=494 16.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ajdylzvnwn.JPEG label=0 verdict=real logit=-8.3750 src=verdict_token tok=465 15.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ajefhvvxek.JPEG label=0 verdict=real logit=-8.7500 src=verdict_token tok=506 17.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ajldduomvc.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=546 18.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ajwadbiyry.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=554 18.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aksszgcpfr.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=492 16.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/albdpubxka.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=595 19.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/alzrdyourf.JPEG label=0 verdict=real logit=-8.3750 src=verdict_token tok=505 16.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/amcjhcqbxr.JPEG label=0 verdict=real logit=-5.6250 src=verdict_token tok=466 15.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/amthaokcfg.JPEG label=0 verdict=real logit=-7.6250 src=verdict_token tok=570 19.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/annkzxvqsz.JPEG label=0 verdict=real logit=-7.0000 src=verdict_token tok=580 19.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aociqzuesd.JPEG label=0 verdict=real logit=-8.3750 src=verdict_token tok=534 17.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aofcqpcyfk.JPEG label=0 verdict=real logit=-6.2500 src=verdict_token tok=524 17.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aowpbzokmp.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=526 17.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aoyyeorqer.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=542 18.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/apdgetedbs.JPEG label=0 verdict=real logit=-7.1250 src=verdict_token tok=543 18.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/apfyxprqpm.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=539 18.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/apwufqzgrg.JPEG label=0 verdict=real logit=-7.7500 src=verdict_token tok=487 16.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aqawlsbyzw.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=479 16.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aqdcxmcowi.JPEG label=0 verdict=real logit=-8.6250 src=verdict_token tok=456 15.2s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aqfnjpltvb.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=475 15.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/arfbiucpar.JPEG label=0 verdict=real logit=-8.5000 src=verdict_token tok=527 17.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/arjjdokwee.JPEG label=0 verdict=real logit=-7.8750 src=verdict_token tok=509 17.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/arnnhazyia.JPEG label=0 verdict=real logit=-7.7500 src=verdict_token tok=479 16.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ascyfbgfmn.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=527 17.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/asxtxajrfc.JPEG label=0 verdict=real logit=-7.8750 src=verdict_token tok=565 18.9s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/attqnlwqgz.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=486 16.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/auannvrmrm.JPEG label=0 verdict=real logit=-7.6250 src=verdict_token tok=618 20.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aujwkgbadp.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=556 18.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/awjhtixyqd.JPEG label=0 verdict=real logit=-7.8750 src=verdict_token tok=529 17.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ayibbogxvl.JPEG label=0 verdict=real logit=-8.7500 src=verdict_token tok=497 16.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/aynkpajrmy.JPEG label=0 verdict=real logit=-8.8750 src=verdict_token tok=526 17.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/ayzndlluru.JPEG label=0 verdict=real logit=-8.6250 src=verdict_token tok=457 15.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bbdiioaqyn.JPEG label=0 verdict=real logit=-8.2500 src=verdict_token tok=548 18.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bbmeviacjm.JPEG label=0 verdict=real logit=-8.5000 src=verdict_token tok=539 18.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bbqlufpjnl.JPEG label=0 verdict=real logit=-7.3750 src=verdict_token tok=519 17.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bbsnktsonl.JPEG label=0 verdict=real logit=-8.8750 src=verdict_token tok=525 17.6s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bbupregfhp.JPEG label=0 verdict=real logit=-7.6250 src=verdict_token tok=518 17.4s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bcdxmvfonp.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=608 20.3s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bcqofpsyca.JPEG label=0 verdict=real logit=-8.3750 src=verdict_token tok=414 13.8s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bdwbeyarpc.JPEG label=0 verdict=real logit=-7.3750 src=verdict_token tok=481 16.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bebadtkmes.JPEG label=0 verdict=real logit=-7.0000 src=verdict_token tok=559 18.7s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bfczagsxfw.JPEG label=0 verdict=real logit=-7.3750 src=verdict_token tok=555 18.5s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bfiknazsha.JPEG label=0 verdict=real logit=-8.5000 src=verdict_token tok=610 20.4s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bfuqjvwwlk.JPEG label=0 verdict=real logit=-8.0000 src=verdict_token tok=627 21.0s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bghliglwng.JPEG label=0 verdict=real logit=-8.1250 src=verdict_token tok=600 20.1s
+[vlm:ufd8:jpeg95]     vlm imagenet/0_real/bhlyixirpi.JPEG label=0 verdict=real logit=-7.6250 src=verdict_token tok=470 15.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aadlygmazf.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=566 18.9s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aahxgrlfqt.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=527 17.6s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aaksjqrtil.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=417 14.0s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aakydlwfer.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=426 14.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/abaxzegfoi.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=443 14.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/abzfomfxjd.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=527 17.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/acpwmtyztu.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=426 14.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/adizyjvxam.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=462 15.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/adkpoxtrlp.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=451 15.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aesvfgnjye.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=518 17.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/afwwethmvf.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=353 11.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/agjsmczzat.png label=1 verdict=fake logit=4.8750 src=verdict_token tok=478 16.0s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ahbiztymlj.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=463 15.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ahnijblsap.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=563 18.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ahwxcijnxm.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=508 17.0s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aieykhstre.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=462 15.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ajaqvfgsih.png label=1 verdict=fake logit=5.2500 src=verdict_token tok=456 15.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ajdylzvnwn.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=554 18.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ajefhvvxek.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=469 15.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ajldduomvc.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=493 16.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ajwadbiyry.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=497 16.6s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aksszgcpfr.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=456 15.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/albdpubxka.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=548 18.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/alzrdyourf.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=561 18.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=510 17.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/amthaokcfg.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=467 15.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/annkzxvqsz.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=635 21.2s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aociqzuesd.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=497 16.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aofcqpcyfk.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=590 19.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aowpbzokmp.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=520 17.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aoyyeorqer.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=446 14.9s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/apdgetedbs.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=519 17.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/apfyxprqpm.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=619 20.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/apwufqzgrg.png label=1 verdict=fake logit=4.2500 src=verdict_token tok=550 18.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=489 16.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=511 17.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=491 16.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/arfbiucpar.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=429 14.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/arjjdokwee.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=500 16.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/arnnhazyia.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=560 18.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ascyfbgfmn.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=442 14.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/asxtxajrfc.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=519 17.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/attqnlwqgz.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=525 17.6s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/auannvrmrm.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=448 15.0s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aujwkgbadp.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=554 18.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/awjhtixyqd.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=420 14.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ayibbogxvl.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=399 13.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/aynkpajrmy.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=455 15.2s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/ayzndlluru.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=528 17.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=481 16.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bbmeviacjm.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=472 15.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bbqlufpjnl.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=530 17.7s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bbsnktsonl.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=429 14.4s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bbupregfhp.png label=1 verdict=real logit=-3.3750 src=verdict_token tok=576 19.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bcdxmvfonp.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=487 16.3s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bcqofpsyca.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=510 17.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bdwbeyarpc.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=450 15.1s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bebadtkmes.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=440 14.8s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bfczagsxfw.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=463 15.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bfiknazsha.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=461 15.5s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=506 17.0s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bghliglwng.png label=1 verdict=real logit=-5.1250 src=verdict_token tok=481 16.2s
+[vlm:ufd8:jpeg95]     vlm guided/1_fake/bhlyixirpi.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=450 15.1s
+[vlm:ufd8:jpeg95]     scored 126 new image(s), 17.07 s/img; 0 from the cache
+[vlm:ufd8:jpeg95]     guided: acc=65.88 AP=87.57 AUROC=87.38 (real_acc=100.0 fake_acc=31.75) unparsed=0 mean_tokens=509.8
+[vlm:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aadlygmazf.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=609 20.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=423 14.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aaksjqrtil.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=555 18.6s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aakydlwfer.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=338 11.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/abaxzegfoi.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=417 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/abzfomfxjd.png label=1 verdict=real logit=-4.3750 src=verdict_token tok=569 19.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/acpwmtyztu.png label=1 verdict=None logit=0.0000 src=unparsed tok=2048 68.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/adizyjvxam.png label=1 verdict=real logit=-4.3750 src=verdict_token tok=594 19.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/adkpoxtrlp.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=446 14.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aesvfgnjye.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=450 15.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/afwwethmvf.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=562 18.8s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/agjsmczzat.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=582 19.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ahbiztymlj.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=466 15.6s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ahnijblsap.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=469 15.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ahwxcijnxm.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=590 19.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aieykhstre.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=431 14.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ajaqvfgsih.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=427 14.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ajdylzvnwn.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=465 15.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ajefhvvxek.png label=1 verdict=real logit=-5.1250 src=verdict_token tok=551 18.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ajldduomvc.png label=1 verdict=real logit=-5.0000 src=verdict_token tok=579 19.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ajwadbiyry.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=552 18.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aksszgcpfr.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=592 19.8s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/albdpubxka.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=566 18.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/alzrdyourf.png label=1 verdict=real logit=-3.8750 src=verdict_token tok=618 20.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-3.7500 src=verdict_token tok=559 18.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/amthaokcfg.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=639 21.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/annkzxvqsz.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=488 16.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aociqzuesd.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=395 13.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aofcqpcyfk.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=518 17.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aowpbzokmp.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=445 14.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aoyyeorqer.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=394 13.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/apdgetedbs.png label=1 verdict=fake logit=5.6250 src=verdict_token tok=497 16.6s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/apfyxprqpm.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=436 14.6s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/apwufqzgrg.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=616 20.6s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=597 20.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=518 17.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=550 18.4s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/arfbiucpar.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=454 15.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/arjjdokwee.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=533 17.8s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/arnnhazyia.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=414 13.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ascyfbgfmn.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=510 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/asxtxajrfc.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=451 15.1s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/attqnlwqgz.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=386 12.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/auannvrmrm.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=419 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aujwkgbadp.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=679 22.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/awjhtixyqd.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=577 19.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ayibbogxvl.png label=1 verdict=real logit=-8.2500 src=verdict_token tok=415 13.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/aynkpajrmy.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=453 15.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/ayzndlluru.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=413 13.9s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=621 20.8s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bbmeviacjm.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=419 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bbqlufpjnl.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=403 13.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bbsnktsonl.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=428 14.3s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bbupregfhp.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=537 18.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bcdxmvfonp.png label=1 verdict=fake logit=0.2500 src=verdict_token tok=619 20.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bcqofpsyca.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=514 17.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bdwbeyarpc.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=513 17.2s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bebadtkmes.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=506 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bfczagsxfw.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=594 19.7s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bfiknazsha.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=513 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=587 19.5s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bghliglwng.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=443 14.8s
+[vlm:ufd8:jpeg95]     vlm ldm_100/1_fake/bhlyixirpi.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=511 17.0s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 17.78 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     ldm_100: acc=69.84 AP=83.9 AUROC=81.67 (real_acc=96.83 fake_acc=42.86) unparsed=1 mean_tokens=513.5
+[vlm:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aadlygmazf.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=630 21.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aahxgrlfqt.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=426 14.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aaksjqrtil.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=535 17.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aakydlwfer.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=417 13.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/abaxzegfoi.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=503 16.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/abzfomfxjd.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=356 11.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/acpwmtyztu.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=535 17.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/adizyjvxam.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=492 16.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/adkpoxtrlp.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=420 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aesvfgnjye.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=507 16.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/afwwethmvf.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=553 18.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/agjsmczzat.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=511 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ahbiztymlj.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=468 15.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ahnijblsap.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=456 15.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ahwxcijnxm.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=516 17.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aieykhstre.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=454 15.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ajaqvfgsih.png label=1 verdict=fake logit=3.8750 src=verdict_token tok=534 17.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ajdylzvnwn.png label=1 verdict=real logit=-8.2500 src=verdict_token tok=581 19.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ajefhvvxek.png label=1 verdict=real logit=-2.3750 src=verdict_token tok=594 19.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ajldduomvc.png label=1 verdict=fake logit=5.3750 src=verdict_token tok=574 19.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ajwadbiyry.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=544 18.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aksszgcpfr.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=504 16.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/albdpubxka.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=505 16.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/alzrdyourf.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=511 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-4.5000 src=verdict_token tok=442 14.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/amthaokcfg.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=453 15.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/annkzxvqsz.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=692 23.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aociqzuesd.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=383 12.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aofcqpcyfk.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=352 11.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aowpbzokmp.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=525 17.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aoyyeorqer.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=366 12.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/apdgetedbs.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=445 14.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/apfyxprqpm.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=483 16.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/apwufqzgrg.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=429 14.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=628 20.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=479 16.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=524 17.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/arfbiucpar.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=465 15.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/arjjdokwee.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=445 14.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/arnnhazyia.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=459 15.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ascyfbgfmn.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=532 17.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/asxtxajrfc.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=454 15.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/attqnlwqgz.png label=1 verdict=real logit=-5.5000 src=verdict_token tok=605 20.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/auannvrmrm.png label=1 verdict=real logit=-1.0000 src=verdict_token tok=560 18.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aujwkgbadp.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=540 18.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/awjhtixyqd.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=491 16.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ayibbogxvl.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=451 15.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/aynkpajrmy.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=512 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/ayzndlluru.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=396 13.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=465 15.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bbmeviacjm.png label=1 verdict=fake logit=4.5000 src=verdict_token tok=571 19.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bbqlufpjnl.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=414 13.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bbsnktsonl.png label=1 verdict=fake logit=5.7500 src=verdict_token tok=427 14.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bbupregfhp.png label=1 verdict=None logit=0.0000 src=unparsed tok=2048 68.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bcdxmvfonp.png label=1 verdict=real logit=-3.6250 src=verdict_token tok=619 20.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bcqofpsyca.png label=1 verdict=fake logit=4.7500 src=verdict_token tok=474 15.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bdwbeyarpc.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=482 16.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bebadtkmes.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=565 18.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bfczagsxfw.png label=1 verdict=real logit=-0.8750 src=verdict_token tok=541 18.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bfiknazsha.png label=1 verdict=real logit=-3.2500 src=verdict_token tok=685 22.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bfuqjvwwlk.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=511 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bghliglwng.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=513 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200/1_fake/bhlyixirpi.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=411 13.7s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 17.45 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     ldm_200: acc=65.08 AP=78.19 AUROC=77.43 (real_acc=96.83 fake_acc=33.33) unparsed=1 mean_tokens=509.5
+[vlm:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aadlygmazf.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=430 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aahxgrlfqt.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=441 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aaksjqrtil.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=538 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aakydlwfer.jpg label=0 verdict=real logit=-6.5000 src=verdict_token tok=543 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abaxzegfoi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=423 14.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/abzfomfxjd.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=571 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/acpwmtyztu.jpg label=0 verdict=real logit=-5.7500 src=verdict_token tok=532 18.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adizyjvxam.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=534 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/adkpoxtrlp.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=479 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aesvfgnjye.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=540 18.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/afwwethmvf.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=618 21.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/agjsmczzat.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=579 19.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahbiztymlj.jpg label=0 verdict=real logit=-4.1250 src=verdict_token tok=638 21.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahnijblsap.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=478 16.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ahwxcijnxm.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=599 20.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aieykhstre.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=466 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajaqvfgsih.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=447 15.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajdylzvnwn.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=494 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajefhvvxek.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=533 18.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajldduomvc.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=511 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ajwadbiyry.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aksszgcpfr.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=465 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/albdpubxka.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=451 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/alzrdyourf.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=543 18.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amcjhcqbxr.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=533 18.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/amthaokcfg.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=485 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/annkzxvqsz.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=488 16.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aociqzuesd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=460 15.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aofcqpcyfk.jpg label=0 verdict=real logit=-5.5000 src=verdict_token tok=452 15.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aowpbzokmp.jpg label=0 verdict=real logit=-5.6250 src=verdict_token tok=556 18.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aoyyeorqer.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=500 17.1s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apdgetedbs.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=494 16.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apfyxprqpm.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/apwufqzgrg.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=461 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqawlsbyzw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=433 14.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqdcxmcowi.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=509 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aqfnjpltvb.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arfbiucpar.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=569 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arjjdokwee.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=528 17.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/arnnhazyia.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=419 14.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ascyfbgfmn.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=467 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/asxtxajrfc.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/attqnlwqgz.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=407 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/auannvrmrm.jpg label=0 verdict=fake logit=5.7500 src=verdict_token tok=409 13.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aujwkgbadp.jpg label=0 verdict=fake logit=7.1250 src=verdict_token tok=440 15.0s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/awjhtixyqd.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=507 17.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayibbogxvl.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=518 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/aynkpajrmy.jpg label=0 verdict=real logit=-4.0000 src=verdict_token tok=568 19.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/ayzndlluru.jpg label=0 verdict=real logit=-5.8750 src=verdict_token tok=450 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbdiioaqyn.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=542 18.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbmeviacjm.jpg label=0 verdict=real logit=-4.6250 src=verdict_token tok=448 15.2s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbqlufpjnl.jpg label=0 verdict=real logit=-4.7500 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbsnktsonl.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=460 15.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bbupregfhp.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=492 16.7s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcdxmvfonp.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=511 17.4s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bcqofpsyca.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=484 16.5s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bdwbeyarpc.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=438 14.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bebadtkmes.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=547 18.6s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfczagsxfw.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=448 15.3s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfiknazsha.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=468 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bfuqjvwwlk.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=467 15.9s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bghliglwng.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=464 15.8s [cached]
+[vlm:ufd8:jpeg95]     vlm laion/0_real/bhlyixirpi.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=519 17.6s [cached]
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aadlygmazf.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=437 14.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aahxgrlfqt.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=586 19.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aaksjqrtil.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=486 16.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aakydlwfer.png label=1 verdict=real logit=-2.8750 src=verdict_token tok=636 21.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/abaxzegfoi.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=449 15.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/abzfomfxjd.png label=1 verdict=fake logit=4.8750 src=verdict_token tok=373 12.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/acpwmtyztu.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=419 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/adizyjvxam.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=437 14.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/adkpoxtrlp.png label=1 verdict=fake logit=6.0000 src=verdict_token tok=431 14.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aesvfgnjye.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=654 21.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/afwwethmvf.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=424 14.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/agjsmczzat.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=477 15.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ahbiztymlj.png label=1 verdict=real logit=-4.8750 src=verdict_token tok=625 20.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ahnijblsap.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=524 17.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ahwxcijnxm.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=649 21.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aieykhstre.png label=1 verdict=fake logit=5.6250 src=verdict_token tok=530 17.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ajaqvfgsih.png label=1 verdict=fake logit=4.5000 src=verdict_token tok=429 14.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ajdylzvnwn.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=497 16.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ajefhvvxek.png label=1 verdict=fake logit=1.8750 src=verdict_token tok=506 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ajldduomvc.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=484 16.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ajwadbiyry.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=519 17.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aksszgcpfr.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=402 13.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/albdpubxka.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=505 16.8s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/alzrdyourf.png label=1 verdict=fake logit=4.3750 src=verdict_token tok=526 17.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/amcjhcqbxr.png label=1 verdict=real logit=-3.3750 src=verdict_token tok=563 18.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/amthaokcfg.png label=1 verdict=real logit=-4.2500 src=verdict_token tok=541 18.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/annkzxvqsz.png label=1 verdict=real logit=-5.2500 src=verdict_token tok=601 20.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aociqzuesd.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=522 17.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aofcqpcyfk.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=440 14.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aowpbzokmp.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=471 15.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aoyyeorqer.png label=1 verdict=fake logit=5.1250 src=verdict_token tok=465 15.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/apdgetedbs.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=509 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/apfyxprqpm.png label=1 verdict=real logit=-8.2500 src=verdict_token tok=489 16.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/apwufqzgrg.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=550 18.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aqawlsbyzw.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=514 17.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aqdcxmcowi.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=484 16.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aqfnjpltvb.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=501 16.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/arfbiucpar.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=584 19.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/arjjdokwee.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=524 17.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/arnnhazyia.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=501 16.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ascyfbgfmn.png label=1 verdict=real logit=-6.7500 src=verdict_token tok=514 17.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/asxtxajrfc.png label=1 verdict=real logit=-7.6250 src=verdict_token tok=498 16.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/attqnlwqgz.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=546 18.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/auannvrmrm.png label=1 verdict=real logit=-6.3750 src=verdict_token tok=521 17.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aujwkgbadp.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=612 20.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/awjhtixyqd.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=609 20.3s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ayibbogxvl.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=463 15.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/aynkpajrmy.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=509 17.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/ayzndlluru.png label=1 verdict=real logit=-8.3750 src=verdict_token tok=437 14.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bbdiioaqyn.png label=1 verdict=real logit=-3.5000 src=verdict_token tok=628 20.9s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bbmeviacjm.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=543 18.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bbqlufpjnl.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=422 14.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bbsnktsonl.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=483 16.1s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bbupregfhp.png label=1 verdict=real logit=-6.6250 src=verdict_token tok=471 15.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bcdxmvfonp.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=438 14.6s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bcqofpsyca.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=541 18.0s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bdwbeyarpc.png label=1 verdict=real logit=-5.0000 src=verdict_token tok=616 20.5s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bebadtkmes.png label=1 verdict=real logit=-8.2500 src=verdict_token tok=462 15.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bfczagsxfw.png label=1 verdict=None logit=0.0000 src=unparsed tok=2048 68.2s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bfiknazsha.png label=1 verdict=real logit=-6.1250 src=verdict_token tok=531 17.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bfuqjvwwlk.png label=1 verdict=fake logit=4.5000 src=verdict_token tok=432 14.4s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bghliglwng.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=502 16.7s
+[vlm:ufd8:jpeg95]     vlm ldm_200_cfg/1_fake/bhlyixirpi.png label=1 verdict=real logit=-7.8750 src=verdict_token tok=472 15.7s
+[vlm:ufd8:jpeg95]     scored 63 new image(s), 17.77 s/img; 63 from the cache
+[vlm:ufd8:jpeg95]     ldm_200_cfg: acc=61.11 AP=69.87 AUROC=66.81 (real_acc=96.83 fake_acc=25.4) unparsed=1 mean_tokens=514.3
+[vlm:ufd8:jpeg95] === RESULT vb_ufd8_veritaspp__jpeg95: mAP=80.5 mAUROC=79.26 acc=67.86 over 8 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/ufd8/veritaspp__jpeg95.json.partial ===
+=== unit vlm:ufd8:jpeg95 DONE rc=0 in 2.94 h -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/ufd8/veritaspp__jpeg95.json
+=== run_units: 1/1 unit results present; failed: []; not present: []
+=== run_units rc=0 Tue Nov 17 21:17:19 CET 2026

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 66.06,
+    "map": 74.52,
+    "mauroc": 71.12
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 82.16,
+      "auroc": 80.49,
+      "real_acc": 84.38,
+      "fake_acc": 58.13,
+      "acc": 71.25
+    },
+    "reddit": {
+      "ap": 65.37,
+      "auroc": 60.54,
+      "real_acc": 89.22,
+      "fake_acc": 28.74,
+      "acc": 58.98
+    },
+    "twitter": {
+      "ap": 76.04,
+      "auroc": 72.32,
+      "real_acc": 83.23,
+      "fake_acc": 52.69,
+      "acc": 67.96
+    }
+  },
+  "date": "2026-11-17T15:55:38",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

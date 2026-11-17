@@ -1,0 +1,790 @@
+{
+  "tag": "vb_cospybench_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/cospybench/data",
+  "jpeg_fakes": null,
+  "n_generators": 110,
+  "means": {
+    "acc": 65.18,
+    "map": 73.22,
+    "mauroc": 65.2
+  },
+  "per_generator": {
+    "cc3m__CompVis@ldm-text2im-large-256": {
+      "ap": 87.11,
+      "auroc": 80.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__CompVis@stable-diffusion-v1-4": {
+      "ap": 81.0,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 100.0,
+      "fake_acc": 60.0,
+      "acc": 80.0
+    },
+    "cc3m__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "cc3m__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__black-forest-labs@FLUX.1-schnell": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 100.0,
+      "fake_acc": 60.0,
+      "acc": 80.0
+    },
+    "cc3m__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__latent-consistency@lcm-lora-sdxl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 94.29,
+      "auroc": 92.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "cc3m__playgroundai@playground-v2-256px-base": {
+      "ap": 86.0,
+      "auroc": 76.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__playgroundai@playground-v2-512px-base": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "cc3m__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 91.11,
+      "auroc": 84.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__runwayml@stable-diffusion-v1-5": {
+      "ap": 83.5,
+      "auroc": 80.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "cc3m__segmind@SSD-1B": {
+      "ap": 87.67,
+      "auroc": 88.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 82.11,
+      "auroc": 76.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__segmind@small-sd": {
+      "ap": 73.89,
+      "auroc": 56.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__segmind@tiny-sd": {
+      "ap": 83.33,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "cc3m__stabilityai@sdxl-turbo": {
+      "ap": 79.44,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__stabilityai@stable-diffusion-2": {
+      "ap": 55.33,
+      "auroc": 48.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "cc3m__stabilityai@stable-diffusion-2-1": {
+      "ap": 83.33,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "cc3m__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 83.33,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 60.0,
+      "acc": 80.0
+    },
+    "cc3m__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 75.0,
+      "auroc": 60.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "flickr__CompVis@ldm-text2im-large-256": {
+      "ap": 57.46,
+      "auroc": 36.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__CompVis@stable-diffusion-v1-4": {
+      "ap": 46.39,
+      "auroc": 28.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 92.5,
+      "auroc": 88.0,
+      "real_acc": 80.0,
+      "fake_acc": 80.0,
+      "acc": 80.0
+    },
+    "flickr__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__black-forest-labs@FLUX.1-schnell": {
+      "ap": 87.11,
+      "auroc": 80.0,
+      "real_acc": 80.0,
+      "fake_acc": 60.0,
+      "acc": 70.0
+    },
+    "flickr__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 92.5,
+      "auroc": 88.0,
+      "real_acc": 80.0,
+      "fake_acc": 80.0,
+      "acc": 80.0
+    },
+    "flickr__latent-consistency@lcm-lora-sdxl": {
+      "ap": 78.93,
+      "auroc": 72.0,
+      "real_acc": 80.0,
+      "fake_acc": 60.0,
+      "acc": 70.0
+    },
+    "flickr__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__playgroundai@playground-v2-256px-base": {
+      "ap": 67.87,
+      "auroc": 60.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "flickr__playgroundai@playground-v2-512px-base": {
+      "ap": 39.39,
+      "auroc": 16.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "flickr__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 90.0,
+      "auroc": 80.0,
+      "real_acc": 80.0,
+      "fake_acc": 80.0,
+      "acc": 80.0
+    },
+    "flickr__runwayml@stable-diffusion-v1-5": {
+      "ap": 56.89,
+      "auroc": 36.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__segmind@SSD-1B": {
+      "ap": 55.46,
+      "auroc": 32.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 55.87,
+      "auroc": 52.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__segmind@small-sd": {
+      "ap": 54.39,
+      "auroc": 28.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__segmind@tiny-sd": {
+      "ap": 52.1,
+      "auroc": 20.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__stabilityai@sdxl-turbo": {
+      "ap": 50.0,
+      "auroc": 40.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "flickr__stabilityai@stable-diffusion-2": {
+      "ap": 39.39,
+      "auroc": 16.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "flickr__stabilityai@stable-diffusion-2-1": {
+      "ap": 61.43,
+      "auroc": 48.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "flickr__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 37.06,
+      "auroc": 8.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "flickr__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 56.39,
+      "auroc": 32.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "mscoco__CompVis@ldm-text2im-large-256": {
+      "ap": 71.17,
+      "auroc": 68.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__CompVis@stable-diffusion-v1-4": {
+      "ap": 61.43,
+      "auroc": 48.0,
+      "real_acc": 40.0,
+      "fake_acc": 60.0,
+      "acc": 50.0
+    },
+    "mscoco__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 40.0,
+      "fake_acc": 100.0,
+      "acc": 70.0
+    },
+    "mscoco__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 92.5,
+      "auroc": 88.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 40.0,
+      "fake_acc": 100.0,
+      "acc": 70.0
+    },
+    "mscoco__black-forest-labs@FLUX.1-schnell": {
+      "ap": 62.78,
+      "auroc": 64.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 83.5,
+      "auroc": 80.0,
+      "real_acc": 40.0,
+      "fake_acc": 100.0,
+      "acc": 70.0
+    },
+    "mscoco__latent-consistency@lcm-lora-sdxl": {
+      "ap": 69.68,
+      "auroc": 52.0,
+      "real_acc": 40.0,
+      "fake_acc": 40.0,
+      "acc": 40.0
+    },
+    "mscoco__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 90.29,
+      "auroc": 88.0,
+      "real_acc": 40.0,
+      "fake_acc": 100.0,
+      "acc": 70.0
+    },
+    "mscoco__playgroundai@playground-v2-256px-base": {
+      "ap": 51.11,
+      "auroc": 44.0,
+      "real_acc": 40.0,
+      "fake_acc": 60.0,
+      "acc": 50.0
+    },
+    "mscoco__playgroundai@playground-v2-512px-base": {
+      "ap": 57.87,
+      "auroc": 56.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 51.43,
+      "auroc": 44.0,
+      "real_acc": 40.0,
+      "fake_acc": 60.0,
+      "acc": 50.0
+    },
+    "mscoco__runwayml@stable-diffusion-v1-5": {
+      "ap": 64.44,
+      "auroc": 52.0,
+      "real_acc": 40.0,
+      "fake_acc": 60.0,
+      "acc": 50.0
+    },
+    "mscoco__segmind@SSD-1B": {
+      "ap": 59.26,
+      "auroc": 60.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 61.67,
+      "auroc": 60.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__segmind@small-sd": {
+      "ap": 50.0,
+      "auroc": 40.0,
+      "real_acc": 40.0,
+      "fake_acc": 60.0,
+      "acc": 50.0
+    },
+    "mscoco__segmind@tiny-sd": {
+      "ap": 43.24,
+      "auroc": 28.0,
+      "real_acc": 40.0,
+      "fake_acc": 40.0,
+      "acc": 40.0
+    },
+    "mscoco__stabilityai@sdxl-turbo": {
+      "ap": 58.67,
+      "auroc": 56.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__stabilityai@stable-diffusion-2": {
+      "ap": 67.87,
+      "auroc": 60.0,
+      "real_acc": 40.0,
+      "fake_acc": 80.0,
+      "acc": 60.0
+    },
+    "mscoco__stabilityai@stable-diffusion-2-1": {
+      "ap": 47.68,
+      "auroc": 36.0,
+      "real_acc": 40.0,
+      "fake_acc": 20.0,
+      "acc": 30.0
+    },
+    "mscoco__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 63.33,
+      "auroc": 48.0,
+      "real_acc": 40.0,
+      "fake_acc": 40.0,
+      "acc": 40.0
+    },
+    "mscoco__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 46.35,
+      "auroc": 36.0,
+      "real_acc": 40.0,
+      "fake_acc": 40.0,
+      "acc": 40.0
+    },
+    "sbu__CompVis@ldm-text2im-large-256": {
+      "ap": 87.11,
+      "auroc": 80.0,
+      "real_acc": 100.0,
+      "fake_acc": 60.0,
+      "acc": 80.0
+    },
+    "sbu__CompVis@stable-diffusion-v1-4": {
+      "ap": 53.02,
+      "auroc": 44.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "sbu__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 90.0,
+      "auroc": 80.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "sbu__black-forest-labs@FLUX.1-dev": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "sbu__black-forest-labs@FLUX.1-schnell": {
+      "ap": 82.54,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "sbu__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "sbu__latent-consistency@lcm-lora-sdxl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2-256px-base": {
+      "ap": 73.89,
+      "auroc": 56.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "sbu__playgroundai@playground-v2-512px-base": {
+      "ap": 92.5,
+      "auroc": 88.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "sbu__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 78.93,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "sbu__runwayml@stable-diffusion-v1-5": {
+      "ap": 53.33,
+      "auroc": 44.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "sbu__segmind@SSD-1B": {
+      "ap": 75.0,
+      "auroc": 60.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "sbu__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 55.46,
+      "auroc": 32.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "sbu__segmind@small-sd": {
+      "ap": 67.22,
+      "auroc": 52.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "sbu__segmind@tiny-sd": {
+      "ap": 47.68,
+      "auroc": 36.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "sbu__stabilityai@sdxl-turbo": {
+      "ap": 92.5,
+      "auroc": 88.0,
+      "real_acc": 100.0,
+      "fake_acc": 80.0,
+      "acc": 90.0
+    },
+    "sbu__stabilityai@stable-diffusion-2": {
+      "ap": 68.57,
+      "auroc": 48.0,
+      "real_acc": 100.0,
+      "fake_acc": 20.0,
+      "acc": 60.0
+    },
+    "sbu__stabilityai@stable-diffusion-2-1": {
+      "ap": 81.0,
+      "auroc": 72.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "sbu__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 41.57,
+      "auroc": 24.0,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "sbu__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 69.68,
+      "auroc": 52.0,
+      "real_acc": 100.0,
+      "fake_acc": 40.0,
+      "acc": 70.0
+    },
+    "textcaps__CompVis@ldm-text2im-large-256": {
+      "ap": 66.44,
+      "auroc": 60.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "textcaps__CompVis@stable-diffusion-v1-4": {
+      "ap": 75.95,
+      "auroc": 76.0,
+      "real_acc": 80.0,
+      "fake_acc": 60.0,
+      "acc": 70.0
+    },
+    "textcaps__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "textcaps__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "textcaps__black-forest-labs@FLUX.1-dev": {
+      "ap": 88.5,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 80.0,
+      "acc": 80.0
+    },
+    "textcaps__black-forest-labs@FLUX.1-schnell": {
+      "ap": 66.44,
+      "auroc": 56.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "textcaps__latent-consistency@lcm-lora-sdxl": {
+      "ap": 87.67,
+      "auroc": 88.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "textcaps__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "textcaps__playgroundai@playground-v2-256px-base": {
+      "ap": 58.67,
+      "auroc": 56.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__playgroundai@playground-v2-512px-base": {
+      "ap": 50.1,
+      "auroc": 44.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "textcaps__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 72.95,
+      "auroc": 72.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__runwayml@stable-diffusion-v1-5": {
+      "ap": 57.26,
+      "auroc": 56.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__segmind@SSD-1B": {
+      "ap": 55.87,
+      "auroc": 52.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 46.67,
+      "auroc": 36.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "textcaps__segmind@small-sd": {
+      "ap": 41.06,
+      "auroc": 20.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "textcaps__segmind@tiny-sd": {
+      "ap": 47.46,
+      "auroc": 32.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "textcaps__stabilityai@sdxl-turbo": {
+      "ap": 64.17,
+      "auroc": 68.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    },
+    "textcaps__stabilityai@stable-diffusion-2": {
+      "ap": 46.67,
+      "auroc": 36.0,
+      "real_acc": 80.0,
+      "fake_acc": 0.0,
+      "acc": 40.0
+    },
+    "textcaps__stabilityai@stable-diffusion-2-1": {
+      "ap": 61.17,
+      "auroc": 64.0,
+      "real_acc": 80.0,
+      "fake_acc": 20.0,
+      "acc": 50.0
+    },
+    "textcaps__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 78.62,
+      "auroc": 80.0,
+      "real_acc": 80.0,
+      "fake_acc": 60.0,
+      "acc": 70.0
+    },
+    "textcaps__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 61.17,
+      "auroc": 64.0,
+      "real_acc": 80.0,
+      "fake_acc": 40.0,
+      "acc": 60.0
+    }
+  },
+  "date": "2026-11-17T20:03:36",
+  "synthscope_version": "0.1.0",
+  "limit": 5
+}
