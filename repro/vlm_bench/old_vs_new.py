@@ -1,7 +1,8 @@
 """Proof that the bench_eval changes of this branch leave every non-VLM detector's scores unchanged.
 
 Runs ``benchmark/bench_eval.py`` from two code trees on the same tiny inputs and compares the output JSONs field by field
-(everything except ``date``, ``tag`` and the results-log path; ``per_generator`` and ``means`` must be identical):
+(everything except ``date``, ``tag`` and ``data_root``; ``per_generator`` and ``means`` must be identical; the only key the new
+bench_eval may add is ``limit``, recorded when --limit is set):
 
     old = the branch before the VLM path (9f8b45c), new = this commit:   clean runs (no new flag)
     ref = fieldreport/harness (2691337, the matrix's bench_eval), new:   --degrade jpeg95 (the ported robustness path)
@@ -34,8 +35,12 @@ def run(tree: Path, det: str, bench: dict, sub: Path, limit: int, extra: list[st
     return json.loads(out.read_text())
 
 
+IGNORED = ("date", "tag", "data_root")
+ADDED_BY_NEW = {"limit"}       # new: bench_eval records --limit when it is set (old / harness bench_eval did not)
+
+
 def comparable(result: dict) -> dict:
-    return {k: v for k, v in result.items() if k not in ("date", "tag", "data_root")}
+    return {k: v for k, v in result.items() if k not in IGNORED and k not in ADDED_BY_NEW}
 
 
 def main(argv=None) -> int:
@@ -61,7 +66,7 @@ def main(argv=None) -> int:
                         Path(tmp) / f"{base_name}_{det}_{bench}.json", args.python)
                 b = run(Path(args.new_tree), det, benches[bench], Path(args.subsets_root), args.limit, extra,
                         Path(tmp) / f"new_{base_name}_{det}_{bench}.json", args.python)
-                same = comparable(a) == comparable(b)
+                same = comparable(a) == comparable(b) and set(b) - set(a) <= ADDED_BY_NEW and set(a) <= set(b)
                 ok &= same
                 rows.append({"detector": det, "benchmark": bench, "baseline": base_name, "flags": extra[:2],
                              "identical": same, "baseline_per_generator": a["per_generator"],

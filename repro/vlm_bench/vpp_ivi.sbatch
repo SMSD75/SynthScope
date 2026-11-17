@@ -20,7 +20,8 @@ set -euo pipefail
 unset HF_TOKEN HUGGING_FACE_HUB_TOKEN
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True PYTHONUNBUFFERED=1
 SRC=/ssdstore/ssalehi/SynthScope                        # ivi-cn029: weights + cn029-site originals
-if [ "$(hostname -s)" = ivi-cn029 ]; then S=$SRC
+ONSRC=0
+if [ "$(hostname -s)" = ivi-cn029 ]; then S=$SRC; ONSRC=1
 else
   for d in /ssdstore /nvmestore /hddstore; do [ -d $d ] && { S=$d/ssalehi/SynthScope; break; }; done
   : "${S:?no local scratch on $(hostname -s)}"
@@ -79,12 +80,12 @@ print(b['site'], b['data'], b.get('reals', '-'))")
     echo "subset $b: verified earlier"; flock -u 8; continue; fi
   mkdir -p $d/data
   $PY repro/vlm_bench/make_subsets.py files $b data > $d/files_data.txt
-  if [ $S = $SRC ]; then rsync -a --files-from=$d/files_data.txt $SRC/$data/ $d/data/
+  if [ $ONSRC = 1 ]; then rsync -a --files-from=$d/files_data.txt $SRC/$data/ $d/data/
   else rsync -a --files-from=$d/files_data.txt ssalehi@ivi-cn029:$SRC/$data/ $d/data/; fi
   if [ "$reals" != - ]; then
     mkdir -p $d/reals
     $PY repro/vlm_bench/make_subsets.py files $b reals > $d/files_reals.txt
-    if [ $S = $SRC ]; then rsync -a --files-from=$d/files_reals.txt $SRC/$reals/ $d/reals/
+    if [ $ONSRC = 1 ]; then rsync -a --files-from=$d/files_reals.txt $SRC/$reals/ $d/reals/
     else rsync -a --files-from=$d/files_reals.txt ssalehi@ivi-cn029:$SRC/$reals/ $d/reals/; fi
   fi
   $PY repro/vlm_bench/make_subsets.py verify $b $d 2>&1 | grep -v -i warning
