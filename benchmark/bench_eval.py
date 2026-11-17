@@ -29,6 +29,15 @@ Use --degrade SPEC for a robustness slice: one deterministic degradation applied
 loaded and before --jpeg-fakes (fakes only) and the detector's own transform, in that order. SPEC is one token:
 jpeg<Q> | down<F> | blur<S> | social | social2 (see ``parse_degrade``). Use --results-log PATH to append the run's summary line
 to PATH instead of repro/MASTER_RESULTS.jsonl.
+
+VLM detectors (registry ``predict_kind="vlm"``, e.g. veritaspp) are scored one image at a time through ``Engine.vlm_score`` on the
+file decoded without an RGB conversion (``media.decode_image_raw``; the model's own ``image_loader`` does the official EXIF / alpha
+handling). With --degrade / --jpeg-fakes that loader runs first and the degradation is applied to its RGB output. Metrics:
+accuracy from the parsed verdict (an unparsed answer counts as wrong; ``*_drop`` fields drop it, as the authors' script does),
+AUROC / AP from the fake-minus-real logit, plus the unparsed count and the mean generated tokens; the per-image records go into the
+output JSON (``per_image``). --vlm-decoding official samples with the authors' settings, seeded per image with --vlm-seed.
+--vlm-cache DIR keeps every scored image as a JSON line (one file per writer, keyed by its path relative to --data and checked
+against the file's sha1), so a preempted or repeated run only scores what is missing.
 """
 from __future__ import annotations
 
@@ -37,15 +46,21 @@ import ctypes
 import ctypes.util
 import dataclasses
 import datetime
+import hashlib
 import io
 import json
+import os
 import re
+import socket
+import time
 from pathlib import Path
 
 import torch
 from PIL import Image, ImageFile, ImageFilter
+from sklearn.metrics import average_precision_score, roc_auc_score
 
 import synthscope
+from interface.backend import media
 from interface.backend.registry import get_spec, model_transform
 from synthscope.api import Detector
 from models.image.cure.preprocess import SRC_FORMAT_KEY
@@ -303,6 +318,141 @@ def metrics(fake_probs: torch.Tensor, labels: torch.Tensor) -> dict | None:
             "acc": round((real_acc + fake_acc) / 2, 2)}
 
 
+# --- VLM detectors -------------------------------------------------------------------------------------------------------------
+REALS_KEY_PREFIX = "@reals/"     # cache key of an image of the shared --reals pool (outside --data)
+
+
+def image_key(path: Path, data_root: Path, reals_root: Path | None) -> str:
+    """An image's cache key: its path relative to the benchmark root (``@reals/<rel>`` for the shared real pool), so a
+    copy of the same files under another root (a staged subset, another node) finds the same records."""
+    for root, prefix in ((data_root, ""), (reals_root, REALS_KEY_PREFIX)):
+        if root is not None:
+            try:
+                return prefix + path.relative_to(root).as_posix()
+            except ValueError:
+                pass
+    return path.as_posix()
+
+
+def vlm_variant(model: str, decoding: str, seed: int | None, degrade: str | None, jpeg_q: int | None) -> str:
+    """The cache folder name of one scoring setup: records of different setups never mix."""
+    return (f"{model}__{decoding}" + (f"_seed{seed}" if decoding == "official" else "")
+            + (f"__{degrade}" if degrade else "") + (f"__jpegfakes{jpeg_q}" if jpeg_q is not None else ""))
+
+
+class VLMCache:
+    """Per-image VLM results as JSON lines under ``<directory>/<variant>/``: this process appends to its own file
+    (``<host>.<pid>.jsonl``, flushed per line) and reads every file there, so several writers never share a file and a
+    preempted run resumes from what any earlier run stored. A record is used only when the file's sha1 matches."""
+
+    def __init__(self, directory: Path | None, variant: str):
+        self.records: dict[str, dict] = {}
+        self.folder = None if directory is None else Path(directory) / variant
+        self._fh = None
+        if self.folder is None:
+            return
+        self.folder.mkdir(parents=True, exist_ok=True)
+        for f in sorted(self.folder.glob("*.jsonl")):
+            for line in f.read_text().splitlines():
+                try:
+                    rec = json.loads(line)
+                except json.JSONDecodeError:       # a line cut by a kill
+                    continue
+                self.records[rec["key"]] = rec
+        print(f"[vlm-cache] {self.folder}: {len(self.records)} cached images", flush=True)
+
+    def get(self, key: str, sha1: str) -> dict | None:
+        rec = self.records.get(key)
+        return rec if rec is not None and rec["sha1"] == sha1 else None
+
+    def put(self, rec: dict) -> None:
+        self.records[rec["key"]] = rec
+        if self.folder is None:
+            return
+        if self._fh is None:
+            self._fh = (self.folder / f"{socket.gethostname().split('.')[0]}.{os.getpid()}.jsonl").open("a")
+        self._fh.write(json.dumps(rec) + "\n")
+        self._fh.flush()
+
+
+def score_vlm(det, spec, paths: list[Path], keys: list[str], labels: list[int], cache: VLMCache, *, decoding: str,
+              seed: int | None, degrade=None, jpeg_q: int | None = None, jpeg_from: int = 0) -> tuple[list[dict], list[int]]:
+    """One ``Engine.vlm_score`` call per image (cached ones are read back), and the indices (into ``paths``) scored.
+    The file is decoded without an RGB conversion; with ``degrade`` / ``jpeg_q`` the model's ``image_loader`` runs first
+    and the degradation is applied to its RGB output (the scorer's loader then leaves an RGB image unchanged)."""
+    recs, kept = [], []
+    n_new = secs = 0
+    for j, (p, key) in enumerate(zip(paths, keys)):
+        try:
+            data = p.read_bytes()
+            sha1 = hashlib.sha1(data).hexdigest()
+            rec = cache.get(key, sha1)
+            if rec is None:
+                image = media.decode_image_raw(data)
+                fake_jpeg = jpeg_q is not None and j >= jpeg_from and jpeg_q < 100
+                if degrade is not None or fake_jpeg:
+                    image = spec.vlm.image_loader(image)
+                    if degrade is not None:
+                        image = degrade(image)
+                    if fake_jpeg:
+                        image = _jpeg(image, jpeg_q)
+        except Exception as e:  # noqa: BLE001
+            print(f"    bad image {p}: {e}", flush=True)
+            continue
+        cached = rec is not None
+        if not cached:
+            t0 = time.time()
+            out = det._engine.vlm_score(spec, image, decoding=decoding, seed=seed)
+            dt = time.time() - t0
+            rec = {"key": key, "sha1": sha1, "logit": out["logit"], "verdict": out["verdict"],
+                   "score_source": out["score_source"], "new_tokens": out["new_tokens"], "finished": out["finished"],
+                   "verdict_token": out["verdict_token"], "input_size": out["input_size"], "seconds": round(dt, 3),
+                   "decoding": decoding, "seed": seed, "response": out["response"]}
+            cache.put(rec)
+            n_new += 1
+            secs += dt
+        recs.append(rec)
+        kept.append(j)
+        print(f"    vlm {key} label={labels[j]} verdict={rec['verdict']} logit={rec['logit']:.4f} "
+              f"src={rec['score_source']} tok={rec['new_tokens']} {rec['seconds']:.1f}s" + (" [cached]" if cached else ""),
+              flush=True)
+    if n_new:
+        print(f"    scored {n_new} new image(s), {secs / n_new:.2f} s/img; {len(recs) - n_new} from the cache", flush=True)
+    return recs, kept
+
+
+def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
+    """Accuracy from the parsed verdicts (unparsed = wrong; ``*_drop``: unparsed answers left out, as the authors'
+    ``cal_metrics.py``), AUROC / AP from the fake-minus-real logit (float64, rank-based), plus counts."""
+    if len(set(labels)) < 2:
+        return None
+    logits = [r["logit"] for r in recs]
+    verdicts = [r["verdict"] for r in recs]
+
+    def pct(hits: list[bool]) -> float | None:
+        return round(100.0 * sum(hits) / len(hits), 2) if hits else None
+
+    correct = [v == ("fake" if y else "real") for v, y in zip(verdicts, labels)]
+    parsed = [v is not None for v in verdicts]
+    by_class = {y: [c for c, l in zip(correct, labels) if l == y] for y in (0, 1)}
+    by_class_drop = {y: [c for c, l, ok in zip(correct, labels, parsed) if l == y and ok] for y in (0, 1)}
+    real_acc, fake_acc = pct(by_class[0]), pct(by_class[1])
+    real_drop, fake_drop = pct(by_class_drop[0]), pct(by_class_drop[1])
+    return {"ap": round(100 * average_precision_score(labels, logits), 2),
+            "auroc": round(100 * roc_auc_score(labels, logits), 2),
+            "real_acc": real_acc, "fake_acc": fake_acc, "acc": round((real_acc + fake_acc) / 2, 2),
+            "acc_pooled": pct(correct),
+            "real_acc_drop": real_drop, "fake_acc_drop": fake_drop,
+            "acc_drop": None if real_drop is None or fake_drop is None else round((real_drop + fake_drop) / 2, 2),
+            "acc_pooled_drop": pct([c for c, ok in zip(correct, parsed) if ok]),
+            "n_real": len(by_class[0]), "n_fake": len(by_class[1]),
+            "n_unparsed": parsed.count(False),
+            "n_unfinished": sum(not r["finished"] for r in recs),
+            "n_logit_verdict_disagree": sum(v is not None and (v == "fake") != (r["logit"] > 0)
+                                            for v, r in zip(verdicts, recs)),
+            "mean_tokens": round(sum(r["new_tokens"] for r in recs) / len(recs), 1)}
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-m", "--model", required=True, help="SynthScope detector key (see `synthscope list`)")
@@ -334,14 +484,19 @@ def main(argv=None) -> int:
                          "blur2 (deterministic; recorded as `degrade` in the output)")
     ap.add_argument("--results-log", default=None, metavar="PATH",
                     help="append the run's summary line to PATH instead of repro/MASTER_RESULTS.jsonl")
+    ap.add_argument("--vlm-decoding", choices=["greedy", "official"], default="greedy",
+                    help="VLM detectors: greedy decoding (default) or the authors' sampling (seeded per image with --vlm-seed)")
+    ap.add_argument("--vlm-seed", type=int, default=0, help="VLM detectors, --vlm-decoding official: the per-image seed")
+    ap.add_argument("--vlm-cache", default=None, metavar="DIR",
+                    help="VLM detectors: per-image result cache (resume); one subfolder per model / decoding / degradation")
     ap.add_argument("--device", default=None)
-    ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset>")
+    ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset> (+ _<degrade> with --degrade and no --out)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args(argv)
     if args.model_config and not args.ckpt:
         ap.error("--model-config needs --ckpt")
     degrade = None
-    if args.degrade:
+    if args.degrade is not None:     # "" is rejected by parse_degrade, not silently ignored
         try:
             degrade = parse_degrade(args.degrade)
         except ValueError as e:
@@ -357,7 +512,9 @@ def main(argv=None) -> int:
         eval_root, profile = find_eval_root(args.dataset, root)
         args.data = args.data or str(eval_root)
         args.benchmark = args.benchmark or profile
-        args.tag = args.tag or f"{args.model}_{args.dataset}"
+        # a degraded run must never overwrite the clean default repro/bench_results/<model>_<dataset>.json
+        degrade_suffix = f"_{args.degrade}" if args.degrade is not None and not args.out else ""
+        args.tag = args.tag or f"{args.model}_{args.dataset}{degrade_suffix}"
         print(f"[dataset] {args.dataset}: evaluating {args.data} with the '{args.benchmark}' profile", flush=True)
         if args.dry_run:
             return 0
@@ -381,14 +538,17 @@ def main(argv=None) -> int:
     det._ensure_weights()
     spec = det.spec
     model = det._engine._get_model(spec)
+    is_vlm = getattr(spec, "predict_kind", None) == "vlm"
+    if is_vlm and (args.native_res or args.model_config):
+        ap.error("--native-res / --model-config do not apply to VLM detectors")
     eval_transform = native_res_transform(spec.transform) if args.native_res else spec.transform
     if args.native_res:
         print(f"[native-res] scoring at native resolution; transform={eval_transform}", flush=True)
 
     root = Path(args.data).expanduser()
+    reals_root = Path(args.reals).expanduser() if args.reals else None
     select = set(args.select.split(",")) if args.select else None
-    gens = discover(args.benchmark, root,
-                    Path(args.reals).expanduser() if args.reals else None, select)
+    gens = discover(args.benchmark, root, reals_root, select)
     if not gens:
         print(f"No generators with real+fake under {root} (benchmark={args.benchmark})")
         return 1
@@ -396,7 +556,11 @@ def main(argv=None) -> int:
     print(f"=== bench_eval {args.tag} | model={args.model} ckpt={args.ckpt or 'registry-default'} "
           f"| {args.benchmark} | {len(gens)} generators | device={det._engine.device}"
           + (f" | fakes JPEG q{args.jpeg_fakes}" if args.jpeg_fakes else "")
-          + (f" | degrade {args.degrade}" if args.degrade else "") + " ===", flush=True)
+          + (f" | degrade {args.degrade}" if args.degrade is not None else "") + " ===", flush=True)
+    if is_vlm:
+        vlm_seed = args.vlm_seed if args.vlm_decoding == "official" else None
+        cache = VLMCache(args.vlm_cache, vlm_variant(args.model, args.vlm_decoding, vlm_seed, args.degrade, args.jpeg_fakes))
+        per_image = []
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
     for name, reals, fakes in gens:
@@ -404,12 +568,24 @@ def main(argv=None) -> int:
             reals, fakes = reals[:args.limit], fakes[:args.limit]
         labels = torch.tensor([0] * len(reals) + [1] * len(fakes))
         print(f"  {name}: {len(reals)} real + {len(fakes)} fake ...", flush=True)
-        probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform,
-                            jpeg_q=args.jpeg_fakes, jpeg_from=len(reals), degrade=degrade)
+        if is_vlm:
+            paths = reals + fakes
+            recs, kept = score_vlm(det, spec, paths, [image_key(p, root, reals_root) for p in paths], labels.tolist(), cache,
+                                   decoding=args.vlm_decoding, seed=vlm_seed, degrade=degrade, jpeg_q=args.jpeg_fakes,
+                                   jpeg_from=len(reals))
+        else:
+            probs, kept = score(det, model, spec, reals + fakes, args.bs, transform=eval_transform,
+                                jpeg_q=args.jpeg_fakes, jpeg_from=len(reals), degrade=degrade)
         if len(kept) != labels.numel():     # unreadable images are skipped: keep each score paired with its own label
             print(f"    {labels.numel() - len(kept)} unreadable image(s) left out of {name}", flush=True)
             labels = labels[kept]
-        m = metrics(probs, labels)
+        if is_vlm:
+            m = vlm_metrics(recs, labels.tolist())
+            per_image += [{"generator": name, "key": r["key"], "label": int(y), "logit": round(r["logit"], 4),
+                           "verdict": r["verdict"], "score_source": r["score_source"], "new_tokens": r["new_tokens"],
+                           "finished": r["finished"], "seconds": r["seconds"]} for r, y in zip(recs, labels.tolist())]
+        else:
+            m = metrics(probs, labels)
         if m is None:
             print(f"    skip {name}: one class only")
             continue
@@ -417,7 +593,8 @@ def main(argv=None) -> int:
         for k in agg:
             agg[k].append(m[k])
         print(f"    {name}: acc={m['acc']} AP={m['ap']} AUROC={m['auroc']} "
-              f"(real_acc={m['real_acc']} fake_acc={m['fake_acc']})", flush=True)
+              f"(real_acc={m['real_acc']} fake_acc={m['fake_acc']})"
+              + (f" unparsed={m['n_unparsed']} mean_tokens={m['mean_tokens']}" if is_vlm else ""), flush=True)
 
     if not per_gen:
         print("No generator produced valid metrics.")
@@ -441,8 +618,25 @@ def main(argv=None) -> int:
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
         "synthscope_version": getattr(synthscope, "__version__", "?"),
     }
-    if args.degrade:
+    if args.degrade is not None:
         result["degrade"] = args.degrade
+    if args.limit:
+        result["limit"] = args.limit
+    if is_vlm:
+        n = len(per_image)
+        unparsed = sum(r["verdict"] is None for r in per_image)
+        result["vlm"] = {
+            "decoding": args.vlm_decoding, "seed": vlm_seed, "n_images": n, "n_unparsed": unparsed,
+            "n_unfinished": sum(not r["finished"] for r in per_image),
+            "mean_tokens": round(sum(r["new_tokens"] for r in per_image) / n, 1),
+            "mean_seconds_scored": round(sum(r["seconds"] for r in per_image) / n, 2),
+            "acc_pooled": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image) / n, 2),
+            "acc_pooled_drop": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image)
+                                     / (n - unparsed), 2) if n > unparsed else None,
+            "cache": str(cache.folder) if cache.folder else None,
+            "metric_note": "acc / real_acc / fake_acc from the parsed verdict, unparsed = wrong; *_drop leave unparsed "
+                           "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit"}
+        result["per_image"] = per_image
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -454,7 +648,7 @@ def main(argv=None) -> int:
         f.write(json.dumps({k: result[k] for k in
                             ("date", "tag", "model", "ckpt", "benchmark", "data_root",
                              "n_generators", "means") + (("model_config",) if args.model_config else ())
-                            + (("degrade",) if args.degrade else ())}) + "\n")
+                            + (("degrade",) if args.degrade is not None else ())}) + "\n")
 
     print(f"\n=== RESULT {args.tag}: mAP={means['map']} mAUROC={means['mauroc']} acc={means['acc']} "
           f"over {len(per_gen)} generators -> {out} ===", flush=True)

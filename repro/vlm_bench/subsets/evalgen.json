@@ -1,0 +1,5052 @@
+{
+"benchmark": "evalgen",
+"profile": "pergen",
+"limit": 100,
+"n_generators": 5,
+"site": "029",
+"source_root": "/ssdstore/ssalehi/SynthScope/EvalGEN/test",
+"reals_root": null,
+"layout": null,
+"n_files": 1000,
+"n_scored": 1000,
+"bytes": 193192741,
+"generators": [
+{
+"name": "Flux",
+"reals": [
+"Flux/0_real/00000_000000000139.jpg",
+"Flux/0_real/00001_000000000285.jpg",
+"Flux/0_real/00002_000000000632.jpg",
+"Flux/0_real/00003_000000000724.jpg",
+"Flux/0_real/00004_000000000776.jpg",
+"Flux/0_real/00005_000000000785.jpg",
+"Flux/0_real/00006_000000000802.jpg",
+"Flux/0_real/00007_000000000872.jpg",
+"Flux/0_real/00008_000000000885.jpg",
+"Flux/0_real/00009_000000001000.jpg",
+"Flux/0_real/00010_000000001268.jpg",
+"Flux/0_real/00011_000000001296.jpg",
+"Flux/0_real/00012_000000001353.jpg",
+"Flux/0_real/00013_000000001425.jpg",
+"Flux/0_real/00014_000000001490.jpg",
+"Flux/0_real/00015_000000001503.jpg",
+"Flux/0_real/00016_000000001532.jpg",
+"Flux/0_real/00017_000000001584.jpg",
+"Flux/0_real/00018_000000001675.jpg",
+"Flux/0_real/00019_000000001761.jpg",
+"Flux/0_real/00020_000000001818.jpg",
+"Flux/0_real/00021_000000001993.jpg",
+"Flux/0_real/00022_000000002006.jpg",
+"Flux/0_real/00023_000000002149.jpg",
+"Flux/0_real/00024_000000002153.jpg",
+"Flux/0_real/00025_000000002157.jpg",
+"Flux/0_real/00026_000000002261.jpg",
+"Flux/0_real/00027_000000002299.jpg",
+"Flux/0_real/00028_000000002431.jpg",
+"Flux/0_real/00029_000000002473.jpg",
+"Flux/0_real/00030_000000002532.jpg",
+"Flux/0_real/00031_000000002587.jpg",
+"Flux/0_real/00032_000000002592.jpg",
+"Flux/0_real/00033_000000002685.jpg",
+"Flux/0_real/00034_000000002923.jpg",
+"Flux/0_real/00035_000000003156.jpg",
+"Flux/0_real/00036_000000003255.jpg",
+"Flux/0_real/00037_000000003501.jpg",
+"Flux/0_real/00038_000000003553.jpg",
+"Flux/0_real/00039_000000003661.jpg",
+"Flux/0_real/00040_000000003845.jpg",
+"Flux/0_real/00041_000000003934.jpg",
+"Flux/0_real/00042_000000004134.jpg",
+"Flux/0_real/00043_000000004395.jpg",
+"Flux/0_real/00044_000000004495.jpg",
+"Flux/0_real/00045_000000004765.jpg",
+"Flux/0_real/00046_000000004795.jpg",
+"Flux/0_real/00047_000000005001.jpg",
+"Flux/0_real/00048_000000005037.jpg",
+"Flux/0_real/00049_000000005060.jpg",
+"Flux/0_real/00050_000000005193.jpg",
+"Flux/0_real/00051_000000005477.jpg",
+"Flux/0_real/00052_000000005503.jpg",
+"Flux/0_real/00053_000000005529.jpg",
+"Flux/0_real/00054_000000005586.jpg",
+"Flux/0_real/00055_000000005600.jpg",
+"Flux/0_real/00056_000000005992.jpg",
+"Flux/0_real/00057_000000006012.jpg",
+"Flux/0_real/00058_000000006040.jpg",
+"Flux/0_real/00059_000000006213.jpg",
+"Flux/0_real/00060_000000006460.jpg",
+"Flux/0_real/00061_000000006471.jpg",
+"Flux/0_real/00062_000000006614.jpg",
+"Flux/0_real/00063_000000006723.jpg",
+"Flux/0_real/00064_000000006763.jpg",
+"Flux/0_real/00065_000000006771.jpg",
+"Flux/0_real/00066_000000006818.jpg",
+"Flux/0_real/00067_000000006894.jpg",
+"Flux/0_real/00068_000000006954.jpg",
+"Flux/0_real/00069_000000007088.jpg",
+"Flux/0_real/00070_000000007108.jpg",
+"Flux/0_real/00071_000000007278.jpg",
+"Flux/0_real/00072_000000007281.jpg",
+"Flux/0_real/00073_000000007386.jpg",
+"Flux/0_real/00074_000000007511.jpg",
+"Flux/0_real/00075_000000007574.jpg",
+"Flux/0_real/00076_000000007784.jpg",
+"Flux/0_real/00077_000000007795.jpg",
+"Flux/0_real/00078_000000007816.jpg",
+"Flux/0_real/00079_000000007818.jpg",
+"Flux/0_real/00080_000000007888.jpg",
+"Flux/0_real/00081_000000007977.jpg",
+"Flux/0_real/00082_000000007991.jpg",
+"Flux/0_real/00083_000000008021.jpg",
+"Flux/0_real/00084_000000008211.jpg",
+"Flux/0_real/00085_000000008277.jpg",
+"Flux/0_real/00086_000000008532.jpg",
+"Flux/0_real/00087_000000008629.jpg",
+"Flux/0_real/00088_000000008690.jpg",
+"Flux/0_real/00089_000000008762.jpg",
+"Flux/0_real/00090_000000008844.jpg",
+"Flux/0_real/00091_000000008899.jpg",
+"Flux/0_real/00092_000000009378.jpg",
+"Flux/0_real/00093_000000009400.jpg",
+"Flux/0_real/00094_000000009448.jpg",
+"Flux/0_real/00095_000000009483.jpg",
+"Flux/0_real/00096_000000009590.jpg",
+"Flux/0_real/00097_000000009769.jpg",
+"Flux/0_real/00098_000000009772.jpg",
+"Flux/0_real/00099_000000009891.jpg"
+],
+"fakes": [
+"Flux/1_fake/00000_a_photo_of_a_backpack_0.jpg",
+"Flux/1_fake/00001_a_photo_of_a_backpack_1.jpg",
+"Flux/1_fake/00002_a_photo_of_a_backpack_10.jpg",
+"Flux/1_fake/00003_a_photo_of_a_backpack_11.jpg",
+"Flux/1_fake/00004_a_photo_of_a_backpack_12.jpg",
+"Flux/1_fake/00005_a_photo_of_a_backpack_13.jpg",
+"Flux/1_fake/00006_a_photo_of_a_backpack_14.jpg",
+"Flux/1_fake/00007_a_photo_of_a_backpack_15.jpg",
+"Flux/1_fake/00008_a_photo_of_a_backpack_16.jpg",
+"Flux/1_fake/00009_a_photo_of_a_backpack_17.jpg",
+"Flux/1_fake/00010_a_photo_of_a_backpack_18.jpg",
+"Flux/1_fake/00011_a_photo_of_a_backpack_19.jpg",
+"Flux/1_fake/00012_a_photo_of_a_backpack_2.jpg",
+"Flux/1_fake/00013_a_photo_of_a_backpack_3.jpg",
+"Flux/1_fake/00014_a_photo_of_a_backpack_4.jpg",
+"Flux/1_fake/00015_a_photo_of_a_backpack_5.jpg",
+"Flux/1_fake/00016_a_photo_of_a_backpack_6.jpg",
+"Flux/1_fake/00017_a_photo_of_a_backpack_7.jpg",
+"Flux/1_fake/00018_a_photo_of_a_backpack_8.jpg",
+"Flux/1_fake/00019_a_photo_of_a_backpack_9.jpg",
+"Flux/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg",
+"Flux/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg",
+"Flux/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg",
+"Flux/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg",
+"Flux/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg",
+"Flux/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg",
+"Flux/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg",
+"Flux/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg",
+"Flux/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg",
+"Flux/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg",
+"Flux/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg",
+"Flux/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg",
+"Flux/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg",
+"Flux/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg",
+"Flux/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg",
+"Flux/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg",
+"Flux/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg",
+"Flux/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg",
+"Flux/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg",
+"Flux/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg",
+"Flux/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg",
+"Flux/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg",
+"Flux/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg",
+"Flux/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg",
+"Flux/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg",
+"Flux/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg",
+"Flux/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg",
+"Flux/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg",
+"Flux/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg",
+"Flux/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg",
+"Flux/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg",
+"Flux/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg",
+"Flux/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg",
+"Flux/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg",
+"Flux/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg",
+"Flux/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg",
+"Flux/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg",
+"Flux/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg",
+"Flux/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg",
+"Flux/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg",
+"Flux/1_fake/00060_a_photo_of_a_banana_0.jpg",
+"Flux/1_fake/00061_a_photo_of_a_banana_1.jpg",
+"Flux/1_fake/00062_a_photo_of_a_banana_10.jpg",
+"Flux/1_fake/00063_a_photo_of_a_banana_11.jpg",
+"Flux/1_fake/00064_a_photo_of_a_banana_12.jpg",
+"Flux/1_fake/00065_a_photo_of_a_banana_13.jpg",
+"Flux/1_fake/00066_a_photo_of_a_banana_14.jpg",
+"Flux/1_fake/00067_a_photo_of_a_banana_15.jpg",
+"Flux/1_fake/00068_a_photo_of_a_banana_16.jpg",
+"Flux/1_fake/00069_a_photo_of_a_banana_17.jpg",
+"Flux/1_fake/00070_a_photo_of_a_banana_18.jpg",
+"Flux/1_fake/00071_a_photo_of_a_banana_19.jpg",
+"Flux/1_fake/00072_a_photo_of_a_banana_2.jpg",
+"Flux/1_fake/00073_a_photo_of_a_banana_3.jpg",
+"Flux/1_fake/00074_a_photo_of_a_banana_4.jpg",
+"Flux/1_fake/00075_a_photo_of_a_banana_5.jpg",
+"Flux/1_fake/00076_a_photo_of_a_banana_6.jpg",
+"Flux/1_fake/00077_a_photo_of_a_banana_7.jpg",
+"Flux/1_fake/00078_a_photo_of_a_banana_8.jpg",
+"Flux/1_fake/00079_a_photo_of_a_banana_9.jpg",
+"Flux/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg",
+"Flux/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg",
+"Flux/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg",
+"Flux/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg",
+"Flux/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg",
+"Flux/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg",
+"Flux/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg",
+"Flux/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg",
+"Flux/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg",
+"Flux/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg",
+"Flux/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg",
+"Flux/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg",
+"Flux/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg",
+"Flux/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg",
+"Flux/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg",
+"Flux/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg",
+"Flux/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg",
+"Flux/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg",
+"Flux/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg",
+"Flux/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg"
+]
+},
+{
+"name": "GoT",
+"reals": [
+"GoT/0_real/00000_000000000139.jpg",
+"GoT/0_real/00001_000000000285.jpg",
+"GoT/0_real/00002_000000000632.jpg",
+"GoT/0_real/00003_000000000724.jpg",
+"GoT/0_real/00004_000000000776.jpg",
+"GoT/0_real/00005_000000000785.jpg",
+"GoT/0_real/00006_000000000802.jpg",
+"GoT/0_real/00007_000000000872.jpg",
+"GoT/0_real/00008_000000000885.jpg",
+"GoT/0_real/00009_000000001000.jpg",
+"GoT/0_real/00010_000000001268.jpg",
+"GoT/0_real/00011_000000001296.jpg",
+"GoT/0_real/00012_000000001353.jpg",
+"GoT/0_real/00013_000000001425.jpg",
+"GoT/0_real/00014_000000001490.jpg",
+"GoT/0_real/00015_000000001503.jpg",
+"GoT/0_real/00016_000000001532.jpg",
+"GoT/0_real/00017_000000001584.jpg",
+"GoT/0_real/00018_000000001675.jpg",
+"GoT/0_real/00019_000000001761.jpg",
+"GoT/0_real/00020_000000001818.jpg",
+"GoT/0_real/00021_000000001993.jpg",
+"GoT/0_real/00022_000000002006.jpg",
+"GoT/0_real/00023_000000002149.jpg",
+"GoT/0_real/00024_000000002153.jpg",
+"GoT/0_real/00025_000000002157.jpg",
+"GoT/0_real/00026_000000002261.jpg",
+"GoT/0_real/00027_000000002299.jpg",
+"GoT/0_real/00028_000000002431.jpg",
+"GoT/0_real/00029_000000002473.jpg",
+"GoT/0_real/00030_000000002532.jpg",
+"GoT/0_real/00031_000000002587.jpg",
+"GoT/0_real/00032_000000002592.jpg",
+"GoT/0_real/00033_000000002685.jpg",
+"GoT/0_real/00034_000000002923.jpg",
+"GoT/0_real/00035_000000003156.jpg",
+"GoT/0_real/00036_000000003255.jpg",
+"GoT/0_real/00037_000000003501.jpg",
+"GoT/0_real/00038_000000003553.jpg",
+"GoT/0_real/00039_000000003661.jpg",
+"GoT/0_real/00040_000000003845.jpg",
+"GoT/0_real/00041_000000003934.jpg",
+"GoT/0_real/00042_000000004134.jpg",
+"GoT/0_real/00043_000000004395.jpg",
+"GoT/0_real/00044_000000004495.jpg",
+"GoT/0_real/00045_000000004765.jpg",
+"GoT/0_real/00046_000000004795.jpg",
+"GoT/0_real/00047_000000005001.jpg",
+"GoT/0_real/00048_000000005037.jpg",
+"GoT/0_real/00049_000000005060.jpg",
+"GoT/0_real/00050_000000005193.jpg",
+"GoT/0_real/00051_000000005477.jpg",
+"GoT/0_real/00052_000000005503.jpg",
+"GoT/0_real/00053_000000005529.jpg",
+"GoT/0_real/00054_000000005586.jpg",
+"GoT/0_real/00055_000000005600.jpg",
+"GoT/0_real/00056_000000005992.jpg",
+"GoT/0_real/00057_000000006012.jpg",
+"GoT/0_real/00058_000000006040.jpg",
+"GoT/0_real/00059_000000006213.jpg",
+"GoT/0_real/00060_000000006460.jpg",
+"GoT/0_real/00061_000000006471.jpg",
+"GoT/0_real/00062_000000006614.jpg",
+"GoT/0_real/00063_000000006723.jpg",
+"GoT/0_real/00064_000000006763.jpg",
+"GoT/0_real/00065_000000006771.jpg",
+"GoT/0_real/00066_000000006818.jpg",
+"GoT/0_real/00067_000000006894.jpg",
+"GoT/0_real/00068_000000006954.jpg",
+"GoT/0_real/00069_000000007088.jpg",
+"GoT/0_real/00070_000000007108.jpg",
+"GoT/0_real/00071_000000007278.jpg",
+"GoT/0_real/00072_000000007281.jpg",
+"GoT/0_real/00073_000000007386.jpg",
+"GoT/0_real/00074_000000007511.jpg",
+"GoT/0_real/00075_000000007574.jpg",
+"GoT/0_real/00076_000000007784.jpg",
+"GoT/0_real/00077_000000007795.jpg",
+"GoT/0_real/00078_000000007816.jpg",
+"GoT/0_real/00079_000000007818.jpg",
+"GoT/0_real/00080_000000007888.jpg",
+"GoT/0_real/00081_000000007977.jpg",
+"GoT/0_real/00082_000000007991.jpg",
+"GoT/0_real/00083_000000008021.jpg",
+"GoT/0_real/00084_000000008211.jpg",
+"GoT/0_real/00085_000000008277.jpg",
+"GoT/0_real/00086_000000008532.jpg",
+"GoT/0_real/00087_000000008629.jpg",
+"GoT/0_real/00088_000000008690.jpg",
+"GoT/0_real/00089_000000008762.jpg",
+"GoT/0_real/00090_000000008844.jpg",
+"GoT/0_real/00091_000000008899.jpg",
+"GoT/0_real/00092_000000009378.jpg",
+"GoT/0_real/00093_000000009400.jpg",
+"GoT/0_real/00094_000000009448.jpg",
+"GoT/0_real/00095_000000009483.jpg",
+"GoT/0_real/00096_000000009590.jpg",
+"GoT/0_real/00097_000000009769.jpg",
+"GoT/0_real/00098_000000009772.jpg",
+"GoT/0_real/00099_000000009891.jpg"
+],
+"fakes": [
+"GoT/1_fake/00000_a_photo_of_a_backpack_0.jpg",
+"GoT/1_fake/00001_a_photo_of_a_backpack_1.jpg",
+"GoT/1_fake/00002_a_photo_of_a_backpack_10.jpg",
+"GoT/1_fake/00003_a_photo_of_a_backpack_11.jpg",
+"GoT/1_fake/00004_a_photo_of_a_backpack_12.jpg",
+"GoT/1_fake/00005_a_photo_of_a_backpack_13.jpg",
+"GoT/1_fake/00006_a_photo_of_a_backpack_14.jpg",
+"GoT/1_fake/00007_a_photo_of_a_backpack_15.jpg",
+"GoT/1_fake/00008_a_photo_of_a_backpack_16.jpg",
+"GoT/1_fake/00009_a_photo_of_a_backpack_17.jpg",
+"GoT/1_fake/00010_a_photo_of_a_backpack_18.jpg",
+"GoT/1_fake/00011_a_photo_of_a_backpack_19.jpg",
+"GoT/1_fake/00012_a_photo_of_a_backpack_2.jpg",
+"GoT/1_fake/00013_a_photo_of_a_backpack_3.jpg",
+"GoT/1_fake/00014_a_photo_of_a_backpack_4.jpg",
+"GoT/1_fake/00015_a_photo_of_a_backpack_5.jpg",
+"GoT/1_fake/00016_a_photo_of_a_backpack_6.jpg",
+"GoT/1_fake/00017_a_photo_of_a_backpack_7.jpg",
+"GoT/1_fake/00018_a_photo_of_a_backpack_8.jpg",
+"GoT/1_fake/00019_a_photo_of_a_backpack_9.jpg",
+"GoT/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg",
+"GoT/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg",
+"GoT/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg",
+"GoT/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg",
+"GoT/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg",
+"GoT/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg",
+"GoT/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg",
+"GoT/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg",
+"GoT/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg",
+"GoT/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg",
+"GoT/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg",
+"GoT/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg",
+"GoT/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg",
+"GoT/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg",
+"GoT/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg",
+"GoT/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg",
+"GoT/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg",
+"GoT/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg",
+"GoT/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg",
+"GoT/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg",
+"GoT/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg",
+"GoT/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg",
+"GoT/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg",
+"GoT/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg",
+"GoT/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg",
+"GoT/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg",
+"GoT/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg",
+"GoT/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg",
+"GoT/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg",
+"GoT/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg",
+"GoT/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg",
+"GoT/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg",
+"GoT/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg",
+"GoT/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg",
+"GoT/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg",
+"GoT/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg",
+"GoT/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg",
+"GoT/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg",
+"GoT/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg",
+"GoT/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg",
+"GoT/1_fake/00060_a_photo_of_a_banana_0.jpg",
+"GoT/1_fake/00061_a_photo_of_a_banana_1.jpg",
+"GoT/1_fake/00062_a_photo_of_a_banana_10.jpg",
+"GoT/1_fake/00063_a_photo_of_a_banana_11.jpg",
+"GoT/1_fake/00064_a_photo_of_a_banana_12.jpg",
+"GoT/1_fake/00065_a_photo_of_a_banana_13.jpg",
+"GoT/1_fake/00066_a_photo_of_a_banana_14.jpg",
+"GoT/1_fake/00067_a_photo_of_a_banana_15.jpg",
+"GoT/1_fake/00068_a_photo_of_a_banana_16.jpg",
+"GoT/1_fake/00069_a_photo_of_a_banana_17.jpg",
+"GoT/1_fake/00070_a_photo_of_a_banana_18.jpg",
+"GoT/1_fake/00071_a_photo_of_a_banana_19.jpg",
+"GoT/1_fake/00072_a_photo_of_a_banana_2.jpg",
+"GoT/1_fake/00073_a_photo_of_a_banana_3.jpg",
+"GoT/1_fake/00074_a_photo_of_a_banana_4.jpg",
+"GoT/1_fake/00075_a_photo_of_a_banana_5.jpg",
+"GoT/1_fake/00076_a_photo_of_a_banana_6.jpg",
+"GoT/1_fake/00077_a_photo_of_a_banana_7.jpg",
+"GoT/1_fake/00078_a_photo_of_a_banana_8.jpg",
+"GoT/1_fake/00079_a_photo_of_a_banana_9.jpg",
+"GoT/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg",
+"GoT/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg",
+"GoT/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg",
+"GoT/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg",
+"GoT/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg",
+"GoT/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg",
+"GoT/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg",
+"GoT/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg",
+"GoT/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg",
+"GoT/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg",
+"GoT/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg",
+"GoT/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg",
+"GoT/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg",
+"GoT/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg",
+"GoT/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg",
+"GoT/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg",
+"GoT/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg",
+"GoT/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg",
+"GoT/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg",
+"GoT/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg"
+]
+},
+{
+"name": "Infinity",
+"reals": [
+"Infinity/0_real/00000_000000000139.jpg",
+"Infinity/0_real/00001_000000000285.jpg",
+"Infinity/0_real/00002_000000000632.jpg",
+"Infinity/0_real/00003_000000000724.jpg",
+"Infinity/0_real/00004_000000000776.jpg",
+"Infinity/0_real/00005_000000000785.jpg",
+"Infinity/0_real/00006_000000000802.jpg",
+"Infinity/0_real/00007_000000000872.jpg",
+"Infinity/0_real/00008_000000000885.jpg",
+"Infinity/0_real/00009_000000001000.jpg",
+"Infinity/0_real/00010_000000001268.jpg",
+"Infinity/0_real/00011_000000001296.jpg",
+"Infinity/0_real/00012_000000001353.jpg",
+"Infinity/0_real/00013_000000001425.jpg",
+"Infinity/0_real/00014_000000001490.jpg",
+"Infinity/0_real/00015_000000001503.jpg",
+"Infinity/0_real/00016_000000001532.jpg",
+"Infinity/0_real/00017_000000001584.jpg",
+"Infinity/0_real/00018_000000001675.jpg",
+"Infinity/0_real/00019_000000001761.jpg",
+"Infinity/0_real/00020_000000001818.jpg",
+"Infinity/0_real/00021_000000001993.jpg",
+"Infinity/0_real/00022_000000002006.jpg",
+"Infinity/0_real/00023_000000002149.jpg",
+"Infinity/0_real/00024_000000002153.jpg",
+"Infinity/0_real/00025_000000002157.jpg",
+"Infinity/0_real/00026_000000002261.jpg",
+"Infinity/0_real/00027_000000002299.jpg",
+"Infinity/0_real/00028_000000002431.jpg",
+"Infinity/0_real/00029_000000002473.jpg",
+"Infinity/0_real/00030_000000002532.jpg",
+"Infinity/0_real/00031_000000002587.jpg",
+"Infinity/0_real/00032_000000002592.jpg",
+"Infinity/0_real/00033_000000002685.jpg",
+"Infinity/0_real/00034_000000002923.jpg",
+"Infinity/0_real/00035_000000003156.jpg",
+"Infinity/0_real/00036_000000003255.jpg",
+"Infinity/0_real/00037_000000003501.jpg",
+"Infinity/0_real/00038_000000003553.jpg",
+"Infinity/0_real/00039_000000003661.jpg",
+"Infinity/0_real/00040_000000003845.jpg",
+"Infinity/0_real/00041_000000003934.jpg",
+"Infinity/0_real/00042_000000004134.jpg",
+"Infinity/0_real/00043_000000004395.jpg",
+"Infinity/0_real/00044_000000004495.jpg",
+"Infinity/0_real/00045_000000004765.jpg",
+"Infinity/0_real/00046_000000004795.jpg",
+"Infinity/0_real/00047_000000005001.jpg",
+"Infinity/0_real/00048_000000005037.jpg",
+"Infinity/0_real/00049_000000005060.jpg",
+"Infinity/0_real/00050_000000005193.jpg",
+"Infinity/0_real/00051_000000005477.jpg",
+"Infinity/0_real/00052_000000005503.jpg",
+"Infinity/0_real/00053_000000005529.jpg",
+"Infinity/0_real/00054_000000005586.jpg",
+"Infinity/0_real/00055_000000005600.jpg",
+"Infinity/0_real/00056_000000005992.jpg",
+"Infinity/0_real/00057_000000006012.jpg",
+"Infinity/0_real/00058_000000006040.jpg",
+"Infinity/0_real/00059_000000006213.jpg",
+"Infinity/0_real/00060_000000006460.jpg",
+"Infinity/0_real/00061_000000006471.jpg",
+"Infinity/0_real/00062_000000006614.jpg",
+"Infinity/0_real/00063_000000006723.jpg",
+"Infinity/0_real/00064_000000006763.jpg",
+"Infinity/0_real/00065_000000006771.jpg",
+"Infinity/0_real/00066_000000006818.jpg",
+"Infinity/0_real/00067_000000006894.jpg",
+"Infinity/0_real/00068_000000006954.jpg",
+"Infinity/0_real/00069_000000007088.jpg",
+"Infinity/0_real/00070_000000007108.jpg",
+"Infinity/0_real/00071_000000007278.jpg",
+"Infinity/0_real/00072_000000007281.jpg",
+"Infinity/0_real/00073_000000007386.jpg",
+"Infinity/0_real/00074_000000007511.jpg",
+"Infinity/0_real/00075_000000007574.jpg",
+"Infinity/0_real/00076_000000007784.jpg",
+"Infinity/0_real/00077_000000007795.jpg",
+"Infinity/0_real/00078_000000007816.jpg",
+"Infinity/0_real/00079_000000007818.jpg",
+"Infinity/0_real/00080_000000007888.jpg",
+"Infinity/0_real/00081_000000007977.jpg",
+"Infinity/0_real/00082_000000007991.jpg",
+"Infinity/0_real/00083_000000008021.jpg",
+"Infinity/0_real/00084_000000008211.jpg",
+"Infinity/0_real/00085_000000008277.jpg",
+"Infinity/0_real/00086_000000008532.jpg",
+"Infinity/0_real/00087_000000008629.jpg",
+"Infinity/0_real/00088_000000008690.jpg",
+"Infinity/0_real/00089_000000008762.jpg",
+"Infinity/0_real/00090_000000008844.jpg",
+"Infinity/0_real/00091_000000008899.jpg",
+"Infinity/0_real/00092_000000009378.jpg",
+"Infinity/0_real/00093_000000009400.jpg",
+"Infinity/0_real/00094_000000009448.jpg",
+"Infinity/0_real/00095_000000009483.jpg",
+"Infinity/0_real/00096_000000009590.jpg",
+"Infinity/0_real/00097_000000009769.jpg",
+"Infinity/0_real/00098_000000009772.jpg",
+"Infinity/0_real/00099_000000009891.jpg"
+],
+"fakes": [
+"Infinity/1_fake/00000_a_photo_of_a_backpack_0.jpg",
+"Infinity/1_fake/00001_a_photo_of_a_backpack_1.jpg",
+"Infinity/1_fake/00002_a_photo_of_a_backpack_10.jpg",
+"Infinity/1_fake/00003_a_photo_of_a_backpack_11.jpg",
+"Infinity/1_fake/00004_a_photo_of_a_backpack_12.jpg",
+"Infinity/1_fake/00005_a_photo_of_a_backpack_13.jpg",
+"Infinity/1_fake/00006_a_photo_of_a_backpack_14.jpg",
+"Infinity/1_fake/00007_a_photo_of_a_backpack_15.jpg",
+"Infinity/1_fake/00008_a_photo_of_a_backpack_16.jpg",
+"Infinity/1_fake/00009_a_photo_of_a_backpack_17.jpg",
+"Infinity/1_fake/00010_a_photo_of_a_backpack_18.jpg",
+"Infinity/1_fake/00011_a_photo_of_a_backpack_19.jpg",
+"Infinity/1_fake/00012_a_photo_of_a_backpack_2.jpg",
+"Infinity/1_fake/00013_a_photo_of_a_backpack_3.jpg",
+"Infinity/1_fake/00014_a_photo_of_a_backpack_4.jpg",
+"Infinity/1_fake/00015_a_photo_of_a_backpack_5.jpg",
+"Infinity/1_fake/00016_a_photo_of_a_backpack_6.jpg",
+"Infinity/1_fake/00017_a_photo_of_a_backpack_7.jpg",
+"Infinity/1_fake/00018_a_photo_of_a_backpack_8.jpg",
+"Infinity/1_fake/00019_a_photo_of_a_backpack_9.jpg",
+"Infinity/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg",
+"Infinity/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg",
+"Infinity/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg",
+"Infinity/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg",
+"Infinity/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg",
+"Infinity/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg",
+"Infinity/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg",
+"Infinity/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg",
+"Infinity/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg",
+"Infinity/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg",
+"Infinity/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg",
+"Infinity/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg",
+"Infinity/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg",
+"Infinity/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg",
+"Infinity/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg",
+"Infinity/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg",
+"Infinity/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg",
+"Infinity/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg",
+"Infinity/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg",
+"Infinity/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg",
+"Infinity/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg",
+"Infinity/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg",
+"Infinity/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg",
+"Infinity/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg",
+"Infinity/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg",
+"Infinity/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg",
+"Infinity/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg",
+"Infinity/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg",
+"Infinity/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg",
+"Infinity/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg",
+"Infinity/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg",
+"Infinity/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg",
+"Infinity/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg",
+"Infinity/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg",
+"Infinity/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg",
+"Infinity/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg",
+"Infinity/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg",
+"Infinity/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg",
+"Infinity/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg",
+"Infinity/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg",
+"Infinity/1_fake/00060_a_photo_of_a_banana_0.jpg",
+"Infinity/1_fake/00061_a_photo_of_a_banana_1.jpg",
+"Infinity/1_fake/00062_a_photo_of_a_banana_10.jpg",
+"Infinity/1_fake/00063_a_photo_of_a_banana_11.jpg",
+"Infinity/1_fake/00064_a_photo_of_a_banana_12.jpg",
+"Infinity/1_fake/00065_a_photo_of_a_banana_13.jpg",
+"Infinity/1_fake/00066_a_photo_of_a_banana_14.jpg",
+"Infinity/1_fake/00067_a_photo_of_a_banana_15.jpg",
+"Infinity/1_fake/00068_a_photo_of_a_banana_16.jpg",
+"Infinity/1_fake/00069_a_photo_of_a_banana_17.jpg",
+"Infinity/1_fake/00070_a_photo_of_a_banana_18.jpg",
+"Infinity/1_fake/00071_a_photo_of_a_banana_19.jpg",
+"Infinity/1_fake/00072_a_photo_of_a_banana_2.jpg",
+"Infinity/1_fake/00073_a_photo_of_a_banana_3.jpg",
+"Infinity/1_fake/00074_a_photo_of_a_banana_4.jpg",
+"Infinity/1_fake/00075_a_photo_of_a_banana_5.jpg",
+"Infinity/1_fake/00076_a_photo_of_a_banana_6.jpg",
+"Infinity/1_fake/00077_a_photo_of_a_banana_7.jpg",
+"Infinity/1_fake/00078_a_photo_of_a_banana_8.jpg",
+"Infinity/1_fake/00079_a_photo_of_a_banana_9.jpg",
+"Infinity/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg",
+"Infinity/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg",
+"Infinity/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg",
+"Infinity/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg",
+"Infinity/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg",
+"Infinity/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg",
+"Infinity/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg",
+"Infinity/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg",
+"Infinity/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg",
+"Infinity/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg",
+"Infinity/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg",
+"Infinity/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg",
+"Infinity/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg",
+"Infinity/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg",
+"Infinity/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg",
+"Infinity/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg",
+"Infinity/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg",
+"Infinity/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg",
+"Infinity/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg",
+"Infinity/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg"
+]
+},
+{
+"name": "NOVA",
+"reals": [
+"NOVA/0_real/00000_000000000139.jpg",
+"NOVA/0_real/00001_000000000285.jpg",
+"NOVA/0_real/00002_000000000632.jpg",
+"NOVA/0_real/00003_000000000724.jpg",
+"NOVA/0_real/00004_000000000776.jpg",
+"NOVA/0_real/00005_000000000785.jpg",
+"NOVA/0_real/00006_000000000802.jpg",
+"NOVA/0_real/00007_000000000872.jpg",
+"NOVA/0_real/00008_000000000885.jpg",
+"NOVA/0_real/00009_000000001000.jpg",
+"NOVA/0_real/00010_000000001268.jpg",
+"NOVA/0_real/00011_000000001296.jpg",
+"NOVA/0_real/00012_000000001353.jpg",
+"NOVA/0_real/00013_000000001425.jpg",
+"NOVA/0_real/00014_000000001490.jpg",
+"NOVA/0_real/00015_000000001503.jpg",
+"NOVA/0_real/00016_000000001532.jpg",
+"NOVA/0_real/00017_000000001584.jpg",
+"NOVA/0_real/00018_000000001675.jpg",
+"NOVA/0_real/00019_000000001761.jpg",
+"NOVA/0_real/00020_000000001818.jpg",
+"NOVA/0_real/00021_000000001993.jpg",
+"NOVA/0_real/00022_000000002006.jpg",
+"NOVA/0_real/00023_000000002149.jpg",
+"NOVA/0_real/00024_000000002153.jpg",
+"NOVA/0_real/00025_000000002157.jpg",
+"NOVA/0_real/00026_000000002261.jpg",
+"NOVA/0_real/00027_000000002299.jpg",
+"NOVA/0_real/00028_000000002431.jpg",
+"NOVA/0_real/00029_000000002473.jpg",
+"NOVA/0_real/00030_000000002532.jpg",
+"NOVA/0_real/00031_000000002587.jpg",
+"NOVA/0_real/00032_000000002592.jpg",
+"NOVA/0_real/00033_000000002685.jpg",
+"NOVA/0_real/00034_000000002923.jpg",
+"NOVA/0_real/00035_000000003156.jpg",
+"NOVA/0_real/00036_000000003255.jpg",
+"NOVA/0_real/00037_000000003501.jpg",
+"NOVA/0_real/00038_000000003553.jpg",
+"NOVA/0_real/00039_000000003661.jpg",
+"NOVA/0_real/00040_000000003845.jpg",
+"NOVA/0_real/00041_000000003934.jpg",
+"NOVA/0_real/00042_000000004134.jpg",
+"NOVA/0_real/00043_000000004395.jpg",
+"NOVA/0_real/00044_000000004495.jpg",
+"NOVA/0_real/00045_000000004765.jpg",
+"NOVA/0_real/00046_000000004795.jpg",
+"NOVA/0_real/00047_000000005001.jpg",
+"NOVA/0_real/00048_000000005037.jpg",
+"NOVA/0_real/00049_000000005060.jpg",
+"NOVA/0_real/00050_000000005193.jpg",
+"NOVA/0_real/00051_000000005477.jpg",
+"NOVA/0_real/00052_000000005503.jpg",
+"NOVA/0_real/00053_000000005529.jpg",
+"NOVA/0_real/00054_000000005586.jpg",
+"NOVA/0_real/00055_000000005600.jpg",
+"NOVA/0_real/00056_000000005992.jpg",
+"NOVA/0_real/00057_000000006012.jpg",
+"NOVA/0_real/00058_000000006040.jpg",
+"NOVA/0_real/00059_000000006213.jpg",
+"NOVA/0_real/00060_000000006460.jpg",
+"NOVA/0_real/00061_000000006471.jpg",
+"NOVA/0_real/00062_000000006614.jpg",
+"NOVA/0_real/00063_000000006723.jpg",
+"NOVA/0_real/00064_000000006763.jpg",
+"NOVA/0_real/00065_000000006771.jpg",
+"NOVA/0_real/00066_000000006818.jpg",
+"NOVA/0_real/00067_000000006894.jpg",
+"NOVA/0_real/00068_000000006954.jpg",
+"NOVA/0_real/00069_000000007088.jpg",
+"NOVA/0_real/00070_000000007108.jpg",
+"NOVA/0_real/00071_000000007278.jpg",
+"NOVA/0_real/00072_000000007281.jpg",
+"NOVA/0_real/00073_000000007386.jpg",
+"NOVA/0_real/00074_000000007511.jpg",
+"NOVA/0_real/00075_000000007574.jpg",
+"NOVA/0_real/00076_000000007784.jpg",
+"NOVA/0_real/00077_000000007795.jpg",
+"NOVA/0_real/00078_000000007816.jpg",
+"NOVA/0_real/00079_000000007818.jpg",
+"NOVA/0_real/00080_000000007888.jpg",
+"NOVA/0_real/00081_000000007977.jpg",
+"NOVA/0_real/00082_000000007991.jpg",
+"NOVA/0_real/00083_000000008021.jpg",
+"NOVA/0_real/00084_000000008211.jpg",
+"NOVA/0_real/00085_000000008277.jpg",
+"NOVA/0_real/00086_000000008532.jpg",
+"NOVA/0_real/00087_000000008629.jpg",
+"NOVA/0_real/00088_000000008690.jpg",
+"NOVA/0_real/00089_000000008762.jpg",
+"NOVA/0_real/00090_000000008844.jpg",
+"NOVA/0_real/00091_000000008899.jpg",
+"NOVA/0_real/00092_000000009378.jpg",
+"NOVA/0_real/00093_000000009400.jpg",
+"NOVA/0_real/00094_000000009448.jpg",
+"NOVA/0_real/00095_000000009483.jpg",
+"NOVA/0_real/00096_000000009590.jpg",
+"NOVA/0_real/00097_000000009769.jpg",
+"NOVA/0_real/00098_000000009772.jpg",
+"NOVA/0_real/00099_000000009891.jpg"
+],
+"fakes": [
+"NOVA/1_fake/00000_a_photo_of_a_backpack_0.jpg",
+"NOVA/1_fake/00001_a_photo_of_a_backpack_1.jpg",
+"NOVA/1_fake/00002_a_photo_of_a_backpack_10.jpg",
+"NOVA/1_fake/00003_a_photo_of_a_backpack_11.jpg",
+"NOVA/1_fake/00004_a_photo_of_a_backpack_12.jpg",
+"NOVA/1_fake/00005_a_photo_of_a_backpack_13.jpg",
+"NOVA/1_fake/00006_a_photo_of_a_backpack_14.jpg",
+"NOVA/1_fake/00007_a_photo_of_a_backpack_15.jpg",
+"NOVA/1_fake/00008_a_photo_of_a_backpack_16.jpg",
+"NOVA/1_fake/00009_a_photo_of_a_backpack_17.jpg",
+"NOVA/1_fake/00010_a_photo_of_a_backpack_18.jpg",
+"NOVA/1_fake/00011_a_photo_of_a_backpack_19.jpg",
+"NOVA/1_fake/00012_a_photo_of_a_backpack_2.jpg",
+"NOVA/1_fake/00013_a_photo_of_a_backpack_3.jpg",
+"NOVA/1_fake/00014_a_photo_of_a_backpack_4.jpg",
+"NOVA/1_fake/00015_a_photo_of_a_backpack_5.jpg",
+"NOVA/1_fake/00016_a_photo_of_a_backpack_6.jpg",
+"NOVA/1_fake/00017_a_photo_of_a_backpack_7.jpg",
+"NOVA/1_fake/00018_a_photo_of_a_backpack_8.jpg",
+"NOVA/1_fake/00019_a_photo_of_a_backpack_9.jpg",
+"NOVA/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg",
+"NOVA/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg",
+"NOVA/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg",
+"NOVA/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg",
+"NOVA/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg",
+"NOVA/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg",
+"NOVA/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg",
+"NOVA/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg",
+"NOVA/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg",
+"NOVA/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg",
+"NOVA/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg",
+"NOVA/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg",
+"NOVA/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg",
+"NOVA/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg",
+"NOVA/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg",
+"NOVA/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg",
+"NOVA/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg",
+"NOVA/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg",
+"NOVA/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg",
+"NOVA/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg",
+"NOVA/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg",
+"NOVA/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg",
+"NOVA/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg",
+"NOVA/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg",
+"NOVA/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg",
+"NOVA/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg",
+"NOVA/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg",
+"NOVA/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg",
+"NOVA/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg",
+"NOVA/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg",
+"NOVA/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg",
+"NOVA/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg",
+"NOVA/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg",
+"NOVA/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg",
+"NOVA/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg",
+"NOVA/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg",
+"NOVA/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg",
+"NOVA/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg",
+"NOVA/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg",
+"NOVA/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg",
+"NOVA/1_fake/00060_a_photo_of_a_banana_0.jpg",
+"NOVA/1_fake/00061_a_photo_of_a_banana_1.jpg",
+"NOVA/1_fake/00062_a_photo_of_a_banana_10.jpg",
+"NOVA/1_fake/00063_a_photo_of_a_banana_11.jpg",
+"NOVA/1_fake/00064_a_photo_of_a_banana_12.jpg",
+"NOVA/1_fake/00065_a_photo_of_a_banana_13.jpg",
+"NOVA/1_fake/00066_a_photo_of_a_banana_14.jpg",
+"NOVA/1_fake/00067_a_photo_of_a_banana_15.jpg",
+"NOVA/1_fake/00068_a_photo_of_a_banana_16.jpg",
+"NOVA/1_fake/00069_a_photo_of_a_banana_17.jpg",
+"NOVA/1_fake/00070_a_photo_of_a_banana_18.jpg",
+"NOVA/1_fake/00071_a_photo_of_a_banana_19.jpg",
+"NOVA/1_fake/00072_a_photo_of_a_banana_2.jpg",
+"NOVA/1_fake/00073_a_photo_of_a_banana_3.jpg",
+"NOVA/1_fake/00074_a_photo_of_a_banana_4.jpg",
+"NOVA/1_fake/00075_a_photo_of_a_banana_5.jpg",
+"NOVA/1_fake/00076_a_photo_of_a_banana_6.jpg",
+"NOVA/1_fake/00077_a_photo_of_a_banana_7.jpg",
+"NOVA/1_fake/00078_a_photo_of_a_banana_8.jpg",
+"NOVA/1_fake/00079_a_photo_of_a_banana_9.jpg",
+"NOVA/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg",
+"NOVA/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg",
+"NOVA/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg",
+"NOVA/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg",
+"NOVA/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg",
+"NOVA/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg",
+"NOVA/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg",
+"NOVA/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg",
+"NOVA/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg",
+"NOVA/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg",
+"NOVA/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg",
+"NOVA/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg",
+"NOVA/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg",
+"NOVA/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg",
+"NOVA/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg",
+"NOVA/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg",
+"NOVA/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg",
+"NOVA/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg",
+"NOVA/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg",
+"NOVA/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg"
+]
+},
+{
+"name": "OmniGen",
+"reals": [
+"OmniGen/0_real/00000_000000000139.jpg",
+"OmniGen/0_real/00001_000000000285.jpg",
+"OmniGen/0_real/00002_000000000632.jpg",
+"OmniGen/0_real/00003_000000000724.jpg",
+"OmniGen/0_real/00004_000000000776.jpg",
+"OmniGen/0_real/00005_000000000785.jpg",
+"OmniGen/0_real/00006_000000000802.jpg",
+"OmniGen/0_real/00007_000000000872.jpg",
+"OmniGen/0_real/00008_000000000885.jpg",
+"OmniGen/0_real/00009_000000001000.jpg",
+"OmniGen/0_real/00010_000000001268.jpg",
+"OmniGen/0_real/00011_000000001296.jpg",
+"OmniGen/0_real/00012_000000001353.jpg",
+"OmniGen/0_real/00013_000000001425.jpg",
+"OmniGen/0_real/00014_000000001490.jpg",
+"OmniGen/0_real/00015_000000001503.jpg",
+"OmniGen/0_real/00016_000000001532.jpg",
+"OmniGen/0_real/00017_000000001584.jpg",
+"OmniGen/0_real/00018_000000001675.jpg",
+"OmniGen/0_real/00019_000000001761.jpg",
+"OmniGen/0_real/00020_000000001818.jpg",
+"OmniGen/0_real/00021_000000001993.jpg",
+"OmniGen/0_real/00022_000000002006.jpg",
+"OmniGen/0_real/00023_000000002149.jpg",
+"OmniGen/0_real/00024_000000002153.jpg",
+"OmniGen/0_real/00025_000000002157.jpg",
+"OmniGen/0_real/00026_000000002261.jpg",
+"OmniGen/0_real/00027_000000002299.jpg",
+"OmniGen/0_real/00028_000000002431.jpg",
+"OmniGen/0_real/00029_000000002473.jpg",
+"OmniGen/0_real/00030_000000002532.jpg",
+"OmniGen/0_real/00031_000000002587.jpg",
+"OmniGen/0_real/00032_000000002592.jpg",
+"OmniGen/0_real/00033_000000002685.jpg",
+"OmniGen/0_real/00034_000000002923.jpg",
+"OmniGen/0_real/00035_000000003156.jpg",
+"OmniGen/0_real/00036_000000003255.jpg",
+"OmniGen/0_real/00037_000000003501.jpg",
+"OmniGen/0_real/00038_000000003553.jpg",
+"OmniGen/0_real/00039_000000003661.jpg",
+"OmniGen/0_real/00040_000000003845.jpg",
+"OmniGen/0_real/00041_000000003934.jpg",
+"OmniGen/0_real/00042_000000004134.jpg",
+"OmniGen/0_real/00043_000000004395.jpg",
+"OmniGen/0_real/00044_000000004495.jpg",
+"OmniGen/0_real/00045_000000004765.jpg",
+"OmniGen/0_real/00046_000000004795.jpg",
+"OmniGen/0_real/00047_000000005001.jpg",
+"OmniGen/0_real/00048_000000005037.jpg",
+"OmniGen/0_real/00049_000000005060.jpg",
+"OmniGen/0_real/00050_000000005193.jpg",
+"OmniGen/0_real/00051_000000005477.jpg",
+"OmniGen/0_real/00052_000000005503.jpg",
+"OmniGen/0_real/00053_000000005529.jpg",
+"OmniGen/0_real/00054_000000005586.jpg",
+"OmniGen/0_real/00055_000000005600.jpg",
+"OmniGen/0_real/00056_000000005992.jpg",
+"OmniGen/0_real/00057_000000006012.jpg",
+"OmniGen/0_real/00058_000000006040.jpg",
+"OmniGen/0_real/00059_000000006213.jpg",
+"OmniGen/0_real/00060_000000006460.jpg",
+"OmniGen/0_real/00061_000000006471.jpg",
+"OmniGen/0_real/00062_000000006614.jpg",
+"OmniGen/0_real/00063_000000006723.jpg",
+"OmniGen/0_real/00064_000000006763.jpg",
+"OmniGen/0_real/00065_000000006771.jpg",
+"OmniGen/0_real/00066_000000006818.jpg",
+"OmniGen/0_real/00067_000000006894.jpg",
+"OmniGen/0_real/00068_000000006954.jpg",
+"OmniGen/0_real/00069_000000007088.jpg",
+"OmniGen/0_real/00070_000000007108.jpg",
+"OmniGen/0_real/00071_000000007278.jpg",
+"OmniGen/0_real/00072_000000007281.jpg",
+"OmniGen/0_real/00073_000000007386.jpg",
+"OmniGen/0_real/00074_000000007511.jpg",
+"OmniGen/0_real/00075_000000007574.jpg",
+"OmniGen/0_real/00076_000000007784.jpg",
+"OmniGen/0_real/00077_000000007795.jpg",
+"OmniGen/0_real/00078_000000007816.jpg",
+"OmniGen/0_real/00079_000000007818.jpg",
+"OmniGen/0_real/00080_000000007888.jpg",
+"OmniGen/0_real/00081_000000007977.jpg",
+"OmniGen/0_real/00082_000000007991.jpg",
+"OmniGen/0_real/00083_000000008021.jpg",
+"OmniGen/0_real/00084_000000008211.jpg",
+"OmniGen/0_real/00085_000000008277.jpg",
+"OmniGen/0_real/00086_000000008532.jpg",
+"OmniGen/0_real/00087_000000008629.jpg",
+"OmniGen/0_real/00088_000000008690.jpg",
+"OmniGen/0_real/00089_000000008762.jpg",
+"OmniGen/0_real/00090_000000008844.jpg",
+"OmniGen/0_real/00091_000000008899.jpg",
+"OmniGen/0_real/00092_000000009378.jpg",
+"OmniGen/0_real/00093_000000009400.jpg",
+"OmniGen/0_real/00094_000000009448.jpg",
+"OmniGen/0_real/00095_000000009483.jpg",
+"OmniGen/0_real/00096_000000009590.jpg",
+"OmniGen/0_real/00097_000000009769.jpg",
+"OmniGen/0_real/00098_000000009772.jpg",
+"OmniGen/0_real/00099_000000009891.jpg"
+],
+"fakes": [
+"OmniGen/1_fake/00000_a_photo_of_a_backpack_0.jpg",
+"OmniGen/1_fake/00001_a_photo_of_a_backpack_1.jpg",
+"OmniGen/1_fake/00002_a_photo_of_a_backpack_10.jpg",
+"OmniGen/1_fake/00003_a_photo_of_a_backpack_11.jpg",
+"OmniGen/1_fake/00004_a_photo_of_a_backpack_12.jpg",
+"OmniGen/1_fake/00005_a_photo_of_a_backpack_13.jpg",
+"OmniGen/1_fake/00006_a_photo_of_a_backpack_14.jpg",
+"OmniGen/1_fake/00007_a_photo_of_a_backpack_15.jpg",
+"OmniGen/1_fake/00008_a_photo_of_a_backpack_16.jpg",
+"OmniGen/1_fake/00009_a_photo_of_a_backpack_17.jpg",
+"OmniGen/1_fake/00010_a_photo_of_a_backpack_18.jpg",
+"OmniGen/1_fake/00011_a_photo_of_a_backpack_19.jpg",
+"OmniGen/1_fake/00012_a_photo_of_a_backpack_2.jpg",
+"OmniGen/1_fake/00013_a_photo_of_a_backpack_3.jpg",
+"OmniGen/1_fake/00014_a_photo_of_a_backpack_4.jpg",
+"OmniGen/1_fake/00015_a_photo_of_a_backpack_5.jpg",
+"OmniGen/1_fake/00016_a_photo_of_a_backpack_6.jpg",
+"OmniGen/1_fake/00017_a_photo_of_a_backpack_7.jpg",
+"OmniGen/1_fake/00018_a_photo_of_a_backpack_8.jpg",
+"OmniGen/1_fake/00019_a_photo_of_a_backpack_9.jpg",
+"OmniGen/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg",
+"OmniGen/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg",
+"OmniGen/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg",
+"OmniGen/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg",
+"OmniGen/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg",
+"OmniGen/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg",
+"OmniGen/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg",
+"OmniGen/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg",
+"OmniGen/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg",
+"OmniGen/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg",
+"OmniGen/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg",
+"OmniGen/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg",
+"OmniGen/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg",
+"OmniGen/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg",
+"OmniGen/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg",
+"OmniGen/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg",
+"OmniGen/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg",
+"OmniGen/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg",
+"OmniGen/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg",
+"OmniGen/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg",
+"OmniGen/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg",
+"OmniGen/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg",
+"OmniGen/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg",
+"OmniGen/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg",
+"OmniGen/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg",
+"OmniGen/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg",
+"OmniGen/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg",
+"OmniGen/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg",
+"OmniGen/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg",
+"OmniGen/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg",
+"OmniGen/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg",
+"OmniGen/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg",
+"OmniGen/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg",
+"OmniGen/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg",
+"OmniGen/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg",
+"OmniGen/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg",
+"OmniGen/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg",
+"OmniGen/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg",
+"OmniGen/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg",
+"OmniGen/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg",
+"OmniGen/1_fake/00060_a_photo_of_a_banana_0.jpg",
+"OmniGen/1_fake/00061_a_photo_of_a_banana_1.jpg",
+"OmniGen/1_fake/00062_a_photo_of_a_banana_10.jpg",
+"OmniGen/1_fake/00063_a_photo_of_a_banana_11.jpg",
+"OmniGen/1_fake/00064_a_photo_of_a_banana_12.jpg",
+"OmniGen/1_fake/00065_a_photo_of_a_banana_13.jpg",
+"OmniGen/1_fake/00066_a_photo_of_a_banana_14.jpg",
+"OmniGen/1_fake/00067_a_photo_of_a_banana_15.jpg",
+"OmniGen/1_fake/00068_a_photo_of_a_banana_16.jpg",
+"OmniGen/1_fake/00069_a_photo_of_a_banana_17.jpg",
+"OmniGen/1_fake/00070_a_photo_of_a_banana_18.jpg",
+"OmniGen/1_fake/00071_a_photo_of_a_banana_19.jpg",
+"OmniGen/1_fake/00072_a_photo_of_a_banana_2.jpg",
+"OmniGen/1_fake/00073_a_photo_of_a_banana_3.jpg",
+"OmniGen/1_fake/00074_a_photo_of_a_banana_4.jpg",
+"OmniGen/1_fake/00075_a_photo_of_a_banana_5.jpg",
+"OmniGen/1_fake/00076_a_photo_of_a_banana_6.jpg",
+"OmniGen/1_fake/00077_a_photo_of_a_banana_7.jpg",
+"OmniGen/1_fake/00078_a_photo_of_a_banana_8.jpg",
+"OmniGen/1_fake/00079_a_photo_of_a_banana_9.jpg",
+"OmniGen/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg",
+"OmniGen/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg",
+"OmniGen/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg",
+"OmniGen/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg",
+"OmniGen/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg",
+"OmniGen/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg",
+"OmniGen/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg",
+"OmniGen/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg",
+"OmniGen/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg",
+"OmniGen/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg",
+"OmniGen/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg",
+"OmniGen/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg",
+"OmniGen/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg",
+"OmniGen/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg",
+"OmniGen/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg",
+"OmniGen/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg",
+"OmniGen/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg",
+"OmniGen/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg",
+"OmniGen/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg",
+"OmniGen/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg"
+]
+}
+],
+"files": {
+"Flux/0_real/00000_000000000139.jpg": [
+"7dac3963569bb65d3adb32c8dc4372340867e81f",
+161811
+],
+"Flux/0_real/00001_000000000285.jpg": [
+"1403bda53ea1d49afda2a9e5daff1978b8c1453b",
+335861
+],
+"Flux/0_real/00002_000000000632.jpg": [
+"4a7a0c5504d76ef6060f28496fde4cc19109ef6c",
+155667
+],
+"Flux/0_real/00003_000000000724.jpg": [
+"e626f242c0dcf4d5dcea081a71179ab3e5ca5891",
+130107
+],
+"Flux/0_real/00004_000000000776.jpg": [
+"8a1681e8e47a1d97797009ececc366b4f10dc1ed",
+176410
+],
+"Flux/0_real/00005_000000000785.jpg": [
+"27befa5f0b57fa5527a3cdcf98e31fb1dc5e1f82",
+133674
+],
+"Flux/0_real/00006_000000000802.jpg": [
+"9f337ad7eac5eb20b4ba21eb08ca2f421db704c3",
+62406
+],
+"Flux/0_real/00007_000000000872.jpg": [
+"fe5f7846069af695a8b4c0081f44a17d471eab4e",
+317669
+],
+"Flux/0_real/00008_000000000885.jpg": [
+"fb1d0aa34b570ca7bf16e91b88c1a854a5b3aa8a",
+111441
+],
+"Flux/0_real/00009_000000001000.jpg": [
+"b2bd1649e71c7335423017da607ed52357e12b88",
+321136
+],
+"Flux/0_real/00010_000000001268.jpg": [
+"71a02a80899ebd3bdafa8b04ff0942df7afe500f",
+180751
+],
+"Flux/0_real/00011_000000001296.jpg": [
+"93f33d5783a222803743d5d5ec88df3eaff19a1c",
+204829
+],
+"Flux/0_real/00012_000000001353.jpg": [
+"0388ebd4e08b73a13fb68451bee30d9c50f488cb",
+83033
+],
+"Flux/0_real/00013_000000001425.jpg": [
+"496c6b40d36f90337e4d96f29068555a624cd44e",
+111309
+],
+"Flux/0_real/00014_000000001490.jpg": [
+"eadfccc9eeac2e15221095f70eae7c995397732a",
+101098
+],
+"Flux/0_real/00015_000000001503.jpg": [
+"3b937dc76d7eeff86f384dd63a99b4c4653521fe",
+15259
+],
+"Flux/0_real/00016_000000001532.jpg": [
+"9a47d9e3eb6cbe1106bdf74948a8b456c7f4a3f2",
+174022
+],
+"Flux/0_real/00017_000000001584.jpg": [
+"77f4cc601cf98f8c69e368614ba84422db4b1bc0",
+138202
+],
+"Flux/0_real/00018_000000001675.jpg": [
+"ed0f1fb593f8a0a77fcc07facfff1d21113497a6",
+97643
+],
+"Flux/0_real/00019_000000001761.jpg": [
+"4b2fa0c981a7ede1e81e881d84229396da516048",
+115835
+],
+"Flux/0_real/00020_000000001818.jpg": [
+"7aabe938e352a42a39f0f3ffda7392b6a7b73f35",
+203119
+],
+"Flux/0_real/00021_000000001993.jpg": [
+"a42908ff8e59bd350fb03149e1a35ec10d452764",
+110450
+],
+"Flux/0_real/00022_000000002006.jpg": [
+"f535e1be306cae8b149b8c95d66f81824e1b8fd5",
+202589
+],
+"Flux/0_real/00023_000000002149.jpg": [
+"55454494a0024a8227d412fe5696c2de40999c65",
+52707
+],
+"Flux/0_real/00024_000000002153.jpg": [
+"59355cd8b96f38bbc10f1ad5b4cc904b512a5b70",
+136034
+],
+"Flux/0_real/00025_000000002157.jpg": [
+"93eae2c703bcda466f1e83ac7c99f45d015a1de3",
+124713
+],
+"Flux/0_real/00026_000000002261.jpg": [
+"1dbd989bda99853b31effdf5fe551077ff072297",
+197814
+],
+"Flux/0_real/00027_000000002299.jpg": [
+"a234e2a26f3dbe6a18f2e030d2dd701388498b33",
+103567
+],
+"Flux/0_real/00028_000000002431.jpg": [
+"f70bd9f040c4e4773ef0b321594fd77d1841712b",
+141124
+],
+"Flux/0_real/00029_000000002473.jpg": [
+"86c47bd87ff769327d2b2d5538d6b3e6b40503cd",
+95783
+],
+"Flux/0_real/00030_000000002532.jpg": [
+"ac15431d1239ad49f0ca1d6579d31d67fabb7dd0",
+210376
+],
+"Flux/0_real/00031_000000002587.jpg": [
+"e3d7e29fe49b0325b876365d447fe7652672050d",
+113812
+],
+"Flux/0_real/00032_000000002592.jpg": [
+"9a29bdf7c3d7fd61a6c4f7163e3080cb67ee1339",
+103017
+],
+"Flux/0_real/00033_000000002685.jpg": [
+"d1841713c78a9f8d84cfd62dc55b9235ab01e5f8",
+272650
+],
+"Flux/0_real/00034_000000002923.jpg": [
+"274a176fa3962189b0367025abf4b8a31aef2760",
+99783
+],
+"Flux/0_real/00035_000000003156.jpg": [
+"2ff5e7efeaf3dde09f72b38ccde2c76115a28108",
+127189
+],
+"Flux/0_real/00036_000000003255.jpg": [
+"9b2b487f84b9eadc6d89b926f70f20b6ac9c1544",
+159111
+],
+"Flux/0_real/00037_000000003501.jpg": [
+"8963dd7bd96eda502b58fc78e35a3e227e2e7a8d",
+150713
+],
+"Flux/0_real/00038_000000003553.jpg": [
+"83325c16f5beeddac5b86cddb6600762b4d1ac46",
+148040
+],
+"Flux/0_real/00039_000000003661.jpg": [
+"e0e1e13f621da35149238adcd56c958822b3aad7",
+102617
+],
+"Flux/0_real/00040_000000003845.jpg": [
+"4595e3d2fe960bee38e12cf2c393d125612fdd62",
+163593
+],
+"Flux/0_real/00041_000000003934.jpg": [
+"9f57b825a026d353910ea09ced29eb42086e6495",
+138201
+],
+"Flux/0_real/00042_000000004134.jpg": [
+"1b9389ff4e46e84888150ef8e73e03c71a7d8a68",
+160116
+],
+"Flux/0_real/00043_000000004395.jpg": [
+"0fa4ac8fe58b17bb7bfce0e1eebd39ccc4c998ee",
+77239
+],
+"Flux/0_real/00044_000000004495.jpg": [
+"325e4ddddc369206b572cc7c2d235d27f820df49",
+106634
+],
+"Flux/0_real/00045_000000004765.jpg": [
+"7f89cc5b8174ae959fb6f3cc0c2f436d1c14728b",
+139681
+],
+"Flux/0_real/00046_000000004795.jpg": [
+"a8c6388b871e8627c8f104650e8f5fb5d59eaf5e",
+165837
+],
+"Flux/0_real/00047_000000005001.jpg": [
+"f91c21950e23a52f618a57d905b6308ecb9d3d17",
+211700
+],
+"Flux/0_real/00048_000000005037.jpg": [
+"790ab607d44c0ba8680963e5d686a5ae64ce7dae",
+182150
+],
+"Flux/0_real/00049_000000005060.jpg": [
+"9de90651f0aeebe9c1a6d5a942f08eded3c9c2c7",
+157329
+],
+"Flux/0_real/00050_000000005193.jpg": [
+"b616a56f165b83d59606d6c73324000777e56b7b",
+102722
+],
+"Flux/0_real/00051_000000005477.jpg": [
+"e07d8a6cd4e5931a1db02a829f080c7f20c1c5f3",
+154975
+],
+"Flux/0_real/00052_000000005503.jpg": [
+"05c4801a0881ab7f7c70b015fddb8eccd5752898",
+58617
+],
+"Flux/0_real/00053_000000005529.jpg": [
+"dc67ba0f87c3b9799bcc820325c7749f4ba2e90f",
+224797
+],
+"Flux/0_real/00054_000000005586.jpg": [
+"218baccec13cb75f1d51ca143ad0ddebfea9a7e6",
+36367
+],
+"Flux/0_real/00055_000000005600.jpg": [
+"824412badd3791291fb180a9ee785bbbca7f44c3",
+134559
+],
+"Flux/0_real/00056_000000005992.jpg": [
+"2901a95755d41f6a90da4ad393c309ef163c3df3",
+180732
+],
+"Flux/0_real/00057_000000006012.jpg": [
+"3eb5fc104f965c1f81a81c334dacf136c35221d3",
+166135
+],
+"Flux/0_real/00058_000000006040.jpg": [
+"955473e44a9a284f99d480b67a4aa8d0949c771a",
+161100
+],
+"Flux/0_real/00059_000000006213.jpg": [
+"96a79bdba9e72c37e0cfa8a8a5de02e7a4e22b2b",
+125937
+],
+"Flux/0_real/00060_000000006460.jpg": [
+"033abdf6c33d6821757e1e019601e883ed6e1194",
+119914
+],
+"Flux/0_real/00061_000000006471.jpg": [
+"d12f857d7ca10f87c7ebe1d56bd9016c9835043d",
+96115
+],
+"Flux/0_real/00062_000000006614.jpg": [
+"b8b5932dbfaf98eaa6b32d7cb6fd8c35d5aebef5",
+86815
+],
+"Flux/0_real/00063_000000006723.jpg": [
+"5dac60a062edf26f13384563ec83bb96138dab73",
+200461
+],
+"Flux/0_real/00064_000000006763.jpg": [
+"547a7ae5adfdf8343f50392d7b9118ee6f1fc38c",
+111031
+],
+"Flux/0_real/00065_000000006771.jpg": [
+"f68f3cd560d1ea11d76117a6e3eb62571a0ff250",
+138318
+],
+"Flux/0_real/00066_000000006818.jpg": [
+"93cb18f9e785e7ba0862ca6be6e6d73092401e66",
+77539
+],
+"Flux/0_real/00067_000000006894.jpg": [
+"d84b70e0d47be32afd4e53d785de88854fe70f34",
+119456
+],
+"Flux/0_real/00068_000000006954.jpg": [
+"50e5c718977afcd9e4254fab80622c262b150425",
+266595
+],
+"Flux/0_real/00069_000000007088.jpg": [
+"771702190beb3dd4d4f4dbae83e6be34d9d748d4",
+263011
+],
+"Flux/0_real/00070_000000007108.jpg": [
+"a2d4f08c99fad2ef607c1d556503b7655fa0a852",
+161781
+],
+"Flux/0_real/00071_000000007278.jpg": [
+"1ee346388a6c2c86222e32e4c38ffd4f6fa4eb8a",
+291912
+],
+"Flux/0_real/00072_000000007281.jpg": [
+"b2a7f9185b02b9b9709a338b9bda2ee1e6718bdd",
+137409
+],
+"Flux/0_real/00073_000000007386.jpg": [
+"c9d66de82e6cce488ee27b5eed72cb217d0572ea",
+211976
+],
+"Flux/0_real/00074_000000007511.jpg": [
+"20781dbc22f3b404f980aa65be1ba1a553a494d1",
+135698
+],
+"Flux/0_real/00075_000000007574.jpg": [
+"0367b59c2ff3fa3b150f69902eb6d65e1a917d94",
+163988
+],
+"Flux/0_real/00076_000000007784.jpg": [
+"96c6eece6148482c3466aa68bc7a94af72cf8e81",
+65621
+],
+"Flux/0_real/00077_000000007795.jpg": [
+"002ceca497c1384ca4219abfa0cabac313e91315",
+153601
+],
+"Flux/0_real/00078_000000007816.jpg": [
+"9d5479e037bea26f6fa06062da7c13d8c1f78fd1",
+171711
+],
+"Flux/0_real/00079_000000007818.jpg": [
+"1844fa3f2eaa6b239f7f727a2e7db31ad2827785",
+108736
+],
+"Flux/0_real/00080_000000007888.jpg": [
+"829c3e75ace5e08cc5fda1442b86145a1082ea66",
+132380
+],
+"Flux/0_real/00081_000000007977.jpg": [
+"0b2f031ec658899586876d2254eec194b3c79697",
+206738
+],
+"Flux/0_real/00082_000000007991.jpg": [
+"2dea6a70b8f11ae91328c5ec3afff615cdd58a98",
+194363
+],
+"Flux/0_real/00083_000000008021.jpg": [
+"d7f14a1e9b16a83a60434ede81758fc37826b720",
+180088
+],
+"Flux/0_real/00084_000000008211.jpg": [
+"8f02f060d66871b44ab7244024e1977820216548",
+268366
+],
+"Flux/0_real/00085_000000008277.jpg": [
+"f6e53a96562660bcd863174200a85df5a4984e42",
+206878
+],
+"Flux/0_real/00086_000000008532.jpg": [
+"f9ed534eb8b184f84b6edf1e7a3f1d59b9c4d068",
+109812
+],
+"Flux/0_real/00087_000000008629.jpg": [
+"0b450ce80f7648c9d57e2663a2241d8b244d0705",
+231097
+],
+"Flux/0_real/00088_000000008690.jpg": [
+"9c8b3b015ce23a0e309d55cb08e4a3721f9fac50",
+246519
+],
+"Flux/0_real/00089_000000008762.jpg": [
+"705c88938dec2de9287b9c2b35ea82cfaf97636e",
+48914
+],
+"Flux/0_real/00090_000000008844.jpg": [
+"61613fc36227dc3b861d18394a3271df2a4d59cc",
+111826
+],
+"Flux/0_real/00091_000000008899.jpg": [
+"ed39a89f728db7b1d24d1a35280529cb8cbc8be3",
+284674
+],
+"Flux/0_real/00092_000000009378.jpg": [
+"41c6e43969bec13926729f0c3817bd9804158ab2",
+117675
+],
+"Flux/0_real/00093_000000009400.jpg": [
+"ca1ea1fbf6d91d854bf55d9bd3738bb4df6bb923",
+104999
+],
+"Flux/0_real/00094_000000009448.jpg": [
+"8ee98910e05bfceb1a0d1a30c7982c7b0634be81",
+339450
+],
+"Flux/0_real/00095_000000009483.jpg": [
+"17b842b02383ab5176d47ce8b8b67763d8633db0",
+116766
+],
+"Flux/0_real/00096_000000009590.jpg": [
+"8dc274d95cf184391bb3f4486a0dcf2e86536e7c",
+155925
+],
+"Flux/0_real/00097_000000009769.jpg": [
+"59e431e7e82f32e078db363e24905cc2bac6be4b",
+327350
+],
+"Flux/0_real/00098_000000009772.jpg": [
+"06047312d6f885bafb5ecec239559374ad1af6b4",
+245584
+],
+"Flux/0_real/00099_000000009891.jpg": [
+"9fa92171e6311e04c77e9c1184634f6b4d2e62e3",
+131797
+],
+"Flux/1_fake/00000_a_photo_of_a_backpack_0.jpg": [
+"8bbc0fd2bd3053120e2fc497f64de1085102e929",
+261255
+],
+"Flux/1_fake/00001_a_photo_of_a_backpack_1.jpg": [
+"06b7b49341e742fb190c70796f90ffdb68a4ab26",
+276620
+],
+"Flux/1_fake/00002_a_photo_of_a_backpack_10.jpg": [
+"40c1111da02c871006ce5003b5111dfe3f9b9ba6",
+193488
+],
+"Flux/1_fake/00003_a_photo_of_a_backpack_11.jpg": [
+"936cb77f10f5cef172560b8070add8ded6415acf",
+299940
+],
+"Flux/1_fake/00004_a_photo_of_a_backpack_12.jpg": [
+"6a78eabde0ad652cea81477ca40a80ed262016f2",
+272304
+],
+"Flux/1_fake/00005_a_photo_of_a_backpack_13.jpg": [
+"baad513d2c62d44975535fd17b3b07f24ddd71ed",
+315821
+],
+"Flux/1_fake/00006_a_photo_of_a_backpack_14.jpg": [
+"d5155519ef11d35ff4a9705db6a1d58a9c8ac193",
+314807
+],
+"Flux/1_fake/00007_a_photo_of_a_backpack_15.jpg": [
+"f12f8e74263c9e11149d8e1de61b665963615c0f",
+279553
+],
+"Flux/1_fake/00008_a_photo_of_a_backpack_16.jpg": [
+"0f95662c97638250198a6894265b1cbba5879e84",
+218580
+],
+"Flux/1_fake/00009_a_photo_of_a_backpack_17.jpg": [
+"9a0cc764acb742a132f7717ed6bb50772eecbf89",
+331079
+],
+"Flux/1_fake/00010_a_photo_of_a_backpack_18.jpg": [
+"9caa1d49b18b5254e72ebf609167fe8ade995211",
+207359
+],
+"Flux/1_fake/00011_a_photo_of_a_backpack_19.jpg": [
+"3453ed274deaa144a777639a6b5cd938ced466a6",
+320286
+],
+"Flux/1_fake/00012_a_photo_of_a_backpack_2.jpg": [
+"caf883719b58f5d04d1c21bad40c995b25093a38",
+256308
+],
+"Flux/1_fake/00013_a_photo_of_a_backpack_3.jpg": [
+"7f0660195bab7edc1420f8e14dc73279c7f49f90",
+233043
+],
+"Flux/1_fake/00014_a_photo_of_a_backpack_4.jpg": [
+"1084ff9961ffbd0dd03f7fac2c05bfe11c292ff8",
+291749
+],
+"Flux/1_fake/00015_a_photo_of_a_backpack_5.jpg": [
+"35a1392983698d0fcdc9fb948bbb92f0f5006382",
+295948
+],
+"Flux/1_fake/00016_a_photo_of_a_backpack_6.jpg": [
+"fb2b065fd57e874fe4f331d874a86b614adb3046",
+221533
+],
+"Flux/1_fake/00017_a_photo_of_a_backpack_7.jpg": [
+"f9452d76c64368172ae9af9e721d0b146a50d9a8",
+245704
+],
+"Flux/1_fake/00018_a_photo_of_a_backpack_8.jpg": [
+"25b7c3448fe362c48169579485e5d7297148c364",
+246183
+],
+"Flux/1_fake/00019_a_photo_of_a_backpack_9.jpg": [
+"6099987c672e7a07fa0689dbb041b064607e600d",
+267233
+],
+"Flux/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg": [
+"f848a5e0d59e11df7e6a10a9bf021f438f96f522",
+291763
+],
+"Flux/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg": [
+"0085046b9c50c5d0aec6c6690272bcb25b8de5b9",
+250715
+],
+"Flux/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg": [
+"a06d535a8ef18a904e394964cbac8b2f838ab28a",
+206163
+],
+"Flux/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg": [
+"c1bec72b6ae12489a7634dfaca6b1ad803dea5a6",
+262599
+],
+"Flux/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg": [
+"1646f3d058b4d5119b0d731a3816878999a59ef4",
+295333
+],
+"Flux/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg": [
+"e6d82f17c0d6d7b347973b4eced21f02994a2f72",
+242991
+],
+"Flux/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg": [
+"fcef5ae4700bb47c8320bb8232401ed545b74311",
+305185
+],
+"Flux/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg": [
+"68a78afe001fcb81ff8c9fb570e7721316b6f569",
+210367
+],
+"Flux/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg": [
+"2b5205290270c91a75f2f72349e33975a7ef0e70",
+229194
+],
+"Flux/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg": [
+"887ec86f321e5940957b8b17991f6711c6da2df6",
+257398
+],
+"Flux/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg": [
+"235d3f0d0ec312ae1cc783d4b982ff8bd0d0b71f",
+260930
+],
+"Flux/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg": [
+"f827c56df946086c523cc12288bc23d4f0ed5fdb",
+243091
+],
+"Flux/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg": [
+"0234977bcb1204ba8fd5b025f9de355d7d2f123b",
+277031
+],
+"Flux/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg": [
+"222bffe5c23eaf8eca29e35563c5a598aae25bb5",
+251415
+],
+"Flux/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg": [
+"c9637620e27b1cef2e7f5e44bb0c9f97c70b8610",
+269052
+],
+"Flux/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg": [
+"616474082bdef3422fa6ec4d7537ec0cd8a6ee7a",
+274270
+],
+"Flux/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg": [
+"e04fc3fe5d261d19fc200fe0e21ef09e17d456a4",
+261907
+],
+"Flux/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg": [
+"bebe7ddb24e4f681fb31db291829af6a70fed608",
+290253
+],
+"Flux/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg": [
+"de19f14e23f9660b5c69f70043a9ab22a09722ea",
+303229
+],
+"Flux/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg": [
+"aa5d1d2f120e5f038bdca40c9a9d3875f5cce5e8",
+255022
+],
+"Flux/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg": [
+"3cee6b613aae84d6b551c5b5d17f154d774f7acf",
+305452
+],
+"Flux/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg": [
+"325d59925a506bcc55b0cfff3f1d272e18574786",
+274433
+],
+"Flux/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg": [
+"f4cef165532de0c41a495a904b3574630b4c775e",
+275214
+],
+"Flux/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg": [
+"e774e268b098fe63301c48b71ae0a104f65acac2",
+251689
+],
+"Flux/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg": [
+"99aaaf9fed88dae3e01bf8ae0251e92512b1c713",
+336989
+],
+"Flux/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg": [
+"6f6e4ccd3ae3e6394f56bb7c47f9758f4f9076f9",
+355681
+],
+"Flux/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg": [
+"ee9e13816a1cc53677f07d45d42754214cf56da5",
+254140
+],
+"Flux/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg": [
+"25e20997c56adaf14c3daf46504ad9474f59542e",
+243901
+],
+"Flux/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg": [
+"d59ea94f8c41fef9f6cc0213d813b59443729d11",
+328616
+],
+"Flux/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg": [
+"c4f5051f2513b656d280ae3cf56eb4b0c90da0ea",
+297567
+],
+"Flux/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg": [
+"c32cd2f891b38d39b29bc5b30317a5f0c04bfd90",
+248787
+],
+"Flux/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg": [
+"be55e92f923cd4954c3547e1ae598d80d35977d0",
+296738
+],
+"Flux/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg": [
+"6fa3cfa84d256e00a8ffecbc25ee1b7db2a79f86",
+289361
+],
+"Flux/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg": [
+"6ba6fe9203f3ba6ec96b852b7f87eb39216a1f30",
+287942
+],
+"Flux/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg": [
+"18f5d1f96e23343ab5f54ae89166af1599f3e774",
+321350
+],
+"Flux/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg": [
+"e4a331c83ac64fa18aeb6413aaf9332788c6122f",
+244746
+],
+"Flux/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg": [
+"4214c1b72c31a21e9bc452931052853946deaaff",
+294277
+],
+"Flux/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg": [
+"d4ea7c96998d5f815cd0d166eeaf618fbd72aaeb",
+296657
+],
+"Flux/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg": [
+"00ac2866bb9689d837dbd26c8f272fa42235e013",
+271507
+],
+"Flux/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg": [
+"1fc54d54549493e142cc76ecd13561c330ed6426",
+295818
+],
+"Flux/1_fake/00060_a_photo_of_a_banana_0.jpg": [
+"3c479ccf43ab05eb12a2bffb9cb30580d2bf4fcd",
+135602
+],
+"Flux/1_fake/00061_a_photo_of_a_banana_1.jpg": [
+"d00e028cb83a40a95b7d57f33928e2cc65d5acec",
+172319
+],
+"Flux/1_fake/00062_a_photo_of_a_banana_10.jpg": [
+"1c4a432fc6c8aa4412666b12072cf2ba9ab3613c",
+109334
+],
+"Flux/1_fake/00063_a_photo_of_a_banana_11.jpg": [
+"91aa3a9456a86724ede717ad930d589bf17b6feb",
+150847
+],
+"Flux/1_fake/00064_a_photo_of_a_banana_12.jpg": [
+"076b7ee47f21f688fbf85bfd827f307aa24c60f5",
+157365
+],
+"Flux/1_fake/00065_a_photo_of_a_banana_13.jpg": [
+"f628b444dfd84bc9755962a5106b495989b8fad0",
+177906
+],
+"Flux/1_fake/00066_a_photo_of_a_banana_14.jpg": [
+"95caa2ff9407972972c581bdc28b5d6bc4f5c5db",
+158530
+],
+"Flux/1_fake/00067_a_photo_of_a_banana_15.jpg": [
+"176b8262a80f88266f4010049bb6c8e03c15b95d",
+179037
+],
+"Flux/1_fake/00068_a_photo_of_a_banana_16.jpg": [
+"fca53f1c5ed9a97606b42d0f04306e840454d3c4",
+113528
+],
+"Flux/1_fake/00069_a_photo_of_a_banana_17.jpg": [
+"e0c8602e2b61aedb03e7f72f9743435bd9d640a6",
+114879
+],
+"Flux/1_fake/00070_a_photo_of_a_banana_18.jpg": [
+"89c0dcac7f3776818b9b7adeacd32a94a6b30b75",
+172123
+],
+"Flux/1_fake/00071_a_photo_of_a_banana_19.jpg": [
+"3fabad61e886bd38f987a2bcc00b1bb373dd2940",
+155123
+],
+"Flux/1_fake/00072_a_photo_of_a_banana_2.jpg": [
+"7732422e48de379ad54d9768593fb549ebb06b66",
+163938
+],
+"Flux/1_fake/00073_a_photo_of_a_banana_3.jpg": [
+"1f7294aec48534ed60ad4fdb1409854bfb8e4785",
+148400
+],
+"Flux/1_fake/00074_a_photo_of_a_banana_4.jpg": [
+"b652452e87b74f69cd72af8665e779f1e8cc6718",
+141595
+],
+"Flux/1_fake/00075_a_photo_of_a_banana_5.jpg": [
+"d5f20c09c5810d8a0aab1684b9e1d0009247eb55",
+118531
+],
+"Flux/1_fake/00076_a_photo_of_a_banana_6.jpg": [
+"6339de9245a3f6abdb9369313f3bf362550f6267",
+146353
+],
+"Flux/1_fake/00077_a_photo_of_a_banana_7.jpg": [
+"7587d14a433f74988e7c580e9c4c4da954a24ff7",
+162496
+],
+"Flux/1_fake/00078_a_photo_of_a_banana_8.jpg": [
+"390362581daf8f008346ed950002a52e85b13921",
+133144
+],
+"Flux/1_fake/00079_a_photo_of_a_banana_9.jpg": [
+"d3c29657d8f554b37710db91463c1f20d8360844",
+198663
+],
+"Flux/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg": [
+"65a7b0f65034c0c202f47c20b2475847829edb22",
+294316
+],
+"Flux/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg": [
+"c06d37f9f579525be700eb4bca2f19845bfcf42a",
+303814
+],
+"Flux/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg": [
+"67d2fb129dada025c98ff856cc22949760cbb9bd",
+155290
+],
+"Flux/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg": [
+"1da633b29ce43899547af51745d0e6840b34812e",
+138173
+],
+"Flux/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg": [
+"6e00581fd9836f3e4f4df9cbdb8fb0b45937d105",
+259058
+],
+"Flux/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg": [
+"39c394fd4fa1d09d24dcd867818b32978b249dc1",
+108445
+],
+"Flux/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg": [
+"9b38ca2af5edddc61dd317d43c5c6ef4672dc83a",
+306946
+],
+"Flux/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg": [
+"e95afc8e846483ed54f0d30ccaba886a1e9dd6a2",
+262996
+],
+"Flux/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg": [
+"ffe9fcd0d61417cc7f19cab96d0129e5bdeaccf2",
+319351
+],
+"Flux/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg": [
+"8ab1320193b45069fe3a03f0a594c2859fbe5290",
+187859
+],
+"Flux/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg": [
+"76e7252a948b8d7c9afb9acb5d4d29a63874097e",
+211124
+],
+"Flux/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg": [
+"ff59b25ff2a21749decc33c5c9ba032e7921a66e",
+309564
+],
+"Flux/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg": [
+"51ececf9c4525b1868ba2d4e8217db7abc51b8e4",
+246764
+],
+"Flux/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg": [
+"8ac85553453e6b2a63326c0c7d058ed2bcfb0fa8",
+176378
+],
+"Flux/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg": [
+"db1287fe5cb7730904d8e4875de2d5d81658e474",
+125778
+],
+"Flux/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg": [
+"f0a5da694a76f1913c9bee2bec4612a598ebbc40",
+295328
+],
+"Flux/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg": [
+"cb853754228cca69f354f1847711ee3695814125",
+298484
+],
+"Flux/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg": [
+"02a3ef61b5efdbbc91ef86919972182ee4440263",
+299146
+],
+"Flux/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg": [
+"9fe246f9395e835fb8e01db6abf4dc62db9155aa",
+182886
+],
+"Flux/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg": [
+"9f52446585d1d099392f4bb12730d721fff4240a",
+231308
+],
+"GoT/0_real/00000_000000000139.jpg": [
+"7dac3963569bb65d3adb32c8dc4372340867e81f",
+161811
+],
+"GoT/0_real/00001_000000000285.jpg": [
+"1403bda53ea1d49afda2a9e5daff1978b8c1453b",
+335861
+],
+"GoT/0_real/00002_000000000632.jpg": [
+"4a7a0c5504d76ef6060f28496fde4cc19109ef6c",
+155667
+],
+"GoT/0_real/00003_000000000724.jpg": [
+"e626f242c0dcf4d5dcea081a71179ab3e5ca5891",
+130107
+],
+"GoT/0_real/00004_000000000776.jpg": [
+"8a1681e8e47a1d97797009ececc366b4f10dc1ed",
+176410
+],
+"GoT/0_real/00005_000000000785.jpg": [
+"27befa5f0b57fa5527a3cdcf98e31fb1dc5e1f82",
+133674
+],
+"GoT/0_real/00006_000000000802.jpg": [
+"9f337ad7eac5eb20b4ba21eb08ca2f421db704c3",
+62406
+],
+"GoT/0_real/00007_000000000872.jpg": [
+"fe5f7846069af695a8b4c0081f44a17d471eab4e",
+317669
+],
+"GoT/0_real/00008_000000000885.jpg": [
+"fb1d0aa34b570ca7bf16e91b88c1a854a5b3aa8a",
+111441
+],
+"GoT/0_real/00009_000000001000.jpg": [
+"b2bd1649e71c7335423017da607ed52357e12b88",
+321136
+],
+"GoT/0_real/00010_000000001268.jpg": [
+"71a02a80899ebd3bdafa8b04ff0942df7afe500f",
+180751
+],
+"GoT/0_real/00011_000000001296.jpg": [
+"93f33d5783a222803743d5d5ec88df3eaff19a1c",
+204829
+],
+"GoT/0_real/00012_000000001353.jpg": [
+"0388ebd4e08b73a13fb68451bee30d9c50f488cb",
+83033
+],
+"GoT/0_real/00013_000000001425.jpg": [
+"496c6b40d36f90337e4d96f29068555a624cd44e",
+111309
+],
+"GoT/0_real/00014_000000001490.jpg": [
+"eadfccc9eeac2e15221095f70eae7c995397732a",
+101098
+],
+"GoT/0_real/00015_000000001503.jpg": [
+"3b937dc76d7eeff86f384dd63a99b4c4653521fe",
+15259
+],
+"GoT/0_real/00016_000000001532.jpg": [
+"9a47d9e3eb6cbe1106bdf74948a8b456c7f4a3f2",
+174022
+],
+"GoT/0_real/00017_000000001584.jpg": [
+"77f4cc601cf98f8c69e368614ba84422db4b1bc0",
+138202
+],
+"GoT/0_real/00018_000000001675.jpg": [
+"ed0f1fb593f8a0a77fcc07facfff1d21113497a6",
+97643
+],
+"GoT/0_real/00019_000000001761.jpg": [
+"4b2fa0c981a7ede1e81e881d84229396da516048",
+115835
+],
+"GoT/0_real/00020_000000001818.jpg": [
+"7aabe938e352a42a39f0f3ffda7392b6a7b73f35",
+203119
+],
+"GoT/0_real/00021_000000001993.jpg": [
+"a42908ff8e59bd350fb03149e1a35ec10d452764",
+110450
+],
+"GoT/0_real/00022_000000002006.jpg": [
+"f535e1be306cae8b149b8c95d66f81824e1b8fd5",
+202589
+],
+"GoT/0_real/00023_000000002149.jpg": [
+"55454494a0024a8227d412fe5696c2de40999c65",
+52707
+],
+"GoT/0_real/00024_000000002153.jpg": [
+"59355cd8b96f38bbc10f1ad5b4cc904b512a5b70",
+136034
+],
+"GoT/0_real/00025_000000002157.jpg": [
+"93eae2c703bcda466f1e83ac7c99f45d015a1de3",
+124713
+],
+"GoT/0_real/00026_000000002261.jpg": [
+"1dbd989bda99853b31effdf5fe551077ff072297",
+197814
+],
+"GoT/0_real/00027_000000002299.jpg": [
+"a234e2a26f3dbe6a18f2e030d2dd701388498b33",
+103567
+],
+"GoT/0_real/00028_000000002431.jpg": [
+"f70bd9f040c4e4773ef0b321594fd77d1841712b",
+141124
+],
+"GoT/0_real/00029_000000002473.jpg": [
+"86c47bd87ff769327d2b2d5538d6b3e6b40503cd",
+95783
+],
+"GoT/0_real/00030_000000002532.jpg": [
+"ac15431d1239ad49f0ca1d6579d31d67fabb7dd0",
+210376
+],
+"GoT/0_real/00031_000000002587.jpg": [
+"e3d7e29fe49b0325b876365d447fe7652672050d",
+113812
+],
+"GoT/0_real/00032_000000002592.jpg": [
+"9a29bdf7c3d7fd61a6c4f7163e3080cb67ee1339",
+103017
+],
+"GoT/0_real/00033_000000002685.jpg": [
+"d1841713c78a9f8d84cfd62dc55b9235ab01e5f8",
+272650
+],
+"GoT/0_real/00034_000000002923.jpg": [
+"274a176fa3962189b0367025abf4b8a31aef2760",
+99783
+],
+"GoT/0_real/00035_000000003156.jpg": [
+"2ff5e7efeaf3dde09f72b38ccde2c76115a28108",
+127189
+],
+"GoT/0_real/00036_000000003255.jpg": [
+"9b2b487f84b9eadc6d89b926f70f20b6ac9c1544",
+159111
+],
+"GoT/0_real/00037_000000003501.jpg": [
+"8963dd7bd96eda502b58fc78e35a3e227e2e7a8d",
+150713
+],
+"GoT/0_real/00038_000000003553.jpg": [
+"83325c16f5beeddac5b86cddb6600762b4d1ac46",
+148040
+],
+"GoT/0_real/00039_000000003661.jpg": [
+"e0e1e13f621da35149238adcd56c958822b3aad7",
+102617
+],
+"GoT/0_real/00040_000000003845.jpg": [
+"4595e3d2fe960bee38e12cf2c393d125612fdd62",
+163593
+],
+"GoT/0_real/00041_000000003934.jpg": [
+"9f57b825a026d353910ea09ced29eb42086e6495",
+138201
+],
+"GoT/0_real/00042_000000004134.jpg": [
+"1b9389ff4e46e84888150ef8e73e03c71a7d8a68",
+160116
+],
+"GoT/0_real/00043_000000004395.jpg": [
+"0fa4ac8fe58b17bb7bfce0e1eebd39ccc4c998ee",
+77239
+],
+"GoT/0_real/00044_000000004495.jpg": [
+"325e4ddddc369206b572cc7c2d235d27f820df49",
+106634
+],
+"GoT/0_real/00045_000000004765.jpg": [
+"7f89cc5b8174ae959fb6f3cc0c2f436d1c14728b",
+139681
+],
+"GoT/0_real/00046_000000004795.jpg": [
+"a8c6388b871e8627c8f104650e8f5fb5d59eaf5e",
+165837
+],
+"GoT/0_real/00047_000000005001.jpg": [
+"f91c21950e23a52f618a57d905b6308ecb9d3d17",
+211700
+],
+"GoT/0_real/00048_000000005037.jpg": [
+"790ab607d44c0ba8680963e5d686a5ae64ce7dae",
+182150
+],
+"GoT/0_real/00049_000000005060.jpg": [
+"9de90651f0aeebe9c1a6d5a942f08eded3c9c2c7",
+157329
+],
+"GoT/0_real/00050_000000005193.jpg": [
+"b616a56f165b83d59606d6c73324000777e56b7b",
+102722
+],
+"GoT/0_real/00051_000000005477.jpg": [
+"e07d8a6cd4e5931a1db02a829f080c7f20c1c5f3",
+154975
+],
+"GoT/0_real/00052_000000005503.jpg": [
+"05c4801a0881ab7f7c70b015fddb8eccd5752898",
+58617
+],
+"GoT/0_real/00053_000000005529.jpg": [
+"dc67ba0f87c3b9799bcc820325c7749f4ba2e90f",
+224797
+],
+"GoT/0_real/00054_000000005586.jpg": [
+"218baccec13cb75f1d51ca143ad0ddebfea9a7e6",
+36367
+],
+"GoT/0_real/00055_000000005600.jpg": [
+"824412badd3791291fb180a9ee785bbbca7f44c3",
+134559
+],
+"GoT/0_real/00056_000000005992.jpg": [
+"2901a95755d41f6a90da4ad393c309ef163c3df3",
+180732
+],
+"GoT/0_real/00057_000000006012.jpg": [
+"3eb5fc104f965c1f81a81c334dacf136c35221d3",
+166135
+],
+"GoT/0_real/00058_000000006040.jpg": [
+"955473e44a9a284f99d480b67a4aa8d0949c771a",
+161100
+],
+"GoT/0_real/00059_000000006213.jpg": [
+"96a79bdba9e72c37e0cfa8a8a5de02e7a4e22b2b",
+125937
+],
+"GoT/0_real/00060_000000006460.jpg": [
+"033abdf6c33d6821757e1e019601e883ed6e1194",
+119914
+],
+"GoT/0_real/00061_000000006471.jpg": [
+"d12f857d7ca10f87c7ebe1d56bd9016c9835043d",
+96115
+],
+"GoT/0_real/00062_000000006614.jpg": [
+"b8b5932dbfaf98eaa6b32d7cb6fd8c35d5aebef5",
+86815
+],
+"GoT/0_real/00063_000000006723.jpg": [
+"5dac60a062edf26f13384563ec83bb96138dab73",
+200461
+],
+"GoT/0_real/00064_000000006763.jpg": [
+"547a7ae5adfdf8343f50392d7b9118ee6f1fc38c",
+111031
+],
+"GoT/0_real/00065_000000006771.jpg": [
+"f68f3cd560d1ea11d76117a6e3eb62571a0ff250",
+138318
+],
+"GoT/0_real/00066_000000006818.jpg": [
+"93cb18f9e785e7ba0862ca6be6e6d73092401e66",
+77539
+],
+"GoT/0_real/00067_000000006894.jpg": [
+"d84b70e0d47be32afd4e53d785de88854fe70f34",
+119456
+],
+"GoT/0_real/00068_000000006954.jpg": [
+"50e5c718977afcd9e4254fab80622c262b150425",
+266595
+],
+"GoT/0_real/00069_000000007088.jpg": [
+"771702190beb3dd4d4f4dbae83e6be34d9d748d4",
+263011
+],
+"GoT/0_real/00070_000000007108.jpg": [
+"a2d4f08c99fad2ef607c1d556503b7655fa0a852",
+161781
+],
+"GoT/0_real/00071_000000007278.jpg": [
+"1ee346388a6c2c86222e32e4c38ffd4f6fa4eb8a",
+291912
+],
+"GoT/0_real/00072_000000007281.jpg": [
+"b2a7f9185b02b9b9709a338b9bda2ee1e6718bdd",
+137409
+],
+"GoT/0_real/00073_000000007386.jpg": [
+"c9d66de82e6cce488ee27b5eed72cb217d0572ea",
+211976
+],
+"GoT/0_real/00074_000000007511.jpg": [
+"20781dbc22f3b404f980aa65be1ba1a553a494d1",
+135698
+],
+"GoT/0_real/00075_000000007574.jpg": [
+"0367b59c2ff3fa3b150f69902eb6d65e1a917d94",
+163988
+],
+"GoT/0_real/00076_000000007784.jpg": [
+"96c6eece6148482c3466aa68bc7a94af72cf8e81",
+65621
+],
+"GoT/0_real/00077_000000007795.jpg": [
+"002ceca497c1384ca4219abfa0cabac313e91315",
+153601
+],
+"GoT/0_real/00078_000000007816.jpg": [
+"9d5479e037bea26f6fa06062da7c13d8c1f78fd1",
+171711
+],
+"GoT/0_real/00079_000000007818.jpg": [
+"1844fa3f2eaa6b239f7f727a2e7db31ad2827785",
+108736
+],
+"GoT/0_real/00080_000000007888.jpg": [
+"829c3e75ace5e08cc5fda1442b86145a1082ea66",
+132380
+],
+"GoT/0_real/00081_000000007977.jpg": [
+"0b2f031ec658899586876d2254eec194b3c79697",
+206738
+],
+"GoT/0_real/00082_000000007991.jpg": [
+"2dea6a70b8f11ae91328c5ec3afff615cdd58a98",
+194363
+],
+"GoT/0_real/00083_000000008021.jpg": [
+"d7f14a1e9b16a83a60434ede81758fc37826b720",
+180088
+],
+"GoT/0_real/00084_000000008211.jpg": [
+"8f02f060d66871b44ab7244024e1977820216548",
+268366
+],
+"GoT/0_real/00085_000000008277.jpg": [
+"f6e53a96562660bcd863174200a85df5a4984e42",
+206878
+],
+"GoT/0_real/00086_000000008532.jpg": [
+"f9ed534eb8b184f84b6edf1e7a3f1d59b9c4d068",
+109812
+],
+"GoT/0_real/00087_000000008629.jpg": [
+"0b450ce80f7648c9d57e2663a2241d8b244d0705",
+231097
+],
+"GoT/0_real/00088_000000008690.jpg": [
+"9c8b3b015ce23a0e309d55cb08e4a3721f9fac50",
+246519
+],
+"GoT/0_real/00089_000000008762.jpg": [
+"705c88938dec2de9287b9c2b35ea82cfaf97636e",
+48914
+],
+"GoT/0_real/00090_000000008844.jpg": [
+"61613fc36227dc3b861d18394a3271df2a4d59cc",
+111826
+],
+"GoT/0_real/00091_000000008899.jpg": [
+"ed39a89f728db7b1d24d1a35280529cb8cbc8be3",
+284674
+],
+"GoT/0_real/00092_000000009378.jpg": [
+"41c6e43969bec13926729f0c3817bd9804158ab2",
+117675
+],
+"GoT/0_real/00093_000000009400.jpg": [
+"ca1ea1fbf6d91d854bf55d9bd3738bb4df6bb923",
+104999
+],
+"GoT/0_real/00094_000000009448.jpg": [
+"8ee98910e05bfceb1a0d1a30c7982c7b0634be81",
+339450
+],
+"GoT/0_real/00095_000000009483.jpg": [
+"17b842b02383ab5176d47ce8b8b67763d8633db0",
+116766
+],
+"GoT/0_real/00096_000000009590.jpg": [
+"8dc274d95cf184391bb3f4486a0dcf2e86536e7c",
+155925
+],
+"GoT/0_real/00097_000000009769.jpg": [
+"59e431e7e82f32e078db363e24905cc2bac6be4b",
+327350
+],
+"GoT/0_real/00098_000000009772.jpg": [
+"06047312d6f885bafb5ecec239559374ad1af6b4",
+245584
+],
+"GoT/0_real/00099_000000009891.jpg": [
+"9fa92171e6311e04c77e9c1184634f6b4d2e62e3",
+131797
+],
+"GoT/1_fake/00000_a_photo_of_a_backpack_0.jpg": [
+"bc1c6fe2e7a0ac144e3a24c24650708ea579dc82",
+233972
+],
+"GoT/1_fake/00001_a_photo_of_a_backpack_1.jpg": [
+"92fcbaf90f409869f9b14d279b7d59634c5303cc",
+228171
+],
+"GoT/1_fake/00002_a_photo_of_a_backpack_10.jpg": [
+"9d5176f1ca5d5f641775f798a825224a9ba64371",
+222323
+],
+"GoT/1_fake/00003_a_photo_of_a_backpack_11.jpg": [
+"47835f49f06cb08106ddb92624bf220edd1428cd",
+184809
+],
+"GoT/1_fake/00004_a_photo_of_a_backpack_12.jpg": [
+"b5828e9b83f5ccf4a1b94c085b9ed1cf2f5d8871",
+200677
+],
+"GoT/1_fake/00005_a_photo_of_a_backpack_13.jpg": [
+"df48c59ecd61ac05c8aa7b9480eb0a2e535fd8ce",
+231304
+],
+"GoT/1_fake/00006_a_photo_of_a_backpack_14.jpg": [
+"d581166983983c24c658942c7695a32a28296dd8",
+236256
+],
+"GoT/1_fake/00007_a_photo_of_a_backpack_15.jpg": [
+"1ef3c0445ab113644f6ea20dc9e5eeaa34cd181d",
+191215
+],
+"GoT/1_fake/00008_a_photo_of_a_backpack_16.jpg": [
+"1b146b267aefdf5f00f147558ec81cfaac2c228d",
+193958
+],
+"GoT/1_fake/00009_a_photo_of_a_backpack_17.jpg": [
+"28cd6d5fbf98444e90f1101812cf236ba5daa4f2",
+260867
+],
+"GoT/1_fake/00010_a_photo_of_a_backpack_18.jpg": [
+"5126103feb528928d412141890f86ec4a4dceb41",
+200135
+],
+"GoT/1_fake/00011_a_photo_of_a_backpack_19.jpg": [
+"3d687404f34ec04e3e039e966517c5df2315a280",
+219277
+],
+"GoT/1_fake/00012_a_photo_of_a_backpack_2.jpg": [
+"1431a2e92359199d9de5084ef607f05272cefd75",
+213565
+],
+"GoT/1_fake/00013_a_photo_of_a_backpack_3.jpg": [
+"d85aae91860df384d75afc1796223020cddf57e9",
+227892
+],
+"GoT/1_fake/00014_a_photo_of_a_backpack_4.jpg": [
+"6a8fd1c99b837ab106fd1e49826e94cc9baf7d90",
+232534
+],
+"GoT/1_fake/00015_a_photo_of_a_backpack_5.jpg": [
+"9c721a415c4af3ca319b4d5350c8f9887ecbd50f",
+225018
+],
+"GoT/1_fake/00016_a_photo_of_a_backpack_6.jpg": [
+"ccf718a0f68d30e3bb53593a22d093370c16d53d",
+170937
+],
+"GoT/1_fake/00017_a_photo_of_a_backpack_7.jpg": [
+"ddcb21cb28628d0906ed2dbdcbdbd702d245d5ad",
+187072
+],
+"GoT/1_fake/00018_a_photo_of_a_backpack_8.jpg": [
+"5a021940dde3d2a050e3de8ab7f7b57b72ad00e9",
+238841
+],
+"GoT/1_fake/00019_a_photo_of_a_backpack_9.jpg": [
+"96a6bb2271fd4079835a1851d9c432176f211ef0",
+217834
+],
+"GoT/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg": [
+"2c0213325d4a5dec8d9561111c16a1339a26e20d",
+158224
+],
+"GoT/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg": [
+"6abd14855140571d27835fb01217c3e76601477d",
+167310
+],
+"GoT/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg": [
+"1abf44b07ee4d555451c38a65dabe4e0b4e01645",
+145556
+],
+"GoT/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg": [
+"9e507f4a298a1d445a949ac0f5d31dd991b17b05",
+136738
+],
+"GoT/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg": [
+"602cfdbaa3d3ee843360d60188473fb3b5d58bd8",
+145966
+],
+"GoT/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg": [
+"05ce45e9fb9a2df24f5a144c2ceabfd7015abb3c",
+144099
+],
+"GoT/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg": [
+"4a64a6dcfd07effff5ae28dd5395a2461ed894ba",
+178610
+],
+"GoT/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg": [
+"01133620c1ce4ae8d8482e3406f84fd97aca4b33",
+175777
+],
+"GoT/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg": [
+"ace48dcb08f4a35db71afd841d5909153e6f7e4c",
+150705
+],
+"GoT/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg": [
+"efc3b74f243b096eff2528df4e18d3523dd8dcec",
+154473
+],
+"GoT/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg": [
+"e77de0b2bbd4c5108ef3b7b078b993ef89215964",
+168456
+],
+"GoT/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg": [
+"7062dbb7c3e9401776d7795a712c9603ade42fd5",
+157523
+],
+"GoT/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg": [
+"343f7631f88f600d9649f74e8f39d28692322f80",
+165470
+],
+"GoT/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg": [
+"bf820804cc50ccadc57c67ed62e17a7e6ddfda4f",
+169034
+],
+"GoT/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg": [
+"d2fc9e46bf247b3917ba39c398a4dd6bbba029ef",
+170299
+],
+"GoT/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg": [
+"62bc760c00b4ac1d806dce3390c0196e0a19e3db",
+143674
+],
+"GoT/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg": [
+"3dab28e5b0443ccbddd84924599a28b73abc977c",
+147060
+],
+"GoT/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg": [
+"4d07d0a162e05cf70cce87bc1f877f87c3a6452d",
+159087
+],
+"GoT/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg": [
+"9d4d374b2f856579ec79bd886daca60939db482e",
+150539
+],
+"GoT/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg": [
+"0dc89d3a7f2347b7d494bb0c337f4d369df2286a",
+170630
+],
+"GoT/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg": [
+"d04ecf140f388baf2153064db828975f9668c77a",
+216991
+],
+"GoT/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg": [
+"e3837006accba4976337e16b22ead1a35ca26ba5",
+266859
+],
+"GoT/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg": [
+"d8b02e5054bb49fcca5d985478ff99d7f95dc7d3",
+255812
+],
+"GoT/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg": [
+"504b3a02d85a5d32c61c433728077febeadc1c71",
+261766
+],
+"GoT/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg": [
+"964759648ec2c396458077c7de657942e25db123",
+253229
+],
+"GoT/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg": [
+"e85eca3bbba5ce1f08c2a133551a1e087339568e",
+245055
+],
+"GoT/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg": [
+"1155bed711928bc60221a3a9be3b13a314b6f107",
+274151
+],
+"GoT/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg": [
+"5ed4ed007316e22c09d01f1d65e5903d49135a85",
+259939
+],
+"GoT/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg": [
+"1a42891ebb1c6f63c617d257250d10ca0c201445",
+255536
+],
+"GoT/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg": [
+"9e83ae4a007443304abf36c7b12ca03e3c59999f",
+259272
+],
+"GoT/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg": [
+"0d21af36ce0bda0ce4d7d2bf3b784d6908706c25",
+249227
+],
+"GoT/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg": [
+"44b58b8a76245d772a484df072702af96cb063cb",
+252679
+],
+"GoT/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg": [
+"1f05a03116e99f5afb9d47c947f30c017fc455e4",
+235293
+],
+"GoT/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg": [
+"e2ffc84c8eec17a82d48448643662ff7808331b1",
+247594
+],
+"GoT/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg": [
+"d18df6b7ed89e3b7f835315cce008268e869fa5c",
+233637
+],
+"GoT/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg": [
+"969e285788330fafecb20ff3b58d9f388e6ca3bd",
+257465
+],
+"GoT/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg": [
+"fda383e8e46cf3446dd1dfa64b18893afa8f877c",
+235590
+],
+"GoT/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg": [
+"34aaea2f9fd85de5826a19a61c113dfa84fac533",
+240801
+],
+"GoT/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg": [
+"f0b6396980321e0021e6fa152219cce35a42298f",
+232901
+],
+"GoT/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg": [
+"6f9e36d1142a8fa589a9dda6b9347b65d1cf8dfd",
+238644
+],
+"GoT/1_fake/00060_a_photo_of_a_banana_0.jpg": [
+"184cc1cd14c8533aa5cf5bce52a31e377a226953",
+113127
+],
+"GoT/1_fake/00061_a_photo_of_a_banana_1.jpg": [
+"86449923d454933d5efa0138e52c0472e5087d19",
+121852
+],
+"GoT/1_fake/00062_a_photo_of_a_banana_10.jpg": [
+"1d7d67761dfe6b5a454e900ba3caad7c948aa145",
+123059
+],
+"GoT/1_fake/00063_a_photo_of_a_banana_11.jpg": [
+"a75f79fb2b00956aaa2b0eeb34eea8e35fdaf425",
+127839
+],
+"GoT/1_fake/00064_a_photo_of_a_banana_12.jpg": [
+"4f9d62ddfc44a4c725905a869cf8fd0d04acc1ad",
+113060
+],
+"GoT/1_fake/00065_a_photo_of_a_banana_13.jpg": [
+"e23f22be20f1239bee15d1494ebe8e9b47d3c662",
+108886
+],
+"GoT/1_fake/00066_a_photo_of_a_banana_14.jpg": [
+"ba5f670f1aed7e35b1cb76394ddef8ccd6d23bd4",
+117997
+],
+"GoT/1_fake/00067_a_photo_of_a_banana_15.jpg": [
+"e1b1072581f95c92a8af8770677206070a9d96ea",
+111015
+],
+"GoT/1_fake/00068_a_photo_of_a_banana_16.jpg": [
+"9c5550d778cde3e7f848cfc8a43db833d3db3add",
+115569
+],
+"GoT/1_fake/00069_a_photo_of_a_banana_17.jpg": [
+"2f356173460c89f35aecd94a7d7f48242e5816ce",
+117301
+],
+"GoT/1_fake/00070_a_photo_of_a_banana_18.jpg": [
+"d2b4418822beaeffa07432023e42cba7161002e1",
+114230
+],
+"GoT/1_fake/00071_a_photo_of_a_banana_19.jpg": [
+"d2fe919b790cc50d4cfeac9fd290d05e99f5b508",
+114531
+],
+"GoT/1_fake/00072_a_photo_of_a_banana_2.jpg": [
+"5ba7479a845726fd32e9a515d50137783b1d6760",
+121144
+],
+"GoT/1_fake/00073_a_photo_of_a_banana_3.jpg": [
+"fbcef189a569b6df05d3dc7bf91d9367ada01925",
+124062
+],
+"GoT/1_fake/00074_a_photo_of_a_banana_4.jpg": [
+"e0471c28d549c8851c5a586b8e1be1382b4b49c9",
+159541
+],
+"GoT/1_fake/00075_a_photo_of_a_banana_5.jpg": [
+"5a6a499c91586f60bdcc0fccd2ded7c7dbd7f9a5",
+121400
+],
+"GoT/1_fake/00076_a_photo_of_a_banana_6.jpg": [
+"9eec2a268ed49547aaa73444dd2ca89a67987655",
+121653
+],
+"GoT/1_fake/00077_a_photo_of_a_banana_7.jpg": [
+"fb4e8e936aa4b24fbc74525ab4bb497deedc4bc2",
+117853
+],
+"GoT/1_fake/00078_a_photo_of_a_banana_8.jpg": [
+"64041e78e845b82848598e020e5892c13ebd54fd",
+114248
+],
+"GoT/1_fake/00079_a_photo_of_a_banana_9.jpg": [
+"1f2bd93ab95e8e752f335fed3b108d54dccace0b",
+117458
+],
+"GoT/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg": [
+"6527ab5388b8bb7eccd39be40d7558670f821517",
+130399
+],
+"GoT/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg": [
+"6b1ef5e34672bc94a9e476cd54ec53391edd4194",
+110900
+],
+"GoT/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg": [
+"1ff3c91f6146ecf2dbd2621970d1fa787355afba",
+130233
+],
+"GoT/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg": [
+"becb92dcd57521f7aef4ddd6e7de404d6650f30b",
+132862
+],
+"GoT/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg": [
+"9c32bcbde0676b2ee5d443a73e405d89332a01c1",
+130354
+],
+"GoT/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg": [
+"0d90e1d64a3e6f5a1a1f14888014aa46f95805fc",
+120712
+],
+"GoT/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg": [
+"44665c91ca20682f7cbb44fa827a4b16173bdd31",
+148936
+],
+"GoT/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg": [
+"8d4738a0f64ee3a6a75c0cd4d21786d90b98ca59",
+157558
+],
+"GoT/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg": [
+"7bd04a1eebccd62fd5ec629df03c391cac4a05b2",
+116489
+],
+"GoT/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg": [
+"67c03784f79404dcfa09a652437f253420851575",
+118726
+],
+"GoT/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg": [
+"ae681989e9520290fa3723e78103a72f4a53306a",
+134112
+],
+"GoT/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg": [
+"50523cf96af7d625998ed05955080505f591e59c",
+122974
+],
+"GoT/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg": [
+"95f097a053f20d172dc033d0a4e0642012da4720",
+138573
+],
+"GoT/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg": [
+"f33d4a0b9ad636cc138e2660eb8684778b8e09f8",
+124053
+],
+"GoT/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg": [
+"035c5015ff32b2f64579b0c3c816d63607a6b04d",
+130331
+],
+"GoT/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg": [
+"bf53d73a74860ee0970d1b6802f6b05486d1f96c",
+148804
+],
+"GoT/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg": [
+"71fedf65b8cfa159330bb7d8ef1b51e332ca2ba8",
+123476
+],
+"GoT/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg": [
+"f1537745c7e88302627e26525824d0e8cd884ba3",
+119046
+],
+"GoT/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg": [
+"2663d1e9c19245f24ebde9a56dea27a3a409b771",
+126000
+],
+"GoT/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg": [
+"1bbb1ebf1645703b9bf37962d4637c102539f661",
+124987
+],
+"Infinity/0_real/00000_000000000139.jpg": [
+"7dac3963569bb65d3adb32c8dc4372340867e81f",
+161811
+],
+"Infinity/0_real/00001_000000000285.jpg": [
+"1403bda53ea1d49afda2a9e5daff1978b8c1453b",
+335861
+],
+"Infinity/0_real/00002_000000000632.jpg": [
+"4a7a0c5504d76ef6060f28496fde4cc19109ef6c",
+155667
+],
+"Infinity/0_real/00003_000000000724.jpg": [
+"e626f242c0dcf4d5dcea081a71179ab3e5ca5891",
+130107
+],
+"Infinity/0_real/00004_000000000776.jpg": [
+"8a1681e8e47a1d97797009ececc366b4f10dc1ed",
+176410
+],
+"Infinity/0_real/00005_000000000785.jpg": [
+"27befa5f0b57fa5527a3cdcf98e31fb1dc5e1f82",
+133674
+],
+"Infinity/0_real/00006_000000000802.jpg": [
+"9f337ad7eac5eb20b4ba21eb08ca2f421db704c3",
+62406
+],
+"Infinity/0_real/00007_000000000872.jpg": [
+"fe5f7846069af695a8b4c0081f44a17d471eab4e",
+317669
+],
+"Infinity/0_real/00008_000000000885.jpg": [
+"fb1d0aa34b570ca7bf16e91b88c1a854a5b3aa8a",
+111441
+],
+"Infinity/0_real/00009_000000001000.jpg": [
+"b2bd1649e71c7335423017da607ed52357e12b88",
+321136
+],
+"Infinity/0_real/00010_000000001268.jpg": [
+"71a02a80899ebd3bdafa8b04ff0942df7afe500f",
+180751
+],
+"Infinity/0_real/00011_000000001296.jpg": [
+"93f33d5783a222803743d5d5ec88df3eaff19a1c",
+204829
+],
+"Infinity/0_real/00012_000000001353.jpg": [
+"0388ebd4e08b73a13fb68451bee30d9c50f488cb",
+83033
+],
+"Infinity/0_real/00013_000000001425.jpg": [
+"496c6b40d36f90337e4d96f29068555a624cd44e",
+111309
+],
+"Infinity/0_real/00014_000000001490.jpg": [
+"eadfccc9eeac2e15221095f70eae7c995397732a",
+101098
+],
+"Infinity/0_real/00015_000000001503.jpg": [
+"3b937dc76d7eeff86f384dd63a99b4c4653521fe",
+15259
+],
+"Infinity/0_real/00016_000000001532.jpg": [
+"9a47d9e3eb6cbe1106bdf74948a8b456c7f4a3f2",
+174022
+],
+"Infinity/0_real/00017_000000001584.jpg": [
+"77f4cc601cf98f8c69e368614ba84422db4b1bc0",
+138202
+],
+"Infinity/0_real/00018_000000001675.jpg": [
+"ed0f1fb593f8a0a77fcc07facfff1d21113497a6",
+97643
+],
+"Infinity/0_real/00019_000000001761.jpg": [
+"4b2fa0c981a7ede1e81e881d84229396da516048",
+115835
+],
+"Infinity/0_real/00020_000000001818.jpg": [
+"7aabe938e352a42a39f0f3ffda7392b6a7b73f35",
+203119
+],
+"Infinity/0_real/00021_000000001993.jpg": [
+"a42908ff8e59bd350fb03149e1a35ec10d452764",
+110450
+],
+"Infinity/0_real/00022_000000002006.jpg": [
+"f535e1be306cae8b149b8c95d66f81824e1b8fd5",
+202589
+],
+"Infinity/0_real/00023_000000002149.jpg": [
+"55454494a0024a8227d412fe5696c2de40999c65",
+52707
+],
+"Infinity/0_real/00024_000000002153.jpg": [
+"59355cd8b96f38bbc10f1ad5b4cc904b512a5b70",
+136034
+],
+"Infinity/0_real/00025_000000002157.jpg": [
+"93eae2c703bcda466f1e83ac7c99f45d015a1de3",
+124713
+],
+"Infinity/0_real/00026_000000002261.jpg": [
+"1dbd989bda99853b31effdf5fe551077ff072297",
+197814
+],
+"Infinity/0_real/00027_000000002299.jpg": [
+"a234e2a26f3dbe6a18f2e030d2dd701388498b33",
+103567
+],
+"Infinity/0_real/00028_000000002431.jpg": [
+"f70bd9f040c4e4773ef0b321594fd77d1841712b",
+141124
+],
+"Infinity/0_real/00029_000000002473.jpg": [
+"86c47bd87ff769327d2b2d5538d6b3e6b40503cd",
+95783
+],
+"Infinity/0_real/00030_000000002532.jpg": [
+"ac15431d1239ad49f0ca1d6579d31d67fabb7dd0",
+210376
+],
+"Infinity/0_real/00031_000000002587.jpg": [
+"e3d7e29fe49b0325b876365d447fe7652672050d",
+113812
+],
+"Infinity/0_real/00032_000000002592.jpg": [
+"9a29bdf7c3d7fd61a6c4f7163e3080cb67ee1339",
+103017
+],
+"Infinity/0_real/00033_000000002685.jpg": [
+"d1841713c78a9f8d84cfd62dc55b9235ab01e5f8",
+272650
+],
+"Infinity/0_real/00034_000000002923.jpg": [
+"274a176fa3962189b0367025abf4b8a31aef2760",
+99783
+],
+"Infinity/0_real/00035_000000003156.jpg": [
+"2ff5e7efeaf3dde09f72b38ccde2c76115a28108",
+127189
+],
+"Infinity/0_real/00036_000000003255.jpg": [
+"9b2b487f84b9eadc6d89b926f70f20b6ac9c1544",
+159111
+],
+"Infinity/0_real/00037_000000003501.jpg": [
+"8963dd7bd96eda502b58fc78e35a3e227e2e7a8d",
+150713
+],
+"Infinity/0_real/00038_000000003553.jpg": [
+"83325c16f5beeddac5b86cddb6600762b4d1ac46",
+148040
+],
+"Infinity/0_real/00039_000000003661.jpg": [
+"e0e1e13f621da35149238adcd56c958822b3aad7",
+102617
+],
+"Infinity/0_real/00040_000000003845.jpg": [
+"4595e3d2fe960bee38e12cf2c393d125612fdd62",
+163593
+],
+"Infinity/0_real/00041_000000003934.jpg": [
+"9f57b825a026d353910ea09ced29eb42086e6495",
+138201
+],
+"Infinity/0_real/00042_000000004134.jpg": [
+"1b9389ff4e46e84888150ef8e73e03c71a7d8a68",
+160116
+],
+"Infinity/0_real/00043_000000004395.jpg": [
+"0fa4ac8fe58b17bb7bfce0e1eebd39ccc4c998ee",
+77239
+],
+"Infinity/0_real/00044_000000004495.jpg": [
+"325e4ddddc369206b572cc7c2d235d27f820df49",
+106634
+],
+"Infinity/0_real/00045_000000004765.jpg": [
+"7f89cc5b8174ae959fb6f3cc0c2f436d1c14728b",
+139681
+],
+"Infinity/0_real/00046_000000004795.jpg": [
+"a8c6388b871e8627c8f104650e8f5fb5d59eaf5e",
+165837
+],
+"Infinity/0_real/00047_000000005001.jpg": [
+"f91c21950e23a52f618a57d905b6308ecb9d3d17",
+211700
+],
+"Infinity/0_real/00048_000000005037.jpg": [
+"790ab607d44c0ba8680963e5d686a5ae64ce7dae",
+182150
+],
+"Infinity/0_real/00049_000000005060.jpg": [
+"9de90651f0aeebe9c1a6d5a942f08eded3c9c2c7",
+157329
+],
+"Infinity/0_real/00050_000000005193.jpg": [
+"b616a56f165b83d59606d6c73324000777e56b7b",
+102722
+],
+"Infinity/0_real/00051_000000005477.jpg": [
+"e07d8a6cd4e5931a1db02a829f080c7f20c1c5f3",
+154975
+],
+"Infinity/0_real/00052_000000005503.jpg": [
+"05c4801a0881ab7f7c70b015fddb8eccd5752898",
+58617
+],
+"Infinity/0_real/00053_000000005529.jpg": [
+"dc67ba0f87c3b9799bcc820325c7749f4ba2e90f",
+224797
+],
+"Infinity/0_real/00054_000000005586.jpg": [
+"218baccec13cb75f1d51ca143ad0ddebfea9a7e6",
+36367
+],
+"Infinity/0_real/00055_000000005600.jpg": [
+"824412badd3791291fb180a9ee785bbbca7f44c3",
+134559
+],
+"Infinity/0_real/00056_000000005992.jpg": [
+"2901a95755d41f6a90da4ad393c309ef163c3df3",
+180732
+],
+"Infinity/0_real/00057_000000006012.jpg": [
+"3eb5fc104f965c1f81a81c334dacf136c35221d3",
+166135
+],
+"Infinity/0_real/00058_000000006040.jpg": [
+"955473e44a9a284f99d480b67a4aa8d0949c771a",
+161100
+],
+"Infinity/0_real/00059_000000006213.jpg": [
+"96a79bdba9e72c37e0cfa8a8a5de02e7a4e22b2b",
+125937
+],
+"Infinity/0_real/00060_000000006460.jpg": [
+"033abdf6c33d6821757e1e019601e883ed6e1194",
+119914
+],
+"Infinity/0_real/00061_000000006471.jpg": [
+"d12f857d7ca10f87c7ebe1d56bd9016c9835043d",
+96115
+],
+"Infinity/0_real/00062_000000006614.jpg": [
+"b8b5932dbfaf98eaa6b32d7cb6fd8c35d5aebef5",
+86815
+],
+"Infinity/0_real/00063_000000006723.jpg": [
+"5dac60a062edf26f13384563ec83bb96138dab73",
+200461
+],
+"Infinity/0_real/00064_000000006763.jpg": [
+"547a7ae5adfdf8343f50392d7b9118ee6f1fc38c",
+111031
+],
+"Infinity/0_real/00065_000000006771.jpg": [
+"f68f3cd560d1ea11d76117a6e3eb62571a0ff250",
+138318
+],
+"Infinity/0_real/00066_000000006818.jpg": [
+"93cb18f9e785e7ba0862ca6be6e6d73092401e66",
+77539
+],
+"Infinity/0_real/00067_000000006894.jpg": [
+"d84b70e0d47be32afd4e53d785de88854fe70f34",
+119456
+],
+"Infinity/0_real/00068_000000006954.jpg": [
+"50e5c718977afcd9e4254fab80622c262b150425",
+266595
+],
+"Infinity/0_real/00069_000000007088.jpg": [
+"771702190beb3dd4d4f4dbae83e6be34d9d748d4",
+263011
+],
+"Infinity/0_real/00070_000000007108.jpg": [
+"a2d4f08c99fad2ef607c1d556503b7655fa0a852",
+161781
+],
+"Infinity/0_real/00071_000000007278.jpg": [
+"1ee346388a6c2c86222e32e4c38ffd4f6fa4eb8a",
+291912
+],
+"Infinity/0_real/00072_000000007281.jpg": [
+"b2a7f9185b02b9b9709a338b9bda2ee1e6718bdd",
+137409
+],
+"Infinity/0_real/00073_000000007386.jpg": [
+"c9d66de82e6cce488ee27b5eed72cb217d0572ea",
+211976
+],
+"Infinity/0_real/00074_000000007511.jpg": [
+"20781dbc22f3b404f980aa65be1ba1a553a494d1",
+135698
+],
+"Infinity/0_real/00075_000000007574.jpg": [
+"0367b59c2ff3fa3b150f69902eb6d65e1a917d94",
+163988
+],
+"Infinity/0_real/00076_000000007784.jpg": [
+"96c6eece6148482c3466aa68bc7a94af72cf8e81",
+65621
+],
+"Infinity/0_real/00077_000000007795.jpg": [
+"002ceca497c1384ca4219abfa0cabac313e91315",
+153601
+],
+"Infinity/0_real/00078_000000007816.jpg": [
+"9d5479e037bea26f6fa06062da7c13d8c1f78fd1",
+171711
+],
+"Infinity/0_real/00079_000000007818.jpg": [
+"1844fa3f2eaa6b239f7f727a2e7db31ad2827785",
+108736
+],
+"Infinity/0_real/00080_000000007888.jpg": [
+"829c3e75ace5e08cc5fda1442b86145a1082ea66",
+132380
+],
+"Infinity/0_real/00081_000000007977.jpg": [
+"0b2f031ec658899586876d2254eec194b3c79697",
+206738
+],
+"Infinity/0_real/00082_000000007991.jpg": [
+"2dea6a70b8f11ae91328c5ec3afff615cdd58a98",
+194363
+],
+"Infinity/0_real/00083_000000008021.jpg": [
+"d7f14a1e9b16a83a60434ede81758fc37826b720",
+180088
+],
+"Infinity/0_real/00084_000000008211.jpg": [
+"8f02f060d66871b44ab7244024e1977820216548",
+268366
+],
+"Infinity/0_real/00085_000000008277.jpg": [
+"f6e53a96562660bcd863174200a85df5a4984e42",
+206878
+],
+"Infinity/0_real/00086_000000008532.jpg": [
+"f9ed534eb8b184f84b6edf1e7a3f1d59b9c4d068",
+109812
+],
+"Infinity/0_real/00087_000000008629.jpg": [
+"0b450ce80f7648c9d57e2663a2241d8b244d0705",
+231097
+],
+"Infinity/0_real/00088_000000008690.jpg": [
+"9c8b3b015ce23a0e309d55cb08e4a3721f9fac50",
+246519
+],
+"Infinity/0_real/00089_000000008762.jpg": [
+"705c88938dec2de9287b9c2b35ea82cfaf97636e",
+48914
+],
+"Infinity/0_real/00090_000000008844.jpg": [
+"61613fc36227dc3b861d18394a3271df2a4d59cc",
+111826
+],
+"Infinity/0_real/00091_000000008899.jpg": [
+"ed39a89f728db7b1d24d1a35280529cb8cbc8be3",
+284674
+],
+"Infinity/0_real/00092_000000009378.jpg": [
+"41c6e43969bec13926729f0c3817bd9804158ab2",
+117675
+],
+"Infinity/0_real/00093_000000009400.jpg": [
+"ca1ea1fbf6d91d854bf55d9bd3738bb4df6bb923",
+104999
+],
+"Infinity/0_real/00094_000000009448.jpg": [
+"8ee98910e05bfceb1a0d1a30c7982c7b0634be81",
+339450
+],
+"Infinity/0_real/00095_000000009483.jpg": [
+"17b842b02383ab5176d47ce8b8b67763d8633db0",
+116766
+],
+"Infinity/0_real/00096_000000009590.jpg": [
+"8dc274d95cf184391bb3f4486a0dcf2e86536e7c",
+155925
+],
+"Infinity/0_real/00097_000000009769.jpg": [
+"59e431e7e82f32e078db363e24905cc2bac6be4b",
+327350
+],
+"Infinity/0_real/00098_000000009772.jpg": [
+"06047312d6f885bafb5ecec239559374ad1af6b4",
+245584
+],
+"Infinity/0_real/00099_000000009891.jpg": [
+"9fa92171e6311e04c77e9c1184634f6b4d2e62e3",
+131797
+],
+"Infinity/1_fake/00000_a_photo_of_a_backpack_0.jpg": [
+"cd5d15b07e23827e133d5081192b47c759945e74",
+294790
+],
+"Infinity/1_fake/00001_a_photo_of_a_backpack_1.jpg": [
+"f5d49d6bcbdf997da5fbe82a811ec6ef6172bf05",
+290197
+],
+"Infinity/1_fake/00002_a_photo_of_a_backpack_10.jpg": [
+"56c32662dc1e79a1438d997b1b41b3febfa7c80b",
+300790
+],
+"Infinity/1_fake/00003_a_photo_of_a_backpack_11.jpg": [
+"d7bc201456769c7de60cbc3f2f1409a9cf88ad96",
+305404
+],
+"Infinity/1_fake/00004_a_photo_of_a_backpack_12.jpg": [
+"92fbba37924eb93e62379776c4c86fc73b0d832e",
+312360
+],
+"Infinity/1_fake/00005_a_photo_of_a_backpack_13.jpg": [
+"2f5b72a9a66b212ad0271f24b41c71c722f963e4",
+297922
+],
+"Infinity/1_fake/00006_a_photo_of_a_backpack_14.jpg": [
+"f633028ca9b061c30848ba9a40ae5d557f0cd91c",
+291306
+],
+"Infinity/1_fake/00007_a_photo_of_a_backpack_15.jpg": [
+"b0cedf165efacf70eb1b03f269d80d1c5d4abe8a",
+316978
+],
+"Infinity/1_fake/00008_a_photo_of_a_backpack_16.jpg": [
+"3b28f38350c7454ee436e0aa854e38f0ce4bfee6",
+328432
+],
+"Infinity/1_fake/00009_a_photo_of_a_backpack_17.jpg": [
+"2194d8a49b07b094e652e27022ccdccff1120c81",
+301618
+],
+"Infinity/1_fake/00010_a_photo_of_a_backpack_18.jpg": [
+"d35957c2743371210cda46b028132fac144d0b16",
+299066
+],
+"Infinity/1_fake/00011_a_photo_of_a_backpack_19.jpg": [
+"de87c367ce698001045f6cc27c23e7277cf836af",
+293378
+],
+"Infinity/1_fake/00012_a_photo_of_a_backpack_2.jpg": [
+"c00322db1b4688b07b08e9aa69946955db2547c2",
+296368
+],
+"Infinity/1_fake/00013_a_photo_of_a_backpack_3.jpg": [
+"386644ebb70cbf76d2dbac469f1884796e15de67",
+300940
+],
+"Infinity/1_fake/00014_a_photo_of_a_backpack_4.jpg": [
+"66c35414821e3c0c4268d46bfe367a846f460e59",
+306302
+],
+"Infinity/1_fake/00015_a_photo_of_a_backpack_5.jpg": [
+"7930680b5d1c2028330ef4e3473096944b4aa082",
+312334
+],
+"Infinity/1_fake/00016_a_photo_of_a_backpack_6.jpg": [
+"91114c24a21bade3e3842c4e504a9e846a512fe3",
+303946
+],
+"Infinity/1_fake/00017_a_photo_of_a_backpack_7.jpg": [
+"32c49a5add142c30887dc3b0e4a1f8e20703c406",
+295160
+],
+"Infinity/1_fake/00018_a_photo_of_a_backpack_8.jpg": [
+"6992a9fdaf84472accd9a21e58e3d17a055856ea",
+305253
+],
+"Infinity/1_fake/00019_a_photo_of_a_backpack_9.jpg": [
+"48b343ddc28a2beef8e823f5daa7a91f895dcfa1",
+308332
+],
+"Infinity/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg": [
+"66ef3ced9223be3cafe423d693059bee108a230a",
+308013
+],
+"Infinity/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg": [
+"e2b6d44aa8f02935cac1cd253a783fbba6e52d5e",
+301856
+],
+"Infinity/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg": [
+"ac8ff9bd469d94155c8c5dee492f95ad94c6e519",
+296525
+],
+"Infinity/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg": [
+"615d3a816b0c7f316742cf1303b04d9a063fb9eb",
+302621
+],
+"Infinity/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg": [
+"21b5e5924a6d6fbff0626fe9f0b64ee2fdf7e790",
+296724
+],
+"Infinity/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg": [
+"fa49f18bcd68e32ec66663778ef75f8c210a3a04",
+297394
+],
+"Infinity/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg": [
+"bb4255416c60efe014216da1f6d954e444b568a6",
+308817
+],
+"Infinity/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg": [
+"b8cdee7e908b1d7b54710cdfa5bfbb737c1ede84",
+297257
+],
+"Infinity/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg": [
+"42523f64923978acf054314ecde0cbb2bfa4966f",
+291899
+],
+"Infinity/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg": [
+"1970ed397930041c10872f084fdebb262fd38fb8",
+297767
+],
+"Infinity/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg": [
+"c98dc831cad5c2b28843381d9de02219b3959dd1",
+296712
+],
+"Infinity/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg": [
+"fe346244cee8cf7e75ce27c02ed59f30e4a41fd3",
+294650
+],
+"Infinity/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg": [
+"44fac3290bd611e2214ced07f8263259d187fcc2",
+291640
+],
+"Infinity/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg": [
+"9256e7b0d1e531d4fb52e2e8aa994af2de8cb72d",
+299062
+],
+"Infinity/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg": [
+"81f51c4b8a24ee28ca64b1114838a6681e91a26b",
+297150
+],
+"Infinity/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg": [
+"305987f9f46d811cfe63e34a3069899faf6968de",
+304437
+],
+"Infinity/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg": [
+"ba8bfc8e7843a81b4d429c3a04fe993305f0f192",
+300700
+],
+"Infinity/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg": [
+"dae676bac621b8b13b3ffabe967be1bbcb0d3ffc",
+312900
+],
+"Infinity/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg": [
+"fced4bfb9198c5b98c0b8ab94ce9b6f6fcda77ad",
+303733
+],
+"Infinity/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg": [
+"5ee35b3fd360450ce796b13469ec3f94f2c1da97",
+303713
+],
+"Infinity/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg": [
+"65d10b1cb1867bfa39e0b8570a24cf4d8ffa37e9",
+383790
+],
+"Infinity/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg": [
+"c763238c081385e488265eb24261a4844c6c2456",
+395082
+],
+"Infinity/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg": [
+"0fcd0c2265d2b014fdb076acee9eb4fb044f6d08",
+376021
+],
+"Infinity/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg": [
+"a070746d18d2b20c51c6b9affdb77e1aa7b96867",
+377723
+],
+"Infinity/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg": [
+"9eea37c082165357151560b1503faf4e36b7c91b",
+398204
+],
+"Infinity/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg": [
+"a5f4d8b4ee1ea4c7866e6ad71d1e6a2dd02e6c6e",
+391679
+],
+"Infinity/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg": [
+"bb3295dbe6f01478036c8332b219654c82e5ae5e",
+392487
+],
+"Infinity/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg": [
+"6f96f71b08cc32a8b92f361389441a5895bc2a00",
+385504
+],
+"Infinity/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg": [
+"484886af6cbccdfe62f5c6ef22d9128489f0adbb",
+390435
+],
+"Infinity/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg": [
+"ef9e2798b94798c23790b3ff06074320dd97f0e4",
+396441
+],
+"Infinity/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg": [
+"2d969119467e3599803f37444cbfb22bc172e334",
+401455
+],
+"Infinity/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg": [
+"b09ef860d0c90150a97a5097b560601c2eefc725",
+389828
+],
+"Infinity/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg": [
+"5dadc9609fef3a1f7589691ccf74b5e4066d81a1",
+394259
+],
+"Infinity/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg": [
+"5c0a7ca99efd690e44874270d5bbce42fea64a1f",
+395333
+],
+"Infinity/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg": [
+"ba9805fe25e8e6505110e9eee3b34145e9f12a6f",
+392441
+],
+"Infinity/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg": [
+"20946cf84fd775de256a90dca067b077480e6f00",
+389605
+],
+"Infinity/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg": [
+"e8123ce99e40a5afc0e9214746b922871733507f",
+400655
+],
+"Infinity/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg": [
+"876c53d0420238f4ee0ce796bc46188b5c702d44",
+384576
+],
+"Infinity/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg": [
+"6a1a0ade1256e13b096e6f9b9ea02f6883d7c49d",
+397441
+],
+"Infinity/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg": [
+"c67e9c1238c1e6765f26f2fac11daa1259498a8b",
+394854
+],
+"Infinity/1_fake/00060_a_photo_of_a_banana_0.jpg": [
+"9e46eaff462380e78943ca76b1d3f8db4a5e990d",
+142200
+],
+"Infinity/1_fake/00061_a_photo_of_a_banana_1.jpg": [
+"b26afab23e4d6858f072696a0485efdd6a219540",
+157601
+],
+"Infinity/1_fake/00062_a_photo_of_a_banana_10.jpg": [
+"1ee81cdda0f7666da9bdb57613b61e91052ff663",
+150400
+],
+"Infinity/1_fake/00063_a_photo_of_a_banana_11.jpg": [
+"679016419eb4844abe10703a2fa8056c5870da28",
+157386
+],
+"Infinity/1_fake/00064_a_photo_of_a_banana_12.jpg": [
+"dd3029e159d62e83fe207c9497081bad5e61542b",
+154059
+],
+"Infinity/1_fake/00065_a_photo_of_a_banana_13.jpg": [
+"54822cf51881a07c5e1370786375b48055e5ca58",
+147994
+],
+"Infinity/1_fake/00066_a_photo_of_a_banana_14.jpg": [
+"26dd06cfccfbe686f603ceac90b8bdfb4e76085e",
+162734
+],
+"Infinity/1_fake/00067_a_photo_of_a_banana_15.jpg": [
+"cdd748902248e5004604932248876ae32dc1f24d",
+159683
+],
+"Infinity/1_fake/00068_a_photo_of_a_banana_16.jpg": [
+"0d2b34391512267077efe7ef62093056c592b1e0",
+145727
+],
+"Infinity/1_fake/00069_a_photo_of_a_banana_17.jpg": [
+"4fd14c4dd7e0d8d1015b1e12a911df39f487895c",
+158117
+],
+"Infinity/1_fake/00070_a_photo_of_a_banana_18.jpg": [
+"4319445d66b24a981866486a4b6d689701cf44d3",
+151471
+],
+"Infinity/1_fake/00071_a_photo_of_a_banana_19.jpg": [
+"0924a4dd44e22a1e49afab3a21ad853d05d6fa14",
+158861
+],
+"Infinity/1_fake/00072_a_photo_of_a_banana_2.jpg": [
+"2904ab05941dfe287f9793fa18b66dc46a84fd6d",
+150540
+],
+"Infinity/1_fake/00073_a_photo_of_a_banana_3.jpg": [
+"46b0db5c39ceafc314dd80aad87be26713e29ce0",
+153648
+],
+"Infinity/1_fake/00074_a_photo_of_a_banana_4.jpg": [
+"ea60cf74dd27772daa41a79c5b448c229b6dc283",
+138994
+],
+"Infinity/1_fake/00075_a_photo_of_a_banana_5.jpg": [
+"e6c89fd898ee28495b08dd1af5b23e9a7f3a24de",
+153635
+],
+"Infinity/1_fake/00076_a_photo_of_a_banana_6.jpg": [
+"97b98d8cd152da8750e3e3c7821dbf19761e3854",
+167176
+],
+"Infinity/1_fake/00077_a_photo_of_a_banana_7.jpg": [
+"dc8b8727cd746e8371d8083d82b04b5e772b14e9",
+154708
+],
+"Infinity/1_fake/00078_a_photo_of_a_banana_8.jpg": [
+"c88f5844ac28a27d148ba8160518232d9a7e6bfa",
+159874
+],
+"Infinity/1_fake/00079_a_photo_of_a_banana_9.jpg": [
+"7f00b8b056f70de08bf4fc9a5fd2b2dadafb4e9b",
+155117
+],
+"Infinity/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg": [
+"6b90cf90b433b83be91e35413ea9c620f6bc3130",
+229158
+],
+"Infinity/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg": [
+"4efbd7bbd251e58485daae6b8bc2ae04e4927787",
+242467
+],
+"Infinity/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg": [
+"d16a24907e6f06ebff05d9983f669db3322c6ac5",
+233581
+],
+"Infinity/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg": [
+"20f0b5a3340145fb849fb20706fca010c74b5b06",
+237640
+],
+"Infinity/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg": [
+"5abb4bce53bcf796f792d5e1b18daede48c50954",
+268010
+],
+"Infinity/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg": [
+"1e8f04f1ab2cfbc918d5bd9425eb4f32a3bef80f",
+244270
+],
+"Infinity/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg": [
+"b0aa118619e9bea29b34c2fded379cbe9c417ce8",
+238752
+],
+"Infinity/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg": [
+"c8279118c8b88fb347037ddd0d3c254945816aea",
+243124
+],
+"Infinity/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg": [
+"dd1878306a9d07232066f6f061e55139a842176e",
+223498
+],
+"Infinity/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg": [
+"47f2af6637fd37cfef0359431f372e3c1ac9c9c5",
+246607
+],
+"Infinity/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg": [
+"f46e750d3bd52908a818251eb5febee29870732a",
+232504
+],
+"Infinity/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg": [
+"51560bad165383051687c5d3e9aec1e22a259f59",
+252828
+],
+"Infinity/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg": [
+"88a7085ceabdb7c8276f764611f0f0ab40e3b132",
+239918
+],
+"Infinity/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg": [
+"3f4e89221005bf665173af25feb0f3dda9b2ccc3",
+237247
+],
+"Infinity/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg": [
+"2ea40561aa93e1cc1f051d642d656e361f355ce4",
+245334
+],
+"Infinity/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg": [
+"612f16039efa11d03377645e5b837bb0dbd3f6a4",
+247438
+],
+"Infinity/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg": [
+"3df8ca7127dec33faf4f6211b5a4e4ceea0b1897",
+239279
+],
+"Infinity/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg": [
+"53503c6b98b2e1786b28cd14ef6ace6d89000e68",
+262891
+],
+"Infinity/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg": [
+"1083f587ea9bd11ab2f80648caed0d52c53f5501",
+253155
+],
+"Infinity/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg": [
+"3cbd4af8eebcdacc6aaf1a04efa6d406750feeb0",
+250340
+],
+"NOVA/0_real/00000_000000000139.jpg": [
+"7dac3963569bb65d3adb32c8dc4372340867e81f",
+161811
+],
+"NOVA/0_real/00001_000000000285.jpg": [
+"1403bda53ea1d49afda2a9e5daff1978b8c1453b",
+335861
+],
+"NOVA/0_real/00002_000000000632.jpg": [
+"4a7a0c5504d76ef6060f28496fde4cc19109ef6c",
+155667
+],
+"NOVA/0_real/00003_000000000724.jpg": [
+"e626f242c0dcf4d5dcea081a71179ab3e5ca5891",
+130107
+],
+"NOVA/0_real/00004_000000000776.jpg": [
+"8a1681e8e47a1d97797009ececc366b4f10dc1ed",
+176410
+],
+"NOVA/0_real/00005_000000000785.jpg": [
+"27befa5f0b57fa5527a3cdcf98e31fb1dc5e1f82",
+133674
+],
+"NOVA/0_real/00006_000000000802.jpg": [
+"9f337ad7eac5eb20b4ba21eb08ca2f421db704c3",
+62406
+],
+"NOVA/0_real/00007_000000000872.jpg": [
+"fe5f7846069af695a8b4c0081f44a17d471eab4e",
+317669
+],
+"NOVA/0_real/00008_000000000885.jpg": [
+"fb1d0aa34b570ca7bf16e91b88c1a854a5b3aa8a",
+111441
+],
+"NOVA/0_real/00009_000000001000.jpg": [
+"b2bd1649e71c7335423017da607ed52357e12b88",
+321136
+],
+"NOVA/0_real/00010_000000001268.jpg": [
+"71a02a80899ebd3bdafa8b04ff0942df7afe500f",
+180751
+],
+"NOVA/0_real/00011_000000001296.jpg": [
+"93f33d5783a222803743d5d5ec88df3eaff19a1c",
+204829
+],
+"NOVA/0_real/00012_000000001353.jpg": [
+"0388ebd4e08b73a13fb68451bee30d9c50f488cb",
+83033
+],
+"NOVA/0_real/00013_000000001425.jpg": [
+"496c6b40d36f90337e4d96f29068555a624cd44e",
+111309
+],
+"NOVA/0_real/00014_000000001490.jpg": [
+"eadfccc9eeac2e15221095f70eae7c995397732a",
+101098
+],
+"NOVA/0_real/00015_000000001503.jpg": [
+"3b937dc76d7eeff86f384dd63a99b4c4653521fe",
+15259
+],
+"NOVA/0_real/00016_000000001532.jpg": [
+"9a47d9e3eb6cbe1106bdf74948a8b456c7f4a3f2",
+174022
+],
+"NOVA/0_real/00017_000000001584.jpg": [
+"77f4cc601cf98f8c69e368614ba84422db4b1bc0",
+138202
+],
+"NOVA/0_real/00018_000000001675.jpg": [
+"ed0f1fb593f8a0a77fcc07facfff1d21113497a6",
+97643
+],
+"NOVA/0_real/00019_000000001761.jpg": [
+"4b2fa0c981a7ede1e81e881d84229396da516048",
+115835
+],
+"NOVA/0_real/00020_000000001818.jpg": [
+"7aabe938e352a42a39f0f3ffda7392b6a7b73f35",
+203119
+],
+"NOVA/0_real/00021_000000001993.jpg": [
+"a42908ff8e59bd350fb03149e1a35ec10d452764",
+110450
+],
+"NOVA/0_real/00022_000000002006.jpg": [
+"f535e1be306cae8b149b8c95d66f81824e1b8fd5",
+202589
+],
+"NOVA/0_real/00023_000000002149.jpg": [
+"55454494a0024a8227d412fe5696c2de40999c65",
+52707
+],
+"NOVA/0_real/00024_000000002153.jpg": [
+"59355cd8b96f38bbc10f1ad5b4cc904b512a5b70",
+136034
+],
+"NOVA/0_real/00025_000000002157.jpg": [
+"93eae2c703bcda466f1e83ac7c99f45d015a1de3",
+124713
+],
+"NOVA/0_real/00026_000000002261.jpg": [
+"1dbd989bda99853b31effdf5fe551077ff072297",
+197814
+],
+"NOVA/0_real/00027_000000002299.jpg": [
+"a234e2a26f3dbe6a18f2e030d2dd701388498b33",
+103567
+],
+"NOVA/0_real/00028_000000002431.jpg": [
+"f70bd9f040c4e4773ef0b321594fd77d1841712b",
+141124
+],
+"NOVA/0_real/00029_000000002473.jpg": [
+"86c47bd87ff769327d2b2d5538d6b3e6b40503cd",
+95783
+],
+"NOVA/0_real/00030_000000002532.jpg": [
+"ac15431d1239ad49f0ca1d6579d31d67fabb7dd0",
+210376
+],
+"NOVA/0_real/00031_000000002587.jpg": [
+"e3d7e29fe49b0325b876365d447fe7652672050d",
+113812
+],
+"NOVA/0_real/00032_000000002592.jpg": [
+"9a29bdf7c3d7fd61a6c4f7163e3080cb67ee1339",
+103017
+],
+"NOVA/0_real/00033_000000002685.jpg": [
+"d1841713c78a9f8d84cfd62dc55b9235ab01e5f8",
+272650
+],
+"NOVA/0_real/00034_000000002923.jpg": [
+"274a176fa3962189b0367025abf4b8a31aef2760",
+99783
+],
+"NOVA/0_real/00035_000000003156.jpg": [
+"2ff5e7efeaf3dde09f72b38ccde2c76115a28108",
+127189
+],
+"NOVA/0_real/00036_000000003255.jpg": [
+"9b2b487f84b9eadc6d89b926f70f20b6ac9c1544",
+159111
+],
+"NOVA/0_real/00037_000000003501.jpg": [
+"8963dd7bd96eda502b58fc78e35a3e227e2e7a8d",
+150713
+],
+"NOVA/0_real/00038_000000003553.jpg": [
+"83325c16f5beeddac5b86cddb6600762b4d1ac46",
+148040
+],
+"NOVA/0_real/00039_000000003661.jpg": [
+"e0e1e13f621da35149238adcd56c958822b3aad7",
+102617
+],
+"NOVA/0_real/00040_000000003845.jpg": [
+"4595e3d2fe960bee38e12cf2c393d125612fdd62",
+163593
+],
+"NOVA/0_real/00041_000000003934.jpg": [
+"9f57b825a026d353910ea09ced29eb42086e6495",
+138201
+],
+"NOVA/0_real/00042_000000004134.jpg": [
+"1b9389ff4e46e84888150ef8e73e03c71a7d8a68",
+160116
+],
+"NOVA/0_real/00043_000000004395.jpg": [
+"0fa4ac8fe58b17bb7bfce0e1eebd39ccc4c998ee",
+77239
+],
+"NOVA/0_real/00044_000000004495.jpg": [
+"325e4ddddc369206b572cc7c2d235d27f820df49",
+106634
+],
+"NOVA/0_real/00045_000000004765.jpg": [
+"7f89cc5b8174ae959fb6f3cc0c2f436d1c14728b",
+139681
+],
+"NOVA/0_real/00046_000000004795.jpg": [
+"a8c6388b871e8627c8f104650e8f5fb5d59eaf5e",
+165837
+],
+"NOVA/0_real/00047_000000005001.jpg": [
+"f91c21950e23a52f618a57d905b6308ecb9d3d17",
+211700
+],
+"NOVA/0_real/00048_000000005037.jpg": [
+"790ab607d44c0ba8680963e5d686a5ae64ce7dae",
+182150
+],
+"NOVA/0_real/00049_000000005060.jpg": [
+"9de90651f0aeebe9c1a6d5a942f08eded3c9c2c7",
+157329
+],
+"NOVA/0_real/00050_000000005193.jpg": [
+"b616a56f165b83d59606d6c73324000777e56b7b",
+102722
+],
+"NOVA/0_real/00051_000000005477.jpg": [
+"e07d8a6cd4e5931a1db02a829f080c7f20c1c5f3",
+154975
+],
+"NOVA/0_real/00052_000000005503.jpg": [
+"05c4801a0881ab7f7c70b015fddb8eccd5752898",
+58617
+],
+"NOVA/0_real/00053_000000005529.jpg": [
+"dc67ba0f87c3b9799bcc820325c7749f4ba2e90f",
+224797
+],
+"NOVA/0_real/00054_000000005586.jpg": [
+"218baccec13cb75f1d51ca143ad0ddebfea9a7e6",
+36367
+],
+"NOVA/0_real/00055_000000005600.jpg": [
+"824412badd3791291fb180a9ee785bbbca7f44c3",
+134559
+],
+"NOVA/0_real/00056_000000005992.jpg": [
+"2901a95755d41f6a90da4ad393c309ef163c3df3",
+180732
+],
+"NOVA/0_real/00057_000000006012.jpg": [
+"3eb5fc104f965c1f81a81c334dacf136c35221d3",
+166135
+],
+"NOVA/0_real/00058_000000006040.jpg": [
+"955473e44a9a284f99d480b67a4aa8d0949c771a",
+161100
+],
+"NOVA/0_real/00059_000000006213.jpg": [
+"96a79bdba9e72c37e0cfa8a8a5de02e7a4e22b2b",
+125937
+],
+"NOVA/0_real/00060_000000006460.jpg": [
+"033abdf6c33d6821757e1e019601e883ed6e1194",
+119914
+],
+"NOVA/0_real/00061_000000006471.jpg": [
+"d12f857d7ca10f87c7ebe1d56bd9016c9835043d",
+96115
+],
+"NOVA/0_real/00062_000000006614.jpg": [
+"b8b5932dbfaf98eaa6b32d7cb6fd8c35d5aebef5",
+86815
+],
+"NOVA/0_real/00063_000000006723.jpg": [
+"5dac60a062edf26f13384563ec83bb96138dab73",
+200461
+],
+"NOVA/0_real/00064_000000006763.jpg": [
+"547a7ae5adfdf8343f50392d7b9118ee6f1fc38c",
+111031
+],
+"NOVA/0_real/00065_000000006771.jpg": [
+"f68f3cd560d1ea11d76117a6e3eb62571a0ff250",
+138318
+],
+"NOVA/0_real/00066_000000006818.jpg": [
+"93cb18f9e785e7ba0862ca6be6e6d73092401e66",
+77539
+],
+"NOVA/0_real/00067_000000006894.jpg": [
+"d84b70e0d47be32afd4e53d785de88854fe70f34",
+119456
+],
+"NOVA/0_real/00068_000000006954.jpg": [
+"50e5c718977afcd9e4254fab80622c262b150425",
+266595
+],
+"NOVA/0_real/00069_000000007088.jpg": [
+"771702190beb3dd4d4f4dbae83e6be34d9d748d4",
+263011
+],
+"NOVA/0_real/00070_000000007108.jpg": [
+"a2d4f08c99fad2ef607c1d556503b7655fa0a852",
+161781
+],
+"NOVA/0_real/00071_000000007278.jpg": [
+"1ee346388a6c2c86222e32e4c38ffd4f6fa4eb8a",
+291912
+],
+"NOVA/0_real/00072_000000007281.jpg": [
+"b2a7f9185b02b9b9709a338b9bda2ee1e6718bdd",
+137409
+],
+"NOVA/0_real/00073_000000007386.jpg": [
+"c9d66de82e6cce488ee27b5eed72cb217d0572ea",
+211976
+],
+"NOVA/0_real/00074_000000007511.jpg": [
+"20781dbc22f3b404f980aa65be1ba1a553a494d1",
+135698
+],
+"NOVA/0_real/00075_000000007574.jpg": [
+"0367b59c2ff3fa3b150f69902eb6d65e1a917d94",
+163988
+],
+"NOVA/0_real/00076_000000007784.jpg": [
+"96c6eece6148482c3466aa68bc7a94af72cf8e81",
+65621
+],
+"NOVA/0_real/00077_000000007795.jpg": [
+"002ceca497c1384ca4219abfa0cabac313e91315",
+153601
+],
+"NOVA/0_real/00078_000000007816.jpg": [
+"9d5479e037bea26f6fa06062da7c13d8c1f78fd1",
+171711
+],
+"NOVA/0_real/00079_000000007818.jpg": [
+"1844fa3f2eaa6b239f7f727a2e7db31ad2827785",
+108736
+],
+"NOVA/0_real/00080_000000007888.jpg": [
+"829c3e75ace5e08cc5fda1442b86145a1082ea66",
+132380
+],
+"NOVA/0_real/00081_000000007977.jpg": [
+"0b2f031ec658899586876d2254eec194b3c79697",
+206738
+],
+"NOVA/0_real/00082_000000007991.jpg": [
+"2dea6a70b8f11ae91328c5ec3afff615cdd58a98",
+194363
+],
+"NOVA/0_real/00083_000000008021.jpg": [
+"d7f14a1e9b16a83a60434ede81758fc37826b720",
+180088
+],
+"NOVA/0_real/00084_000000008211.jpg": [
+"8f02f060d66871b44ab7244024e1977820216548",
+268366
+],
+"NOVA/0_real/00085_000000008277.jpg": [
+"f6e53a96562660bcd863174200a85df5a4984e42",
+206878
+],
+"NOVA/0_real/00086_000000008532.jpg": [
+"f9ed534eb8b184f84b6edf1e7a3f1d59b9c4d068",
+109812
+],
+"NOVA/0_real/00087_000000008629.jpg": [
+"0b450ce80f7648c9d57e2663a2241d8b244d0705",
+231097
+],
+"NOVA/0_real/00088_000000008690.jpg": [
+"9c8b3b015ce23a0e309d55cb08e4a3721f9fac50",
+246519
+],
+"NOVA/0_real/00089_000000008762.jpg": [
+"705c88938dec2de9287b9c2b35ea82cfaf97636e",
+48914
+],
+"NOVA/0_real/00090_000000008844.jpg": [
+"61613fc36227dc3b861d18394a3271df2a4d59cc",
+111826
+],
+"NOVA/0_real/00091_000000008899.jpg": [
+"ed39a89f728db7b1d24d1a35280529cb8cbc8be3",
+284674
+],
+"NOVA/0_real/00092_000000009378.jpg": [
+"41c6e43969bec13926729f0c3817bd9804158ab2",
+117675
+],
+"NOVA/0_real/00093_000000009400.jpg": [
+"ca1ea1fbf6d91d854bf55d9bd3738bb4df6bb923",
+104999
+],
+"NOVA/0_real/00094_000000009448.jpg": [
+"8ee98910e05bfceb1a0d1a30c7982c7b0634be81",
+339450
+],
+"NOVA/0_real/00095_000000009483.jpg": [
+"17b842b02383ab5176d47ce8b8b67763d8633db0",
+116766
+],
+"NOVA/0_real/00096_000000009590.jpg": [
+"8dc274d95cf184391bb3f4486a0dcf2e86536e7c",
+155925
+],
+"NOVA/0_real/00097_000000009769.jpg": [
+"59e431e7e82f32e078db363e24905cc2bac6be4b",
+327350
+],
+"NOVA/0_real/00098_000000009772.jpg": [
+"06047312d6f885bafb5ecec239559374ad1af6b4",
+245584
+],
+"NOVA/0_real/00099_000000009891.jpg": [
+"9fa92171e6311e04c77e9c1184634f6b4d2e62e3",
+131797
+],
+"NOVA/1_fake/00000_a_photo_of_a_backpack_0.jpg": [
+"1fc3aa554bf47ebb6171966a79d70922d27a89cf",
+311776
+],
+"NOVA/1_fake/00001_a_photo_of_a_backpack_1.jpg": [
+"09101ffef9e9bf9203574ec1c640b816910f63d5",
+300142
+],
+"NOVA/1_fake/00002_a_photo_of_a_backpack_10.jpg": [
+"989193d636f2e4072d1cc3ef84281267751fae5c",
+196326
+],
+"NOVA/1_fake/00003_a_photo_of_a_backpack_11.jpg": [
+"8a6f38d9be4403cf06c380b46d102dd9019c93bb",
+326435
+],
+"NOVA/1_fake/00004_a_photo_of_a_backpack_12.jpg": [
+"3b13e50f0b479bcdeb318481097db496294c6c89",
+282733
+],
+"NOVA/1_fake/00005_a_photo_of_a_backpack_13.jpg": [
+"247ce64a7062af791c7a7f4a4cf7de81f6600b41",
+391747
+],
+"NOVA/1_fake/00006_a_photo_of_a_backpack_14.jpg": [
+"cc95b58ac2787e1c20c114175265569c82143725",
+266089
+],
+"NOVA/1_fake/00007_a_photo_of_a_backpack_15.jpg": [
+"49b27b0cf15e28f65291e6e444caf659e00b81e4",
+289445
+],
+"NOVA/1_fake/00008_a_photo_of_a_backpack_16.jpg": [
+"d3af577d35e1cb07083e1a6ea1e9f490ab868df5",
+284133
+],
+"NOVA/1_fake/00009_a_photo_of_a_backpack_17.jpg": [
+"68f8364362c749e1c3cca3a32f352c6f20006259",
+212138
+],
+"NOVA/1_fake/00010_a_photo_of_a_backpack_18.jpg": [
+"5c3f67b50f27a2bebb0dee903cd6eff1b9d8d16d",
+235504
+],
+"NOVA/1_fake/00011_a_photo_of_a_backpack_19.jpg": [
+"73113e03f7ed3a045feee5bbbbcb628950a4c785",
+171402
+],
+"NOVA/1_fake/00012_a_photo_of_a_backpack_2.jpg": [
+"4acbaddf09bf21d195fcf4d3c56a8243f3f02cfe",
+254389
+],
+"NOVA/1_fake/00013_a_photo_of_a_backpack_3.jpg": [
+"00fc05cbc47c0cb6e6298d32b0e227a21084befa",
+217959
+],
+"NOVA/1_fake/00014_a_photo_of_a_backpack_4.jpg": [
+"a37c3a2b4147238485ddbd3c07f8594bdca0045d",
+257883
+],
+"NOVA/1_fake/00015_a_photo_of_a_backpack_5.jpg": [
+"ce909ff670468ccf943057c77f78e1665c72318e",
+370891
+],
+"NOVA/1_fake/00016_a_photo_of_a_backpack_6.jpg": [
+"5781a982d87d5a20e3364647d953d9c1a29a97fc",
+283949
+],
+"NOVA/1_fake/00017_a_photo_of_a_backpack_7.jpg": [
+"76d60c70e471ae2f54e19d73997181a3f84fd2e6",
+257165
+],
+"NOVA/1_fake/00018_a_photo_of_a_backpack_8.jpg": [
+"553707ae78a9052deeb031975afed2da93f3251c",
+309953
+],
+"NOVA/1_fake/00019_a_photo_of_a_backpack_9.jpg": [
+"841721d7d26b39216c9f43bc66f94e570a81445b",
+257719
+],
+"NOVA/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg": [
+"c40aa975054c16ee7dbfbb3d8ebc235c8151a3ad",
+258623
+],
+"NOVA/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg": [
+"7d686d2a8ab287c129c295c95c581a0450414acc",
+326110
+],
+"NOVA/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg": [
+"f549d4016c976c122246313dfb747465b6cb24f7",
+232143
+],
+"NOVA/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg": [
+"802d2412b52d07dcd5857bc25c6ad3f44711c797",
+262699
+],
+"NOVA/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg": [
+"b273c5781cc970789976a394560c4945d3885982",
+241699
+],
+"NOVA/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg": [
+"27303cd60ee5e29ca8eb1f5dd8db77857b39b182",
+290894
+],
+"NOVA/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg": [
+"a0347e25cecba0bbe0d2b14ebfb670db5f4a7d44",
+246857
+],
+"NOVA/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg": [
+"2358bd79b7b191781d569b8525a5613a691b4a50",
+252042
+],
+"NOVA/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg": [
+"f28415d29c0b1d981b2d143e3e1c80775a6fa271",
+272975
+],
+"NOVA/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg": [
+"bb920047a9e9aa839ccb622bce87d7f2082d2ac9",
+236482
+],
+"NOVA/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg": [
+"3ed96052addaea42e51b89ac011a67114f123ca6",
+258973
+],
+"NOVA/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg": [
+"583c9a6c0ffce0b93a426534097a0bd66f87aaa1",
+275620
+],
+"NOVA/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg": [
+"427c311648d9d42ad08f68441b20a3d6e7f18448",
+213246
+],
+"NOVA/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg": [
+"7b004cc00f0f415f2e7088127bc04a7880740be2",
+126902
+],
+"NOVA/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg": [
+"e110853c49a66aaf5af34a3193b4fb562f3ccca8",
+321270
+],
+"NOVA/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg": [
+"37b2a79be53c58d5a7b49cad09cbd3bcd5e5a47a",
+317352
+],
+"NOVA/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg": [
+"829e092a283877fe5f918f6d6af4562971a63ae3",
+241291
+],
+"NOVA/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg": [
+"d44110866a2f9d4272343751bc4934e771515ff5",
+214234
+],
+"NOVA/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg": [
+"d7c2ae943e1870da676b2cd6d8c67f2e6fb47b0c",
+318196
+],
+"NOVA/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg": [
+"27b964e1f8f5db90c1f34f1e3f69f03a1b1b3101",
+302732
+],
+"NOVA/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg": [
+"ce3fa5f8cffec81bf319bfe1849497e2d42ffb4c",
+342414
+],
+"NOVA/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg": [
+"5c2ec62f34db0c5efc715111bb31f006c60538cb",
+390458
+],
+"NOVA/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg": [
+"97c32b03bf719a20d1aa92461589795952852de2",
+284215
+],
+"NOVA/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg": [
+"bf6e72e6c564832a3f11eb4a30ae5fe61ff8c0ac",
+321903
+],
+"NOVA/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg": [
+"906b5cdb3bac2da4133dab19d7dce33f660a8386",
+374276
+],
+"NOVA/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg": [
+"4565b4f38c1ddfe274ba4cd16eb5e3a812093724",
+269771
+],
+"NOVA/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg": [
+"64bb0cc6098bf4798254d57d5faac9974e40b7ed",
+376544
+],
+"NOVA/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg": [
+"3ac068b182bf74651d57627a4166562a6fd52ba4",
+322624
+],
+"NOVA/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg": [
+"b101c45a825edba98bdc3a19a951a11d971e475c",
+372218
+],
+"NOVA/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg": [
+"fbff8fcb0edc02f72d0860015ef892edd5137801",
+311001
+],
+"NOVA/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg": [
+"f423cc599b362782f84ee1dadfedfd58b48bbd06",
+284205
+],
+"NOVA/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg": [
+"1ddca4ac68af11954cfdf6bbd683d0763a8f3185",
+310739
+],
+"NOVA/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg": [
+"11bb821afd20ae57208ac1857837b07a9cb23617",
+258261
+],
+"NOVA/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg": [
+"40a3924c928e4601dcf4536295dd1de40867701e",
+239136
+],
+"NOVA/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg": [
+"d148c25a32ede2cc036350601760d15840c8e4c4",
+293108
+],
+"NOVA/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg": [
+"3989990610abfc372fead4d12566a8c1c9938622",
+272890
+],
+"NOVA/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg": [
+"909221a23ce8f6cf6fc7313e7b5353100161a969",
+298692
+],
+"NOVA/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg": [
+"7a9bede79ef1b7a76879ceb1e91279f57d2a0295",
+300802
+],
+"NOVA/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg": [
+"eea34e3fb046505a3019a0898babe452137b101a",
+226507
+],
+"NOVA/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg": [
+"e67fb116762d798426746856adfb3968aba8ba3a",
+287132
+],
+"NOVA/1_fake/00060_a_photo_of_a_banana_0.jpg": [
+"7875f6a8509957f87e2d100220ca0da103a13b6b",
+183617
+],
+"NOVA/1_fake/00061_a_photo_of_a_banana_1.jpg": [
+"d01cdd630ba56afec4a628f72da182feea4559d1",
+91336
+],
+"NOVA/1_fake/00062_a_photo_of_a_banana_10.jpg": [
+"0112bea5b2069d249cef59fadb2ec3be99e4dff7",
+118017
+],
+"NOVA/1_fake/00063_a_photo_of_a_banana_11.jpg": [
+"c4674c43b48f970c183558b3be1f092d7856d71e",
+115908
+],
+"NOVA/1_fake/00064_a_photo_of_a_banana_12.jpg": [
+"ad1ad02ec68802208f244e181768144e004fed22",
+145194
+],
+"NOVA/1_fake/00065_a_photo_of_a_banana_13.jpg": [
+"6225ac12a702e043e20b6fc5793a593524f7d0ba",
+217443
+],
+"NOVA/1_fake/00066_a_photo_of_a_banana_14.jpg": [
+"09176059aeb85930250473ae81cef3d850bcab48",
+149525
+],
+"NOVA/1_fake/00067_a_photo_of_a_banana_15.jpg": [
+"0955cabf1bdc1c81e667437ef5c27fb074ebdae4",
+119766
+],
+"NOVA/1_fake/00068_a_photo_of_a_banana_16.jpg": [
+"e796525ed6585fc091e2da613bc7e386916eb052",
+112327
+],
+"NOVA/1_fake/00069_a_photo_of_a_banana_17.jpg": [
+"491735fda987de996c126638f491f9ff6a88d113",
+102059
+],
+"NOVA/1_fake/00070_a_photo_of_a_banana_18.jpg": [
+"84e0b5d7cba36fc9a1e008a25e64e84ae80823cc",
+115278
+],
+"NOVA/1_fake/00071_a_photo_of_a_banana_19.jpg": [
+"fe71322a3b60d2a9728a39902cac7757d8514502",
+199060
+],
+"NOVA/1_fake/00072_a_photo_of_a_banana_2.jpg": [
+"9bc6208188910baa142653f2856c2521c03fb1f1",
+176345
+],
+"NOVA/1_fake/00073_a_photo_of_a_banana_3.jpg": [
+"3ab16d0647568f3d9e924147ac65df45422971ed",
+123921
+],
+"NOVA/1_fake/00074_a_photo_of_a_banana_4.jpg": [
+"8b59bac1dd7a316513314c40867c240575e045c6",
+91733
+],
+"NOVA/1_fake/00075_a_photo_of_a_banana_5.jpg": [
+"29d7099855f095c6091500de31cde1bc45de711a",
+179781
+],
+"NOVA/1_fake/00076_a_photo_of_a_banana_6.jpg": [
+"c27768f417d051298fe2f122af679b87dd073e1d",
+96818
+],
+"NOVA/1_fake/00077_a_photo_of_a_banana_7.jpg": [
+"ff99df9de7d3e1d95a609e3045e6d763420408d2",
+169310
+],
+"NOVA/1_fake/00078_a_photo_of_a_banana_8.jpg": [
+"55b4db71c4eb0e9ef10e80773d192f145cf3a744",
+120279
+],
+"NOVA/1_fake/00079_a_photo_of_a_banana_9.jpg": [
+"408b21c884de45d10eca0ef4b7a1026bb03895dc",
+147669
+],
+"NOVA/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg": [
+"88eb4886584b61b8b3ed42f3679d2d09a97501ed",
+66890
+],
+"NOVA/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg": [
+"b0f4bbc8a1c9fd9ec85293a0b3a5e7b0f616cac2",
+87890
+],
+"NOVA/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg": [
+"6af1fc2f17da20826e37a57a089a58ad2da608e9",
+95288
+],
+"NOVA/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg": [
+"71c7c644adc638c12608feb750a73493d1b0b04a",
+115976
+],
+"NOVA/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg": [
+"892f404639f4f9d08771f74c6a93e363d77dec47",
+80684
+],
+"NOVA/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg": [
+"8fbfcf474fb2b213be3747e31acc2a26874befa2",
+79382
+],
+"NOVA/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg": [
+"104dfba7a2e871cff6381c2272213e7fc996c55a",
+106657
+],
+"NOVA/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg": [
+"37dc028b0f6b85ce90a02a4d6fca47f42642ba18",
+100157
+],
+"NOVA/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg": [
+"f4c1b999a1afdf3d66b3132ef6a4bc2559332639",
+84499
+],
+"NOVA/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg": [
+"b57f3aed6a3d9a13ec75c63c30f9b019c5b0a4cd",
+75533
+],
+"NOVA/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg": [
+"eff4c85ffff772e8349c2c7383e4549dd83944ca",
+69269
+],
+"NOVA/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg": [
+"29f80de61ab5be4e4096d33a56a431bc1d5a4af7",
+88663
+],
+"NOVA/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg": [
+"8a2cdff0943a17ddc996b8b2504e8994b99c4d9f",
+91536
+],
+"NOVA/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg": [
+"d1577e5d51f66c65bb9dc517e423ee8a51b6e5f4",
+97945
+],
+"NOVA/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg": [
+"7f8fc127c9e6172c01985f6cbd275e9ac274001f",
+65924
+],
+"NOVA/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg": [
+"875eab354d3e03fb7de1d61a163598f4d6ee8823",
+92768
+],
+"NOVA/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg": [
+"74b4e97bc43c4aa90c46e7fa3e77a4acfb11e826",
+94941
+],
+"NOVA/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg": [
+"064c6c165ee8c2940a02939afdd5988d7db59948",
+86724
+],
+"NOVA/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg": [
+"71caa7bfa96da045b5f47ff4fbf70e7ab0cf61e9",
+59014
+],
+"NOVA/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg": [
+"ade4b4c17bb2482e11d1abda12df60f6838f530f",
+88184
+],
+"OmniGen/0_real/00000_000000000139.jpg": [
+"7dac3963569bb65d3adb32c8dc4372340867e81f",
+161811
+],
+"OmniGen/0_real/00001_000000000285.jpg": [
+"1403bda53ea1d49afda2a9e5daff1978b8c1453b",
+335861
+],
+"OmniGen/0_real/00002_000000000632.jpg": [
+"4a7a0c5504d76ef6060f28496fde4cc19109ef6c",
+155667
+],
+"OmniGen/0_real/00003_000000000724.jpg": [
+"e626f242c0dcf4d5dcea081a71179ab3e5ca5891",
+130107
+],
+"OmniGen/0_real/00004_000000000776.jpg": [
+"8a1681e8e47a1d97797009ececc366b4f10dc1ed",
+176410
+],
+"OmniGen/0_real/00005_000000000785.jpg": [
+"27befa5f0b57fa5527a3cdcf98e31fb1dc5e1f82",
+133674
+],
+"OmniGen/0_real/00006_000000000802.jpg": [
+"9f337ad7eac5eb20b4ba21eb08ca2f421db704c3",
+62406
+],
+"OmniGen/0_real/00007_000000000872.jpg": [
+"fe5f7846069af695a8b4c0081f44a17d471eab4e",
+317669
+],
+"OmniGen/0_real/00008_000000000885.jpg": [
+"fb1d0aa34b570ca7bf16e91b88c1a854a5b3aa8a",
+111441
+],
+"OmniGen/0_real/00009_000000001000.jpg": [
+"b2bd1649e71c7335423017da607ed52357e12b88",
+321136
+],
+"OmniGen/0_real/00010_000000001268.jpg": [
+"71a02a80899ebd3bdafa8b04ff0942df7afe500f",
+180751
+],
+"OmniGen/0_real/00011_000000001296.jpg": [
+"93f33d5783a222803743d5d5ec88df3eaff19a1c",
+204829
+],
+"OmniGen/0_real/00012_000000001353.jpg": [
+"0388ebd4e08b73a13fb68451bee30d9c50f488cb",
+83033
+],
+"OmniGen/0_real/00013_000000001425.jpg": [
+"496c6b40d36f90337e4d96f29068555a624cd44e",
+111309
+],
+"OmniGen/0_real/00014_000000001490.jpg": [
+"eadfccc9eeac2e15221095f70eae7c995397732a",
+101098
+],
+"OmniGen/0_real/00015_000000001503.jpg": [
+"3b937dc76d7eeff86f384dd63a99b4c4653521fe",
+15259
+],
+"OmniGen/0_real/00016_000000001532.jpg": [
+"9a47d9e3eb6cbe1106bdf74948a8b456c7f4a3f2",
+174022
+],
+"OmniGen/0_real/00017_000000001584.jpg": [
+"77f4cc601cf98f8c69e368614ba84422db4b1bc0",
+138202
+],
+"OmniGen/0_real/00018_000000001675.jpg": [
+"ed0f1fb593f8a0a77fcc07facfff1d21113497a6",
+97643
+],
+"OmniGen/0_real/00019_000000001761.jpg": [
+"4b2fa0c981a7ede1e81e881d84229396da516048",
+115835
+],
+"OmniGen/0_real/00020_000000001818.jpg": [
+"7aabe938e352a42a39f0f3ffda7392b6a7b73f35",
+203119
+],
+"OmniGen/0_real/00021_000000001993.jpg": [
+"a42908ff8e59bd350fb03149e1a35ec10d452764",
+110450
+],
+"OmniGen/0_real/00022_000000002006.jpg": [
+"f535e1be306cae8b149b8c95d66f81824e1b8fd5",
+202589
+],
+"OmniGen/0_real/00023_000000002149.jpg": [
+"55454494a0024a8227d412fe5696c2de40999c65",
+52707
+],
+"OmniGen/0_real/00024_000000002153.jpg": [
+"59355cd8b96f38bbc10f1ad5b4cc904b512a5b70",
+136034
+],
+"OmniGen/0_real/00025_000000002157.jpg": [
+"93eae2c703bcda466f1e83ac7c99f45d015a1de3",
+124713
+],
+"OmniGen/0_real/00026_000000002261.jpg": [
+"1dbd989bda99853b31effdf5fe551077ff072297",
+197814
+],
+"OmniGen/0_real/00027_000000002299.jpg": [
+"a234e2a26f3dbe6a18f2e030d2dd701388498b33",
+103567
+],
+"OmniGen/0_real/00028_000000002431.jpg": [
+"f70bd9f040c4e4773ef0b321594fd77d1841712b",
+141124
+],
+"OmniGen/0_real/00029_000000002473.jpg": [
+"86c47bd87ff769327d2b2d5538d6b3e6b40503cd",
+95783
+],
+"OmniGen/0_real/00030_000000002532.jpg": [
+"ac15431d1239ad49f0ca1d6579d31d67fabb7dd0",
+210376
+],
+"OmniGen/0_real/00031_000000002587.jpg": [
+"e3d7e29fe49b0325b876365d447fe7652672050d",
+113812
+],
+"OmniGen/0_real/00032_000000002592.jpg": [
+"9a29bdf7c3d7fd61a6c4f7163e3080cb67ee1339",
+103017
+],
+"OmniGen/0_real/00033_000000002685.jpg": [
+"d1841713c78a9f8d84cfd62dc55b9235ab01e5f8",
+272650
+],
+"OmniGen/0_real/00034_000000002923.jpg": [
+"274a176fa3962189b0367025abf4b8a31aef2760",
+99783
+],
+"OmniGen/0_real/00035_000000003156.jpg": [
+"2ff5e7efeaf3dde09f72b38ccde2c76115a28108",
+127189
+],
+"OmniGen/0_real/00036_000000003255.jpg": [
+"9b2b487f84b9eadc6d89b926f70f20b6ac9c1544",
+159111
+],
+"OmniGen/0_real/00037_000000003501.jpg": [
+"8963dd7bd96eda502b58fc78e35a3e227e2e7a8d",
+150713
+],
+"OmniGen/0_real/00038_000000003553.jpg": [
+"83325c16f5beeddac5b86cddb6600762b4d1ac46",
+148040
+],
+"OmniGen/0_real/00039_000000003661.jpg": [
+"e0e1e13f621da35149238adcd56c958822b3aad7",
+102617
+],
+"OmniGen/0_real/00040_000000003845.jpg": [
+"4595e3d2fe960bee38e12cf2c393d125612fdd62",
+163593
+],
+"OmniGen/0_real/00041_000000003934.jpg": [
+"9f57b825a026d353910ea09ced29eb42086e6495",
+138201
+],
+"OmniGen/0_real/00042_000000004134.jpg": [
+"1b9389ff4e46e84888150ef8e73e03c71a7d8a68",
+160116
+],
+"OmniGen/0_real/00043_000000004395.jpg": [
+"0fa4ac8fe58b17bb7bfce0e1eebd39ccc4c998ee",
+77239
+],
+"OmniGen/0_real/00044_000000004495.jpg": [
+"325e4ddddc369206b572cc7c2d235d27f820df49",
+106634
+],
+"OmniGen/0_real/00045_000000004765.jpg": [
+"7f89cc5b8174ae959fb6f3cc0c2f436d1c14728b",
+139681
+],
+"OmniGen/0_real/00046_000000004795.jpg": [
+"a8c6388b871e8627c8f104650e8f5fb5d59eaf5e",
+165837
+],
+"OmniGen/0_real/00047_000000005001.jpg": [
+"f91c21950e23a52f618a57d905b6308ecb9d3d17",
+211700
+],
+"OmniGen/0_real/00048_000000005037.jpg": [
+"790ab607d44c0ba8680963e5d686a5ae64ce7dae",
+182150
+],
+"OmniGen/0_real/00049_000000005060.jpg": [
+"9de90651f0aeebe9c1a6d5a942f08eded3c9c2c7",
+157329
+],
+"OmniGen/0_real/00050_000000005193.jpg": [
+"b616a56f165b83d59606d6c73324000777e56b7b",
+102722
+],
+"OmniGen/0_real/00051_000000005477.jpg": [
+"e07d8a6cd4e5931a1db02a829f080c7f20c1c5f3",
+154975
+],
+"OmniGen/0_real/00052_000000005503.jpg": [
+"05c4801a0881ab7f7c70b015fddb8eccd5752898",
+58617
+],
+"OmniGen/0_real/00053_000000005529.jpg": [
+"dc67ba0f87c3b9799bcc820325c7749f4ba2e90f",
+224797
+],
+"OmniGen/0_real/00054_000000005586.jpg": [
+"218baccec13cb75f1d51ca143ad0ddebfea9a7e6",
+36367
+],
+"OmniGen/0_real/00055_000000005600.jpg": [
+"824412badd3791291fb180a9ee785bbbca7f44c3",
+134559
+],
+"OmniGen/0_real/00056_000000005992.jpg": [
+"2901a95755d41f6a90da4ad393c309ef163c3df3",
+180732
+],
+"OmniGen/0_real/00057_000000006012.jpg": [
+"3eb5fc104f965c1f81a81c334dacf136c35221d3",
+166135
+],
+"OmniGen/0_real/00058_000000006040.jpg": [
+"955473e44a9a284f99d480b67a4aa8d0949c771a",
+161100
+],
+"OmniGen/0_real/00059_000000006213.jpg": [
+"96a79bdba9e72c37e0cfa8a8a5de02e7a4e22b2b",
+125937
+],
+"OmniGen/0_real/00060_000000006460.jpg": [
+"033abdf6c33d6821757e1e019601e883ed6e1194",
+119914
+],
+"OmniGen/0_real/00061_000000006471.jpg": [
+"d12f857d7ca10f87c7ebe1d56bd9016c9835043d",
+96115
+],
+"OmniGen/0_real/00062_000000006614.jpg": [
+"b8b5932dbfaf98eaa6b32d7cb6fd8c35d5aebef5",
+86815
+],
+"OmniGen/0_real/00063_000000006723.jpg": [
+"5dac60a062edf26f13384563ec83bb96138dab73",
+200461
+],
+"OmniGen/0_real/00064_000000006763.jpg": [
+"547a7ae5adfdf8343f50392d7b9118ee6f1fc38c",
+111031
+],
+"OmniGen/0_real/00065_000000006771.jpg": [
+"f68f3cd560d1ea11d76117a6e3eb62571a0ff250",
+138318
+],
+"OmniGen/0_real/00066_000000006818.jpg": [
+"93cb18f9e785e7ba0862ca6be6e6d73092401e66",
+77539
+],
+"OmniGen/0_real/00067_000000006894.jpg": [
+"d84b70e0d47be32afd4e53d785de88854fe70f34",
+119456
+],
+"OmniGen/0_real/00068_000000006954.jpg": [
+"50e5c718977afcd9e4254fab80622c262b150425",
+266595
+],
+"OmniGen/0_real/00069_000000007088.jpg": [
+"771702190beb3dd4d4f4dbae83e6be34d9d748d4",
+263011
+],
+"OmniGen/0_real/00070_000000007108.jpg": [
+"a2d4f08c99fad2ef607c1d556503b7655fa0a852",
+161781
+],
+"OmniGen/0_real/00071_000000007278.jpg": [
+"1ee346388a6c2c86222e32e4c38ffd4f6fa4eb8a",
+291912
+],
+"OmniGen/0_real/00072_000000007281.jpg": [
+"b2a7f9185b02b9b9709a338b9bda2ee1e6718bdd",
+137409
+],
+"OmniGen/0_real/00073_000000007386.jpg": [
+"c9d66de82e6cce488ee27b5eed72cb217d0572ea",
+211976
+],
+"OmniGen/0_real/00074_000000007511.jpg": [
+"20781dbc22f3b404f980aa65be1ba1a553a494d1",
+135698
+],
+"OmniGen/0_real/00075_000000007574.jpg": [
+"0367b59c2ff3fa3b150f69902eb6d65e1a917d94",
+163988
+],
+"OmniGen/0_real/00076_000000007784.jpg": [
+"96c6eece6148482c3466aa68bc7a94af72cf8e81",
+65621
+],
+"OmniGen/0_real/00077_000000007795.jpg": [
+"002ceca497c1384ca4219abfa0cabac313e91315",
+153601
+],
+"OmniGen/0_real/00078_000000007816.jpg": [
+"9d5479e037bea26f6fa06062da7c13d8c1f78fd1",
+171711
+],
+"OmniGen/0_real/00079_000000007818.jpg": [
+"1844fa3f2eaa6b239f7f727a2e7db31ad2827785",
+108736
+],
+"OmniGen/0_real/00080_000000007888.jpg": [
+"829c3e75ace5e08cc5fda1442b86145a1082ea66",
+132380
+],
+"OmniGen/0_real/00081_000000007977.jpg": [
+"0b2f031ec658899586876d2254eec194b3c79697",
+206738
+],
+"OmniGen/0_real/00082_000000007991.jpg": [
+"2dea6a70b8f11ae91328c5ec3afff615cdd58a98",
+194363
+],
+"OmniGen/0_real/00083_000000008021.jpg": [
+"d7f14a1e9b16a83a60434ede81758fc37826b720",
+180088
+],
+"OmniGen/0_real/00084_000000008211.jpg": [
+"8f02f060d66871b44ab7244024e1977820216548",
+268366
+],
+"OmniGen/0_real/00085_000000008277.jpg": [
+"f6e53a96562660bcd863174200a85df5a4984e42",
+206878
+],
+"OmniGen/0_real/00086_000000008532.jpg": [
+"f9ed534eb8b184f84b6edf1e7a3f1d59b9c4d068",
+109812
+],
+"OmniGen/0_real/00087_000000008629.jpg": [
+"0b450ce80f7648c9d57e2663a2241d8b244d0705",
+231097
+],
+"OmniGen/0_real/00088_000000008690.jpg": [
+"9c8b3b015ce23a0e309d55cb08e4a3721f9fac50",
+246519
+],
+"OmniGen/0_real/00089_000000008762.jpg": [
+"705c88938dec2de9287b9c2b35ea82cfaf97636e",
+48914
+],
+"OmniGen/0_real/00090_000000008844.jpg": [
+"61613fc36227dc3b861d18394a3271df2a4d59cc",
+111826
+],
+"OmniGen/0_real/00091_000000008899.jpg": [
+"ed39a89f728db7b1d24d1a35280529cb8cbc8be3",
+284674
+],
+"OmniGen/0_real/00092_000000009378.jpg": [
+"41c6e43969bec13926729f0c3817bd9804158ab2",
+117675
+],
+"OmniGen/0_real/00093_000000009400.jpg": [
+"ca1ea1fbf6d91d854bf55d9bd3738bb4df6bb923",
+104999
+],
+"OmniGen/0_real/00094_000000009448.jpg": [
+"8ee98910e05bfceb1a0d1a30c7982c7b0634be81",
+339450
+],
+"OmniGen/0_real/00095_000000009483.jpg": [
+"17b842b02383ab5176d47ce8b8b67763d8633db0",
+116766
+],
+"OmniGen/0_real/00096_000000009590.jpg": [
+"8dc274d95cf184391bb3f4486a0dcf2e86536e7c",
+155925
+],
+"OmniGen/0_real/00097_000000009769.jpg": [
+"59e431e7e82f32e078db363e24905cc2bac6be4b",
+327350
+],
+"OmniGen/0_real/00098_000000009772.jpg": [
+"06047312d6f885bafb5ecec239559374ad1af6b4",
+245584
+],
+"OmniGen/0_real/00099_000000009891.jpg": [
+"9fa92171e6311e04c77e9c1184634f6b4d2e62e3",
+131797
+],
+"OmniGen/1_fake/00000_a_photo_of_a_backpack_0.jpg": [
+"5a58c56ea35e6027d8d9a1a5089fe87867fd2780",
+311680
+],
+"OmniGen/1_fake/00001_a_photo_of_a_backpack_1.jpg": [
+"0f2a4caa9a9b029b695cfa36118bfd9ab3f473d1",
+294326
+],
+"OmniGen/1_fake/00002_a_photo_of_a_backpack_10.jpg": [
+"5dec12280f67542a95721131e5afe6e1c4711d51",
+307365
+],
+"OmniGen/1_fake/00003_a_photo_of_a_backpack_11.jpg": [
+"689f2e8c3068bf22afcb20024ab01bd8dd41f387",
+319660
+],
+"OmniGen/1_fake/00004_a_photo_of_a_backpack_12.jpg": [
+"d6cfe6fa23a44ebaaa83c17fd6be115fc02cb3f4",
+230558
+],
+"OmniGen/1_fake/00005_a_photo_of_a_backpack_13.jpg": [
+"ce5dde990e63c13e18ab6bccac2876acf43d8331",
+280739
+],
+"OmniGen/1_fake/00006_a_photo_of_a_backpack_14.jpg": [
+"6f26401d3336bcf4949e6d4bfdf4a8022c3c36db",
+287420
+],
+"OmniGen/1_fake/00007_a_photo_of_a_backpack_15.jpg": [
+"9acb99c8833cc242188349fc538444720bb19e44",
+259210
+],
+"OmniGen/1_fake/00008_a_photo_of_a_backpack_16.jpg": [
+"d20832e7c7741cafa807d6d8743cc220da7e282e",
+368768
+],
+"OmniGen/1_fake/00009_a_photo_of_a_backpack_17.jpg": [
+"3503b50e147fe5879d1a065355ef935003b0c98e",
+317010
+],
+"OmniGen/1_fake/00010_a_photo_of_a_backpack_18.jpg": [
+"4134543604f6817c573dc52557610b3e43088248",
+290552
+],
+"OmniGen/1_fake/00011_a_photo_of_a_backpack_19.jpg": [
+"d4e4e8a75f639137993227234e05843b5eb0842e",
+343411
+],
+"OmniGen/1_fake/00012_a_photo_of_a_backpack_2.jpg": [
+"0e48a30752aae20a417bda492a13ba15eed9a2b5",
+199364
+],
+"OmniGen/1_fake/00013_a_photo_of_a_backpack_3.jpg": [
+"1f7d4b5955f64a3812e48fd1aeaa63d997398704",
+324161
+],
+"OmniGen/1_fake/00014_a_photo_of_a_backpack_4.jpg": [
+"8039e59693e12ddbd8fa939f5f0df49044fb4a22",
+292044
+],
+"OmniGen/1_fake/00015_a_photo_of_a_backpack_5.jpg": [
+"1cd055a9ddb47444c22dfe473067b35be652f582",
+314441
+],
+"OmniGen/1_fake/00016_a_photo_of_a_backpack_6.jpg": [
+"1a028dc95a12928c89b00d272a7a2db698b1c807",
+329738
+],
+"OmniGen/1_fake/00017_a_photo_of_a_backpack_7.jpg": [
+"8ad769316e3609998217752bb0d7015846867ca7",
+260954
+],
+"OmniGen/1_fake/00018_a_photo_of_a_backpack_8.jpg": [
+"12b6f43057ee7099c5c0457820965a5c633ce6d8",
+287705
+],
+"OmniGen/1_fake/00019_a_photo_of_a_backpack_9.jpg": [
+"4ba544be85c2705b51a61bdbdf901d68b35cac10",
+288320
+],
+"OmniGen/1_fake/00020_a_photo_of_a_backpack_below_a_cake_0.jpg": [
+"a60b5252ae53a423516ae576b82dd8900753682d",
+229328
+],
+"OmniGen/1_fake/00021_a_photo_of_a_backpack_below_a_cake_1.jpg": [
+"f24ee265e8ec13c0130e0004a01a0ae237726d63",
+231283
+],
+"OmniGen/1_fake/00022_a_photo_of_a_backpack_below_a_cake_10.jpg": [
+"a8450d1afcd18224e2fe6bfe4c68b201cd07ef6c",
+188126
+],
+"OmniGen/1_fake/00023_a_photo_of_a_backpack_below_a_cake_11.jpg": [
+"c6415640c4fa3b9bbbba21a77fe119157730ab41",
+242410
+],
+"OmniGen/1_fake/00024_a_photo_of_a_backpack_below_a_cake_12.jpg": [
+"5e9346a457c5cb99ed7fa5fde05b7c7f5ee77cff",
+227657
+],
+"OmniGen/1_fake/00025_a_photo_of_a_backpack_below_a_cake_13.jpg": [
+"453e7fa3e848916b947550e3abcbdd6d2f118430",
+237882
+],
+"OmniGen/1_fake/00026_a_photo_of_a_backpack_below_a_cake_14.jpg": [
+"70a9a5f51470e3091e6e06492f19133b3d66bfb0",
+281168
+],
+"OmniGen/1_fake/00027_a_photo_of_a_backpack_below_a_cake_15.jpg": [
+"3a1f6cfe82f6cb96322a256c326800c679c32285",
+263236
+],
+"OmniGen/1_fake/00028_a_photo_of_a_backpack_below_a_cake_16.jpg": [
+"13589ea8a12ff28f997ce4512088a6f231e31e50",
+203804
+],
+"OmniGen/1_fake/00029_a_photo_of_a_backpack_below_a_cake_17.jpg": [
+"944bd6546cd4fd63754d40d4349f8e951745a4df",
+203707
+],
+"OmniGen/1_fake/00030_a_photo_of_a_backpack_below_a_cake_18.jpg": [
+"b6e6c35b62b60ca3c331dc2fce6ebad77f64e8e6",
+252775
+],
+"OmniGen/1_fake/00031_a_photo_of_a_backpack_below_a_cake_19.jpg": [
+"2985a2b42ede6e27de974d9ed47069ad552160c9",
+233297
+],
+"OmniGen/1_fake/00032_a_photo_of_a_backpack_below_a_cake_2.jpg": [
+"5abf96ba8383210a3142affdfdd7398acd4df510",
+229974
+],
+"OmniGen/1_fake/00033_a_photo_of_a_backpack_below_a_cake_3.jpg": [
+"dee80a1b3d74f2dc14bd897589fb1106a2204405",
+217709
+],
+"OmniGen/1_fake/00034_a_photo_of_a_backpack_below_a_cake_4.jpg": [
+"35eb69e1a1c98642f4aaffdf9b6cf41c4378c6a5",
+227170
+],
+"OmniGen/1_fake/00035_a_photo_of_a_backpack_below_a_cake_5.jpg": [
+"9cabf1beadf3121106552dce85992c0bf9703b01",
+251607
+],
+"OmniGen/1_fake/00036_a_photo_of_a_backpack_below_a_cake_6.jpg": [
+"a773a8171278f25bc4ef3d39d15f73a14669f167",
+227125
+],
+"OmniGen/1_fake/00037_a_photo_of_a_backpack_below_a_cake_7.jpg": [
+"64cf9999c204d68e27d27a6cead9ba7932aeef92",
+190425
+],
+"OmniGen/1_fake/00038_a_photo_of_a_backpack_below_a_cake_8.jpg": [
+"4745805b80393ee62f32090c4585063c139bccf4",
+203069
+],
+"OmniGen/1_fake/00039_a_photo_of_a_backpack_below_a_cake_9.jpg": [
+"d3fed4f9eb928c7daa336877a6336e32792e3ab3",
+210100
+],
+"OmniGen/1_fake/00040_a_photo_of_a_backpack_right_of_a_sandwich_0.jpg": [
+"0721da8f76ce9216380df8dbaccf624feae7ea6f",
+252782
+],
+"OmniGen/1_fake/00041_a_photo_of_a_backpack_right_of_a_sandwich_1.jpg": [
+"18944cfec391451c5fa9c1bdd834dfa28e9d0591",
+296290
+],
+"OmniGen/1_fake/00042_a_photo_of_a_backpack_right_of_a_sandwich_10.jpg": [
+"8e77b41f836ca8dd6f0e2d40b652e687dfc27be3",
+290487
+],
+"OmniGen/1_fake/00043_a_photo_of_a_backpack_right_of_a_sandwich_11.jpg": [
+"015fa3bf56e150343cbfa2c70c8e9a81d1b1ace3",
+262188
+],
+"OmniGen/1_fake/00044_a_photo_of_a_backpack_right_of_a_sandwich_12.jpg": [
+"23112580e51baad55b6af3faea0e6565bacac232",
+264213
+],
+"OmniGen/1_fake/00045_a_photo_of_a_backpack_right_of_a_sandwich_13.jpg": [
+"81e64bf9abe00aca21115d00c72cd784a6db7edd",
+262092
+],
+"OmniGen/1_fake/00046_a_photo_of_a_backpack_right_of_a_sandwich_14.jpg": [
+"7c4ea4a638ada331ea0a3a3da509df4bf5908895",
+254214
+],
+"OmniGen/1_fake/00047_a_photo_of_a_backpack_right_of_a_sandwich_15.jpg": [
+"7c8f6284c2c46b5e4c38d7f46f1ffe7aa5192d83",
+317211
+],
+"OmniGen/1_fake/00048_a_photo_of_a_backpack_right_of_a_sandwich_16.jpg": [
+"37ce9d8fd3a6148aeab046de49e3c5183796eef7",
+271992
+],
+"OmniGen/1_fake/00049_a_photo_of_a_backpack_right_of_a_sandwich_17.jpg": [
+"76c42d09b49b2b1affe4dbb32a73d546e002bf53",
+273098
+],
+"OmniGen/1_fake/00050_a_photo_of_a_backpack_right_of_a_sandwich_18.jpg": [
+"8b2ddc722d466b5cbf4d871a7a22f8290bee86f6",
+285056
+],
+"OmniGen/1_fake/00051_a_photo_of_a_backpack_right_of_a_sandwich_19.jpg": [
+"a1c84c7c4b677e08a614050e5cff00f5b2c84f49",
+306789
+],
+"OmniGen/1_fake/00052_a_photo_of_a_backpack_right_of_a_sandwich_2.jpg": [
+"a40f1041d67ca712134a0264eebff4093d8576fb",
+261183
+],
+"OmniGen/1_fake/00053_a_photo_of_a_backpack_right_of_a_sandwich_3.jpg": [
+"2a001b257856eaed2dc5229f62f244b1c7bf5074",
+311106
+],
+"OmniGen/1_fake/00054_a_photo_of_a_backpack_right_of_a_sandwich_4.jpg": [
+"c6a04c73299853979dddc53ef680dd09f3c23403",
+313479
+],
+"OmniGen/1_fake/00055_a_photo_of_a_backpack_right_of_a_sandwich_5.jpg": [
+"0f75346650ccbd843c62b066590f12ada29be91c",
+243837
+],
+"OmniGen/1_fake/00056_a_photo_of_a_backpack_right_of_a_sandwich_6.jpg": [
+"7e305659056fc80b0c7c8276d30ecdbe003c2820",
+321746
+],
+"OmniGen/1_fake/00057_a_photo_of_a_backpack_right_of_a_sandwich_7.jpg": [
+"75af40dcda55b86fc3af73deaf9a7f8cc86b0a08",
+279517
+],
+"OmniGen/1_fake/00058_a_photo_of_a_backpack_right_of_a_sandwich_8.jpg": [
+"d724634379fde21c9c2fd9771966f62da63d0491",
+330228
+],
+"OmniGen/1_fake/00059_a_photo_of_a_backpack_right_of_a_sandwich_9.jpg": [
+"b53063e4c319e814d3d667f6160f463025aaaeea",
+264847
+],
+"OmniGen/1_fake/00060_a_photo_of_a_banana_0.jpg": [
+"5c98113f4dd8f7d114a3904d28fc36f0cf526481",
+117450
+],
+"OmniGen/1_fake/00061_a_photo_of_a_banana_1.jpg": [
+"74b1a40a950193e2fa87ee3ad80030429aaa5eac",
+179355
+],
+"OmniGen/1_fake/00062_a_photo_of_a_banana_10.jpg": [
+"a777736baa308403dd5be35edc6a11c86853da5b",
+148958
+],
+"OmniGen/1_fake/00063_a_photo_of_a_banana_11.jpg": [
+"acd6b523074797226dbbf04ba81bbd14ccff15a7",
+124237
+],
+"OmniGen/1_fake/00064_a_photo_of_a_banana_12.jpg": [
+"69bec74d5836da0f7e2038b4788ae7ec138d2ca5",
+163570
+],
+"OmniGen/1_fake/00065_a_photo_of_a_banana_13.jpg": [
+"53b8ce292d4f157daac8f5939acd870b2320ceb5",
+149974
+],
+"OmniGen/1_fake/00066_a_photo_of_a_banana_14.jpg": [
+"1d50d874e4ad57784fade243ff36e8bc20b91847",
+146506
+],
+"OmniGen/1_fake/00067_a_photo_of_a_banana_15.jpg": [
+"50402a36e88edbffc38b9f2093129ee5bad00557",
+123144
+],
+"OmniGen/1_fake/00068_a_photo_of_a_banana_16.jpg": [
+"a669e1ada4abb86cf81af2eb89f7f0dc5511d81b",
+139572
+],
+"OmniGen/1_fake/00069_a_photo_of_a_banana_17.jpg": [
+"d200e2289506726ddd33ce78dc53936fe856b4bc",
+182328
+],
+"OmniGen/1_fake/00070_a_photo_of_a_banana_18.jpg": [
+"ed71c7ec2aae1c2e7829528c00dfacd0737e3f6c",
+125297
+],
+"OmniGen/1_fake/00071_a_photo_of_a_banana_19.jpg": [
+"bbb0878cd7f1237f722023f8325e327c3f095488",
+94882
+],
+"OmniGen/1_fake/00072_a_photo_of_a_banana_2.jpg": [
+"9bc59b18a306c102da5082ccde006da00848fbc0",
+160451
+],
+"OmniGen/1_fake/00073_a_photo_of_a_banana_3.jpg": [
+"742e0e5b0394e1533a12d00df7d3ab3347b6ffe1",
+145091
+],
+"OmniGen/1_fake/00074_a_photo_of_a_banana_4.jpg": [
+"4ff903db4041f95e921c765c3217acff46d09680",
+128398
+],
+"OmniGen/1_fake/00075_a_photo_of_a_banana_5.jpg": [
+"8e981c680fe28c3e3ca6840036efcd63d656d52e",
+158698
+],
+"OmniGen/1_fake/00076_a_photo_of_a_banana_6.jpg": [
+"a1f9a6d3e3936c3aa5950c6b80747db99a626f99",
+165100
+],
+"OmniGen/1_fake/00077_a_photo_of_a_banana_7.jpg": [
+"888a20492d511bce18c6f349382bd429f58ec97f",
+178440
+],
+"OmniGen/1_fake/00078_a_photo_of_a_banana_8.jpg": [
+"5a08ad98aaeda4a73ced42f5c6a6f9de40f574ec",
+174219
+],
+"OmniGen/1_fake/00079_a_photo_of_a_banana_9.jpg": [
+"a418ea65004a1e6ec0ec85bbe4d38d0baf73bf01",
+152713
+],
+"OmniGen/1_fake/00080_a_photo_of_a_baseball_bat_0.jpg": [
+"8fffe33cce879ae6bf1ee90b463f160c357608c0",
+274502
+],
+"OmniGen/1_fake/00081_a_photo_of_a_baseball_bat_1.jpg": [
+"a41a0618cff40cdf2a0c41ecb8d225ebccd40b74",
+159885
+],
+"OmniGen/1_fake/00082_a_photo_of_a_baseball_bat_10.jpg": [
+"10b0929bce08b2e061163112f8ca4236e775834e",
+287914
+],
+"OmniGen/1_fake/00083_a_photo_of_a_baseball_bat_11.jpg": [
+"a3bdb8ded7cc276f1e1111542ef862d5be061e9d",
+187163
+],
+"OmniGen/1_fake/00084_a_photo_of_a_baseball_bat_12.jpg": [
+"6541a45215850435617fae56f81252a8f1b5ecdf",
+183570
+],
+"OmniGen/1_fake/00085_a_photo_of_a_baseball_bat_13.jpg": [
+"3b50f17c602e5a3a8d808f99377e8a7ebb298165",
+133578
+],
+"OmniGen/1_fake/00086_a_photo_of_a_baseball_bat_14.jpg": [
+"c7c88b8aa1b7a7a4c233e817f731d908a1ddcd77",
+144766
+],
+"OmniGen/1_fake/00087_a_photo_of_a_baseball_bat_15.jpg": [
+"7bc0a14fe28b4d774a007c76218f48eb273a7ae3",
+196796
+],
+"OmniGen/1_fake/00088_a_photo_of_a_baseball_bat_16.jpg": [
+"cbfc5875fccab45b3d53084d0f838a63538b0f57",
+536020
+],
+"OmniGen/1_fake/00089_a_photo_of_a_baseball_bat_17.jpg": [
+"a1592a71ef44391c243b9d161f42d37224df7ddf",
+185669
+],
+"OmniGen/1_fake/00090_a_photo_of_a_baseball_bat_18.jpg": [
+"45fc0106c3f9570350a316772ec4249065e2647a",
+417413
+],
+"OmniGen/1_fake/00091_a_photo_of_a_baseball_bat_19.jpg": [
+"62d8f07b154d94a234b0c56459600c54e7d64712",
+300895
+],
+"OmniGen/1_fake/00092_a_photo_of_a_baseball_bat_2.jpg": [
+"10618d68d4959691f156ff265445af32b276ff4c",
+290082
+],
+"OmniGen/1_fake/00093_a_photo_of_a_baseball_bat_3.jpg": [
+"8278c7acdecabf1b97cf9e054502b7beb190fb02",
+323041
+],
+"OmniGen/1_fake/00094_a_photo_of_a_baseball_bat_4.jpg": [
+"a31e214c7e652d29f24b918b63892431efca8e48",
+208463
+],
+"OmniGen/1_fake/00095_a_photo_of_a_baseball_bat_5.jpg": [
+"c7d189d5a6fc73ae2827453bfc75bc25d0251fc1",
+276662
+],
+"OmniGen/1_fake/00096_a_photo_of_a_baseball_bat_6.jpg": [
+"a588984290de9624f92d7dc0e127b513bc6681dc",
+289514
+],
+"OmniGen/1_fake/00097_a_photo_of_a_baseball_bat_7.jpg": [
+"d7cf99e735c9f7a90c0bbcb0b6b85cb690a92348",
+150755
+],
+"OmniGen/1_fake/00098_a_photo_of_a_baseball_bat_8.jpg": [
+"0861cc64cbbd626bddb9c780cd57a62f56a87935",
+292296
+],
+"OmniGen/1_fake/00099_a_photo_of_a_baseball_bat_9.jpg": [
+"503299ef05b3851713006eb9cb207236f2217e92",
+217822
+]
+}
+}
