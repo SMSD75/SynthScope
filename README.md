@@ -7,6 +7,7 @@
 
 🔎 **Check whether an image or video is AI-generated, and see how well 29 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
+SynthScope also keeps 📚 **[Awesome AI-Generated Image and Video Detection](docs/CONFERENCE_PAPERS.md)**, a curated and verified list of top-tier conference and journal papers, grouped by venue and updated monthly.
 
 <p align="center">
   <a href="#-web-demo"><b>🌐 Web demo</b></a> ·
@@ -15,6 +16,7 @@ Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' r
   <a href="#-detectors">🔍 Detectors</a> ·
   <a href="#-benchmarks">📊 Benchmarks</a> ·
   <a href="#-train-your-own">🏋️ Train</a> ·
+  <a href="#-awesome-ai-generated-image-and-video-detection">📚 Awesome list</a> ·
   <a href="#-contributing-and-license">🤝 Contributing</a>
 </p>
 
@@ -31,6 +33,7 @@ A browser app for trying the detectors without writing code. The detectors alway
 | **Browse datasets** | Click through samples of the benchmark datasets and see a detector's score on each. Score a whole batch and tune the decision threshold. |
 | **Leaderboard** | Every method on every benchmark it reports: the paper's number, our own retrained checkpoint, and the authors' official weights. |
 | **Generator benchmarks** | How each detector does against specific modern generators, ranked by AUROC. |
+| **Awesome papers** | Browse [Awesome AI-Generated Image and Video Detection](docs/CONFERENCE_PAPERS.md), the curated list of top-tier conference and journal papers on AI-generated image and video detection, filtered by text, venue, year or tag. |
 
 <p align="center">
   <img src="docs/images/generator.jpg" width="49%" alt="Test a generator: a real photo, the image FLUX.2 klein made from it, and four detectors scoring both"/>
@@ -328,6 +331,19 @@ common `<generator>/{0_real,1_fake}` layout; each model config lists its preproc
 `train_transform_list`, ...) as named steps from [transformations.py](transformations.py).
 Training interleaves validation/test each epoch and logs per-generator metrics to Weights & Biases.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETECTOR.md) to add a detector.
+
+---
+
+## 📚 Awesome AI-Generated Image and Video Detection
+
+[docs/CONFERENCE_PAPERS.md](docs/CONFERENCE_PAPERS.md) is a curated list of **264 peer-reviewed papers** on detecting AI-generated
+images and videos (2020 onwards), grouped by venue and year, with first author, paper, arXiv and code links, and tags (`Image`,
+`Video`, `Benchmark`, `Localization`, `MLLM`); ✅ marks the detectors you can run in SynthScope. Every entry links to its official
+proceedings page or accepted OpenReview decision, [`tools/check_conference_list.py`](tools/check_conference_list.py) checks the
+list, and it is updated monthly. The web demo's **Papers** tab shows the same list with filters.
+
+**Per venue:** CVPR 56 · ICCV 14 · ECCV 17 · NeurIPS 46 · ICLR 16 · ICML 33 · AAAI 24 · IJCAI 7 · ACM MM 32 · KDD 2 · WACV 12 ·
+TPAMI 3 · IJCV 2.
 
 ---
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   fetchModels, predict, fetchDatasets, sampleDataset, datasetMediaUrl,
   predictDataset, scoreBatch, verdictAt, autoCalibrate, targetFprThreshold, batchStats,
-  sotaGenerators, sotaRealImage, sotaCompare, fetchLeaderboard, fetchGeneratorBenchmarks,
+  sotaGenerators, sotaRealImage, sotaCompare, fetchLeaderboard, fetchGeneratorBenchmarks, fetchConferencePapers,
 } from "./api.js";
 
 // Which weights back the default inference checkpoint for each detector (shown in the UI).
@@ -100,6 +100,94 @@ function TopGeneratorsView() {
             </table>
           </div>
         </div>
+      ))}
+    </div>
+  );
+}
+
+const PAPERS_MD = "https://github.com/SMSD75/SynthScope/blob/main/docs/CONFERENCE_PAPERS.md";
+
+function filterPapers(papers, { q, venue, year, tag, onlySS }) {
+  const words = (q || "").toLowerCase().split(/\s+/).filter(Boolean);
+  return papers.filter((p) => (!venue || p.venue === venue) && (!year || String(p.year) === String(year))
+    && (!tag || p.tags.includes(tag)) && (!onlySS || p.synthscope)
+    && words.every((w) => (p.title + " " + p.authors + " " + p.venue + " " + p.year + " " + p.tags.join(" ")).toLowerCase().includes(w)));
+}
+
+function groupPapers(papers, venueOrder) {
+  return venueOrder.map((v) => {
+    const ps = papers.filter((p) => p.venue === v);
+    const years = [...new Set(ps.map((p) => p.year))].sort((a, b) => b - a);
+    return { venue: v, n: ps.length, years: years.map((y) => ({ year: y, papers: ps.filter((p) => p.year === y) })) };
+  }).filter((g) => g.n > 0);
+}
+
+// Papers: the curated list of top-tier conference / journal papers, grouped by venue and year (same as static/index.html).
+function PapersView() {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState("");
+  const [q, setQ] = useState("");
+  const [venue, setVenue] = useState("");
+  const [year, setYear] = useState("");
+  const [tag, setTag] = useState("");
+  const [onlySS, setOnlySS] = useState(false);
+  useEffect(() => {
+    fetchConferencePapers().then(setData).catch((e) => setErr("Could not load the paper list: " + e.message));
+  }, []);
+  if (err) return <div className="papers"><div className="err">{err}</div></div>;
+  if (!data) return <div className="papers"><div className="empty">Loading the paper list…</div></div>;
+  const all = data.papers || [];
+  const shown = filterPapers(all, { q, venue, year, tag, onlySS });
+  const groups = groupPapers(shown, data.venues || []);
+  const years = [...new Set(all.map((p) => p.year))].sort((a, b) => b - a);
+  const filtered = !!(q || venue || year || tag || onlySS);
+  const clear = (e) => { e.preventDefault(); setQ(""); setVenue(""); setYear(""); setTag(""); setOnlySS(false); };
+  return (
+    <div className="papers">
+      <div className="pagehead"><p className="muted"><b>Awesome AI-Generated Image and Video Detection</b>: top-tier conference and journal papers on AI-generated image and video
+        detection, grouped by venue and year. Every paper links to its official proceedings page or accepted OpenReview
+        decision, and code links are checked to exist. Updated monthly; last updated <b>{data.last_updated}</b>. ✅ marks a
+        detector you can run in SynthScope. Source: <a href={PAPERS_MD} target="_blank" rel="noopener">docs/CONFERENCE_PAPERS.md</a>.</p></div>
+      <div className="pfilters">
+        <input type="text" placeholder="Filter by title, author, venue or tag…" value={q} onChange={(e) => setQ(e.target.value)} />
+        <select value={venue} onChange={(e) => setVenue(e.target.value)}>
+          <option value="">All venues</option>
+          {(data.venues || []).map((v) => <option key={v} value={v}>{v}</option>)}
+        </select>
+        <select value={year} onChange={(e) => setYear(e.target.value)}>
+          <option value="">All years</option>
+          {years.map((y) => <option key={y} value={y}>{y}</option>)}
+        </select>
+        <select value={tag} onChange={(e) => setTag(e.target.value)}>
+          <option value="">All tags</option>
+          {(data.tags || []).map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <label><input type="checkbox" checked={onlySS} onChange={(e) => setOnlySS(e.target.checked)} /> ✅ in SynthScope</label>
+      </div>
+      <div className="meta">{shown.length} of {all.length} papers{filtered && <> · <a href="#" onClick={clear}>clear filters</a></>}</div>
+      {!groups.length && <div className="empty">No paper matches these filters.</div>}
+      {groups.map((g, gi) => (
+        <details key={g.venue} className="card lead-card" open={filtered || gi < 2}>
+          <summary><span className="sumtitle">{g.venue}</span><span className="pill">{g.n} paper{g.n > 1 ? "s" : ""}</span></summary>
+          {g.years.map((y) => (
+            <div key={y.year}>
+              <div className="pyear">{g.venue} {y.year}</div>
+              <ul className="plist">
+                {y.papers.map((p) => (
+                  <li key={p.title} className="pent">
+                    <div className="ptitle">{p.title}{p.synthscope && <span className="pss" title="Implemented in SynthScope"> ✅</span>}</div>
+                    <div className="pmeta"><span>{p.authors}</span>
+                      <a href={p.paper} target="_blank" rel="noopener">paper</a>
+                      {p.arxiv && <a href={p.arxiv} target="_blank" rel="noopener">arXiv</a>}
+                      {p.code && <a href={p.code} target="_blank" rel="noopener">code</a>}
+                      {p.tags.map((t) => <span key={t} className="itag">{t}</span>)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </details>
       ))}
     </div>
   );
@@ -317,6 +405,7 @@ export default function App() {
         <button className={"tab" + (tab === "sota" ? " active" : "")} onClick={() => setTab("sota")}>SOTA vs Detectors</button>
         <button className={"tab" + (tab === "leaderboard" ? " active" : "")} onClick={() => setTab("leaderboard")}>Leaderboard</button>
         <button className={"tab" + (tab === "topgen" ? " active" : "")} onClick={() => setTab("topgen")}>Top Generators</button>
+        <button className={"tab" + (tab === "papers" ? " active" : "")} onClick={() => setTab("papers")}>Awesome papers</button>
       </div>
       {error && <div className="err">{error}</div>}
       {tab === "detect" && <DetectView {...shared} />}
@@ -324,6 +413,7 @@ export default function App() {
       {tab === "sota" && <SotaView models={models} />}
       {tab === "leaderboard" && <LeaderboardView />}
       {tab === "topgen" && <TopGeneratorsView />}
+      {tab === "papers" && <PapersView />}
     </div>
   );
 }
