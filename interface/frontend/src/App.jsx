@@ -144,7 +144,7 @@ function PapersView() {
   const clear = (e) => { e.preventDefault(); setQ(""); setVenue(""); setYear(""); setTag(""); setOnlySS(false); };
   return (
     <div className="papers">
-      <div className="pagehead"><p className="muted">Top-tier conference and journal papers on AI-generated image and video
+      <div className="pagehead"><p className="muted"><b>Awesome AI-Generated Image and Video Detection</b>: top-tier conference and journal papers on AI-generated image and video
         detection, grouped by venue and year. Every paper links to its official proceedings page or accepted OpenReview
         decision, and code links are checked to exist. Updated monthly; last updated <b>{data.last_updated}</b>. ✅ marks a
         detector you can run in SynthScope. Source: <a href={PAPERS_MD} target="_blank" rel="noopener">docs/CONFERENCE_PAPERS.md</a>.</p></div>
@@ -405,7 +405,7 @@ export default function App() {
         <button className={"tab" + (tab === "sota" ? " active" : "")} onClick={() => setTab("sota")}>SOTA vs Detectors</button>
         <button className={"tab" + (tab === "leaderboard" ? " active" : "")} onClick={() => setTab("leaderboard")}>Leaderboard</button>
         <button className={"tab" + (tab === "topgen" ? " active" : "")} onClick={() => setTab("topgen")}>Top Generators</button>
-        <button className={"tab" + (tab === "papers" ? " active" : "")} onClick={() => setTab("papers")}>Papers</button>
+        <button className={"tab" + (tab === "papers" ? " active" : "")} onClick={() => setTab("papers")}>Awesome papers</button>
       </div>
       {error && <div className="err">{error}</div>}
       {tab === "detect" && <DetectView {...shared} />}

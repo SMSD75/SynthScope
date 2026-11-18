@@ -7,7 +7,7 @@
 
 🔎 **Check whether an image or video is AI-generated, and see how well 29 published detectors (plus 3 DINO baselines) hold up against today's generators.**
 Try it in the browser 🌐, call it from Python 🐍, or reproduce the papers' results 📊 — with the benchmark datasets **downloaded and organized for you**.
-SynthScope also keeps a [curated, verified list of top-tier conference papers](docs/CONFERENCE_PAPERS.md) 📚 on AI-generated image and video detection, grouped by venue and updated monthly.
+SynthScope also keeps 📚 **[Awesome AI-Generated Image and Video Detection](docs/CONFERENCE_PAPERS.md)**, a curated and verified list of top-tier conference and journal papers, grouped by venue and updated monthly.
 
 <p align="center">
   <a href="#-web-demo"><b>🌐 Web demo</b></a> ·
@@ -16,7 +16,7 @@ SynthScope also keeps a [curated, verified list of top-tier conference papers](d
   <a href="#-detectors">🔍 Detectors</a> ·
   <a href="#-benchmarks">📊 Benchmarks</a> ·
   <a href="#-train-your-own">🏋️ Train</a> ·
-  <a href="#-top-tier-conference-papers">📚 Papers</a> ·
+  <a href="#-awesome-ai-generated-image-and-video-detection">📚 Awesome list</a> ·
   <a href="#-contributing-and-license">🤝 Contributing</a>
 </p>
 
@@ -33,7 +33,7 @@ A browser app for trying the detectors without writing code. The detectors alway
 | **Browse datasets** | Click through samples of the benchmark datasets and see a detector's score on each. Score a whole batch and tune the decision threshold. |
 | **Leaderboard** | Every method on every benchmark it reports: the paper's number, our own retrained checkpoint, and the authors' official weights. |
 | **Generator benchmarks** | How each detector does against specific modern generators, ranked by AUROC. |
-| **Papers** | Browse the [curated list of top-tier conference papers](docs/CONFERENCE_PAPERS.md) on AI-generated image and video detection, filtered by text, venue, year or tag. |
+| **Awesome papers** | Browse [Awesome AI-Generated Image and Video Detection](docs/CONFERENCE_PAPERS.md), the curated list of top-tier conference and journal papers on AI-generated image and video detection, filtered by text, venue, year or tag. |
 
 <p align="center">
   <img src="docs/images/generator.jpg" width="49%" alt="Test a generator: a real photo, the image FLUX.2 klein made from it, and four detectors scoring both"/>
@@ -334,7 +334,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ADD_DETECTOR.md](docs/ADD_DETEC
 
 ---
 
-## 📚 Top-tier conference papers
+## 📚 Awesome AI-Generated Image and Video Detection
 
 [docs/CONFERENCE_PAPERS.md](docs/CONFERENCE_PAPERS.md) is a curated list of **264 peer-reviewed papers** on detecting AI-generated
 images and videos (2020 onwards), grouped by venue and year, with first author, paper, arXiv and code links, and tags (`Image`,
