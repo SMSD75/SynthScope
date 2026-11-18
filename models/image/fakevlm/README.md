@@ -55,7 +55,7 @@ are scored. A first verdict word without one, for example a bare "real" without 
 unscored in the fidelity run and in every benchmark result).
 
 **Teacher-forced variant (not the default).** `FAKEVLM_TEACHER_FORCED` reads the same gap from one forward pass on the
-prompt + "▁▁ This is a", about 9x faster (0.38 vs 3.41 s per image). It failed the rule for a default scorer: the greedy
+prompt + "▁▁ This is a", 8.9x faster (0.384 vs 3.41 s per image). It failed the rule for a default scorer: the greedy
 answer does not always start with those four tokens, and its P(fake) differs from the generated one by more than 1e-3
 on some images ([Fidelity](#fidelity)). Results scored with it are not the official method.
 
@@ -256,7 +256,7 @@ get the same transform:
 On UFD-8 the drop is all on the fakes:
 - the real accuracy is 98.61 before and after;
 - the mean fake accuracy falls from 95.44 to 32.74. After JPEG95, 5 of the 8 sets have fake accuracy below 50% (LDM-200
-  4.76, LDM-200-CFG 4.76, Guided 7.94, LDM-100 14.29);
+  4.76, LDM-200-CFG 4.76, Guided 7.94, LDM-100 14.29, DALL-E 19.05);
 - the rank of 28 falls from 2nd to 21st.
 
 After re-encoding, the UFD fakes are called real. DiTFake under the same transform barely moves. A **hypothesis, not
