@@ -19,6 +19,7 @@ from typing import Callable, Optional
 from omegaconf import OmegaConf
 
 from models.image.adb_vlm.adb_vlm import ADB_VLM
+from models.image.fakevlm.fakevlm import FAKEVLM
 from models.image.veritaspp.veritaspp import VERITASPP
 from models.vlm.vlm import VLMConfig
 from transformations import IMAGENET_MEAN, IMAGENET_STD, AIGITransformations   # IMAGENET_*: the video_norm below
@@ -654,6 +655,21 @@ _add(ModelSpec(
           "Still images only. Not on the Space (no licence).",
 ))
 
+_add(ModelSpec(
+    key="fakevlm", name="FakeVLM", paper="Wen et al., NeurIPS'25 (arXiv 2503.14905)",
+    modality="image", predict_kind="vlm", checkpoint="fakevlm", ckpt_kind="official_vlm", weights="official",
+    # fakevlm = the official HF folder lingcco/fakeVLM @ dce9e88d unchanged (no licence; 3 safetensors shards, 14.1 GB
+    # bf16), loaded strictly into transformers' LlavaForConditionalGeneration; the processor from the local folder
+    # llava-1.5-7b-hf_a272c74_processor (llava-hf/llava-1.5-7b-hf @ a272c74, tokenizer + processor files), as eval.py.
+    overrides=[], vlm=FAKEVLM, native_res=True,
+    notes="LLaVA-1.5-7B fine-tuned on FakeClue to answer \"Does the image looks real/fake?\" with \"This is a real / "
+          "fake image.\" and an explanation. Uses the OFFICIAL weights, processor and prompt. P(fake) = sigmoid of the "
+          "fake-minus-real logit at the verdict word, from one forward pass on the prompt + the answer's first words "
+          "(\"This is a\"), which matches the official greedy generation's verdict-token score (repro/fakevlm_fidelity.json); "
+          "the verdict is the sign, and no explanation is written. The image is seen as a 336x336 centre crop. GenImage "
+          "is in its training data (FakeClue). Still images only. Not on the Space (no licence).",
+))
+
 # --- Video detectors ---------------------------------------------------------
 _add(ModelSpec(
     key="d3", name="D3 (video)", paper="ICCV'25",
@@ -765,6 +781,9 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
                 "converted to RGB (no EXIF rotation; any transparency channel is dropped); an image above 1,003,520 "
                 "pixels is first shrunk to about that size (bilinear), then the whole image is resized (bicubic) so "
                 "both sides are multiples of 28 px, keeping the aspect ratio, and goes to the vision-language model."),
+    "fakevlm": ("Resize + center-crop 336", "As the official code loads it, the image is converted to RGB (no EXIF "
+                "rotation; any transparency channel is dropped), the shorter side is scaled to 336 px (bicubic) and the "
+                "central 336x336 square goes to the vision-language model; anything outside it is not seen."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
