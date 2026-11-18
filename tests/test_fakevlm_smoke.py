@@ -490,9 +490,25 @@ def test_tiny_llava() -> None:
                          "add_eos_token=True")
             expect_raise(lambda: SynthScopeVLM(weights, dataclasses.replace(cfg, processor_overrides={}), device="cpu",
                                                root=tmp), ValueError, "patch_size")
+            # num_additional_image_tokens defaults to 0 on the processor: unset, it is refused at load, not at the forward
+            no_extra = {k: v for k, v in cfg.processor_overrides.items() if k != "num_additional_image_tokens"}
+            expect_raise(lambda: LLAVA.load_processor(weights, dataclasses.replace(cfg, processor_overrides=no_extra), tmp),
+                         ValueError, "num_additional_image_tokens")
+        # a processor saved with the three fields (processor_config.json) needs no overrides
+        saved_root = tmp / "saved"
+        saved_root.mkdir()
+        _, saved_proc, _ = tiny_folders(saved_root)
+        (saved_proc / "processor_config.json").write_text(json.dumps({
+            "processor_class": "LlavaProcessor", "patch_size": TINY_PATCH, "vision_feature_select_strategy": "default",
+            "num_additional_image_tokens": 1}))
+        with quiet():
+            loaded = LLAVA.load_processor(saved_root / "fakevlm", dataclasses.replace(cfg, processor_overrides={}), saved_root)
+        assert (loaded.patch_size, loaded.vision_feature_select_strategy, loaded.num_additional_image_tokens) == \
+            (TINY_PATCH, "default", 1)
     print("    no network at load; 4 image tokens left-padded to 64, 4.45.2-style pixels; teacher-forced gap == direct "
           "forward; forced 'This is a fake image.' scored at step 4 == raw output_logits gap == teacher-forced gap; "
-          "'This image is fake.' at its own ▁fake; extra / missing tensor, EOS tokenizer, unset expansion refused")
+          "'This image is fake.' at its own ▁fake; extra / missing tensor, EOS tokenizer, unset expansion (incl. "
+          "num_additional_image_tokens alone) refused; saved processor_config.json accepted")
 
 
 def test_released_weights() -> None:

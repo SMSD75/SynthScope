@@ -6969,7 +6969,7 @@
   "fakevlm": {
    "FakeClue": {
     "status": "not held",
-    "note": "the authors' own benchmark (also its training data source); test split not downloaded"
+    "note": "the authors' own benchmark (also its training data source); test images not held (the smoke test reads only the test file's prompts)"
    },
    "LOKI": {
     "status": "not held",
@@ -6992,6 +6992,6 @@
  "paper_note": {
   "veritaspp": "Veritas++ arXiv 2607.27113 v1, Acc. column. Decoding: the paper's text does not state a sampling temperature; T 0.7 is the setting of the authors' official inference script (infer_vllm_single.py), with top-p 0.8 / top-k 20 from the released generation_config.json, and 'sampled' below means that setting. EvalGEN: fakes-only scoring is our inference from the DDA row (97.2), not stated in the paper; the balanced accuracy is reported next to it.",
   "adb_vlm": "Align, Don't Blend (AlignGemini) arXiv 2512.06746 v3. The paper's detector is the VLM branch OR a pixel-artifact expert (DINOv2 + LoRA trained on VAE reconstructions); only the VLM branch is released, so NONE of the paper's tables is reproducible here. Printed numbers (full_method) are context, not targets. The paper prints no VLM-only number for the released adapter, so no row gets a delta. Table 4 'Qwen2.5-VL-7B' ('baseline methods under the same training set', retrained on the same semantic and pixel corpora) is ambiguous between the base and a trained VLM; Table 5 'Qwen2.5-VL-7B (Untrained)' is the base model without the adapter. Neither is the released adapter. GenImage / AIGCDetect: ours are also run with the fakes JPEG-compressed at q96 (jpegfakes96): the paper states that step for GenImage only, and q96 follows DDA's published protocol (an inference, see ours_note). Decoding: greedy (temperature 0, predict.py), which is the official setting. The paper's AlignGemini GenImage per-generator row appears column-permuted relative to its AIGCDetect row (the baselines agree across the two tables), so only its 91.7 average is used.",
-  "fakevlm": "FakeVLM arXiv 2503.14905. None of the paper's evaluation benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held here, so there is no paper reproduction and no delta; the subset rows are our own protocol (greedy, the official max_new_tokens 256, the official eval.py parse; unparsed answers counted wrong). GenImage is IN-DISTRIBUTION for FakeVLM (FakeClue contains GenImage images): its genimage_val100k row is flagged and the subset means are also given without it."
+  "fakevlm": "FakeVLM arXiv 2503.14905. None of the paper's evaluation benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held here, so there is no paper reproduction and no delta; the subset rows are our own protocol (greedy, the official max_new_tokens 256, the official eval.py parse; unparsed answers counted wrong). GenImage is IN-DISTRIBUTION for FakeVLM (FakeClue contains GenImage images): its genimage_val100k row is flagged and the subset means are also given without it. FakeClue also draws on other sources (its test file lists Chameleon, FF++, document and satellite images besides GenImage); overlap with the other 14 subsets has not been checked, so 'held-out' means 'not known to be in the training data'."
  }
 }

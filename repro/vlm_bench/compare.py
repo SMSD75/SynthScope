@@ -125,7 +125,8 @@ IN_DISTRIBUTION = {
 }
 # FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): its evaluation benchmarks; none is held here.
 FAKEVLM_PAPER = {
-    "FakeClue": "the authors' own benchmark (also its training data source); test split not downloaded",
+    "FakeClue": "the authors' own benchmark (also its training data source); test images not held (the smoke test reads "
+                "only the test file's prompts)",
     "LOKI": "not downloaded",
     "DMimage": "not downloaded",
     "DD-VQA": "not downloaded (deepfake-face VQA)",
@@ -136,7 +137,9 @@ FAKEVLM_PAPER_NOTE = (
     "here, so there is no paper reproduction and no delta; the subset rows are our own protocol (greedy, the official "
     "max_new_tokens 256, the official eval.py parse; unparsed answers counted wrong). GenImage is IN-DISTRIBUTION for "
     "FakeVLM (FakeClue contains GenImage images): its genimage_val100k row is flagged and the subset means are also given "
-    "without it.")
+    "without it. FakeClue also draws on other sources (its test file lists Chameleon, FF++, document and satellite "
+    "images besides GenImage); overlap with the other 14 subsets has not been checked, so 'held-out' means 'not known to "
+    "be in the training data'.")
 
 
 def load(path: Path) -> dict | None:

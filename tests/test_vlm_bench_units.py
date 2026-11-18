@@ -18,7 +18,8 @@
   version is one the entries name (a later ``models/vlm`` edit fails here until it is checked and added); every record is
   carried with its line byte-equal (unscored ones too), bench_eval opens the new folder with the same records, an
   already-carried cf179eee30 source is skipped in favour of its e5749ae folder, and a target code version the entry does
-  not name leaves the folder alone.
+  not name, or another identity field that differs, leaves the folder alone; the fakevlm folders its benchmark jobs
+  wrote (code version 02852acf62, plain and JPEG95) are carried to the current code version byte for byte.
 """
 from __future__ import annotations
 
@@ -220,11 +221,13 @@ def check_migrate_cache(tmp: Path) -> None:
 def check_migrate_unchanged(tmp: Path) -> None:
     mv = migrate_vlm_cache
     main_hashes = {("adb_vlm", "greedy"): "a8ce235283", ("veritaspp", "greedy"): "63de8d1257",
-                   ("veritaspp", "official"): "c17b4d7728"}            # the folder hashes e5749ae's bench_eval wrote
+                   ("veritaspp", "official"): "c17b4d7728",            # the folder hashes e5749ae's bench_eval wrote
+                   ("fakevlm", "greedy"): "ee254109e9"}                # ... and the fakevlm jobs 293884 / 293885 wrote
     for (model, decoding), h in main_hashes.items():
         entry = next(e for e in mv.PREDECESSORS[model] if mv.identity_hash(e["identity"]) == h)
         cur = bench_eval.vlm_identity(bench_eval.get_spec(model), decoding)
-        assert entry["rule"] == "unchanged" and entry["identity"]["code_version"] == "b490c64477"
+        assert entry["rule"] == "unchanged"
+        assert entry["identity"]["code_version"] == ("02852acf62" if model == "fakevlm" else "b490c64477")
         assert {k: v for k, v in cur.items() if k != "code_version"} == \
             {k: v for k, v in entry["identity"].items() if k != "code_version"}, (model, decoding, cur)
         assert cur["code_version"] in entry["to_code_versions"], (
@@ -277,6 +280,36 @@ def check_migrate_unchanged(tmp: Path) -> None:
         assert res["status"].startswith("no checked re-key"), res
     finally:
         mv._FAKEVLM_BRANCH[:] = saved
+    # another identity field differs (here the current config's fingerprint): left alone, nothing written
+    real_identity = bench_eval.vlm_identity
+    try:
+        bench_eval.vlm_identity = lambda spec, decoding: dict(real_identity(spec, decoding), config_sha1="0000000000")
+        third = tmp / "ucache3" / "b" / old.name
+        third.mkdir(parents=True)
+        (third / "identity.json").write_text(json.dumps(old_id))
+        res = mv.migrate_folder(third, "adb_vlm", dry_run=False)
+        assert res["status"].startswith("no checked re-key"), res
+        assert sorted(p.name for p in third.parent.iterdir()) == [old.name]
+    finally:
+        bench_eval.vlm_identity = real_identity
+    # the fakevlm benchmark folders (plain and JPEG95) carry over to the current code version, byte for byte
+    fv_id = mv._FAKEVLM_02852ACF62
+    for stem in ("fakevlm__greedy", "fakevlm__greedy__jpeg95"):
+        src = tmp / "ucache4" / "ufd8" / f"{stem}__{mv.identity_hash(fv_id)}"
+        src.mkdir(parents=True)
+        (src / "identity.json").write_text(json.dumps(fv_id))
+        line = json.dumps({"key": "g/1_fake/x.png", "sha1": "x", "verdict": "real", "score_source": "verdict_token",
+                           "logit": -3.25, "response": "  This is a real image."})
+        (src / "cn026.1.jsonl").write_text(line + "\n")
+    with contextlib.redirect_stdout(io.StringIO()) as out:
+        mv.main(["--cache-root", str(tmp / "ucache4"), "--model", "fakevlm"])
+    res = [json.loads(x) for x in out.getvalue().splitlines()]
+    assert [r["status"] for r in res] == ["migrated", "migrated"] and all(r["kept"] == 1 for r in res), res
+    fv_new = bench_eval.vlm_identity(bench_eval.get_spec("fakevlm"), "greedy")
+    for r in res:
+        dst = Path(r["to"])
+        assert dst.name.endswith(mv.identity_hash(fv_new)) and (dst / f"migrated.{mv.identity_hash(fv_id)}.jsonl").read_text() \
+            == line + "\n"
 
 
 def main() -> None:

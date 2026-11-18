@@ -58,15 +58,16 @@ from interface.backend.registry import get_spec                      # noqa: E40
 from models.image.fakevlm.fakevlm import FAKEVLM, FAKEVLM_TEACHER_FORCED   # noqa: E402
 from models.vlm.parsers import parse_fakevlm                         # noqa: E402
 
-# 16 images, real and fake, 256x256 to 8 MP: the gate's six GenImage val images, seven SynthWildX images, two transparent
-# (RGBA) WildRF PNGs (alpha dropped) and one 8 MP WildRF JPEG; the same 16 as repro/adb_vlm_fidelity.py.
+# 16 images, real and fake, 256x256 to 8 MP: the gate's six GenImage val images, seven SynthWildX images and three WildRF
+# reals (two PNGs, one 8 MP JPEG); the same 16 as repro/adb_vlm_fidelity.py. Three are RGBA (alpha dropped): the GenImage
+# ADM fake and the two WildRF PNGs. The fakes come from GenImage and SynthWildX (WildRF contributes reals only).
 IMAGES = [
     ("GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG", 0),
     ("GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG", 0),
     ("GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG", 0),
     ("GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png", 1),
     ("GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png", 1),
-    ("GenImage_val_full/test/adm/1_fake/0_adm_153.PNG", 1),
+    ("GenImage_val_full/test/adm/1_fake/0_adm_153.PNG", 1),       # RGBA
     ("SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg", 0),
     ("SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg", 0),
     ("SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg", 0),

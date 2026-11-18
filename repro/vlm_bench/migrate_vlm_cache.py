@@ -18,21 +18,28 @@ Known re-keys (``PREDECESSORS``):
       (cc594898, the revision every run used); docstrings and the ``PEFT_PREFIX`` move (8e66aee).
   Dropped (rescored): the records with a parsed verdict and no verdict token. Every kept record must have
   ``verdict_offset(response) is None`` (its scoring path is unchanged), else the script stops.
-* adb_vlm and veritaspp, the FakeVLM branch (detector/fakevlm, 2026-11-18): from the identity of main e5749ae (code version
-  b490c64477) to the branch's (02852acf62). Only ``models/vlm/*.py`` changed, and only by additions that neither detector
-  uses: ``LlavaFamily``, the ``transformers_rgb`` / ``clip_resize_center_crop`` image hooks, ``parse_fakevlm`` and the
-  ``VLMConfig.processor_hf_*`` download-hint fields (not in ``VLM_CONFIG_FIELDS``). Every other identity field is equal, so
-  every record is kept, byte for byte (rule ``unchanged``). Such an entry names the code versions it may migrate TO
-  (``to_code_versions``): after any further edit of ``models/vlm/*.py`` the folder is left alone until someone checks that
-  edit and adds its code version.
+* adb_vlm and veritaspp, the FakeVLM branch (detector/fakevlm, 2026-11-18): from the identity of main e5749ae (code
+  version b490c64477) to the branch's (02852acf62, then 4a950958ed). Only ``models/vlm/*.py`` changed, and only by
+  additions that neither detector uses: ``LlavaFamily``, the ``transformers_rgb`` / ``clip_resize_center_crop`` image
+  hooks, ``parse_fakevlm`` and the ``VLMConfig.processor_hf_*`` download-hint fields (not in ``VLM_CONFIG_FIELDS``);
+  4a950958ed moves the processor-folder choice into ``VLMFamily.processor_folder`` (same folder) and adds the
+  ``num_additional_image_tokens`` load check to ``LlavaFamily``. Every other identity field is equal, so every record is
+  kept, byte for byte (rule ``unchanged``). Such an entry names the code versions it may migrate TO
+  (``to_code_versions``): after any further edit of ``models/vlm/*.py`` the folder is left alone until someone checks
+  that edit and adds its code version.
+* fakevlm, the same branch: from the identity its benchmark jobs wrote (code version 02852acf62; folders
+  ``fakevlm__greedy__ee254109e9`` and ``fakevlm__greedy__jpeg95__ee254109e9``) to 4a950958ed. The only change for FakeVLM
+  is the load check, which its config passes (all three fields are in ``processor_overrides``); rule ``unchanged``.
 
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model adb_vlm [--dry-run]
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model veritaspp
+    python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model fakevlm
 
 The new folder gets ``migrated.<old hash>.jsonl`` (the kept records, each the source folder's line as written),
-``identity.json`` and ``MIGRATION.json`` (source folder, old identity, rule, counts, dropped keys). A folder already migrated from the same source is left alone, and so is a source folder that an earlier
-migration carried into another folder of the same stem (that folder holds its records and is migrated in its place). Run it with the code the
-scoring jobs will run (a clean checkout of the same commit): the current identity includes the code version.
+``identity.json`` and ``MIGRATION.json`` (source folder, old identity, rule, counts, dropped keys). A folder already
+migrated from the same source is left alone, and so is a source folder that an earlier migration carried into another
+folder of the same stem (that folder holds its records and is migrated in its place). Run it with the code the scoring
+jobs will run (a clean checkout of the same commit): the current identity includes the code version.
 """
 from __future__ import annotations
 
@@ -52,7 +59,7 @@ from interface.backend.registry import get_spec                     # noqa: E402
 # main e5749ae -> detector/fakevlm: only the code version differs (see the module doc); identities as bench_eval.vlm_identity
 # printed them at e5749ae (adb_vlm's official decoding is greedy too, so it shares the greedy identity)
 _MAIN_E5749AE = "b490c64477"
-_FAKEVLM_BRANCH = ["02852acf62"]
+_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed"]
 _ADB_E5749AE = {
     "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
     "ckpt": None, "max_new_tokens": 512, "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05},
@@ -65,6 +72,12 @@ _VPP_E5749AE = {
 }
 _VPP_E5749AE_OFFICIAL = dict(_VPP_E5749AE, generation={"do_sample": True, "max_new_tokens": 2048, "repetition_penalty": 1.0,
                                                        "temperature": 0.7, "top_k": 20, "top_p": 0.8})
+# fakevlm as its benchmark jobs (293884 / 293885, code 37eae6c) wrote it; the official decoding is greedy too (one identity)
+_FAKEVLM_02852ACF62 = {
+    "weights_revision": "dce9e88df7d1053e72af197c1bd3c61c94089e96", "base_weights_revision": None, "ckpt": None,
+    "max_new_tokens": 256, "generation": {"do_sample": False, "max_new_tokens": 256}, "prompt_sha1": "98da686e12",
+    "config_sha1": "02eebd2c47", "code_version": "02852acf62",
+}
 
 # {model: [{"identity": an older cache identity, "rule": how its records carry over, "to_code_versions": (rule "unchanged")
 # the code versions it may be migrated to}]}
@@ -80,6 +93,9 @@ PREDECESSORS = {
     "veritaspp": [
         {"identity": _VPP_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _VPP_E5749AE_OFFICIAL, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
+    ],
+    "fakevlm": [
+        {"identity": _FAKEVLM_02852ACF62, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
     ],
 }
 

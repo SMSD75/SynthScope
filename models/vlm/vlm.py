@@ -52,6 +52,7 @@ Relative ``base_model`` / ``processor`` folders are resolved against the checkpo
 the engine passes ``$SYNTHSCOPE_CKPT_DIR``). Batch size 1 only. Inference only: there is no training path.
 """
 import importlib
+import json
 import threading
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -98,15 +99,18 @@ class VLMFamily:
         (``load_lora_unmerged``) the same names."""
         return key
 
-    def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
+    def processor_folder(self, path: Path, cfg: "VLMConfig", root: Path) -> Path:
         """``cfg.processor`` (relative names under ``root``), else the weights folder if it holds processor files,
         else (a LoRA adapter folder) the base folder."""
         if cfg.processor:
-            folder = resolve_local(root, cfg.processor)
-        elif cfg.base_model and not has_processor(path):
-            folder = resolve_local(root, cfg.base_model)
-        else:
-            folder = path
+            return resolve_local(root, cfg.processor)
+        if cfg.base_model and not has_processor(path):
+            return resolve_local(root, cfg.base_model)
+        return path
+
+    def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
+        """The processor of ``processor_folder`` with ``cfg.processor_overrides`` set on it."""
+        folder = self.processor_folder(path, cfg, root)
         processor = transformers.AutoProcessor.from_pretrained(str(folder), local_files_only=True)
         for name, value in cfg.processor_overrides.items():
             setattr(processor, name, value)
@@ -200,15 +204,21 @@ class LlavaFamily(VLMFamily):
     @ a272c74: no processor_config.json). On transformers 5 such a processor must be given ``patch_size``,
     ``vision_feature_select_strategy`` and ``num_additional_image_tokens`` (``VLMConfig.processor_overrides``; for
     CLIP ViT-L/14-336: 14, "default", 1, i.e. 577 - 1 = 576 image tokens, as 4.45's in-model merge produced), or the
-    run fails with "Image features and image tokens do not match"; ``load_processor`` raises earlier when the first two
-    are unset.
+    run fails with "Image features and image tokens do not match"; ``load_processor`` raises earlier when one of the
+    three is neither in the overrides nor saved in the folder's ``processor_config.json`` (``num_additional_image_tokens``
+    has a default, 0, so an unset value is only visible there).
 
     The tokenizer must not append an end-of-sequence token to the prompt: a LLaVA fine-tune's own tokenizer can have
     ``add_eos_token=True`` (FakeVLM's does), and a prompt ending in ``</s>`` changes the answer; the load raises."""
 
+    EXPANSION_FIELDS = ("patch_size", "vision_feature_select_strategy", "num_additional_image_tokens")
+
     def load_processor(self, path, cfg, root):
+        saved_file = self.processor_folder(path, cfg, root) / "processor_config.json"
+        saved = json.loads(saved_file.read_text()) if saved_file.exists() else {}
         processor = super().load_processor(path, cfg, root)
-        unset = [name for name in ("patch_size", "vision_feature_select_strategy") if getattr(processor, name, None) is None]
+        unset = [name for name in self.EXPANSION_FIELDS
+                 if getattr(processor, name, None) is None or (name not in cfg.processor_overrides and name not in saved)]
         if unset:
             raise ValueError(f"the LLaVA processor has no {unset}: set them in VLMConfig.processor_overrides (LLaVA-1.5 "
                              "with CLIP ViT-L/14-336: 14, 'default', 1)")
