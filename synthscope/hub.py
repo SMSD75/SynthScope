@@ -7,7 +7,9 @@ License safety (see LICENSES.md): by default ``push`` uploads only **SynthScope-
 which are this project's to redistribute. Checkpoints derived from authors' **official released
 weights** (``ckpt_kind`` starting with ``official_`` — e.g. FatFormer, AIDE, NPR) are skipped
 unless you pass ``--include-official`` AND have confirmed the upstream license permits it.
-Keys in ``NEVER_REDISTRIBUTE`` (licence unclear or not granted) are refused even with ``--include-official``.
+Keys in ``NEVER_REDISTRIBUTE`` are refused even with ``--include-official``: licence unclear or not granted, or
+weights that are too large or span several files for the zoo's one-file-per-key layout (Veritas++: Apache-2.0, but a
+17.5 GB multi-file folder).
 """
 from __future__ import annotations
 
@@ -39,6 +41,9 @@ NEVER_REDISTRIBUTE = {
     "nsg_vd_pika": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "nsg_vd_unbalance": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "vib_net_official": "VIB-Net official checkpoints: restricted download, weights licence not verified, not redistributed",
+    # Not a licence problem (Apache-2.0): the release is a 17.5 GB multi-file Hugging Face folder, which the zoo's
+    # one-file-per-key layout does not hold; users fetch it from the authors' repo at the pinned revision.
+    "veritaspp": "Veritas++ weights: Apache-2.0, but a 17.5 GB Hugging Face folder; fetched from EricTan7/VeritasPP, not mirrored",
 }
 
 

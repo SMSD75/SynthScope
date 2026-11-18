@@ -1,0 +1,41 @@
+{
+  "tag": "vb_ditfake_clip",
+  "model": "clip",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 50.6,
+    "map": 50.67,
+    "mauroc": 46.46
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 42.93,
+      "auroc": 37.04,
+      "real_acc": 98.2,
+      "fake_acc": 0.6,
+      "acc": 49.4
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 61.13,
+      "auroc": 55.84,
+      "real_acc": 99.4,
+      "fake_acc": 4.79,
+      "acc": 52.1
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 47.96,
+      "auroc": 46.51,
+      "real_acc": 98.8,
+      "fake_acc": 1.8,
+      "acc": 50.3
+    }
+  },
+  "date": "2026-11-17T20:36:27",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,790 @@
+{
+  "tag": "vb_cospybench_omniaid_v1",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/cospybench/data",
+  "jpeg_fakes": null,
+  "n_generators": 110,
+  "means": {
+    "acc": 93.91,
+    "map": 97.49,
+    "mauroc": 97.71
+  },
+  "per_generator": {
+    "cc3m__CompVis@ldm-text2im-large-256": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__CompVis@stable-diffusion-v1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__black-forest-labs@FLUX.1-schnell": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__latent-consistency@lcm-lora-sdxl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__playgroundai@playground-v2-256px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__playgroundai@playground-v2-512px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__runwayml@stable-diffusion-v1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__segmind@SSD-1B": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__segmind@small-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__segmind@tiny-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__stabilityai@sdxl-turbo": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__stabilityai@stable-diffusion-2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__stabilityai@stable-diffusion-2-1": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "cc3m__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "flickr__CompVis@ldm-text2im-large-256": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__CompVis@stable-diffusion-v1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__black-forest-labs@FLUX.1-dev": {
+      "ap": 71.0,
+      "auroc": 80.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__black-forest-labs@FLUX.1-schnell": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__latent-consistency@lcm-lora-sdxl": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__playgroundai@playground-v2-256px-base": {
+      "ap": 87.67,
+      "auroc": 88.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__playgroundai@playground-v2-512px-base": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__runwayml@stable-diffusion-v1-5": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__segmind@SSD-1B": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__segmind@small-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__segmind@tiny-sd": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__stabilityai@sdxl-turbo": {
+      "ap": 71.0,
+      "auroc": 80.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__stabilityai@stable-diffusion-2": {
+      "ap": 81.0,
+      "auroc": 84.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__stabilityai@stable-diffusion-2-1": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 80.0,
+      "fake_acc": 100.0,
+      "acc": 90.0
+    },
+    "flickr__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 87.67,
+      "auroc": 88.0,
+      "real_acc": 80.0,
+      "fake_acc": 80.0,
+      "acc": 80.0
+    },
+    "mscoco__CompVis@ldm-text2im-large-256": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__CompVis@stable-diffusion-v1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__black-forest-labs@FLUX.1-schnell": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 96.67,
+      "auroc": 96.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__latent-consistency@lcm-lora-sdxl": {
+      "ap": 90.29,
+      "auroc": 88.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__playgroundai@playground-v2-256px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__playgroundai@playground-v2-512px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__runwayml@stable-diffusion-v1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__segmind@SSD-1B": {
+      "ap": 94.29,
+      "auroc": 92.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__segmind@small-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__segmind@tiny-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__stabilityai@sdxl-turbo": {
+      "ap": 92.67,
+      "auroc": 92.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__stabilityai@stable-diffusion-2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__stabilityai@stable-diffusion-2-1": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "mscoco__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 60.0,
+      "fake_acc": 100.0,
+      "acc": 80.0
+    },
+    "sbu__CompVis@ldm-text2im-large-256": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__CompVis@stable-diffusion-v1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__black-forest-labs@FLUX.1-schnell": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__latent-consistency@lcm-lora-sdxl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2-256px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2-512px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__runwayml@stable-diffusion-v1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__segmind@SSD-1B": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__segmind@small-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__segmind@tiny-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__stabilityai@sdxl-turbo": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__stabilityai@stable-diffusion-2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__stabilityai@stable-diffusion-2-1": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "sbu__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__CompVis@ldm-text2im-large-256": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__CompVis@stable-diffusion-v1-4": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__PixArt-alpha@PixArt-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__PixArt-alpha@PixArt-XL-2-512x512": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__black-forest-labs@FLUX.1-dev": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__black-forest-labs@FLUX.1-schnell": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__latent-consistency@lcm-lora-sdv1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__latent-consistency@lcm-lora-sdxl": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__playgroundai@playground-v2-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__playgroundai@playground-v2-256px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__playgroundai@playground-v2-512px-base": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__playgroundai@playground-v2.5-1024px-aesthetic": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__runwayml@stable-diffusion-v1-5": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__segmind@SSD-1B": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__segmind@SegMoE-SD-4x2-v0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__segmind@small-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__segmind@tiny-sd": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__stabilityai@sdxl-turbo": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__stabilityai@stable-diffusion-2": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__stabilityai@stable-diffusion-2-1": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__stabilityai@stable-diffusion-3-medium-diffusers": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "textcaps__stabilityai@stable-diffusion-xl-base-1.0": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    }
+  },
+  "date": "2026-11-17T20:31:48",
+  "synthscope_version": "0.1.0",
+  "limit": 5
+}

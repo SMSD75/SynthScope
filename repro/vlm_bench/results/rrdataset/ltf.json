@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_ltf",
+  "model": "ltf",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 43.41,
+    "map": 49.51,
+    "mauroc": 39.25
+  },
+  "per_generator": {
+    "original": {
+      "ap": 71.65,
+      "auroc": 67.69,
+      "real_acc": 26.35,
+      "fake_acc": 84.43,
+      "acc": 55.39
+    },
+    "redigital": {
+      "ap": 43.49,
+      "auroc": 35.66,
+      "real_acc": 18.56,
+      "fake_acc": 58.08,
+      "acc": 38.32
+    },
+    "transfer": {
+      "ap": 33.4,
+      "auroc": 14.39,
+      "real_acc": 65.87,
+      "fake_acc": 7.19,
+      "acc": 36.53
+    }
+  },
+  "date": "2026-11-17T18:30:46",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,1450 @@
+staging the weights from ivi-cn029 to /ssdstore/ssalehi/SynthScope/vlm_ckpts/veritaspp 18:20:49
+staged 17G 18:20:50
+node=ivi-cn026 job=293275 Tue Nov 17 18:20:53 CET 2026 code=7de4a1e vlm_bench: untrack the in-progress results swept into 4112db8 (they are committed when the r (7de4a1ea841d89755d8baf2400e4153d519c44be, copied to /ssdstore/ssalehi/SynthScope/vpp/code_293275)
+NVIDIA RTX A5000, 24564 MiB
+UNITS=vlm:cospybench
+=== Veritas++ weights: pinned revision (hf download metadata) + sha256 ===
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+sha256 OK
+=== subsets ===
+subset cospybench: verified earlier
+=== run_units 18:21:13
+=== unit vlm:cospybench START 2026-11-17 18:21:13 on ivi-cn026: /home/ssalehi/miniconda3/envs/AGID/bin/python /ssdstore/ssalehi/SynthScope/vpp/code_293275/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /ssdstore/ssalehi/SynthScope/vpp/subsets/cospybench/data --tag vb_cospybench_veritaspp --out /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/cospybench/veritaspp.json.partial --results-log /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/RESULTS.ivi-cn026.88603.jsonl --limit 5 --vlm-cache /ssdstore/ssalehi/SynthScope/vpp/cache/cospybench
+[vlm:cospybench] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[vlm:cospybench] === bench_eval vb_cospybench_veritaspp | model=veritaspp ckpt=registry-default | pergen | 110 generators | device=cuda ===
+[vlm:cospybench] [vlm-cache] /ssdstore/ssalehi/SynthScope/vpp/cache/cospybench/veritaspp__greedy: 0 cached images
+[vlm:cospybench]   cc3m__CompVis@ldm-text2im-large-256: 5 real + 5 fake ...
+[vlm:cospybench] The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.6s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.4s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=498 17.1s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/1_fake/1.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=580 20.0s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/1_fake/10.png label=1 verdict=real logit=-2.8750 src=verdict_token tok=872 30.0s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/1_fake/100.png label=1 verdict=real logit=-1.1250 src=verdict_token tok=448 15.4s
+[vlm:cospybench]     vlm cc3m__CompVis@ldm-text2im-large-256/1_fake/1000.png label=1 verdict=real logit=-4.1250 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     scored 10 new image(s), 20.06 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__CompVis@ldm-text2im-large-256: acc=50.0 AP=72.95 AUROC=72.0 (real_acc=80.0 fake_acc=20.0) unparsed=0 mean_tokens=580.3
+[vlm:cospybench]   cc3m__CompVis@stable-diffusion-v1-4: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.4s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/1_fake/0.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=466 16.1s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/1_fake/1.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=480 16.6s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/1_fake/10.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=505 17.4s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/1_fake/100.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=520 17.9s
+[vlm:cospybench]     vlm cc3m__CompVis@stable-diffusion-v1-4/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=482 16.7s
+[vlm:cospybench]     scored 10 new image(s), 18.26 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__CompVis@stable-diffusion-v1-4: acc=80.0 AP=94.29 AUROC=92.0 (real_acc=80.0 fake_acc=80.0) unparsed=0 mean_tokens=529.1
+[vlm:cospybench]   cc3m__PixArt-alpha@PixArt-XL-2-1024-MS: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=458 16.1s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=439 15.4s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=384 13.5s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/100.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=381 13.5s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=539 18.8s
+[vlm:cospybench]     scored 10 new image(s), 17.53 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__PixArt-alpha@PixArt-XL-2-1024-MS: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=503.9
+[vlm:cospybench]   cc3m__PixArt-alpha@PixArt-XL-2-512x512: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/1_fake/0.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=407 14.1s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=504 17.4s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/1_fake/10.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=432 14.9s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=481 16.6s
+[vlm:cospybench]     vlm cc3m__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1000.png label=1 verdict=fake logit=11.5000 src=verdict_token tok=580 20.0s
+[vlm:cospybench]     scored 10 new image(s), 18.09 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__PixArt-alpha@PixArt-XL-2-512x512: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=524.2
+[vlm:cospybench]   cc3m__black-forest-labs@FLUX.1-dev: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.4s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/1_fake/0.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=390 13.7s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=463 16.2s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/1_fake/10.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=500 17.5s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=418 14.7s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-dev/1_fake/1000.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=513 18.0s
+[vlm:cospybench]     scored 10 new image(s), 17.80 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__black-forest-labs@FLUX.1-dev: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=512.2
+[vlm:cospybench]   cc3m__black-forest-labs@FLUX.1-schnell: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/1_fake/0.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=487 17.1s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/1_fake/1.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=477 16.7s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/1_fake/10.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=470 16.5s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/1_fake/100.png label=1 verdict=real logit=-8.5000 src=verdict_token tok=513 18.0s
+[vlm:cospybench]     vlm cc3m__black-forest-labs@FLUX.1-schnell/1_fake/1000.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=405 14.3s
+[vlm:cospybench]     scored 10 new image(s), 18.05 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__black-forest-labs@FLUX.1-schnell: acc=80.0 AP=91.11 AUROC=84.0 (real_acc=80.0 fake_acc=80.0) unparsed=0 mean_tokens=519.0
+[vlm:cospybench]   cc3m__latent-consistency@lcm-lora-sdv1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=507 17.6s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/1_fake/1.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=500 17.3s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/1_fake/10.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=493 17.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/1_fake/100.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=436 15.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdv1-5/1_fake/1000.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=416 14.4s
+[vlm:cospybench]     scored 10 new image(s), 17.92 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__latent-consistency@lcm-lora-sdv1-5: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=519.0
+[vlm:cospybench]   cc3m__latent-consistency@lcm-lora-sdxl: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/1_fake/0.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=368 13.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=544 19.0s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/1_fake/10.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=449 15.8s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=492 17.2s
+[vlm:cospybench]     vlm cc3m__latent-consistency@lcm-lora-sdxl/1_fake/1000.png label=1 verdict=fake logit=10.5000 src=verdict_token tok=403 14.2s
+[vlm:cospybench]     scored 10 new image(s), 17.73 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__latent-consistency@lcm-lora-sdxl: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=509.4
+[vlm:cospybench]   cc3m__playgroundai@playground-v2-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=436 15.3s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=362 12.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=513 18.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=460 16.2s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=510 17.9s
+[vlm:cospybench]     scored 10 new image(s), 17.81 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__playgroundai@playground-v2-1024px-aesthetic: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=511.9
+[vlm:cospybench]   cc3m__playgroundai@playground-v2-256px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/1_fake/0.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=452 15.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/1_fake/1.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=479 16.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/1_fake/10.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=419 14.4s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/1_fake/100.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=416 14.3s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-256px-base/1_fake/1000.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     scored 10 new image(s), 17.45 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__playgroundai@playground-v2-256px-base: acc=70.0 AP=81.11 AUROC=68.0 (real_acc=80.0 fake_acc=60.0) unparsed=0 mean_tokens=506.2
+[vlm:cospybench]   cc3m__playgroundai@playground-v2-512px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/1_fake/0.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=497 17.2s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/1_fake/1.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=471 16.3s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=415 14.4s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/1_fake/100.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=355 12.3s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2-512px-base/1_fake/1000.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=499 17.2s
+[vlm:cospybench]     scored 10 new image(s), 17.53 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__playgroundai@playground-v2-512px-base: acc=80.0 AP=91.11 AUROC=84.0 (real_acc=80.0 fake_acc=80.0) unparsed=0 mean_tokens=507.5
+[vlm:cospybench]   cc3m__playgroundai@playground-v2.5-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=425 15.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=368 13.0s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=436 15.4s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=508 17.8s
+[vlm:cospybench]     vlm cc3m__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=574 20.1s
+[vlm:cospybench]     scored 10 new image(s), 17.91 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__playgroundai@playground-v2.5-1024px-aesthetic: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=514.9
+[vlm:cospybench]   cc3m__runwayml@stable-diffusion-v1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.1s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=501 17.3s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/1_fake/1.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=441 15.2s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/1_fake/10.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=548 18.9s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=406 14.0s
+[vlm:cospybench]     vlm cc3m__runwayml@stable-diffusion-v1-5/1_fake/1000.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=685 23.6s
+[vlm:cospybench]     scored 10 new image(s), 18.71 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__runwayml@stable-diffusion-v1-5: acc=80.0 AP=94.29 AUROC=92.0 (real_acc=80.0 fake_acc=80.0) unparsed=0 mean_tokens=541.9
+[vlm:cospybench]   cc3m__segmind@SSD-1B: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=448 15.8s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/1_fake/1.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=534 18.7s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/1_fake/10.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=519 18.2s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=370 13.0s
+[vlm:cospybench]     vlm cc3m__segmind@SSD-1B/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=411 14.4s
+[vlm:cospybench]     scored 10 new image(s), 17.81 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__segmind@SSD-1B: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=512.0
+[vlm:cospybench]   cc3m__segmind@SegMoE-SD-4x2-v0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.4s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/1_fake/0.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=466 16.0s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/1_fake/1.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=419 14.4s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=461 15.9s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/1_fake/100.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=477 16.4s
+[vlm:cospybench]     vlm cc3m__segmind@SegMoE-SD-4x2-v0/1_fake/1000.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=465 16.0s
+[vlm:cospybench]     scored 10 new image(s), 17.67 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__segmind@SegMoE-SD-4x2-v0: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=512.6
+[vlm:cospybench]   cc3m__segmind@small-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.1s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/1_fake/0.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=485 16.7s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=636 21.9s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/1_fake/10.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=467 16.1s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=571 19.6s
+[vlm:cospybench]     vlm cc3m__segmind@small-sd/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=467 16.1s
+[vlm:cospybench]     scored 10 new image(s), 18.86 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__segmind@small-sd: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=546.4
+[vlm:cospybench]   cc3m__segmind@tiny-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/1_fake/0.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=436 15.1s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/1_fake/1.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=474 16.4s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=395 13.6s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/1_fake/100.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=423 14.7s
+[vlm:cospybench]     vlm cc3m__segmind@tiny-sd/1_fake/1000.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=443 15.3s
+[vlm:cospybench]     scored 10 new image(s), 17.32 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__segmind@tiny-sd: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=500.9
+[vlm:cospybench]   cc3m__stabilityai@sdxl-turbo: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.6s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/1_fake/0.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=388 13.4s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/1_fake/1.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=371 12.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/1_fake/10.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=544 18.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/1_fake/100.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=347 12.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@sdxl-turbo/1_fake/1000.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=473 16.3s
+[vlm:cospybench]     scored 10 new image(s), 17.15 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__stabilityai@sdxl-turbo: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=496.1
+[vlm:cospybench]   cc3m__stabilityai@stable-diffusion-2: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 19.9s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/1_fake/0.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=387 13.4s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/1_fake/1.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=198 7.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/1_fake/10.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=427 14.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=367 12.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2/1_fake/1000.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=403 14.0s
+[vlm:cospybench]     scored 10 new image(s), 16.01 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__stabilityai@stable-diffusion-2: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=462.0
+[vlm:cospybench]   cc3m__stabilityai@stable-diffusion-2-1: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.6s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/1_fake/0.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=405 14.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/1_fake/1.png label=1 verdict=fake logit=2.1250 src=verdict_token tok=467 16.2s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/1_fake/10.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/1_fake/100.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=491 17.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-2-1/1_fake/1000.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=432 15.0s
+[vlm:cospybench]     scored 10 new image(s), 18.18 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__stabilityai@stable-diffusion-2-1: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=524.9
+[vlm:cospybench]   cc3m__stabilityai@stable-diffusion-3-medium-diffusers: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 16.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.5s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/0.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=371 13.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=429 15.2s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/10.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=357 12.6s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=449 15.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=513 18.0s
+[vlm:cospybench]     scored 10 new image(s), 17.28 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__stabilityai@stable-diffusion-3-medium-diffusers: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=80.0 fake_acc=100.0) unparsed=0 mean_tokens=495.7
+[vlm:cospybench]   cc3m__stabilityai@stable-diffusion-xl-base-1.0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/0_real/0000.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=578 20.0s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/0_real/0001.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=543 18.6s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/0_real/0002.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=464 15.9s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/0_real/0003.jpg label=0 verdict=fake logit=0.7500 src=verdict_token tok=623 21.4s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/0_real/0004.jpg label=0 verdict=real logit=-2.3750 src=verdict_token tok=630 21.7s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=405 14.1s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=512 17.9s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/1_fake/10.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=463 16.3s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/1_fake/100.png label=1 verdict=real logit=-6.2500 src=verdict_token tok=571 19.8s
+[vlm:cospybench]     vlm cc3m__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1000.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=410 14.3s
+[vlm:cospybench]     scored 10 new image(s), 18.00 s/img; 0 from the cache
+[vlm:cospybench]     cc3m__stabilityai@stable-diffusion-xl-base-1.0: acc=80.0 AP=94.29 AUROC=92.0 (real_acc=80.0 fake_acc=80.0) unparsed=0 mean_tokens=519.9
+[vlm:cospybench]   flickr__CompVis@ldm-text2im-large-256: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/1_fake/0.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=420 14.4s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/1_fake/1.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=600 20.7s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/1_fake/10.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=470 16.2s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=401 13.7s
+[vlm:cospybench]     vlm flickr__CompVis@ldm-text2im-large-256/1_fake/1000.png label=1 verdict=real logit=-6.8750 src=verdict_token tok=527 18.1s
+[vlm:cospybench]     scored 10 new image(s), 18.20 s/img; 0 from the cache
+[vlm:cospybench]     flickr__CompVis@ldm-text2im-large-256: acc=80.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=529.9
+[vlm:cospybench]   flickr__CompVis@stable-diffusion-v1-4: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.7s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/1_fake/0.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=399 13.8s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=420 14.5s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/1_fake/10.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=472 16.3s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/1_fake/100.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=445 15.3s
+[vlm:cospybench]     vlm flickr__CompVis@stable-diffusion-v1-4/1_fake/1000.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=507 17.5s
+[vlm:cospybench]     scored 10 new image(s), 17.62 s/img; 0 from the cache
+[vlm:cospybench]     flickr__CompVis@stable-diffusion-v1-4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=512.4
+[vlm:cospybench]   flickr__PixArt-alpha@PixArt-XL-2-1024-MS: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=351 12.4s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1.png label=1 verdict=fake logit=10.5000 src=verdict_token tok=409 14.4s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/10.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=436 15.3s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=494 17.3s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1000.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=446 15.6s
+[vlm:cospybench]     scored 10 new image(s), 17.40 s/img; 0 from the cache
+[vlm:cospybench]     flickr__PixArt-alpha@PixArt-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=501.7
+[vlm:cospybench]   flickr__PixArt-alpha@PixArt-XL-2-512x512: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.7s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/1_fake/0.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=492 16.9s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/1_fake/10.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=479 16.5s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/1_fake/100.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=543 18.7s
+[vlm:cospybench]     vlm flickr__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1000.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=436 15.1s
+[vlm:cospybench]     scored 10 new image(s), 18.19 s/img; 0 from the cache
+[vlm:cospybench]     flickr__PixArt-alpha@PixArt-XL-2-512x512: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=528.9
+[vlm:cospybench]   flickr__black-forest-labs@FLUX.1-dev: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.5s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/1_fake/0.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=404 14.2s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/1_fake/1.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=364 12.8s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=467 16.3s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/1_fake/100.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=519 18.1s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-dev/1_fake/1000.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=433 15.2s
+[vlm:cospybench]     scored 10 new image(s), 17.56 s/img; 0 from the cache
+[vlm:cospybench]     flickr__black-forest-labs@FLUX.1-dev: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=506.8
+[vlm:cospybench]   flickr__black-forest-labs@FLUX.1-schnell: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 19.0s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/1_fake/0.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=422 14.8s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/1_fake/1.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=452 15.8s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/1_fake/10.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=329 11.6s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/1_fake/100.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=523 18.3s
+[vlm:cospybench]     vlm flickr__black-forest-labs@FLUX.1-schnell/1_fake/1000.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=498 17.4s
+[vlm:cospybench]     scored 10 new image(s), 17.72 s/img; 0 from the cache
+[vlm:cospybench]     flickr__black-forest-labs@FLUX.1-schnell: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=510.5
+[vlm:cospybench]   flickr__latent-consistency@lcm-lora-sdv1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/1_fake/0.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=489 16.8s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=459 15.8s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/1_fake/10.png label=1 verdict=fake logit=10.5000 src=verdict_token tok=412 14.2s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/1_fake/100.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=437 15.1s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdv1-5/1_fake/1000.png label=1 verdict=fake logit=10.7500 src=verdict_token tok=434 14.9s
+[vlm:cospybench]     scored 10 new image(s), 17.56 s/img; 0 from the cache
+[vlm:cospybench]     flickr__latent-consistency@lcm-lora-sdv1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=511.2
+[vlm:cospybench]   flickr__latent-consistency@lcm-lora-sdxl: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=390 13.7s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/1_fake/1.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=489 17.1s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=462 16.2s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/1_fake/100.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=435 15.2s
+[vlm:cospybench]     vlm flickr__latent-consistency@lcm-lora-sdxl/1_fake/1000.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=473 16.5s
+[vlm:cospybench]     scored 10 new image(s), 17.77 s/img; 0 from the cache
+[vlm:cospybench]     flickr__latent-consistency@lcm-lora-sdxl: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=513.0
+[vlm:cospybench]   flickr__playgroundai@playground-v2-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=387 13.6s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=10.5000 src=verdict_token tok=471 16.5s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=10.8750 src=verdict_token tok=534 18.7s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=11.1250 src=verdict_token tok=567 19.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=512 17.9s
+[vlm:cospybench]     scored 10 new image(s), 18.52 s/img; 0 from the cache
+[vlm:cospybench]     flickr__playgroundai@playground-v2-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=535.2
+[vlm:cospybench]   flickr__playgroundai@playground-v2-256px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/1_fake/0.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=454 15.5s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/1_fake/1.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=455 15.6s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/1_fake/10.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=552 18.9s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/1_fake/100.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-256px-base/1_fake/1000.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=425 14.6s
+[vlm:cospybench]     scored 10 new image(s), 17.92 s/img; 0 from the cache
+[vlm:cospybench]     flickr__playgroundai@playground-v2-256px-base: acc=80.0 AP=90.0 AUROC=86.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=522.5
+[vlm:cospybench]   flickr__playgroundai@playground-v2-512px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/1_fake/0.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=525 18.1s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/1_fake/1.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=499 17.2s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/1_fake/10.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=555 19.1s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=462 15.9s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2-512px-base/1_fake/1000.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=462 15.9s
+[vlm:cospybench]     scored 10 new image(s), 18.48 s/img; 0 from the cache
+[vlm:cospybench]     flickr__playgroundai@playground-v2-512px-base: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=538.4
+[vlm:cospybench]   flickr__playgroundai@playground-v2.5-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=456 16.0s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=368 13.0s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=337 11.9s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=526 18.4s
+[vlm:cospybench]     vlm flickr__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=459 16.0s
+[vlm:cospybench]     scored 10 new image(s), 17.42 s/img; 0 from the cache
+[vlm:cospybench]     flickr__playgroundai@playground-v2.5-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=502.7
+[vlm:cospybench]   flickr__runwayml@stable-diffusion-v1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/1_fake/0.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=468 16.1s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/1_fake/1.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=486 16.7s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/1_fake/10.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=460 15.8s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/1_fake/100.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=395 13.6s
+[vlm:cospybench]     vlm flickr__runwayml@stable-diffusion-v1-5/1_fake/1000.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=524 18.0s
+[vlm:cospybench]     scored 10 new image(s), 17.92 s/img; 0 from the cache
+[vlm:cospybench]     flickr__runwayml@stable-diffusion-v1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=521.4
+[vlm:cospybench]   flickr__segmind@SSD-1B: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.7s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=431 15.1s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=420 14.7s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/1_fake/10.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=414 14.5s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=529 18.5s
+[vlm:cospybench]     vlm flickr__segmind@SSD-1B/1_fake/1000.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=517 18.1s
+[vlm:cospybench]     scored 10 new image(s), 17.97 s/img; 0 from the cache
+[vlm:cospybench]     flickr__segmind@SSD-1B: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=519.2
+[vlm:cospybench]   flickr__segmind@SegMoE-SD-4x2-v0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=483 16.6s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/1_fake/1.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=374 12.9s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/1_fake/10.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=417 14.3s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/1_fake/100.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=403 13.9s
+[vlm:cospybench]     vlm flickr__segmind@SegMoE-SD-4x2-v0/1_fake/1000.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=419 14.4s
+[vlm:cospybench]     scored 10 new image(s), 17.10 s/img; 0 from the cache
+[vlm:cospybench]     flickr__segmind@SegMoE-SD-4x2-v0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=497.7
+[vlm:cospybench]   flickr__segmind@small-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__segmind@small-sd/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/1_fake/0.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=424 14.6s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=537 18.5s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/1_fake/10.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=528 18.1s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/1_fake/100.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=492 16.9s
+[vlm:cospybench]     vlm flickr__segmind@small-sd/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=453 15.6s
+[vlm:cospybench]     scored 10 new image(s), 18.27 s/img; 0 from the cache
+[vlm:cospybench]     flickr__segmind@small-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=531.5
+[vlm:cospybench]   flickr__segmind@tiny-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.7s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/1_fake/0.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=386 13.3s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=537 18.4s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=489 16.8s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/1_fake/100.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=488 16.8s
+[vlm:cospybench]     vlm flickr__segmind@tiny-sd/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=372 12.9s
+[vlm:cospybench]     scored 10 new image(s), 17.70 s/img; 0 from the cache
+[vlm:cospybench]     flickr__segmind@tiny-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=515.3
+[vlm:cospybench]   flickr__stabilityai@sdxl-turbo: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/1_fake/0.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=456 15.7s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/1_fake/1.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=479 16.5s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/1_fake/10.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=608 20.9s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/1_fake/100.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__stabilityai@sdxl-turbo/1_fake/1000.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=438 15.1s
+[vlm:cospybench]     scored 10 new image(s), 18.40 s/img; 0 from the cache
+[vlm:cospybench]     flickr__stabilityai@sdxl-turbo: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=535.2
+[vlm:cospybench]   flickr__stabilityai@stable-diffusion-2: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.8s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.7s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/1_fake/0.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=463 16.0s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/1_fake/1.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=500 17.3s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=524 18.1s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/1_fake/100.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=422 14.6s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2/1_fake/1000.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=479 16.6s
+[vlm:cospybench]     scored 10 new image(s), 18.14 s/img; 0 from the cache
+[vlm:cospybench]     flickr__stabilityai@stable-diffusion-2: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=526.9
+[vlm:cospybench]   flickr__stabilityai@stable-diffusion-2-1: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.8s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/1_fake/0.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=474 16.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/1_fake/1.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=499 17.3s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/1_fake/10.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=493 17.2s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/1_fake/100.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=471 16.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-2-1/1_fake/1000.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=576 20.1s
+[vlm:cospybench]     scored 10 new image(s), 18.66 s/img; 0 from the cache
+[vlm:cospybench]     flickr__stabilityai@stable-diffusion-2-1: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=539.4
+[vlm:cospybench]   flickr__stabilityai@stable-diffusion-3-medium-diffusers: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.8s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.9s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/0.png label=1 verdict=fake logit=10.7500 src=verdict_token tok=484 17.0s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=531 18.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=480 16.8s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/100.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=464 17.1s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1000.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=398 14.4s
+[vlm:cospybench]     scored 10 new image(s), 18.33 s/img; 0 from the cache
+[vlm:cospybench]     flickr__stabilityai@stable-diffusion-3-medium-diffusers: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=523.8
+[vlm:cospybench]   flickr__stabilityai@stable-diffusion-xl-base-1.0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/0_real/flickr_00000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=567 19.7s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/0_real/flickr_00001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=490 17.1s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/0_real/flickr_00002.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=625 21.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/0_real/flickr_00003.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=652 22.2s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/0_real/flickr_00004.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=547 18.6s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/1_fake/0.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=476 16.5s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=307 10.7s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/1_fake/10.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=590 20.4s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/1_fake/100.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=426 14.8s
+[vlm:cospybench]     vlm flickr__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1000.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=432 15.0s
+[vlm:cospybench]     scored 10 new image(s), 17.64 s/img; 0 from the cache
+[vlm:cospybench]     flickr__stabilityai@stable-diffusion-xl-base-1.0: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=511.2
+[vlm:cospybench]   mscoco__CompVis@ldm-text2im-large-256: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.6s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.5s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.3s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/1_fake/0.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=428 14.6s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/1_fake/1.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=656 22.3s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/1_fake/10.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=387 13.2s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/1_fake/100.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=515 17.5s
+[vlm:cospybench]     vlm mscoco__CompVis@ldm-text2im-large-256/1_fake/1000.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=335 11.4s
+[vlm:cospybench]     scored 10 new image(s), 16.86 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__CompVis@ldm-text2im-large-256: acc=80.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=494.5
+[vlm:cospybench]   mscoco__CompVis@stable-diffusion-v1-4: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.2s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/1_fake/0.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=585 19.9s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/1_fake/1.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=501 17.1s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/1_fake/10.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=407 13.9s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=452 15.4s
+[vlm:cospybench]     vlm mscoco__CompVis@stable-diffusion-v1-4/1_fake/1000.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=439 15.0s
+[vlm:cospybench]     scored 10 new image(s), 17.06 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__CompVis@stable-diffusion-v1-4: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=500.8
+[vlm:cospybench]   mscoco__PixArt-alpha@PixArt-XL-2-1024-MS: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/0.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=440 15.2s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=425 14.7s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/10.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=499 17.2s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/100.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=420 14.6s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1000.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=407 14.2s
+[vlm:cospybench]     scored 10 new image(s), 16.52 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__PixArt-alpha@PixArt-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=481.5
+[vlm:cospybench]   mscoco__PixArt-alpha@PixArt-XL-2-512x512: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/1_fake/0.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=457 15.5s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=489 16.7s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/1_fake/10.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=439 15.0s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/1_fake/100.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=564 19.2s
+[vlm:cospybench]     vlm mscoco__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=385 13.1s
+[vlm:cospybench]     scored 10 new image(s), 16.88 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__PixArt-alpha@PixArt-XL-2-512x512: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=495.8
+[vlm:cospybench]   mscoco__black-forest-labs@FLUX.1-dev: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/1_fake/0.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=580 20.0s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=454 15.7s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/1_fake/10.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=459 15.9s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/1_fake/100.png label=1 verdict=fake logit=11.0000 src=verdict_token tok=574 19.8s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-dev/1_fake/1000.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=550 19.0s
+[vlm:cospybench]     scored 10 new image(s), 17.98 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__black-forest-labs@FLUX.1-dev: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=524.1
+[vlm:cospybench]   mscoco__black-forest-labs@FLUX.1-schnell: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/1_fake/0.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=382 13.3s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/1_fake/1.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=441 15.3s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/1_fake/10.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=467 16.2s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/1_fake/100.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=412 14.3s
+[vlm:cospybench]     vlm mscoco__black-forest-labs@FLUX.1-schnell/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=608 20.9s
+[vlm:cospybench]     scored 10 new image(s), 16.92 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__black-forest-labs@FLUX.1-schnell: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=493.4
+[vlm:cospybench]   mscoco__latent-consistency@lcm-lora-sdv1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/1_fake/0.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/1_fake/1.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/1_fake/100.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=491 16.7s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdv1-5/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=475 16.2s
+[vlm:cospybench]     scored 10 new image(s), 17.29 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__latent-consistency@lcm-lora-sdv1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=508.4
+[vlm:cospybench]   mscoco__latent-consistency@lcm-lora-sdxl: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.4s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/1_fake/0.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=332 11.6s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/1_fake/10.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=523 18.1s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/1_fake/100.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=433 15.0s
+[vlm:cospybench]     vlm mscoco__latent-consistency@lcm-lora-sdxl/1_fake/1000.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=452 15.7s
+[vlm:cospybench]     scored 10 new image(s), 16.64 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__latent-consistency@lcm-lora-sdxl: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=485.4
+[vlm:cospybench]   mscoco__playgroundai@playground-v2-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=482 16.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=397 13.8s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=466 16.1s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=540 18.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=480 16.6s
+[vlm:cospybench]     scored 10 new image(s), 17.10 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__playgroundai@playground-v2-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=498.9
+[vlm:cospybench]   mscoco__playgroundai@playground-v2-256px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.3s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/1_fake/0.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=472 16.0s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/1_fake/1.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=585 19.9s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/1_fake/10.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=481 16.3s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/1_fake/100.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=383 13.0s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-256px-base/1_fake/1000.png label=1 verdict=real logit=-4.6250 src=verdict_token tok=524 17.8s
+[vlm:cospybench]     scored 10 new image(s), 17.22 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__playgroundai@playground-v2-256px-base: acc=80.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=506.9
+[vlm:cospybench]   mscoco__playgroundai@playground-v2-512px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.2s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/1_fake/0.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=380 13.0s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=458 15.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=562 19.0s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/1_fake/100.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=519 17.7s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2-512px-base/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=458 15.6s
+[vlm:cospybench]     scored 10 new image(s), 17.03 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__playgroundai@playground-v2-512px-base: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=500.1
+[vlm:cospybench]   mscoco__playgroundai@playground-v2.5-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.6s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.3s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=535 18.4s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=490 16.9s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=455 15.7s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=542 18.7s
+[vlm:cospybench]     vlm mscoco__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=545 19.0s
+[vlm:cospybench]     scored 10 new image(s), 17.78 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__playgroundai@playground-v2.5-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=519.1
+[vlm:cospybench]   mscoco__runwayml@stable-diffusion-v1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/1_fake/0.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=405 13.8s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/1_fake/1.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=484 16.5s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/1_fake/10.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=471 16.0s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=416 14.2s
+[vlm:cospybench]     vlm mscoco__runwayml@stable-diffusion-v1-5/1_fake/1000.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=401 13.6s
+[vlm:cospybench]     scored 10 new image(s), 16.34 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__runwayml@stable-diffusion-v1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=480.1
+[vlm:cospybench]   mscoco__segmind@SSD-1B: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/1_fake/0.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=440 15.2s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/1_fake/1.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=432 15.0s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/1_fake/10.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=471 16.3s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=485 16.8s
+[vlm:cospybench]     vlm mscoco__segmind@SSD-1B/1_fake/1000.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=445 15.4s
+[vlm:cospybench]     scored 10 new image(s), 16.81 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__segmind@SSD-1B: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=489.7
+[vlm:cospybench]   mscoco__segmind@SegMoE-SD-4x2-v0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.6s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/1_fake/0.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=491 16.7s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/1_fake/1.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=405 13.8s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=439 15.0s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=406 13.8s
+[vlm:cospybench]     vlm mscoco__segmind@SegMoE-SD-4x2-v0/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=422 14.4s
+[vlm:cospybench]     scored 10 new image(s), 16.29 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__segmind@SegMoE-SD-4x2-v0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=478.7
+[vlm:cospybench]   mscoco__segmind@small-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.2s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/1_fake/0.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=385 13.1s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/1_fake/1.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=423 14.4s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/1_fake/10.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=491 16.7s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/1_fake/100.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=397 13.5s
+[vlm:cospybench]     vlm mscoco__segmind@small-sd/1_fake/1000.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=519 17.7s
+[vlm:cospybench]     scored 10 new image(s), 16.49 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__segmind@small-sd: acc=80.0 AP=96.67 AUROC=98.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=483.9
+[vlm:cospybench]   mscoco__segmind@tiny-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.6s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/1_fake/0.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=513 17.4s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/1_fake/1.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=407 13.9s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/1_fake/10.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=467 15.9s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=459 15.7s
+[vlm:cospybench]     vlm mscoco__segmind@tiny-sd/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=421 14.3s
+[vlm:cospybench]     scored 10 new image(s), 16.66 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__segmind@tiny-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=489.1
+[vlm:cospybench]   mscoco__stabilityai@sdxl-turbo: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.2s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=498 17.0s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/1_fake/1.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=494 16.8s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/1_fake/10.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=526 17.9s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/1_fake/100.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=403 13.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@sdxl-turbo/1_fake/1000.png label=1 verdict=real logit=-4.3750 src=verdict_token tok=738 25.1s
+[vlm:cospybench]     scored 10 new image(s), 17.97 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__stabilityai@sdxl-turbo: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=528.3
+[vlm:cospybench]   mscoco__stabilityai@stable-diffusion-2: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/1_fake/0.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=639 21.8s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/1_fake/1.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=447 15.3s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=416 14.3s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=389 13.3s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=536 18.3s
+[vlm:cospybench]     scored 10 new image(s), 17.24 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__stabilityai@stable-diffusion-2: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=505.1
+[vlm:cospybench]   mscoco__stabilityai@stable-diffusion-2-1: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.6s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/1_fake/0.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=463 15.9s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/1_fake/1.png label=1 verdict=fake logit=10.7500 src=verdict_token tok=586 20.0s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/1_fake/10.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=430 14.8s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/1_fake/100.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=421 14.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-2-1/1_fake/1000.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=455 15.6s
+[vlm:cospybench]     scored 10 new image(s), 17.00 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__stabilityai@stable-diffusion-2-1: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=497.9
+[vlm:cospybench]   mscoco__stabilityai@stable-diffusion-3-medium-diffusers: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.6s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.3s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.1s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/0.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=561 19.3s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=526 18.1s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/10.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=408 14.2s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=423 14.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1000.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=369 12.8s
+[vlm:cospybench]     scored 10 new image(s), 16.84 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__stabilityai@stable-diffusion-3-medium-diffusers: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=491.1
+[vlm:cospybench]   mscoco__stabilityai@stable-diffusion-xl-base-1.0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/0_real/mscoco_00000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=608 20.7s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/0_real/mscoco_00001.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=485 16.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/0_real/mscoco_00002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=545 18.5s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/0_real/mscoco_00003.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=512 17.4s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/0_real/mscoco_00004.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=474 16.2s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/1_fake/0.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=528 18.2s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=473 16.4s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/1_fake/10.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=436 15.2s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=460 15.9s
+[vlm:cospybench]     vlm mscoco__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=497 17.2s
+[vlm:cospybench]     scored 10 new image(s), 17.23 s/img; 0 from the cache
+[vlm:cospybench]     mscoco__stabilityai@stable-diffusion-xl-base-1.0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=501.8
+[vlm:cospybench]   sbu__CompVis@ldm-text2im-large-256: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/1_fake/0.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=607 20.7s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=419 14.3s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/1_fake/10.png label=1 verdict=real logit=-5.6250 src=verdict_token tok=510 17.3s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=440 15.0s
+[vlm:cospybench]     vlm sbu__CompVis@ldm-text2im-large-256/1_fake/1000.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=623 21.2s
+[vlm:cospybench]     scored 10 new image(s), 17.84 s/img; 0 from the cache
+[vlm:cospybench]     sbu__CompVis@ldm-text2im-large-256: acc=70.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=40.0) unparsed=0 mean_tokens=524.5
+[vlm:cospybench]   sbu__CompVis@stable-diffusion-v1-4: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/1_fake/0.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=596 20.3s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/1_fake/1.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=391 13.3s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/1_fake/10.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=492 16.7s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/1_fake/100.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=510 17.4s
+[vlm:cospybench]     vlm sbu__CompVis@stable-diffusion-v1-4/1_fake/1000.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=521 17.7s
+[vlm:cospybench]     scored 10 new image(s), 17.54 s/img; 0 from the cache
+[vlm:cospybench]     sbu__CompVis@stable-diffusion-v1-4: acc=90.0 AP=96.67 AUROC=98.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=515.6
+[vlm:cospybench]   sbu__PixArt-alpha@PixArt-XL-2-1024-MS: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/0.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=431 15.0s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=400 13.9s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=503 17.4s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/100.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=426 14.8s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=430 14.9s
+[vlm:cospybench]     scored 10 new image(s), 16.60 s/img; 0 from the cache
+[vlm:cospybench]     sbu__PixArt-alpha@PixArt-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=483.6
+[vlm:cospybench]   sbu__PixArt-alpha@PixArt-XL-2-512x512: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.2s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=379 12.9s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=521 17.7s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/1_fake/10.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=515 17.5s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/1_fake/100.png label=1 verdict=fake logit=10.7500 src=verdict_token tok=597 20.3s
+[vlm:cospybench]     vlm sbu__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=488 16.6s
+[vlm:cospybench]     scored 10 new image(s), 17.52 s/img; 0 from the cache
+[vlm:cospybench]     sbu__PixArt-alpha@PixArt-XL-2-512x512: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=514.6
+[vlm:cospybench]   sbu__black-forest-labs@FLUX.1-dev: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/1_fake/0.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=411 14.2s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=446 15.5s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/1_fake/10.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=459 15.9s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/1_fake/100.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=494 17.1s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-dev/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=435 15.1s
+[vlm:cospybench]     scored 10 new image(s), 16.78 s/img; 0 from the cache
+[vlm:cospybench]     sbu__black-forest-labs@FLUX.1-dev: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=489.1
+[vlm:cospybench]   sbu__black-forest-labs@FLUX.1-schnell: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/1_fake/0.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=406 14.1s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/1_fake/1.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=415 14.4s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=443 15.4s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/1_fake/100.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=559 19.3s
+[vlm:cospybench]     vlm sbu__black-forest-labs@FLUX.1-schnell/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=491 17.0s
+[vlm:cospybench]     scored 10 new image(s), 16.99 s/img; 0 from the cache
+[vlm:cospybench]     sbu__black-forest-labs@FLUX.1-schnell: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=496.0
+[vlm:cospybench]   sbu__latent-consistency@lcm-lora-sdv1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/1_fake/0.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=595 20.3s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/1_fake/1.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=498 17.0s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/1_fake/10.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=507 17.3s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/1_fake/100.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=447 15.2s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdv1-5/1_fake/1000.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=516 17.6s
+[vlm:cospybench]     scored 10 new image(s), 17.74 s/img; 0 from the cache
+[vlm:cospybench]     sbu__latent-consistency@lcm-lora-sdv1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=520.9
+[vlm:cospybench]   sbu__latent-consistency@lcm-lora-sdxl: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/1_fake/0.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=461 16.0s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/1_fake/1.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=454 15.7s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/1_fake/10.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=414 14.4s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/1_fake/100.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=540 18.6s
+[vlm:cospybench]     vlm sbu__latent-consistency@lcm-lora-sdxl/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=415 14.4s
+[vlm:cospybench]     scored 10 new image(s), 16.91 s/img; 0 from the cache
+[vlm:cospybench]     sbu__latent-consistency@lcm-lora-sdxl: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=493.0
+[vlm:cospybench]   sbu__playgroundai@playground-v2-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.5000 src=verdict_token tok=475 16.5s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=494 17.1s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=501 17.4s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=546 18.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=351 12.3s
+[vlm:cospybench]     scored 10 new image(s), 17.20 s/img; 0 from the cache
+[vlm:cospybench]     sbu__playgroundai@playground-v2-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=501.3
+[vlm:cospybench]   sbu__playgroundai@playground-v2-256px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/1_fake/0.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=477 16.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/1_fake/1.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=499 16.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/1_fake/10.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=355 12.0s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/1_fake/100.png label=1 verdict=real logit=-8.1250 src=verdict_token tok=449 15.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-256px-base/1_fake/1000.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=509 17.3s
+[vlm:cospybench]     scored 10 new image(s), 16.75 s/img; 0 from the cache
+[vlm:cospybench]     sbu__playgroundai@playground-v2-256px-base: acc=70.0 AP=72.54 AUROC=64.0 (real_acc=100.0 fake_acc=40.0) unparsed=0 mean_tokens=493.5
+[vlm:cospybench]   sbu__playgroundai@playground-v2-512px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/1_fake/0.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=496 16.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/1_fake/1.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=457 15.6s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/1_fake/10.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=290 9.9s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/1_fake/100.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=522 17.7s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2-512px-base/1_fake/1000.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=488 16.6s
+[vlm:cospybench]     scored 10 new image(s), 16.68 s/img; 0 from the cache
+[vlm:cospybench]     sbu__playgroundai@playground-v2-512px-base: acc=90.0 AP=96.67 AUROC=96.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=489.9
+[vlm:cospybench]   sbu__playgroundai@playground-v2.5-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=416 14.4s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=583 20.1s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=381 13.3s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=390 13.6s
+[vlm:cospybench]     vlm sbu__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=483 16.7s
+[vlm:cospybench]     scored 10 new image(s), 16.82 s/img; 0 from the cache
+[vlm:cospybench]     sbu__playgroundai@playground-v2.5-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=489.9
+[vlm:cospybench]   sbu__runwayml@stable-diffusion-v1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/1_fake/0.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=488 16.6s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/1_fake/1.png label=1 verdict=fake logit=5.0000 src=verdict_token tok=464 15.8s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/1_fake/10.png label=1 verdict=real logit=-5.8750 src=verdict_token tok=497 17.0s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/1_fake/100.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=403 13.7s
+[vlm:cospybench]     vlm sbu__runwayml@stable-diffusion-v1-5/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=499 17.0s
+[vlm:cospybench]     scored 10 new image(s), 17.01 s/img; 0 from the cache
+[vlm:cospybench]     sbu__runwayml@stable-diffusion-v1-5: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=499.7
+[vlm:cospybench]   sbu__segmind@SSD-1B: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=555 19.2s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/1_fake/1.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=559 19.3s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/1_fake/10.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=452 15.6s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=483 16.7s
+[vlm:cospybench]     vlm sbu__segmind@SSD-1B/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=511 17.7s
+[vlm:cospybench]     scored 10 new image(s), 17.84 s/img; 0 from the cache
+[vlm:cospybench]     sbu__segmind@SSD-1B: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=520.6
+[vlm:cospybench]   sbu__segmind@SegMoE-SD-4x2-v0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.0s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/1_fake/0.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=559 19.1s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/1_fake/1.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=482 16.4s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/1_fake/10.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=392 13.3s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/1_fake/100.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=362 12.3s
+[vlm:cospybench]     vlm sbu__segmind@SegMoE-SD-4x2-v0/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=434 14.8s
+[vlm:cospybench]     scored 10 new image(s), 16.56 s/img; 0 from the cache
+[vlm:cospybench]     sbu__segmind@SegMoE-SD-4x2-v0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=487.5
+[vlm:cospybench]   sbu__segmind@small-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__segmind@small-sd/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/1_fake/0.png label=1 verdict=fake logit=7.0000 src=verdict_token tok=490 16.7s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/1_fake/1.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=393 13.4s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/1_fake/10.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=603 20.5s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/1_fake/100.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=471 16.1s
+[vlm:cospybench]     vlm sbu__segmind@small-sd/1_fake/1000.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=501 17.1s
+[vlm:cospybench]     scored 10 new image(s), 17.39 s/img; 0 from the cache
+[vlm:cospybench]     sbu__segmind@small-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=510.4
+[vlm:cospybench]   sbu__segmind@tiny-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.2s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.3s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/1_fake/0.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=349 11.9s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/1_fake/1.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=422 14.4s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/1_fake/10.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=458 15.6s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=488 16.6s
+[vlm:cospybench]     vlm sbu__segmind@tiny-sd/1_fake/1000.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=351 12.0s
+[vlm:cospybench]     scored 10 new image(s), 16.07 s/img; 0 from the cache
+[vlm:cospybench]     sbu__segmind@tiny-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=471.4
+[vlm:cospybench]   sbu__stabilityai@sdxl-turbo: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/1_fake/0.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=492 16.8s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/1_fake/1.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=478 16.3s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/1_fake/10.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=493 16.8s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/1_fake/100.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=481 16.4s
+[vlm:cospybench]     vlm sbu__stabilityai@sdxl-turbo/1_fake/1000.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=445 15.2s
+[vlm:cospybench]     scored 10 new image(s), 17.14 s/img; 0 from the cache
+[vlm:cospybench]     sbu__stabilityai@sdxl-turbo: acc=90.0 AP=96.67 AUROC=96.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=503.5
+[vlm:cospybench]   sbu__stabilityai@stable-diffusion-2: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.9s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/1_fake/0.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=452 15.5s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/1_fake/1.png label=1 verdict=fake logit=10.6250 src=verdict_token tok=402 14.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/1_fake/10.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=526 18.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/1_fake/100.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=398 13.7s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2/1_fake/1000.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=396 13.6s
+[vlm:cospybench]     scored 10 new image(s), 16.47 s/img; 0 from the cache
+[vlm:cospybench]     sbu__stabilityai@stable-diffusion-2: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=482.0
+[vlm:cospybench]   sbu__stabilityai@stable-diffusion-2-1: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=468 16.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/1_fake/1.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=563 19.2s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/1_fake/10.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=411 14.1s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/1_fake/100.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=505 17.3s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-2-1/1_fake/1000.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=442 15.1s
+[vlm:cospybench]     scored 10 new image(s), 17.15 s/img; 0 from the cache
+[vlm:cospybench]     sbu__stabilityai@stable-diffusion-2-1: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=503.5
+[vlm:cospybench]   sbu__stabilityai@stable-diffusion-3-medium-diffusers: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 15.9s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/0.png label=1 verdict=fake logit=6.1250 src=verdict_token tok=481 16.7s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=416 14.5s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/10.png label=1 verdict=real logit=-6.0000 src=verdict_token tok=529 18.3s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/100.png label=1 verdict=fake logit=6.7500 src=verdict_token tok=370 12.9s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1000.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=446 15.5s
+[vlm:cospybench]     scored 10 new image(s), 16.76 s/img; 0 from the cache
+[vlm:cospybench]     sbu__stabilityai@stable-diffusion-3-medium-diffusers: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=488.8
+[vlm:cospybench]   sbu__stabilityai@stable-diffusion-xl-base-1.0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=525 17.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/0_real/0001.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/0_real/0002.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=563 19.1s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/0_real/0003.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=446 15.2s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/0_real/0004.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=642 21.9s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/1_fake/0.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=478 16.6s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=485 16.8s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/1_fake/10.png label=1 verdict=fake logit=7.2500 src=verdict_token tok=462 16.0s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/1_fake/100.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=422 14.7s
+[vlm:cospybench]     vlm sbu__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1000.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=446 15.4s
+[vlm:cospybench]     scored 10 new image(s), 16.96 s/img; 0 from the cache
+[vlm:cospybench]     sbu__stabilityai@stable-diffusion-xl-base-1.0: acc=90.0 AP=92.5 AUROC=88.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=493.9
+[vlm:cospybench]   textcaps__CompVis@ldm-text2im-large-256: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/1_fake/0.png label=1 verdict=fake logit=5.8750 src=verdict_token tok=430 14.6s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/1_fake/1.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=504 17.2s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/1_fake/10.png label=1 verdict=real logit=-3.3750 src=verdict_token tok=559 19.0s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/1_fake/100.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=421 14.3s
+[vlm:cospybench]     vlm textcaps__CompVis@ldm-text2im-large-256/1_fake/1000.png label=1 verdict=real logit=-7.5000 src=verdict_token tok=532 18.0s
+[vlm:cospybench]     scored 10 new image(s), 17.36 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__CompVis@ldm-text2im-large-256: acc=80.0 AP=96.67 AUROC=96.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=507.7
+[vlm:cospybench]   textcaps__CompVis@stable-diffusion-v1-4: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/1_fake/0.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=506 17.2s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/1_fake/1.png label=1 verdict=real logit=-6.5000 src=verdict_token tok=518 17.7s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/1_fake/10.png label=1 verdict=fake logit=7.1250 src=verdict_token tok=394 13.4s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=466 15.8s
+[vlm:cospybench]     vlm textcaps__CompVis@stable-diffusion-v1-4/1_fake/1000.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=466 15.8s
+[vlm:cospybench]     scored 10 new image(s), 17.06 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__CompVis@stable-diffusion-v1-4: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=498.1
+[vlm:cospybench]   textcaps__PixArt-alpha@PixArt-XL-2-1024-MS: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/0.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=384 13.3s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=537 18.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/10.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=559 19.2s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/100.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=478 16.6s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-1024-MS/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=466 16.2s
+[vlm:cospybench]     scored 10 new image(s), 17.44 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__PixArt-alpha@PixArt-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=505.5
+[vlm:cospybench]   textcaps__PixArt-alpha@PixArt-XL-2-512x512: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.4s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/1_fake/0.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=338 11.5s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=490 16.6s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=370 12.6s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/1_fake/100.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=360 12.3s
+[vlm:cospybench]     vlm textcaps__PixArt-alpha@PixArt-XL-2-512x512/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=431 14.6s
+[vlm:cospybench]     scored 10 new image(s), 15.83 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__PixArt-alpha@PixArt-XL-2-512x512: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=462.0
+[vlm:cospybench]   textcaps__black-forest-labs@FLUX.1-dev: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.4s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=434 15.1s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/1_fake/1.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=526 18.2s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/1_fake/10.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=419 14.5s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/1_fake/100.png label=1 verdict=fake logit=5.6250 src=verdict_token tok=436 15.1s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-dev/1_fake/1000.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=485 16.8s
+[vlm:cospybench]     scored 10 new image(s), 17.01 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__black-forest-labs@FLUX.1-dev: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=493.1
+[vlm:cospybench]   textcaps__black-forest-labs@FLUX.1-schnell: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.6s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/1_fake/0.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=480 16.6s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/1_fake/1.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=479 16.6s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/1_fake/10.png label=1 verdict=fake logit=6.3750 src=verdict_token tok=493 17.1s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/1_fake/100.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=438 15.2s
+[vlm:cospybench]     vlm textcaps__black-forest-labs@FLUX.1-schnell/1_fake/1000.png label=1 verdict=fake logit=7.7500 src=verdict_token tok=555 19.2s
+[vlm:cospybench]     scored 10 new image(s), 17.53 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__black-forest-labs@FLUX.1-schnell: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=507.6
+[vlm:cospybench]   textcaps__latent-consistency@lcm-lora-sdv1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/1_fake/0.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=498 17.0s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=490 16.7s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/1_fake/10.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=448 15.3s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=381 13.0s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdv1-5/1_fake/1000.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=436 14.9s
+[vlm:cospybench]     scored 10 new image(s), 16.75 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__latent-consistency@lcm-lora-sdv1-5: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=488.4
+[vlm:cospybench]   textcaps__latent-consistency@lcm-lora-sdxl: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/1_fake/0.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=526 18.2s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/1_fake/1.png label=1 verdict=fake logit=0.8750 src=verdict_token tok=459 15.9s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=489 16.9s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/1_fake/100.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=494 17.1s
+[vlm:cospybench]     vlm textcaps__latent-consistency@lcm-lora-sdxl/1_fake/1000.png label=1 verdict=fake logit=10.3750 src=verdict_token tok=429 14.9s
+[vlm:cospybench]     scored 10 new image(s), 17.37 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__latent-consistency@lcm-lora-sdxl: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=502.8
+[vlm:cospybench]   textcaps__playgroundai@playground-v2-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.4s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=436 15.1s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=462 16.0s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=443 15.4s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=417 14.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=555 19.1s
+[vlm:cospybench]     scored 10 new image(s), 17.06 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__playgroundai@playground-v2-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=494.4
+[vlm:cospybench]   textcaps__playgroundai@playground-v2-256px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.6s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/1_fake/0.png label=1 verdict=real logit=-7.7500 src=verdict_token tok=524 17.8s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/1_fake/1.png label=1 verdict=real logit=-8.0000 src=verdict_token tok=507 17.3s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/1_fake/10.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=362 12.3s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=422 14.3s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-256px-base/1_fake/1000.png label=1 verdict=fake logit=0.3750 src=verdict_token tok=582 19.8s
+[vlm:cospybench]     scored 10 new image(s), 17.20 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__playgroundai@playground-v2-256px-base: acc=80.0 AP=84.44 AUROC=80.0 (real_acc=100.0 fake_acc=60.0) unparsed=0 mean_tokens=502.8
+[vlm:cospybench]   textcaps__playgroundai@playground-v2-512px-base: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/1_fake/0.png label=1 verdict=real logit=-5.7500 src=verdict_token tok=463 15.8s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/1_fake/1.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=397 13.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/1_fake/10.png label=1 verdict=fake logit=6.8750 src=verdict_token tok=392 13.4s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/1_fake/100.png label=1 verdict=fake logit=8.1250 src=verdict_token tok=569 19.4s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2-512px-base/1_fake/1000.png label=1 verdict=fake logit=7.6250 src=verdict_token tok=390 13.3s
+[vlm:cospybench]     scored 10 new image(s), 16.59 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__playgroundai@playground-v2-512px-base: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=484.2
+[vlm:cospybench]   textcaps__playgroundai@playground-v2.5-1024px-aesthetic: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/0.png label=1 verdict=fake logit=10.1250 src=verdict_token tok=390 13.6s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=523 18.1s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=488 16.9s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/100.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=601 20.7s
+[vlm:cospybench]     vlm textcaps__playgroundai@playground-v2.5-1024px-aesthetic/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=473 16.4s
+[vlm:cospybench]     scored 10 new image(s), 17.62 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__playgroundai@playground-v2.5-1024px-aesthetic: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=510.6
+[vlm:cospybench]   textcaps__runwayml@stable-diffusion-v1-5: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=486 16.6s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/1_fake/1.png label=1 verdict=fake logit=6.6250 src=verdict_token tok=466 15.9s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/1_fake/10.png label=1 verdict=real logit=-7.3750 src=verdict_token tok=557 18.9s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/1_fake/100.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=404 13.8s
+[vlm:cospybench]     vlm textcaps__runwayml@stable-diffusion-v1-5/1_fake/1000.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=475 16.2s
+[vlm:cospybench]     scored 10 new image(s), 17.18 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__runwayml@stable-diffusion-v1-5: acc=90.0 AP=96.67 AUROC=96.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=501.9
+[vlm:cospybench]   textcaps__segmind@SSD-1B: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/1_fake/0.png label=1 verdict=fake logit=9.7500 src=verdict_token tok=384 13.3s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/1_fake/1.png label=1 verdict=fake logit=6.2500 src=verdict_token tok=298 10.4s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=509 17.6s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/1_fake/100.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=477 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@SSD-1B/1_fake/1000.png label=1 verdict=fake logit=8.7500 src=verdict_token tok=500 17.3s
+[vlm:cospybench]     scored 10 new image(s), 16.58 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__segmind@SSD-1B: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=479.9
+[vlm:cospybench]   textcaps__segmind@SegMoE-SD-4x2-v0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.4s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/1_fake/0.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=506 17.2s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=484 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=549 18.6s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/1_fake/100.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=421 14.3s
+[vlm:cospybench]     vlm textcaps__segmind@SegMoE-SD-4x2-v0/1_fake/1000.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=401 13.7s
+[vlm:cospybench]     scored 10 new image(s), 17.07 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__segmind@SegMoE-SD-4x2-v0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=499.2
+[vlm:cospybench]   textcaps__segmind@small-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/1_fake/0.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=402 13.7s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/1_fake/1.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=469 15.9s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/1_fake/10.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=422 14.4s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/1_fake/100.png label=1 verdict=fake logit=9.5000 src=verdict_token tok=546 18.5s
+[vlm:cospybench]     vlm textcaps__segmind@small-sd/1_fake/1000.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=538 18.3s
+[vlm:cospybench]     scored 10 new image(s), 17.11 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__segmind@small-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=500.8
+[vlm:cospybench]   textcaps__segmind@tiny-sd: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.4s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/1_fake/0.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=417 14.2s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/1_fake/1.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=470 16.0s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/1_fake/10.png label=1 verdict=fake logit=9.6250 src=verdict_token tok=487 16.6s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/1_fake/100.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=425 14.4s
+[vlm:cospybench]     vlm textcaps__segmind@tiny-sd/1_fake/1000.png label=1 verdict=fake logit=7.5000 src=verdict_token tok=522 17.8s
+[vlm:cospybench]     scored 10 new image(s), 16.95 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__segmind@tiny-sd: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=495.2
+[vlm:cospybench]   textcaps__stabilityai@sdxl-turbo: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.3s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/1_fake/0.png label=1 verdict=fake logit=8.5000 src=verdict_token tok=494 16.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/1_fake/1.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=438 14.9s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/1_fake/10.png label=1 verdict=real logit=-7.2500 src=verdict_token tok=532 18.1s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/1_fake/100.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=502 17.2s
+[vlm:cospybench]     vlm textcaps__stabilityai@sdxl-turbo/1_fake/1000.png label=1 verdict=fake logit=10.0000 src=verdict_token tok=505 17.2s
+[vlm:cospybench]     scored 10 new image(s), 17.43 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__stabilityai@sdxl-turbo: acc=90.0 AP=96.67 AUROC=98.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=510.2
+[vlm:cospybench]   textcaps__stabilityai@stable-diffusion-2: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/1_fake/0.png label=1 verdict=fake logit=8.6250 src=verdict_token tok=450 15.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/1_fake/1.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=411 14.1s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/1_fake/10.png label=1 verdict=fake logit=9.2500 src=verdict_token tok=423 14.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/1_fake/100.png label=1 verdict=fake logit=8.8750 src=verdict_token tok=424 14.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2/1_fake/1000.png label=1 verdict=real logit=-7.1250 src=verdict_token tok=507 17.4s
+[vlm:cospybench]     scored 10 new image(s), 16.65 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__stabilityai@stable-diffusion-2: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=484.6
+[vlm:cospybench]   textcaps__stabilityai@stable-diffusion-2-1: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/1_fake/0.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=404 13.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/1_fake/1.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=458 15.7s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/1_fake/10.png label=1 verdict=real logit=-7.0000 src=verdict_token tok=409 14.1s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/1_fake/100.png label=1 verdict=fake logit=7.8750 src=verdict_token tok=531 18.2s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-2-1/1_fake/1000.png label=1 verdict=fake logit=9.0000 src=verdict_token tok=393 13.5s
+[vlm:cospybench]     scored 10 new image(s), 16.60 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__stabilityai@stable-diffusion-2-1: acc=90.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=80.0) unparsed=0 mean_tokens=482.6
+[vlm:cospybench]   textcaps__stabilityai@stable-diffusion-3-medium-diffusers: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.3s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/0.png label=1 verdict=fake logit=8.3750 src=verdict_token tok=473 16.4s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1.png label=1 verdict=fake logit=6.5000 src=verdict_token tok=508 17.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/10.png label=1 verdict=fake logit=7.3750 src=verdict_token tok=450 15.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/100.png label=1 verdict=fake logit=9.1250 src=verdict_token tok=453 15.7s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-3-medium-diffusers/1_fake/1000.png label=1 verdict=fake logit=8.2500 src=verdict_token tok=472 16.3s
+[vlm:cospybench]     scored 10 new image(s), 17.24 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__stabilityai@stable-diffusion-3-medium-diffusers: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=498.7
+[vlm:cospybench]   textcaps__stabilityai@stable-diffusion-xl-base-1.0: 5 real + 5 fake ...
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/0_real/0000.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=616 21.2s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/0_real/0001.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=458 15.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/0_real/0002.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=538 18.6s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/0_real/0003.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=480 16.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/0_real/0004.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=539 18.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/1_fake/0.png label=1 verdict=fake logit=9.8750 src=verdict_token tok=448 15.5s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=640 22.0s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/1_fake/10.png label=1 verdict=fake logit=8.0000 src=verdict_token tok=471 16.3s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/1_fake/100.png label=1 verdict=fake logit=10.2500 src=verdict_token tok=396 13.8s
+[vlm:cospybench]     vlm textcaps__stabilityai@stable-diffusion-xl-base-1.0/1_fake/1000.png label=1 verdict=fake logit=9.3750 src=verdict_token tok=448 15.6s
+[vlm:cospybench]     scored 10 new image(s), 17.38 s/img; 0 from the cache
+[vlm:cospybench]     textcaps__stabilityai@stable-diffusion-xl-base-1.0: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0) unparsed=0 mean_tokens=503.4
+[vlm:cospybench] === RESULT vb_cospybench_veritaspp: mAP=98.5 mAUROC=98.0 acc=93.82 over 110 generators -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/cospybench/veritaspp.json.partial ===
+=== unit vlm:cospybench DONE rc=0 in 5.32 h -> /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/vlm_bench/results/cospybench/veritaspp.json
+=== run_units: 1/1 unit results present; failed: []; not present: []
+=== run_units rc=0 Tue Nov 17 23:40:12 CET 2026

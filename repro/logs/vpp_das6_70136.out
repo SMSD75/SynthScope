@@ -1,0 +1,217 @@
+log mirror: /var/scratch/ssalehid/synthscope_das6/logs/vpp_das6_das6_70136.out -> ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/vpp_das6_70136.out
+DAS6 job=70136 name=vpp_das6 node=node409 cpus=8 mem=32768M Tue Nov 17 07:44:36 CET 2026
+gpu=NVIDIA RTX A6000, 49140 MiB, 580.95.05; CUDA_VISIBLE_DEVICES=0
+python=/var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python torch 2.11.0+cu126 cuda_ok True
+/local free: 2.1T
+UNITS=vlm:wildrf,vlm:evalgen,vlm:realchain,vlm:ditfake,vlm:ufd8,vlm:ditfake:jpeg95,vlm:ufd8:jpeg95,vlm:wildrf:official,vlm:bfree_online,vlm:forensynths13,vlm:aigibench25,vlm:cospybench,vlm:synthwildx OLDNEW=0
+code=cf8c496 bench_eval VLM path (per-image Engine.vlm_score, resumable cache, verdict/logit metrics) + Veritas++ b branch=detector/veritaspp sha=cf8c496687969b16ae755134bbcbb6b4d4baa21f src=github uncommitted_tracked_files=0 (IVI wt /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt clean)
+benchmarks: forensynths13 ufd8 evalgen synthwildx wildrf aigibench25 bfree_online cospybench ditfake realchain
+subset forensynths13: verified earlier
+subset ufd8: verified earlier
+subset evalgen: verified earlier
+subset synthwildx: verified earlier
+subset wildrf: verified earlier
+subset aigibench25: verified earlier
+subset bfree_online: verified earlier
+subset cospybench: verified earlier
+subset ditfake: verified earlier
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+realchain: verified /local/ssalehid/vpp/subsets/realchain: 7 generators, 1008 scored images, 1008 files sha1-identical to the manifest
+staging cn029:vlm_ckpts/veritaspp -> /local/ssalehid/cache/data029/vlm_ckpts/veritaspp/ 07:51:11
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn029:vlm_ckpts/veritaspp: 33 files, 17G 07:53:42
+15 files from EricTan7/VeritasPP @ 22ba6c6b9f623755c1a68a9816b83a0540039829; shard etags == SHA256SUMS
+veritaspp sha256 OK
+=== run_units 07:54:05
+=== unit vlm:wildrf START 2026-11-17 07:54:05 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70136/code/benchmark/bench_eval.py --model veritaspp --benchmark pergen --data /local/ssalehid/vpp/subsets/wildrf/data --tag vb_wildrf_veritaspp --out /local/ssalehid/vpp/out/wildrf/veritaspp.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.265525.jsonl --limit 167 --vlm-cache /local/ssalehid/vpp/cache/wildrf
+[vlm:wildrf] Kwargs passed to `processor.__call__` have to be in `processor_kwargs` dict, not in `**kwargs`
+[vlm:wildrf] === bench_eval vb_wildrf_veritaspp | model=veritaspp ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[vlm:wildrf] [vlm-cache] /local/ssalehid/vpp/cache/wildrf/veritaspp__greedy: 0 cached images
+[vlm:wildrf]   facebook: 160 real + 160 fake ...
+[vlm:wildrf] The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[vlm:wildrf]     vlm facebook/0_real/000000_0000.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=499 26.1s
+[vlm:wildrf]     vlm facebook/0_real/000001_0001.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=527 19.6s
+[vlm:wildrf]     vlm facebook/0_real/000002_0002.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=534 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000003_0003.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=561 20.2s
+[vlm:wildrf]     vlm facebook/0_real/000004_0004.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=559 20.3s
+[vlm:wildrf]     vlm facebook/0_real/000005_0005.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=505 18.3s
+[vlm:wildrf]     vlm facebook/0_real/000006_0006.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=491 17.6s
+[vlm:wildrf]     vlm facebook/0_real/000007_0007.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=540 20.2s
+[vlm:wildrf]     vlm facebook/0_real/000008_0008.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=496 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000009_0009.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=575 20.7s
+[vlm:wildrf]     vlm facebook/0_real/000010_0010.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=561 20.7s
+[vlm:wildrf]     vlm facebook/0_real/000011_0011.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=547 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000012_0012.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=492 17.7s
+[vlm:wildrf]     vlm facebook/0_real/000013_0013.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=462 17.2s
+[vlm:wildrf]     vlm facebook/0_real/000014_0014.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=461 17.4s
+[vlm:wildrf]     vlm facebook/0_real/000015_0015.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=451 16.1s
+[vlm:wildrf]     vlm facebook/0_real/000016_0016.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=601 21.5s
+[vlm:wildrf]     vlm facebook/0_real/000017_0017.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=500 17.9s
+[vlm:wildrf]     vlm facebook/0_real/000018_0018.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=477 17.1s
+[vlm:wildrf]     vlm facebook/0_real/000019_0019.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=627 22.5s
+[vlm:wildrf]     vlm facebook/0_real/000020_0020.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=486 17.4s
+[vlm:wildrf]     vlm facebook/0_real/000021_0021.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=496 17.8s
+[vlm:wildrf]     vlm facebook/0_real/000022_0022.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=610 21.8s
+[vlm:wildrf]     vlm facebook/0_real/000023_0023.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=498 17.8s
+[vlm:wildrf]     vlm facebook/0_real/000024_0024.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=509 18.2s
+[vlm:wildrf]     vlm facebook/0_real/000025_0025.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=521 19.0s
+[vlm:wildrf]     vlm facebook/0_real/000026_0026.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=543 19.8s
+[vlm:wildrf]     vlm facebook/0_real/000027_0027.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=543 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000028_0028.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=502 18.2s
+[vlm:wildrf]     vlm facebook/0_real/000029_0029.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=440 16.6s
+[vlm:wildrf]     vlm facebook/0_real/000030_0030.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=537 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000031_0031.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=524 19.6s
+[vlm:wildrf]     vlm facebook/0_real/000032_0032.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=513 18.4s
+[vlm:wildrf]     vlm facebook/0_real/000033_0033.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=518 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000034_0034.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=519 19.2s
+[vlm:wildrf]     vlm facebook/0_real/000035_0035.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=518 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000036_0036.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=510 19.0s
+[vlm:wildrf]     vlm facebook/0_real/000037_0037.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=599 21.5s
+[vlm:wildrf]     vlm facebook/0_real/000038_0038.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=543 20.2s
+[vlm:wildrf]     vlm facebook/0_real/000039_0039.jpg label=0 verdict=real logit=-6.3750 src=verdict_token tok=519 19.1s
+[vlm:wildrf]     vlm facebook/0_real/000040_0040.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=585 21.5s
+[vlm:wildrf]     vlm facebook/0_real/000041_0041.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=621 22.1s
+[vlm:wildrf]     vlm facebook/0_real/000042_0042.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=558 20.4s
+[vlm:wildrf]     vlm facebook/0_real/000043_0043.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=509 18.4s
+[vlm:wildrf]     vlm facebook/0_real/000044_0044.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=604 22.1s
+[vlm:wildrf]     vlm facebook/0_real/000045_0045.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=456 16.6s
+[vlm:wildrf]     vlm facebook/0_real/000046_0046.jpg label=0 verdict=real logit=-6.3750 src=verdict_token tok=474 17.2s
+[vlm:wildrf]     vlm facebook/0_real/000047_0047.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=523 18.7s
+[vlm:wildrf]     vlm facebook/0_real/000048_0048.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=519 18.5s
+[vlm:wildrf]     vlm facebook/0_real/000049_0049.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=543 19.7s
+[vlm:wildrf]     vlm facebook/0_real/000050_0050.jpg label=0 verdict=real logit=-8.7500 src=verdict_token tok=570 20.6s
+[vlm:wildrf]     vlm facebook/0_real/000051_0051.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=594 21.1s
+[vlm:wildrf]     vlm facebook/0_real/000052_0052.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=544 19.4s
+[vlm:wildrf]     vlm facebook/0_real/000053_0053.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=465 17.5s
+[vlm:wildrf]     vlm facebook/0_real/000054_0054.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=520 18.5s
+[vlm:wildrf]     vlm facebook/0_real/000055_0055.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=522 19.3s
+[vlm:wildrf]     vlm facebook/0_real/000056_0056.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=548 20.2s
+[vlm:wildrf]     vlm facebook/0_real/000057_0057.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=646 23.0s
+[vlm:wildrf]     vlm facebook/0_real/000058_0058.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=575 20.5s
+[vlm:wildrf]     vlm facebook/0_real/000059_0059.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=579 20.6s
+[vlm:wildrf]     vlm facebook/0_real/000060_0060.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=469 17.4s
+[vlm:wildrf]     vlm facebook/0_real/000061_0061.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=451 16.1s
+[vlm:wildrf]     vlm facebook/0_real/000062_0062.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=503 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000063_0063.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=503 18.0s
+[vlm:wildrf]     vlm facebook/0_real/000064_0064.jpg label=0 verdict=fake logit=3.2500 src=verdict_token tok=539 19.6s
+[vlm:wildrf]     vlm facebook/0_real/000065_0065.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=642 22.9s
+[vlm:wildrf]     vlm facebook/0_real/000066_0066.jpg label=0 verdict=real logit=-6.2500 src=verdict_token tok=492 17.6s
+[vlm:wildrf]     vlm facebook/0_real/000067_0067.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=622 22.1s
+[vlm:wildrf]     vlm facebook/0_real/000068_0068.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=488 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000069_0069.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=538 19.8s
+[vlm:wildrf]     vlm facebook/0_real/000070_0070.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=462 16.6s
+[vlm:wildrf]     vlm facebook/0_real/000071_0071.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=618 22.3s
+[vlm:wildrf]     vlm facebook/0_real/000072_0072.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=634 22.6s
+[vlm:wildrf]     vlm facebook/0_real/000073_0073.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=655 23.4s
+[vlm:wildrf]     vlm facebook/0_real/000074_0074.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=533 19.6s
+[vlm:wildrf]     vlm facebook/0_real/000075_0075.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=514 18.5s
+[vlm:wildrf]     vlm facebook/0_real/000076_0076.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=455 16.2s
+[vlm:wildrf]     vlm facebook/0_real/000077_0077.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=530 19.8s
+[vlm:wildrf]     vlm facebook/0_real/000078_0078.jpg label=0 verdict=fake logit=8.1250 src=verdict_token tok=548 19.7s
+[vlm:wildrf]     vlm facebook/0_real/000079_0079.jpg label=0 verdict=real logit=-9.0000 src=verdict_token tok=539 20.1s
+[vlm:wildrf]     vlm facebook/0_real/000080_0080.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=532 19.0s
+[vlm:wildrf]     vlm facebook/0_real/000081_0081.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=604 22.4s
+[vlm:wildrf]     vlm facebook/0_real/000082_0082.jpg label=0 verdict=fake logit=8.5000 src=verdict_token tok=550 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000083_0083.jpg label=0 verdict=fake logit=7.7500 src=verdict_token tok=478 17.0s
+[vlm:wildrf]     vlm facebook/0_real/000084_0084.jpg label=0 verdict=fake logit=4.7500 src=verdict_token tok=436 16.0s
+[vlm:wildrf]     vlm facebook/0_real/000085_0085.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=653 24.0s
+[vlm:wildrf]     vlm facebook/0_real/000086_0086.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=519 18.6s
+[vlm:wildrf]     vlm facebook/0_real/000087_0087.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=513 18.2s
+[vlm:wildrf]     vlm facebook/0_real/000088_0088.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=482 17.9s
+[vlm:wildrf]     vlm facebook/0_real/000089_0089.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=527 19.4s
+[vlm:wildrf]     vlm facebook/0_real/000090_0090.jpg label=0 verdict=fake logit=7.8750 src=verdict_token tok=596 21.3s
+[vlm:wildrf]     vlm facebook/0_real/000091_0091.jpg label=0 verdict=fake logit=9.2500 src=verdict_token tok=625 22.3s
+[vlm:wildrf]     vlm facebook/0_real/000092_0092.jpg label=0 verdict=fake logit=7.3750 src=verdict_token tok=447 16.4s
+[vlm:wildrf]     vlm facebook/0_real/000093_0093.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=533 19.7s
+[vlm:wildrf]     vlm facebook/0_real/000094_0094.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=480 17.2s
+[vlm:wildrf]     vlm facebook/0_real/000095_0095.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=545 19.7s
+[vlm:wildrf]     vlm facebook/0_real/000096_0096.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=507 18.5s
+[vlm:wildrf]     vlm facebook/0_real/000097_0097.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000098_0098.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=540 19.2s
+[vlm:wildrf]     vlm facebook/0_real/000099_0099.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=497 18.6s
+[vlm:wildrf]     vlm facebook/0_real/000100_0100.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=508 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000101_0101.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=575 20.5s
+[vlm:wildrf]     vlm facebook/0_real/000102_0102.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=511 18.3s
+[vlm:wildrf]     vlm facebook/0_real/000103_0103.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=452 16.6s
+[vlm:wildrf]     vlm facebook/0_real/000104_0104.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=558 20.1s
+[vlm:wildrf]     vlm facebook/0_real/000105_0105.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=506 18.0s
+[vlm:wildrf]     vlm facebook/0_real/000106_0106.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=589 21.4s
+[vlm:wildrf]     vlm facebook/0_real/000107_0107.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=505 18.9s
+[vlm:wildrf]     vlm facebook/0_real/000108_0108.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=547 19.5s
+[vlm:wildrf]     vlm facebook/0_real/000109_0109.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=527 18.9s
+[vlm:wildrf]     vlm facebook/0_real/000110_0110.jpg label=0 verdict=fake logit=6.3750 src=verdict_token tok=516 18.7s
+[vlm:wildrf]     vlm facebook/0_real/000111_0111.jpg label=0 verdict=real logit=-6.7500 src=verdict_token tok=676 24.7s
+[vlm:wildrf]     vlm facebook/0_real/000112_0112.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=616 21.9s
+[vlm:wildrf]     vlm facebook/0_real/000113_0113.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=638 23.4s
+[vlm:wildrf]     vlm facebook/0_real/000114_0114.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=555 19.7s
+[vlm:wildrf]     vlm facebook/0_real/000115_0115.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=549 19.6s
+[vlm:wildrf]     vlm facebook/0_real/000116_0116.jpg label=0 verdict=fake logit=8.6250 src=verdict_token tok=539 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000117_0117.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=564 20.8s
+[vlm:wildrf]     vlm facebook/0_real/000118_0118.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=461 16.5s
+[vlm:wildrf]     vlm facebook/0_real/000119_0119.jpg label=0 verdict=fake logit=8.3750 src=verdict_token tok=484 17.4s
+[vlm:wildrf]     vlm facebook/0_real/000120_0120.jpg label=0 verdict=real logit=-8.5000 src=verdict_token tok=577 21.4s
+[vlm:wildrf]     vlm facebook/0_real/000121_0121.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=466 16.7s
+[vlm:wildrf]     vlm facebook/0_real/000122_0122.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=506 18.6s
+[vlm:wildrf]     vlm facebook/0_real/000123_0123.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=476 17.7s
+[vlm:wildrf]     vlm facebook/0_real/000124_0124.jpg label=0 verdict=real logit=-8.2500 src=verdict_token tok=565 20.8s
+[vlm:wildrf]     vlm facebook/0_real/000125_0125.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=556 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000126_0126.jpg label=0 verdict=real logit=-7.3750 src=verdict_token tok=499 17.9s
+[vlm:wildrf]     vlm facebook/0_real/000127_0127.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=459 16.3s
+[vlm:wildrf]     vlm facebook/0_real/000128_0128.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=566 20.2s
+[vlm:wildrf]     vlm facebook/0_real/000129_0129.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=574 20.5s
+[vlm:wildrf]     vlm facebook/0_real/000130_0130.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=514 18.2s
+[vlm:wildrf]     vlm facebook/0_real/000131_0131.jpg label=0 verdict=real logit=-7.1250 src=verdict_token tok=530 19.4s
+[vlm:wildrf]     vlm facebook/0_real/000132_0132.jpg label=0 verdict=real logit=-7.2500 src=verdict_token tok=563 20.5s
+[vlm:wildrf]     vlm facebook/0_real/000133_0133.jpg label=0 verdict=fake logit=6.8750 src=verdict_token tok=520 18.4s
+[vlm:wildrf]     vlm facebook/0_real/000134_0134.jpg label=0 verdict=fake logit=7.6250 src=verdict_token tok=446 16.2s
+[vlm:wildrf]     vlm facebook/0_real/000135_0135.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=460 17.0s
+[vlm:wildrf]     vlm facebook/0_real/000136_0136.jpg label=0 verdict=real logit=-6.8750 src=verdict_token tok=707 25.1s
+[vlm:wildrf]     vlm facebook/0_real/000137_0137.jpg label=0 verdict=real logit=-7.6250 src=verdict_token tok=480 18.0s
+[vlm:wildrf]     vlm facebook/0_real/000138_0138.jpg label=0 verdict=real logit=-6.6250 src=verdict_token tok=521 18.7s
+[vlm:wildrf]     vlm facebook/0_real/000139_0139.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=595 21.9s
+[vlm:wildrf]     vlm facebook/0_real/000140_0140.jpg label=0 verdict=real logit=-7.0000 src=verdict_token tok=557 19.8s
+[vlm:wildrf]     vlm facebook/0_real/000141_0141.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=526 18.6s
+[vlm:wildrf]     vlm facebook/0_real/000142_0142.jpg label=0 verdict=real logit=-6.2500 src=verdict_token tok=478 17.0s
+[vlm:wildrf]     vlm facebook/0_real/000143_0143.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=569 21.0s
+[vlm:wildrf]     vlm facebook/0_real/000144_0144.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=571 20.8s
+[vlm:wildrf]     vlm facebook/0_real/000145_0145.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=512 19.1s
+[vlm:wildrf]     vlm facebook/0_real/000146_0146.jpg label=0 verdict=real logit=-7.5000 src=verdict_token tok=492 18.1s
+[vlm:wildrf]     vlm facebook/0_real/000147_0147.jpg label=0 verdict=real logit=-8.6250 src=verdict_token tok=561 20.4s
+[vlm:wildrf]     vlm facebook/0_real/000148_0148.jpg label=0 verdict=real logit=-8.0000 src=verdict_token tok=550 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000149_0149.jpg label=0 verdict=real logit=-8.1250 src=verdict_token tok=566 20.7s
+[vlm:wildrf]     vlm facebook/0_real/000150_0150.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=562 20.0s
+[vlm:wildrf]     vlm facebook/0_real/000151_0151.jpg label=0 verdict=real logit=-8.3750 src=verdict_token tok=485 17.2s
+[vlm:wildrf]     vlm facebook/0_real/000152_0152.jpg label=0 verdict=real logit=-7.7500 src=verdict_token tok=467 17.5s
+[vlm:wildrf]     vlm facebook/0_real/000153_0153.jpg label=0 verdict=real logit=-7.8750 src=verdict_token tok=436 16.6s
+slurmstepd: error: *** JOB 70136 ON node409 CANCELLED AT 2026-11-17T08:44:24 ***
+exit rc=0: final sync 08:44:24
+/var/scratch/ssalehid/synthscope_das6/das6_lib.sh: line 28: 265522 Terminated              ( while sleep $SYNC_SECONDS; do
+    sync_results;
+done )
+[vlm:wildrf]     vlm facebook/0_real/000154_0154.jpg label=0 verdict=real logit=-8.8750 src=verdict_token tok=496 18.1s

@@ -1,0 +1,638 @@
+log mirror: /var/scratch/ssalehid/synthscope_das6/logs/vpp_das6_das6_70135.out -> ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/vpp_das6_70135.out
+DAS6 job=70135 name=vpp_das6 node=node409 cpus=8 mem=40960M Tue Nov 17 07:44:36 CET 2026
+gpu=NVIDIA RTX A6000, 49140 MiB, 580.95.05; CUDA_VISIBLE_DEVICES=0
+python=/var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python torch 2.11.0+cu126 cuda_ok True
+/local free: 2.1T
+UNITS=all-cmp,vlm:wildrf,vlm:evalgen,vlm:realchain,vlm:ditfake,vlm:ufd8,vlm:ditfake:jpeg95,vlm:ufd8:jpeg95,vlm:wildrf:official,vlm:bfree_online,vlm:forensynths13,vlm:aigibench25,vlm:cospybench,vlm:synthwildx OLDNEW=1
+code=cf8c496 bench_eval VLM path (per-image Engine.vlm_score, resumable cache, verdict/logit metrics) + Veritas++ b branch=detector/veritaspp sha=cf8c496687969b16ae755134bbcbb6b4d4baa21f src=github uncommitted_tracked_files=0 (IVI wt /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt clean)
+benchmarks: genimage_val100k forensynths13 ufd8 aigcdetect17 synthbuster_coco evalgen synthwildx wildrf aigibench25 rrdataset bfree_online cospybench ditfake arforensics realchain
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+genimage_val100k: verified /local/ssalehid/vpp/subsets/genimage_val100k: 8 generators, 1008 scored images, 1008 files sha1-identical to the manifest
+subset forensynths13: verified earlier
+subset ufd8: verified earlier
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+aigcdetect17: verified /local/ssalehid/vpp/subsets/aigcdetect17: 17 generators, 1020 scored images, 1020 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+synthbuster_coco: verified /local/ssalehid/vpp/subsets/synthbuster_coco: 9 generators, 1008 scored images, 560 files sha1-identical to the manifest
+subset evalgen: verified earlier
+subset synthwildx: verified earlier
+subset wildrf: verified earlier
+subset aigibench25: verified earlier
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+rrdataset: verified /local/ssalehid/vpp/subsets/rrdataset: 3 generators, 1002 scored images, 1002 files sha1-identical to the manifest
+subset bfree_online: verified earlier
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+cospybench: verified /local/ssalehid/vpp/subsets/cospybench: 110 generators, 1100 scored images, 1100 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+ditfake: verified /local/ssalehid/vpp/subsets/ditfake: 3 generators, 1002 scored images, 1002 files sha1-identical to the manifest
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+arforensics: verified /local/ssalehid/vpp/subsets/arforensics: 7 generators, 1008 scored images, 1008 files sha1-identical to the manifest
+subset realchain: verified earlier
+staging cn029:vlm_ckpts/veritaspp -> /local/ssalehid/cache/data029/vlm_ckpts/veritaspp/ 07:53:42
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn029:vlm_ckpts/veritaspp: 33 files, 17G 07:53:42
+veritaspp weights verified earlier (Tue Nov 17 07:54:02 CET 2026)
+staging cn023:zoo_ckpts/clip.pth -> /local/ssalehid/cache/data023/zoo_ckpts/clip.pth 07:54:13
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/clip.pth: 1 files, 890M 07:54:14
+ckpt: clip -> clip.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/clip.pth (932233793 bytes)
+dep: clipL
+staging ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/clip/ViT-L-14.pt 07:54:14
+staged ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt: 1 files, 890M 07:54:15
+  sha256 OK ViT-L-14.pt b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836 (932768134 bytes)
+staging cn023:zoo_ckpts/cnn.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth 07:54:28
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cnn.pth: 1 files, 90M 07:54:28
+ckpt: cnn -> cnn.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth (94339007 bytes)
+dep: resnet50
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth 07:54:28
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth: 1 files, 98M 07:54:30
+  sha256 prefix 11ad3fa6 OK
+staging cn023:zoo_ckpts/dinov2.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth 07:54:41
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov2.pth: 1 files, 1.2G 07:54:42
+ckpt: dinov2 -> dinov2.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth (1217613135 bytes)
+dep: dinov2hub
+  already in the node torch cache
+dep: dinov2w
+  dinov2_vitl14_pretrain.pth sha256=d5383ea8f4877b2472eb973e0fd72d557c7da5d3611bd527ceeb1d7162cbf428 (1217586395 bytes)
+staging cn023:zoo_ckpts/dinov3.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth 07:54:54
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov3.pth: 1 files, 1.2G 07:54:55
+ckpt: dinov3 -> dinov3.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth (1213057245 bytes)
+dep: dinov3
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3 -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/ 07:54:55
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3: 337 files, 33M 07:54:56
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth 07:54:56
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth: 1 files, 1.2G 07:54:57
+  sha256 prefix 8aa4cbdd OK
+staging cn023:zoo_ckpts/adapted_dino.pth -> /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth 07:55:10
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/adapted_dino.pth: 1 files, 1.2G 07:55:11
+ckpt: adapted_dino -> adapted_dino.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth (1230317327 bytes)
+staging cn023:zoo_ckpts/safe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/safe.pth 07:55:21
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/safe.pth: 1 files, 5.6M 07:55:22
+ckpt: safe -> safe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/safe.pth (5828943 bytes)
+staging cn023:zoo_ckpts/fat_former.pth -> /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth 07:55:33
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/fat_former.pth: 1 files, 1.9G 07:55:34
+ckpt: fat_former -> fat_former.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth (1971052681 bytes)
+staging cn023:zoo_ckpts/aide.pth -> /local/ssalehid/cache/data023/zoo_ckpts/aide.pth 07:55:45
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/aide.pth: 1 files, 3.4G 07:55:46
+ckpt: aide -> aide.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/aide.pth (3592077976 bytes)
+staging cn023:zoo_ckpts/spai.pth -> /local/ssalehid/cache/data023/zoo_ckpts/spai.pth 07:55:55
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/spai.pth: 1 files, 534M 07:55:56
+ckpt: spai -> spai.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/spai.pth (559607690 bytes)
+dep: mfm
+staging cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth -> /local/ssalehid/cache/data023/zoo_ckpts/mfm/mfm_pretrain_vit_base.pth 07:55:56
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth: 1 files, 328M 07:55:56
+  sha256 OK mfm_pretrain_vit_base.pth 3dc31520f8971c64f06a6924c2a5e738b25db06d06c9b58853d7b13c60af7c80 (343213629 bytes)
+staging cn023:zoo_ckpts/vib_net.pth -> /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth 07:56:07
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/vib_net.pth: 1 files, 1.7G 07:56:08
+ckpt: vib_net -> vib_net.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth (1720094231 bytes)
+staging cn023:zoo_ckpts/bfree.pth -> /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth 07:56:19
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/bfree.pth: 1 files, 331M 07:56:19
+ckpt: bfree -> bfree.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth (346171370 bytes)
+staging cn023:zoo_ckpts/effort.pth -> /local/ssalehid/cache/data023/zoo_ckpts/effort.pth 07:56:31
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/effort.pth: 1 files, 1.2G 07:56:31
+ckpt: effort -> effort.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/effort.pth (1213769519 bytes)
+dep: hf:models--openai--clip-vit-large-patch14
+staging cn023:zoo_ckpts/moejepa.safetensors -> /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors 07:56:40
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/moejepa.safetensors: 1 files, 590M 07:56:41
+ckpt: moejepa -> moejepa.safetensors staged at /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors (617963532 bytes)
+dep: hf:models--facebook--vjepa2-vitl-fpc64-256
+staging cn023:zoo_ckpts/co_spy.pth -> /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth 07:56:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/co_spy.pth: 1 files, 3.6G 07:56:51
+ckpt: co_spy -> co_spy.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth (3852684857 bytes)
+dep: hf:models--CompVis--stable-diffusion-v1-4
+dep: hf:models--timm--ViT-SO400M-14-SigLIP-384
+staging cn023:zoo_ckpts/pgc.pth -> /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth 07:57:03
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/pgc.pth: 1 files, 1.2G 07:57:04
+ckpt: pgc -> pgc.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth (1245911754 bytes)
+dep: hf:models--facebook--dinov2-large
+staging cn023:zoo_ckpts/cure.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cure.pth 07:57:14
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cure.pth: 1 files, 25M 07:57:14
+ckpt: cure -> cure.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cure.pth (25728649 bytes)
+dep: pecore
+staging cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt -> /local/ssalehid/cache/data023/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt 07:57:15
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt: 1 files, 2.6G 07:57:15
+  PE-Core-L14-336.pt sha256=0cdab5b338cbaa1e7a5dcd1b2fb4c9f4d5df1abd289564658edbab64a650e7e8 (2684747432 bytes)
+staging cn023:zoo_ckpts/dda.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dda.pth 07:57:30
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dda.pth: 1 files, 1.2G 07:57:31
+ckpt: dda -> dda.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dda.pth (1255621296 bytes)
+staging cn023:zoo_ckpts/d3qe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth 07:57:42
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/d3qe.pth: 1 files, 89M 07:57:42
+ckpt: d3qe -> d3qe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth (92395435 bytes)
+dep: hf:models--FoundationVision--LlamaGen
+  SYNTHSCOPE_LLAMAGEN_VQ=/local/ssalehid/cache/hf/hub/models--FoundationVision--LlamaGen/snapshots/81e41139272c038412e4fe8f1c52a51ebbf95b8b/vq_ds16_c2i.pt
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth 07:57:53
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth: 1 files, 60M 07:57:54
+ckpt: ltf -> ltf.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth (62249626 bytes)
+  sha256 OK ltf.pth 32e9fa2e38e04d6d0221c844d650f0d45f7235bbf898b5ad665543d8be580031 (62249626 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth 07:58:03
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth: 1 files, 3.3G 07:58:04
+ckpt: mirror -> mirror.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth (3453063720 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth 07:58:15
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth: 1 files, 1.2G 07:58:16
+ckpt: vina -> vina.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth (1212678500 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth 07:58:27
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth: 1 files, 1.2G 07:58:28
+ckpt: probe -> probe.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth (1217679947 bytes)
+  sha256 OK DINOv2_best_model_step_34999.pth c8caa9bad54c029e4d22e1909c4673e46a239d8419a986e0ab461d423a450156 (1217679947 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth 07:58:39
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth: 1 files, 90M 07:58:40
+ckpt: probe_resnet -> probe_resnet.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth (94362899 bytes)
+  sha256 OK ResNet50_best_model_step_19343.pth 71ef257eb288ae17c6ad3348085f2ca1ce1a2cfa4273d69ef47b5d3420f0507c (94362899 bytes)
+staging cn023:zoo_ckpts/omniaid.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth 07:58:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid.pth: 1 files, 3.1G 07:58:52
+ckpt: omniaid -> omniaid.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth (3241518989 bytes)
+dep: hf:models--openai--clip-vit-large-patch14-336
+staging cn023:zoo_ckpts/omniaid_v1.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth 07:59:03
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_v1.pth: 1 files, 3.1G 07:59:03
+ckpt: omniaid_v1 -> omniaid_v1.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth (3269036790 bytes)
+staging cn023:zoo_ckpts/omniaid_genimage.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth 07:59:14
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_genimage.pth: 1 files, 3.1G 07:59:15
+ckpt: omniaid_genimage -> omniaid_genimage.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth (3241198710 bytes)
+staging cn023:zoo_ckpts/npr.pth -> /local/ssalehid/cache/data023/zoo_ckpts/npr.pth 07:59:24
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/npr.pth: 1 files, 5.6M 07:59:24
+ckpt: npr -> npr.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/npr.pth (5835619 bytes)
+preflight: clip OK offline: PREFLIGHT clip loaded 448 tensors from clip.pth (missing=0, unexpected=0) params=427.6M 16s
+preflight: cnn OK offline: PREFLIGHT cnn loaded 320 tensors from cnn.pth (missing=0, unexpected=0) params=23.5M 8s
+preflight: dinov2 OK offline: PREFLIGHT dinov2 loaded 345 tensors from dinov2.pth (missing=0, unexpected=0) params=304.4M 18s
+preflight: dinov3 OK offline: PREFLIGHT dinov3 loaded 370 tensors from dinov3.pth (missing=0, unexpected=0) params=303.2M 13s
+preflight: adapted_dino OK offline: PREFLIGHT adapted_dino loaded 465 tensors from adapted_dino.pth (missing=0, unexpected=0) params=307.5M 16s
+preflight: safe OK offline: PREFLIGHT safe loaded 150 tensors from safe.pth (missing=0, unexpected=0) params=1.4M 12s
+preflight: fat_former OK offline: PREFLIGHT fat_former loaded 719 tensors from fat_former.pth (missing=0, unexpected=0) params=492.6M 14s
+preflight: aide OK offline: PREFLIGHT aide loaded 1025 tensors from aide.pth (missing=0, unexpected=0) params=897.8M 34s
+preflight: spai OK offline: PREFLIGHT spai loaded 321 tensors from spai.pth (missing=0, unexpected=0) params=149.1M 11s
+preflight: vib_net OK offline: PREFLIGHT vib_net loaded 454 tensors from vib_net.pth (missing=0, unexpected=0) params=430.0M 18s
+preflight: bfree OK offline: PREFLIGHT bfree loaded 177 tensors from bfree.pth (missing=0, unexpected=0) params=86.5M 10s
+preflight: effort OK offline: PREFLIGHT effort loaded 681 tensors from effort.pth (missing=0, unexpected=0) params=504.6M 38s
+preflight: moejepa OK offline: PREFLIGHT moejepa loaded 116 tensors from moejepa.safetensors (missing=0, unexpected=0) params=480.5M 15s
+preflight: co_spy OK offline: PREFLIGHT co_spy loaded 1072 tensors from co_spy.pth (missing=0, unexpected=0) params=963.1M 73s
+preflight: pgc OK offline: PREFLIGHT pgc loaded 563 tensors from pgc.pth (missing=0, unexpected=0) params=306.7M 13s
+preflight: cure OK offline: PREFLIGHT cure loaded 100 tensors from cure.pth (missing=0, unexpected=0) params=309.8M 11s
+preflight: dda OK offline: PREFLIGHT dda loaded 537 tensors from dda.pth (missing=0, unexpected=0) params=307.5M 17s
+preflight: d3qe OK offline: PREFLIGHT d3qe loaded 81 tensors from d3qe.pth (missing=0, unexpected=0) params=507.2M 16s
+preflight: ltf OK offline: PREFLIGHT ltf loaded 37 tensors from ltf.pth (missing=0, unexpected=0) params=310.3M 14s
+preflight: mirror OK offline: PREFLIGHT mirror loaded 825 tensors from mirror.pth (missing=0, unexpected=0) params=856.0M 22s
+preflight: vina OK offline: PREFLIGHT vina loaded 417 tensors from vina.pth (missing=0, unexpected=0) params=303.1M 14s
+preflight: probe OK offline: PREFLIGHT probe loaded 442 tensors from probe.pth (missing=0, unexpected=0) params=304.4M 14s
+preflight: probe_resnet OK offline: PREFLIGHT probe_resnet loaded 320 tensors from probe_resnet.pth (missing=0, unexpected=0) params=23.5M 10s
+preflight: omniaid OK offline: PREFLIGHT omniaid loaded 2804 tensors from omniaid.pth (missing=0, unexpected=0) params=507.8M 44s
+preflight: omniaid_v1 OK offline: PREFLIGHT omniaid_v1 loaded 2804 tensors from omniaid_v1.pth (missing=0, unexpected=0) params=516.1M 41s
+preflight: omniaid_genimage OK offline: PREFLIGHT omniaid_genimage loaded 1940 tensors from omniaid_genimage.pth (missing=0, unexpected=0) params=508.8M 40s
+preflight: npr OK offline: PREFLIGHT npr loaded 146 tensors from npr.pth (missing=0, unexpected=0) params=1.4M 9s
+detectors requested: clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+detectors to run (27): clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+fatal: couldn't find remote ref 9f8b45c
+fetch of 9f8b45c failed
+exit rc=5: final sync 08:10:46

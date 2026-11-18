@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_d3qe",
+  "model": "d3qe",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 53.01,
+    "map": 63.82,
+    "mauroc": 64.65
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 59.58,
+      "auroc": 60.23,
+      "real_acc": 98.12,
+      "fake_acc": 3.75,
+      "acc": 50.94
+    },
+    "reddit": {
+      "ap": 62.21,
+      "auroc": 64.77,
+      "real_acc": 91.62,
+      "fake_acc": 17.96,
+      "acc": 54.79
+    },
+    "twitter": {
+      "ap": 69.66,
+      "auroc": 68.96,
+      "real_acc": 97.6,
+      "fake_acc": 8.98,
+      "acc": 53.29
+    }
+  },
+  "date": "2026-11-17T16:04:45",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

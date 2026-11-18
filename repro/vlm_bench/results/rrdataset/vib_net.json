@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_vib_net",
+  "model": "vib_net",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 43.21,
+    "map": 44.3,
+    "mauroc": 37.34
+  },
+  "per_generator": {
+    "original": {
+      "ap": 51.22,
+      "auroc": 44.53,
+      "real_acc": 74.85,
+      "fake_acc": 23.35,
+      "acc": 49.1
+    },
+    "redigital": {
+      "ap": 45.0,
+      "auroc": 41.37,
+      "real_acc": 56.89,
+      "fake_acc": 31.74,
+      "acc": 44.31
+    },
+    "transfer": {
+      "ap": 36.68,
+      "auroc": 26.11,
+      "real_acc": 54.49,
+      "fake_acc": 17.96,
+      "acc": 36.23
+    }
+  },
+  "date": "2026-11-17T18:10:03",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

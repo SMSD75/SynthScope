@@ -1,0 +1,198 @@
+{
+ "version": 1,
+ "description": "Veritas++ (VLM) benchmark subsets: every held image benchmark of the field-report matrix (repro/matrix/spec.json on fieldreport/harness @ 2691337), subsampled. Read by repro/vlm_bench/make_subsets.py and the vpp_* job scripts.",
+ "protocol": "per benchmark bench_eval --limit L, L = ceil(500 / n_generators): the first L sorted reals and the first L sorted fakes of every generator (bench_eval.discover order), a fixed subset (repro/vlm_bench/subsets/<bench>.json lists every file with its sha1). The same subset is used for every VLM and for the comparator detectors (user decision 2026-11-16: subsampled).",
+ "sources": {
+  "029": "ivi-cn029:/ssdstore/ssalehi/SynthScope",
+  "023": "ivi-cn023:/hddstore/ssalehi/SynthScope"
+ },
+ "degradations": [
+  "jpeg95"
+ ],
+ "jpeg95_benchmarks": [
+  "ditfake",
+  "ufd8"
+ ],
+ "sampled_benchmark": "wildrf",
+ "paper_benchmarks": [
+  "evalgen",
+  "realchain",
+  "wildrf"
+ ],
+ "detectors": [
+  "clip",
+  "cnn",
+  "dinov2",
+  "dinov3",
+  "adapted_dino",
+  "safe",
+  "fat_former",
+  "aide",
+  "spai",
+  "vib_net",
+  "bfree",
+  "effort",
+  "moejepa",
+  "co_spy",
+  "pgc",
+  "cure",
+  "dda",
+  "d3qe",
+  "ltf",
+  "mirror",
+  "vina",
+  "probe",
+  "probe_resnet",
+  "omniaid",
+  "omniaid_v1",
+  "omniaid_genimage",
+  "npr"
+ ],
+ "internal_only": [
+  "ltf",
+  "mirror",
+  "vina",
+  "probe",
+  "probe_resnet"
+ ],
+ "internal_only_note": "Comparators whose weights are not publicly licensed (no LICENSE / unclear terms; the keys of synthscope.hub.NEVER_REDISTRIBUTE that are comparators here), restored from the field-report matrix spec (repro/matrix/spec.json on fieldreport/harness @ 2691337). They are scored like the rest but are not servable, so compare.py reports a best overall detector and a best publicly licensed / servable one (ruling T2-C2).",
+ "benchmarks": [
+  {
+   "key": "genimage_val100k",
+   "title": "GenImage val (100k)",
+   "profile": "pergen",
+   "data": "GenImage_val_full/test",
+   "n_generators": 8,
+   "site": "029",
+   "limit": 63
+  },
+  {
+   "key": "forensynths13",
+   "title": "ForenSynths (13 generators)",
+   "profile": "forensynths",
+   "data": "CNNDetection/test",
+   "n_generators": 13,
+   "site": "023",
+   "limit": 39
+  },
+  {
+   "key": "ufd8",
+   "title": "UniversalFakeDetect (8 diffusion sets)",
+   "profile": "ufd",
+   "data": "universialfakedetection/test",
+   "n_generators": 8,
+   "site": "023",
+   "limit": 63
+  },
+  {
+   "key": "aigcdetect17",
+   "title": "AIGCDetectBenchmark (17)",
+   "profile": "pergen",
+   "data": "AIGCDetect/test",
+   "n_generators": 17,
+   "site": "029",
+   "limit": 30
+  },
+  {
+   "key": "synthbuster_coco",
+   "title": "Synthbuster (MSCOCO reals)",
+   "profile": "pergen",
+   "data": "Synthbuster/test",
+   "n_generators": 9,
+   "layout": "fakes_with_shared_reals",
+   "reals": "EvalGEN/test/Flux/0_real",
+   "site": "029",
+   "limit": 56
+  },
+  {
+   "key": "evalgen",
+   "title": "EvalGEN",
+   "profile": "pergen",
+   "data": "EvalGEN/test",
+   "n_generators": 5,
+   "site": "029",
+   "limit": 100
+  },
+  {
+   "key": "synthwildx",
+   "title": "SynthWildX",
+   "profile": "pergen",
+   "data": "SynthWildX/test",
+   "n_generators": 3,
+   "site": "029",
+   "limit": 167
+  },
+  {
+   "key": "wildrf",
+   "title": "WildRF",
+   "profile": "pergen",
+   "data": "WildRF/test",
+   "n_generators": 3,
+   "site": "029",
+   "limit": 167
+  },
+  {
+   "key": "aigibench25",
+   "title": "AIGIBench (25 subsets, full)",
+   "profile": "pergen",
+   "data": "AIGIBench/test",
+   "n_generators": 25,
+   "site": "023",
+   "limit": 20
+  },
+  {
+   "key": "rrdataset",
+   "title": "RRDataset",
+   "profile": "pergen",
+   "data": "RRDataset/test",
+   "n_generators": 3,
+   "site": "029",
+   "limit": 167
+  },
+  {
+   "key": "bfree_online",
+   "title": "BFree-Online",
+   "profile": "pergen",
+   "data": "BFreeOnline/test",
+   "n_generators": 1,
+   "site": "029",
+   "limit": 500
+  },
+  {
+   "key": "cospybench",
+   "title": "Co-Spy-Bench (110 subsets)",
+   "profile": "pergen",
+   "data": "CoSpyBench/test",
+   "n_generators": 110,
+   "site": "023",
+   "limit": 5
+  },
+  {
+   "key": "ditfake",
+   "title": "DiTFake",
+   "profile": "pergen",
+   "data": "DiTFake/test",
+   "n_generators": 3,
+   "site": "023",
+   "limit": 167
+  },
+  {
+   "key": "arforensics",
+   "title": "ARForensics",
+   "profile": "pergen",
+   "data": "ARForensics/test",
+   "n_generators": 7,
+   "site": "029",
+   "limit": 72
+  },
+  {
+   "key": "realchain",
+   "title": "RealChain (internal only)",
+   "profile": "pergen",
+   "data": "RealChain/test",
+   "n_generators": 7,
+   "site": "029",
+   "limit": 72
+  }
+ ]
+}

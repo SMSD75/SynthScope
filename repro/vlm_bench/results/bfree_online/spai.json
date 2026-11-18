@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_spai",
+  "model": "spai",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 59.69,
+    "map": 75.09,
+    "mauroc": 60.16
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 75.09,
+      "auroc": 60.16,
+      "real_acc": 76.58,
+      "fake_acc": 42.8,
+      "acc": 59.69
+    }
+  },
+  "date": "2026-11-17T19:03:04",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

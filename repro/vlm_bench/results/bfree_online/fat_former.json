@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_fat_former",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 50.0,
+    "map": 65.61,
+    "mauroc": 51.01
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 65.61,
+      "auroc": 51.01,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-11-17T18:53:19",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_dinov2",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 52.99,
+    "map": 53.85,
+    "mauroc": 50.23
+  },
+  "per_generator": {
+    "original": {
+      "ap": 55.58,
+      "auroc": 50.83,
+      "real_acc": 94.01,
+      "fake_acc": 11.98,
+      "acc": 52.99
+    },
+    "redigital": {
+      "ap": 51.33,
+      "auroc": 48.3,
+      "real_acc": 90.42,
+      "fake_acc": 17.37,
+      "acc": 53.89
+    },
+    "transfer": {
+      "ap": 54.63,
+      "auroc": 51.57,
+      "real_acc": 91.62,
+      "fake_acc": 12.57,
+      "acc": 52.1
+    }
+  },
+  "date": "2026-11-17T17:55:07",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

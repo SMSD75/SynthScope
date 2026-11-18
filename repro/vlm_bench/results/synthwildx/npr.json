@@ -1,0 +1,41 @@
+{
+  "tag": "vb_synthwildx_npr",
+  "model": "npr",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthwildx/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 55.29,
+    "map": 54.44,
+    "mauroc": 57.47
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 46.89,
+      "auroc": 50.17,
+      "real_acc": 61.08,
+      "fake_acc": 37.72,
+      "acc": 49.4
+    },
+    "firefly": {
+      "ap": 65.71,
+      "auroc": 69.8,
+      "real_acc": 61.08,
+      "fake_acc": 71.26,
+      "acc": 66.17
+    },
+    "midjourney_v5": {
+      "ap": 50.72,
+      "auroc": 52.45,
+      "real_acc": 61.08,
+      "fake_acc": 39.52,
+      "acc": 50.3
+    }
+  },
+  "date": "2026-11-17T15:17:11",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_rrdataset_bfree",
+  "model": "bfree",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/rrdataset/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 51.8,
+    "map": 54.07,
+    "mauroc": 53.48
+  },
+  "per_generator": {
+    "original": {
+      "ap": 71.6,
+      "auroc": 70.02,
+      "real_acc": 97.6,
+      "fake_acc": 14.37,
+      "acc": 55.99
+    },
+    "redigital": {
+      "ap": 47.38,
+      "auroc": 48.19,
+      "real_acc": 99.4,
+      "fake_acc": 1.2,
+      "acc": 50.3
+    },
+    "transfer": {
+      "ap": 43.24,
+      "auroc": 42.22,
+      "real_acc": 97.01,
+      "fake_acc": 1.2,
+      "acc": 49.1
+    }
+  },
+  "date": "2026-11-17T18:13:11",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

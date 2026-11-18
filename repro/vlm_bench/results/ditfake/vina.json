@@ -1,0 +1,41 @@
+{
+  "tag": "vb_ditfake_vina",
+  "model": "vina",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 97.81,
+    "map": 99.94,
+    "mauroc": 99.94
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 99.99,
+      "auroc": 99.99,
+      "real_acc": 100.0,
+      "fake_acc": 92.22,
+      "acc": 96.11
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 99.84,
+      "auroc": 99.82,
+      "real_acc": 100.0,
+      "fake_acc": 94.61,
+      "acc": 97.31
+    }
+  },
+  "date": "2026-11-17T20:56:44",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

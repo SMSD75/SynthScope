@@ -1,0 +1,41 @@
+{
+  "tag": "vb_ditfake_fat_former",
+  "model": "fat_former",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 60.48,
+    "map": 70.9,
+    "mauroc": 66.87
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 62.95,
+      "auroc": 59.82,
+      "real_acc": 98.2,
+      "fake_acc": 11.98,
+      "acc": 55.09
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 79.1,
+      "auroc": 74.12,
+      "real_acc": 96.41,
+      "fake_acc": 39.52,
+      "acc": 67.96
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 70.64,
+      "auroc": 66.68,
+      "real_acc": 97.01,
+      "fake_acc": 19.76,
+      "acc": 58.38
+    }
+  },
+  "date": "2026-11-17T20:41:51",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_dinov2",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 61.43,
+    "map": 70.52,
+    "mauroc": 67.02
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 61.45,
+      "auroc": 55.42,
+      "real_acc": 99.37,
+      "fake_acc": 7.5,
+      "acc": 53.44
+    },
+    "reddit": {
+      "ap": 78.81,
+      "auroc": 77.3,
+      "real_acc": 91.02,
+      "fake_acc": 52.69,
+      "acc": 71.86
+    },
+    "twitter": {
+      "ap": 71.31,
+      "auroc": 68.33,
+      "real_acc": 95.81,
+      "fake_acc": 22.16,
+      "acc": 58.98
+    }
+  },
+  "date": "2026-11-17T15:21:54",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

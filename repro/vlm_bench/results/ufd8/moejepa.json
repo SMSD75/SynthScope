@@ -1,0 +1,76 @@
+{
+  "tag": "vb_ufd8_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "ufd",
+  "data_root": "/local/ssalehid/vpp/subsets/ufd8/data",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 63.0,
+    "map": 69.78,
+    "mauroc": 68.37
+  },
+  "per_generator": {
+    "dalle": {
+      "ap": 64.61,
+      "auroc": 59.76,
+      "real_acc": 90.48,
+      "fake_acc": 31.75,
+      "acc": 61.11
+    },
+    "glide_100_10": {
+      "ap": 76.15,
+      "auroc": 76.44,
+      "real_acc": 90.48,
+      "fake_acc": 41.27,
+      "acc": 65.87
+    },
+    "glide_100_27": {
+      "ap": 76.07,
+      "auroc": 76.17,
+      "real_acc": 90.48,
+      "fake_acc": 44.44,
+      "acc": 67.46
+    },
+    "glide_50_27": {
+      "ap": 76.1,
+      "auroc": 74.86,
+      "real_acc": 90.48,
+      "fake_acc": 42.86,
+      "acc": 66.67
+    },
+    "guided": {
+      "ap": 61.39,
+      "auroc": 61.0,
+      "real_acc": 88.89,
+      "fake_acc": 23.81,
+      "acc": 56.35
+    },
+    "ldm_100": {
+      "ap": 71.51,
+      "auroc": 70.19,
+      "real_acc": 90.48,
+      "fake_acc": 42.86,
+      "acc": 66.67
+    },
+    "ldm_200": {
+      "ap": 68.87,
+      "auroc": 67.12,
+      "real_acc": 90.48,
+      "fake_acc": 26.98,
+      "acc": 58.73
+    },
+    "ldm_200_cfg": {
+      "ap": 63.52,
+      "auroc": 61.38,
+      "real_acc": 90.48,
+      "fake_acc": 31.75,
+      "acc": 61.11
+    }
+  },
+  "date": "2026-11-17T11:04:36",
+  "synthscope_version": "0.1.0",
+  "limit": 63
+}

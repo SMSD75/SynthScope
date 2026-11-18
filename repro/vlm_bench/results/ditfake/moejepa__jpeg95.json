@@ -1,0 +1,42 @@
+{
+  "tag": "vb_ditfake_moejepa__jpeg95",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 67.97,
+    "map": 79.23,
+    "mauroc": 79.09
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 77.52,
+      "auroc": 77.65,
+      "real_acc": 52.1,
+      "fake_acc": 87.43,
+      "acc": 69.76
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 94.99,
+      "auroc": 93.85,
+      "real_acc": 47.31,
+      "fake_acc": 97.6,
+      "acc": 72.46
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 65.19,
+      "auroc": 65.78,
+      "real_acc": 47.9,
+      "fake_acc": 75.45,
+      "acc": 61.68
+    }
+  },
+  "date": "2026-11-17T22:26:30",
+  "synthscope_version": "0.1.0",
+  "degrade": "jpeg95",
+  "limit": 167
+}

@@ -1,0 +1,41 @@
+{
+  "tag": "vb_synthwildx_omniaid",
+  "model": "omniaid",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthwildx/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 88.62,
+    "map": 96.27,
+    "mauroc": 96.04
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 99.21,
+      "auroc": 99.24,
+      "real_acc": 97.6,
+      "fake_acc": 93.41,
+      "acc": 95.51
+    },
+    "firefly": {
+      "ap": 92.21,
+      "auroc": 91.68,
+      "real_acc": 97.6,
+      "fake_acc": 58.68,
+      "acc": 78.14
+    },
+    "midjourney_v5": {
+      "ap": 97.4,
+      "auroc": 97.2,
+      "real_acc": 97.6,
+      "fake_acc": 86.83,
+      "acc": 92.22
+    }
+  },
+  "date": "2026-11-17T15:09:37",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

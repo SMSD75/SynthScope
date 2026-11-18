@@ -1,0 +1,41 @@
+{
+  "tag": "vb_synthwildx_moejepa",
+  "model": "moejepa",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/synthwildx/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 77.45,
+    "map": 86.31,
+    "mauroc": 84.51
+  },
+  "per_generator": {
+    "dalle3": {
+      "ap": 92.66,
+      "auroc": 92.22,
+      "real_acc": 89.82,
+      "fake_acc": 80.24,
+      "acc": 85.03
+    },
+    "firefly": {
+      "ap": 79.17,
+      "auroc": 76.19,
+      "real_acc": 89.82,
+      "fake_acc": 50.9,
+      "acc": 70.36
+    },
+    "midjourney_v5": {
+      "ap": 87.1,
+      "auroc": 85.13,
+      "real_acc": 89.82,
+      "fake_acc": 64.07,
+      "acc": 76.95
+    }
+  },
+  "date": "2026-11-17T14:28:33",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

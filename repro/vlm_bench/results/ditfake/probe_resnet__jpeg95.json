@@ -1,0 +1,42 @@
+{
+  "tag": "vb_ditfake_probe_resnet__jpeg95",
+  "model": "probe_resnet",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/ditfake/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 92.12,
+    "map": 98.54,
+    "mauroc": 98.57
+  },
+  "per_generator": {
+    "FLUX.1-schnell": {
+      "ap": 97.43,
+      "auroc": 97.57,
+      "real_acc": 98.2,
+      "fake_acc": 78.44,
+      "acc": 88.32
+    },
+    "PixArt-Sigma-XL-2-1024-MS": {
+      "ap": 99.51,
+      "auroc": 99.52,
+      "real_acc": 97.6,
+      "fake_acc": 95.81,
+      "acc": 96.71
+    },
+    "stable-diffusion-3-medium-diffusers": {
+      "ap": 98.67,
+      "auroc": 98.61,
+      "real_acc": 96.41,
+      "fake_acc": 86.23,
+      "acc": 91.32
+    }
+  },
+  "date": "2026-11-17T22:36:43",
+  "synthscope_version": "0.1.0",
+  "degrade": "jpeg95",
+  "limit": 167
+}

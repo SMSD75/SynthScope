@@ -1,0 +1,1756 @@
+log mirror: /var/scratch/ssalehid/synthscope_das6/logs/vpp_das6_das6_70275.out -> ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/vpp_das6_70275.out
+DAS6 job=70275 name=vpp_das6 node=node409 cpus=8 mem=32768M Tue Nov 17 20:23:34 CET 2026
+gpu=NVIDIA RTX A6000, 49140 MiB, 580.95.05; CUDA_VISIBLE_DEVICES=0
+python=/var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python torch 2.11.0+cu126 cuda_ok True
+/local free: 2.1T
+UNITS=all-cmp OLDNEW=0
+code=7de4a1e vlm_bench: untrack the in-progress results swept into 4112db8 (they are committed when the runs finish branch=detector/veritaspp sha=7de4a1ea841d89755d8baf2400e4153d519c44be src=github uncommitted_tracked_files=0 (IVI wt /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt clean)
+benchmarks: genimage_val100k forensynths13 ufd8 aigcdetect17 synthbuster_coco evalgen synthwildx wildrf aigibench25 rrdataset bfree_online cospybench ditfake arforensics realchain
+subset genimage_val100k: verified earlier
+subset forensynths13: verified earlier
+subset ufd8: verified earlier
+subset aigcdetect17: verified earlier
+subset synthbuster_coco: verified earlier
+subset evalgen: verified earlier
+subset synthwildx: verified earlier
+subset wildrf: verified earlier
+subset aigibench25: verified earlier
+subset rrdataset: verified earlier
+subset bfree_online: verified earlier
+subset cospybench: verified earlier
+subset ditfake: verified earlier
+subset arforensics: verified earlier
+subset realchain: verified earlier
+staging cn023:zoo_ckpts/clip.pth -> /local/ssalehid/cache/data023/zoo_ckpts/clip.pth 20:23:58
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/clip.pth: 1 files, 890M 20:23:59
+ckpt: clip -> clip.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/clip.pth (932233793 bytes)
+dep: clipL
+staging ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/clip/ViT-L-14.pt 20:23:59
+staged ivi-h1:/home/ssalehi/.cache/clip/ViT-L-14.pt: 1 files, 890M 20:24:00
+  sha256 OK ViT-L-14.pt b8cca3fd41ae0c99ba7e8951adf17d267cdb84cd88be6f7c2e0eca1737a03836 (932768134 bytes)
+staging cn023:zoo_ckpts/cnn.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth 20:24:13
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cnn.pth: 1 files, 90M 20:24:13
+ckpt: cnn -> cnn.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cnn.pth (94339007 bytes)
+dep: resnet50
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth 20:24:13
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth: 1 files, 98M 20:24:14
+  sha256 prefix 11ad3fa6 OK
+staging cn023:zoo_ckpts/dinov2.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth 20:24:25
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov2.pth: 1 files, 1.2G 20:24:26
+ckpt: dinov2 -> dinov2.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov2.pth (1217613135 bytes)
+dep: dinov2hub
+  already in the node torch cache
+dep: dinov2w
+  dinov2_vitl14_pretrain.pth sha256=d5383ea8f4877b2472eb973e0fd72d557c7da5d3611bd527ceeb1d7162cbf428 (1217586395 bytes)
+staging cn023:zoo_ckpts/dinov3.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth 20:24:38
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dinov3.pth: 1 files, 1.2G 20:24:39
+ckpt: dinov3 -> dinov3.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dinov3.pth (1213057245 bytes)
+dep: dinov3
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3 -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3/ 20:24:39
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/facebookresearch_dinov3: 337 files, 33M 20:24:40
+staging ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth -> /local/ssalehid/cache/ivi/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth 20:24:40
+staged ivi-h1:/home/ssalehi/.cache/torch/hub/checkpoints/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth: 1 files, 1.2G 20:24:41
+  sha256 prefix 8aa4cbdd OK
+staging cn023:zoo_ckpts/adapted_dino.pth -> /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth 20:24:54
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/adapted_dino.pth: 1 files, 1.2G 20:24:55
+ckpt: adapted_dino -> adapted_dino.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/adapted_dino.pth (1230317327 bytes)
+staging cn023:zoo_ckpts/safe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/safe.pth 20:25:06
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/safe.pth: 1 files, 5.6M 20:25:06
+ckpt: safe -> safe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/safe.pth (5828943 bytes)
+staging cn023:zoo_ckpts/fat_former.pth -> /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth 20:25:18
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/fat_former.pth: 1 files, 1.9G 20:25:18
+ckpt: fat_former -> fat_former.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/fat_former.pth (1971052681 bytes)
+staging cn023:zoo_ckpts/aide.pth -> /local/ssalehid/cache/data023/zoo_ckpts/aide.pth 20:25:29
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/aide.pth: 1 files, 3.4G 20:25:30
+ckpt: aide -> aide.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/aide.pth (3592077976 bytes)
+staging cn023:zoo_ckpts/spai.pth -> /local/ssalehid/cache/data023/zoo_ckpts/spai.pth 20:25:40
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/spai.pth: 1 files, 534M 20:25:41
+ckpt: spai -> spai.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/spai.pth (559607690 bytes)
+dep: mfm
+staging cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth -> /local/ssalehid/cache/data023/zoo_ckpts/mfm/mfm_pretrain_vit_base.pth 20:25:41
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/mfm/mfm_pretrain_vit_base.pth: 1 files, 328M 20:25:41
+  sha256 OK mfm_pretrain_vit_base.pth 3dc31520f8971c64f06a6924c2a5e738b25db06d06c9b58853d7b13c60af7c80 (343213629 bytes)
+staging cn023:zoo_ckpts/vib_net.pth -> /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth 20:25:53
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/vib_net.pth: 1 files, 1.7G 20:25:54
+ckpt: vib_net -> vib_net.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/vib_net.pth (1720094231 bytes)
+staging cn023:zoo_ckpts/bfree.pth -> /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth 20:26:05
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/bfree.pth: 1 files, 331M 20:26:05
+ckpt: bfree -> bfree.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/bfree.pth (346171370 bytes)
+staging cn023:zoo_ckpts/effort.pth -> /local/ssalehid/cache/data023/zoo_ckpts/effort.pth 20:26:16
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/effort.pth: 1 files, 1.2G 20:26:17
+ckpt: effort -> effort.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/effort.pth (1213769519 bytes)
+dep: hf:models--openai--clip-vit-large-patch14
+staging cn023:zoo_ckpts/moejepa.safetensors -> /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors 20:26:28
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/moejepa.safetensors: 1 files, 590M 20:26:28
+ckpt: moejepa -> moejepa.safetensors staged at /local/ssalehid/cache/data023/zoo_ckpts/moejepa.safetensors (617963532 bytes)
+dep: hf:models--facebook--vjepa2-vitl-fpc64-256
+staging cn023:zoo_ckpts/co_spy.pth -> /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth 20:26:39
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/co_spy.pth: 1 files, 3.6G 20:26:39
+ckpt: co_spy -> co_spy.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/co_spy.pth (3852684857 bytes)
+dep: hf:models--CompVis--stable-diffusion-v1-4
+dep: hf:models--timm--ViT-SO400M-14-SigLIP-384
+staging cn023:zoo_ckpts/pgc.pth -> /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth 20:26:51
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/pgc.pth: 1 files, 1.2G 20:26:51
+ckpt: pgc -> pgc.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/pgc.pth (1245911754 bytes)
+dep: hf:models--facebook--dinov2-large
+staging cn023:zoo_ckpts/cure.pth -> /local/ssalehid/cache/data023/zoo_ckpts/cure.pth 20:27:02
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/cure.pth: 1 files, 25M 20:27:03
+ckpt: cure -> cure.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/cure.pth (25728649 bytes)
+dep: pecore
+staging cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt -> /local/ssalehid/cache/data023/.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt 20:27:03
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:.cache_hf_cure/hub/models--facebook--PE-Core-L14-336/snapshots/bafb0f76541d399057e980a25947f67acec76575/PE-Core-L14-336.pt: 1 files, 2.6G 20:27:04
+  PE-Core-L14-336.pt sha256=0cdab5b338cbaa1e7a5dcd1b2fb4c9f4d5df1abd289564658edbab64a650e7e8 (2684747432 bytes)
+staging cn023:zoo_ckpts/dda.pth -> /local/ssalehid/cache/data023/zoo_ckpts/dda.pth 20:27:19
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/dda.pth: 1 files, 1.2G 20:27:20
+ckpt: dda -> dda.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/dda.pth (1255621296 bytes)
+staging cn023:zoo_ckpts/d3qe.pth -> /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth 20:27:31
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/d3qe.pth: 1 files, 89M 20:27:32
+ckpt: d3qe -> d3qe.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/d3qe.pth (92395435 bytes)
+dep: hf:models--FoundationVision--LlamaGen
+  SYNTHSCOPE_LLAMAGEN_VQ=/local/ssalehid/cache/hf/hub/models--FoundationVision--LlamaGen/snapshots/81e41139272c038412e4fe8f1c52a51ebbf95b8b/vq_ds16_c2i.pt
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth 20:27:43
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth: 1 files, 60M 20:27:44
+ckpt: ltf -> ltf.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/ltf/ltf.pth (62249626 bytes)
+  sha256 OK ltf.pth 32e9fa2e38e04d6d0221c844d650f0d45f7235bbf898b5ad665543d8be580031 (62249626 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth 20:27:55
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth: 1 files, 3.3G 20:27:56
+ckpt: mirror -> mirror.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/mirror/serve/mirror.pth (3453063720 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth 20:28:08
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth: 1 files, 1.2G 20:28:09
+ckpt: vina -> vina.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/vina/serve/vina.pth (1212678500 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth 20:28:21
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth: 1 files, 1.2G 20:28:22
+ckpt: probe -> probe.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/DINOv2_best_model_step_34999.pth (1217679947 bytes)
+  sha256 OK DINOv2_best_model_step_34999.pth c8caa9bad54c029e4d22e1909c4673e46a239d8419a986e0ab461d423a450156 (1217679947 bytes)
+staging ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth -> /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth 20:28:36
+staged ivi-h1:/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth: 1 files, 90M 20:28:37
+ckpt: probe_resnet -> probe_resnet.pth staged at /local/ssalehid/cache/ivi/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/ckpts/probe/ResNet50_best_model_step_19343.pth (94362899 bytes)
+  sha256 OK ResNet50_best_model_step_19343.pth 71ef257eb288ae17c6ad3348085f2ca1ce1a2cfa4273d69ef47b5d3420f0507c (94362899 bytes)
+staging cn023:zoo_ckpts/omniaid.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth 20:28:48
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid.pth: 1 files, 3.1G 20:28:49
+ckpt: omniaid -> omniaid.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid.pth (3241518989 bytes)
+dep: hf:models--openai--clip-vit-large-patch14-336
+staging cn023:zoo_ckpts/omniaid_v1.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth 20:29:00
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_v1.pth: 1 files, 3.1G 20:29:01
+ckpt: omniaid_v1 -> omniaid_v1.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_v1.pth (3269036790 bytes)
+staging cn023:zoo_ckpts/omniaid_genimage.pth -> /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth 20:29:12
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/omniaid_genimage.pth: 1 files, 3.1G 20:29:13
+ckpt: omniaid_genimage -> omniaid_genimage.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/omniaid_genimage.pth (3241198710 bytes)
+staging cn023:zoo_ckpts/npr.pth -> /local/ssalehid/cache/data023/zoo_ckpts/npr.pth 20:29:24
+**********************************************************************
+          Welcome to the Amsterdam/UvA FNWI research cluster.
+                         Faculty of Science
+                    (http://www.science.uva.nl)
+              University of Amsterdam,  The Netherlands
+
+
+             Only AUTHORIZED USERS may access this site.
+
+All actions are logged. If you don't like this policy, disconnect now.
+
+**********************************************************************
+  Faculty Expert-IT Support Group (mailto:feiog-tech-science@uva.nl)
+**********************************************************************
+staged cn023:zoo_ckpts/npr.pth: 1 files, 5.6M 20:29:24
+ckpt: npr -> npr.pth staged at /local/ssalehid/cache/data023/zoo_ckpts/npr.pth (5835619 bytes)
+preflight: clip OK offline: PREFLIGHT clip loaded 448 tensors from clip.pth (missing=0, unexpected=0) params=427.6M 16s
+preflight: cnn OK offline: PREFLIGHT cnn loaded 320 tensors from cnn.pth (missing=0, unexpected=0) params=23.5M 11s
+preflight: dinov2 OK offline: PREFLIGHT dinov2 loaded 345 tensors from dinov2.pth (missing=0, unexpected=0) params=304.4M 17s
+preflight: dinov3 OK offline: PREFLIGHT dinov3 loaded 370 tensors from dinov3.pth (missing=0, unexpected=0) params=303.2M 13s
+preflight: adapted_dino OK offline: PREFLIGHT adapted_dino loaded 465 tensors from adapted_dino.pth (missing=0, unexpected=0) params=307.5M 15s
+preflight: safe OK offline: PREFLIGHT safe loaded 150 tensors from safe.pth (missing=0, unexpected=0) params=1.4M 9s
+preflight: fat_former OK offline: PREFLIGHT fat_former loaded 719 tensors from fat_former.pth (missing=0, unexpected=0) params=492.6M 18s
+preflight: aide OK offline: PREFLIGHT aide loaded 1025 tensors from aide.pth (missing=0, unexpected=0) params=897.8M 27s
+preflight: spai OK offline: PREFLIGHT spai loaded 321 tensors from spai.pth (missing=0, unexpected=0) params=149.1M 14s
+preflight: vib_net OK offline: PREFLIGHT vib_net loaded 454 tensors from vib_net.pth (missing=0, unexpected=0) params=430.0M 16s
+preflight: bfree OK offline: PREFLIGHT bfree loaded 177 tensors from bfree.pth (missing=0, unexpected=0) params=86.5M 14s
+preflight: effort OK offline: PREFLIGHT effort loaded 681 tensors from effort.pth (missing=0, unexpected=0) params=504.6M 36s
+preflight: moejepa OK offline: PREFLIGHT moejepa loaded 116 tensors from moejepa.safetensors (missing=0, unexpected=0) params=480.5M 13s
+preflight: co_spy OK offline: PREFLIGHT co_spy loaded 1072 tensors from co_spy.pth (missing=0, unexpected=0) params=963.1M 79s
+preflight: pgc OK offline: PREFLIGHT pgc loaded 563 tensors from pgc.pth (missing=0, unexpected=0) params=306.7M 10s
+preflight: cure OK offline: PREFLIGHT cure loaded 100 tensors from cure.pth (missing=0, unexpected=0) params=309.8M 11s
+preflight: dda OK offline: PREFLIGHT dda loaded 537 tensors from dda.pth (missing=0, unexpected=0) params=307.5M 15s
+preflight: d3qe OK offline: PREFLIGHT d3qe loaded 81 tensors from d3qe.pth (missing=0, unexpected=0) params=507.2M 16s
+preflight: ltf OK offline: PREFLIGHT ltf loaded 37 tensors from ltf.pth (missing=0, unexpected=0) params=310.3M 15s
+preflight: mirror OK offline: PREFLIGHT mirror loaded 825 tensors from mirror.pth (missing=0, unexpected=0) params=856.0M 20s
+preflight: vina OK offline: PREFLIGHT vina loaded 417 tensors from vina.pth (missing=0, unexpected=0) params=303.1M 16s
+preflight: probe OK offline: PREFLIGHT probe loaded 442 tensors from probe.pth (missing=0, unexpected=0) params=304.4M 14s
+preflight: probe_resnet OK offline: PREFLIGHT probe_resnet loaded 320 tensors from probe_resnet.pth (missing=0, unexpected=0) params=23.5M 10s
+preflight: omniaid OK offline: PREFLIGHT omniaid loaded 2804 tensors from omniaid.pth (missing=0, unexpected=0) params=507.8M 39s
+preflight: omniaid_v1 OK offline: PREFLIGHT omniaid_v1 loaded 2804 tensors from omniaid_v1.pth (missing=0, unexpected=0) params=516.1M 38s
+preflight: omniaid_genimage OK offline: PREFLIGHT omniaid_genimage loaded 1940 tensors from omniaid_genimage.pth (missing=0, unexpected=0) params=508.8M 39s
+preflight: npr OK offline: PREFLIGHT npr loaded 146 tensors from npr.pth (missing=0, unexpected=0) params=1.4M 10s
+detectors requested: clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+detectors to run (27): clip,cnn,dinov2,dinov3,adapted_dino,safe,fat_former,aide,spai,vib_net,bfree,effort,moejepa,co_spy,pgc,cure,dda,d3qe,ltf,mirror,vina,probe,probe_resnet,omniaid,omniaid_v1,omniaid_genimage,npr
+=== run_units 20:40:45
+=== unit cmp:fat_former:ditfake START 2026-11-17 20:40:45 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model fat_former --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_fat_former --out /local/ssalehid/vpp/out/ditfake/fat_former.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:fat_former:ditfake]   from pkg_resources import resource_stream
+[cmp:fat_former:ditfake] === bench_eval vb_ditfake_fat_former | model=fat_former ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:fat_former:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:fat_former:ditfake]     FLUX.1-schnell: acc=55.09 AP=62.95 AUROC=59.82 (real_acc=98.2 fake_acc=11.98)
+[cmp:fat_former:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:fat_former:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=67.96 AP=79.1 AUROC=74.12 (real_acc=96.41 fake_acc=39.52)
+[cmp:fat_former:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:fat_former:ditfake]     stable-diffusion-3-medium-diffusers: acc=58.38 AP=70.64 AUROC=66.68 (real_acc=97.01 fake_acc=19.76)
+[cmp:fat_former:ditfake] === RESULT vb_ditfake_fat_former: mAP=70.9 mAUROC=66.87 acc=60.48 over 3 generators -> /local/ssalehid/vpp/out/ditfake/fat_former.json.partial ===
+=== unit cmp:fat_former:ditfake DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/fat_former.json
+=== unit cmp:spai:ditfake START 2026-11-17 20:41:53 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model spai --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_spai --out /local/ssalehid/vpp/out/ditfake/spai.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:spai:ditfake] [SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+[cmp:spai:ditfake] === bench_eval vb_ditfake_spai | model=spai ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:spai:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:spai:ditfake]     FLUX.1-schnell: acc=91.32 AP=98.33 AUROC=98.38 (real_acc=98.8 fake_acc=83.83)
+[cmp:spai:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:spai:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=95.81 AP=99.54 AUROC=99.57 (real_acc=98.2 fake_acc=93.41)
+[cmp:spai:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:spai:ditfake]     stable-diffusion-3-medium-diffusers: acc=97.9 AP=99.9 AUROC=99.89 (real_acc=100.0 fake_acc=95.81)
+[cmp:spai:ditfake] === RESULT vb_ditfake_spai: mAP=99.26 mAUROC=99.28 acc=95.01 over 3 generators -> /local/ssalehid/vpp/out/ditfake/spai.json.partial ===
+=== unit cmp:spai:ditfake DONE rc=0 in 0.08 h -> /local/ssalehid/vpp/out/ditfake/spai.json
+=== unit cmp:bfree:ditfake START 2026-11-17 20:46:41 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model bfree --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_bfree --out /local/ssalehid/vpp/out/ditfake/bfree.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:bfree:ditfake] === bench_eval vb_ditfake_bfree | model=bfree ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:bfree:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:bfree:ditfake]     FLUX.1-schnell: acc=88.32 AP=98.12 AUROC=98.2 (real_acc=97.01 fake_acc=79.64)
+[cmp:bfree:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:bfree:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:bfree:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:bfree:ditfake]     stable-diffusion-3-medium-diffusers: acc=99.1 AP=99.95 AUROC=99.95 (real_acc=98.8 fake_acc=99.4)
+[cmp:bfree:ditfake] === RESULT vb_ditfake_bfree: mAP=99.36 mAUROC=99.38 acc=95.81 over 3 generators -> /local/ssalehid/vpp/out/ditfake/bfree.json.partial ===
+=== unit cmp:bfree:ditfake DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/bfree.json
+=== unit cmp:co_spy:ditfake START 2026-11-17 20:49:12 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model co_spy --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_co_spy --out /local/ssalehid/vpp/out/ditfake/co_spy.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:co_spy:ditfake] === bench_eval vb_ditfake_co_spy | model=co_spy ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:co_spy:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:co_spy:ditfake]     FLUX.1-schnell: acc=96.41 AP=99.76 AUROC=99.75 (real_acc=99.4 fake_acc=93.41)
+[cmp:co_spy:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:co_spy:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=97.9 AP=99.76 AUROC=99.75 (real_acc=98.8 fake_acc=97.01)
+[cmp:co_spy:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:co_spy:ditfake]     stable-diffusion-3-medium-diffusers: acc=97.01 AP=99.2 AUROC=99.24 (real_acc=97.6 fake_acc=96.41)
+[cmp:co_spy:ditfake] === RESULT vb_ditfake_co_spy: mAP=99.57 mAUROC=99.58 acc=97.11 over 3 generators -> /local/ssalehid/vpp/out/ditfake/co_spy.json.partial ===
+=== unit cmp:co_spy:ditfake DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/co_spy.json
+=== unit cmp:dda:ditfake START 2026-11-17 20:51:24 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dda --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_dda --out /local/ssalehid/vpp/out/ditfake/dda.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:dda:ditfake] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dda:ditfake] === bench_eval vb_ditfake_dda | model=dda ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:dda:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:dda:ditfake]     FLUX.1-schnell: acc=95.81 AP=99.6 AUROC=99.58 (real_acc=97.01 fake_acc=94.61)
+[cmp:dda:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:dda:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=99.4 AP=99.99 AUROC=99.99 (real_acc=99.4 fake_acc=99.4)
+[cmp:dda:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:dda:ditfake]     stable-diffusion-3-medium-diffusers: acc=98.2 AP=99.95 AUROC=99.95 (real_acc=98.2 fake_acc=98.2)
+[cmp:dda:ditfake] === RESULT vb_ditfake_dda: mAP=99.85 mAUROC=99.84 acc=97.8 over 3 generators -> /local/ssalehid/vpp/out/ditfake/dda.json.partial ===
+=== unit cmp:dda:ditfake DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/dda.json
+=== unit cmp:ltf:ditfake START 2026-11-17 20:52:35 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model ltf --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_ltf --out /local/ssalehid/vpp/out/ditfake/ltf.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:ltf:ditfake] === bench_eval vb_ditfake_ltf | model=ltf ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:ltf:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:ltf:ditfake]     FLUX.1-schnell: acc=96.71 AP=99.11 AUROC=99.3 (real_acc=97.01 fake_acc=96.41)
+[cmp:ltf:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:ltf:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=98.2 AP=99.9 AUROC=99.89 (real_acc=97.6 fake_acc=98.8)
+[cmp:ltf:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:ltf:ditfake]     stable-diffusion-3-medium-diffusers: acc=98.8 AP=99.99 AUROC=99.99 (real_acc=97.6 fake_acc=100.0)
+[cmp:ltf:ditfake] === RESULT vb_ditfake_ltf: mAP=99.67 mAUROC=99.73 acc=97.9 over 3 generators -> /local/ssalehid/vpp/out/ditfake/ltf.json.partial ===
+=== unit cmp:ltf:ditfake DONE rc=0 in 0.08 h -> /local/ssalehid/vpp/out/ditfake/ltf.json
+=== unit cmp:probe_resnet:ditfake START 2026-11-17 20:57:23 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe_resnet --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_probe_resnet --out /local/ssalehid/vpp/out/ditfake/probe_resnet.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:probe_resnet:ditfake] === bench_eval vb_ditfake_probe_resnet | model=probe_resnet ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:probe_resnet:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake]     FLUX.1-schnell: acc=90.72 AP=99.34 AUROC=99.36 (real_acc=98.8 fake_acc=82.63)
+[cmp:probe_resnet:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=97.9 AP=99.95 AUROC=99.95 (real_acc=99.4 fake_acc=96.41)
+[cmp:probe_resnet:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake]     stable-diffusion-3-medium-diffusers: acc=94.31 AP=99.83 AUROC=99.83 (real_acc=99.4 fake_acc=89.22)
+[cmp:probe_resnet:ditfake] === RESULT vb_ditfake_probe_resnet: mAP=99.71 mAUROC=99.71 acc=94.31 over 3 generators -> /local/ssalehid/vpp/out/ditfake/probe_resnet.json.partial ===
+=== unit cmp:probe_resnet:ditfake DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/probe_resnet.json
+=== unit cmp:omniaid:ditfake START 2026-11-17 20:58:18 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_omniaid --out /local/ssalehid/vpp/out/ditfake/omniaid.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:omniaid:ditfake] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid:ditfake] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid:ditfake] Key                                  | Status     |  |
+[cmp:omniaid:ditfake] -------------------------------------+------------+--+-
+[cmp:omniaid:ditfake] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid:ditfake] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid:ditfake] Notes:
+[cmp:omniaid:ditfake] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid:ditfake] Rank allocation: total_rank=1024, r_main=1023, num_experts=6, rank_per_expert=1
+[cmp:omniaid:ditfake] === bench_eval vb_ditfake_omniaid | model=omniaid ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:omniaid:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:omniaid:ditfake]     FLUX.1-schnell: acc=91.62 AP=99.02 AUROC=98.88 (real_acc=98.8 fake_acc=84.43)
+[cmp:omniaid:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:omniaid:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=98.8 AP=99.92 AUROC=99.92 (real_acc=97.6 fake_acc=100.0)
+[cmp:omniaid:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:omniaid:ditfake]     stable-diffusion-3-medium-diffusers: acc=94.31 AP=99.05 AUROC=99.12 (real_acc=98.2 fake_acc=90.42)
+[cmp:omniaid:ditfake] === RESULT vb_ditfake_omniaid: mAP=99.33 mAUROC=99.31 acc=94.91 over 3 generators -> /local/ssalehid/vpp/out/ditfake/omniaid.json.partial ===
+=== unit cmp:omniaid:ditfake DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/omniaid.json
+=== unit cmp:omniaid_genimage:ditfake START 2026-11-17 21:00:30 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid_genimage --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_omniaid_genimage --out /local/ssalehid/vpp/out/ditfake/omniaid_genimage.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:omniaid_genimage:ditfake] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid_genimage:ditfake] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid_genimage:ditfake] Key                                  | Status     |  |
+[cmp:omniaid_genimage:ditfake] -------------------------------------+------------+--+-
+[cmp:omniaid_genimage:ditfake] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid_genimage:ditfake] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid_genimage:ditfake] Notes:
+[cmp:omniaid_genimage:ditfake] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid_genimage:ditfake] Rank allocation: total_rank=1024, r_main=1020, num_experts=3, rank_per_expert=4
+[cmp:omniaid_genimage:ditfake] === bench_eval vb_ditfake_omniaid_genimage | model=omniaid_genimage ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:omniaid_genimage:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:omniaid_genimage:ditfake]     FLUX.1-schnell: acc=91.92 AP=96.29 AUROC=97.96 (real_acc=97.01 fake_acc=86.83)
+[cmp:omniaid_genimage:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:omniaid_genimage:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=97.6 AP=99.29 AUROC=99.44 (real_acc=96.41 fake_acc=98.8)
+[cmp:omniaid_genimage:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:omniaid_genimage:ditfake]     stable-diffusion-3-medium-diffusers: acc=95.51 AP=98.47 AUROC=98.89 (real_acc=97.01 fake_acc=94.01)
+[cmp:omniaid_genimage:ditfake] === RESULT vb_ditfake_omniaid_genimage: mAP=98.02 mAUROC=98.76 acc=95.01 over 3 generators -> /local/ssalehid/vpp/out/ditfake/omniaid_genimage.json.partial ===
+=== unit cmp:omniaid_genimage:ditfake DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/omniaid_genimage.json
+=== unit cmp:npr:ditfake START 2026-11-17 21:02:47 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model npr --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_npr --out /local/ssalehid/vpp/out/ditfake/npr.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --bs 32
+[cmp:npr:ditfake] === bench_eval vb_ditfake_npr | model=npr ckpt=registry-default | pergen | 3 generators | device=cuda ===
+[cmp:npr:ditfake]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:npr:ditfake]     FLUX.1-schnell: acc=80.54 AP=87.49 AUROC=92.64 (real_acc=61.68 fake_acc=99.4)
+[cmp:npr:ditfake]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:npr:ditfake]     PixArt-Sigma-XL-2-1024-MS: acc=79.64 AP=88.83 AUROC=93.35 (real_acc=59.28 fake_acc=100.0)
+[cmp:npr:ditfake]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:npr:ditfake]     stable-diffusion-3-medium-diffusers: acc=77.84 AP=86.37 AUROC=91.95 (real_acc=55.69 fake_acc=100.0)
+[cmp:npr:ditfake] === RESULT vb_ditfake_npr: mAP=87.56 mAUROC=92.65 acc=79.34 over 3 generators -> /local/ssalehid/vpp/out/ditfake/npr.json.partial ===
+=== unit cmp:npr:ditfake DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ditfake/npr.json
+=== unit cmp:cnn:arforensics START 2026-11-17 21:03:27 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model cnn --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_cnn --out /local/ssalehid/vpp/out/arforensics/cnn.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:cnn:arforensics] === bench_eval vb_arforensics_cnn | model=cnn ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:cnn:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     Infinity: acc=50.0 AP=43.22 AUROC=43.61 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     Janus_Pro: acc=48.61 AP=43.6 AUROC=42.44 (real_acc=97.22 fake_acc=0.0)
+[cmp:cnn:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     LlamaGen: acc=50.0 AP=52.8 AUROC=52.97 (real_acc=98.61 fake_acc=1.39)
+[cmp:cnn:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     Open_MAGVIT2: acc=50.0 AP=50.96 AUROC=52.95 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     RAR: acc=51.39 AP=81.7 AUROC=83.83 (real_acc=98.61 fake_acc=4.17)
+[cmp:cnn:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     Switti: acc=50.0 AP=46.37 AUROC=47.32 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:cnn:arforensics]     VAR: acc=50.69 AP=61.89 AUROC=58.66 (real_acc=100.0 fake_acc=1.39)
+[cmp:cnn:arforensics] === RESULT vb_arforensics_cnn: mAP=54.36 mAUROC=54.54 acc=50.1 over 7 generators -> /local/ssalehid/vpp/out/arforensics/cnn.json.partial ===
+=== unit cmp:cnn:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/cnn.json
+=== unit cmp:dinov2:arforensics START 2026-11-17 21:03:53 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dinov2 --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_dinov2 --out /local/ssalehid/vpp/out/arforensics/dinov2.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:dinov2:arforensics] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dinov2:arforensics] === bench_eval vb_arforensics_dinov2 | model=dinov2 ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:dinov2:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     Infinity: acc=50.0 AP=58.61 AUROC=62.17 (real_acc=90.28 fake_acc=9.72)
+[cmp:dinov2:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     Janus_Pro: acc=55.56 AP=75.26 AUROC=80.63 (real_acc=90.28 fake_acc=20.83)
+[cmp:dinov2:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     LlamaGen: acc=54.17 AP=63.75 AUROC=67.75 (real_acc=91.67 fake_acc=16.67)
+[cmp:dinov2:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     Open_MAGVIT2: acc=63.89 AP=78.74 AUROC=78.26 (real_acc=97.22 fake_acc=30.56)
+[cmp:dinov2:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     RAR: acc=66.67 AP=81.7 AUROC=84.24 (real_acc=90.28 fake_acc=43.06)
+[cmp:dinov2:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     Switti: acc=54.86 AP=64.07 AUROC=65.74 (real_acc=93.06 fake_acc=16.67)
+[cmp:dinov2:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:dinov2:arforensics]     VAR: acc=53.47 AP=73.91 AUROC=76.23 (real_acc=95.83 fake_acc=11.11)
+[cmp:dinov2:arforensics] === RESULT vb_arforensics_dinov2: mAP=70.86 mAUROC=73.57 acc=56.95 over 7 generators -> /local/ssalehid/vpp/out/arforensics/dinov2.json.partial ===
+=== unit cmp:dinov2:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/dinov2.json
+=== unit cmp:adapted_dino:arforensics START 2026-11-17 21:04:37 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model adapted_dino --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_adapted_dino --out /local/ssalehid/vpp/out/arforensics/adapted_dino.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:adapted_dino:arforensics] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:adapted_dino:arforensics] === bench_eval vb_arforensics_adapted_dino | model=adapted_dino ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:adapted_dino:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     Infinity: acc=50.0 AP=71.69 AUROC=71.59 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     Janus_Pro: acc=50.0 AP=81.75 AUROC=82.75 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     LlamaGen: acc=52.08 AP=91.23 AUROC=90.49 (real_acc=100.0 fake_acc=4.17)
+[cmp:adapted_dino:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     Open_MAGVIT2: acc=54.17 AP=95.44 AUROC=94.93 (real_acc=100.0 fake_acc=8.33)
+[cmp:adapted_dino:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     RAR: acc=94.44 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=88.89)
+[cmp:adapted_dino:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     Switti: acc=50.0 AP=90.36 AUROC=88.48 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:adapted_dino:arforensics]     VAR: acc=50.0 AP=95.77 AUROC=94.89 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:arforensics] === RESULT vb_arforensics_adapted_dino: mAP=89.46 mAUROC=89.02 acc=57.24 over 7 generators -> /local/ssalehid/vpp/out/arforensics/adapted_dino.json.partial ===
+=== unit cmp:adapted_dino:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/adapted_dino.json
+=== unit cmp:aide:arforensics START 2026-11-17 21:05:16 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model aide --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_aide --out /local/ssalehid/vpp/out/arforensics/aide.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:aide:arforensics] WARNING:root:No pretrained weights loaded for model 'convnext_xxlarge'. Model initialized randomly.
+[cmp:aide:arforensics] === bench_eval vb_arforensics_aide | model=aide ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:aide:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:aide:arforensics]     Infinity: acc=93.75 AP=99.94 AUROC=99.94 (real_acc=100.0 fake_acc=87.5)
+[cmp:aide:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:aide:arforensics]     Janus_Pro: acc=93.75 AP=99.77 AUROC=99.79 (real_acc=98.61 fake_acc=88.89)
+[cmp:aide:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:aide:arforensics]     LlamaGen: acc=86.11 AP=99.13 AUROC=99.02 (real_acc=100.0 fake_acc=72.22)
+[cmp:aide:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:aide:arforensics]     Open_MAGVIT2: acc=65.28 AP=93.39 AUROC=91.15 (real_acc=100.0 fake_acc=30.56)
+[cmp:aide:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:aide:arforensics]     RAR: acc=68.06 AP=96.18 AUROC=94.93 (real_acc=100.0 fake_acc=36.11)
+[cmp:aide:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:aide:arforensics]     Switti: acc=83.33 AP=99.67 AUROC=99.65 (real_acc=100.0 fake_acc=66.67)
+[cmp:aide:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:aide:arforensics]     VAR: acc=69.44 AP=91.98 AUROC=88.35 (real_acc=100.0 fake_acc=38.89)
+[cmp:aide:arforensics] === RESULT vb_arforensics_aide: mAP=97.15 mAUROC=96.12 acc=79.96 over 7 generators -> /local/ssalehid/vpp/out/arforensics/aide.json.partial ===
+=== unit cmp:aide:arforensics DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/arforensics/aide.json
+=== unit cmp:vib_net:arforensics START 2026-11-17 21:07:54 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model vib_net --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_vib_net --out /local/ssalehid/vpp/out/arforensics/vib_net.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:vib_net:arforensics] === bench_eval vb_arforensics_vib_net | model=vib_net ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:vib_net:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     Infinity: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:vib_net:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     Janus_Pro: acc=98.61 AP=99.92 AUROC=99.92 (real_acc=97.22 fake_acc=100.0)
+[cmp:vib_net:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     LlamaGen: acc=75.69 AP=93.37 AUROC=92.96 (real_acc=94.44 fake_acc=56.94)
+[cmp:vib_net:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     Open_MAGVIT2: acc=63.19 AP=87.73 AUROC=87.79 (real_acc=98.61 fake_acc=27.78)
+[cmp:vib_net:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     RAR: acc=90.28 AP=99.66 AUROC=99.67 (real_acc=100.0 fake_acc=80.56)
+[cmp:vib_net:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     Switti: acc=97.92 AP=99.94 AUROC=99.94 (real_acc=97.22 fake_acc=98.61)
+[cmp:vib_net:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:vib_net:arforensics]     VAR: acc=55.56 AP=78.81 AUROC=83.33 (real_acc=95.83 fake_acc=15.28)
+[cmp:vib_net:arforensics] === RESULT vb_arforensics_vib_net: mAP=94.2 mAUROC=94.8 acc=83.04 over 7 generators -> /local/ssalehid/vpp/out/arforensics/vib_net.json.partial ===
+=== unit cmp:vib_net:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/vib_net.json
+=== unit cmp:bfree:arforensics START 2026-11-17 21:08:36 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model bfree --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_bfree --out /local/ssalehid/vpp/out/arforensics/bfree.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:bfree:arforensics] === bench_eval vb_arforensics_bfree | model=bfree ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:bfree:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     Infinity: acc=96.53 AP=99.68 AUROC=99.69 (real_acc=95.83 fake_acc=97.22)
+[cmp:bfree:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     Janus_Pro: acc=89.58 AP=97.66 AUROC=97.65 (real_acc=97.22 fake_acc=81.94)
+[cmp:bfree:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     LlamaGen: acc=87.5 AP=96.12 AUROC=94.58 (real_acc=98.61 fake_acc=76.39)
+[cmp:bfree:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     Open_MAGVIT2: acc=72.22 AP=89.05 AUROC=89.39 (real_acc=95.83 fake_acc=48.61)
+[cmp:bfree:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     RAR: acc=79.17 AP=97.15 AUROC=97.26 (real_acc=97.22 fake_acc=61.11)
+[cmp:bfree:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     Switti: acc=98.61 AP=99.9 AUROC=99.9 (real_acc=98.61 fake_acc=98.61)
+[cmp:bfree:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:bfree:arforensics]     VAR: acc=83.33 AP=92.81 AUROC=94.39 (real_acc=95.83 fake_acc=70.83)
+[cmp:bfree:arforensics] === RESULT vb_arforensics_bfree: mAP=96.05 mAUROC=96.12 acc=86.71 over 7 generators -> /local/ssalehid/vpp/out/arforensics/bfree.json.partial ===
+=== unit cmp:bfree:arforensics DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/arforensics/bfree.json
+=== unit cmp:co_spy:arforensics START 2026-11-17 21:10:47 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model co_spy --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_co_spy --out /local/ssalehid/vpp/out/arforensics/co_spy.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:co_spy:arforensics] === bench_eval vb_arforensics_co_spy | model=co_spy ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:co_spy:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     Infinity: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:co_spy:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     Janus_Pro: acc=98.61 AP=99.94 AUROC=99.94 (real_acc=100.0 fake_acc=97.22)
+[cmp:co_spy:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     LlamaGen: acc=52.08 AP=74.21 AUROC=80.09 (real_acc=98.61 fake_acc=5.56)
+[cmp:co_spy:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     Open_MAGVIT2: acc=52.78 AP=67.87 AUROC=71.8 (real_acc=98.61 fake_acc=6.94)
+[cmp:co_spy:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     RAR: acc=52.08 AP=73.87 AUROC=79.84 (real_acc=94.44 fake_acc=9.72)
+[cmp:co_spy:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     Switti: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:co_spy:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:co_spy:arforensics]     VAR: acc=57.64 AP=73.65 AUROC=72.16 (real_acc=98.61 fake_acc=16.67)
+[cmp:co_spy:arforensics] === RESULT vb_arforensics_co_spy: mAP=84.22 mAUROC=86.26 acc=73.21 over 7 generators -> /local/ssalehid/vpp/out/arforensics/co_spy.json.partial ===
+=== unit cmp:co_spy:arforensics DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/arforensics/co_spy.json
+=== unit cmp:dda:arforensics START 2026-11-17 21:12:46 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dda --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_dda --out /local/ssalehid/vpp/out/arforensics/dda.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:dda:arforensics] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dda:arforensics] === bench_eval vb_arforensics_dda | model=dda ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:dda:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:dda:arforensics]     Infinity: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:dda:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:dda:arforensics]     Janus_Pro: acc=92.36 AP=99.38 AUROC=99.4 (real_acc=97.22 fake_acc=87.5)
+[cmp:dda:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:dda:arforensics]     LlamaGen: acc=84.72 AP=93.02 AUROC=93.04 (real_acc=95.83 fake_acc=73.61)
+[cmp:dda:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:dda:arforensics]     Open_MAGVIT2: acc=59.72 AP=79.79 AUROC=80.15 (real_acc=95.83 fake_acc=23.61)
+[cmp:dda:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:dda:arforensics]     RAR: acc=72.92 AP=91.58 AUROC=95.85 (real_acc=97.22 fake_acc=48.61)
+[cmp:dda:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:dda:arforensics]     Switti: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:dda:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:dda:arforensics]     VAR: acc=59.72 AP=84.24 AUROC=84.3 (real_acc=97.22 fake_acc=22.22)
+[cmp:dda:arforensics] === RESULT vb_arforensics_dda: mAP=92.57 mAUROC=93.25 acc=81.25 over 7 generators -> /local/ssalehid/vpp/out/arforensics/dda.json.partial ===
+=== unit cmp:dda:arforensics DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/arforensics/dda.json
+=== unit cmp:mirror:arforensics START 2026-11-17 21:13:46 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model mirror --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_mirror --out /local/ssalehid/vpp/out/arforensics/mirror.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:mirror:arforensics] Loading Backbone from: config (DINOv3 ViT, width 1280, 32 blocks)
+[cmp:mirror:arforensics] === bench_eval vb_arforensics_mirror | model=mirror ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:mirror:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     Infinity: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     Janus_Pro: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     LlamaGen: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     Open_MAGVIT2: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     RAR: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:mirror:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     Switti: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:mirror:arforensics]     VAR: acc=97.22 AP=98.95 AUROC=98.3 (real_acc=100.0 fake_acc=94.44)
+[cmp:mirror:arforensics] === RESULT vb_arforensics_mirror: mAP=99.85 mAUROC=99.76 acc=99.5 over 7 generators -> /local/ssalehid/vpp/out/arforensics/mirror.json.partial ===
+=== unit cmp:mirror:arforensics DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/arforensics/mirror.json
+=== unit cmp:vina:arforensics START 2026-11-17 21:14:49 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model vina --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_vina --out /local/ssalehid/vpp/out/arforensics/vina.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:vina:arforensics] === bench_eval vb_arforensics_vina | model=vina ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:vina:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:vina:arforensics]     Infinity: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:vina:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:vina:arforensics]     Janus_Pro: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:vina:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:vina:arforensics]     LlamaGen: acc=93.06 AP=97.61 AUROC=96.57 (real_acc=98.61 fake_acc=87.5)
+[cmp:vina:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:vina:arforensics]     Open_MAGVIT2: acc=72.22 AP=93.55 AUROC=91.09 (real_acc=100.0 fake_acc=44.44)
+[cmp:vina:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:vina:arforensics]     RAR: acc=95.14 AP=99.52 AUROC=99.44 (real_acc=98.61 fake_acc=91.67)
+[cmp:vina:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:vina:arforensics]     Switti: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:vina:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:vina:arforensics]     VAR: acc=94.44 AP=99.5 AUROC=99.38 (real_acc=100.0 fake_acc=88.89)
+[cmp:vina:arforensics] === RESULT vb_arforensics_vina: mAP=98.6 mAUROC=98.07 acc=93.55 over 7 generators -> /local/ssalehid/vpp/out/arforensics/vina.json.partial ===
+=== unit cmp:vina:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/vina.json
+=== unit cmp:probe:arforensics START 2026-11-17 21:15:30 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_probe --out /local/ssalehid/vpp/out/arforensics/probe.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:probe:arforensics] === bench_eval vb_arforensics_probe | model=probe ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:probe:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:probe:arforensics]     Infinity: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:probe:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:probe:arforensics]     Janus_Pro: acc=98.61 AP=100.0 AUROC=100.0 (real_acc=97.22 fake_acc=100.0)
+[cmp:probe:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:probe:arforensics]     LlamaGen: acc=93.06 AP=99.46 AUROC=99.46 (real_acc=98.61 fake_acc=87.5)
+[cmp:probe:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:probe:arforensics]     Open_MAGVIT2: acc=91.67 AP=99.38 AUROC=99.32 (real_acc=100.0 fake_acc=83.33)
+[cmp:probe:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:probe:arforensics]     RAR: acc=95.83 AP=98.65 AUROC=98.78 (real_acc=95.83 fake_acc=95.83)
+[cmp:probe:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:probe:arforensics]     Switti: acc=99.31 AP=99.98 AUROC=99.98 (real_acc=98.61 fake_acc=100.0)
+[cmp:probe:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:probe:arforensics]     VAR: acc=86.11 AP=98.19 AUROC=98.38 (real_acc=95.83 fake_acc=76.39)
+[cmp:probe:arforensics] === RESULT vb_arforensics_probe: mAP=99.38 mAUROC=99.42 acc=94.84 over 7 generators -> /local/ssalehid/vpp/out/arforensics/probe.json.partial ===
+=== unit cmp:probe:arforensics DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/arforensics/probe.json
+=== unit cmp:probe_resnet:arforensics START 2026-11-17 21:16:52 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe_resnet --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_probe_resnet --out /local/ssalehid/vpp/out/arforensics/probe_resnet.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:probe_resnet:arforensics] === bench_eval vb_arforensics_probe_resnet | model=probe_resnet ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:probe_resnet:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     Infinity: acc=98.61 AP=99.86 AUROC=99.86 (real_acc=98.61 fake_acc=98.61)
+[cmp:probe_resnet:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     Janus_Pro: acc=95.14 AP=99.4 AUROC=99.36 (real_acc=98.61 fake_acc=91.67)
+[cmp:probe_resnet:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     LlamaGen: acc=71.53 AP=91.56 AUROC=90.39 (real_acc=100.0 fake_acc=43.06)
+[cmp:probe_resnet:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     Open_MAGVIT2: acc=53.47 AP=79.37 AUROC=79.26 (real_acc=100.0 fake_acc=6.94)
+[cmp:probe_resnet:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     RAR: acc=51.39 AP=61.99 AUROC=62.4 (real_acc=98.61 fake_acc=4.17)
+[cmp:probe_resnet:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     Switti: acc=96.53 AP=99.43 AUROC=99.42 (real_acc=95.83 fake_acc=97.22)
+[cmp:probe_resnet:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:probe_resnet:arforensics]     VAR: acc=56.94 AP=86.22 AUROC=85.84 (real_acc=100.0 fake_acc=13.89)
+[cmp:probe_resnet:arforensics] === RESULT vb_arforensics_probe_resnet: mAP=88.26 mAUROC=88.08 acc=74.8 over 7 generators -> /local/ssalehid/vpp/out/arforensics/probe_resnet.json.partial ===
+=== unit cmp:probe_resnet:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/probe_resnet.json
+=== unit cmp:omniaid_v1:arforensics START 2026-11-17 21:17:26 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid_v1 --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_omniaid_v1 --out /local/ssalehid/vpp/out/arforensics/omniaid_v1.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:omniaid_v1:arforensics] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid_v1:arforensics] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid_v1:arforensics] Key                                  | Status     |  |
+[cmp:omniaid_v1:arforensics] -------------------------------------+------------+--+-
+[cmp:omniaid_v1:arforensics] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid_v1:arforensics] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid_v1:arforensics] Notes:
+[cmp:omniaid_v1:arforensics] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid_v1:arforensics] Rank allocation: total_rank=1024, r_main=1016, num_experts=6, rank_per_expert=8
+[cmp:omniaid_v1:arforensics] === bench_eval vb_arforensics_omniaid_v1 | model=omniaid_v1 ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:omniaid_v1:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     Infinity: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:omniaid_v1:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     Janus_Pro: acc=98.61 AP=100.0 AUROC=100.0 (real_acc=97.22 fake_acc=100.0)
+[cmp:omniaid_v1:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     LlamaGen: acc=96.53 AP=98.88 AUROC=99.02 (real_acc=95.83 fake_acc=97.22)
+[cmp:omniaid_v1:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     Open_MAGVIT2: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=98.61)
+[cmp:omniaid_v1:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     RAR: acc=93.06 AP=99.0 AUROC=98.86 (real_acc=91.67 fake_acc=94.44)
+[cmp:omniaid_v1:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     Switti: acc=99.31 AP=100.0 AUROC=100.0 (real_acc=98.61 fake_acc=100.0)
+[cmp:omniaid_v1:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:omniaid_v1:arforensics]     VAR: acc=97.92 AP=99.79 AUROC=99.79 (real_acc=97.22 fake_acc=98.61)
+[cmp:omniaid_v1:arforensics] === RESULT vb_arforensics_omniaid_v1: mAP=99.67 mAUROC=99.67 acc=97.72 over 7 generators -> /local/ssalehid/vpp/out/arforensics/omniaid_v1.json.partial ===
+=== unit cmp:omniaid_v1:arforensics DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/arforensics/omniaid_v1.json
+=== unit cmp:npr:arforensics START 2026-11-17 21:19:30 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model npr --benchmark pergen --data /local/ssalehid/vpp/subsets/arforensics/data --tag vb_arforensics_npr --out /local/ssalehid/vpp/out/arforensics/npr.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:npr:arforensics] === bench_eval vb_arforensics_npr | model=npr ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:npr:arforensics]   Infinity: 72 real + 72 fake ...
+[cmp:npr:arforensics]     Infinity: acc=83.33 AP=90.0 AUROC=94.44 (real_acc=66.67 fake_acc=100.0)
+[cmp:npr:arforensics]   Janus_Pro: 72 real + 72 fake ...
+[cmp:npr:arforensics]     Janus_Pro: acc=79.86 AP=78.4 AUROC=85.19 (real_acc=62.5 fake_acc=97.22)
+[cmp:npr:arforensics]   LlamaGen: 72 real + 72 fake ...
+[cmp:npr:arforensics]     LlamaGen: acc=72.92 AP=84.08 AUROC=85.81 (real_acc=61.11 fake_acc=84.72)
+[cmp:npr:arforensics]   Open_MAGVIT2: 72 real + 72 fake ...
+[cmp:npr:arforensics]     Open_MAGVIT2: acc=70.83 AP=67.43 AUROC=74.54 (real_acc=63.89 fake_acc=77.78)
+[cmp:npr:arforensics]   RAR: 72 real + 72 fake ...
+[cmp:npr:arforensics]     RAR: acc=78.47 AP=83.55 AUROC=87.91 (real_acc=62.5 fake_acc=94.44)
+[cmp:npr:arforensics]   Switti: 72 real + 72 fake ...
+[cmp:npr:arforensics]     Switti: acc=74.31 AP=83.23 AUROC=89.31 (real_acc=48.61 fake_acc=100.0)
+[cmp:npr:arforensics]   VAR: 72 real + 72 fake ...
+[cmp:npr:arforensics]     VAR: acc=81.94 AP=86.27 AUROC=91.88 (real_acc=63.89 fake_acc=100.0)
+[cmp:npr:arforensics] === RESULT vb_arforensics_npr: mAP=81.85 mAUROC=87.01 acc=77.38 over 7 generators -> /local/ssalehid/vpp/out/arforensics/npr.json.partial ===
+=== unit cmp:npr:arforensics DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/arforensics/npr.json
+=== unit cmp:clip:realchain START 2026-11-17 21:19:54 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model clip --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_clip --out /local/ssalehid/vpp/out/realchain/clip.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:clip:realchain] === bench_eval vb_realchain_clip | model=clip ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:clip:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:clip:realchain]     Flux1: acc=49.31 AP=42.06 AUROC=37.06 (real_acc=98.61 fake_acc=0.0)
+[cmp:clip:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:clip:realchain]     Hunyuan3: acc=49.31 AP=40.72 AUROC=34.16 (real_acc=97.22 fake_acc=1.39)
+[cmp:clip:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:clip:realchain]     NanoBanana: acc=46.53 AP=37.24 AUROC=27.1 (real_acc=91.67 fake_acc=1.39)
+[cmp:clip:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:clip:realchain]     QwenImage: acc=53.47 AP=52.3 AUROC=40.86 (real_acc=100.0 fake_acc=6.94)
+[cmp:clip:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:clip:realchain]     SDv3.5: acc=51.39 AP=55.99 AUROC=48.24 (real_acc=100.0 fake_acc=2.78)
+[cmp:clip:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:clip:realchain]     Seedream4: acc=47.92 AP=36.51 AUROC=24.4 (real_acc=94.44 fake_acc=1.39)
+[cmp:clip:realchain]   i2i: 72 real + 72 fake ...
+[cmp:clip:realchain]     i2i: acc=52.08 AP=64.52 AUROC=65.76 (real_acc=98.61 fake_acc=5.56)
+[cmp:clip:realchain] === RESULT vb_realchain_clip: mAP=47.05 mAUROC=39.65 acc=50.0 over 7 generators -> /local/ssalehid/vpp/out/realchain/clip.json.partial ===
+=== unit cmp:clip:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/clip.json
+=== unit cmp:cnn:realchain START 2026-11-17 21:21:04 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model cnn --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_cnn --out /local/ssalehid/vpp/out/realchain/cnn.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:cnn:realchain] === bench_eval vb_realchain_cnn | model=cnn ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:cnn:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:cnn:realchain]     Flux1: acc=50.0 AP=42.92 AUROC=39.68 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:cnn:realchain]     Hunyuan3: acc=50.0 AP=50.35 AUROC=51.79 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:cnn:realchain]     NanoBanana: acc=50.0 AP=41.4 AUROC=37.96 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:cnn:realchain]     QwenImage: acc=50.0 AP=49.45 AUROC=49.5 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:cnn:realchain]     SDv3.5: acc=50.0 AP=54.21 AUROC=51.87 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:cnn:realchain]     Seedream4: acc=50.0 AP=40.48 AUROC=34.14 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain]   i2i: 72 real + 72 fake ...
+[cmp:cnn:realchain]     i2i: acc=50.0 AP=47.32 AUROC=45.81 (real_acc=100.0 fake_acc=0.0)
+[cmp:cnn:realchain] === RESULT vb_realchain_cnn: mAP=46.59 mAUROC=44.39 acc=50.0 over 7 generators -> /local/ssalehid/vpp/out/realchain/cnn.json.partial ===
+=== unit cmp:cnn:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/cnn.json
+=== unit cmp:dinov3:realchain START 2026-11-17 21:21:59 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dinov3 --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_dinov3 --out /local/ssalehid/vpp/out/realchain/dinov3.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:dinov3:realchain] === bench_eval vb_realchain_dinov3 | model=dinov3 ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:dinov3:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     Flux1: acc=52.78 AP=63.76 AUROC=58.83 (real_acc=98.61 fake_acc=6.94)
+[cmp:dinov3:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     Hunyuan3: acc=55.56 AP=72.51 AUROC=74.21 (real_acc=97.22 fake_acc=13.89)
+[cmp:dinov3:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     NanoBanana: acc=44.44 AP=41.13 AUROC=38.06 (real_acc=86.11 fake_acc=2.78)
+[cmp:dinov3:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     QwenImage: acc=58.33 AP=67.81 AUROC=63.56 (real_acc=93.06 fake_acc=23.61)
+[cmp:dinov3:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     SDv3.5: acc=53.47 AP=82.23 AUROC=80.5 (real_acc=100.0 fake_acc=6.94)
+[cmp:dinov3:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     Seedream4: acc=51.39 AP=56.25 AUROC=51.76 (real_acc=100.0 fake_acc=2.78)
+[cmp:dinov3:realchain]   i2i: 72 real + 72 fake ...
+[cmp:dinov3:realchain]     i2i: acc=44.44 AP=38.71 AUROC=29.8 (real_acc=86.11 fake_acc=2.78)
+[cmp:dinov3:realchain] === RESULT vb_realchain_dinov3: mAP=60.34 mAUROC=56.67 acc=51.49 over 7 generators -> /local/ssalehid/vpp/out/realchain/dinov3.json.partial ===
+=== unit cmp:dinov3:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/dinov3.json
+=== unit cmp:safe:realchain START 2026-11-17 21:23:06 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model safe --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_safe --out /local/ssalehid/vpp/out/realchain/safe.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:safe:realchain]   from pkg_resources import resource_stream
+[cmp:safe:realchain] === bench_eval vb_realchain_safe | model=safe ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:safe:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:safe:realchain]     Flux1: acc=50.69 AP=67.5 AUROC=61.03 (real_acc=100.0 fake_acc=1.39)
+[cmp:safe:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:safe:realchain]     Hunyuan3: acc=50.0 AP=56.26 AUROC=49.86 (real_acc=100.0 fake_acc=0.0)
+[cmp:safe:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:safe:realchain]     NanoBanana: acc=47.22 AP=46.3 AUROC=45.85 (real_acc=94.44 fake_acc=0.0)
+[cmp:safe:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:safe:realchain]     QwenImage: acc=50.69 AP=50.38 AUROC=48.88 (real_acc=100.0 fake_acc=1.39)
+[cmp:safe:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:safe:realchain]     SDv3.5: acc=50.0 AP=50.31 AUROC=50.96 (real_acc=100.0 fake_acc=0.0)
+[cmp:safe:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:safe:realchain]     Seedream4: acc=50.0 AP=52.19 AUROC=50.66 (real_acc=94.44 fake_acc=5.56)
+[cmp:safe:realchain]   i2i: 72 real + 72 fake ...
+[cmp:safe:realchain]     i2i: acc=47.92 AP=54.08 AUROC=56.42 (real_acc=95.83 fake_acc=0.0)
+[cmp:safe:realchain] === RESULT vb_realchain_safe: mAP=53.86 mAUROC=51.95 acc=49.5 over 7 generators -> /local/ssalehid/vpp/out/realchain/safe.json.partial ===
+=== unit cmp:safe:realchain DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/realchain/safe.json
+=== unit cmp:fat_former:realchain START 2026-11-17 21:23:43 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model fat_former --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_fat_former --out /local/ssalehid/vpp/out/realchain/fat_former.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:fat_former:realchain]   from pkg_resources import resource_stream
+[cmp:fat_former:realchain] === bench_eval vb_realchain_fat_former | model=fat_former ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:fat_former:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     Flux1: acc=50.0 AP=57.48 AUROC=55.88 (real_acc=100.0 fake_acc=0.0)
+[cmp:fat_former:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     Hunyuan3: acc=50.0 AP=66.36 AUROC=70.2 (real_acc=100.0 fake_acc=0.0)
+[cmp:fat_former:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     NanoBanana: acc=47.92 AP=34.96 AUROC=20.58 (real_acc=95.83 fake_acc=0.0)
+[cmp:fat_former:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     QwenImage: acc=50.69 AP=83.13 AUROC=82.04 (real_acc=100.0 fake_acc=1.39)
+[cmp:fat_former:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     SDv3.5: acc=50.0 AP=69.25 AUROC=69.97 (real_acc=100.0 fake_acc=0.0)
+[cmp:fat_former:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     Seedream4: acc=47.22 AP=37.12 AUROC=27.68 (real_acc=94.44 fake_acc=0.0)
+[cmp:fat_former:realchain]   i2i: 72 real + 72 fake ...
+[cmp:fat_former:realchain]     i2i: acc=45.83 AP=36.94 AUROC=21.89 (real_acc=88.89 fake_acc=2.78)
+[cmp:fat_former:realchain] === RESULT vb_realchain_fat_former: mAP=55.03 mAUROC=49.75 acc=48.81 over 7 generators -> /local/ssalehid/vpp/out/realchain/fat_former.json.partial ===
+=== unit cmp:fat_former:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/fat_former.json
+=== unit cmp:spai:realchain START 2026-11-17 21:25:02 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model spai --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_spai --out /local/ssalehid/vpp/out/realchain/spai.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:spai:realchain] [SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+[cmp:spai:realchain] === bench_eval vb_realchain_spai | model=spai ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:spai:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:spai:realchain]     Flux1: acc=55.56 AP=65.49 AUROC=71.35 (real_acc=83.33 fake_acc=27.78)
+[cmp:spai:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:spai:realchain]     Hunyuan3: acc=76.39 AP=78.36 AUROC=85.03 (real_acc=84.72 fake_acc=68.06)
+[cmp:spai:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:spai:realchain]     NanoBanana: acc=68.06 AP=68.65 AUROC=77.58 (real_acc=81.94 fake_acc=54.17)
+[cmp:spai:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:spai:realchain]     QwenImage: acc=65.28 AP=72.38 AUROC=80.57 (real_acc=86.11 fake_acc=44.44)
+[cmp:spai:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:spai:realchain]     SDv3.5: acc=70.14 AP=86.49 AUROC=88.93 (real_acc=88.89 fake_acc=51.39)
+[cmp:spai:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:spai:realchain]     Seedream4: acc=56.94 AP=60.63 AUROC=67.55 (real_acc=81.94 fake_acc=31.94)
+[cmp:spai:realchain]   i2i: 72 real + 72 fake ...
+[cmp:spai:realchain]     i2i: acc=52.08 AP=54.16 AUROC=48.46 (real_acc=70.83 fake_acc=33.33)
+[cmp:spai:realchain] === RESULT vb_realchain_spai: mAP=69.45 mAUROC=74.21 acc=63.49 over 7 generators -> /local/ssalehid/vpp/out/realchain/spai.json.partial ===
+=== unit cmp:spai:realchain DONE rc=0 in 0.09 h -> /local/ssalehid/vpp/out/realchain/spai.json
+=== unit cmp:vib_net:realchain START 2026-11-17 21:30:27 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model vib_net --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_vib_net --out /local/ssalehid/vpp/out/realchain/vib_net.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:vib_net:realchain] === bench_eval vb_realchain_vib_net | model=vib_net ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:vib_net:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     Flux1: acc=83.33 AP=91.36 AUROC=91.96 (real_acc=77.78 fake_acc=88.89)
+[cmp:vib_net:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     Hunyuan3: acc=87.5 AP=94.44 AUROC=94.17 (real_acc=83.33 fake_acc=91.67)
+[cmp:vib_net:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     NanoBanana: acc=80.56 AP=87.34 AUROC=90.14 (real_acc=65.28 fake_acc=95.83)
+[cmp:vib_net:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     QwenImage: acc=75.69 AP=78.59 AUROC=83.62 (real_acc=65.28 fake_acc=86.11)
+[cmp:vib_net:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     SDv3.5: acc=79.17 AP=82.7 AUROC=86.32 (real_acc=75.0 fake_acc=83.33)
+[cmp:vib_net:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     Seedream4: acc=72.22 AP=80.94 AUROC=81.52 (real_acc=66.67 fake_acc=77.78)
+[cmp:vib_net:realchain]   i2i: 72 real + 72 fake ...
+[cmp:vib_net:realchain]     i2i: acc=47.22 AP=48.43 AUROC=45.51 (real_acc=45.83 fake_acc=48.61)
+[cmp:vib_net:realchain] === RESULT vb_realchain_vib_net: mAP=80.54 mAUROC=81.89 acc=75.1 over 7 generators -> /local/ssalehid/vpp/out/realchain/vib_net.json.partial ===
+=== unit cmp:vib_net:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/vib_net.json
+=== unit cmp:bfree:realchain START 2026-11-17 21:31:24 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model bfree --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_bfree --out /local/ssalehid/vpp/out/realchain/bfree.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:bfree:realchain] === bench_eval vb_realchain_bfree | model=bfree ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:bfree:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:bfree:realchain]     Flux1: acc=62.5 AP=81.64 AUROC=80.03 (real_acc=98.61 fake_acc=26.39)
+[cmp:bfree:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:bfree:realchain]     Hunyuan3: acc=61.11 AP=68.43 AUROC=70.35 (real_acc=93.06 fake_acc=29.17)
+[cmp:bfree:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:bfree:realchain]     NanoBanana: acc=42.36 AP=37.33 AUROC=19.48 (real_acc=73.61 fake_acc=11.11)
+[cmp:bfree:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:bfree:realchain]     QwenImage: acc=79.17 AP=91.38 AUROC=89.58 (real_acc=98.61 fake_acc=59.72)
+[cmp:bfree:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:bfree:realchain]     SDv3.5: acc=81.94 AP=95.7 AUROC=94.73 (real_acc=100.0 fake_acc=63.89)
+[cmp:bfree:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:bfree:realchain]     Seedream4: acc=79.86 AP=87.98 AUROC=81.77 (real_acc=81.94 fake_acc=77.78)
+[cmp:bfree:realchain]   i2i: 72 real + 72 fake ...
+[cmp:bfree:realchain]     i2i: acc=76.39 AP=81.82 AUROC=74.48 (real_acc=87.5 fake_acc=65.28)
+[cmp:bfree:realchain] === RESULT vb_realchain_bfree: mAP=77.75 mAUROC=72.92 acc=69.05 over 7 generators -> /local/ssalehid/vpp/out/realchain/bfree.json.partial ===
+=== unit cmp:bfree:realchain DONE rc=0 in 0.05 h -> /local/ssalehid/vpp/out/realchain/bfree.json
+=== unit cmp:effort:realchain START 2026-11-17 21:34:36 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model effort --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_effort --out /local/ssalehid/vpp/out/realchain/effort.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:effort:realchain] [1mCLIPVisionModel LOAD REPORT[0m from: openai/clip-vit-large-patch14
+[cmp:effort:realchain] Key                                                          | Status     |  |
+[cmp:effort:realchain] -------------------------------------------------------------+------------+--+-
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.out_proj.weight | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.layer_norm2.weight        | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.mlp.fc1.bias              | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.layer_norm1.weight        | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.mlp.fc2.weight            | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.k_proj.weight   | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.mlp.fc2.bias              | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.layer_norm1.bias          | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.layer_norm2.bias          | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.q_proj.weight   | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.out_proj.bias   | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.k_proj.bias     | UNEXPECTED |  |
+[cmp:effort:realchain] visual_projection.weight                                     | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.v_proj.bias     | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.mlp.fc1.weight            | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.v_proj.weight   | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.embeddings.token_embedding.weight                 | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.final_layer_norm.bias                             | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.encoder.layers.{0...11}.self_attn.q_proj.bias     | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.embeddings.position_ids                           | UNEXPECTED |  |
+[cmp:effort:realchain] logit_scale                                                  | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.final_layer_norm.weight                           | UNEXPECTED |  |
+[cmp:effort:realchain] vision_model.embeddings.position_ids                         | UNEXPECTED |  |
+[cmp:effort:realchain] text_projection.weight                                       | UNEXPECTED |  |
+[cmp:effort:realchain] text_model.embeddings.position_embedding.weight              | UNEXPECTED |  |
+[cmp:effort:realchain] Notes:
+[cmp:effort:realchain] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:effort:realchain] === bench_eval vb_realchain_effort | model=effort ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:effort:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:effort:realchain]     Flux1: acc=50.69 AP=94.33 AUROC=94.68 (real_acc=100.0 fake_acc=1.39)
+[cmp:effort:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:effort:realchain]     Hunyuan3: acc=52.08 AP=86.42 AUROC=87.96 (real_acc=100.0 fake_acc=4.17)
+[cmp:effort:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:effort:realchain]     NanoBanana: acc=45.83 AP=47.71 AUROC=50.58 (real_acc=81.94 fake_acc=9.72)
+[cmp:effort:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:effort:realchain]     QwenImage: acc=59.03 AP=91.96 AUROC=92.09 (real_acc=100.0 fake_acc=18.06)
+[cmp:effort:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:effort:realchain]     SDv3.5: acc=52.78 AP=87.92 AUROC=89.53 (real_acc=98.61 fake_acc=6.94)
+[cmp:effort:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:effort:realchain]     Seedream4: acc=46.53 AP=48.78 AUROC=51.66 (real_acc=79.17 fake_acc=13.89)
+[cmp:effort:realchain]   i2i: 72 real + 72 fake ...
+[cmp:effort:realchain]     i2i: acc=49.31 AP=42.43 AUROC=28.43 (real_acc=81.94 fake_acc=16.67)
+[cmp:effort:realchain] === RESULT vb_realchain_effort: mAP=71.36 mAUROC=70.7 acc=50.89 over 7 generators -> /local/ssalehid/vpp/out/realchain/effort.json.partial ===
+=== unit cmp:effort:realchain DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/realchain/effort.json
+=== unit cmp:moejepa:realchain START 2026-11-17 21:36:27 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model moejepa --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_moejepa --out /local/ssalehid/vpp/out/realchain/moejepa.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:moejepa:realchain] === bench_eval vb_realchain_moejepa | model=moejepa ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:moejepa:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     Flux1: acc=84.72 AP=94.81 AUROC=94.5 (real_acc=77.78 fake_acc=91.67)
+[cmp:moejepa:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     Hunyuan3: acc=54.17 AP=64.4 AUROC=57.25 (real_acc=48.61 fake_acc=59.72)
+[cmp:moejepa:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     NanoBanana: acc=64.58 AP=72.94 AUROC=69.77 (real_acc=80.56 fake_acc=48.61)
+[cmp:moejepa:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     QwenImage: acc=53.47 AP=58.27 AUROC=55.73 (real_acc=63.89 fake_acc=43.06)
+[cmp:moejepa:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     SDv3.5: acc=57.64 AP=60.92 AUROC=60.61 (real_acc=62.5 fake_acc=52.78)
+[cmp:moejepa:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     Seedream4: acc=56.25 AP=69.55 AUROC=72.84 (real_acc=87.5 fake_acc=25.0)
+[cmp:moejepa:realchain]   i2i: 72 real + 72 fake ...
+[cmp:moejepa:realchain]     i2i: acc=61.11 AP=66.63 AUROC=74.98 (real_acc=88.89 fake_acc=33.33)
+[cmp:moejepa:realchain] === RESULT vb_realchain_moejepa: mAP=69.65 mAUROC=69.38 acc=61.71 over 7 generators -> /local/ssalehid/vpp/out/realchain/moejepa.json.partial ===
+=== unit cmp:moejepa:realchain DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/realchain/moejepa.json
+=== unit cmp:co_spy:realchain START 2026-11-17 21:38:48 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model co_spy --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_co_spy --out /local/ssalehid/vpp/out/realchain/co_spy.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:co_spy:realchain] === bench_eval vb_realchain_co_spy | model=co_spy ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:co_spy:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     Flux1: acc=93.06 AP=98.41 AUROC=98.05 (real_acc=94.44 fake_acc=91.67)
+[cmp:co_spy:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     Hunyuan3: acc=89.58 AP=98.95 AUROC=99.0 (real_acc=97.22 fake_acc=81.94)
+[cmp:co_spy:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     NanoBanana: acc=63.89 AP=59.38 AUROC=65.66 (real_acc=40.28 fake_acc=87.5)
+[cmp:co_spy:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     QwenImage: acc=88.89 AP=95.11 AUROC=96.66 (real_acc=91.67 fake_acc=86.11)
+[cmp:co_spy:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     SDv3.5: acc=90.97 AP=94.07 AUROC=96.32 (real_acc=94.44 fake_acc=87.5)
+[cmp:co_spy:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     Seedream4: acc=62.5 AP=70.74 AUROC=70.25 (real_acc=45.83 fake_acc=79.17)
+[cmp:co_spy:realchain]   i2i: 72 real + 72 fake ...
+[cmp:co_spy:realchain]     i2i: acc=24.31 AP=35.92 AUROC=20.04 (real_acc=23.61 fake_acc=25.0)
+[cmp:co_spy:realchain] === RESULT vb_realchain_co_spy: mAP=78.94 mAUROC=78.0 acc=73.31 over 7 generators -> /local/ssalehid/vpp/out/realchain/co_spy.json.partial ===
+=== unit cmp:co_spy:realchain DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/realchain/co_spy.json
+=== unit cmp:pgc:realchain START 2026-11-17 21:41:25 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model pgc --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_pgc --out /local/ssalehid/vpp/out/realchain/pgc.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:pgc:realchain] === bench_eval vb_realchain_pgc | model=pgc ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:pgc:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:pgc:realchain]     Flux1: acc=50.0 AP=55.98 AUROC=59.01 (real_acc=100.0 fake_acc=0.0)
+[cmp:pgc:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:pgc:realchain]     Hunyuan3: acc=50.0 AP=47.27 AUROC=50.21 (real_acc=100.0 fake_acc=0.0)
+[cmp:pgc:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:pgc:realchain]     NanoBanana: acc=47.92 AP=31.96 AUROC=6.94 (real_acc=95.83 fake_acc=0.0)
+[cmp:pgc:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:pgc:realchain]     QwenImage: acc=50.69 AP=53.94 AUROC=47.01 (real_acc=100.0 fake_acc=1.39)
+[cmp:pgc:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:pgc:realchain]     SDv3.5: acc=50.0 AP=68.29 AUROC=70.37 (real_acc=100.0 fake_acc=0.0)
+[cmp:pgc:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:pgc:realchain]     Seedream4: acc=43.75 AP=38.27 AUROC=30.36 (real_acc=86.11 fake_acc=1.39)
+[cmp:pgc:realchain]   i2i: 72 real + 72 fake ...
+[cmp:pgc:realchain]     i2i: acc=53.47 AP=52.41 AUROC=45.25 (real_acc=94.44 fake_acc=12.5)
+[cmp:pgc:realchain] === RESULT vb_realchain_pgc: mAP=49.73 mAUROC=44.16 acc=49.4 over 7 generators -> /local/ssalehid/vpp/out/realchain/pgc.json.partial ===
+=== unit cmp:pgc:realchain DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/realchain/pgc.json
+=== unit cmp:cure:realchain START 2026-11-17 21:42:16 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model cure --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_cure --out /local/ssalehid/vpp/out/realchain/cure.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:cure:realchain] === bench_eval vb_realchain_cure | model=cure ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:cure:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:cure:realchain]     Flux1: acc=87.5 AP=97.78 AUROC=96.45 (real_acc=100.0 fake_acc=75.0)
+[cmp:cure:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:cure:realchain]     Hunyuan3: acc=93.75 AP=98.59 AUROC=97.59 (real_acc=100.0 fake_acc=87.5)
+[cmp:cure:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:cure:realchain]     NanoBanana: acc=83.33 AP=90.22 AUROC=87.65 (real_acc=98.61 fake_acc=68.06)
+[cmp:cure:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:cure:realchain]     QwenImage: acc=93.06 AP=95.6 AUROC=98.09 (real_acc=98.61 fake_acc=87.5)
+[cmp:cure:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:cure:realchain]     SDv3.5: acc=77.78 AP=94.67 AUROC=94.02 (real_acc=98.61 fake_acc=56.94)
+[cmp:cure:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:cure:realchain]     Seedream4: acc=56.94 AP=63.4 AUROC=61.28 (real_acc=81.94 fake_acc=31.94)
+[cmp:cure:realchain]   i2i: 72 real + 72 fake ...
+[cmp:cure:realchain]     i2i: acc=54.86 AP=55.34 AUROC=52.16 (real_acc=88.89 fake_acc=20.83)
+[cmp:cure:realchain] === RESULT vb_realchain_cure: mAP=85.09 mAUROC=83.89 acc=78.17 over 7 generators -> /local/ssalehid/vpp/out/realchain/cure.json.partial ===
+=== unit cmp:cure:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/cure.json
+=== unit cmp:dda:realchain START 2026-11-17 21:43:39 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dda --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_dda --out /local/ssalehid/vpp/out/realchain/dda.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:dda:realchain] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dda:realchain] === bench_eval vb_realchain_dda | model=dda ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:dda:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:dda:realchain]     Flux1: acc=61.81 AP=78.28 AUROC=79.26 (real_acc=90.28 fake_acc=33.33)
+[cmp:dda:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:dda:realchain]     Hunyuan3: acc=63.89 AP=84.93 AUROC=83.37 (real_acc=97.22 fake_acc=30.56)
+[cmp:dda:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:dda:realchain]     NanoBanana: acc=60.42 AP=72.33 AUROC=67.79 (real_acc=90.28 fake_acc=30.56)
+[cmp:dda:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:dda:realchain]     QwenImage: acc=84.03 AP=95.28 AUROC=94.37 (real_acc=97.22 fake_acc=70.83)
+[cmp:dda:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:dda:realchain]     SDv3.5: acc=71.53 AP=87.64 AUROC=87.91 (real_acc=91.67 fake_acc=51.39)
+[cmp:dda:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:dda:realchain]     Seedream4: acc=76.39 AP=85.26 AUROC=80.96 (real_acc=93.06 fake_acc=59.72)
+[cmp:dda:realchain]   i2i: 72 real + 72 fake ...
+[cmp:dda:realchain]     i2i: acc=69.44 AP=77.72 AUROC=70.56 (real_acc=90.28 fake_acc=48.61)
+[cmp:dda:realchain] === RESULT vb_realchain_dda: mAP=83.06 mAUROC=80.6 acc=69.64 over 7 generators -> /local/ssalehid/vpp/out/realchain/dda.json.partial ===
+=== unit cmp:dda:realchain DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/realchain/dda.json
+=== unit cmp:ltf:realchain START 2026-11-17 21:44:52 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model ltf --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_ltf --out /local/ssalehid/vpp/out/realchain/ltf.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:ltf:realchain] === bench_eval vb_realchain_ltf | model=ltf ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:ltf:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:ltf:realchain]     Flux1: acc=72.92 AP=89.61 AUROC=88.58 (real_acc=58.33 fake_acc=87.5)
+[cmp:ltf:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:ltf:realchain]     Hunyuan3: acc=78.47 AP=83.72 AUROC=88.73 (real_acc=65.28 fake_acc=91.67)
+[cmp:ltf:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:ltf:realchain]     NanoBanana: acc=50.0 AP=69.94 AUROC=68.27 (real_acc=9.72 fake_acc=90.28)
+[cmp:ltf:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:ltf:realchain]     QwenImage: acc=70.14 AP=79.87 AUROC=81.64 (real_acc=50.0 fake_acc=90.28)
+[cmp:ltf:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:ltf:realchain]     SDv3.5: acc=75.69 AP=88.23 AUROC=88.99 (real_acc=55.56 fake_acc=95.83)
+[cmp:ltf:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:ltf:realchain]     Seedream4: acc=61.81 AP=72.29 AUROC=70.74 (real_acc=26.39 fake_acc=97.22)
+[cmp:ltf:realchain]   i2i: 72 real + 72 fake ...
+[cmp:ltf:realchain]     i2i: acc=47.22 AP=52.22 AUROC=50.06 (real_acc=11.11 fake_acc=83.33)
+[cmp:ltf:realchain] === RESULT vb_realchain_ltf: mAP=76.55 mAUROC=76.72 acc=65.18 over 7 generators -> /local/ssalehid/vpp/out/realchain/ltf.json.partial ===
+=== unit cmp:ltf:realchain DONE rc=0 in 0.37 h -> /local/ssalehid/vpp/out/realchain/ltf.json
+=== unit cmp:probe_resnet:realchain START 2026-11-17 22:07:07 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe_resnet --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_probe_resnet --out /local/ssalehid/vpp/out/realchain/probe_resnet.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:probe_resnet:realchain] === bench_eval vb_realchain_probe_resnet | model=probe_resnet ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:probe_resnet:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     Flux1: acc=87.5 AP=96.58 AUROC=96.78 (real_acc=94.44 fake_acc=80.56)
+[cmp:probe_resnet:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     Hunyuan3: acc=79.17 AP=93.79 AUROC=94.1 (real_acc=97.22 fake_acc=61.11)
+[cmp:probe_resnet:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     NanoBanana: acc=83.33 AP=93.46 AUROC=93.87 (real_acc=95.83 fake_acc=70.83)
+[cmp:probe_resnet:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     QwenImage: acc=78.47 AP=88.49 AUROC=90.07 (real_acc=84.72 fake_acc=72.22)
+[cmp:probe_resnet:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     SDv3.5: acc=70.14 AP=82.85 AUROC=89.39 (real_acc=94.44 fake_acc=45.83)
+[cmp:probe_resnet:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     Seedream4: acc=72.22 AP=78.11 AUROC=79.61 (real_acc=76.39 fake_acc=68.06)
+[cmp:probe_resnet:realchain]   i2i: 72 real + 72 fake ...
+[cmp:probe_resnet:realchain]     i2i: acc=80.56 AP=88.68 AUROC=83.51 (real_acc=87.5 fake_acc=73.61)
+[cmp:probe_resnet:realchain] === RESULT vb_realchain_probe_resnet: mAP=88.85 mAUROC=89.62 acc=78.77 over 7 generators -> /local/ssalehid/vpp/out/realchain/probe_resnet.json.partial ===
+=== unit cmp:probe_resnet:realchain DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/realchain/probe_resnet.json
+=== unit cmp:omniaid_v1:realchain START 2026-11-17 22:09:32 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid_v1 --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_omniaid_v1 --out /local/ssalehid/vpp/out/realchain/omniaid_v1.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:omniaid_v1:realchain] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid_v1:realchain] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid_v1:realchain] Key                                  | Status     |  |
+[cmp:omniaid_v1:realchain] -------------------------------------+------------+--+-
+[cmp:omniaid_v1:realchain] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid_v1:realchain] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid_v1:realchain] Notes:
+[cmp:omniaid_v1:realchain] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid_v1:realchain] Rank allocation: total_rank=1024, r_main=1016, num_experts=6, rank_per_expert=8
+[cmp:omniaid_v1:realchain] === bench_eval vb_realchain_omniaid_v1 | model=omniaid_v1 ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:omniaid_v1:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     Flux1: acc=61.81 AP=96.41 AUROC=96.35 (real_acc=100.0 fake_acc=23.61)
+[cmp:omniaid_v1:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     Hunyuan3: acc=72.22 AP=98.87 AUROC=98.69 (real_acc=100.0 fake_acc=44.44)
+[cmp:omniaid_v1:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     NanoBanana: acc=65.28 AP=90.44 AUROC=93.0 (real_acc=98.61 fake_acc=31.94)
+[cmp:omniaid_v1:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     QwenImage: acc=63.19 AP=98.85 AUROC=98.77 (real_acc=100.0 fake_acc=26.39)
+[cmp:omniaid_v1:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     SDv3.5: acc=56.25 AP=93.75 AUROC=95.25 (real_acc=100.0 fake_acc=12.5)
+[cmp:omniaid_v1:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     Seedream4: acc=57.64 AP=85.7 AUROC=84.43 (real_acc=100.0 fake_acc=15.28)
+[cmp:omniaid_v1:realchain]   i2i: 72 real + 72 fake ...
+[cmp:omniaid_v1:realchain]     i2i: acc=51.39 AP=66.31 AUROC=62.19 (real_acc=98.61 fake_acc=4.17)
+[cmp:omniaid_v1:realchain] === RESULT vb_realchain_omniaid_v1: mAP=90.05 mAUROC=89.81 acc=61.11 over 7 generators -> /local/ssalehid/vpp/out/realchain/omniaid_v1.json.partial ===
+=== unit cmp:omniaid_v1:realchain DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/realchain/omniaid_v1.json
+=== unit cmp:npr:realchain START 2026-11-17 22:12:10 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model npr --benchmark pergen --data /local/ssalehid/vpp/subsets/realchain/data --tag vb_realchain_npr --out /local/ssalehid/vpp/out/realchain/npr.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 72 --bs 32
+[cmp:npr:realchain] === bench_eval vb_realchain_npr | model=npr ckpt=registry-default | pergen | 7 generators | device=cuda ===
+[cmp:npr:realchain]   Flux1: 72 real + 72 fake ...
+[cmp:npr:realchain]     Flux1: acc=59.03 AP=86.47 AUROC=84.22 (real_acc=100.0 fake_acc=18.06)
+[cmp:npr:realchain]   Hunyuan3: 72 real + 72 fake ...
+[cmp:npr:realchain]     Hunyuan3: acc=50.0 AP=49.78 AUROC=53.0 (real_acc=100.0 fake_acc=0.0)
+[cmp:npr:realchain]   NanoBanana: 72 real + 72 fake ...
+[cmp:npr:realchain]     NanoBanana: acc=48.61 AP=52.61 AUROC=57.71 (real_acc=87.5 fake_acc=9.72)
+[cmp:npr:realchain]   QwenImage: 72 real + 72 fake ...
+[cmp:npr:realchain]     QwenImage: acc=54.86 AP=85.67 AUROC=84.67 (real_acc=100.0 fake_acc=9.72)
+[cmp:npr:realchain]   SDv3.5: 72 real + 72 fake ...
+[cmp:npr:realchain]     SDv3.5: acc=50.69 AP=69.0 AUROC=73.72 (real_acc=98.61 fake_acc=2.78)
+[cmp:npr:realchain]   Seedream4: 72 real + 72 fake ...
+[cmp:npr:realchain]     Seedream4: acc=41.67 AP=43.27 AUROC=42.17 (real_acc=76.39 fake_acc=6.94)
+[cmp:npr:realchain]   i2i: 72 real + 72 fake ...
+[cmp:npr:realchain]     i2i: acc=51.39 AP=58.67 AUROC=60.91 (real_acc=88.89 fake_acc=13.89)
+[cmp:npr:realchain] === RESULT vb_realchain_npr: mAP=63.64 mAUROC=65.2 acc=50.89 over 7 generators -> /local/ssalehid/vpp/out/realchain/npr.json.partial ===
+=== unit cmp:npr:realchain DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/realchain/npr.json
+=== unit cmp:clip:ditfake:jpeg95 START 2026-11-17 22:13:02 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model clip --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_clip__jpeg95 --out /local/ssalehid/vpp/out/ditfake/clip__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:clip:ditfake:jpeg95] === bench_eval vb_ditfake_clip__jpeg95 | model=clip ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:clip:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:clip:ditfake:jpeg95]     FLUX.1-schnell: acc=49.7 AP=42.54 AUROC=38.16 (real_acc=99.4 fake_acc=0.0)
+[cmp:clip:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:clip:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=52.1 AP=60.57 AUROC=55.89 (real_acc=99.4 fake_acc=4.79)
+[cmp:clip:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:clip:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=50.3 AP=47.68 AUROC=46.3 (real_acc=98.8 fake_acc=1.8)
+[cmp:clip:ditfake:jpeg95] === RESULT vb_ditfake_clip__jpeg95: mAP=50.26 mAUROC=46.78 acc=50.7 over 3 generators -> /local/ssalehid/vpp/out/ditfake/clip__jpeg95.json.partial ===
+=== unit cmp:clip:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/clip__jpeg95.json
+=== unit cmp:dinov2:ditfake:jpeg95 START 2026-11-17 22:14:06 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dinov2 --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_dinov2__jpeg95 --out /local/ssalehid/vpp/out/ditfake/dinov2__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:dinov2:ditfake:jpeg95] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dinov2:ditfake:jpeg95] === bench_eval vb_ditfake_dinov2__jpeg95 | model=dinov2 ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:dinov2:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:dinov2:ditfake:jpeg95]     FLUX.1-schnell: acc=48.2 AP=45.22 AUROC=45.71 (real_acc=95.21 fake_acc=1.2)
+[cmp:dinov2:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:dinov2:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=53.59 AP=62.4 AUROC=60.6 (real_acc=98.8 fake_acc=8.38)
+[cmp:dinov2:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:dinov2:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=49.1 AP=48.81 AUROC=47.41 (real_acc=94.61 fake_acc=3.59)
+[cmp:dinov2:ditfake:jpeg95] === RESULT vb_ditfake_dinov2__jpeg95: mAP=52.14 mAUROC=51.24 acc=50.3 over 3 generators -> /local/ssalehid/vpp/out/ditfake/dinov2__jpeg95.json.partial ===
+=== unit cmp:dinov2:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/dinov2__jpeg95.json
+=== unit cmp:adapted_dino:ditfake:jpeg95 START 2026-11-17 22:15:10 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model adapted_dino --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_adapted_dino__jpeg95 --out /local/ssalehid/vpp/out/ditfake/adapted_dino__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:adapted_dino:ditfake:jpeg95] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:adapted_dino:ditfake:jpeg95] === bench_eval vb_ditfake_adapted_dino__jpeg95 | model=adapted_dino ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:adapted_dino:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:adapted_dino:ditfake:jpeg95]     FLUX.1-schnell: acc=50.0 AP=51.53 AUROC=51.61 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:adapted_dino:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=50.0 AP=67.72 AUROC=68.9 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:adapted_dino:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=50.0 AP=60.54 AUROC=62.87 (real_acc=100.0 fake_acc=0.0)
+[cmp:adapted_dino:ditfake:jpeg95] === RESULT vb_ditfake_adapted_dino__jpeg95: mAP=59.93 mAUROC=61.13 acc=50.0 over 3 generators -> /local/ssalehid/vpp/out/ditfake/adapted_dino__jpeg95.json.partial ===
+=== unit cmp:adapted_dino:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/adapted_dino__jpeg95.json
+=== unit cmp:fat_former:ditfake:jpeg95 START 2026-11-17 22:16:14 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model fat_former --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_fat_former__jpeg95 --out /local/ssalehid/vpp/out/ditfake/fat_former__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:fat_former:ditfake:jpeg95]   from pkg_resources import resource_stream
+[cmp:fat_former:ditfake:jpeg95] === bench_eval vb_ditfake_fat_former__jpeg95 | model=fat_former ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:fat_former:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:fat_former:ditfake:jpeg95]     FLUX.1-schnell: acc=50.3 AP=55.36 AUROC=54.36 (real_acc=98.2 fake_acc=2.4)
+[cmp:fat_former:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:fat_former:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=60.78 AP=77.53 AUROC=74.98 (real_acc=97.6 fake_acc=23.95)
+[cmp:fat_former:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:fat_former:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=52.69 AP=61.27 AUROC=59.65 (real_acc=98.8 fake_acc=6.59)
+[cmp:fat_former:ditfake:jpeg95] === RESULT vb_ditfake_fat_former__jpeg95: mAP=64.72 mAUROC=63.0 acc=54.59 over 3 generators -> /local/ssalehid/vpp/out/ditfake/fat_former__jpeg95.json.partial ===
+=== unit cmp:fat_former:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/fat_former__jpeg95.json
+=== unit cmp:spai:ditfake:jpeg95 START 2026-11-17 22:17:31 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model spai --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_spai__jpeg95 --out /local/ssalehid/vpp/out/ditfake/spai__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:spai:ditfake:jpeg95] [SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+[cmp:spai:ditfake:jpeg95] === bench_eval vb_ditfake_spai__jpeg95 | model=spai ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:spai:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:spai:ditfake:jpeg95]     FLUX.1-schnell: acc=86.23 AP=95.97 AUROC=96.13 (real_acc=92.81 fake_acc=79.64)
+[cmp:spai:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:spai:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=94.01 AP=98.6 AUROC=98.59 (real_acc=96.41 fake_acc=91.62)
+[cmp:spai:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:spai:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=94.01 AP=99.33 AUROC=99.31 (real_acc=95.21 fake_acc=92.81)
+[cmp:spai:ditfake:jpeg95] === RESULT vb_ditfake_spai__jpeg95: mAP=97.97 mAUROC=98.01 acc=91.42 over 3 generators -> /local/ssalehid/vpp/out/ditfake/spai__jpeg95.json.partial ===
+=== unit cmp:spai:ditfake:jpeg95 DONE rc=0 in 0.08 h -> /local/ssalehid/vpp/out/ditfake/spai__jpeg95.json
+=== unit cmp:bfree:ditfake:jpeg95 START 2026-11-17 22:22:29 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model bfree --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_bfree__jpeg95 --out /local/ssalehid/vpp/out/ditfake/bfree__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:bfree:ditfake:jpeg95] === bench_eval vb_ditfake_bfree__jpeg95 | model=bfree ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:bfree:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:bfree:ditfake:jpeg95]     FLUX.1-schnell: acc=87.72 AP=97.75 AUROC=97.81 (real_acc=97.6 fake_acc=77.84)
+[cmp:bfree:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:bfree:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=99.7 AP=100.0 AUROC=100.0 (real_acc=99.4 fake_acc=100.0)
+[cmp:bfree:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:bfree:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=98.8 AP=99.9 AUROC=99.9 (real_acc=98.8 fake_acc=98.8)
+[cmp:bfree:ditfake:jpeg95] === RESULT vb_ditfake_bfree__jpeg95: mAP=99.22 mAUROC=99.24 acc=95.41 over 3 generators -> /local/ssalehid/vpp/out/ditfake/bfree__jpeg95.json.partial ===
+=== unit cmp:bfree:ditfake:jpeg95 DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/bfree__jpeg95.json
+=== unit cmp:co_spy:ditfake:jpeg95 START 2026-11-17 22:25:08 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model co_spy --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_co_spy__jpeg95 --out /local/ssalehid/vpp/out/ditfake/co_spy__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:co_spy:ditfake:jpeg95] === bench_eval vb_ditfake_co_spy__jpeg95 | model=co_spy ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:co_spy:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:co_spy:ditfake:jpeg95]     FLUX.1-schnell: acc=95.51 AP=99.57 AUROC=99.55 (real_acc=97.6 fake_acc=93.41)
+[cmp:co_spy:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:co_spy:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=97.6 AP=99.71 AUROC=99.7 (real_acc=98.2 fake_acc=97.01)
+[cmp:co_spy:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:co_spy:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=96.41 AP=99.02 AUROC=99.13 (real_acc=97.01 fake_acc=95.81)
+[cmp:co_spy:ditfake:jpeg95] === RESULT vb_ditfake_co_spy__jpeg95: mAP=99.43 mAUROC=99.46 acc=96.51 over 3 generators -> /local/ssalehid/vpp/out/ditfake/co_spy__jpeg95.json.partial ===
+=== unit cmp:co_spy:ditfake:jpeg95 DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/co_spy__jpeg95.json
+=== unit cmp:cure:ditfake:jpeg95 START 2026-11-17 22:27:35 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model cure --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_cure__jpeg95 --out /local/ssalehid/vpp/out/ditfake/cure__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:cure:ditfake:jpeg95] === bench_eval vb_ditfake_cure__jpeg95 | model=cure ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:cure:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:cure:ditfake:jpeg95]     FLUX.1-schnell: acc=83.23 AP=95.9 AUROC=93.55 (real_acc=100.0 fake_acc=66.47)
+[cmp:cure:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:cure:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:cure:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:cure:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=97.01 AP=99.78 AUROC=99.78 (real_acc=99.4 fake_acc=94.61)
+[cmp:cure:ditfake:jpeg95] === RESULT vb_ditfake_cure__jpeg95: mAP=98.56 mAUROC=97.78 acc=93.41 over 3 generators -> /local/ssalehid/vpp/out/ditfake/cure__jpeg95.json.partial ===
+=== unit cmp:cure:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/cure__jpeg95.json
+=== unit cmp:d3qe:ditfake:jpeg95 START 2026-11-17 22:28:45 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model d3qe --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_d3qe__jpeg95 --out /local/ssalehid/vpp/out/ditfake/d3qe__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:d3qe:ditfake:jpeg95] Trainable parameters: 7680003
+[cmp:d3qe:ditfake:jpeg95] === bench_eval vb_ditfake_d3qe__jpeg95 | model=d3qe ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:d3qe:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:d3qe:ditfake:jpeg95]     FLUX.1-schnell: acc=55.99 AP=65.85 AUROC=63.48 (real_acc=95.81 fake_acc=16.17)
+[cmp:d3qe:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:d3qe:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=55.99 AP=74.82 AUROC=72.54 (real_acc=98.2 fake_acc=13.77)
+[cmp:d3qe:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:d3qe:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=52.69 AP=61.85 AUROC=60.17 (real_acc=97.6 fake_acc=7.78)
+[cmp:d3qe:ditfake:jpeg95] === RESULT vb_ditfake_d3qe__jpeg95: mAP=67.51 mAUROC=65.4 acc=54.89 over 3 generators -> /local/ssalehid/vpp/out/ditfake/d3qe__jpeg95.json.partial ===
+=== unit cmp:d3qe:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/d3qe__jpeg95.json
+=== unit cmp:mirror:ditfake:jpeg95 START 2026-11-17 22:29:59 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model mirror --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_mirror__jpeg95 --out /local/ssalehid/vpp/out/ditfake/mirror__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:mirror:ditfake:jpeg95] Loading Backbone from: config (DINOv3 ViT, width 1280, 32 blocks)
+[cmp:mirror:ditfake:jpeg95] === bench_eval vb_ditfake_mirror__jpeg95 | model=mirror ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:mirror:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:mirror:ditfake:jpeg95]     FLUX.1-schnell: acc=99.1 AP=99.99 AUROC=99.99 (real_acc=98.8 fake_acc=99.4)
+[cmp:mirror:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:mirror:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:mirror:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=99.4 AP=99.97 AUROC=99.97 (real_acc=100.0 fake_acc=98.8)
+[cmp:mirror:ditfake:jpeg95] === RESULT vb_ditfake_mirror__jpeg95: mAP=99.99 mAUROC=99.99 acc=99.5 over 3 generators -> /local/ssalehid/vpp/out/ditfake/mirror__jpeg95.json.partial ===
+=== unit cmp:mirror:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/mirror__jpeg95.json
+=== unit cmp:vina:ditfake:jpeg95 START 2026-11-17 22:31:26 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model vina --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_vina__jpeg95 --out /local/ssalehid/vpp/out/ditfake/vina__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:vina:ditfake:jpeg95] === bench_eval vb_ditfake_vina__jpeg95 | model=vina ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:vina:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:vina:ditfake:jpeg95]     FLUX.1-schnell: acc=91.92 AP=99.52 AUROC=99.54 (real_acc=98.8 fake_acc=85.03)
+[cmp:vina:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:vina:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=99.7 AP=100.0 AUROC=100.0 (real_acc=99.4 fake_acc=100.0)
+[cmp:vina:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:vina:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=95.81 AP=99.56 AUROC=99.54 (real_acc=99.4 fake_acc=92.22)
+[cmp:vina:ditfake:jpeg95] === RESULT vb_ditfake_vina__jpeg95: mAP=99.69 mAUROC=99.69 acc=95.81 over 3 generators -> /local/ssalehid/vpp/out/ditfake/vina__jpeg95.json.partial ===
+=== unit cmp:vina:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/vina__jpeg95.json
+=== unit cmp:probe:ditfake:jpeg95 START 2026-11-17 22:32:34 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_probe__jpeg95 --out /local/ssalehid/vpp/out/ditfake/probe__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:probe:ditfake:jpeg95] === bench_eval vb_ditfake_probe__jpeg95 | model=probe ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:probe:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:probe:ditfake:jpeg95]     FLUX.1-schnell: acc=90.72 AP=99.08 AUROC=99.2 (real_acc=99.4 fake_acc=82.04)
+[cmp:probe:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:probe:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:probe:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:probe:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=99.7 AP=100.0 AUROC=100.0 (real_acc=99.4 fake_acc=100.0)
+[cmp:probe:ditfake:jpeg95] === RESULT vb_ditfake_probe__jpeg95: mAP=99.69 mAUROC=99.73 acc=96.81 over 3 generators -> /local/ssalehid/vpp/out/ditfake/probe__jpeg95.json.partial ===
+=== unit cmp:probe:ditfake:jpeg95 DONE rc=0 in 0.05 h -> /local/ssalehid/vpp/out/ditfake/probe__jpeg95.json
+=== unit cmp:probe_resnet:ditfake:jpeg95 START 2026-11-17 22:35:42 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe_resnet --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_probe_resnet__jpeg95 --out /local/ssalehid/vpp/out/ditfake/probe_resnet__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:probe_resnet:ditfake:jpeg95] === bench_eval vb_ditfake_probe_resnet__jpeg95 | model=probe_resnet ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:probe_resnet:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake:jpeg95]     FLUX.1-schnell: acc=88.32 AP=97.43 AUROC=97.57 (real_acc=98.2 fake_acc=78.44)
+[cmp:probe_resnet:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=96.71 AP=99.51 AUROC=99.52 (real_acc=97.6 fake_acc=95.81)
+[cmp:probe_resnet:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:probe_resnet:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=91.32 AP=98.67 AUROC=98.61 (real_acc=96.41 fake_acc=86.23)
+[cmp:probe_resnet:ditfake:jpeg95] === RESULT vb_ditfake_probe_resnet__jpeg95: mAP=98.54 mAUROC=98.57 acc=92.12 over 3 generators -> /local/ssalehid/vpp/out/ditfake/probe_resnet__jpeg95.json.partial ===
+=== unit cmp:probe_resnet:ditfake:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ditfake/probe_resnet__jpeg95.json
+=== unit cmp:omniaid_v1:ditfake:jpeg95 START 2026-11-17 22:36:45 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid_v1 --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_omniaid_v1__jpeg95 --out /local/ssalehid/vpp/out/ditfake/omniaid_v1__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:omniaid_v1:ditfake:jpeg95] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid_v1:ditfake:jpeg95] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid_v1:ditfake:jpeg95] Key                                  | Status     |  |
+[cmp:omniaid_v1:ditfake:jpeg95] -------------------------------------+------------+--+-
+[cmp:omniaid_v1:ditfake:jpeg95] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid_v1:ditfake:jpeg95] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid_v1:ditfake:jpeg95] Notes:
+[cmp:omniaid_v1:ditfake:jpeg95] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid_v1:ditfake:jpeg95] Rank allocation: total_rank=1024, r_main=1016, num_experts=6, rank_per_expert=8
+[cmp:omniaid_v1:ditfake:jpeg95] === bench_eval vb_ditfake_omniaid_v1__jpeg95 | model=omniaid_v1 ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:omniaid_v1:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:omniaid_v1:ditfake:jpeg95]     FLUX.1-schnell: acc=85.33 AP=94.57 AUROC=94.79 (real_acc=91.62 fake_acc=79.04)
+[cmp:omniaid_v1:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:omniaid_v1:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=98.2 AP=99.9 AUROC=99.9 (real_acc=96.41 fake_acc=100.0)
+[cmp:omniaid_v1:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:omniaid_v1:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=88.92 AP=93.46 AUROC=96.07 (real_acc=92.81 fake_acc=85.03)
+[cmp:omniaid_v1:ditfake:jpeg95] === RESULT vb_ditfake_omniaid_v1__jpeg95: mAP=95.98 mAUROC=96.92 acc=90.82 over 3 generators -> /local/ssalehid/vpp/out/ditfake/omniaid_v1__jpeg95.json.partial ===
+=== unit cmp:omniaid_v1:ditfake:jpeg95 DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ditfake/omniaid_v1__jpeg95.json
+=== unit cmp:npr:ditfake:jpeg95 START 2026-11-17 22:39:16 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model npr --benchmark pergen --data /local/ssalehid/vpp/subsets/ditfake/data --tag vb_ditfake_npr__jpeg95 --out /local/ssalehid/vpp/out/ditfake/npr__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 167 --degrade jpeg95 --bs 32
+[cmp:npr:ditfake:jpeg95] === bench_eval vb_ditfake_npr__jpeg95 | model=npr ckpt=registry-default | pergen | 3 generators | device=cuda | degrade jpeg95 ===
+[cmp:npr:ditfake:jpeg95]   FLUX.1-schnell: 167 real + 167 fake ...
+[cmp:npr:ditfake:jpeg95]     FLUX.1-schnell: acc=66.47 AP=68.67 AUROC=68.54 (real_acc=74.25 fake_acc=58.68)
+[cmp:npr:ditfake:jpeg95]   PixArt-Sigma-XL-2-1024-MS: 167 real + 167 fake ...
+[cmp:npr:ditfake:jpeg95]     PixArt-Sigma-XL-2-1024-MS: acc=73.65 AP=76.64 AUROC=79.6 (real_acc=79.04 fake_acc=68.26)
+[cmp:npr:ditfake:jpeg95]   stable-diffusion-3-medium-diffusers: 167 real + 167 fake ...
+[cmp:npr:ditfake:jpeg95]     stable-diffusion-3-medium-diffusers: acc=58.08 AP=58.73 AUROC=57.03 (real_acc=76.05 fake_acc=40.12)
+[cmp:npr:ditfake:jpeg95] === RESULT vb_ditfake_npr__jpeg95: mAP=68.01 mAUROC=68.39 acc=66.07 over 3 generators -> /local/ssalehid/vpp/out/ditfake/npr__jpeg95.json.partial ===
+=== unit cmp:npr:ditfake:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ditfake/npr__jpeg95.json
+=== unit cmp:clip:ufd8:jpeg95 START 2026-11-17 22:40:04 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model clip --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_clip__jpeg95 --out /local/ssalehid/vpp/out/ufd8/clip__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:clip:ufd8:jpeg95] === bench_eval vb_ufd8_clip__jpeg95 | model=clip ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:clip:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     dalle: acc=86.51 AP=95.31 AUROC=94.78 (real_acc=95.24 fake_acc=77.78)
+[cmp:clip:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     glide_100_10: acc=83.33 AP=94.43 AUROC=94.78 (real_acc=95.24 fake_acc=71.43)
+[cmp:clip:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     glide_100_27: acc=85.71 AP=95.14 AUROC=94.66 (real_acc=95.24 fake_acc=76.19)
+[cmp:clip:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     glide_50_27: acc=84.92 AP=94.07 AUROC=93.83 (real_acc=95.24 fake_acc=74.6)
+[cmp:clip:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     guided: acc=69.05 AP=89.06 AUROC=87.55 (real_acc=100.0 fake_acc=38.1)
+[cmp:clip:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     ldm_100: acc=91.27 AP=97.57 AUROC=97.56 (real_acc=95.24 fake_acc=87.3)
+[cmp:clip:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     ldm_200: acc=93.65 AP=97.61 AUROC=97.58 (real_acc=95.24 fake_acc=92.06)
+[cmp:clip:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:clip:ufd8:jpeg95]     ldm_200_cfg: acc=67.46 AP=85.66 AUROC=85.64 (real_acc=95.24 fake_acc=39.68)
+[cmp:clip:ufd8:jpeg95] === RESULT vb_ufd8_clip__jpeg95: mAP=93.61 mAUROC=93.3 acc=82.74 over 8 generators -> /local/ssalehid/vpp/out/ufd8/clip__jpeg95.json.partial ===
+=== unit cmp:clip:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/clip__jpeg95.json
+=== unit cmp:cnn:ufd8:jpeg95 START 2026-11-17 22:40:41 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model cnn --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_cnn__jpeg95 --out /local/ssalehid/vpp/out/ufd8/cnn__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:cnn:ufd8:jpeg95] === bench_eval vb_ufd8_cnn__jpeg95 | model=cnn ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:cnn:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     dalle: acc=50.0 AP=73.49 AUROC=76.34 (real_acc=98.41 fake_acc=1.59)
+[cmp:cnn:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     glide_100_10: acc=52.38 AP=69.71 AUROC=70.57 (real_acc=98.41 fake_acc=6.35)
+[cmp:cnn:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     glide_100_27: acc=53.17 AP=80.48 AUROC=80.98 (real_acc=98.41 fake_acc=7.94)
+[cmp:cnn:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     glide_50_27: acc=52.38 AP=75.85 AUROC=77.58 (real_acc=98.41 fake_acc=6.35)
+[cmp:cnn:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     guided: acc=49.21 AP=60.23 AUROC=61.45 (real_acc=98.41 fake_acc=0.0)
+[cmp:cnn:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     ldm_100: acc=50.79 AP=80.69 AUROC=82.67 (real_acc=98.41 fake_acc=3.17)
+[cmp:cnn:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     ldm_200: acc=51.59 AP=81.66 AUROC=84.74 (real_acc=98.41 fake_acc=4.76)
+[cmp:cnn:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:cnn:ufd8:jpeg95]     ldm_200_cfg: acc=50.79 AP=69.6 AUROC=72.71 (real_acc=98.41 fake_acc=3.17)
+[cmp:cnn:ufd8:jpeg95] === RESULT vb_ufd8_cnn__jpeg95: mAP=73.96 mAUROC=75.88 acc=51.29 over 8 generators -> /local/ssalehid/vpp/out/ufd8/cnn__jpeg95.json.partial ===
+=== unit cmp:cnn:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/cnn__jpeg95.json
+=== unit cmp:dinov2:ufd8:jpeg95 START 2026-11-17 22:41:01 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dinov2 --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_dinov2__jpeg95 --out /local/ssalehid/vpp/out/ufd8/dinov2__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:dinov2:ufd8:jpeg95] Using cache found in /local/ssalehid/cache/torch/hub/facebookresearch_dinov2_main
+[cmp:dinov2:ufd8:jpeg95] === bench_eval vb_ufd8_dinov2__jpeg95 | model=dinov2 ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:dinov2:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     dalle: acc=75.4 AP=85.24 AUROC=84.05 (real_acc=90.48 fake_acc=60.32)
+[cmp:dinov2:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     glide_100_10: acc=85.71 AP=92.9 AUROC=91.89 (real_acc=90.48 fake_acc=80.95)
+[cmp:dinov2:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     glide_100_27: acc=88.89 AP=94.6 AUROC=93.78 (real_acc=90.48 fake_acc=87.3)
+[cmp:dinov2:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     glide_50_27: acc=83.33 AP=91.8 AUROC=90.95 (real_acc=90.48 fake_acc=76.19)
+[cmp:dinov2:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     guided: acc=73.02 AP=88.85 AUROC=88.08 (real_acc=93.65 fake_acc=52.38)
+[cmp:dinov2:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     ldm_100: acc=92.86 AP=97.51 AUROC=97.48 (real_acc=90.48 fake_acc=95.24)
+[cmp:dinov2:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     ldm_200: acc=88.89 AP=94.7 AUROC=93.68 (real_acc=90.48 fake_acc=87.3)
+[cmp:dinov2:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:dinov2:ufd8:jpeg95]     ldm_200_cfg: acc=79.37 AP=86.59 AUROC=86.24 (real_acc=90.48 fake_acc=68.25)
+[cmp:dinov2:ufd8:jpeg95] === RESULT vb_ufd8_dinov2__jpeg95: mAP=91.52 mAUROC=90.77 acc=83.43 over 8 generators -> /local/ssalehid/vpp/out/ufd8/dinov2__jpeg95.json.partial ===
+=== unit cmp:dinov2:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/dinov2__jpeg95.json
+=== unit cmp:dinov3:ufd8:jpeg95 START 2026-11-17 22:41:38 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model dinov3 --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_dinov3__jpeg95 --out /local/ssalehid/vpp/out/ufd8/dinov3__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:dinov3:ufd8:jpeg95] === bench_eval vb_ufd8_dinov3__jpeg95 | model=dinov3 ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:dinov3:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     dalle: acc=82.54 AP=94.89 AUROC=93.15 (real_acc=77.78 fake_acc=87.3)
+[cmp:dinov3:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     glide_100_10: acc=85.71 AP=97.66 AUROC=96.72 (real_acc=77.78 fake_acc=93.65)
+[cmp:dinov3:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     glide_100_27: acc=88.1 AP=99.47 AUROC=99.4 (real_acc=77.78 fake_acc=98.41)
+[cmp:dinov3:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     glide_50_27: acc=85.71 AP=96.29 AUROC=95.52 (real_acc=77.78 fake_acc=93.65)
+[cmp:dinov3:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     guided: acc=80.95 AP=92.9 AUROC=91.03 (real_acc=93.65 fake_acc=68.25)
+[cmp:dinov3:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     ldm_100: acc=88.1 AP=99.56 AUROC=99.4 (real_acc=77.78 fake_acc=98.41)
+[cmp:dinov3:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     ldm_200: acc=88.1 AP=99.35 AUROC=98.99 (real_acc=77.78 fake_acc=98.41)
+[cmp:dinov3:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:dinov3:ufd8:jpeg95]     ldm_200_cfg: acc=84.13 AP=96.3 AUROC=95.46 (real_acc=77.78 fake_acc=90.48)
+[cmp:dinov3:ufd8:jpeg95] === RESULT vb_ufd8_dinov3__jpeg95: mAP=97.05 mAUROC=96.21 acc=85.42 over 8 generators -> /local/ssalehid/vpp/out/ufd8/dinov3__jpeg95.json.partial ===
+=== unit cmp:dinov3:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/dinov3__jpeg95.json
+=== unit cmp:safe:ufd8:jpeg95 START 2026-11-17 22:42:14 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model safe --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_safe__jpeg95 --out /local/ssalehid/vpp/out/ufd8/safe__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:safe:ufd8:jpeg95]   from pkg_resources import resource_stream
+[cmp:safe:ufd8:jpeg95] === bench_eval vb_ufd8_safe__jpeg95 | model=safe ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:safe:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     dalle: acc=47.62 AP=45.55 AUROC=43.31 (real_acc=93.65 fake_acc=1.59)
+[cmp:safe:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     glide_100_10: acc=49.21 AP=46.04 AUROC=39.53 (real_acc=93.65 fake_acc=4.76)
+[cmp:safe:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     glide_100_27: acc=47.62 AP=43.96 AUROC=39.66 (real_acc=93.65 fake_acc=1.59)
+[cmp:safe:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     glide_50_27: acc=49.21 AP=45.27 AUROC=39.46 (real_acc=93.65 fake_acc=4.76)
+[cmp:safe:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     guided: acc=50.0 AP=50.03 AUROC=42.4 (real_acc=100.0 fake_acc=0.0)
+[cmp:safe:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     ldm_100: acc=46.83 AP=42.83 AUROC=40.84 (real_acc=93.65 fake_acc=0.0)
+[cmp:safe:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     ldm_200: acc=46.83 AP=45.09 AUROC=43.16 (real_acc=93.65 fake_acc=0.0)
+[cmp:safe:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:safe:ufd8:jpeg95]     ldm_200_cfg: acc=46.83 AP=43.09 AUROC=40.97 (real_acc=93.65 fake_acc=0.0)
+[cmp:safe:ufd8:jpeg95] === RESULT vb_ufd8_safe__jpeg95: mAP=45.23 mAUROC=41.17 acc=48.02 over 8 generators -> /local/ssalehid/vpp/out/ufd8/safe__jpeg95.json.partial ===
+=== unit cmp:safe:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/safe__jpeg95.json
+=== unit cmp:fat_former:ufd8:jpeg95 START 2026-11-17 22:42:33 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model fat_former --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_fat_former__jpeg95 --out /local/ssalehid/vpp/out/ufd8/fat_former__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:fat_former:ufd8:jpeg95]   from pkg_resources import resource_stream
+[cmp:fat_former:ufd8:jpeg95] === bench_eval vb_ufd8_fat_former__jpeg95 | model=fat_former ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:fat_former:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     dalle: acc=84.13 AP=96.81 AUROC=95.79 (real_acc=100.0 fake_acc=68.25)
+[cmp:fat_former:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     glide_100_10: acc=62.7 AP=84.47 AUROC=79.72 (real_acc=100.0 fake_acc=25.4)
+[cmp:fat_former:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     glide_100_27: acc=69.84 AP=89.17 AUROC=85.92 (real_acc=100.0 fake_acc=39.68)
+[cmp:fat_former:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     glide_50_27: acc=65.87 AP=87.87 AUROC=85.59 (real_acc=100.0 fake_acc=31.75)
+[cmp:fat_former:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     guided: acc=62.7 AP=80.66 AUROC=77.3 (real_acc=98.41 fake_acc=26.98)
+[cmp:fat_former:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     ldm_100: acc=82.54 AP=97.52 AUROC=96.85 (real_acc=100.0 fake_acc=65.08)
+[cmp:fat_former:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     ldm_200: acc=80.95 AP=96.45 AUROC=95.09 (real_acc=100.0 fake_acc=61.9)
+[cmp:fat_former:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:fat_former:ufd8:jpeg95]     ldm_200_cfg: acc=66.67 AP=90.16 AUROC=87.53 (real_acc=100.0 fake_acc=33.33)
+[cmp:fat_former:ufd8:jpeg95] === RESULT vb_ufd8_fat_former__jpeg95: mAP=90.39 mAUROC=87.97 acc=71.92 over 8 generators -> /local/ssalehid/vpp/out/ufd8/fat_former__jpeg95.json.partial ===
+=== unit cmp:fat_former:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/fat_former__jpeg95.json
+=== unit cmp:spai:ufd8:jpeg95 START 2026-11-17 22:43:20 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model spai --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_spai__jpeg95 --out /local/ssalehid/vpp/out/ufd8/spai__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:spai:ufd8:jpeg95] [SPAI] unexpected checkpoint keys ignored: ['norm.weight', 'norm.bias']
+[cmp:spai:ufd8:jpeg95] === bench_eval vb_ufd8_spai__jpeg95 | model=spai ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:spai:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     dalle: acc=85.71 AP=93.44 AUROC=94.47 (real_acc=80.95 fake_acc=90.48)
+[cmp:spai:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     glide_100_10: acc=77.78 AP=88.4 AUROC=89.44 (real_acc=80.95 fake_acc=74.6)
+[cmp:spai:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     glide_100_27: acc=78.57 AP=86.45 AUROC=88.5 (real_acc=80.95 fake_acc=76.19)
+[cmp:spai:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     glide_50_27: acc=79.37 AP=89.56 AUROC=90.55 (real_acc=80.95 fake_acc=77.78)
+[cmp:spai:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     guided: acc=76.19 AP=84.11 AUROC=86.0 (real_acc=82.54 fake_acc=69.84)
+[cmp:spai:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     ldm_100: acc=89.68 AP=97.61 AUROC=98.34 (real_acc=80.95 fake_acc=98.41)
+[cmp:spai:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     ldm_200: acc=89.68 AP=97.63 AUROC=98.39 (real_acc=80.95 fake_acc=98.41)
+[cmp:spai:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:spai:ufd8:jpeg95]     ldm_200_cfg: acc=90.48 AP=97.95 AUROC=98.79 (real_acc=80.95 fake_acc=100.0)
+[cmp:spai:ufd8:jpeg95] === RESULT vb_ufd8_spai__jpeg95: mAP=91.89 mAUROC=93.06 acc=83.43 over 8 generators -> /local/ssalehid/vpp/out/ufd8/spai__jpeg95.json.partial ===
+=== unit cmp:spai:ufd8:jpeg95 DONE rc=0 in 0.04 h -> /local/ssalehid/vpp/out/ufd8/spai__jpeg95.json
+=== unit cmp:bfree:ufd8:jpeg95 START 2026-11-17 22:45:44 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model bfree --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_bfree__jpeg95 --out /local/ssalehid/vpp/out/ufd8/bfree__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:bfree:ufd8:jpeg95] === bench_eval vb_ufd8_bfree__jpeg95 | model=bfree ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:bfree:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     dalle: acc=92.86 AP=98.88 AUROC=98.77 (real_acc=92.06 fake_acc=93.65)
+[cmp:bfree:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     glide_100_10: acc=87.3 AP=96.01 AUROC=95.77 (real_acc=92.06 fake_acc=82.54)
+[cmp:bfree:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     glide_100_27: acc=90.48 AP=96.82 AUROC=96.5 (real_acc=92.06 fake_acc=88.89)
+[cmp:bfree:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     glide_50_27: acc=89.68 AP=95.43 AUROC=95.31 (real_acc=92.06 fake_acc=87.3)
+[cmp:bfree:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     guided: acc=86.51 AP=94.26 AUROC=92.01 (real_acc=98.41 fake_acc=74.6)
+[cmp:bfree:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     ldm_100: acc=96.03 AP=99.87 AUROC=99.87 (real_acc=92.06 fake_acc=100.0)
+[cmp:bfree:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     ldm_200: acc=96.03 AP=99.9 AUROC=99.9 (real_acc=92.06 fake_acc=100.0)
+[cmp:bfree:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:bfree:ufd8:jpeg95]     ldm_200_cfg: acc=96.03 AP=100.0 AUROC=100.0 (real_acc=92.06 fake_acc=100.0)
+[cmp:bfree:ufd8:jpeg95] === RESULT vb_ufd8_bfree__jpeg95: mAP=97.65 mAUROC=97.27 acc=91.86 over 8 generators -> /local/ssalehid/vpp/out/ufd8/bfree__jpeg95.json.partial ===
+=== unit cmp:bfree:ufd8:jpeg95 DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/ufd8/bfree__jpeg95.json
+=== unit cmp:co_spy:ufd8:jpeg95 START 2026-11-17 22:47:50 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model co_spy --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_co_spy__jpeg95 --out /local/ssalehid/vpp/out/ufd8/co_spy__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:co_spy:ufd8:jpeg95] === bench_eval vb_ufd8_co_spy__jpeg95 | model=co_spy ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:co_spy:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     dalle: acc=67.46 AP=82.93 AUROC=83.27 (real_acc=92.06 fake_acc=42.86)
+[cmp:co_spy:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     glide_100_10: acc=70.63 AP=83.73 AUROC=83.77 (real_acc=92.06 fake_acc=49.21)
+[cmp:co_spy:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     glide_100_27: acc=66.67 AP=85.46 AUROC=87.91 (real_acc=92.06 fake_acc=41.27)
+[cmp:co_spy:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     glide_50_27: acc=65.08 AP=81.92 AUROC=82.14 (real_acc=92.06 fake_acc=38.1)
+[cmp:co_spy:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     guided: acc=57.14 AP=89.56 AUROC=91.48 (real_acc=98.41 fake_acc=15.87)
+[cmp:co_spy:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     ldm_100: acc=82.54 AP=93.54 AUROC=93.63 (real_acc=92.06 fake_acc=73.02)
+[cmp:co_spy:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     ldm_200: acc=79.37 AP=91.6 AUROC=91.53 (real_acc=92.06 fake_acc=66.67)
+[cmp:co_spy:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:co_spy:ufd8:jpeg95]     ldm_200_cfg: acc=71.43 AP=86.62 AUROC=85.94 (real_acc=92.06 fake_acc=50.79)
+[cmp:co_spy:ufd8:jpeg95] === RESULT vb_ufd8_co_spy__jpeg95: mAP=86.92 mAUROC=87.46 acc=70.04 over 8 generators -> /local/ssalehid/vpp/out/ufd8/co_spy__jpeg95.json.partial ===
+=== unit cmp:co_spy:ufd8:jpeg95 DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/ufd8/co_spy__jpeg95.json
+=== unit cmp:d3qe:ufd8:jpeg95 START 2026-11-17 22:49:52 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model d3qe --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_d3qe__jpeg95 --out /local/ssalehid/vpp/out/ufd8/d3qe__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:d3qe:ufd8:jpeg95] Trainable parameters: 7680003
+[cmp:d3qe:ufd8:jpeg95] === bench_eval vb_ufd8_d3qe__jpeg95 | model=d3qe ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:d3qe:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     dalle: acc=84.92 AP=89.24 AUROC=87.83 (real_acc=95.24 fake_acc=74.6)
+[cmp:d3qe:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     glide_100_10: acc=87.3 AP=93.49 AUROC=94.15 (real_acc=95.24 fake_acc=79.37)
+[cmp:d3qe:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     glide_100_27: acc=86.51 AP=92.89 AUROC=94.08 (real_acc=95.24 fake_acc=77.78)
+[cmp:d3qe:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     glide_50_27: acc=81.75 AP=92.2 AUROC=93.25 (real_acc=95.24 fake_acc=68.25)
+[cmp:d3qe:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     guided: acc=65.08 AP=79.47 AUROC=76.49 (real_acc=95.24 fake_acc=34.92)
+[cmp:d3qe:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     ldm_100: acc=84.13 AP=91.6 AUROC=90.27 (real_acc=95.24 fake_acc=73.02)
+[cmp:d3qe:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     ldm_200: acc=83.33 AP=92.77 AUROC=92.4 (real_acc=95.24 fake_acc=71.43)
+[cmp:d3qe:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:d3qe:ufd8:jpeg95]     ldm_200_cfg: acc=73.81 AP=79.09 AUROC=74.06 (real_acc=95.24 fake_acc=52.38)
+[cmp:d3qe:ufd8:jpeg95] === RESULT vb_ufd8_d3qe__jpeg95: mAP=88.84 mAUROC=87.82 acc=80.85 over 8 generators -> /local/ssalehid/vpp/out/ufd8/d3qe__jpeg95.json.partial ===
+=== unit cmp:d3qe:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/d3qe__jpeg95.json
+=== unit cmp:mirror:ufd8:jpeg95 START 2026-11-17 22:50:38 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model mirror --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_mirror__jpeg95 --out /local/ssalehid/vpp/out/ufd8/mirror__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:mirror:ufd8:jpeg95] Loading Backbone from: config (DINOv3 ViT, width 1280, 32 blocks)
+[cmp:mirror:ufd8:jpeg95] === bench_eval vb_ufd8_mirror__jpeg95 | model=mirror ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:mirror:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     dalle: acc=97.62 AP=99.93 AUROC=99.92 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     glide_100_10: acc=97.62 AP=99.95 AUROC=99.95 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     glide_100_27: acc=97.62 AP=99.95 AUROC=99.95 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     glide_50_27: acc=97.62 AP=100.0 AUROC=100.0 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     guided: acc=100.0 AP=100.0 AUROC=100.0 (real_acc=100.0 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     ldm_100: acc=97.62 AP=100.0 AUROC=100.0 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     ldm_200: acc=97.62 AP=100.0 AUROC=100.0 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:mirror:ufd8:jpeg95]     ldm_200_cfg: acc=97.62 AP=99.98 AUROC=99.97 (real_acc=95.24 fake_acc=100.0)
+[cmp:mirror:ufd8:jpeg95] === RESULT vb_ufd8_mirror__jpeg95: mAP=99.98 mAUROC=99.97 acc=97.92 over 8 generators -> /local/ssalehid/vpp/out/ufd8/mirror__jpeg95.json.partial ===
+=== unit cmp:mirror:ufd8:jpeg95 DONE rc=0 in 0.02 h -> /local/ssalehid/vpp/out/ufd8/mirror__jpeg95.json
+=== unit cmp:vina:ufd8:jpeg95 START 2026-11-17 22:51:38 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model vina --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_vina__jpeg95 --out /local/ssalehid/vpp/out/ufd8/vina__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:vina:ufd8:jpeg95] === bench_eval vb_ufd8_vina__jpeg95 | model=vina ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:vina:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     dalle: acc=98.41 AP=99.88 AUROC=99.87 (real_acc=98.41 fake_acc=98.41)
+[cmp:vina:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     glide_100_10: acc=94.44 AP=99.56 AUROC=99.55 (real_acc=98.41 fake_acc=90.48)
+[cmp:vina:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     glide_100_27: acc=96.83 AP=99.58 AUROC=99.55 (real_acc=98.41 fake_acc=95.24)
+[cmp:vina:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     glide_50_27: acc=99.21 AP=99.95 AUROC=99.95 (real_acc=98.41 fake_acc=100.0)
+[cmp:vina:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     guided: acc=84.92 AP=94.58 AUROC=92.39 (real_acc=100.0 fake_acc=69.84)
+[cmp:vina:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     ldm_100: acc=99.21 AP=100.0 AUROC=100.0 (real_acc=98.41 fake_acc=100.0)
+[cmp:vina:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     ldm_200: acc=99.21 AP=100.0 AUROC=100.0 (real_acc=98.41 fake_acc=100.0)
+[cmp:vina:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:vina:ufd8:jpeg95]     ldm_200_cfg: acc=99.21 AP=99.98 AUROC=99.97 (real_acc=98.41 fake_acc=100.0)
+[cmp:vina:ufd8:jpeg95] === RESULT vb_ufd8_vina__jpeg95: mAP=99.19 mAUROC=98.91 acc=96.43 over 8 generators -> /local/ssalehid/vpp/out/ufd8/vina__jpeg95.json.partial ===
+=== unit cmp:vina:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/vina__jpeg95.json
+=== unit cmp:probe_resnet:ufd8:jpeg95 START 2026-11-17 22:52:15 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model probe_resnet --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_probe_resnet__jpeg95 --out /local/ssalehid/vpp/out/ufd8/probe_resnet__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:probe_resnet:ufd8:jpeg95] === bench_eval vb_ufd8_probe_resnet__jpeg95 | model=probe_resnet ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:probe_resnet:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     dalle: acc=78.57 AP=90.99 AUROC=90.98 (real_acc=90.48 fake_acc=66.67)
+[cmp:probe_resnet:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     glide_100_10: acc=59.52 AP=69.28 AUROC=70.04 (real_acc=90.48 fake_acc=28.57)
+[cmp:probe_resnet:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     glide_100_27: acc=53.17 AP=65.2 AUROC=68.91 (real_acc=90.48 fake_acc=15.87)
+[cmp:probe_resnet:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     glide_50_27: acc=54.76 AP=69.4 AUROC=70.67 (real_acc=90.48 fake_acc=19.05)
+[cmp:probe_resnet:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     guided: acc=60.32 AP=80.31 AUROC=79.14 (real_acc=100.0 fake_acc=20.63)
+[cmp:probe_resnet:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     ldm_100: acc=93.65 AP=99.36 AUROC=99.27 (real_acc=90.48 fake_acc=96.83)
+[cmp:probe_resnet:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     ldm_200: acc=95.24 AP=99.79 AUROC=99.77 (real_acc=90.48 fake_acc=100.0)
+[cmp:probe_resnet:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:probe_resnet:ufd8:jpeg95]     ldm_200_cfg: acc=94.44 AP=99.5 AUROC=99.47 (real_acc=90.48 fake_acc=98.41)
+[cmp:probe_resnet:ufd8:jpeg95] === RESULT vb_ufd8_probe_resnet__jpeg95: mAP=84.23 mAUROC=84.78 acc=73.71 over 8 generators -> /local/ssalehid/vpp/out/ufd8/probe_resnet__jpeg95.json.partial ===
+=== unit cmp:probe_resnet:ufd8:jpeg95 DONE rc=0 in 0.01 h -> /local/ssalehid/vpp/out/ufd8/probe_resnet__jpeg95.json
+=== unit cmp:omniaid:ufd8:jpeg95 START 2026-11-17 22:52:42 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_omniaid__jpeg95 --out /local/ssalehid/vpp/out/ufd8/omniaid__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:omniaid:ufd8:jpeg95] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid:ufd8:jpeg95] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid:ufd8:jpeg95] Key                                  | Status     |  |
+[cmp:omniaid:ufd8:jpeg95] -------------------------------------+------------+--+-
+[cmp:omniaid:ufd8:jpeg95] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid:ufd8:jpeg95] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid:ufd8:jpeg95] Notes:
+[cmp:omniaid:ufd8:jpeg95] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid:ufd8:jpeg95] Rank allocation: total_rank=1024, r_main=1023, num_experts=6, rank_per_expert=1
+[cmp:omniaid:ufd8:jpeg95] === bench_eval vb_ufd8_omniaid__jpeg95 | model=omniaid ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:omniaid:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     dalle: acc=68.25 AP=80.26 AUROC=78.91 (real_acc=69.84 fake_acc=66.67)
+[cmp:omniaid:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     glide_100_10: acc=50.79 AP=64.62 AUROC=61.4 (real_acc=69.84 fake_acc=31.75)
+[cmp:omniaid:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     glide_100_27: acc=60.32 AP=70.9 AUROC=68.86 (real_acc=69.84 fake_acc=50.79)
+[cmp:omniaid:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     glide_50_27: acc=53.17 AP=65.49 AUROC=62.43 (real_acc=69.84 fake_acc=36.51)
+[cmp:omniaid:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     guided: acc=53.97 AP=71.65 AUROC=70.98 (real_acc=98.41 fake_acc=9.52)
+[cmp:omniaid:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     ldm_100: acc=79.37 AP=91.71 AUROC=91.51 (real_acc=69.84 fake_acc=88.89)
+[cmp:omniaid:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     ldm_200: acc=78.57 AP=91.46 AUROC=91.18 (real_acc=69.84 fake_acc=87.3)
+[cmp:omniaid:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:omniaid:ufd8:jpeg95]     ldm_200_cfg: acc=74.6 AP=88.86 AUROC=88.01 (real_acc=69.84 fake_acc=79.37)
+[cmp:omniaid:ufd8:jpeg95] === RESULT vb_ufd8_omniaid__jpeg95: mAP=78.12 mAUROC=76.66 acc=64.88 over 8 generators -> /local/ssalehid/vpp/out/ufd8/omniaid__jpeg95.json.partial ===
+=== unit cmp:omniaid:ufd8:jpeg95 DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/ufd8/omniaid__jpeg95.json
+=== unit cmp:omniaid_genimage:ufd8:jpeg95 START 2026-11-17 22:54:38 on node409: /var/scratch/ssalehid/anaconda3/envs/SynthScope/bin/python /local/ssalehid/70275/code/benchmark/bench_eval.py --model omniaid_genimage --benchmark ufd --data /local/ssalehid/vpp/subsets/ufd8/data --tag vb_ufd8_omniaid_genimage__jpeg95 --out /local/ssalehid/vpp/out/ufd8/omniaid_genimage__jpeg95.json.partial --results-log /local/ssalehid/vpp/out/RESULTS.node409.305129.jsonl --limit 63 --degrade jpeg95 --bs 32
+[cmp:omniaid_genimage:ufd8:jpeg95] Initializing in HYBRID MoE architectural mode.
+[cmp:omniaid_genimage:ufd8:jpeg95] [1mCLIPModel LOAD REPORT[0m from: openai/clip-vit-large-patch14-336
+[cmp:omniaid_genimage:ufd8:jpeg95] Key                                  | Status     |  |
+[cmp:omniaid_genimage:ufd8:jpeg95] -------------------------------------+------------+--+-
+[cmp:omniaid_genimage:ufd8:jpeg95] vision_model.embeddings.position_ids | UNEXPECTED |  |
+[cmp:omniaid_genimage:ufd8:jpeg95] text_model.embeddings.position_ids   | UNEXPECTED |  |
+[cmp:omniaid_genimage:ufd8:jpeg95] Notes:
+[cmp:omniaid_genimage:ufd8:jpeg95] - UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+[cmp:omniaid_genimage:ufd8:jpeg95] Rank allocation: total_rank=1024, r_main=1020, num_experts=3, rank_per_expert=4
+[cmp:omniaid_genimage:ufd8:jpeg95] === bench_eval vb_ufd8_omniaid_genimage__jpeg95 | model=omniaid_genimage ckpt=registry-default | ufd | 8 generators | device=cuda | degrade jpeg95 ===
+[cmp:omniaid_genimage:ufd8:jpeg95]   dalle: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     dalle: acc=92.86 AP=97.25 AUROC=97.46 (real_acc=88.89 fake_acc=96.83)
+[cmp:omniaid_genimage:ufd8:jpeg95]   glide_100_10: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     glide_100_10: acc=92.06 AP=97.76 AUROC=97.58 (real_acc=88.89 fake_acc=95.24)
+[cmp:omniaid_genimage:ufd8:jpeg95]   glide_100_27: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     glide_100_27: acc=88.1 AP=96.91 AUROC=96.47 (real_acc=88.89 fake_acc=87.3)
+[cmp:omniaid_genimage:ufd8:jpeg95]   glide_50_27: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     glide_50_27: acc=92.86 AP=97.97 AUROC=97.71 (real_acc=88.89 fake_acc=96.83)
+[cmp:omniaid_genimage:ufd8:jpeg95]   guided: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     guided: acc=84.13 AP=94.45 AUROC=93.8 (real_acc=96.83 fake_acc=71.43)
+[cmp:omniaid_genimage:ufd8:jpeg95]   ldm_100: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     ldm_100: acc=94.44 AP=99.52 AUROC=99.55 (real_acc=88.89 fake_acc=100.0)
+[cmp:omniaid_genimage:ufd8:jpeg95]   ldm_200: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     ldm_200: acc=94.44 AP=99.49 AUROC=99.52 (real_acc=88.89 fake_acc=100.0)
+[cmp:omniaid_genimage:ufd8:jpeg95]   ldm_200_cfg: 63 real + 63 fake ...
+[cmp:omniaid_genimage:ufd8:jpeg95]     ldm_200_cfg: acc=94.44 AP=98.3 AUROC=98.51 (real_acc=88.89 fake_acc=100.0)
+[cmp:omniaid_genimage:ufd8:jpeg95] === RESULT vb_ufd8_omniaid_genimage__jpeg95: mAP=97.71 mAUROC=97.57 acc=91.67 over 8 generators -> /local/ssalehid/vpp/out/ufd8/omniaid_genimage__jpeg95.json.partial ===
+=== unit cmp:omniaid_genimage:ufd8:jpeg95 DONE rc=0 in 0.03 h -> /local/ssalehid/vpp/out/ufd8/omniaid_genimage__jpeg95.json
+=== run_units: 459/459 unit results present; failed: []; not present: []
+=== run_units rc=0 Tue Nov 17 22:56:38 CET 2026
+exit rc=0: final sync 22:56:38
+/var/scratch/ssalehid/synthscope_das6/das6_lib.sh: line 28: 305126 Terminated              ( while sleep $SYNC_SECONDS; do
+    sync_results;
+done )

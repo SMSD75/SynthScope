@@ -1,0 +1,41 @@
+{
+  "tag": "vb_wildrf_cure",
+  "model": "cure",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/wildrf/data",
+  "jpeg_fakes": null,
+  "n_generators": 3,
+  "means": {
+    "acc": 96.24,
+    "map": 99.22,
+    "mauroc": 99.3
+  },
+  "per_generator": {
+    "facebook": {
+      "ap": 98.8,
+      "auroc": 98.92,
+      "real_acc": 91.25,
+      "fake_acc": 99.37,
+      "acc": 95.31
+    },
+    "reddit": {
+      "ap": 99.6,
+      "auroc": 99.61,
+      "real_acc": 97.6,
+      "fake_acc": 95.81,
+      "acc": 96.71
+    },
+    "twitter": {
+      "ap": 99.27,
+      "auroc": 99.36,
+      "real_acc": 94.01,
+      "fake_acc": 99.4,
+      "acc": 96.71
+    }
+  },
+  "date": "2026-11-17T16:01:31",
+  "synthscope_version": "0.1.0",
+  "limit": 167
+}

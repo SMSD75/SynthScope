@@ -50,6 +50,49 @@ for the maintainers and stop.
    - `weights`: `"official"` | `"synthscope_trained"` | `"training_free"` (shown in the web UI badge).
 5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 
+### VLM detectors (a released vision-language model that answers "real or fake")
+A detector that is a released Hugging Face VLM (Veritas++ so far) uses the `vlm` kind (`models/vlm/vlm.py`) instead of
+steps 1-3. It is a family-adapter design:
+- a **family** (`VLMFamily`) says how a model family is loaded and fed: the strict `from_pretrained` load into the
+  official transformers class (local files only; a LoRA adapter folder, `adapter_config.json`, is kept unmerged on a
+  local `base_model` folder named relative to `$SYNTHSCOPE_CKPT_DIR`, needs peft (`pip install ".[vlm]"`: peft 0.21.3, qwen-vl-utils 0.0.14); the processor then comes from the
+  base unless `processor` is set), the processor (+ `processor_overrides`), the verdict token sequences (default: the
+  first verdict pair with a leading space as the tokenizer encodes it, e.g. SentencePiece `["▁", "▁fake"]`; set
+  `verdict_sequences` to give token strings), the prompt (chat template on, or the raw prompt with
+  `chat_template=False`), the processor call and the input size. `QwenVLFamily` (`QWEN_VL`) is implemented; the base
+  class fits processors that take `text=[prompt], images=[image]` (LLaVA-style; `tests/test_veritaspp_smoke.py` plugs a
+  dummy one in). A family whose loading or inputs differ (e.g. FakeVLM's processor from another repo) overrides the
+  methods it needs;
+- `models/image/<k>/<k>.py` holds the detector's `VLMConfig`: the family and transformers class, the official prompts
+  (verbatim), the image loader (`models/vlm/image.py`: vLLM's EXIF transpose + white alpha composite, when the official
+  inference is a vLLM server), an optional PIL `preprocess` hook (e.g. `qwen_vl_utils.fetch_image`), the decoding
+  (`decoding` = greedy for benchmarks, `official_decoding` = the authors' setting), the answer marker and end tag (both
+  optional), the verdict word pairs, the verdict mode (`generate`, or `teacher_forced`: one forward pass on the prompt +
+  `teacher_forced_suffix` + the verdict sequences' shared prefix, read at their first differing token), raw or
+  processed logits (processed = after a repetition penalty, what greedy decoding
+  picks from), the official verdict parser (`models/vlm/parsers.py`, vendored with attribution) and `max_pixels`
+  (None = the processor's default; set a cap only if an image does not fit, and document it);
+- the spec: `predict_kind="vlm"`, `ckpt_kind="official_vlm"`, `checkpoint="<folder>"`, `vlm=<config>`, `overrides=[]`,
+  no `transform`, `native_res=True`; no model config and no `trainer.py` dispatch (inference only);
+- score: P(fake) = sigmoid(l(fake) - l(real)) at the verdict token (generate: the emitted verdict token and its
+  same-spelling counterpart; teacher-forced: the first differing tokens of the verdict sequences; `logit` = that gap), 0.5 with
+  `score_source="unparsed"` when no verdict token was generated, plus the parsed verdict and the rationale
+  (`Engine.vlm_score`); pass the decoded file without an RGB conversion (`media.decode_image_raw`);
+- not supported yet: batching (one image per call), video;
+- a multi-GB folder does not fit the one-file zoo: add the key to `NEVER_REDISTRIBUTE` with the reason.
+- benchmarking: `bench_eval` scores a `vlm` spec one image at a time through `Engine.vlm_score` (greedy by default;
+  `--vlm-decoding official --vlm-seed N` for the authors' sampling). An unparsed answer counts as wrong for accuracy
+  (the `*_drop` fields leave it out, as the authors' scripts usually do) and gets logit 0 for AUROC; report the unparsed
+  count. A VLM costs seconds per image, so benchmarks are subsampled (`--limit L`, the same files for every detector it is
+  compared with; `repro/vlm_bench/` holds the subset manifests, the unit runner and `compare.py`). `--vlm-cache DIR`
+  resumes an interrupted run; its folder is keyed by the weights revision, `max_new_tokens`, the prompts and the VLM code
+  version, so it never returns records written under another setting;
+- documentation: the model README states the official request, the greedy-versus-official decoding choice (say where each
+  sampling setting comes from: a script, the model's `generation_config.json` or the paper), the unparsed policy, the
+  fidelity check against a direct transformers call (identical tokens and logit gap), memory and speed, and the licence.
+  Compare with the paper only on the paper's own data and metric; a subset or a metric you had to guess is "reference",
+  never "reproduced".
+
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:
 ```

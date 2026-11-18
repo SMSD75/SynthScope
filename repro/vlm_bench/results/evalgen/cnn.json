@@ -1,0 +1,55 @@
+{
+  "tag": "vb_evalgen_cnn",
+  "model": "cnn",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/evalgen/data",
+  "jpeg_fakes": null,
+  "n_generators": 5,
+  "means": {
+    "acc": 53.1,
+    "map": 66.69,
+    "mauroc": 65.97
+  },
+  "per_generator": {
+    "Flux": {
+      "ap": 55.1,
+      "auroc": 52.4,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    },
+    "GoT": {
+      "ap": 72.15,
+      "auroc": 73.37,
+      "real_acc": 100.0,
+      "fake_acc": 2.0,
+      "acc": 51.0
+    },
+    "Infinity": {
+      "ap": 73.41,
+      "auroc": 74.97,
+      "real_acc": 100.0,
+      "fake_acc": 3.0,
+      "acc": 51.5
+    },
+    "NOVA": {
+      "ap": 86.82,
+      "auroc": 86.32,
+      "real_acc": 100.0,
+      "fake_acc": 26.0,
+      "acc": 63.0
+    },
+    "OmniGen": {
+      "ap": 45.97,
+      "auroc": 42.78,
+      "real_acc": 100.0,
+      "fake_acc": 0.0,
+      "acc": 50.0
+    }
+  },
+  "date": "2026-11-17T13:01:29",
+  "synthscope_version": "0.1.0",
+  "limit": 100
+}

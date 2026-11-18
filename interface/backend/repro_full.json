@@ -1663,6 +1663,48 @@
       "note": "REPRODUCED: SynthScope mAUROC 84.00 / mAP 82.59 vs paper avg AUC 0.852 / AP 0.858 (within ~1-3 pts). Per-gen near-exact (Sora AUROC 82.4 vs 84.0; VEO3 85.6 vs 86.5). Small residual = SynthScope decoding the on-disk mp4s with decord + recomputing calibration on GenVideo reals, vs the official precomputed-VATEX-embedding path. VEO3 IS evaluated here (the gated Google Veo3 clips are bundled in\u2026"
     }
   ],
+  "veritaspp": [
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
+      "metric": "accuracy over all images (unparsed answers dropped, as the authors' script; 0 here)",
+      "paper": "acc=96.4",
+      "ours": "acc=95.65 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=95.65",
+      "status": "official",
+      "note": "Greedy decoding, official weights, full data: 95.65 acc (-0.75). On a 988-image subset: greedy 95.65, the authors' sampled setting (T 0.7) 96.46 (+0.06). The paper states no temperature. Full run 13.8 GPU-h (judgement call: above the 12 h guideline)."
+    },
+    {
+      "benchmark": "RealChain (7 generators), 1,008-image subset",
+      "metric": "accuracy over all images (unparsed dropped; 0 here)",
+      "paper": "acc=82.3",
+      "ours": "acc=82.74 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=82.74",
+      "status": "reference",
+      "note": "Subset only (72 reals + 72 fakes per generator, 7% of the data), greedy: 82.74 acc (+0.44), close but not a full-data run. Weak generators: Seedream4 fake acc 31.9, image-to-image 22.2. Ranks 1st of 28 detectors on the same images."
+    },
+    {
+      "benchmark": "EvalGEN (5 generators), 500-fake subset",
+      "metric": "accuracy on the fakes only (our inference of the paper's metric, from DDA's row 97.2)",
+      "paper": "acc=99.5",
+      "ours": "acc=98.2 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=98.2",
+      "status": "reference",
+      "note": "NOT reproduced on full data: 500-fake subset (of 55,298), greedy. 98.20 fakes only (-1.30), 99.10 balanced with MSCOCO reals (-0.40). NOVA is the only weak generator (91.0, 100 fakes)."
+    },
+    {
+      "benchmark": "15 held benchmarks, subsampled (L = ceil(500 / generators)), vs 27 detectors on identical images",
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap",
+      "paper": "\u2014",
+      "ours": "acc=84.7 / AUROC=91.33 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=84.7 / AUROC=91.33",
+      "status": "reference",
+      "note": "Subsampled, official weights, greedy, unparsed counted wrong (10 of 17,935); mean of the 15 accuracies 84.70 (median detector 76.25, best public CuRe 89.27, MIRROR 95.30). 1st of 28 on RRDataset and RealChain, weak on GANs (ForenSynths 25th). JPEG95: UFD-8 -5.26 acc, DiTFake +0.10."
+    }
+  ],
   "vib_net": [
     {
       "benchmark": "Diffusion-source (SDv1.4-trained), AP and ACC -- HEADLINE",

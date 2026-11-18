@@ -1,0 +1,27 @@
+{
+  "tag": "vb_bfree_online_omniaid_v1",
+  "model": "omniaid_v1",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "pergen",
+  "data_root": "/local/ssalehid/vpp/subsets/bfree_online/data",
+  "jpeg_fakes": null,
+  "n_generators": 1,
+  "means": {
+    "acc": 82.28,
+    "map": 95.62,
+    "mauroc": 94.61
+  },
+  "per_generator": {
+    "viral": {
+      "ap": 95.62,
+      "auroc": 94.61,
+      "real_acc": 95.17,
+      "fake_acc": 69.4,
+      "acc": 82.28
+    }
+  },
+  "date": "2026-11-17T19:36:16",
+  "synthscope_version": "0.1.0",
+  "limit": 500
+}

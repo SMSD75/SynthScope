@@ -1,0 +1,76 @@
+{
+  "tag": "vb_ufd8_dinov2",
+  "model": "dinov2",
+  "ckpt": "registry-default",
+  "model_config": null,
+  "benchmark": "ufd",
+  "data_root": "/local/ssalehid/vpp/subsets/ufd8/data",
+  "jpeg_fakes": null,
+  "n_generators": 8,
+  "means": {
+    "acc": 82.84,
+    "map": 91.66,
+    "mauroc": 90.82
+  },
+  "per_generator": {
+    "dalle": {
+      "ap": 85.63,
+      "auroc": 84.08,
+      "real_acc": 88.89,
+      "fake_acc": 58.73,
+      "acc": 73.81
+    },
+    "glide_100_10": {
+      "ap": 92.73,
+      "auroc": 91.56,
+      "real_acc": 88.89,
+      "fake_acc": 82.54,
+      "acc": 85.71
+    },
+    "glide_100_27": {
+      "ap": 94.9,
+      "auroc": 94.41,
+      "real_acc": 88.89,
+      "fake_acc": 85.71,
+      "acc": 87.3
+    },
+    "glide_50_27": {
+      "ap": 92.53,
+      "auroc": 91.74,
+      "real_acc": 88.89,
+      "fake_acc": 76.19,
+      "acc": 82.54
+    },
+    "guided": {
+      "ap": 87.6,
+      "auroc": 86.55,
+      "real_acc": 93.65,
+      "fake_acc": 52.38,
+      "acc": 73.02
+    },
+    "ldm_100": {
+      "ap": 97.61,
+      "auroc": 97.63,
+      "real_acc": 88.89,
+      "fake_acc": 95.24,
+      "acc": 92.06
+    },
+    "ldm_200": {
+      "ap": 95.08,
+      "auroc": 93.9,
+      "real_acc": 88.89,
+      "fake_acc": 87.3,
+      "acc": 88.1
+    },
+    "ldm_200_cfg": {
+      "ap": 87.22,
+      "auroc": 86.7,
+      "real_acc": 88.89,
+      "fake_acc": 71.43,
+      "acc": 80.16
+    }
+  },
+  "date": "2026-11-17T10:51:15",
+  "synthscope_version": "0.1.0",
+  "limit": 63
+}

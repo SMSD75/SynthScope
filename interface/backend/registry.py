@@ -18,6 +18,8 @@ from typing import Callable, Optional
 
 from omegaconf import OmegaConf
 
+from models.image.veritaspp.veritaspp import VERITASPP
+from models.vlm.vlm import VLMConfig
 from transformations import IMAGENET_MEAN, IMAGENET_STD, AIGITransformations   # IMAGENET_*: the video_norm below
 
 MODEL_CONF_DIR = Path(__file__).resolve().parents[2] / "conf" / "model"
@@ -170,10 +172,10 @@ class ModelSpec:
     paper: str                     # short citation
     modality: str                  # "image" (also runs frame-by-frame on video) or "video"
     overrides: list[str]           # Hydra overrides for config_utils.compose_config
-    predict_kind: str              # ce | bce | bce_npr | vib | video
-    checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file)
+    predict_kind: str              # ce | bce | bce_npr | vib | video | vlm
+    checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file; a folder for "vlm")
     ckpt_kind: str                 # synthscope | official_* (strict) | none
-    transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video models)
+    transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video and VLM models)
     # Video-clip sampling (used when modality == "video").
     num_frames: int = 16
     fps: Optional[float] = None
@@ -219,6 +221,13 @@ class ModelSpec:
     #   "" = none (black-box) · "safe_hf" = DWT HH-band artifact map · "npr_residual" = pixel-residual map.
     interpret: str = ""
     remap: Optional[Callable[[dict], dict]] = field(default=None, repr=False)
+    # predict_kind "vlm": a released vision-language model that writes a rationale and a verdict (models/vlm/vlm.py).
+    # Its preprocessing is the official image loader + the model's own processor, so ``transform`` is None and
+    # ``overrides`` is empty: the config (with its model family) carries the processor, prompt, decoding, answer
+    # marker, verdict words, parser and pixel cap. ``checkpoint`` is the Hugging Face folder under CHECKPOINTS_DIR
+    # (ckpt_kind "official_vlm": strict ``from_pretrained``, local files only), or a LoRA adapter folder when the config
+    # names a local ``base_model`` (relative to CHECKPOINTS_DIR; kept unmerged). Still images only.
+    vlm: Optional[VLMConfig] = field(default=None, repr=False)
 
     def eval_batch_size(self, batch_size: int) -> int:
         """Batch size an evaluation loop may use: 1 for a ``native_res`` spec (its inputs differ in size and cannot be
@@ -613,6 +622,21 @@ _add(ModelSpec(
     notes="Neighboring-pixel-residual ResNet. Official ProGAN weights.",
 ))
 
+# --- VLM detectors (inference only, official weights; one image at a time) ----------------------------------------
+_add(ModelSpec(
+    key="veritaspp", name="Veritas++", paper="Tan et al., arXiv 2607.27113",
+    modality="image", predict_kind="vlm", checkpoint="veritaspp", ckpt_kind="official_vlm", weights="official",
+    # veritaspp = the official HF folder EricTan7/VeritasPP @ 22ba6c6b unchanged (Apache-2.0; 4 safetensors shards,
+    # 17.5 GB bf16, 750 tensors), loaded strictly into transformers' Qwen3VLForConditionalGeneration.
+    overrides=[], vlm=VERITASPP, native_res=True,
+    notes="Qwen3-VL-8B trained to reason about an image (a written rationale, about 400-650 tokens) and then answer "
+          "<answer> real/fake </answer>. Uses the OFFICIAL weights and the official prompt; scored with greedy "
+          "decoding (the authors' inference script samples at temperature 0.7). P(fake) = sigmoid of the fake-minus-real logit at the "
+          "answer token, so it is near 0 or 1; the verdict is the parsed answer. Still images only. On an RTX A5000 "
+          "(bf16): about 17 s per image and 18.9 GB peak up to 2048x2048, about 38 s and 23 GB at the processor's "
+          "16.8 MP cap (repro/veritaspp_fidelity.json). Not on the Space.",
+))
+
 # --- Video detectors ---------------------------------------------------------
 _add(ModelSpec(
     key="d3", name="D3 (video)", paper="ICCV'25",
@@ -716,6 +740,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "vina": ("Resize + center-crop 256 (bicubic)", "The shorter side is scaled to 256 px (bicubic) and the central "
              "256×256 square is used. The aspect ratio is kept; anything outside the square is not seen by the "
              "detector."),
+    "veritaspp": ("Native resolution (Qwen3-VL processor)", "As the official server loads it, the image is turned "
+                  "upright by its EXIF orientation and any transparency is filled with white; then the whole image goes "
+                  "to the vision-language model at its own resolution, resized only to a multiple of 32 px (between "
+                  "0.07 and 16.8 megapixels)."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
