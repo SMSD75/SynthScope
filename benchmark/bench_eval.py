@@ -38,7 +38,8 @@ AUROC / AP from the fake-minus-real logit, plus the unparsed count and the mean 
 output JSON (``per_image``). --vlm-decoding official samples with the authors' settings, seeded per image with --vlm-seed.
 --vlm-cache DIR keeps every scored image as a JSON line (one file per writer, keyed by its path relative to --data and checked
 against the file's sha1), so a preempted or repeated run only scores what is missing. The cache folder is also keyed by a hash of
-the weights revision (or --ckpt), max_new_tokens and sampling settings, the prompts and the VLM code version (``vlm_identity``,
+the weights revision (or --ckpt), max_new_tokens and sampling settings, the prompts, the detector's other VLM settings (max_pixels,
+model class, verdict pairs, markers, parser, image loader) and the VLM code version (``vlm_identity``,
 written to ``identity.json`` in the folder), so a cache reused after any of them changed starts empty.
 """
 from __future__ import annotations
@@ -349,23 +350,44 @@ def vlm_code_version() -> str:
     return h.hexdigest()[:10]
 
 
+VLM_CONFIG_FIELDS = ("model_class", "family", "max_pixels", "verdict_pairs", "verdict_sequences", "verdict_mode",
+                     "teacher_forced_suffix", "logits", "answer_marker", "answer_end", "parser", "image_loader", "preprocess",
+                     "processor", "processor_overrides", "processor_kwargs", "base_model", "dtype", "attn_implementation")
+
+
+def vlm_config_fingerprint(cfg) -> str:
+    """Short hash of the per-detector VLM settings that change a score (``VLMConfig`` fields: model class, pixel cap,
+    verdict words / sequences / mode, logits kind, answer marker and end tag, parser, image loader, pre-resize hook,
+    processor and base folders, dtype, attention): callables by qualified name, a family by its class."""
+    def name(v):
+        if callable(v) or isinstance(v, type):
+            return f"{getattr(v, '__module__', '')}.{getattr(v, '__qualname__', repr(v))}"
+        if hasattr(v, "__class__") and type(v).__module__ != "builtins" and not isinstance(v, (dict, list, tuple)):
+            return f"{type(v).__module__}.{type(v).__qualname__}"
+        return v
+    blob = json.dumps({f: name(getattr(cfg, f, None)) for f in VLM_CONFIG_FIELDS}, sort_keys=True, default=str)
+    return hashlib.sha1(blob.encode()).hexdigest()[:10]
+
+
 def vlm_identity(spec, decoding: str, ckpt: str | None = None) -> dict:
     """Everything besides the image that determines a cached record: the weights (pinned HF revision, or the explicit
     ``--ckpt`` path), the generation limit and sampling settings of the active decoding, a hash of the prompts and chat
-    template arguments, and the code version. A cache folder is keyed by a hash of this dict."""
+    template arguments, a fingerprint of the rest of the detector's VLM config (``vlm_config_fingerprint``: max_pixels,
+    model class, verdict pairs, markers, parser, image loader, ...), and the code version. A cache folder is keyed by a
+    hash of this dict."""
     cfg = spec.vlm
     dec = dict(cfg.official_decoding if decoding == "official" else cfg.decoding)
     prompts = json.dumps([cfg.system_prompt, cfg.user_prompt, cfg.chat_template_kwargs, cfg.chat_template],
                          sort_keys=True, default=str)
     return {"weights_revision": cfg.hf_revision or None, "ckpt": ckpt, "max_new_tokens": dec.get("max_new_tokens"),
             "generation": dec, "prompt_sha1": hashlib.sha1(prompts.encode()).hexdigest()[:10],
-            "code_version": vlm_code_version()}
+            "config_sha1": vlm_config_fingerprint(cfg), "code_version": vlm_code_version()}
 
 
 def vlm_variant(model: str, decoding: str, seed: int | None, degrade: str | None, jpeg_q: int | None,
                 identity: dict | None = None) -> str:
     """The cache folder name of one scoring setup: records of different setups never mix. ``identity`` (``vlm_identity``)
-    adds a hash of the weights revision, max_new_tokens, prompt and code version, so a cache reused after any of them
+    adds a hash of the weights revision, max_new_tokens, prompt, the rest of the VLM config and the code version, so a cache reused after any of them
     changed starts empty instead of returning stale records."""
     return (f"{model}__{decoding}" + (f"_seed{seed}" if decoding == "official" else "")
             + (f"__{degrade}" if degrade else "") + (f"__jpegfakes{jpeg_q}" if jpeg_q is not None else "")

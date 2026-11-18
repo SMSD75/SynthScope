@@ -12,7 +12,7 @@
 # On ivi-cn029 the weights and originals are used in place. On another node the job picks its local scratch (/ssdstore,
 # /nvmestore or /hddstore) and copies the weights folder and the subset files from ivi-cn029 over ssh (needs one of our jobs
 # there, e.g. keep029); the checks below then run on the copies.
-# The worktree's clean HEAD is copied to /ssdstore first (later edits of the worktree do not change a running job). Subsets: the
+# Submit from the repo root (or set SYNTHSCOPE_REPO). The checkout's clean HEAD is copied to /ssdstore first (later edits of the worktree do not change a running job). Subsets: the
 # manifest's files (repro/vlm_bench/subsets/<bench>.json) copied from the originals (cn029, or cn023 for its sets) and
 # sha1-verified. Per-image VLM caches, locks and staged subsets stay under /ssdstore/ssalehi/SynthScope/vpp; result JSONs go to the
 # worktree's repro/vlm_bench/results/. Any failed check (weights revision / sha256, subset verification) stops the job.
@@ -34,7 +34,10 @@ fi
 mkdir -p $S/vlm_ckpts/_hf_home $S/vlm_ckpts/_tmp
 export SYNTHSCOPE_CKPT_DIR=$S/vlm_ckpts HF_HOME=$S/vlm_ckpts/_hf_home TMPDIR=$S/vlm_ckpts/_tmp
 PY=/home/ssalehi/miniconda3/envs/AGID/bin/python     # the SynthScope env (symlinked as envs/SynthScope)
-WT=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt
+# The repo root: $SYNTHSCOPE_REPO, else the directory sbatch was run from (sbatch copies this script to a spool dir, so
+# its own location is lost), else the checkout this file lives in (run with bash). Not tied to any worktree path.
+WT=${SYNTHSCOPE_REPO:-${SLURM_SUBMIT_DIR:-$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)}}
+[ -f "$WT/repro/vlm_bench/run_units.py" ] || { echo "$WT is not the SynthScope repo root (submit from it, or set SYNTHSCOPE_REPO)"; exit 4; }
 V=$S/vpp
 : "${UNITS:?UNITS is required}"
 SHA=$(git -C $WT rev-parse HEAD)

@@ -102,7 +102,7 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
                     detail=f"'{spec.name}' is a video detector; please upload a video.",
                 )
             if spec.vlm is not None:          # seconds per image: run off the event loop; the raw file (official loader)
-                result = await asyncio.to_thread(engine.predict_image, spec, media.decode_image_raw(data))
+                result = await asyncio.to_thread(_vlm_predict, engine, spec, data)
             else:
                 result = engine.predict_image(spec, media.decode_image(data))
             result["media_type"] = "image"
@@ -177,6 +177,14 @@ def sota_real_image():
 _GPU_LOCK = threading.Lock()   # detector scoring and heavy local generation never overlap on the GPU
 
 
+def _vlm_predict(engine, spec, data: bytes) -> dict:
+    """Score an uploaded image with a VLM detector (a 15-20 s, ~19 GB generation) on the raw file; it takes
+    ``_GPU_LOCK`` like the other GPU work, so a heavy local generation (``release_gpu`` + a big pipeline) never starts
+    while the model is in use."""
+    with _GPU_LOCK:
+        return engine.predict_image(spec, media.decode_image_raw(data))
+
+
 async def _sota_generate(real_bytes: bytes, generator: str, prompt: str, mode: str = "recreate"):
     """Run one generator on the real image -> (effective prompt, generated PNG bytes); HTTP errors on failure."""
     if not real_bytes:
@@ -202,11 +210,16 @@ async def _sota_generate(real_bytes: bytes, generator: str, prompt: str, mode: s
         raise HTTPException(status_code=502, detail=f"generator failed: {type(e).__name__}: {e}")
 
 
-def _score_one(engine, key: str, real_img, gen_img) -> dict:
+def _score_one(engine, key: str, real_img, gen_img, raw=None) -> dict:
+    """Score the real and the generated image with one detector. ``real_img`` / ``gen_img`` are the RGB decodes; a VLM
+    detector gets the raw decodes (``raw()`` -> (real, generated)) instead, as /api/predict does: its official image
+    loader handles EXIF and transparency itself."""
     try:
         spec = get_spec(key)
         if spec.modality != "image" or not engine.is_available(spec):
             return {"detector": key, "error": "unavailable / not an image detector"}
+        if spec.vlm is not None and raw is not None:
+            real_img, gen_img = raw()
         rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
         return {"detector": key, "name": spec.name,
                 "real_fake_prob": round(rr["fake_probability"], 4),
@@ -219,11 +232,12 @@ def _score_one(engine, key: str, real_img, gen_img) -> dict:
 def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dict]:
     """Score the real and the generated image with each listed detector (no generation involved)."""
     real_img, gen_img = media.decode_image(real_bytes), media.decode_image(gen_bytes)
+    raw = lambda: (media.decode_image_raw(real_bytes), media.decode_image_raw(gen_bytes))   # noqa: E731  (VLM detectors)
     engine = get_engine()
     results = []
     for key in [d.strip() for d in detectors.split(",") if d.strip()]:
         with _GPU_LOCK:                              # one detector at a time: concurrent requests queue, not race
-            results.append(_score_one(engine, key, real_img, gen_img))
+            results.append(_score_one(engine, key, real_img, gen_img, raw))
     return results
 
 

@@ -48,6 +48,7 @@ dependencies = [
     "PyWavelets>=1.9",
     "opencv-python-headless",     # CuRe preprocessing (JPEG round-trips, resizing)
     "scipy",                      # CNNDetection-style blur augmentation (transformations.CNNDetAugment)
+    "scikit-learn>=1.0",          # benchmark/bench_eval.py imports AUROC / AP at the top for every run (VLM metrics), so non-VLM runs need it too
     "setuptools<81",              # pytorch_wavelets (SAFE) still imports pkg_resources, removed in setuptools 81
 ]
 
@@ -57,7 +58,10 @@ web = ["fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9"]
 # Training + dataset auto-download stack.
 train = ["wandb>=0.16", "gdown>=5", "albumentations==1.4.14", "albucore==0.0.16", "kornia==0.7.2"]   # albumentations: SPAI's official augmentations; kornia: AIDE's (aide_blur, aide_jpeg)
 # Benchmark scripts (benchmark/bench_eval_video.py, benchmark/generator_bench.py): exact AUROC / AP on float64 logits.
-bench = ["scikit-learn>=1.0"]
+bench = ["scikit-learn>=1.0"]     # also a core dependency now (benchmark/bench_eval.py); kept so `.[bench]` keeps working
+# VLM detectors (predict_kind="vlm", e.g. veritaspp): LoRA adapters (peft) and the Qwen-VL image helpers. Pinned to the versions
+# the reproduction was run with (installed into the shared SynthScope env with the user's approval, 2026-11-17).
+vlm = ["peft==0.21.3", "qwen-vl-utils==0.0.14"]
 # Gradio demo (demo/app.py, Hugging Face Spaces).
 demo = ["gradio>=4"]
 # Tooling for contributors / CI.
@@ -65,7 +69,7 @@ dev = ["ruff>=0.4", "pytest>=7", "build>=1", "twine>=5"]
 all = [
     "fastapi>=0.110", "uvicorn[standard]>=0.27", "python-multipart>=0.0.9",
     "wandb>=0.16", "gdown>=5", "albumentations==1.4.14", "albucore==0.0.16", "kornia==0.7.2", "gradio>=4",
-    "scikit-learn>=1.0",
+    "scikit-learn>=1.0", "peft==0.21.3", "qwen-vl-utils==0.0.14",
 ]
 
 [project.urls]

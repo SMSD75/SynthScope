@@ -7,7 +7,9 @@ License safety (see LICENSES.md): by default ``push`` uploads only **SynthScope-
 which are this project's to redistribute. Checkpoints derived from authors' **official released
 weights** (``ckpt_kind`` starting with ``official_`` — e.g. FatFormer, AIDE, NPR) are skipped
 unless you pass ``--include-official`` AND have confirmed the upstream license permits it.
-Keys in ``NEVER_REDISTRIBUTE`` (licence unclear or not granted) are refused even with ``--include-official``.
+Keys in ``NEVER_REDISTRIBUTE`` are refused even with ``--include-official``: licence unclear or not granted, or
+weights that are too large or span several files for the zoo's one-file-per-key layout (Veritas++: Apache-2.0, but a
+17.5 GB multi-file folder).
 """
 from __future__ import annotations
 

@@ -53,7 +53,7 @@ import torch
 import transformers
 from PIL import Image
 from safetensors.torch import load_file, save_file
-from tokenizers import Tokenizer, decoders, models as tok_models, normalizers, pre_tokenizers
+from tokenizers import Tokenizer, decoders, models as tok_models, normalizers, pre_tokenizers, trainers
 from transformers import (CLIPImageProcessor, LlavaConfig, LlavaForConditionalGeneration, LlavaProcessor,
                           LogitsProcessor, LogitsProcessorList, PreTrainedTokenizerFast, Qwen2VLImageProcessor,
                           Qwen3VLConfig, Qwen3VLForConditionalGeneration, Qwen3VLProcessor)
@@ -72,7 +72,7 @@ from models.vlm.image import vllm_rgb                                           
 from models.vlm.parsers import parse_veritas_v1                                    # noqa: E402
 from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, VLMConfig,   # noqa: E402
                             VLMFamily, check_loading_info, divergence, locate_verdict, marker_end,
-                            verdict_pair_map, verdict_score)
+                            token_pieces, verdict_pair_map, verdict_score)
 from synthscope import hub                                                         # noqa: E402
 from synthscope.api import Detector                                                # noqa: E402
 
@@ -198,6 +198,17 @@ def sentencepiece_tokenizer() -> PreTrainedTokenizerFast:
     backend.decoder = decoders.Sequence([decoders.Replace("▁", " "), decoders.Fuse(), decoders.Strip(" ", 1, 0)])
     return PreTrainedTokenizerFast(tokenizer_object=backend, unk_token="<unk>", bos_token="<s>", eos_token="</s>",
                                    pad_token="<unk>", additional_special_tokens=["<image>"])
+
+
+def bytelevel_tokenizer() -> PreTrainedTokenizerFast:
+    """A small byte-level BPE tokenizer (Qwen / GPT-2 style: "Ġ" is a leading space) trained on a toy corpus."""
+    backend = Tokenizer(tok_models.BPE())
+    backend.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
+    backend.decoder = decoders.ByteLevel()
+    corpus = ["the image looks real or fake <answer> fake </answer> <answer> real </answer> this is a fake image"] * 50
+    backend.train_from_iterator(corpus, trainers.BpeTrainer(vocab_size=400, initial_alphabet=pre_tokenizers.ByteLevel.alphabet(),
+                                                            special_tokens=["<|endoftext|>"]))
+    return PreTrainedTokenizerFast(tokenizer_object=backend, eos_token="<|endoftext|>")
 
 
 def tiny_llava_folder(folder: Path) -> Path:
@@ -355,6 +366,32 @@ def test_score_math() -> None:
     # without a marker the first verdict word counts (from step 0)
     out = run([11, 4, 3], marker=None, end=None)
     assert out["verdict_step"] == 1 and out["pair_ids"] == (4, 3) and marker_end(["x"], None) == 0
+    # token_pieces (incremental decode) == the per-token decode on a byte-level BPE tokenizer (Veritas++ / Qwen): same
+    # pieces on ASCII, same marker / verdict positions with non-ASCII bytes split over tokens
+    bl = bytelevel_tokenizer()
+    for text in ("the image looks real. <answer> fake </answer>", "reasoning x <answer>real</answer> y",
+                 "caf\u00e9 \u65e5\u672c \U0001f600 <answer> fake </answer>"):
+        gen = bl.encode(text, add_special_tokens=False)
+        alone = [bl.decode([t]) for t in gen]
+        inc = token_pieces(bl, gen)
+        assert len(inc) == len(gen)
+        if text.isascii():
+            assert inc == alone and "".join(inc) == text, (inc, alone)
+        pm = verdict_pair_map(bl, VERITASPP.verdict_pairs)
+        assert pm, "no verdict pairs in the toy vocabulary"
+        assert marker_end(inc, "<answer>") == marker_end(alone, "<answer>")
+        assert locate_verdict(gen, inc, "<answer>", pm, "</answer>") == locate_verdict(gen, alone, "<answer>", pm, "</answer>")
+    assert token_pieces(bl, []) == []
+    # a SentencePiece / Llama tokenizer drops the leading space of a token decoded alone ("\u2581is" -> "is"), so a
+    # multi-word marker is never found in the per-token pieces; the incremental decode keeps it
+    sp = sentencepiece_tokenizer()
+    gen = sp.encode("This is a fake", add_special_tokens=False)
+    alone = [sp.decode([t]) for t in gen]
+    assert alone == ["This", "is", "a", "fake"] and marker_end(alone, "This is a") is None   # the old behaviour: lost
+    inc = token_pieces(sp, gen)
+    assert inc == ["This", " is", " a", " fake"], inc
+    sp_pairs = verdict_pair_map(sp, (("fake", "real"),))
+    assert marker_end(inc, "This is a") == 3 and locate_verdict(gen, inc, "This is a", sp_pairs) == (3, 3)
     # the hook keeps out[:, -1, ids] of every forward
     head = torch.nn.Linear(8, 13)
     with LogitRecorder(head, ids) as rec:
@@ -464,6 +501,7 @@ def test_web_threadpool() -> None:
 
     def fake_predict(spec, pil):
         seen["main_thread"], seen["mode"] = threading.current_thread() is threading.main_thread(), pil.mode
+        seen["locked"] = web_app._GPU_LOCK.locked()            # a VLM score holds the GPU lock (finding 8)
         return {"fake_probability": 0.9, "verdict": "fake"}
 
     engine.is_available, engine.predict_image = (lambda spec: True), fake_predict
@@ -473,7 +511,19 @@ def test_web_threadpool() -> None:
         client = TestClient(web_app.app)
         r = client.post("/api/predict", data={"model": "veritaspp"}, files={"file": ("x.png", png.getvalue(), "image/png")})
         assert r.status_code == 200, r.text
-        assert seen == {"main_thread": False, "mode": "RGBA"}, seen
+        assert seen == {"main_thread": False, "mode": "RGBA", "locked": True}, seen
+        assert not web_app._GPU_LOCK.locked()                  # and releases it
+        # the SOTA-compare path hands a VLM the raw decode too (finding 7), other detectors the RGB one
+        modes = {}
+
+        def record(spec, pil):
+            modes[spec.key] = modes.get(spec.key, []) + [pil.mode]
+            return {"fake_probability": 0.9, "verdict": "fake"}
+
+        engine.predict_image = record
+        res = web_app._sota_score(png.getvalue(), png.getvalue(), "veritaspp,clip")
+        assert [r.get("detector") for r in res] == ["veritaspp", "clip"] and all("error" not in r for r in res), res
+        assert modes == {"veritaspp": ["RGBA", "RGBA"], "clip": ["RGB", "RGB"]}, modes
         r = client.post("/api/predict", data={"model": "veritaspp"}, files={"file": ("v.mp4", b"00000000", "video/mp4")})
         assert r.status_code == 400 and "still images only" in r.json()["detail"], r.text
     finally:
@@ -511,6 +561,33 @@ def test_tiny_qwen() -> None:
         assert ref.sequences[0, n_prompt:].tolist() == out["generated_ids"]
         assert torch.equal(rec.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.logits]).cpu())
         assert out["input_size"] == [320, 224] and out["decoding"] == "greedy"
+        # generated pieces: the incremental decode equals the per-token decode on this (Qwen-style) path
+        assert token_pieces(tok, out["generated_ids"]) == [tok.decode([t]) for t in out["generated_ids"]]
+        # max_pixels (the QwenVL family caps longest_edge) and the preprocess hook (ADB: fetch_image), tiny processor
+        capped = dataclasses.replace(cfg, max_pixels=64 * 64)
+        pre_calls = []
+
+        def shrink(im):
+            pre_calls.append(im.size)
+            return im.resize((100, 100))
+
+        vlm.cfg = capped
+        with quiet():
+            small = vlm.score(image)
+            direct = vlm.processor(text=[vlm.prompt], images=[vlm.image(image)], return_tensors="pt",
+                                   images_kwargs={"size": {"shortest_edge": 65536, "longest_edge": 64 * 64}})
+        grid = direct["image_grid_thw"][0].tolist()
+        assert small["input_size"] == [grid[2] * 16, grid[1] * 16] and small["input_size"] != [320, 224], small["input_size"]
+        assert small["input_size"][0] * small["input_size"][1] <= 64 * 64 and small["prompt_tokens"] < out["prompt_tokens"]
+        vlm.cfg = dataclasses.replace(cfg, preprocess=shrink)
+        assert vlm.image(image).size == (100, 100) and pre_calls == [image.size]      # after the image loader, before the processor
+        with quiet():
+            pre = vlm.score(image)
+            ref_in = vlm.processor(text=[vlm.prompt], images=[image.resize((100, 100))], return_tensors="pt")
+        ref_grid = ref_in["image_grid_thw"][0].tolist()
+        assert pre["input_size"] == [ref_grid[2] * 16, ref_grid[1] * 16] and pre["prompt_tokens"] == ref_in["input_ids"].shape[1]
+        assert pre_calls == [image.size] * 2                  # once in the check above, once in score
+        vlm.cfg = cfg
         # a forced answer: verdict step, gap == output_logits, parsed verdict
         script = tok.convert_tokens_to_ids(["x", "<", "answer", ">", "fake", "</", "answer", ">"])
         forcing = ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)
@@ -724,6 +801,18 @@ def test_llava_family() -> None:
         assert gen["new_tokens"] > 0 and gen["score_source"] in ("verdict_token", "unparsed")
         assert gen["rationale"] == gen["response"] and gen["input_size"] == [32, 32]
         assert vlm.pair_map[sp.convert_tokens_to_ids("▁real")] == (f, r)
+        # a multi-word marker on a SentencePiece tokenizer (the review's finding 1): the forced answer "This is a fake"
+        # is found after "This is a" at step 3 (the per-token decode would lose the spaces and report unparsed)
+        n_prompt = vlm.inputs(vlm.image(image))["input_ids"].shape[1]
+        script = sp.convert_tokens_to_ids(["▁This", "▁is", "▁a", "▁fake"])
+        forcing = ForceTokens(script, sp.convert_tokens_to_ids("</s>"), n_prompt)
+        vlm.cfg = dataclasses.replace(base, verdict_mode="generate", answer_marker="This is a",
+                                      decoding={"do_sample": False, "max_new_tokens": 8,
+                                                "logits_processor": LogitsProcessorList([forcing])})
+        with quiet():
+            gen = vlm.score(image)
+        assert gen["generated_ids"][:4] == script and gen["response"].startswith("This is a fake"), gen["response"]
+        assert (gen["score_source"], gen["verdict_step"], gen["verdict_token"]) == ("verdict_token", 3, "▁fake"), gen
     print("    Llama-style split reproduced; teacher-forced score at the first differing token (\"▁\" forced by default, "
           "none with explicit sequences) == direct forward; input size from pixel_values; generate without a marker")
 

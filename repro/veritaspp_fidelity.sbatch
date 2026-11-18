@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=28G
 #SBATCH --time=02:00:00
-#SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt/repro/logs/veritaspp_fidelity_%j.out
+#SBATCH --output=repro/logs/veritaspp_fidelity_%j.out     # relative to the submit directory: submit from the repo root
 # Veritas++ fidelity (repro/veritaspp_fidelity.py): weights + data are node-local on ivi-cn029. Any failed check stops
 # the job (set -e): the file checksums, or a local folder that is not the pinned revision.
 set -euo pipefail
@@ -16,7 +16,10 @@ export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandabl
 export SYNTHSCOPE_CKPT_DIR=/ssdstore/ssalehi/SynthScope/vlm_ckpts
 export HF_HOME=/ssdstore/ssalehi/SynthScope/vlm_ckpts/_hf_home TMPDIR=/ssdstore/ssalehi/SynthScope/vlm_ckpts/_tmp
 PY=/home/ssalehi/miniconda3/envs/AGID/bin/python     # the SynthScope env (symlinked as envs/SynthScope)
-WT=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_wt
+# The repo root: $SYNTHSCOPE_REPO, else the directory sbatch was run from (sbatch copies this script to a spool dir, so
+# its own location is lost), else the checkout this file lives in (run with bash). Not tied to any worktree path.
+WT=${SYNTHSCOPE_REPO:-${SLURM_SUBMIT_DIR:-$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)}}
+[ -f "$WT/repro/veritaspp_fidelity.py" ] || { echo "$WT is not the SynthScope repo root (submit from it, or set SYNTHSCOPE_REPO)"; exit 4; }
 W=$SYNTHSCOPE_CKPT_DIR/veritaspp
 echo "node=$(hostname) $(date) commit=$(git -C $WT rev-parse --short HEAD)"; nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 echo "=== revision: every file of the folder was downloaded from the pinned commit (hf download metadata) ==="

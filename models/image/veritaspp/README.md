@@ -17,7 +17,7 @@ tokens and verdicts, max |logit-gap diff| 0.0 ([Fidelity check](#fidelity-check)
 and scored on identical images as 27 other detectors ([Results](#results)): it is among the best on in-the-wild and recent
 generators (RRDataset and RealChain first, DiTFake second, EvalGEN third) and weak on older GAN and early-diffusion sets
 (ForenSynths 25th of 28). Paper comparison: RealChain 82.74 vs 82.3 (a 1,008-image subset), WildRF 95.65 vs 96.4 (full data;
-96.46 with the authors' sampled decoding); EvalGEN is **not** reproduced on full data (a 500-fake subset: 98.20 on fakes only
+the authors' sampled decoding gives 96.46 on a 988-image subset, where greedy gives 95.65); EvalGEN is **not** reproduced on full data (a 500-fake subset: 98.20 on fakes only
 vs 99.5, 99.10 balanced).
 
 ## Pipeline (official request, reproduced)

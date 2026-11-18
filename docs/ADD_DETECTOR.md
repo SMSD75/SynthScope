@@ -55,7 +55,7 @@ A detector that is a released Hugging Face VLM (Veritas++ so far) uses the `vlm`
 steps 1-3. It is a family-adapter design:
 - a **family** (`VLMFamily`) says how a model family is loaded and fed: the strict `from_pretrained` load into the
   official transformers class (local files only; a LoRA adapter folder, `adapter_config.json`, is kept unmerged on a
-  local `base_model` folder named relative to `$SYNTHSCOPE_CKPT_DIR`, needs peft; the processor then comes from the
+  local `base_model` folder named relative to `$SYNTHSCOPE_CKPT_DIR`, needs peft (`pip install ".[vlm]"`: peft 0.21.3, qwen-vl-utils 0.0.14); the processor then comes from the
   base unless `processor` is set), the processor (+ `processor_overrides`), the verdict token sequences (default: the
   first verdict pair with a leading space as the tokenizer encodes it, e.g. SentencePiece `["▁", "▁fake"]`; set
   `verdict_sequences` to give token strings), the prompt (chat template on, or the raw prompt with

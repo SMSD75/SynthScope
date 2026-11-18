@@ -15,7 +15,10 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 `synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (40 registry keys on
 2026-11-18: 30 image, 10 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
-`interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`.
+`interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`. The one exception is
+the VLM kind (`predict_kind="vlm"`, `veritaspp`): an inference-only released model with no training path, so it has no
+`SynthScope<Name>Model`, no `conf/model` yaml and no trainer branch; it is a `ModelSpec` carrying a `VLMConfig`
+(`models/vlm/vlm.py`, `models/image/veritaspp/veritaspp.py`), served by `SynthScopeVLM`.
 
 | key | modality | predict_kind | weights | interp map | method |
 |---|---|---|---|---|---|

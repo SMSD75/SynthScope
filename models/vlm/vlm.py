@@ -262,6 +262,21 @@ def divergence(fake: list, real: list) -> int:
     return k
 
 
+def token_pieces(tokenizer, ids: list) -> list:
+    """The text each generated token adds, from decoding the growing prefix: ``decode(ids[:t+1])`` minus ``decode(ids[:t])``.
+    Decoding a token alone drops its leading space on SentencePiece / Llama tokenizers ("▁is" -> "is"), so a
+    multi-word marker such as "This is a" would never be found; the prefix decode keeps it. A trailing U+FFFD (an
+    incomplete UTF-8 character) is re-read once its remaining bytes arrive. Identical to the per-token decode for
+    byte-level BPE tokenizers (Qwen) wherever a token is a whole character."""
+    pieces, prev = [], ""
+    for t in range(len(ids)):
+        cur = tokenizer.decode(ids[:t + 1])
+        base = prev if cur.startswith(prev) else prev.rstrip("\ufffd")
+        pieces.append(cur[len(base):] if cur.startswith(base) else "")
+        prev = cur
+    return pieces
+
+
 def marker_end(pieces: list, marker: Optional[str]) -> Optional[int]:
     """Index of the first generated token after the one that completes ``marker`` in the concatenated ``pieces``
     (the per-token text); 0 without a marker; None if the marker is never generated."""
@@ -405,7 +420,7 @@ class SynthScopeVLM(torch.nn.Module):
                 with LogitRecorder(self.hf.get_output_embeddings(), self.record_ids) as rec:
                     seq = self.hf.generate(**inputs, **kwargs)
             gen = seq[0, n_prompt:].tolist()
-            pieces = [self.tokenizer.decode([t]) for t in gen]
+            pieces = token_pieces(self.tokenizer, gen)
             out = verdict_score(gen, pieces, rec.stacked(), self.column, self.cfg.answer_marker, self.pair_map,
                                 self.cfg.answer_end)
             response = self.tokenizer.decode(gen, skip_special_tokens=True)

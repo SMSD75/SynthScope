@@ -41,6 +41,22 @@ STEMS = ["r0", "r1", "r2", "r3", "f0", "f1", "f2", "f3"]
 SPEC: dict = {}                                                      # the stub spec of the latest ``patched`` run
 
 
+class StubFamily:
+    pass
+
+
+def stub_parser(text):
+    return None
+
+
+def other_parser(text):
+    return "fake"
+
+
+class OtherFamily:
+    pass
+
+
 class StubEngine:
     def __init__(self):
         self.device = torch.device("cpu")
@@ -75,7 +91,12 @@ def patched(engine: StubEngine, stem_of: dict, loader_modes: list):
     cfg = types.SimpleNamespace(image_loader=loader, hf_revision=SPEC.get("revision", "rev1"), system_prompt="sys", user_prompt="usr",
                                 chat_template=True, chat_template_kwargs={"enable_thinking": False},
                                 decoding={"do_sample": False, "max_new_tokens": 2048},
-                                official_decoding={"do_sample": True, "temperature": 0.7, "max_new_tokens": 2048})
+                                official_decoding={"do_sample": True, "temperature": 0.7, "max_new_tokens": 2048},
+                                model_class="StubForGeneration", family=StubFamily(), max_pixels=None,
+                                verdict_pairs=(("fake", "real"),), verdict_sequences=None, verdict_mode="generate",
+                                teacher_forced_suffix="", logits="raw", answer_marker="<answer>", answer_end="</answer>",
+                                parser=stub_parser, preprocess=None, processor=None, processor_overrides={},
+                                processor_kwargs={}, base_model=None, dtype="bfloat16", attn_implementation="sdpa")
     spec = types.SimpleNamespace(predict_kind="vlm", transform=None, vlm=cfg, eval_batch_size=lambda b: 1)
     SPEC["spec"] = spec
     det = types.SimpleNamespace(_engine=engine, spec=spec, _ensure_weights=lambda: None)
@@ -134,7 +155,7 @@ def check_identity(tmp: Path, stem_of: dict) -> None:
     of them (each alone) gives an empty cache, so stale records are never returned; restoring it finds them again."""
     ident = bench_eval.vlm_identity(SPEC["spec"], "greedy")
     assert ident["weights_revision"] == "rev1" and ident["max_new_tokens"] == 2048 and ident["code_version"]
-    assert len(ident["prompt_sha1"]) == 10
+    assert len(ident["prompt_sha1"]) == 10 and len(ident["config_sha1"]) == 10
     variants = {}
     base = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, ident)
     cfg = SPEC["spec"].vlm
@@ -144,12 +165,26 @@ def check_identity(tmp: Path, stem_of: dict) -> None:
         "system prompt": lambda: setattr(cfg, "system_prompt", "sys2"),
         "user prompt": lambda: setattr(cfg, "user_prompt", "usr2"),
         "chat template kwargs": lambda: cfg.chat_template_kwargs.__setitem__("enable_thinking", True),
+        # the per-detector VLM config (the review's finding 4): each of these changes what a record means
+        "max_pixels": lambda: setattr(cfg, "max_pixels", 1003520),
+        "model_class": lambda: setattr(cfg, "model_class", "OtherForGeneration"),
+        "verdict pairs": lambda: setattr(cfg, "verdict_pairs", (("fake", "real"), ("Fake", "Real"))),
+        "answer marker": lambda: setattr(cfg, "answer_marker", "<verdict>"),
+        "answer end": lambda: setattr(cfg, "answer_end", None),
+        "parser": lambda: setattr(cfg, "parser", other_parser),
+        "image loader": lambda: setattr(cfg, "image_loader", other_parser),
+        "preprocess": lambda: setattr(cfg, "preprocess", other_parser),
+        "verdict mode": lambda: setattr(cfg, "verdict_mode", "teacher_forced"),
+        "logits": lambda: setattr(cfg, "logits", "processed"),
+        "family": lambda: setattr(cfg, "family", OtherFamily()),
     }
     for name, change in changes.items():
-        saved = (cfg.hf_revision, cfg.system_prompt, cfg.user_prompt, dict(cfg.chat_template_kwargs), dict(cfg.decoding))
+        saved = dict(vars(cfg))
+        saved["chat_template_kwargs"], saved["decoding"] = dict(cfg.chat_template_kwargs), dict(cfg.decoding)
         change()
         variants[name] = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, bench_eval.vlm_identity(SPEC["spec"], "greedy"))
-        cfg.hf_revision, cfg.system_prompt, cfg.user_prompt, cfg.chat_template_kwargs, cfg.decoding = saved
+        vars(cfg).clear()
+        vars(cfg).update(saved)
     real_version = bench_eval.vlm_code_version
     try:
         bench_eval.vlm_code_version = lambda: "other-code"
