@@ -34,13 +34,14 @@ Two scorers (``verdict_mode``):
 
 * ``FAKEVLM`` ("generate", the registry default): the official greedy generation (up to 256 tokens), the logits of the
   step that emitted the verdict token; the verdict is the official parser on the generated text; the rest of the text
-  is the model's explanation. About 0.5 s for a bare verdict (9 tokens), up to 7.5 s for 256 tokens on an A5000.
+  is the model's explanation. About 0.6 s for a bare verdict (9 tokens), up to 8.3 s for 256 tokens on an A5000.
 * ``FAKEVLM_TEACHER_FORCED`` ("teacher_forced", NOT the default): one forward pass on the prompt + "▁▁ This is a" (the
-  verdict sequences' shared prefix), the logits of the next token; the verdict is the sign of the gap; about 0.27 s per
-  image. It failed the default rule on the fidelity check (repro/fakevlm_fidelity.json): the generated answer does not
-  always start with those four tokens (1 of the 16 fidelity images, 5 of 224 extended images), and P(fake) differs from
-  the generated path's by up to 0.011 (0.052 on the extended set; bf16 logits, cached decoding vs one forward pass).
-  Kept for fast screening; results scored with it are not the official method.
+  verdict sequences' shared prefix), the logits of the next token; the verdict is the sign of the gap; about 0.38 s per
+  image. It failed the rule for a default scorer on the fidelity check (repro/fakevlm_fidelity.json): P(fake) differs
+  from the generated path's by more than 1e-3 on 2 of the 16 fidelity images (up to 0.0023; 29 of 224 extended images,
+  up to 0.031: bf16 logits, cached decoding vs one forward pass), and the greedy answer does not always start with
+  those four tokens (5 of the 224: no "▁▁", or a newline first). Kept for fast screening; results scored with it are
+  not the official method.
 """
 import dataclasses
 

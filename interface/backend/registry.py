@@ -666,8 +666,9 @@ _add(ModelSpec(
           "fake image.\" and an explanation of the artifacts. Uses the OFFICIAL weights, processor, prompt and greedy "
           "decoding (256 tokens). P(fake) = sigmoid of the fake-minus-real logit at the first \"fake\" / \"real\" "
           "word it writes; the verdict is the official parse of the answer. The image is seen as a 336x336 centre "
-          "crop. On an RTX A5000 (bf16): about 0.5 s for a bare verdict (9 tokens), up to 7.5 s with a full explanation; "
-          "14.8 GB (repro/fakevlm_fidelity.json). GenImage is in its training data (FakeClue). Still images only. "
+          "crop. On an RTX A5000 (bf16): about 0.6 s for a bare verdict (9 tokens), up to 8.3 s with a full explanation "
+          "(256 tokens); 15.1 GB (repro/fakevlm_fidelity.json). GenImage is in its training data (FakeClue). Still "
+          "images only. "
           "Not on the Space (no licence).",
 ))
 
