@@ -113,6 +113,12 @@ export async function fetchGeneratorBenchmarks() {
   if (!r.ok) throw new Error(`generator benchmarks: HTTP ${r.status}`);
   return r.json();
 }
+// Curated top-tier paper list: docs/CONFERENCE_PAPERS.md exported by tools/check_conference_list.py --export.
+export async function fetchConferencePapers() {
+  const r = await fetch(`${BASE}/static/conference_papers.json`);
+  if (!r.ok) throw new Error(`paper list: HTTP ${r.status}`);
+  return r.json();
+}
 export async function sotaCompare(file, generator, detectors, prompt) {
   const fd = new FormData();
   fd.append("file", file);

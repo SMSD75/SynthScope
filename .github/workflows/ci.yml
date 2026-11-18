@@ -33,6 +33,9 @@ jobs:
       - run: python benchmark/leaderboard.py --check
       # Pure-stdlib check: SynthScope's own submissions still match their repro/bench_results evidence.
       - run: python benchmark/seed_reference_results.py --check
+      # Pure-stdlib check: docs/CONFERENCE_PAPERS.md format, official link domains, duplicates, counts table,
+      # and the web page's JSON export (interface/static/conference_papers.json) in sync with it.
+      - run: python tools/check_conference_list.py --export /tmp/conference_papers.json && cmp /tmp/conference_papers.json interface/static/conference_papers.json
 
   lint:
     name: Ruff (errors only)

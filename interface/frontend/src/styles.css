@@ -280,3 +280,22 @@ a { color: var(--accent); }
 .interp-cell figcaption { font-size: 11px; color: #8b93a7; margin-top: 4px; text-align: center; }
 .interp-map { display: block; width: 100%; max-width: 240px; border-radius: var(--radius-sm);
   border: 1px solid var(--line-strong); box-shadow: var(--shadow); }
+
+/* ---- papers tab (mirrors static/index.html) ---- */
+.papers a { color: var(--accent2); }
+.papers .pfilters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 4px 0 16px; }
+.papers .pfilters input[type=text] { flex: 1 1 260px; width: auto; }
+.papers .pfilters select { width: auto; min-width: 120px; }
+.papers .pfilters label { display: flex; gap: 6px; align-items: center; margin: 0; white-space: nowrap; }
+.papers details.lead-card > summary { cursor: pointer; list-style: none; padding: 16px 22px; display: flex; align-items: center; gap: 10px; }
+.papers details.lead-card .sumtitle { font-size: 16px; font-weight: 700; }
+.papers .pyear { margin: 4px 22px 0; padding: 12px 0 4px; font-size: 13px; color: var(--muted); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; border-top: 1px solid var(--line); }
+.papers .plist { list-style: none; margin: 0; padding: 0 22px 14px; }
+.papers .pent { padding: 9px 0; border-bottom: 1px solid var(--line); line-height: 1.45; }
+.papers .pent:last-child { border-bottom: 0; }
+.papers .ptitle { font-weight: 650; }
+.papers .pmeta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.papers .itag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 9px; border-radius: 999px;
+  background: rgba(124,140,255,.18); border: 1px solid var(--accent); color: var(--text); white-space: nowrap; }
+.papers .pss { color: var(--real); font-weight: 700; white-space: nowrap; }
