@@ -415,6 +415,22 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); border: 1px solid var(--line); border-radius: var(--radius-sm);
   font-size: 12px; overflow-x: auto; color: var(--text); }
 
+/* ---- papers tab ------------------------------------------------------------------------------------------------*/
+.papers a { color: var(--accent2); }
+.papers .pfilters { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 4px 0 16px; }
+.papers .pfilters input[type=text] { flex: 1 1 260px; width: auto; }
+.papers .pfilters select { width: auto; min-width: 120px; }
+.papers .pfilters label { display: flex; gap: 6px; align-items: center; margin: 0; white-space: nowrap; }
+.papers .pyear { margin: 4px 22px 0; padding: 12px 0 4px; font-size: 13px; color: var(--muted); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; border-top: 1px solid var(--line); }
+.papers .plist { list-style: none; margin: 0; padding: 0 22px 14px; }
+.papers .pent { padding: 9px 0; border-bottom: 1px solid var(--line); line-height: 1.45; }
+.papers .pent:last-child { border-bottom: 0; }
+.papers .ptitle { font-weight: 650; }
+.papers .pmeta { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.papers .pmeta .itag { margin-right: 0; font-weight: 600; }
+.papers .pss { color: var(--real); font-weight: 700; white-space: nowrap; }
+
   </style>
   <!-- Vendored locally (served by the backend at /static/vendor) so the UI needs no external CDN. -->
   <script src="/static/vendor/react.production.min.js"></script>
@@ -926,8 +942,86 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       </div>`;
     }
 
+    // Papers: the curated list of top-tier conference / journal papers (docs/CONFERENCE_PAPERS.md, exported to JSON by
+    // tools/check_conference_list.py --export), grouped by venue and year, with a text filter and venue/year/tag filters.
+    const PAPERS_MD = "https://github.com/SMSD75/SynthScope/blob/main/docs/CONFERENCE_PAPERS.md";
+    function filterPapers(papers, { q, venue, year, tag, onlySS }) {
+      const words = (q || "").toLowerCase().split(/\s+/).filter(Boolean);
+      return papers.filter(p => (!venue || p.venue === venue) && (!year || String(p.year) === String(year))
+        && (!tag || p.tags.includes(tag)) && (!onlySS || p.synthscope)
+        && words.every(w => (p.title + " " + p.authors + " " + p.venue + " " + p.year + " " + p.tags.join(" ")).toLowerCase().includes(w)));
+    }
+    function groupPapers(papers, venueOrder) {
+      return venueOrder.map(v => {
+        const ps = papers.filter(p => p.venue === v);
+        const years = [...new Set(ps.map(p => p.year))].sort((a, b) => b - a);
+        return { venue: v, n: ps.length, years: years.map(y => ({ year: y, papers: ps.filter(p => p.year === y) })) };
+      }).filter(g => g.n > 0);
+    }
+    function PapersView() {
+      const [data, setData] = useState(null);
+      const [err, setErr] = useState("");
+      const [q, setQ] = useState("");
+      const [venue, setVenue] = useState("");
+      const [year, setYear] = useState("");
+      const [tag, setTag] = useState("");
+      const [onlySS, setOnlySS] = useState(false);
+      useEffect(() => {
+        fetch(API("/static/conference_papers.json")).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+          .then(setData).catch(e => setErr("Could not load the paper list: " + (e.message || e)));
+      }, []);
+      if (err) return html`<div class="papers"><div class="err">${err}</div></div>`;
+      if (!data) return html`<div class="papers"><div class="empty">Loading the paper list…</div></div>`;
+      const all = data.papers || [];
+      const shown = filterPapers(all, { q, venue, year, tag, onlySS });
+      const groups = groupPapers(shown, data.venues || []);
+      const years = [...new Set(all.map(p => p.year))].sort((a, b) => b - a);
+      const filtered = !!(q || venue || year || tag || onlySS);
+      return html`<div class="papers">
+        <div class="pagehead"><p class="muted">Top-tier conference and journal papers on AI-generated image and video detection,
+          grouped by venue and year. Every paper links to its official proceedings page or accepted OpenReview decision, and code
+          links are checked to exist. Updated monthly; last updated <b>${data.last_updated}</b>. ✅ marks a detector you can run in
+          SynthScope. Source: <a href=${PAPERS_MD} target="_blank" rel="noopener">docs/CONFERENCE_PAPERS.md</a>.</p></div>
+        <div class="pfilters">
+          <input type="text" placeholder="Filter by title, author, venue or tag…" value=${q} onInput=${e => setQ(e.target.value)} />
+          <select value=${venue} onChange=${e => setVenue(e.target.value)}>
+            <option value="">All venues</option>
+            ${(data.venues || []).map(v => html`<option key=${v} value=${v}>${v}</option>`)}
+          </select>
+          <select value=${year} onChange=${e => setYear(e.target.value)}>
+            <option value="">All years</option>
+            ${years.map(y => html`<option key=${y} value=${y}>${y}</option>`)}
+          </select>
+          <select value=${tag} onChange=${e => setTag(e.target.value)}>
+            <option value="">All tags</option>
+            ${(data.tags || []).map(t => html`<option key=${t} value=${t}>${t}</option>`)}
+          </select>
+          <label><input type="checkbox" checked=${onlySS} onChange=${e => setOnlySS(e.target.checked)} /> ✅ in SynthScope</label>
+        </div>
+        <div class="meta">${shown.length} of ${all.length} papers${filtered ? html` · <a href="#" onClick=${e => { e.preventDefault(); setQ(""); setVenue(""); setYear(""); setTag(""); setOnlySS(false); }}>clear filters</a>` : ""}</div>
+        ${!groups.length && html`<div class="empty">No paper matches these filters.</div>`}
+        ${groups.map((g, gi) => html`<details key=${g.venue} class="card lead-card" open=${filtered || gi < 2}>
+          <summary><span class="sumtitle">${g.venue}</span><span class="pill">${g.n} paper${g.n > 1 ? "s" : ""}</span></summary>
+          ${g.years.map(y => html`<div key=${y.year}>
+            <div class="pyear">${g.venue} ${y.year}</div>
+            <ul class="plist">
+              ${y.papers.map(p => html`<li key=${p.title} class="pent">
+                <div class="ptitle">${p.title}${p.synthscope ? html` <span class="pss" title="Implemented in SynthScope">✅</span>` : ""}</div>
+                <div class="pmeta"><span>${p.authors}</span>
+                  <a href=${p.paper} target="_blank" rel="noopener">paper</a>
+                  ${p.arxiv && html`<a href=${p.arxiv} target="_blank" rel="noopener">arXiv</a>`}
+                  ${p.code && html`<a href=${p.code} target="_blank" rel="noopener">code</a>`}
+                  ${p.tags.map(t => html`<span key=${t} class="itag">${t}</span>`)}
+                </div>
+              </li>`)}
+            </ul>
+          </div>`)}
+        </details>`)}
+      </div>`;
+    }
+
     const TABS = [["detect", "Detect"], ["sota", "Test a generator"], ["explore", "Browse datasets"],
-                  ["leaderboard", "Leaderboard"], ["topgen", "Generator benchmarks"]];
+                  ["leaderboard", "Leaderboard"], ["topgen", "Generator benchmarks"], ["papers", "Papers"]];
 
     function App() {
       const [models, setModels] = useState([]);
@@ -971,6 +1065,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             : tab === "explore" ? html`<${ExploreView} ...${shared} />`
             : tab === "sota" ? (hasGen ? html`<${SotaView} models=${models} />` : html`<${GeneratorOff} demo=${demo} />`)
             : tab === "leaderboard" ? html`<${LeaderboardView} />`
+            : tab === "papers" ? html`<${PapersView} />`
             : html`<${TopGeneratorsView} />`}
         </div>`;
     }
