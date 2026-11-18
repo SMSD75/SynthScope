@@ -5,12 +5,21 @@
   exactly as the model's loader returns it, every fake as the loader output after a JPEG q-Q round trip;
 * compare.py with two VLM columns: best / best public / median over the comparators only, ``rank_*`` among the comparators plus
   the VLM itself, ``rank_all_*`` also counting the other VLM, and ``subset_means`` over the clean rows only;
+* compare.py in-distribution flag: fakevlm's genimage_val100k row is marked ``in_distribution`` (another VLM's is not), and
+  its subset mean is also given without that subset (``held_out``), while another VLM's mean has no such field;
 * trace_check: a per-image log line belongs to the model of its unit's START line, so two VLMs that scored the same image of
   the same benchmark are checked against their own lines (and a wrong one is reported);
 * compare.py ``n_unscored``: a parsed verdict without a verdict token, under the old label ("unparsed") or the new one;
 * migrate_vlm_cache: a cache folder of a known older adb_vlm identity is carried into the current identity's folder without
   its parsed-but-unscored records, the result is what ``bench_eval.VLMCache`` reads there, a second run does nothing, an
-  unknown identity is left alone, and a kept record that the verdict-offset hook would score differently stops it.
+  unknown identity is left alone, and a kept record that the verdict-offset hook would score differently stops it;
+* migrate_vlm_cache, rule ``unchanged`` (main e5749ae -> detector/fakevlm): the e5749ae identities of adb_vlm and veritaspp
+  hash to the folder names e5749ae wrote, differ from the current ones only in the code version, and the current code
+  version is one the entries name (a later ``models/vlm`` edit fails here until it is checked and added); every record is
+  carried with its line byte-equal (unscored ones too), bench_eval opens the new folder with the same records, an
+  already-carried cf179eee30 source is skipped in favour of its e5749ae folder, and a target code version the entry does
+  not name, or another identity field that differs, leaves the folder alone; the fakevlm folders its benchmark jobs
+  wrote (code version 02852acf62, plain and JPEG95) are carried to the current code version byte for byte.
 """
 from __future__ import annotations
 
@@ -120,6 +129,23 @@ def check_compare_ranks(tmp: Path) -> None:
                             "n_unscored": 2}}, means
 
 
+def check_compare_in_distribution(tmp: Path) -> None:
+    res = tmp / "results_ind"
+    for bench, accs in {"genimage_val100k": {"fakevlm": 99.0, "va": 60.0, "c1": 70.0},
+                        "wildrf": {"fakevlm": 50.0, "va": 80.0, "c1": 70.0}}.items():
+        (res / bench).mkdir(parents=True)
+        for model, acc in accs.items():
+            (res / bench / f"{model}.json").write_text(json.dumps(result(model, acc, acc, model != "c1")))
+    rows = [compare.subset_row(b, "clean", ("va", "fakevlm"), ["c1"], res) for b in ("genimage_val100k", "wildrf")]
+    gi = rows[0]["vlms"]
+    assert gi["fakevlm"]["in_distribution"] is True and "FakeClue" in gi["fakevlm"]["in_distribution_note"]
+    assert "in_distribution" not in gi["va"] and "in_distribution" not in rows[1]["vlms"]["fakevlm"]
+    means = compare.subset_means(rows, ("va", "fakevlm"))
+    assert means["fakevlm"]["acc"] == 74.5 and means["fakevlm"]["in_distribution_subsets"] == ["genimage_val100k"]
+    assert means["fakevlm"]["held_out"] == {"n_subsets": 1, "acc": 50.0, "mauroc": 50.0}, means
+    assert "held_out" not in means["va"] and "in_distribution_subsets" not in means["va"]
+
+
 def check_trace_model_keying(tmp: Path) -> None:
     res, logs = tmp / "tres", tmp / "tlogs"
     (res / "b").mkdir(parents=True)
@@ -147,7 +173,7 @@ def check_trace_model_keying(tmp: Path) -> None:
 
 
 def check_migrate_cache(tmp: Path) -> None:
-    old_id = migrate_vlm_cache.PREDECESSORS["adb_vlm"][0]
+    old_id = migrate_vlm_cache.PREDECESSORS["adb_vlm"][0]["identity"]
     root = tmp / "cache"
     old = root / "b" / f"adb_vlm__greedy__jpegfakes96__{migrate_vlm_cache.identity_hash(old_id)}"
     old.mkdir(parents=True)
@@ -192,14 +218,110 @@ def check_migrate_cache(tmp: Path) -> None:
         raise AssertionError("a record the hook changes was carried over")
 
 
+def check_migrate_unchanged(tmp: Path) -> None:
+    mv = migrate_vlm_cache
+    main_hashes = {("adb_vlm", "greedy"): "a8ce235283", ("veritaspp", "greedy"): "63de8d1257",
+                   ("veritaspp", "official"): "c17b4d7728",            # the folder hashes e5749ae's bench_eval wrote
+                   ("fakevlm", "greedy"): "ee254109e9"}                # ... and the fakevlm jobs 293884 / 293885 wrote
+    for (model, decoding), h in main_hashes.items():
+        entry = next(e for e in mv.PREDECESSORS[model] if mv.identity_hash(e["identity"]) == h)
+        cur = bench_eval.vlm_identity(bench_eval.get_spec(model), decoding)
+        assert entry["rule"] == "unchanged"
+        assert entry["identity"]["code_version"] == ("02852acf62" if model == "fakevlm" else "b490c64477")
+        assert {k: v for k, v in cur.items() if k != "code_version"} == \
+            {k: v for k, v in entry["identity"].items() if k != "code_version"}, (model, decoding, cur)
+        assert cur["code_version"] in entry["to_code_versions"], (
+            f"models/vlm/*.py changed (code version {cur['code_version']}): check that {model}'s scoring is unchanged and "
+            "add the version to migrate_vlm_cache._FAKEVLM_BRANCH")
+    old_id = mv._ADB_E5749AE
+    root = tmp / "ucache"
+    stem = "adb_vlm__greedy"
+    cf = root / "b" / f"{stem}__{mv.identity_hash(mv.PREDECESSORS['adb_vlm'][0]['identity'])}"   # cf179eee30 source
+    old = root / "b" / f"{stem}__{mv.identity_hash(old_id)}"
+    for d, ident in ((cf, mv.PREDECESSORS["adb_vlm"][0]["identity"]), (old, old_id)):
+        d.mkdir(parents=True)
+        (d / "identity.json").write_text(json.dumps(ident))
+    (cf / "h.1.jsonl").write_text('{"key": "g/x.png", "sha1": "x", "verdict": "real", "score_source": "verdict_token"}\n')
+    (old / "MIGRATION.json").write_text(json.dumps({"from": str(cf)}))
+    recs = [{"key": "g/0_real/a.png", "sha1": "a", "verdict": "fake", "score_source": "verdict_token", "logit": 0.1 + 0.2,
+             "response": "<answer>\nThis is an AI-generated image.\n</answer> \u00e9"},
+            {"key": "g/0_real/b.png", "sha1": "b", "verdict": "real", "score_source": "unscored", "logit": 0.0,
+             "response": "This is an authentic image."},
+            {"key": "g/1_fake/c.png", "sha1": "c", "verdict": None, "score_source": "unparsed", "logit": 0.0, "response": "x"}]
+    stale = dict(recs[0], logit=-1.0)        # an earlier line of a.png (files read in sorted order): the later one wins
+    (old / f"migrated.{mv.identity_hash(mv.PREDECESSORS['adb_vlm'][0]['identity'])}.jsonl").write_text(
+        json.dumps(stale) + "\n" + json.dumps(recs[1]) + "\n")
+    (old / "node9.2.jsonl").write_text(json.dumps(recs[0]) + "\n" + json.dumps(recs[2]) + "\n" + '{"key": "g/cut')
+    with contextlib.redirect_stdout(io.StringIO()) as out:
+        mv.main(["--cache-root", str(root), "--model", "adb_vlm"])
+    lines = {json.loads(x)["folder"]: json.loads(x) for x in out.getvalue().splitlines()}
+    assert lines[str(cf)]["status"].startswith("carried earlier into"), lines[str(cf)]
+    done = lines[str(old)]
+    assert (done["status"], done["records"], done["kept"], done["dropped"]) == ("migrated", 3, 3, 0), done
+    new_id = bench_eval.vlm_identity(bench_eval.get_spec("adb_vlm"), "greedy")
+    variant = bench_eval.vlm_variant("adb_vlm", "greedy", None, None, None, new_id)
+    assert Path(done["to"]) == root / "b" / variant
+    src = {json.loads(x)["key"]: x for f in sorted(old.glob("*.jsonl")) for x in f.read_text().splitlines()
+           if not x.startswith('{"key": "g/cut')}
+    got = [x for f in (root / "b" / variant).glob("*.jsonl") for x in f.read_text().splitlines()]
+    assert sorted(got) == sorted(src.values()) and len(got) == 3            # byte-equal lines, the later a.png line
+    with contextlib.redirect_stdout(io.StringIO()):
+        cache = bench_eval.VLMCache(root / "b", variant, new_id)
+    assert cache.records == {r["key"]: r for r in recs}
+    assert json.loads((root / "b" / variant / "MIGRATION.json").read_text())["rule"] == "unchanged"
+    # a target code version the entry does not name: left alone
+    saved = mv._FAKEVLM_BRANCH[:]
+    try:
+        mv._FAKEVLM_BRANCH[:] = ["0000000000"]
+        other = tmp / "ucache2" / "b" / old.name
+        other.mkdir(parents=True)
+        (other / "identity.json").write_text(json.dumps(old_id))
+        res = mv.migrate_folder(other, "adb_vlm", dry_run=False)
+        assert res["status"].startswith("no checked re-key"), res
+    finally:
+        mv._FAKEVLM_BRANCH[:] = saved
+    # another identity field differs (here the current config's fingerprint): left alone, nothing written
+    real_identity = bench_eval.vlm_identity
+    try:
+        bench_eval.vlm_identity = lambda spec, decoding: dict(real_identity(spec, decoding), config_sha1="0000000000")
+        third = tmp / "ucache3" / "b" / old.name
+        third.mkdir(parents=True)
+        (third / "identity.json").write_text(json.dumps(old_id))
+        res = mv.migrate_folder(third, "adb_vlm", dry_run=False)
+        assert res["status"].startswith("no checked re-key"), res
+        assert sorted(p.name for p in third.parent.iterdir()) == [old.name]
+    finally:
+        bench_eval.vlm_identity = real_identity
+    # the fakevlm benchmark folders (plain and JPEG95) carry over to the current code version, byte for byte
+    fv_id = mv._FAKEVLM_02852ACF62
+    for stem in ("fakevlm__greedy", "fakevlm__greedy__jpeg95"):
+        src = tmp / "ucache4" / "ufd8" / f"{stem}__{mv.identity_hash(fv_id)}"
+        src.mkdir(parents=True)
+        (src / "identity.json").write_text(json.dumps(fv_id))
+        line = json.dumps({"key": "g/1_fake/x.png", "sha1": "x", "verdict": "real", "score_source": "verdict_token",
+                           "logit": -3.25, "response": "  This is a real image."})
+        (src / "cn026.1.jsonl").write_text(line + "\n")
+    with contextlib.redirect_stdout(io.StringIO()) as out:
+        mv.main(["--cache-root", str(tmp / "ucache4"), "--model", "fakevlm"])
+    res = [json.loads(x) for x in out.getvalue().splitlines()]
+    assert [r["status"] for r in res] == ["migrated", "migrated"] and all(r["kept"] == 1 for r in res), res
+    fv_new = bench_eval.vlm_identity(bench_eval.get_spec("fakevlm"), "greedy")
+    for r in res:
+        dst = Path(r["to"])
+        assert dst.name.endswith(mv.identity_hash(fv_new)) and (dst / f"migrated.{mv.identity_hash(fv_id)}.jsonl").read_text() \
+            == line + "\n"
+
+
 def main() -> None:
     check_jpegfakes_unit()
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)
         check_jpegfakes_only_fakes(tmp)
         check_compare_ranks(tmp)
+        check_compare_in_distribution(tmp)
         check_trace_model_keying(tmp)
         check_migrate_cache(tmp)
+        check_migrate_unchanged(tmp)
     print("vlm_bench units: all checks passed")
 
 

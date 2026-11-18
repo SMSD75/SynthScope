@@ -51,7 +51,7 @@ for the maintainers and stop.
 5. **Per-model `README.md`** — mirror `models/image/pgc/README.md`: short method explanation + official-repo/paper links, the pipeline, "SynthScope adaptations", and a results table in the **Paper / SynthScope_official / SynthScope_train** schema.
 
 ### VLM detectors (a released vision-language model that answers "real or fake")
-A detector that is a released Hugging Face VLM (Veritas++; Align, Don't Blend's VLM branch, a LoRA) uses the `vlm` kind (`models/vlm/vlm.py`) instead of
+A detector that is a released Hugging Face VLM (Veritas++; Align, Don't Blend's VLM branch, a LoRA; FakeVLM, a LLaVA-1.5) uses the `vlm` kind (`models/vlm/vlm.py`) instead of
 steps 1-3. It is a family-adapter design:
 - a **family** (`VLMFamily`) says how a model family is loaded and fed: the strict `from_pretrained` load into the
   official transformers class (local files only; a LoRA adapter folder, `adapter_config.json`, is kept unmerged on a
@@ -61,16 +61,23 @@ steps 1-3. It is a family-adapter design:
   key still fails), the processor (+ `processor_overrides`), the verdict token sequences (default: the
   first verdict pair with a leading space as the tokenizer encodes it, e.g. SentencePiece `["▁", "▁fake"]`; set
   `verdict_sequences` to give token strings), the prompt (chat template on, or the raw prompt with
-  `chat_template=False`), the processor call and the input size. `QwenVLFamily` (`QWEN_VL`) is implemented; the base
-  class fits processors that take `text=[prompt], images=[image]` (LLaVA-style; `tests/test_veritaspp_smoke.py` plugs a
-  dummy one in). A family whose loading or inputs differ (e.g. FakeVLM's processor from another repo) overrides the
-  methods it needs;
+  `chat_template=False`), the processor call and the input size. `QwenVLFamily` (`QWEN_VL`) and `LlavaFamily`
+  (`LLAVA`: LLaVA-1.5 with a processor saved before transformers 4.45, which must get `patch_size`,
+  `vision_feature_select_strategy` and `num_additional_image_tokens` through `processor_overrides`; a tokenizer that
+  appends EOS to the prompt is refused) are implemented; the base class fits processors that take
+  `text=[prompt], images=[image]`. A processor from another folder than the weights is `processor` (relative to
+  `$SYNTHSCOPE_CKPT_DIR`; the engine requires it, and `processor_hf_repo` / `processor_hf_revision` /
+  `processor_hf_include` go into the download hint). A family whose loading or inputs differ overrides the methods it
+  needs;
 - `models/image/<k>/<k>.py` holds the detector's `VLMConfig`: the family and transformers class, the official prompts
   (verbatim), the image loader (`models/vlm/image.py`: vLLM's EXIF transpose + white alpha composite, when the official
-  inference is a vLLM server; ms-swift's plain RGB conversion, `swift_rgb`, when it is `swift infer`), an optional PIL
+  inference is a vLLM server; ms-swift's plain RGB conversion, `swift_rgb`, when it is `swift infer`; transformers'
+  `transformers_rgb` when the official code hands the file to the processor), an optional PIL
   `preprocess` hook (e.g. ms-swift's Qwen-VL resize, `swift_qwen_vl_resize`: `rescale_image` + qwen-vl-utils
   `fetch_image`, ported in `models/vlm/image.py`; with `processor_kwargs={"images_kwargs": {"do_resize": False}}` as
-  swift calls the processor), the decoding
+  swift calls the processor; or transformers 4.45.2's PIL CLIP resize + crop, `clip_resize_center_crop`, when the
+  official code pins a transformers version whose image processor resized with PIL: transformers 5 resizes with
+  torchvision, which gives different pixels), the decoding
   (`decoding` = greedy for benchmarks, `official_decoding` = the authors' setting), the answer marker and end tag (both
   optional), the verdict word pairs, the verdict mode (`generate`, or `teacher_forced`: one forward pass on the prompt +
   `teacher_forced_suffix` + the verdict sequences' shared prefix, read at their first differing token), raw or

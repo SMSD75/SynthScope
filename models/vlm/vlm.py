@@ -4,7 +4,9 @@ One loader / scorer (``SynthScopeVLM``) serves every such detector. What differs
 
 * ``VLMFamily``: how a model family is loaded and fed. The base class covers a Hugging Face processor that takes
   ``text=[prompt], images=[image]`` (LLaVA-style models); ``QwenVLFamily`` adds the Qwen-VL specifics (a pixel cap
-  through the processor's ``size``, the input size from ``image_grid_thw``). A family decides:
+  through the processor's ``size``, the input size from ``image_grid_thw``); ``LlavaFamily`` (LLaVA-1.5) checks that a
+  pre-4.45 processor was given its image-expansion attributes and that its tokenizer does not append an EOS token to
+  the prompt. A family decides:
     - ``load_model``: the folder loaded strictly into the official transformers class, or a LoRA adapter folder
       (``adapter_config.json``) kept unmerged on a LOCAL base folder (``base_model``; nothing is fetched from the Hub);
     - ``adapter_key``: an adapter file's key under the current transformers module names (Qwen-VL: the 4.52 rename),
@@ -50,6 +52,7 @@ Relative ``base_model`` / ``processor`` folders are resolved against the checkpo
 the engine passes ``$SYNTHSCOPE_CKPT_DIR``). Batch size 1 only. Inference only: there is no training path.
 """
 import importlib
+import json
 import threading
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -96,15 +99,18 @@ class VLMFamily:
         (``load_lora_unmerged``) the same names."""
         return key
 
-    def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
+    def processor_folder(self, path: Path, cfg: "VLMConfig", root: Path) -> Path:
         """``cfg.processor`` (relative names under ``root``), else the weights folder if it holds processor files,
         else (a LoRA adapter folder) the base folder."""
         if cfg.processor:
-            folder = resolve_local(root, cfg.processor)
-        elif cfg.base_model and not has_processor(path):
-            folder = resolve_local(root, cfg.base_model)
-        else:
-            folder = path
+            return resolve_local(root, cfg.processor)
+        if cfg.base_model and not has_processor(path):
+            return resolve_local(root, cfg.base_model)
+        return path
+
+    def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
+        """The processor of ``processor_folder`` with ``cfg.processor_overrides`` set on it."""
+        folder = self.processor_folder(path, cfg, root)
         processor = transformers.AutoProcessor.from_pretrained(str(folder), local_files_only=True)
         for name, value in cfg.processor_overrides.items():
             setattr(processor, name, value)
@@ -192,6 +198,41 @@ class QwenVLFamily(VLMFamily):
 QWEN_VL = QwenVLFamily()
 
 
+class LlavaFamily(VLMFamily):
+    """LLaVA-1.5 (``LlavaForConditionalGeneration``, a CLIP ViT + Llama / Vicuna) fed through a processor saved before
+    transformers 4.45 moved the ``<image>`` expansion from the model into the processor (e.g. llava-hf/llava-1.5-7b-hf
+    @ a272c74: no processor_config.json). On transformers 5 such a processor must be given ``patch_size``,
+    ``vision_feature_select_strategy`` and ``num_additional_image_tokens`` (``VLMConfig.processor_overrides``; for
+    CLIP ViT-L/14-336: 14, "default", 1, i.e. 577 - 1 = 576 image tokens, as 4.45's in-model merge produced), or the
+    run fails with "Image features and image tokens do not match"; ``load_processor`` raises earlier when one of the
+    three is neither in the overrides nor saved in the folder's ``processor_config.json`` (``num_additional_image_tokens``
+    has a default, 0, so an unset value is only visible there).
+
+    The tokenizer must not append an end-of-sequence token to the prompt: a LLaVA fine-tune's own tokenizer can have
+    ``add_eos_token=True`` (FakeVLM's does), and a prompt ending in ``</s>`` changes the answer; the load raises."""
+
+    EXPANSION_FIELDS = ("patch_size", "vision_feature_select_strategy", "num_additional_image_tokens")
+
+    def load_processor(self, path, cfg, root):
+        saved_file = self.processor_folder(path, cfg, root) / "processor_config.json"
+        saved = json.loads(saved_file.read_text()) if saved_file.exists() else {}
+        processor = super().load_processor(path, cfg, root)
+        unset = [name for name in self.EXPANSION_FIELDS
+                 if getattr(processor, name, None) is None or (name not in cfg.processor_overrides and name not in saved)]
+        if unset:
+            raise ValueError(f"the LLaVA processor has no {unset}: set them in VLMConfig.processor_overrides (LLaVA-1.5 "
+                             "with CLIP ViT-L/14-336: 14, 'default', 1)")
+        tokenizer = processor.tokenizer
+        eos = tokenizer.eos_token_id
+        if eos is not None and tokenizer("x")["input_ids"][-1:] == [eos]:
+            raise ValueError("the tokenizer appends an end-of-sequence token to the prompt (add_eos_token=True): use the "
+                             "processor the official code loads (e.g. llava-hf/llava-1.5-7b-hf @ a272c74)")
+        return processor
+
+
+LLAVA = LlavaFamily()
+
+
 @dataclass
 class VLMConfig:
     model_class: str                                  # transformers class, e.g. "Qwen3VLForConditionalGeneration"
@@ -230,17 +271,26 @@ class VLMConfig:
     hf_revision: str = ""
     base_hf_repo: str = ""                            # LoRA: the base model's repo and revision (download hint)
     base_hf_revision: str = ""
+    processor_hf_repo: str = ""                       # a separate processor folder's repo, revision and files (hint)
+    processor_hf_revision: str = ""
+    processor_hf_include: tuple = ()
 
 
 def download_hint(cfg: VLMConfig, folder: Path, root: Path) -> str:
     """The ``hf download`` commands for the official weights folder ``folder`` and, for a LoRA detector, the base folder
-    (``cfg.base_model`` under ``root``); empty without ``hf_repo``."""
+    (``cfg.base_model`` under ``root``), and for a separate processor, its folder (``cfg.processor``); empty without
+    ``hf_repo``."""
     if not cfg.hf_repo:
         return ""
     hint = f"hf download {cfg.hf_repo} --revision {cfg.hf_revision} --local-dir {folder}"
     if cfg.base_model and cfg.base_hf_repo:
         base = Path(cfg.base_model) if Path(cfg.base_model).is_absolute() else Path(root) / cfg.base_model
         hint += f"; base model: hf download {cfg.base_hf_repo} --revision {cfg.base_hf_revision} --local-dir {base}"
+    if cfg.processor and cfg.processor_hf_repo:
+        proc = Path(cfg.processor) if Path(cfg.processor).is_absolute() else Path(root) / cfg.processor
+        include = "".join(f" --include '{p}'" for p in cfg.processor_hf_include)
+        hint += (f"; processor: hf download {cfg.processor_hf_repo} --revision {cfg.processor_hf_revision}{include} "
+                 f"--local-dir {proc}")
     return hint
 
 

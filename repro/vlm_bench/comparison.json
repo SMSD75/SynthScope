@@ -1,7 +1,8 @@
 {
  "models": [
   "veritaspp",
-  "adb_vlm"
+  "adb_vlm",
+  "fakevlm"
  ],
  "protocol": "per benchmark bench_eval --limit L, L = ceil(500 / n_generators): the first L sorted reals and the first L sorted fakes of every generator (bench_eval.discover order), a fixed subset (repro/vlm_bench/subsets/<bench>.json lists every file with its sha1). The same subset is used for every VLM and for the comparator detectors (user decision 2026-11-16: subsampled).",
  "internal_only": [
@@ -15,6 +16,11 @@
  "best_tie_break": "equal values (rounded to 2 decimals): the alphabetically first detector key is named, every tied key is listed under `tied`",
  "rank_note": "rank_<metric> = 1 + the number of comparators strictly better (the VLM among the comparators plus itself); rank_all_<metric> also counts the other VLMs. Best and median are over the comparators.",
  "acc_pooled_note": "acc_pooled counts every scored (generator, image) pair once: a real pool shared by several generators (ufd8, synthbuster_coco; bench_eval's shared-reals layout) is counted once per generator, so reals and fakes keep the 1:1 balance of the subset. acc_pooled_distinct counts each image once, so the shared reals count once and the fakes dominate (ufd8: 630 distinct images, 504 of them fake); it is not comparable with acc. The headline acc (balanced mean over generators) is unaffected by either.",
+ "in_distribution": {
+  "fakevlm": {
+   "genimage_val100k": "IN-DISTRIBUTION: FakeVLM's training set FakeClue contains GenImage images (FakeVLM paper, arXiv 2503.14905, FakeClue construction), so this subset is not held-out for FakeVLM"
+  }
+ },
  "subsets": [
   {
    "benchmark": "genimage_val100k",
@@ -226,9 +232,9 @@
      },
      "limit": 63,
      "rank_acc": 17,
-     "rank_all_acc": 17,
+     "rank_all_acc": 18,
      "rank_mauroc": 18,
-     "rank_all_mauroc": 18
+     "rank_all_mauroc": 19
     },
     "adb_vlm": {
      "acc": 68.05,
@@ -270,9 +276,55 @@
      },
      "limit": 63,
      "rank_acc": 24,
-     "rank_all_acc": 25,
+     "rank_all_acc": 26,
      "rank_mauroc": 24,
-     "rank_all_mauroc": 25
+     "rank_all_mauroc": 26
+    },
+    "fakevlm": {
+     "acc": 99.7,
+     "mauroc": 99.99,
+     "map": 99.99,
+     "acc_pooled": 99.7,
+     "acc_pooled_distinct": 99.7,
+     "n_distinct_images": 1008,
+     "acc_pooled_drop": 99.7,
+     "n_images": 1008,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 267,
+     "mean_tokens": 112.3,
+     "mean_seconds": 3.84,
+     "balance": {
+      "mean_real_acc": 99.6,
+      "mean_fake_acc": 99.8,
+      "lowest_fake_acc": {
+       "generator": "midjourney",
+       "value": 98.41
+      },
+      "highest_fake_acc": {
+       "generator": "wukong",
+       "value": 100.0
+      },
+      "n_generators": 8,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "adm": 100.0,
+       "biggan": 100.0,
+       "glide": 100.0,
+       "midjourney": 98.41,
+       "sdv1.4": 100.0,
+       "sdv1.5": 100.0,
+       "vqdm": 100.0,
+       "wukong": 100.0
+      }
+     },
+     "limit": 63,
+     "in_distribution": true,
+     "in_distribution_note": "IN-DISTRIBUTION: FakeVLM's training set FakeClue contains GenImage images (FakeVLM paper, arXiv 2503.14905, FakeClue construction), so this subset is not held-out for FakeVLM",
+     "rank_acc": 1,
+     "rank_all_acc": 1,
+     "rank_mauroc": 2,
+     "rank_all_mauroc": 2
     }
    },
    "best_acc": {
@@ -521,9 +573,9 @@
      },
      "limit": 39,
      "rank_acc": 25,
-     "rank_all_acc": 25,
+     "rank_all_acc": 26,
      "rank_mauroc": 25,
-     "rank_all_mauroc": 25
+     "rank_all_mauroc": 26
     },
     "adb_vlm": {
      "acc": 55.72,
@@ -570,9 +622,58 @@
      },
      "limit": 39,
      "rank_acc": 26,
-     "rank_all_acc": 27,
+     "rank_all_acc": 28,
      "rank_mauroc": 26,
-     "rank_all_mauroc": 27
+     "rank_all_mauroc": 28
+    },
+    "fakevlm": {
+     "acc": 76.43,
+     "mauroc": 88.49,
+     "map": 87.62,
+     "acc_pooled": 76.43,
+     "acc_pooled_distinct": 76.43,
+     "n_distinct_images": 1014,
+     "acc_pooled_drop": 76.43,
+     "n_images": 1014,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 318,
+     "mean_tokens": 134.9,
+     "mean_seconds": 4.53,
+     "balance": {
+      "mean_real_acc": 56.8,
+      "mean_fake_acc": 96.06,
+      "lowest_fake_acc": {
+       "generator": "stylegan",
+       "value": 51.28
+      },
+      "highest_fake_acc": {
+       "generator": "whichfaceisreal",
+       "value": 100.0
+      },
+      "n_generators": 13,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "biggan": 100.0,
+       "crn": 100.0,
+       "cyclegan": 100.0,
+       "deepfake": 97.44,
+       "gaugan": 100.0,
+       "imle": 100.0,
+       "progan": 100.0,
+       "san": 100.0,
+       "seeingdark": 100.0,
+       "stargan": 100.0,
+       "stylegan": 51.28,
+       "stylegan2": 100.0,
+       "whichfaceisreal": 100.0
+      }
+     },
+     "limit": 39,
+     "rank_acc": 17,
+     "rank_all_acc": 17,
+     "rank_mauroc": 16,
+     "rank_all_mauroc": 16
     }
    },
    "best_acc": {
@@ -816,9 +917,9 @@
      },
      "limit": 63,
      "rank_acc": 25,
-     "rank_all_acc": 25,
+     "rank_all_acc": 26,
      "rank_mauroc": 26,
-     "rank_all_mauroc": 26
+     "rank_all_mauroc": 27
     },
     "adb_vlm": {
      "acc": 52.88,
@@ -860,9 +961,53 @@
      },
      "limit": 63,
      "rank_acc": 28,
-     "rank_all_acc": 29,
+     "rank_all_acc": 30,
      "rank_mauroc": 28,
-     "rank_all_mauroc": 29
+     "rank_all_mauroc": 30
+    },
+    "fakevlm": {
+     "acc": 97.02,
+     "mauroc": 99.9,
+     "map": 99.9,
+     "acc_pooled": 97.02,
+     "acc_pooled_distinct": 96.19,
+     "n_distinct_images": 630,
+     "acc_pooled_drop": 97.02,
+     "n_images": 1008,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 344,
+     "mean_tokens": 120.1,
+     "mean_seconds": 4.14,
+     "balance": {
+      "mean_real_acc": 98.61,
+      "mean_fake_acc": 95.44,
+      "lowest_fake_acc": {
+       "generator": "guided",
+       "value": 71.43
+      },
+      "highest_fake_acc": {
+       "generator": "glide_50_27",
+       "value": 100.0
+      },
+      "n_generators": 8,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "dalle": 100.0,
+       "glide_100_10": 100.0,
+       "glide_100_27": 98.41,
+       "glide_50_27": 100.0,
+       "guided": 71.43,
+       "ldm_100": 98.41,
+       "ldm_200": 98.41,
+       "ldm_200_cfg": 96.83
+      }
+     },
+     "limit": 63,
+     "rank_acc": 2,
+     "rank_all_acc": 2,
+     "rank_mauroc": 2,
+     "rank_all_mauroc": 2
     }
    },
    "best_acc": {
@@ -1115,9 +1260,9 @@
      },
      "limit": 30,
      "rank_acc": 19,
-     "rank_all_acc": 19,
+     "rank_all_acc": 20,
      "rank_mauroc": 20,
-     "rank_all_mauroc": 20
+     "rank_all_mauroc": 21
     },
     "adb_vlm": {
      "acc": 65.2,
@@ -1168,9 +1313,62 @@
      },
      "limit": 30,
      "rank_acc": 26,
-     "rank_all_acc": 27,
+     "rank_all_acc": 28,
      "rank_mauroc": 26,
-     "rank_all_mauroc": 27
+     "rank_all_mauroc": 28
+    },
+    "fakevlm": {
+     "acc": 92.45,
+     "mauroc": 97.55,
+     "map": 97.55,
+     "acc_pooled": 92.45,
+     "acc_pooled_distinct": 92.45,
+     "n_distinct_images": 1020,
+     "acc_pooled_drop": 92.45,
+     "n_images": 1020,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 304,
+     "mean_tokens": 122.4,
+     "mean_seconds": 4.21,
+     "balance": {
+      "mean_real_acc": 87.45,
+      "mean_fake_acc": 97.45,
+      "lowest_fake_acc": {
+       "generator": "stylegan",
+       "value": 56.67
+      },
+      "highest_fake_acc": {
+       "generator": "wukong",
+       "value": 100.0
+      },
+      "n_generators": 17,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "ADM": 100.0,
+       "DALLE2": 100.0,
+       "Glide": 100.0,
+       "Midjourney": 100.0,
+       "VQDM": 100.0,
+       "biggan": 100.0,
+       "cyclegan": 100.0,
+       "gaugan": 100.0,
+       "progan": 100.0,
+       "sd_xl": 100.0,
+       "stable_diffusion_v_1_4": 100.0,
+       "stable_diffusion_v_1_5": 100.0,
+       "stargan": 100.0,
+       "stylegan": 56.67,
+       "stylegan2": 100.0,
+       "whichfaceisreal": 100.0,
+       "wukong": 100.0
+      }
+     },
+     "limit": 30,
+     "rank_acc": 5,
+     "rank_all_acc": 5,
+     "rank_mauroc": 7,
+     "rank_all_mauroc": 7
     }
    },
    "best_acc": {
@@ -1415,9 +1613,9 @@
      },
      "limit": 56,
      "rank_acc": 13,
-     "rank_all_acc": 13,
+     "rank_all_acc": 14,
      "rank_mauroc": 12,
-     "rank_all_mauroc": 12
+     "rank_all_mauroc": 13
     },
     "adb_vlm": {
      "acc": 80.95,
@@ -1460,9 +1658,54 @@
      },
      "limit": 56,
      "rank_acc": 21,
-     "rank_all_acc": 22,
+     "rank_all_acc": 23,
      "rank_mauroc": 19,
-     "rank_all_mauroc": 20
+     "rank_all_mauroc": 21
+    },
+    "fakevlm": {
+     "acc": 96.52,
+     "mauroc": 99.85,
+     "map": 99.85,
+     "acc_pooled": 96.53,
+     "acc_pooled_distinct": 98.04,
+     "n_distinct_images": 560,
+     "acc_pooled_drop": 96.53,
+     "n_images": 1008,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 143,
+     "mean_tokens": 90.3,
+     "mean_seconds": 3.15,
+     "balance": {
+      "mean_real_acc": 94.64,
+      "mean_fake_acc": 98.41,
+      "lowest_fake_acc": {
+       "generator": "stable-diffusion-2",
+       "value": 92.86
+      },
+      "highest_fake_acc": {
+       "generator": "stable-diffusion-xl",
+       "value": 100.0
+      },
+      "n_generators": 9,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "dalle2": 98.21,
+       "dalle3": 100.0,
+       "firefly": 96.43,
+       "glide": 98.21,
+       "midjourney-v5": 100.0,
+       "stable-diffusion-1-3": 100.0,
+       "stable-diffusion-1-4": 100.0,
+       "stable-diffusion-2": 92.86,
+       "stable-diffusion-xl": 100.0
+      }
+     },
+     "limit": 56,
+     "rank_acc": 6,
+     "rank_all_acc": 6,
+     "rank_mauroc": 6,
+     "rank_all_mauroc": 6
     }
    },
    "best_acc": {
@@ -1745,7 +1988,48 @@
      },
      "limit": 100,
      "rank_acc": 5,
-     "rank_all_acc": 6,
+     "rank_all_acc": 7,
+     "rank_mauroc": 3,
+     "rank_all_mauroc": 5
+    },
+    "fakevlm": {
+     "acc": 98.1,
+     "mauroc": 99.94,
+     "map": 99.94,
+     "acc_pooled": 98.1,
+     "acc_pooled_distinct": 98.1,
+     "n_distinct_images": 1000,
+     "acc_pooled_drop": 98.1,
+     "n_images": 1000,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 229,
+     "mean_tokens": 90.8,
+     "mean_seconds": 3.17,
+     "balance": {
+      "mean_real_acc": 97.0,
+      "mean_fake_acc": 99.2,
+      "lowest_fake_acc": {
+       "generator": "Flux",
+       "value": 98.0
+      },
+      "highest_fake_acc": {
+       "generator": "OmniGen",
+       "value": 100.0
+      },
+      "n_generators": 5,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "Flux": 98.0,
+       "GoT": 100.0,
+       "Infinity": 98.0,
+       "NOVA": 100.0,
+       "OmniGen": 100.0
+      }
+     },
+     "limit": 100,
+     "rank_acc": 4,
+     "rank_all_acc": 5,
      "rank_mauroc": 3,
      "rank_all_mauroc": 4
     }
@@ -2029,6 +2313,45 @@
      "rank_all_acc": 8,
      "rank_mauroc": 5,
      "rank_all_mauroc": 5
+    },
+    "fakevlm": {
+     "acc": 65.46,
+     "mauroc": 87.78,
+     "map": 84.91,
+     "acc_pooled": 65.47,
+     "acc_pooled_distinct": 65.47,
+     "n_distinct_images": 1002,
+     "acc_pooled_drop": 65.47,
+     "n_images": 1002,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 44,
+     "mean_tokens": 53.4,
+     "mean_seconds": 2.01,
+     "balance": {
+      "mean_real_acc": 32.93,
+      "mean_fake_acc": 98.0,
+      "lowest_fake_acc": {
+       "generator": "midjourney_v5",
+       "value": 96.41
+      },
+      "highest_fake_acc": {
+       "generator": "firefly",
+       "value": 98.8
+      },
+      "n_generators": 3,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "dalle3": 98.8,
+       "firefly": 98.8,
+       "midjourney_v5": 96.41
+      }
+     },
+     "limit": 167,
+     "rank_acc": 13,
+     "rank_all_acc": 15,
+     "rank_mauroc": 9,
+     "rank_all_mauroc": 11
     }
    },
    "best_acc": {
@@ -2309,6 +2632,45 @@
      "rank_all_acc": 6,
      "rank_mauroc": 4,
      "rank_all_mauroc": 5
+    },
+    "fakevlm": {
+     "acc": 64.11,
+     "mauroc": 80.86,
+     "map": 77.24,
+     "acc_pooled": 64.17,
+     "acc_pooled_distinct": 64.17,
+     "n_distinct_images": 988,
+     "acc_pooled_drop": 64.17,
+     "n_images": 988,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 91,
+     "mean_tokens": 60.7,
+     "mean_seconds": 2.28,
+     "balance": {
+      "mean_real_acc": 33.41,
+      "mean_fake_acc": 94.81,
+      "lowest_fake_acc": {
+       "generator": "reddit",
+       "value": 89.82
+      },
+      "highest_fake_acc": {
+       "generator": "facebook",
+       "value": 100.0
+      },
+      "n_generators": 3,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "facebook": 100.0,
+       "reddit": 89.82,
+       "twitter": 94.61
+      }
+     },
+     "limit": 167,
+     "rank_acc": 17,
+     "rank_all_acc": 19,
+     "rank_mauroc": 12,
+     "rank_all_mauroc": 14
     }
    },
    "best_acc": {
@@ -2569,9 +2931,9 @@
      },
      "limit": 20,
      "rank_acc": 11,
-     "rank_all_acc": 11,
+     "rank_all_acc": 12,
      "rank_mauroc": 14,
-     "rank_all_mauroc": 14
+     "rank_all_mauroc": 15
     },
     "adb_vlm": {
      "acc": 76.7,
@@ -2630,9 +2992,70 @@
      },
      "limit": 20,
      "rank_acc": 16,
-     "rank_all_acc": 17,
+     "rank_all_acc": 18,
      "rank_mauroc": 15,
-     "rank_all_mauroc": 16
+     "rank_all_mauroc": 17
+    },
+    "fakevlm": {
+     "acc": 83.9,
+     "mauroc": 95.38,
+     "map": 94.35,
+     "acc_pooled": 83.9,
+     "acc_pooled_distinct": 83.9,
+     "n_distinct_images": 1000,
+     "acc_pooled_drop": 83.9,
+     "n_images": 1000,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 199,
+     "mean_tokens": 90.3,
+     "mean_seconds": 3.15,
+     "balance": {
+      "mean_real_acc": 70.4,
+      "mean_fake_acc": 97.4,
+      "lowest_fake_acc": {
+       "generator": "BlendFace",
+       "value": 85.0
+      },
+      "highest_fake_acc": {
+       "generator": "WFIR",
+       "value": 100.0
+      },
+      "n_generators": 25,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "BLIP": 100.0,
+       "BlendFace": 85.0,
+       "CommunityAI": 100.0,
+       "DALLE-3": 100.0,
+       "E4S": 95.0,
+       "FLUX1-dev": 100.0,
+       "FaceSwap": 100.0,
+       "GLIDE": 100.0,
+       "IP_Adapter": 100.0,
+       "Imagen3": 100.0,
+       "InSwap": 95.0,
+       "Infinite_ID": 100.0,
+       "InstantID": 100.0,
+       "Midjourney": 100.0,
+       "PhotoMaker": 90.0,
+       "ProGAN": 100.0,
+       "R3GAN": 100.0,
+       "SD3": 100.0,
+       "SDXL": 100.0,
+       "SimSwap": 85.0,
+       "SocialRF": 95.0,
+       "StyleGAN-XL": 100.0,
+       "StyleGAN3": 90.0,
+       "StyleSwim": 100.0,
+       "WFIR": 100.0
+      }
+     },
+     "limit": 20,
+     "rank_acc": 9,
+     "rank_all_acc": 9,
+     "rank_mauroc": 6,
+     "rank_all_mauroc": 6
     }
    },
    "best_acc": {
@@ -2914,6 +3337,45 @@
      "rank_all_acc": 8,
      "rank_mauroc": 6,
      "rank_all_mauroc": 7
+    },
+    "fakevlm": {
+     "acc": 62.67,
+     "mauroc": 74.64,
+     "map": 72.63,
+     "acc_pooled": 62.67,
+     "acc_pooled_distinct": 62.67,
+     "n_distinct_images": 1002,
+     "acc_pooled_drop": 62.67,
+     "n_images": 1002,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 148,
+     "mean_tokens": 79.0,
+     "mean_seconds": 2.8,
+     "balance": {
+      "mean_real_acc": 50.1,
+      "mean_fake_acc": 75.25,
+      "lowest_fake_acc": {
+       "generator": "redigital",
+       "value": 47.31
+      },
+      "highest_fake_acc": {
+       "generator": "original",
+       "value": 100.0
+      },
+      "n_generators": 3,
+      "n_generators_fake_acc_below_50": 1,
+      "per_generator_fake_acc": {
+       "original": 100.0,
+       "redigital": 47.31,
+       "transfer": 78.44
+      }
+     },
+     "limit": 167,
+     "rank_acc": 14,
+     "rank_all_acc": 16,
+     "rank_mauroc": 9,
+     "rank_all_mauroc": 11
     }
    },
    "best_acc": {
@@ -3190,6 +3652,43 @@
      "rank_all_acc": 6,
      "rank_mauroc": 3,
      "rank_all_mauroc": 3
+    },
+    "fakevlm": {
+     "acc": 70.47,
+     "mauroc": 70.17,
+     "map": 74.87,
+     "acc_pooled": 78.02,
+     "acc_pooled_distinct": 78.02,
+     "n_distinct_images": 769,
+     "acc_pooled_drop": 78.02,
+     "n_images": 769,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 66,
+     "mean_tokens": 52.1,
+     "mean_seconds": 2.01,
+     "balance": {
+      "mean_real_acc": 45.35,
+      "mean_fake_acc": 95.6,
+      "lowest_fake_acc": {
+       "generator": "viral",
+       "value": 95.6
+      },
+      "highest_fake_acc": {
+       "generator": "viral",
+       "value": 95.6
+      },
+      "n_generators": 1,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "viral": 95.6
+      }
+     },
+     "limit": 500,
+     "rank_acc": 9,
+     "rank_all_acc": 11,
+     "rank_mauroc": 16,
+     "rank_all_mauroc": 18
     }
    },
    "best_acc": {
@@ -3535,9 +4034,9 @@
      },
      "limit": 5,
      "rank_acc": 7,
-     "rank_all_acc": 7,
+     "rank_all_acc": 8,
      "rank_mauroc": 10,
-     "rank_all_mauroc": 10
+     "rank_all_mauroc": 11
     },
     "adb_vlm": {
      "acc": 78.36,
@@ -3681,9 +4180,155 @@
      },
      "limit": 5,
      "rank_acc": 19,
-     "rank_all_acc": 20,
+     "rank_all_acc": 21,
      "rank_mauroc": 20,
-     "rank_all_mauroc": 21
+     "rank_all_mauroc": 22
+    },
+    "fakevlm": {
+     "acc": 96.0,
+     "mauroc": 99.02,
+     "map": 99.32,
+     "acc_pooled": 96.0,
+     "acc_pooled_distinct": 96.0,
+     "n_distinct_images": 1100,
+     "acc_pooled_drop": 96.0,
+     "n_images": 1100,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 408,
+     "mean_tokens": 130.6,
+     "mean_seconds": 4.4,
+     "balance": {
+      "mean_real_acc": 96.0,
+      "mean_fake_acc": 96.0,
+      "lowest_fake_acc": {
+       "generator": "cc3m__playgroundai@playground-v2-256px-base",
+       "value": 40.0
+      },
+      "highest_fake_acc": {
+       "generator": "textcaps__stabilityai@stable-diffusion-xl-base-1.0",
+       "value": 100.0
+      },
+      "n_generators": 110,
+      "n_generators_fake_acc_below_50": 2,
+      "per_generator_fake_acc": {
+       "cc3m__CompVis@ldm-text2im-large-256": 80.0,
+       "cc3m__CompVis@stable-diffusion-v1-4": 100.0,
+       "cc3m__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+       "cc3m__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+       "cc3m__black-forest-labs@FLUX.1-dev": 100.0,
+       "cc3m__black-forest-labs@FLUX.1-schnell": 100.0,
+       "cc3m__latent-consistency@lcm-lora-sdv1-5": 100.0,
+       "cc3m__latent-consistency@lcm-lora-sdxl": 100.0,
+       "cc3m__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+       "cc3m__playgroundai@playground-v2-256px-base": 40.0,
+       "cc3m__playgroundai@playground-v2-512px-base": 100.0,
+       "cc3m__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+       "cc3m__runwayml@stable-diffusion-v1-5": 100.0,
+       "cc3m__segmind@SSD-1B": 100.0,
+       "cc3m__segmind@SegMoE-SD-4x2-v0": 100.0,
+       "cc3m__segmind@small-sd": 100.0,
+       "cc3m__segmind@tiny-sd": 100.0,
+       "cc3m__stabilityai@sdxl-turbo": 80.0,
+       "cc3m__stabilityai@stable-diffusion-2": 100.0,
+       "cc3m__stabilityai@stable-diffusion-2-1": 100.0,
+       "cc3m__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+       "cc3m__stabilityai@stable-diffusion-xl-base-1.0": 100.0,
+       "flickr__CompVis@ldm-text2im-large-256": 100.0,
+       "flickr__CompVis@stable-diffusion-v1-4": 80.0,
+       "flickr__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+       "flickr__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+       "flickr__black-forest-labs@FLUX.1-dev": 100.0,
+       "flickr__black-forest-labs@FLUX.1-schnell": 100.0,
+       "flickr__latent-consistency@lcm-lora-sdv1-5": 100.0,
+       "flickr__latent-consistency@lcm-lora-sdxl": 100.0,
+       "flickr__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+       "flickr__playgroundai@playground-v2-256px-base": 60.0,
+       "flickr__playgroundai@playground-v2-512px-base": 80.0,
+       "flickr__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+       "flickr__runwayml@stable-diffusion-v1-5": 100.0,
+       "flickr__segmind@SSD-1B": 100.0,
+       "flickr__segmind@SegMoE-SD-4x2-v0": 100.0,
+       "flickr__segmind@small-sd": 100.0,
+       "flickr__segmind@tiny-sd": 100.0,
+       "flickr__stabilityai@sdxl-turbo": 100.0,
+       "flickr__stabilityai@stable-diffusion-2": 80.0,
+       "flickr__stabilityai@stable-diffusion-2-1": 100.0,
+       "flickr__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+       "flickr__stabilityai@stable-diffusion-xl-base-1.0": 100.0,
+       "mscoco__CompVis@ldm-text2im-large-256": 100.0,
+       "mscoco__CompVis@stable-diffusion-v1-4": 100.0,
+       "mscoco__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+       "mscoco__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+       "mscoco__black-forest-labs@FLUX.1-dev": 100.0,
+       "mscoco__black-forest-labs@FLUX.1-schnell": 100.0,
+       "mscoco__latent-consistency@lcm-lora-sdv1-5": 100.0,
+       "mscoco__latent-consistency@lcm-lora-sdxl": 100.0,
+       "mscoco__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+       "mscoco__playgroundai@playground-v2-256px-base": 80.0,
+       "mscoco__playgroundai@playground-v2-512px-base": 100.0,
+       "mscoco__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+       "mscoco__runwayml@stable-diffusion-v1-5": 100.0,
+       "mscoco__segmind@SSD-1B": 100.0,
+       "mscoco__segmind@SegMoE-SD-4x2-v0": 100.0,
+       "mscoco__segmind@small-sd": 100.0,
+       "mscoco__segmind@tiny-sd": 100.0,
+       "mscoco__stabilityai@sdxl-turbo": 100.0,
+       "mscoco__stabilityai@stable-diffusion-2": 100.0,
+       "mscoco__stabilityai@stable-diffusion-2-1": 100.0,
+       "mscoco__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+       "mscoco__stabilityai@stable-diffusion-xl-base-1.0": 100.0,
+       "sbu__CompVis@ldm-text2im-large-256": 80.0,
+       "sbu__CompVis@stable-diffusion-v1-4": 100.0,
+       "sbu__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+       "sbu__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+       "sbu__black-forest-labs@FLUX.1-dev": 100.0,
+       "sbu__black-forest-labs@FLUX.1-schnell": 100.0,
+       "sbu__latent-consistency@lcm-lora-sdv1-5": 100.0,
+       "sbu__latent-consistency@lcm-lora-sdxl": 100.0,
+       "sbu__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+       "sbu__playgroundai@playground-v2-256px-base": 60.0,
+       "sbu__playgroundai@playground-v2-512px-base": 100.0,
+       "sbu__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+       "sbu__runwayml@stable-diffusion-v1-5": 100.0,
+       "sbu__segmind@SSD-1B": 100.0,
+       "sbu__segmind@SegMoE-SD-4x2-v0": 100.0,
+       "sbu__segmind@small-sd": 100.0,
+       "sbu__segmind@tiny-sd": 100.0,
+       "sbu__stabilityai@sdxl-turbo": 100.0,
+       "sbu__stabilityai@stable-diffusion-2": 100.0,
+       "sbu__stabilityai@stable-diffusion-2-1": 100.0,
+       "sbu__stabilityai@stable-diffusion-3-medium-diffusers": 100.0,
+       "sbu__stabilityai@stable-diffusion-xl-base-1.0": 100.0,
+       "textcaps__CompVis@ldm-text2im-large-256": 100.0,
+       "textcaps__CompVis@stable-diffusion-v1-4": 100.0,
+       "textcaps__PixArt-alpha@PixArt-XL-2-1024-MS": 100.0,
+       "textcaps__PixArt-alpha@PixArt-XL-2-512x512": 100.0,
+       "textcaps__black-forest-labs@FLUX.1-dev": 80.0,
+       "textcaps__black-forest-labs@FLUX.1-schnell": 100.0,
+       "textcaps__latent-consistency@lcm-lora-sdv1-5": 100.0,
+       "textcaps__latent-consistency@lcm-lora-sdxl": 100.0,
+       "textcaps__playgroundai@playground-v2-1024px-aesthetic": 100.0,
+       "textcaps__playgroundai@playground-v2-256px-base": 40.0,
+       "textcaps__playgroundai@playground-v2-512px-base": 100.0,
+       "textcaps__playgroundai@playground-v2.5-1024px-aesthetic": 100.0,
+       "textcaps__runwayml@stable-diffusion-v1-5": 100.0,
+       "textcaps__segmind@SSD-1B": 100.0,
+       "textcaps__segmind@SegMoE-SD-4x2-v0": 100.0,
+       "textcaps__segmind@small-sd": 100.0,
+       "textcaps__segmind@tiny-sd": 100.0,
+       "textcaps__stabilityai@sdxl-turbo": 80.0,
+       "textcaps__stabilityai@stable-diffusion-2": 80.0,
+       "textcaps__stabilityai@stable-diffusion-2-1": 100.0,
+       "textcaps__stabilityai@stable-diffusion-3-medium-diffusers": 60.0,
+       "textcaps__stabilityai@stable-diffusion-xl-base-1.0": 100.0
+      }
+     },
+     "limit": 5,
+     "rank_acc": 6,
+     "rank_all_acc": 6,
+     "rank_mauroc": 5,
+     "rank_all_mauroc": 5
     }
    },
    "best_acc": {
@@ -3924,7 +4569,7 @@
      "rank_acc": 2,
      "rank_all_acc": 2,
      "rank_mauroc": 5,
-     "rank_all_mauroc": 5
+     "rank_all_mauroc": 6
     },
     "adb_vlm": {
      "acc": 95.11,
@@ -3961,9 +4606,48 @@
      },
      "limit": 167,
      "rank_acc": 10,
-     "rank_all_acc": 11,
+     "rank_all_acc": 12,
      "rank_mauroc": 16,
-     "rank_all_mauroc": 17
+     "rank_all_mauroc": 18
+    },
+    "fakevlm": {
+     "acc": 99.3,
+     "mauroc": 99.99,
+     "map": 99.99,
+     "acc_pooled": 99.3,
+     "acc_pooled_distinct": 99.3,
+     "n_distinct_images": 1002,
+     "acc_pooled_drop": 99.3,
+     "n_images": 1002,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 202,
+     "mean_tokens": 86.9,
+     "mean_seconds": 3.09,
+     "balance": {
+      "mean_real_acc": 98.8,
+      "mean_fake_acc": 99.8,
+      "lowest_fake_acc": {
+       "generator": "FLUX.1-schnell",
+       "value": 99.4
+      },
+      "highest_fake_acc": {
+       "generator": "stable-diffusion-3-medium-diffusers",
+       "value": 100.0
+      },
+      "n_generators": 3,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "FLUX.1-schnell": 99.4,
+       "PixArt-Sigma-XL-2-1024-MS": 100.0,
+       "stable-diffusion-3-medium-diffusers": 100.0
+      }
+     },
+     "limit": 167,
+     "rank_acc": 2,
+     "rank_all_acc": 3,
+     "rank_mauroc": 3,
+     "rank_all_mauroc": 3
     }
    },
    "best_acc": {
@@ -4207,9 +4891,9 @@
      },
      "limit": 72,
      "rank_acc": 19,
-     "rank_all_acc": 19,
+     "rank_all_acc": 20,
      "rank_mauroc": 22,
-     "rank_all_mauroc": 22
+     "rank_all_mauroc": 23
     },
     "adb_vlm": {
      "acc": 64.78,
@@ -4250,9 +4934,52 @@
      },
      "limit": 72,
      "rank_acc": 23,
-     "rank_all_acc": 24,
+     "rank_all_acc": 25,
      "rank_mauroc": 26,
-     "rank_all_mauroc": 27
+     "rank_all_mauroc": 28
+    },
+    "fakevlm": {
+     "acc": 97.92,
+     "mauroc": 99.84,
+     "map": 99.82,
+     "acc_pooled": 97.92,
+     "acc_pooled_distinct": 97.92,
+     "n_distinct_images": 1008,
+     "acc_pooled_drop": 98.01,
+     "n_images": 1008,
+     "n_unparsed": 1,
+     "n_unscored": 0,
+     "n_unfinished": 210,
+     "mean_tokens": 97.2,
+     "mean_seconds": 3.42,
+     "balance": {
+      "mean_real_acc": 99.4,
+      "mean_fake_acc": 96.43,
+      "lowest_fake_acc": {
+       "generator": "Open_MAGVIT2",
+       "value": 81.94
+      },
+      "highest_fake_acc": {
+       "generator": "VAR",
+       "value": 100.0
+      },
+      "n_generators": 7,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "Infinity": 98.61,
+       "Janus_Pro": 100.0,
+       "LlamaGen": 94.44,
+       "Open_MAGVIT2": 81.94,
+       "RAR": 100.0,
+       "Switti": 100.0,
+       "VAR": 100.0
+      }
+     },
+     "limit": 72,
+     "rank_acc": 2,
+     "rank_all_acc": 2,
+     "rank_mauroc": 1,
+     "rank_all_mauroc": 1
     }
    },
    "best_acc": {
@@ -4538,9 +5265,52 @@
      },
      "limit": 72,
      "rank_acc": 8,
-     "rank_all_acc": 9,
+     "rank_all_acc": 10,
      "rank_mauroc": 10,
-     "rank_all_mauroc": 11
+     "rank_all_mauroc": 12
+    },
+    "fakevlm": {
+     "acc": 77.78,
+     "mauroc": 82.77,
+     "map": 85.06,
+     "acc_pooled": 77.78,
+     "acc_pooled_distinct": 77.78,
+     "n_distinct_images": 1008,
+     "acc_pooled_drop": 77.78,
+     "n_images": 1008,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 72,
+     "mean_tokens": 49.5,
+     "mean_seconds": 1.9,
+     "balance": {
+      "mean_real_acc": 71.43,
+      "mean_fake_acc": 84.13,
+      "lowest_fake_acc": {
+       "generator": "i2i",
+       "value": 13.89
+      },
+      "highest_fake_acc": {
+       "generator": "QwenImage",
+       "value": 98.61
+      },
+      "n_generators": 7,
+      "n_generators_fake_acc_below_50": 1,
+      "per_generator_fake_acc": {
+       "Flux1": 95.83,
+       "Hunyuan3": 98.61,
+       "NanoBanana": 98.61,
+       "QwenImage": 98.61,
+       "SDv3.5": 91.67,
+       "Seedream4": 91.67,
+       "i2i": 13.89
+      }
+     },
+     "limit": 72,
+     "rank_acc": 5,
+     "rank_all_acc": 6,
+     "rank_mauroc": 8,
+     "rank_all_mauroc": 9
     }
    },
    "best_acc": {
@@ -4819,9 +5589,48 @@
      },
      "limit": 167,
      "rank_acc": 6,
-     "rank_all_acc": 7,
+     "rank_all_acc": 8,
      "rank_mauroc": 7,
-     "rank_all_mauroc": 8
+     "rank_all_mauroc": 9
+    },
+    "fakevlm": {
+     "acc": 98.9,
+     "mauroc": 99.95,
+     "map": 99.95,
+     "acc_pooled": 98.9,
+     "acc_pooled_distinct": 98.9,
+     "n_distinct_images": 1002,
+     "acc_pooled_drop": 98.9,
+     "n_images": 1002,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 179,
+     "mean_tokens": 78.4,
+     "mean_seconds": 2.82,
+     "balance": {
+      "mean_real_acc": 99.2,
+      "mean_fake_acc": 98.6,
+      "lowest_fake_acc": {
+       "generator": "FLUX.1-schnell",
+       "value": 97.01
+      },
+      "highest_fake_acc": {
+       "generator": "PixArt-Sigma-XL-2-1024-MS",
+       "value": 100.0
+      },
+      "n_generators": 3,
+      "n_generators_fake_acc_below_50": 0,
+      "per_generator_fake_acc": {
+       "FLUX.1-schnell": 97.01,
+       "PixArt-Sigma-XL-2-1024-MS": 100.0,
+       "stable-diffusion-3-medium-diffusers": 98.8
+      }
+     },
+     "limit": 167,
+     "rank_acc": 2,
+     "rank_all_acc": 3,
+     "rank_mauroc": 2,
+     "rank_all_mauroc": 3
     }
    },
    "best_acc": {
@@ -5067,7 +5876,7 @@
      "rank_acc": 21,
      "rank_all_acc": 21,
      "rank_mauroc": 22,
-     "rank_all_mauroc": 22
+     "rank_all_mauroc": 23
     },
     "adb_vlm": {
      "acc": 52.18,
@@ -5109,9 +5918,53 @@
      },
      "limit": 63,
      "rank_acc": 25,
-     "rank_all_acc": 26,
+     "rank_all_acc": 27,
      "rank_mauroc": 26,
-     "rank_all_mauroc": 27
+     "rank_all_mauroc": 28
+    },
+    "fakevlm": {
+     "acc": 65.67,
+     "mauroc": 87.85,
+     "map": 87.6,
+     "acc_pooled": 65.67,
+     "acc_pooled_distinct": 46.03,
+     "n_distinct_images": 630,
+     "acc_pooled_drop": 65.67,
+     "n_images": 1008,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "n_unfinished": 224,
+     "mean_tokens": 78.4,
+     "mean_seconds": 2.83,
+     "balance": {
+      "mean_real_acc": 98.61,
+      "mean_fake_acc": 32.74,
+      "lowest_fake_acc": {
+       "generator": "ldm_200",
+       "value": 4.76
+      },
+      "highest_fake_acc": {
+       "generator": "glide_100_10",
+       "value": 74.6
+      },
+      "n_generators": 8,
+      "n_generators_fake_acc_below_50": 5,
+      "per_generator_fake_acc": {
+       "dalle": 19.05,
+       "glide_100_10": 74.6,
+       "glide_100_27": 69.84,
+       "glide_50_27": 66.67,
+       "guided": 7.94,
+       "ldm_100": 14.29,
+       "ldm_200": 4.76,
+       "ldm_200_cfg": 4.76
+      }
+     },
+     "limit": 63,
+     "rank_acc": 21,
+     "rank_all_acc": 22,
+     "rank_mauroc": 17,
+     "rank_all_mauroc": 17
     }
    },
    "best_acc": {
@@ -5162,6 +6015,22 @@
    "n_images": 14937,
    "n_unparsed": 0,
    "n_unscored": 0
+  },
+  "fakevlm": {
+   "n_subsets": 15,
+   "acc": 85.19,
+   "mauroc": 91.74,
+   "n_images": 14937,
+   "n_unparsed": 1,
+   "n_unscored": 0,
+   "in_distribution_subsets": [
+    "genimage_val100k"
+   ],
+   "held_out": {
+    "n_subsets": 14,
+    "acc": 84.15,
+    "mauroc": 91.16
+   }
   }
  },
  "jpeg95_probe": {
@@ -5182,6 +6051,14 @@
      "mauroc_clean": 98.86,
      "mauroc_jpeg95": 99.21,
      "d_mauroc": 0.35
+    },
+    "fakevlm": {
+     "acc_clean": 99.3,
+     "acc_jpeg95": 98.9,
+     "d_acc": -0.4,
+     "mauroc_clean": 99.99,
+     "mauroc_jpeg95": 99.95,
+     "d_mauroc": -0.04
     },
     "clip": {
      "acc_clean": 50.6,
@@ -5420,6 +6297,14 @@
      "mauroc_clean": 54.65,
      "mauroc_jpeg95": 53.81,
      "d_mauroc": -0.84
+    },
+    "fakevlm": {
+     "acc_clean": 97.02,
+     "acc_jpeg95": 65.67,
+     "d_acc": -31.35,
+     "mauroc_clean": 99.9,
+     "mauroc_jpeg95": 87.85,
+     "d_mauroc": -12.05
     },
     "clip": {
      "acc_clean": 85.71,
@@ -6080,10 +6965,33 @@
     },
     "full_method_note": "context only, no delta: the paper's number includes the unreleased pixel expert"
    }
+  },
+  "fakevlm": {
+   "FakeClue": {
+    "status": "not held",
+    "note": "the authors' own benchmark (also its training data source); test images not held (the smoke test reads only the test file's prompts)"
+   },
+   "LOKI": {
+    "status": "not held",
+    "note": "not downloaded"
+   },
+   "DMimage": {
+    "status": "not held",
+    "note": "not downloaded"
+   },
+   "DD-VQA": {
+    "status": "not held",
+    "note": "not downloaded (deepfake-face VQA)"
+   },
+   "FF++": {
+    "status": "not held",
+    "note": "FaceForensics++ not downloaded (face manipulation, not full-image generation)"
+   }
   }
  },
  "paper_note": {
   "veritaspp": "Veritas++ arXiv 2607.27113 v1, Acc. column. Decoding: the paper's text does not state a sampling temperature; T 0.7 is the setting of the authors' official inference script (infer_vllm_single.py), with top-p 0.8 / top-k 20 from the released generation_config.json, and 'sampled' below means that setting. EvalGEN: fakes-only scoring is our inference from the DDA row (97.2), not stated in the paper; the balanced accuracy is reported next to it.",
-  "adb_vlm": "Align, Don't Blend (AlignGemini) arXiv 2512.06746 v3. The paper's detector is the VLM branch OR a pixel-artifact expert (DINOv2 + LoRA trained on VAE reconstructions); only the VLM branch is released, so NONE of the paper's tables is reproducible here. Printed numbers (full_method) are context, not targets. The paper prints no VLM-only number for the released adapter, so no row gets a delta. Table 4 'Qwen2.5-VL-7B' ('baseline methods under the same training set', retrained on the same semantic and pixel corpora) is ambiguous between the base and a trained VLM; Table 5 'Qwen2.5-VL-7B (Untrained)' is the base model without the adapter. Neither is the released adapter. GenImage / AIGCDetect: ours are also run with the fakes JPEG-compressed at q96 (jpegfakes96): the paper states that step for GenImage only, and q96 follows DDA's published protocol (an inference, see ours_note). Decoding: greedy (temperature 0, predict.py), which is the official setting. The paper's AlignGemini GenImage per-generator row appears column-permuted relative to its AIGCDetect row (the baselines agree across the two tables), so only its 91.7 average is used."
+  "adb_vlm": "Align, Don't Blend (AlignGemini) arXiv 2512.06746 v3. The paper's detector is the VLM branch OR a pixel-artifact expert (DINOv2 + LoRA trained on VAE reconstructions); only the VLM branch is released, so NONE of the paper's tables is reproducible here. Printed numbers (full_method) are context, not targets. The paper prints no VLM-only number for the released adapter, so no row gets a delta. Table 4 'Qwen2.5-VL-7B' ('baseline methods under the same training set', retrained on the same semantic and pixel corpora) is ambiguous between the base and a trained VLM; Table 5 'Qwen2.5-VL-7B (Untrained)' is the base model without the adapter. Neither is the released adapter. GenImage / AIGCDetect: ours are also run with the fakes JPEG-compressed at q96 (jpegfakes96): the paper states that step for GenImage only, and q96 follows DDA's published protocol (an inference, see ours_note). Decoding: greedy (temperature 0, predict.py), which is the official setting. The paper's AlignGemini GenImage per-generator row appears column-permuted relative to its AIGCDetect row (the baselines agree across the two tables), so only its 91.7 average is used.",
+  "fakevlm": "FakeVLM arXiv 2503.14905. None of the paper's evaluation benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held here, so there is no paper reproduction and no delta; the subset rows are our own protocol (greedy, the official max_new_tokens 256, the official eval.py parse; unparsed answers counted wrong). GenImage is IN-DISTRIBUTION for FakeVLM (FakeClue contains GenImage images): its genimage_val100k row is flagged and the subset means are also given without it. FakeClue also draws on other sources (its test file lists Chameleon, FF++, document and satellite images besides GenImage); overlap with the other 14 subsets has not been checked, so 'held-out' means 'not known to be in the training data'."
  }
 }

@@ -12,13 +12,13 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ## 1. What's already integrated
 
-`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (41 registry keys on
-2026-11-18: 31 image, 10 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (42 registry keys on
+2026-11-18: 32 image, 10 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`. The one exception is
-the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`): an inference-only released model with no training path, so it has no
+the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`, `fakevlm`): an inference-only released model with no training path, so it has no
 `SynthScope<Name>Model`, no `conf/model` yaml and no trainer branch; it is a `ModelSpec` carrying a `VLMConfig`
-(`models/vlm/vlm.py`, `models/image/veritaspp/veritaspp.py`, `models/image/adb_vlm/adb_vlm.py`), served by `SynthScopeVLM`.
+(`models/vlm/vlm.py`, `models/image/veritaspp/veritaspp.py`, `models/image/adb_vlm/adb_vlm.py`, `models/image/fakevlm/fakevlm.py`), served by `SynthScopeVLM`.
 
 | key | modality | predict_kind | weights | interp map | method |
 |---|---|---|---|---|---|
@@ -42,6 +42,7 @@ the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`): an inference-only r
 | `probe`, `probe_resnet` | image | bce | official | – | PROBE: DINOv2 ViT-L/14 + registers (`probe`, patches of 336) or ResNet-50 (`probe_resnet`, patches of 224), single-logit head; the score is the mean logit of the image's non-overlapping patches at native resolution |
 | `veritaspp` | image | vlm | official | – | Veritas++: Qwen3-VL-8B that writes a rationale and answers `<answer> real/fake </answer>` (official weights, inference only, still images one at a time; the verdict is the parsed answer, P(fake) the fake-minus-real logit at the answer token; 17.5 GB folder, not in the zoo or on the Space). First member of the VLM kind (`models/vlm/`, a family adapter: see `docs/ADD_DETECTOR.md`) |
 | `adb_vlm` | image | vlm | official | – | Align, Don't Blend, VLM branch only: Qwen2.5-VL-7B-Instruct + the authors' LoRA (unmerged, on a local base folder) writes a short rationale and answers "This is an authentic / AI-generated image." (official adapter and ms-swift request: plain RGB, ≤ 1,003,520 px resize to multiples of 28, greedy, repetition penalty 1.05; P(fake) the raw AI-minus-authentic logit at the answer token). The paper's pixel expert is not released. No licence: not in the zoo or on the Space |
+| `fakevlm` | image | vlm | official | – | FakeVLM: LLaVA-1.5-7B fine-tuned on FakeClue answers "This is a real / fake image." and explains the artifacts (official weights + the llava-hf a272c74 processor folder, inference only, still images one at a time; the official raw prompt, transformers 4.45.2's CLIP resize + 336 centre crop and 1,599-position padding ported to transformers 5, greedy 256 tokens, the official eval.py parse; P(fake) the raw fake-minus-real logit at the first verdict word). GenImage is in its training data. No licence (Llama 2-licensed base): not in the zoo or on the Space |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
 | `ltf` | image | ce | official | – | Native-resolution 224 tiles + global view, frozen CLIP ViT-L/14, hierarchical MIL + gated fusion (evaluation only) |
@@ -102,7 +103,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 
 ## 4. Evaluation / benchmarking
 
-- **Image** (a `vlm` detector is scored one image at a time, greedy, with `--vlm-cache DIR` to resume; see `models/image/veritaspp/README.md` and `models/image/adb_vlm/README.md`): `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
+- **Image** (a `vlm` detector is scored one image at a time, greedy, with `--vlm-cache DIR` to resume; see `models/image/veritaspp/README.md`, `models/image/adb_vlm/README.md` and `models/image/fakevlm/README.md`): `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
 - **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video|waverep|waverep_g4|nsg_vd|nsg_vd_pika|nsg_vd_unbalance} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).

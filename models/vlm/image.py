@@ -1,6 +1,7 @@
 """Image loading of the official VLM inference stacks: what the server does to an image file before the model's processor
-sees it. Two stacks so far: vLLM (``vllm_rgb``, Veritas++) and ms-swift's Qwen-VL template (``swift_rgb`` +
-``swift_qwen_vl_resize``, Align, Don't Blend).
+sees it. Three stacks so far: vLLM (``vllm_rgb``, Veritas++), ms-swift's Qwen-VL template (``swift_rgb`` +
+``swift_qwen_vl_resize``, Align, Don't Blend) and transformers 4.45.2's CLIP image processor (``transformers_rgb`` +
+``clip_resize_center_crop``, FakeVLM).
 
 vLLM. Ported from vLLM 0.31.0 (Apache-2.0, Copyright contributors to the vLLM project): ``vllm/multimodal/media/image.py``
 ``ImageMediaIO.load_bytes`` with the default ``image_mode="RGB"`` and ``rgba_background_color=(255, 255, 255)``, and
@@ -29,6 +30,21 @@ ModelScope team) and qwen-vl-utils 0.0.14 (Apache-2.0, Copyright the Qwen team, 
        merge 2, pixels within [min_pixels, max_pixels]; swift sets qwen-vl-utils' IMAGE_MAX_TOKEN_NUM from the
        MAX_PIXELS environment variable, i.e. max_pixels / 28^2 tokens). The processor is then called with
        ``do_resize=False`` (``Qwen2VLTemplate._encode``).
+
+transformers 4.45.2 CLIP image processor (FakeVLM: its official ``eval.py`` pins transformers 4.45.2 and calls the
+llava-hf LLaVA-1.5 processor on the file as ``Image.open`` returns it). Ported from transformers 4.45.2 (Apache-2.0,
+Copyright The HuggingFace Team): ``image_transforms.convert_to_rgb`` and ``CLIPImageProcessor.preprocess``'s resize
+and centre crop (``get_resize_output_image_size`` with ``default_to_square=False``, ``image_transforms.resize``
+through PIL, ``image_transforms.center_crop``), unchanged in behaviour:
+
+    1. ``transformers_rgb``: ``convert("RGB")`` unless already RGB (no EXIF rotation; alpha dropped), what the processor
+       does with ``do_convert_rgb=True`` (4.45.2 and 5.x alike);
+    2. ``clip_resize_center_crop(image, shortest_edge, crop_size)``: a PIL bicubic resize of the shorter side to
+       ``shortest_edge`` (the longer side ``int(shortest_edge * long / short)``), then the central ``crop_size`` square
+       (top / left offsets floored).
+transformers 5 resizes with torchvision instead of PIL (up to 0.03 apart after normalisation on noise images); with
+this hook as ``VLMConfig.preprocess`` and the processor called with ``do_resize=False, do_center_crop=False``, the
+pixel values equal 4.45.2's to float rounding (tests/test_fakevlm_smoke.py).
 """
 import contextlib
 import math
@@ -155,3 +171,26 @@ def swift_qwen_vl_resize(image: Image.Image, max_pixels: int, min_pixels: int = 
     """What ``swift infer --max_pixels max_pixels`` does to an (already ``swift_rgb``) image of a Qwen2-VL / Qwen2.5-VL
     model before the processor (called with ``do_resize=False``): ``rescale_image``, then ``fetch_image``."""
     return qwen_vl_fetch_image(swift_rescale_image(image, max_pixels), min_pixels=min_pixels, max_pixels=max_pixels)
+
+
+# --- transformers 4.45.2 CLIPImageProcessor (LLaVA-1.5 / FakeVLM) ------------------------------------------------------
+def transformers_rgb(image: Image.Image) -> Image.Image:
+    """transformers ``convert_to_rgb``: ``convert("RGB")`` unless the image already is RGB (no EXIF transpose; alpha
+    dropped)."""
+    if image.mode == "RGB":
+        return image
+    return image.convert("RGB")
+
+
+def clip_resize_center_crop(image: Image.Image, shortest_edge: int = 336, crop_size: int = 336) -> Image.Image:
+    """transformers 4.45.2 ``CLIPImageProcessor`` resize (``size={"shortest_edge": shortest_edge}``, PIL bicubic) and
+    centre crop (``crop_size`` square) of an RGB image."""
+    width, height = image.size
+    short, long = (width, height) if width <= height else (height, width)
+    new_short, new_long = shortest_edge, int(shortest_edge * long / short)
+    new_height, new_width = (new_long, new_short) if width <= height else (new_short, new_long)
+    image = image.resize((new_width, new_height), resample=Image.BICUBIC, reducing_gap=None)
+    top, left = (new_height - crop_size) // 2, (new_width - crop_size) // 2
+    if top < 0 or left < 0:
+        raise ValueError(f"crop {crop_size} larger than the resized image {new_width}x{new_height}")
+    return image.crop((left, top, left + crop_size, top + crop_size))

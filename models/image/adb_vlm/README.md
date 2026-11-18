@@ -132,8 +132,8 @@ Every benchmark is **subsampled** exactly as for Veritas++ (`models/image/verita
 `acc` is `bench_eval`'s balanced accuracy (mean over generators of the mean of real and fake accuracy). AUROC comes from the
 verdict-token logit gap (after `<answer>`, or at the tag-less final line's verdict word).
 
-**Ranks.** "Rank of 28" is among the 27 comparators plus ADB (1 = best; Veritas++ is not counted). `rank_all_*` in
-`comparison.json` also counts Veritas++. "Best publicly licensed" excludes LTF, MIRROR, VINA, PROBE and PROBE-ResNet.
+**Ranks.** "Rank of 28" is among the 27 comparators plus ADB (1 = best; the other VLMs are not counted). `rank_all_*` in
+`comparison.json` also counts the other VLMs, Veritas++ and FakeVLM. "Best publicly licensed" excludes LTF, MIRROR, VINA, PROBE and PROBE-ResNet.
 
 **Sources.** Every number is in `repro/vlm_bench/comparison.json`, under `vlms.adb_vlm` per subset and `subset_means.adb_vlm`.
 It is built by `repro/vlm_bench/compare.py` from `repro/vlm_bench/results/<bench>/adb_vlm*.json`. The logs are
@@ -306,6 +306,9 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
     is an explicit, checked carry-over: the final-review fix (verdict-word hook, identity fields) moved the ADB caches
     with `repro/vlm_bench/migrate_vlm_cache.py`, which kept the 18,900 records the change cannot affect and left out
     the 386 tag-less ones (rescored). Veritas++ caches were not migrated.
+  - The FakeVLM integration edits `models/vlm/*.py` again (a new LLaVA family, image hooks and parser that ADB does not
+    use), so the caches written by main e5749ae are re-keyed once more. `migrate_vlm_cache.py --model adb_vlm` carries
+    them over byte for byte (rule `unchanged`, see its docstring).
 
 ## Availability
 - Not on the Hugging Face Space: no licence, and a 7B model needs a GPU (17.26 GB peak).

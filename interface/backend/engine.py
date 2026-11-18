@@ -324,6 +324,15 @@ def vlm_base_folder(spec: ModelSpec):
     return Path(base) if Path(base).is_absolute() else config.CHECKPOINTS_DIR / base
 
 
+def vlm_processor_folder(spec: ModelSpec):
+    """A VLM detector's separate local processor folder (``vlm.processor``, relative names under CHECKPOINTS_DIR, e.g.
+    FakeVLM's llava-hf processor); else None."""
+    proc = spec.vlm.processor if spec.vlm is not None else None
+    if not proc:
+        return None
+    return Path(proc) if Path(proc).is_absolute() else config.CHECKPOINTS_DIR / proc
+
+
 def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
     """Load a VLM detector strictly (``SynthScopeVLM`` raises on any missing / unexpected / mismatched tensor): a
     Hugging Face model folder (``config.json``), or a LoRA adapter folder (``adapter_config.json``) on the local
@@ -333,6 +342,9 @@ def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
     missing = [f"no {marker} in {path}"] if path is None or not (path / marker).exists() else []
     if base is not None and not (base / "config.json").exists():
         missing.append(f"no base model (config.json) in {base}")
+    proc = vlm_processor_folder(spec)
+    if proc is not None and not (proc / "preprocessor_config.json").exists():
+        missing.append(f"no processor (preprocessor_config.json) in {proc}")
     if missing:
         hint = download_hint(spec.vlm, path, config.CHECKPOINTS_DIR)
         raise FileNotFoundError(f"{spec.key}: {'; '.join(missing)}." + (f" Download the official weights: {hint}"
@@ -386,7 +398,8 @@ class Engine:
             return True
         p = self.checkpoint_path(spec)
         base = vlm_base_folder(spec)                # a LoRA VLM detector also needs its local base model
-        return bool(p and p.exists()) and (base is None or base.exists())
+        proc = vlm_processor_folder(spec)           # ... and a VLM with a separate processor, that folder
+        return bool(p and p.exists()) and (base is None or base.exists()) and (proc is None or proc.exists())
 
     # -- model lifecycle ----------------------------------------------------
     def release_gpu(self) -> None:
@@ -416,7 +429,8 @@ class Engine:
                 self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
                                           f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype}"
                                           + (f"; LoRA adapter unmerged on {spec.vlm.base_model}" if spec.vlm.base_model
-                                             else "") + ")")
+                                             else "")
+                                          + (f"; processor {spec.vlm.processor}" if spec.vlm.processor else "") + ")")
                 self._cache[spec.key] = model
                 return model
 

@@ -1,0 +1,508 @@
+node=ivi-cn026 job=293873 Wed Nov 18 11:19:06 CET 2026 code=aeb5334 fakevlm: pad to 1599 positions, the layout transformers 4.45.2 builds (aeb53340107b201306e9f96fd5160c11b4949110, copied to /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/code)
+NVIDIA RTX A5000, 24564 MiB
+staging fakevlm from ivi-cn029 11:19:06
+staging llava-1.5-7b-hf_a272c74_processor from ivi-cn029 11:19:07
+=== weights + processor: pinned revisions (hf download metadata) + sha256 ===
+fakevlm: 17 files from lingcco/fakeVLM @ dce9e88df7d1053e72af197c1bd3c61c94089e96; safetensors etags == SHA256SUMS
+llava-1.5-7b-hf_a272c74_processor: 10 files from llava-hf/llava-1.5-7b-hf @ a272c74b2481d8aff3aa6fc2c4bf891fe57334fb; safetensors etags == SHA256SUMS
+fakevlm sha256 OK
+llava-1.5-7b-hf_a272c74_processor sha256 OK
+=== images: the 16 fidelity images + the extended set (8 per class folder, sorted positions 21-28) ===
+16 fidelity images, 224 extended images
+7043c9d21cc43f1128d5834e61898b9cab4c0370  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+41227e2fb233af5f7fc93ea38ff1005f9519b902  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+cef224052a229610d5e86f7ccecf3037985a4e95  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+c72dc3dcba991e3cb7dd771d7786c64f4dac7c7e  GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+462ce1c5d95e7c225d3917abc54c0d9c78d74e98  GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+ecabd1a00ad31a429cbea8c003a357eaae017d86  GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+dea667805fff8397148d3e36a973df822804cf3a  SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+4997988e160ae956e301c2eeb342f6b7423a5730  SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+606d20f52b601a702381de9e3b97a7a731d1b184  SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+15bb160780e2998c7d449fb673e238d57b3a935c  SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+0a57109daee27f9d09903ce35f3252f8ff8ba3ef  SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+fabfd62b54d8b5cc2e6758380829b8d9a3f4f255  SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+1c80b0cc10203f02087cf0e53c3b978ecf8e074a  SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+ee9b84aa96da90e5914bef528df66f555a9a7d68  WildRF/test/reddit/0_real/000219_0219.png
+90118c951dec1b8979bb0d91f8bc1b3a0b2bcb6b  WildRF/test/reddit/0_real/000032_0032.png
+22ace0827cc0e2afb020806d0eac46cffa23226c  WildRF/test/reddit/0_real/000030_0030.jpg
+(500, 375) RGB GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+(500, 333) RGB GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+(500, 333) RGB GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+(1024, 1024) RGB GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+(512, 512) RGB GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+(256, 256) RGBA GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+(662, 1000) RGB SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+(1024, 682) RGB SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+(2048, 1365) RGB SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+(1024, 1024) RGB SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+(2048, 2048) RGB SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+(1200, 686) RGB SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+(1344, 896) RGB SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+(643, 481) RGBA WildRF/test/reddit/0_real/000219_0219.png
+(720, 962) RGBA WildRF/test/reddit/0_real/000032_0032.png
+(2448, 3264) RGB WildRF/test/reddit/0_real/000030_0030.jpg
+=== official runs 11:19:33 ===
+--- eval.py (unmodified), transformers 4.45.2, batches of 4 11:19:41
+Loading model...
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:00,  6.66it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00,  8.22it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  8.53it/s]
+Successfully loaded model from: /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/ckpt/fakevlm
+  0%|          | 0/4 [00:00<?, ?it/s]Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a fake image. (The fish has unnatural proportions, with an unusually large head and small body; the texture of the fish's skin is inconsistent, with some areas appearing smooth and others rough; the color of the fish is overly saturated and unnatural, with an unrealistic yellow hue; the background environment, including the rocks and water, appears disjointed and lacks realistic details; the fish has an unnatural coloration with overly saturated yellow and green hues that do not match real-world fish; the texture of the fish's skin appears inconsistent and lacks realistic details; the background environment, including the rocks and water, has unnatural reflections and highlights; the overall image processing distortion is evident, with color shifts that do not align with real-world aquatic settings. 
+ 25%|██▌       | 1/4 [00:15<00:47, 15.72s/it]   This is a fake image.Ъ. The fish has an unnatural texture and color, with a smooth, almost plastic-like appearance and an overly saturated blue hue that does not match real-life fish. The lighting and shadows are inconsistent, lacking natural variations and depth. The fish's shape and structure are also unrealistic, with an exaggerated and distorted form that does not align with the natural anatomy of fish. The background is plain and lacks detail, contributing to the overall unrealistic presentation of the image. The fish has an unnatural texture and color, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is also unrealistic, with a plain and uniform color that does not reflect a natural environment. The fish's fins and tail are not proportionate to its body, and the overall shape of the fish is distorted. The texture of the fish's skin appears unnatural and inconsistent, with a lack of realistic scales and a smooth, almost plastic-like appearance. The coloration is overly saturated and does not match the natural hues of a real fish. The background
+   This is a fake image.Ъ. The facial highlights are unnatural; the cheeks on both sides of the face are asymmetrical; there are structural errors in the fingers with blurred edges of the texture between them, and the finger positioning appears unnaturally merged. Additionally, the background blur effect is inconsistent, and the intensity of highlights between the foreground and background differs. The texture blending and blurring are evident in the background, where the edges of the trees and grass are not clearly defined, and the overall color saturation is inconsistent. There are structural distortions in the person's face, with the eyes and mouth appearing asymmetrical. The image quality is compromised, with noticeable blurriness in the background and inconsistent sharpness across the image. The person's clothing and the fish also show texture blending and blurring, with unnatural transitions between different parts of the image. The overall image quality is compromised, with noticeable noise and a blurry foreground/background. The placement of the fish in the person's hand appears illogical, with mismatched highlights and shadows. The
+   This is a real image.Ъ
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+ 50%|█████     | 2/4 [00:54<00:59, 29.51s/it]   This is a real image. (The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The elements within the image, including the clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on the clothing. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a fake image. The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created. 
+ 75%|███████▌  | 3/4 [01:12<00:24, 24.01s/it]   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a real image.Ъ
+   This is a fake image.Ъ. The overall saturation is too high; the waves and materials do not match reality; the boundary between the waves and the shore is blurred, lacking realism; the lighting in the upper part of the image differs from that in the lower part; the tree appears to be floating without any visible roots or support; the cliff edge is too smooth and lacks natural irregularities; the lighting and shadows do not match, with the upper part of the image appearing brighter than the lower part; the colors are overly saturated, particularly the red and green hues of the cliffs and the tree; the boundary between the cliffs and the sky is blurred, lacking realism; the placement of the tree on the cliff edge is unrealistic, as it appears to be growing in an impossible position. 
+100%|██████████| 4/4 [02:13<00:00, 38.59s/it]100%|██████████| 4/4 [02:18<00:00, 34.57s/it]
+{'category_acc': {'deepfake': {'total_samples': 16, 'total_accuracy': 0.8125, 'real_accuracy': 0.6667, 'fake_accuracy': 1.0, 'confusion_matrix': {'right_real': 6, 'wrong_real': 3, 'right_fake': 7, 'wrong_fake': 0}}}, 'global_stats': {'total_right': 13, 'total_wrong': 3, 'global_accuracy': 0.8125}}
+[official eval.py main(), transformers 4.45.2, batch 4] 142.5s -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_4452_bs4.json
+--- eval.py (unmodified), transformers 4.45.2, batches of 2 11:22:08
+Loading model...
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:00,  6.50it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00,  8.18it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  8.48it/s]
+Successfully loaded model from: /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/ckpt/fakevlm
+  0%|          | 0/8 [00:00<?, ?it/s]Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+   This is a real image.Ъ
+   This is a real image.Ъ
+ 12%|█▎        | 1/8 [00:01<00:11,  1.58s/it]   This is a real image.Ъ
+   This is a fake image. (The fish has unnatural proportions, with an unusually large head and small body; the texture of the fish's skin is inconsistent, with some areas appearing smooth and others rough; the color of the fish is overly saturated and unnatural, with an unrealistic yellow hue; the background environment, including the rocks and water, appears disjointed and lacks realistic details; the fish has an unnatural coloration with overly saturated yellow and green hues that do not match real-world fish; the texture of the fish's skin appears inconsistent and lacks realistic details; the background environment, including the rocks and water, has unnatural reflections and highlights; the overall image processing distortion is evident, with color shifts that do not align with real-world aquatic settings. 
+ 25%|██▌       | 2/8 [00:11<00:39,  6.58s/it]   This is a fake image.Ъ. The fish has an unnatural texture and color, with a smooth, almost plastic-like appearance and an overly saturated blue hue that does not match real-life fish. The lighting and shadows are inconsistent, lacking natural variations and depth. The fish's shape and structure are also unrealistic, with an exaggerated and distorted form that does not align with the natural anatomy of fish. The background is plain and lacks detail, contributing to the overall unrealistic presentation of the image. The fish has an unnatural texture and color, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is also unrealistic, with a plain and uniform color that does not reflect a natural environment. The fish's fins and tail are not proportionate to its body, and the overall shape of the fish is distorted. The texture of the fish's skin appears unnatural and inconsistent, with a lack of realistic scales and a glossy finish that does not match the typical appearance of a fish. The coloration is overly saturated and does not align with the natural coloration
+   This is a fake image.Ъ. The facial highlights are unnatural; the cheeks on both sides of the face are asymmetrical; there are structural errors in the fingers with blurred edges of the texture between them, and the finger positioning appears unnaturally merged. Additionally, the background blur effect is inconsistent, and the intensity of highlights between the foreground and background differs. The texture blending and blurring are evident in the background, where the edges of the trees and grass are not clearly defined, and the overall color saturation is inconsistent. There are structural distortions in the person's face, with the eyes and mouth appearing asymmetrical. The image quality is compromised, with noticeable blurriness in the background and inconsistent sharpness across the image. The person's clothing and the fish also show texture blending and blurring, with unnatural transitions between different parts of the image. The overall image quality is compromised, with noticeable noise and a blurry foreground/background. The placement of the fish in the person's hands appears illogical, with mismatched highlights and shadows. The
+ 38%|███▊      | 3/8 [00:25<00:49,  9.86s/it]   This is a real image.Ъ
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+ 50%|█████     | 4/8 [00:28<00:28,  7.09s/it]   This is a real image. (The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The elements within the image, including the clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on the clothing. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+ 62%|██████▎   | 5/8 [00:39<00:26,  8.70s/it]   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a fake image. The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created. 
+ 75%|███████▌  | 6/8 [00:42<00:13,  6.71s/it]   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+ 88%|████████▊ | 7/8 [00:45<00:05,  5.44s/it]   This is a real image.Ъ
+   This is a fake image.Ъ. The overall saturation is too high; the waves and materials do not match reality; the boundary between the waves and the shore is blurred, lacking realism; the lighting in the upper part of the image differs from that in the lower part; the tree appears to be floating without any visible roots or support; the cliff edge is too smooth and lacks natural irregularities; the lighting and shadows do not match, with the upper part of the image appearing brighter than the lower part; the colors are overly saturated, particularly the red and green hues of the cliffs and the tree; the boundary between the cliffs and the sky is blurred, lacking realism; the placement of the tree on the cliff edge is unrealistic, as it appears to be growing in an impossible position. 
+100%|██████████| 8/8 [00:57<00:00,  7.41s/it]100%|██████████| 8/8 [00:58<00:00,  7.29s/it]
+{'category_acc': {'deepfake': {'total_samples': 16, 'total_accuracy': 0.8125, 'real_accuracy': 0.6667, 'fake_accuracy': 1.0, 'confusion_matrix': {'right_real': 6, 'wrong_real': 3, 'right_fake': 7, 'wrong_fake': 0}}}, 'global_stats': {'total_right': 13, 'total_wrong': 3, 'global_accuracy': 0.8125}}
+[official eval.py main(), transformers 4.45.2, batch 2] 61.4s -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_4452_bs2.json
+--- eval.py items one at a time, transformers 4.45.2 11:23:14
+Loading model...
+Loading checkpoint shards:   0%|          | 0/3 [00:00<?, ?it/s]Loading checkpoint shards:  33%|███▎      | 1/3 [00:00<00:00,  6.83it/s]Loading checkpoint shards:  67%|██████▋   | 2/3 [00:00<00:00,  8.30it/s]Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  8.65it/s]
+Successfully loaded model from: /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/ckpt/fakevlm
+Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+Starting from v4.46, the `logits` model output will have the same type as the model (except at train time, where it will always be FP32)
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a fake image.Ъ. The fish has unnatural proportions, with an unusually large head and small body; the texture of the fish's skin is inconsistent, with some areas appearing smooth and others rough; the color of the fish is overly saturated and unnatural, with a yellow hue that does not match typical fish colors; the background environment, including the rocks and water, appears disjointed and lacks realistic details; the fish has an unnatural coloration with overly saturated yellow and green hues that do not match real-world fish; the texture of the fish's skin appears inconsistent and lacks realistic details; the background environment, including the rocks and water, has unnatural reflections and highlights; the overall image lacks the natural variations and imperfections typically found in real-world photographs. 
+   This is a fake image.Ъ. The fish has an unnatural texture and color, with a smooth, almost plastic-like appearance and an overly saturated blue hue that does not match real-life fish. The lighting and shadows are inconsistent, lacking natural variations and depth. The fish's shape and structure are also unrealistic, with an exaggerated and distorted form that does not align with the natural anatomy of fish. The background is plain and lacks detail, contributing to the overall unrealistic presentation of the image. The fish has an unnatural texture and color, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is also unrealistic, with a plain and uniform color that does not reflect a natural environment. The fish's fins and tail are not proportionate to its body, and the overall shape of the fish is distorted. The texture of the fish's skin appears unnatural and inconsistent, with some areas looking overly smooth and others having an unrealistic pattern. The coloration is overly saturated, with an unnatural blue hue that does not align with the typical coloration
+   This is a fake image.Ъ. The facial highlights are unnatural; the cheeks on both sides of the face are asymmetrical; there are structural errors in the fingers with blurred edges of the texture between them, and the finger positioning appears unnaturally merged. Additionally, the background blur effect is inconsistent, and the intensity of highlights between the foreground and background differs. The texture blending and blurring are evident in the background, where the edges of the trees and grass are not clearly defined, and the overall color saturation is inconsistent. There are structural distortions in the person's face, with the eyes and mouth appearing asymmetrical. The image quality is compromised, with noticeable blurriness in the background and inconsistent sharpness across the image. The person's clothing and the fish also show texture blending and blurring, with unnatural transitions between different parts of the image. The overall image quality is compromised, with noticeable noise and a blurry foreground/background. The placement of the fish in the person's hands appears illogical, with mismatched highlights and shadows. The
+   This is a real image.Ъ
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a real image. (The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The elements within the image, including the clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on the clothing. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a fake image. The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image.
+        This is a real image. The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The image is uniformly sharp, with consistent quality throughout. The elements within the image, including clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on clothing. 
+   This is a real image.Ъ
+   This is a fake image.Ъ. The overall saturation is too high; the waves and materials do not match reality; the boundary between the waves and the shore is blurred, lacking realism; the lighting in the upper part of the image differs from that in the lower part; the tree appears to be floating without any visible roots or support; the cliff edge is too smooth and lacks natural irregularities; the lighting and shadows do not match, with the upper part of the image appearing brighter than the lower part; the colors are overly saturated, particularly the red and green hues of the cliffs and the tree; the boundary between the cliffs and the sky is blurred, lacking realism; the placement of the tree on the cliff edge is unrealistic, as it appears to be growing in an impossible position. 
+[official eval.py items one at a time, transformers 4.45.2, batch 1] 75.0s -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_4452_bs1.json
+--- eval.py (unmodified), transformers 5.5.4 (the env), batches of 4 11:24:34
+Loading model...
+Loading weights:   0%|          | 0/686 [00:00<?, ?it/s]Loading weights: 100%|██████████| 686/686 [00:00<00:00, 7994.41it/s]
+Successfully loaded model from: /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/ckpt/fakevlm
+  0%|          | 0/4 [00:00<?, ?it/s]   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a fake image. (The fish has an unnatural shape and texture, with a distorted body and fins. The coloration is overly saturated and unrealistic, with an unnatural yellow hue. The background environment, including the rocks and water, appears disjointed and lacks realistic details. The fish's fins and tail are not proportionate to its body, and the texture of the fish's skin is inconsistent, with some areas appearing smooth and others rough. The background environment, including the rocks and water, has unnatural reflections and highlights, and the overall color balance is off, with overly saturated colors that do not align with real-world aquatic settings. The fish has an unnatural coloration and texture, with a yellowish hue that does not match the natural coloration of fish. The fins and tail appear distorted and disproportionate, with an unnatural connection to the body. The background environment, including the rocks and water, has unnatural reflections and highlights, and the overall color balance is off, with overly saturated colors that do not align with real-world aquatic settings. The fish has an unnatural shape
+ 25%|██▌       | 1/4 [00:10<00:31, 10.59s/it]   This is a fake image.Ъ. The fish has an unnatural texture and coloration, with a smooth, almost plastic-like surface that does not match the typical texture of a real fish. The coloration is overly uniform and lacks the natural variations found in real fish. The lighting and shadows on the fish do not correspond to a natural light source, creating an unrealistic appearance. The fish's fins and tail are not proportionate to its body, and the overall shape of the fish is unrealistic. The background is plain and lacks any environmental context, making the fish appear out of place. The fish has an unnatural texture and coloration, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is plain and lacks any environmental context, making the fish appear out of place. The fish has an unnatural texture and coloration, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is plain and lacks any environmental context, making the fish appear out of place. The fish has an unnatural texture and coloration, with a smooth and shiny surface that does not match the typical appearance of a
+ This is a fake image.Ъ. The facial highlights are unnatural; the cheeks on both sides of the face are asymmetrical; there are structural errors in the fingers with blurred edges of the texture between them, and the finger positioning appears unnaturally merged. Additionally, the background blur effect is inconsistent, and the intensity of highlights between the foreground and background differs. The texture blending and blurring are evident in the background, where the edges of the trees and grass are not clearly defined, and the overall color saturation is inconsistent. There are structural distortions in the person's face, with the eyes and mouth appearing asymmetrical. The image quality is compromised, with noticeable blurriness in the background and inconsistent sharpness across the image. The person's clothing and the fish also show texture blending and blurring, with unnatural transitions between different parts of the image. The overall image quality is compromised, with noticeable noise and a blurry foreground/background. The placement of the fish in the person's hand appears illogical, with mismatched highlights and shadows. The image
+   This is a real image.Ъ
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+ 50%|█████     | 2/4 [00:20<00:20, 10.28s/it]   This is a real image. (The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The elements within the image, including the clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on the clothing. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a fake image. The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created. 
+ 75%|███████▌  | 3/4 [00:29<00:09,  9.45s/it]   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a real image. (The person is holding a fish on a stick, which is a common method for carrying fish in some cultures. The fish are being held in a way that suggests they are being prepared for cooking, possibly by being cleaned or gutted. The person is wearing a gray sweatshirt and pants, which are appropriate for outdoor activities. The background shows a grassy field, which is a natural setting for fishing or preparing fish. The lighting and shadows are consistent with a sunny day, and the colors and textures are realistic, with the fish and grass appearing natural and not overly saturated. The overall composition of the image is coherent and logical, with the person and fish positioned in a way that makes sense within the context of the scene. The image does not show any unrealistic elements or distortions, and the details, such as the person's clothing and the fish's scales, are sharp and clear. The image is well-composed, with the person and fish positioned in a way that makes sense within the context of the scene. The lighting and shadows are consistent with a sunny day,
+   This is a fake image.Ъ. The overall saturation is too high; the waves and materials do not match reality; the boundary between the waves and the shore is blurred, lacking realism; the lighting in the upper part of the image differs from that in the lower part; the tree appears to be floating without any visible roots or support; the cliff edge is too smooth and lacks natural irregularities; the lighting and shadows do not match, with the upper part of the image appearing brighter than the lower part; the colors are overly saturated, particularly the red and green hues of the cliffs and the tree; the boundary between the cliffs and the sky is blurred, lacking realism; the placement of the tree on the cliff edge is unrealistic, as it appears to be growing in an impossible position. 
+100%|██████████| 4/4 [00:39<00:00,  9.70s/it]100%|██████████| 4/4 [00:39<00:00,  9.80s/it]
+{'category_acc': {'deepfake': {'total_samples': 16, 'total_accuracy': 0.8125, 'real_accuracy': 0.6667, 'fake_accuracy': 1.0, 'confusion_matrix': {'right_real': 6, 'wrong_real': 3, 'right_fake': 7, 'wrong_fake': 0}}}, 'global_stats': {'total_right': 13, 'total_wrong': 3, 'global_accuracy': 0.8125}}
+[official eval.py main(), transformers 5.5.4, batch 4] 41.9s -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_554_bs4.json
+--- eval.py items one at a time, transformers 5.5.4 11:25:25
+Loading model...
+Loading weights:   0%|          | 0/686 [00:00<?, ?it/s]Loading weights: 100%|██████████| 686/686 [00:00<00:00, 7810.92it/s]
+Successfully loaded model from: /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/ckpt/fakevlm
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a real image.Ъ
+   This is a fake image.Ъ. The fish has unnatural proportions, with an unusually large head and small body; the texture of the fish's skin is inconsistent, with some areas appearing smooth and others rough; the color of the fish is overly saturated and unnatural, with a yellow hue that does not match typical fish colors; the background environment, including the rocks and water, appears disjointed and lacks realistic details; the fish has an unnatural coloration with overly saturated yellow and green hues that do not match real-world fish; the texture of the fish's skin appears inconsistent and lacks realistic details; the background environment, including the rocks and water, has unnatural reflections and highlights; the overall image lacks the natural variations and imperfections typically found in real-world photographs. 
+   This is a fake image.Ъ. The fish has an unnatural texture and color, with a smooth, almost plastic-like appearance and an overly saturated blue hue that does not match real-life fish. The lighting and shadows are inconsistent, lacking natural variations and depth. The fish's shape and structure are also unrealistic, with an exaggerated and distorted form that does not align with the natural anatomy of fish. The background is plain and lacks detail, contributing to the overall unrealistic presentation of the image. The fish has an unnatural texture and color, with a smooth and shiny surface that does not match the typical appearance of a real fish. The background is also unrealistic, with a plain and uniform color that does not reflect a natural environment. The fish's fins and tail are not proportionate to its body, and the overall shape of the fish is distorted. The texture of the fish's skin appears unnatural and inconsistent, with a lack of realistic scales and a glossy finish that does not match the typical appearance of a fish. The coloration is overly saturated and does not align with the natural coloration
+ This is a fake image.Ъ. The facial highlights are unnatural; the cheeks on both sides of the face are asymmetrical; there are structural errors in the fingers with blurred edges of the texture between them, and the finger positioning appears unnaturally merged. Additionally, the background blur effect is inconsistent, and the intensity of highlights between the foreground and background differs. The texture blending and blurring are evident in the background, where the edges of the trees and grass are not clearly defined, and the overall color saturation is inconsistent. There are structural distortions in the person's face, with the eyes and mouth appearing asymmetrical. The image quality is compromised, with noticeable blurriness in the background and inconsistent sharpness across the image. The person's clothing and the fish also show texture blending and blurring, with unnatural transitions between different parts of the image. The overall image quality is compromised, with noticeable noise and a blurry foreground/background. The placement of the fish in the person's hands appears illogical, with mismatched highlights and shadows. The image
+   This is a real image.Ъ
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a real image. (The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The elements within the image, including the clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on the clothing. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition.) 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a fake image. The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created. 
+   This is a fake image. (The image exhibits underlying characteristic inconsistencies in its features that suggest it is artificially created, despite the absence of obvious artifacts or direct signs of composition). 
+   This is a fake image.
+        This is a real image. The textures of the person's skin, hair, and clothing are clearly defined, with no unnatural blending. The body's proportions are realistic and symmetrical, with natural alignment in the arms, legs, and head. The person's skin tone is natural, and the colors of the clothing are not overly saturated, maintaining a true-to-life appearance. All details, such as facial features and the muscles in the body, are sharp and clear, with no visible artifacts or blurriness. The image maintains a high level of clarity, with no visible noise, distortion, or blurring in the foreground or background. The image is uniformly sharp, with consistent quality throughout. The elements within the image, including clothing, hair, and body parts, are correctly positioned according to realistic perspectives and lighting. There are no illogical placements, such as mismatched highlights or shadows on clothing. 
+   This is a real image.Ъ
+   This is a fake image.Ъ. The overall saturation is too high; the waves and materials do not match reality; the boundary between the waves and the shore is blurred, lacking realism; the lighting in the upper part of the image differs from that in the lower part; the tree appears to be floating without any visible roots or support; the cliff edge is too smooth and lacks natural irregularities; the lighting and shadows do not match, with the upper part of the image appearing brighter than the lower part; the colors are overly saturated, particularly the red and green hues of the cliffs and the tree; the boundary between the cliffs and the sky is blurred, lacking realism; the placement of the tree on the cliff edge is unrealistic, as it appears to be growing in an impossible position. 
+[official eval.py items one at a time, transformers 5.5.4, batch 1] 52.4s -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_554_bs1.json
+=== official processor inputs under transformers 4.45.2 11:26:24 ===
+Expanding inputs for image tokens in LLaVa should be done in processing. Please add `patch_size` and `vision_feature_select_strategy` to the model's processing config or set directly with `processor.patch_size = {{patch_size}}` and processor.vision_feature_select_strategy = {{vision_feature_select_strategy}}`. Using processors without these attributes in the config is deprecated and will throw an error in v4.47.
+[official inputs, transformers 4.45.2] 16 images -> /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/official_inputs_4452.npz
+=== reference + engine comparison 11:26:29 ===
+Loading weights:   0%|          | 0/686 [00:00<?, ?it/s]Loading weights:   4%|▍         | 28/686 [00:00<00:02, 279.59it/s]Loading weights:   8%|▊         | 56/686 [00:00<00:02, 243.94it/s]Loading weights:  12%|█▏        | 81/686 [00:00<00:02, 232.75it/s]Loading weights:  15%|█▌        | 105/686 [00:00<00:02, 222.58it/s]Loading weights:  19%|█▉        | 130/686 [00:00<00:02, 228.60it/s]Loading weights:  22%|██▏       | 153/686 [00:00<00:02, 223.32it/s]Loading weights:  26%|██▌       | 176/686 [00:00<00:02, 221.50it/s]Loading weights:  29%|██▉       | 199/686 [00:00<00:02, 223.07it/s]Loading weights:  32%|███▏      | 222/686 [00:00<00:02, 217.25it/s]Loading weights:  36%|███▌      | 247/686 [00:01<00:01, 222.68it/s]Loading weights:  39%|███▉      | 270/686 [00:01<00:01, 220.68it/s]Loading weights:  47%|████▋     | 325/686 [00:01<00:01, 315.84it/s]Loading weights: 100%|██████████| 686/686 [00:01<00:00, 496.26it/s]
+[ref] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG step=4 gap=-5.875 tf_gap=-5.75 parse=real 9 tok 1.0s
+[ref] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG step=4 gap=-5.25 tf_gap=-5.25 parse=real 9 tok 0.6s
+[ref] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG step=4 gap=-7.875 tf_gap=-8.0 parse=real 9 tok 0.6s
+[ref] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png step=4 gap=6.875 tf_gap=6.875 parse=fake 185 tok 6.0s
+[ref] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png step=4 gap=4.875 tf_gap=5.0 parse=fake 256 tok 8.1s
+[ref] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG step=4 gap=9.625 tf_gap=9.625 parse=fake 256 tok 8.2s
+[ref] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg step=4 gap=-4.75 tf_gap=-4.625 parse=real 9 tok 0.6s
+[ref] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg step=4 gap=3.875 tf_gap=4.0 parse=fake 43 tok 1.6s
+[ref] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg step=4 gap=-5.625 tf_gap=-5.625 parse=real 213 tok 6.8s
+[ref] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg step=4 gap=12.375 tf_gap=12.375 parse=fake 43 tok 1.6s
+[ref] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg step=4 gap=11.625 tf_gap=11.375 parse=fake 43 tok 1.6s
+[ref] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg step=4 gap=6.5 tf_gap=6.5 parse=fake 37 tok 1.5s
+[ref] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg step=4 gap=3.875 tf_gap=3.875 parse=fake 43 tok 1.6s
+[ref] WildRF/test/reddit/0_real/000219_0219.png step=4 gap=2.125 tf_gap=2.125 parse=fake 229 tok 7.3s
+[ref] WildRF/test/reddit/0_real/000032_0032.png step=4 gap=-5.375 tf_gap=-5.375 parse=real 9 tok 0.6s
+[ref] WildRF/test/reddit/0_real/000030_0030.jpg step=4 gap=2.5 tf_gap=2.5 parse=fake 188 tok 6.1s
+Loading weights:   0%|          | 0/686 [00:00<?, ?it/s]Loading weights:   4%|▍         | 27/686 [00:00<00:02, 268.92it/s]Loading weights:   8%|▊         | 54/686 [00:00<00:02, 238.33it/s]Loading weights:  12%|█▏        | 79/686 [00:00<00:02, 230.46it/s]Loading weights:  15%|█▌        | 103/686 [00:00<00:02, 231.09it/s]Loading weights:  19%|█▊        | 127/686 [00:00<00:02, 227.08it/s]Loading weights:  22%|██▏       | 150/686 [00:00<00:02, 220.03it/s]Loading weights:  26%|██▌       | 175/686 [00:00<00:02, 225.20it/s]Loading weights:  29%|██▉       | 198/686 [00:00<00:02, 221.74it/s]Loading weights:  32%|███▏      | 221/686 [00:00<00:02, 218.39it/s]Loading weights:  36%|███▌      | 244/686 [00:01<00:02, 217.49it/s]Loading weights:  39%|███▉      | 266/686 [00:01<00:01, 217.61it/s]Loading weights:  42%|████▏     | 288/686 [00:01<00:01, 218.28it/s]Loading weights:  96%|█████████▌| 657/686 [00:01<00:00, 1240.70it/s]Loading weights: 100%|██████████| 686/686 [00:01<00:00, 490.77it/s] 
+[load] {'status': 'loaded 686 tensors from fakevlm (missing=0, unexpected=0; LlavaForConditionalGeneration, bfloat16; processor llava-1.5-7b-hf_a272c74_processor)', 'seconds': 2.4, 'weights_GB': 14.14, 'tensors': {'checkpoint_tensors': 686, 'model_tensors': 686, 'equal': 686, 'differ_or_absent': [], 'model_only': []}}
+[engine gen] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG step=4 logit=-5.8750 verdict=real 9 tok 0.627s 15.14GB | '  This is a real image.Ъ'
+[engine gen] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG step=4 logit=-5.2500 verdict=real 9 tok 0.625s 15.14GB | '  This is a real image.Ъ'
+[engine gen] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG step=4 logit=-7.8750 verdict=real 9 tok 0.624s 15.14GB | '  This is a real image.Ъ'
+[engine gen] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png step=4 logit=6.8750 verdict=fake 185 tok 6.049s 15.14GB | '  This is a fake image.Ъ. The fish has unnatural proportions'
+[engine gen] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png step=4 logit=4.8750 verdict=fake 256 tok 8.265s 15.14GB | '  This is a fake image.Ъ. The fish has an unnatural texture '
+[engine gen] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG step=4 logit=9.6250 verdict=fake 256 tok 8.265s 15.14GB | '  This is a fake image.Ъ. The facial highlights are unnatura'
+[engine gen] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg step=4 logit=-4.7500 verdict=real 9 tok 0.631s 15.14GB | '  This is a real image.Ъ'
+[engine gen] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg step=4 logit=3.8750 verdict=fake 43 tok 1.669s 15.14GB | '  This is a fake image. (The image exhibits underlying chara'
+[engine gen] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg step=4 logit=-5.6250 verdict=real 213 tok 6.939s 15.14GB | "  This is a real image. (The textures of the person's skin, "
+[engine gen] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg step=4 logit=12.3750 verdict=fake 43 tok 1.674s 15.14GB | '  This is a fake image. (The image exhibits underlying chara'
+[engine gen] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg step=4 logit=11.6250 verdict=fake 43 tok 1.691s 15.14GB | '  This is a fake image. (The image exhibits underlying chara'
+[engine gen] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg step=4 logit=6.5000 verdict=fake 37 tok 1.488s 15.14GB | '  This is a fake image.\n        This is a fake image. The im'
+[engine gen] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg step=4 logit=3.8750 verdict=fake 43 tok 1.674s 15.14GB | '  This is a fake image. (The image exhibits underlying chara'
+[engine gen] WildRF/test/reddit/0_real/000219_0219.png step=4 logit=2.1250 verdict=fake 229 tok 7.435s 15.14GB | '  This is a fake image.\n        This is a real image. The te'
+[engine gen] WildRF/test/reddit/0_real/000032_0032.png step=4 logit=-5.3750 verdict=real 9 tok 0.635s 15.14GB | '  This is a real image.Ъ'
+[engine gen] WildRF/test/reddit/0_real/000030_0030.jpg step=4 logit=2.5000 verdict=fake 188 tok 6.197s 15.14GB | '  This is a fake image.Ъ. The overall saturation is too high'
+[engine tf] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG (500, 375) logit=-5.7500 0.376s 15.15GB
+[engine tf] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG (500, 333) logit=-5.2500 0.376s 15.15GB
+[engine tf] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG (500, 333) logit=-8.0000 0.38s 15.15GB
+[engine tf] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png (1024, 1024) logit=6.8750 0.379s 15.15GB
+[engine tf] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png (512, 512) logit=5.0000 0.377s 15.15GB
+[engine tf] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG (256, 256) logit=9.6250 0.378s 15.15GB
+[engine tf] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg (662, 1000) logit=-4.6250 0.379s 15.15GB
+[engine tf] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg (1024, 682) logit=4.0000 0.38s 15.15GB
+[engine tf] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg (2048, 1365) logit=-5.6250 0.392s 15.15GB
+[engine tf] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg (1024, 1024) logit=12.3750 0.382s 15.15GB
+[engine tf] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg (2048, 2048) logit=11.3750 0.398s 15.15GB
+[engine tf] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg (1200, 686) logit=6.5000 0.382s 15.15GB
+[engine tf] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg (1344, 896) logit=3.8750 0.385s 15.15GB
+[engine tf] WildRF/test/reddit/0_real/000219_0219.png (643, 481) logit=2.1250 0.378s 15.15GB
+[engine tf] WildRF/test/reddit/0_real/000032_0032.png (720, 962) logit=-5.3750 0.38s 15.15GB
+[engine tf] WildRF/test/reddit/0_real/000030_0030.jpg (2448, 3264) logit=2.5000 0.42s 15.15GB
+[summary] {
+ "n_images": 16,
+ "registry_scorer": "generate (FAKEVLM)",
+ "forced_prefix_tokens": [
+  "▁▁",
+  "▁This",
+  "▁is",
+  "▁a"
+ ],
+ "engine_vs_official": {
+  "eval_4.45.2_bs4": {
+   "transformers": "4.45.2",
+   "batch_size": 4,
+   "identical_text": "11/16",
+   "identical_text_stripped": "11/16",
+   "identical_first_sentence": "16/16",
+   "identical_parsed_verdict": "16/16",
+   "first_divergence_char": [
+    null,
+    null,
+    null,
+    24,
+    951,
+    1095,
+    null,
+    215,
+    null,
+    null,
+    null,
+    null,
+    null,
+    24,
+    null,
+    null
+   ],
+   "official_accuracy": {
+    "total_right": 13,
+    "total_wrong": 3,
+    "global_accuracy": 0.8125
+   },
+   "wall_seconds_incl_load": 142.5,
+   "peak_GB": 18.29
+  },
+  "eval_4.45.2_bs2": {
+   "transformers": "4.45.2",
+   "batch_size": 2,
+   "identical_text": "12/16",
+   "identical_text_stripped": "12/16",
+   "identical_first_sentence": "16/16",
+   "identical_parsed_verdict": "16/16",
+   "first_divergence_char": [
+    null,
+    null,
+    null,
+    24,
+    951,
+    null,
+    null,
+    215,
+    null,
+    null,
+    null,
+    null,
+    null,
+    24,
+    null,
+    null
+   ],
+   "official_accuracy": {
+    "total_right": 13,
+    "total_wrong": 3,
+    "global_accuracy": 0.8125
+   },
+   "wall_seconds_incl_load": 61.4,
+   "peak_GB": 16.21
+  },
+  "items_4.45.2_bs1": {
+   "transformers": "4.45.2",
+   "batch_size": 1,
+   "identical_text": "16/16",
+   "identical_text_stripped": "16/16",
+   "identical_first_sentence": "16/16",
+   "identical_parsed_verdict": "16/16",
+   "first_divergence_char": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "official_accuracy": null,
+   "wall_seconds_incl_load": 75.0,
+   "peak_GB": 15.17
+  },
+  "eval_5.5.4_bs4": {
+   "transformers": "5.5.4",
+   "batch_size": 4,
+   "identical_text": "10/16",
+   "identical_text_stripped": "10/16",
+   "identical_first_sentence": "16/16",
+   "identical_parsed_verdict": "16/16",
+   "first_divergence_char": [
+    null,
+    null,
+    null,
+    24,
+    70,
+    1,
+    null,
+    215,
+    null,
+    null,
+    null,
+    null,
+    null,
+    24,
+    24,
+    null
+   ],
+   "official_accuracy": {
+    "total_right": 13,
+    "total_wrong": 3,
+    "global_accuracy": 0.8125
+   },
+   "wall_seconds_incl_load": 41.9,
+   "peak_GB": 16.87
+  },
+  "items_5.5.4_bs1": {
+   "transformers": "5.5.4",
+   "batch_size": 1,
+   "identical_text": "13/16",
+   "identical_text_stripped": "13/16",
+   "identical_first_sentence": "16/16",
+   "identical_parsed_verdict": "16/16",
+   "first_divergence_char": [
+    null,
+    null,
+    null,
+    null,
+    951,
+    1,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    215,
+    null,
+    null,
+    null
+   ],
+   "official_accuracy": null,
+   "wall_seconds_incl_load": 52.4,
+   "peak_GB": 14.82
+  }
+ },
+ "official_vs_official_identical_text": {
+  "eval_4.45.2_bs4 vs eval_4.45.2_bs2": "14/16",
+  "eval_4.45.2_bs4 vs items_4.45.2_bs1": "11/16",
+  "eval_4.45.2_bs4 vs eval_5.5.4_bs4": "12/16",
+  "eval_4.45.2_bs4 vs items_5.5.4_bs1": "10/16",
+  "eval_4.45.2_bs2 vs items_4.45.2_bs1": "12/16",
+  "eval_4.45.2_bs2 vs eval_5.5.4_bs4": "12/16",
+  "eval_4.45.2_bs2 vs items_5.5.4_bs1": "11/16",
+  "items_4.45.2_bs1 vs eval_5.5.4_bs4": "10/16",
+  "items_4.45.2_bs1 vs items_5.5.4_bs1": "13/16",
+  "eval_5.5.4_bs4 vs items_5.5.4_bs1": "9/16"
+ },
+ "inputs_pixel_max_abs_diff_vs_official_4452": 2.384185791015625e-07,
+ "inputs_ids_equal_vs_official_4452": "16/16",
+ "vs_reference_identical_tokens": "16/16",
+ "vs_reference_verdict_steps_equal": true,
+ "vs_reference_identical_parsed_verdict": "16/16",
+ "max_abs_logit_gap_diff_generate_engine_vs_reference": 0.0,
+ "max_abs_logit_gap_diff_teacher_forced_engine_vs_reference": 0.0,
+ "verdict_steps": [
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4,
+  4
+ ],
+ "generated_starts_with_forced_prefix_and_verdict_next": "16/16",
+ "generated_text_starts_with_This_is_a": "16/16",
+ "max_abs_p_fake_diff_teacher_forced_vs_generated": 0.002346143380567267,
+ "n_p_fake_diff_over_1e-3": 2,
+ "max_abs_logit_diff_teacher_forced_vs_generated": 0.25,
+ "teacher_forced_vs_generated_verdict_agree": "16/16",
+ "reference_teacher_forced_on_generated_prefix_vs_generated_max_abs_p_diff": 0.002346143380567267,
+ "teacher_forced_default_rule_met": false,
+ "engine_correct_generate": 13,
+ "engine_correct_teacher_forced": 13,
+ "engine_unparsed_generate": 0,
+ "engine_score_sources_generate": [
+  "verdict_token"
+ ],
+ "tensors_all_equal": true,
+ "generate_images_per_s": 0.2936,
+ "generate_seconds_per_image": 3.41,
+ "generate_tokens_per_s": 29.0,
+ "generate_new_tokens": [
+  9,
+  9,
+  9,
+  185,
+  256,
+  256,
+  9,
+  43,
+  213,
+  43,
+  43,
+  37,
+  43,
+  229,
+  9,
+  188
+ ],
+ "teacher_forced_images_per_s": 2.605,
+ "generate_peak_GB_max": 15.14,
+ "teacher_forced_peak_GB_max": 15.15,
+ "reference_images_per_s": 0.2963,
+ "extended": {
+  "n_images": 224,
+  "generated_tokens": 8,
+  "starts_with_forced_prefix_and_verdict_next": "219/224",
+  "text_starts_with_This_is_a": "224/224",
+  "other_starts": [
+   "' \\nThis is a ' ids [259, 13, 4013, 338, 263]",
+   "'This is a fa' ids [910, 338, 263, 25713, 1967]",
+   "'This is a re' ids [910, 338, 263, 1855, 1967]"
+  ],
+  "max_abs_p_fake_diff": 0.03120937337375629,
+  "n_p_diff_over_1e-3": 29,
+  "max_abs_logit_diff": 0.75,
+  "verdict_agree": "223/224",
+  "teacher_forced_images_per_s": 2.627,
+  "teacher_forced_peak_GB_max": 15.15,
+  "correct_generated_verdict": 185,
+  "correct_teacher_forced": 184
+ }
+}
+=== smoke test with the released files ([B] tokenizer, [F] strict load + one image) 11:32:29 ===
+[A] parser vs the official eval.py validate ...
+    9 answers: parse_fakevlm == the official validate (None where it picks at random)
+[B] prompt, decoding, verdict sequences (released processor if present) ...
+    the prompt equals all 5,000 rows of the FakeClue test file
+    verdict sequences ▁▁ This is a + ▁fake / ▁real; 576 image tokens, 1,013 pads, 1,599 positions as 4.45.2; FakeVLM's own tokenizer refused
+[C] image handling vs transformers 4.45.2's CLIPImageProcessor ...
+    8 images (RGB, tall, small, square, 8 MP, RGBA, L, P): pixel values == 4.45.2's to < 1e-6 (transformers 5.5.4's own resize: up to 0.030 apart)
+[D] registry spec, note, block list, licence, Space, download hint, missing processor ...
+    vlm spec (generated default, teacher-forced variant), note, NEVER_REDISTRIBUTE, LICENSES 'no licence' + Llama 2 base, not on the Space, weights + processor download hint, missing processor reported
+[E] tiny random LLaVA through the engine: offline load, inputs, teacher-forced and generated scores, strict ...
+    no network at load; 4 image tokens left-padded to 64, 4.45.2-style pixels; teacher-forced gap == direct forward; forced 'This is a fake image.' scored at step 4 == raw output_logits gap == teacher-forced gap; 'This image is fake.' at its own ▁fake; extra / missing tensor, EOS tokenizer, unset expansion refused
+[F] released weights: strict engine load and one image ...
+    686 tensors strict, no network; synthetic: fake (P(fake) 0.962673)
+fakevlm smoke test passed
+done Wed Nov 18 11:33:00 CET 2026
+removed the code copy and caches (kept /ssdstore/ssalehi/SynthScope/fakevlm_fid/293873/data and the official outputs)

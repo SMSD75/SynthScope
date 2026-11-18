@@ -4,7 +4,9 @@ A per-image log line belongs to the model of the last ``=== unit ... START`` lin
 several VLMs can be checked together. ``--models`` limits the check to the result JSONs of those models.
 
     python repro/vlm_bench/trace_check.py --logs /ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs --glob 'vpp_*.out'
-    python repro/vlm_bench/trace_check.py --logs ... --glob 'adb_*.out' --models adb_vlm     (default: vpp_*.out,adb_*.out, every JSON)
+    python repro/vlm_bench/trace_check.py --logs ... --glob 'adb_*.out' --models adb_vlm
+    python repro/vlm_bench/trace_check.py --logs ... --glob 'fakevlm_bench_*.out' --models fakevlm
+    (default: vpp_*.out,adb_*.out,fakevlm_bench_*.out, every JSON)
 """
 from __future__ import annotations
 
@@ -22,7 +24,7 @@ IMG = re.compile(r"\[vlm:([^\]]+)\]\s+vlm (\S+) label=(\d) verdict=(\S+) logit=(
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--logs", required=True)
-    ap.add_argument("--glob", default="vpp_*.out,adb_*.out", help="comma list of log file patterns")
+    ap.add_argument("--glob", default="vpp_*.out,adb_*.out,fakevlm_bench_*.out", help="comma list of log file patterns")
     ap.add_argument("--results", default=str(HERE / "results"))
     ap.add_argument("--models", default="", help="comma list: check only the result JSONs of these models (default all)")
     args = ap.parse_args(argv)

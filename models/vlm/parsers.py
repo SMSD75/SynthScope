@@ -14,6 +14,14 @@ ai-generated image."; with no answer tag, a final line "This is an authentic / A
 followed by ``</answer>``). Any other output raises ``ValueError`` in the official code (``predict.py`` then stops);
 here it is returned as None (unparsed). ``adb_verdict_offset`` says where in the text that parser found a tag-less
 verdict, so that the score is read at the same word (``VLMConfig.verdict_offset``).
+
+``parse_fakevlm`` is vendored from FakeVLM's ``scripts/eval.py`` ``validate`` (github.com/opendatalab/FakeVLM @ fdcdcf1;
+no licence file, see LICENSES.md): the per-output rule, unchanged in behaviour: the text after the last "?"
+(``decode(prompt + answer).split('?')[-1]``; the prompt ends with "?", so on the answer alone this is the answer itself
+unless it contains a "?"), then the first sentence (``split('.')[0]``, lower-cased) is checked for "real" before
+"fake", then the second sentence. The official labels are real=1 / fake=0. Where the official code falls back to
+``random.choice([0, 1])`` (neither word, or no second sentence), this returns None (unparsed). As in the official rule,
+"real" is a substring test, so e.g. "unrealistic" in the first sentence reads as "real".
 """
 import re
 from typing import Optional
@@ -78,3 +86,20 @@ def adb_verdict_offset(output: str) -> Optional[int]:
         return None
     final = _ADB_FINAL_SENTENCE.search(output)
     return final.start(1) if final else None
+
+
+def parse_fakevlm(output: str) -> Optional[str]:
+    """"real" / "fake" by FakeVLM's ``eval.py`` rule on the model's answer, None where it picks at random."""
+    response = output.split('?')[-1]
+    if 'real' in response.split('.')[0].lower():
+        return "real"
+    elif 'fake' in response.split('.')[0].lower():
+        return "fake"
+    try:
+        if 'real' in response.split('.')[1].lower():
+            return "real"
+        elif 'fake' in response.split('.')[1].lower():
+            return "fake"
+        return None                            # official: random.choice([0, 1])
+    except IndexError:                         # official: bare except -> random.choice([0, 1])
+        return None
