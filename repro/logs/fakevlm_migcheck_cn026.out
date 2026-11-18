@@ -1,0 +1,38 @@
+node=ivi-cn026 Wed Nov 18 11:52:31 CET 2026 code=37eae6c vlm_bench: vpp_ivi.sbatch runs fakevlm (weights + ll + working tree (migrate_vlm_cache.py, migrate_check.py as committed next)
+copied 22 adb_vlm cache folders of /ssdstore/ssalehi/SynthScope/vpp/cache to /ssdstore/ssalehi/SynthScope/fakevlm_migcheck
+=== migrate_vlm_cache
+{"folder": "aigcdetect17/adb_vlm__greedy__jpegfakes96__6184d3f535", "status": "carried earlier into aigcdetect17/adb_vlm__greedy__jpegfakes96__a8ce235283, which is migrated instead"}
+{"folder": "aigcdetect17/adb_vlm__greedy__jpegfakes96__a8ce235283", "to": "aigcdetect17/adb_vlm__greedy__jpegfakes96__d4fe4ba1ea", "records": 1020, "kept": 1020, "dropped": 0, "status": "migrated"}
+{"folder": "aigibench25/adb_vlm__greedy__6184d3f535", "status": "carried earlier into aigibench25/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "aigibench25/adb_vlm__greedy__a8ce235283", "to": "aigibench25/adb_vlm__greedy__d4fe4ba1ea", "records": 1000, "kept": 1000, "dropped": 0, "status": "migrated"}
+{"folder": "cospybench/adb_vlm__greedy__6184d3f535", "status": "carried earlier into cospybench/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "cospybench/adb_vlm__greedy__a8ce235283", "to": "cospybench/adb_vlm__greedy__d4fe4ba1ea", "records": 1100, "kept": 1100, "dropped": 0, "status": "migrated"}
+{"folder": "evalgen/adb_vlm__greedy__6184d3f535", "status": "carried earlier into evalgen/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "evalgen/adb_vlm__greedy__a8ce235283", "to": "evalgen/adb_vlm__greedy__d4fe4ba1ea", "records": 1000, "kept": 1000, "dropped": 0, "status": "migrated"}
+{"folder": "forensynths13/adb_vlm__greedy__6184d3f535", "status": "carried earlier into forensynths13/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "forensynths13/adb_vlm__greedy__a8ce235283", "to": "forensynths13/adb_vlm__greedy__d4fe4ba1ea", "records": 1014, "kept": 1014, "dropped": 0, "status": "migrated"}
+{"folder": "genimage_val100k/adb_vlm__greedy__6184d3f535", "status": "carried earlier into genimage_val100k/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "genimage_val100k/adb_vlm__greedy__a8ce235283", "to": "genimage_val100k/adb_vlm__greedy__d4fe4ba1ea", "records": 1008, "kept": 1008, "dropped": 0, "status": "migrated"}
+{"folder": "genimage_val100k/adb_vlm__greedy__jpegfakes96__6184d3f535", "status": "carried earlier into genimage_val100k/adb_vlm__greedy__jpegfakes96__a8ce235283, which is migrated instead"}
+{"folder": "genimage_val100k/adb_vlm__greedy__jpegfakes96__a8ce235283", "to": "genimage_val100k/adb_vlm__greedy__jpegfakes96__d4fe4ba1ea", "records": 1008, "kept": 1008, "dropped": 0, "status": "migrated"}
+{"folder": "realchain/adb_vlm__greedy__6184d3f535", "status": "carried earlier into realchain/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "realchain/adb_vlm__greedy__a8ce235283", "to": "realchain/adb_vlm__greedy__d4fe4ba1ea", "records": 1008, "kept": 1008, "dropped": 0, "status": "migrated"}
+{"folder": "rrdataset/adb_vlm__greedy__6184d3f535", "status": "carried earlier into rrdataset/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "rrdataset/adb_vlm__greedy__a8ce235283", "to": "rrdataset/adb_vlm__greedy__d4fe4ba1ea", "records": 1002, "kept": 1002, "dropped": 0, "status": "migrated"}
+{"folder": "synthbuster_coco/adb_vlm__greedy__6184d3f535", "status": "carried earlier into synthbuster_coco/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "synthbuster_coco/adb_vlm__greedy__a8ce235283", "to": "synthbuster_coco/adb_vlm__greedy__d4fe4ba1ea", "records": 560, "kept": 560, "dropped": 0, "status": "migrated"}
+{"folder": "synthwildx/adb_vlm__greedy__6184d3f535", "status": "carried earlier into synthwildx/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "synthwildx/adb_vlm__greedy__a8ce235283", "to": "synthwildx/adb_vlm__greedy__d4fe4ba1ea", "records": 1002, "kept": 1002, "dropped": 0, "status": "migrated"}
+=== migrate_check
+aigcdetect17/adb_vlm__greedy__jpegfakes96__a8ce235283 -> adb_vlm__greedy__jpegfakes96__d4fe4ba1ea: 1020 records, lines byte-equal True (sha1 9302a08afa33 / 9302a08afa33), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+aigibench25/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1000 records, lines byte-equal True (sha1 212d575f670e / 212d575f670e), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+cospybench/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1100 records, lines byte-equal True (sha1 0532aab0a128 / 0532aab0a128), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+evalgen/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1000 records, lines byte-equal True (sha1 92ac65356d66 / 92ac65356d66), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+forensynths13/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1014 records, lines byte-equal True (sha1 ad274d41ecce / ad274d41ecce), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+genimage_val100k/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1008 records, lines byte-equal True (sha1 6af315e8af23 / 6af315e8af23), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+genimage_val100k/adb_vlm__greedy__jpegfakes96__a8ce235283 -> adb_vlm__greedy__jpegfakes96__d4fe4ba1ea: 1008 records, lines byte-equal True (sha1 26555a76095a / 26555a76095a), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+realchain/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1008 records, lines byte-equal True (sha1 836d0e143b48 / 836d0e143b48), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+rrdataset/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1002 records, lines byte-equal True (sha1 c8713df3e2ea / c8713df3e2ea), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+synthbuster_coco/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 560 records, lines byte-equal True (sha1 4f4d25ee95f7 / 4f4d25ee95f7), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+synthwildx/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1002 records, lines byte-equal True (sha1 dec6bc031d9d / dec6bc031d9d), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+migrate_check adb_vlm: 10722 records in the migrated folders, 0 folder(s) failing

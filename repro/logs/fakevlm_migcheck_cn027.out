@@ -1,0 +1,29 @@
+node=ivi-cn027 Wed Nov 18 11:52:52 CET 2026 code=37eae6c vlm_bench: vpp_ivi.sbatch runs fakevlm (weights + ll + working tree (migrate_vlm_cache.py, migrate_check.py as committed next)
+copied 16 adb_vlm cache folders of /ssdstore/ssalehi/SynthScope/vpp/cache to /ssdstore/ssalehi/SynthScope/fakevlm_migcheck
+=== migrate_vlm_cache
+{"folder": "aigcdetect17/adb_vlm__greedy__6184d3f535", "status": "carried earlier into aigcdetect17/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "aigcdetect17/adb_vlm__greedy__a8ce235283", "to": "aigcdetect17/adb_vlm__greedy__d4fe4ba1ea", "records": 1020, "kept": 1020, "dropped": 0, "status": "migrated"}
+{"folder": "arforensics/adb_vlm__greedy__6184d3f535", "status": "carried earlier into arforensics/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "arforensics/adb_vlm__greedy__a8ce235283", "to": "arforensics/adb_vlm__greedy__d4fe4ba1ea", "records": 1008, "kept": 1008, "dropped": 0, "status": "migrated"}
+{"folder": "bfree_online/adb_vlm__greedy__6184d3f535", "status": "carried earlier into bfree_online/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "bfree_online/adb_vlm__greedy__a8ce235283", "to": "bfree_online/adb_vlm__greedy__d4fe4ba1ea", "records": 769, "kept": 769, "dropped": 0, "status": "migrated"}
+{"folder": "ditfake/adb_vlm__greedy__6184d3f535", "status": "carried earlier into ditfake/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "ditfake/adb_vlm__greedy__a8ce235283", "to": "ditfake/adb_vlm__greedy__d4fe4ba1ea", "records": 1002, "kept": 1002, "dropped": 0, "status": "migrated"}
+{"folder": "ditfake/adb_vlm__greedy__jpeg95__6184d3f535", "status": "carried earlier into ditfake/adb_vlm__greedy__jpeg95__a8ce235283, which is migrated instead"}
+{"folder": "ditfake/adb_vlm__greedy__jpeg95__a8ce235283", "to": "ditfake/adb_vlm__greedy__jpeg95__d4fe4ba1ea", "records": 1002, "kept": 1002, "dropped": 0, "status": "migrated"}
+{"folder": "ufd8/adb_vlm__greedy__6184d3f535", "status": "carried earlier into ufd8/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "ufd8/adb_vlm__greedy__a8ce235283", "to": "ufd8/adb_vlm__greedy__d4fe4ba1ea", "records": 630, "kept": 630, "dropped": 0, "status": "migrated"}
+{"folder": "ufd8/adb_vlm__greedy__jpeg95__6184d3f535", "status": "carried earlier into ufd8/adb_vlm__greedy__jpeg95__a8ce235283, which is migrated instead"}
+{"folder": "ufd8/adb_vlm__greedy__jpeg95__a8ce235283", "to": "ufd8/adb_vlm__greedy__jpeg95__d4fe4ba1ea", "records": 630, "kept": 630, "dropped": 0, "status": "migrated"}
+{"folder": "wildrf/adb_vlm__greedy__6184d3f535", "status": "carried earlier into wildrf/adb_vlm__greedy__a8ce235283, which is migrated instead"}
+{"folder": "wildrf/adb_vlm__greedy__a8ce235283", "to": "wildrf/adb_vlm__greedy__d4fe4ba1ea", "records": 2503, "kept": 2503, "dropped": 0, "status": "migrated"}
+=== migrate_check
+aigcdetect17/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1020 records, lines byte-equal True (sha1 9b5eae26855a / 9b5eae26855a), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+arforensics/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1008 records, lines byte-equal True (sha1 895373d027cc / 895373d027cc), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+bfree_online/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 769 records, lines byte-equal True (sha1 0a694d0e2219 / 0a694d0e2219), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+ditfake/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 1002 records, lines byte-equal True (sha1 2df6ef7f25c5 / 2df6ef7f25c5), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+ditfake/adb_vlm__greedy__jpeg95__a8ce235283 -> adb_vlm__greedy__jpeg95__d4fe4ba1ea: 1002 records, lines byte-equal True (sha1 07a40a75da59 / 07a40a75da59), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+ufd8/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 630 records, lines byte-equal True (sha1 070afaffce1f / 070afaffce1f), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+ufd8/adb_vlm__greedy__jpeg95__a8ce235283 -> adb_vlm__greedy__jpeg95__d4fe4ba1ea: 630 records, lines byte-equal True (sha1 561f1dd7727c / 561f1dd7727c), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+wildrf/adb_vlm__greedy__a8ce235283 -> adb_vlm__greedy__d4fe4ba1ea: 2503 records, lines byte-equal True (sha1 cfa015df358f / cfa015df358f), VLMCache reads the same records True, code b490c64477 -> 02852acf62: OK
+migrate_check adb_vlm: 8564 records in the migrated folders, 0 folder(s) failing

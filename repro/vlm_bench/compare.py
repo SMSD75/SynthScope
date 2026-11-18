@@ -1,4 +1,4 @@
-"""Comparison of the VLM detectors (veritaspp, adb_vlm) with the field-report detectors on the identical benchmark subsets.
+"""Comparison of the VLM detectors (veritaspp, adb_vlm, fakevlm) with the field-report detectors on the identical benchmark subsets.
 
 Reads ``repro/vlm_bench/results/<bench>/<model>[__variant].json`` (bench_eval outputs of run_units.py) and writes
 ``repro/vlm_bench/comparison.json`` plus a printed summary:
@@ -13,7 +13,10 @@ Reads ``repro/vlm_bench/results/<bench>/<model>[__variant].json`` (bench_eval ou
   first detector key is named and every tied key is listed under ``tied``. ``acc_pooled`` counts each (generator, image) pair, so
   a real pool shared by several generators (ufd8, synthbuster_coco) is counted once per generator; ``acc_pooled_distinct``
   counts each image once;
-* ``subset_means``: per VLM, the unweighted mean acc / mAUROC over the clean subsets it has;
+* ``subset_means``: per VLM, the unweighted mean acc / mAUROC over the clean subsets it has (and, for a VLM with an
+  in-distribution subset, the same mean without it);
+* in-distribution flags (``IN_DISTRIBUTION``): a subset whose images come from a VLM's training data is marked
+  ``in_distribution`` under that VLM (fakevlm: GenImage, which FakeClue contains), in the JSON and in the printed tables (*);
 * the JPEG95 probe: per detector acc / mAUROC on jpeg95 minus clean, on the same subset;
 * greedy vs sampled (the authors' sampling, fixed seed) on the sampled benchmark, for a VLM that has a sampled run;
 * the paper rows, per VLM:
@@ -25,6 +28,8 @@ Reads ``repro/vlm_bench/results/<bench>/<model>[__variant].json`` (bench_eval ou
     expert), so none is reproducible with the released VLM branch; they are listed as context only, with no delta. The paper
     prints no VLM-only number for the released adapter. Table 4's "Qwen2.5-VL-7B" row is ambiguous (base or trained) and
     Table 5's is the UNTRAINED base: both are listed, never as a reproduction target.
+  - fakevlm (arXiv 2503.14905): none of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held here, so
+    each is recorded as "not held" and nothing is claimed as a reproduction.
 """
 from __future__ import annotations
 
@@ -34,7 +39,7 @@ import statistics
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-VLMS = ("veritaspp", "adb_vlm")
+VLMS = ("veritaspp", "adb_vlm", "fakevlm")
 PAPER = {  # arXiv 2607.27113 v1, Table II (standard OOD) and Table III (in-the-wild), Acc. (%), VERITAS++ row (not the dagger row)
     # EvalGen: fakes-only accuracy is an inference from DDA's row (97.2), not something the paper states.
     "evalgen": {"paper_acc": 99.5, "table": "II", "metric": "fake_acc"},
@@ -110,6 +115,28 @@ ADB_PAPER_NOTE = (
     "GenImage only, and q96 follows DDA's published protocol (an inference, see ours_note). Decoding: greedy (temperature 0, "
     "predict.py), which is the official setting. The paper's AlignGemini GenImage per-generator row appears column-permuted "
     "relative to its AIGCDetect row (the baselines agree across the two tables), so only its 91.7 average is used.")
+
+
+# Subsets whose images are in a VLM's training data: flagged per VLM in the rows, the means and the printed tables.
+IN_DISTRIBUTION = {
+    "fakevlm": {"genimage_val100k": "IN-DISTRIBUTION: FakeVLM's training set FakeClue contains GenImage images (FakeVLM "
+                                    "paper, arXiv 2503.14905, FakeClue construction), so this subset is not held-out "
+                                    "for FakeVLM"},
+}
+# FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): its evaluation benchmarks; none is held here.
+FAKEVLM_PAPER = {
+    "FakeClue": "the authors' own benchmark (also its training data source); test split not downloaded",
+    "LOKI": "not downloaded",
+    "DMimage": "not downloaded",
+    "DD-VQA": "not downloaded (deepfake-face VQA)",
+    "FF++": "FaceForensics++ not downloaded (face manipulation, not full-image generation)",
+}
+FAKEVLM_PAPER_NOTE = (
+    "FakeVLM arXiv 2503.14905. None of the paper's evaluation benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held "
+    "here, so there is no paper reproduction and no delta; the subset rows are our own protocol (greedy, the official "
+    "max_new_tokens 256, the official eval.py parse; unparsed answers counted wrong). GenImage is IN-DISTRIBUTION for "
+    "FakeVLM (FakeClue contains GenImage images): its genimage_val100k row is flagged and the subset means are also given "
+    "without it.")
 
 
 def load(path: Path) -> dict | None:
@@ -191,6 +218,8 @@ def subset_row(bench: str, variant: str, models: tuple[str, ...], dets: list[str
            "missing_comparators": sorted(set(dets) - set(comps)), "vlms": {}}
     for m, r in vlm_r.items():
         row["vlms"][m] = dict(summary(r), balance=balance(r), limit=r.get("limit"))
+        if bench in IN_DISTRIBUTION.get(m, {}):
+            row["vlms"][m].update(in_distribution=True, in_distribution_note=IN_DISTRIBUTION[m][bench])
     for metric in ("acc", "mauroc"):
         vals = [(c[metric], d) for d, c in comps.items()]
         public = [(v, d) for v, d in vals if d not in internal_only]
@@ -207,7 +236,7 @@ def subset_row(bench: str, variant: str, models: tuple[str, ...], dets: list[str
 
 def subset_means(rows: list[dict], models: tuple[str, ...]) -> dict:
     """Per VLM: the unweighted mean acc / mAUROC over the CLEAN subset rows it has, with the image, unparsed and unscored
-    counts."""
+    counts; for a VLM with in-distribution subsets also ``held_out``, the same over the other subsets."""
     means = {}
     for m in models:
         got = [r["vlms"][m] for r in rows if r["variant"] == "clean" and m in r["vlms"]]
@@ -216,6 +245,12 @@ def subset_means(rows: list[dict], models: tuple[str, ...]) -> dict:
                         "mauroc": round(statistics.mean(s["mauroc"] for s in got), 2),
                         "n_images": sum(s["n_images"] for s in got), "n_unparsed": sum(s["n_unparsed"] for s in got),
                         "n_unscored": sum(s["n_unscored"] for s in got)}
+            ind = sorted(r["benchmark"] for r in rows if r["variant"] == "clean" and r["vlms"].get(m, {}).get("in_distribution"))
+            held = [s for s in got if not s.get("in_distribution")]
+            if ind and held:
+                means[m]["in_distribution_subsets"] = ind
+                means[m]["held_out"] = {"n_subsets": len(held), "acc": round(statistics.mean(s["acc"] for s in held), 2),
+                                        "mauroc": round(statistics.mean(s["mauroc"] for s in held), 2)}
     return means
 
 
@@ -344,6 +379,8 @@ def main(argv=None) -> int:
         paper["veritaspp"] = veritaspp_paper("veritaspp", res)
     if "adb_vlm" in models:
         paper["adb_vlm"] = adb_paper("adb_vlm", res)
+    if "fakevlm" in models:
+        paper["fakevlm"] = {b: {"status": "not held", "note": n} for b, n in FAKEVLM_PAPER.items()}
 
     out = {"models": list(models), "protocol": spec["protocol"], "internal_only": sorted(internal),
            "internal_only_note": spec.get("internal_only_note"),
@@ -352,6 +389,7 @@ def main(argv=None) -> int:
            "rank_note": "rank_<metric> = 1 + the number of comparators strictly better (the VLM among the comparators plus "
                         "itself); rank_all_<metric> also counts the other VLMs. Best and median are over the comparators.",
            "acc_pooled_note": ACC_POOLED_NOTE,
+           "in_distribution": {m: IN_DISTRIBUTION[m] for m in models if m in IN_DISTRIBUTION},
            "subsets": rows, "subset_means": means, "jpeg95_probe": probe, "greedy_vs_sampled": sampling,
            "paper_comparison": paper,
            "paper_note": {
@@ -360,7 +398,7 @@ def main(argv=None) -> int:
                             "(infer_vllm_single.py), with top-p 0.8 / top-k 20 from the released generation_config.json, and "
                             "'sampled' below means that setting. EvalGEN: fakes-only scoring is our inference from the DDA row "
                             "(97.2), not stated in the paper; the balanced accuracy is reported next to it.",
-               "adb_vlm": ADB_PAPER_NOTE}}
+               "adb_vlm": ADB_PAPER_NOTE, "fakevlm": FAKEVLM_PAPER_NOTE}}
     Path(args.out).write_text(json.dumps(out, indent=1) + "\n")
 
     for m in models:
@@ -371,7 +409,7 @@ def main(argv=None) -> int:
             v = r["vlms"].get(m)
             if v is None:
                 continue
-            name = r["benchmark"] + ("" if r["variant"] == "clean" else f" {r['variant']}")
+            name = r["benchmark"] + ("" if r["variant"] == "clean" else f" {r['variant']}") + ("*" if v.get("in_distribution") else "")
             ba, bu, bp = r.get("best_acc", {}), r.get("best_mauroc", {}), r.get("best_public_acc", {})
             print(f"{name:24s} {v['acc']:6.2f} {v['mauroc']:6.2f} {v['n_unparsed']:4d} {v['n_unscored']:4d} {v['mean_tokens']:5.0f} | "
                   f"{ba.get('value', float('nan')):7.2f} ({ba.get('detector', '-'):>14s}) "
@@ -381,6 +419,10 @@ def main(argv=None) -> int:
                   f"({v.get('rank_all_acc', '-')}/{v.get('rank_all_mauroc', '-')}) {r['n_comparators']}")
         if m in means:
             print(f"mean over {means[m]['n_subsets']} clean subsets: acc {means[m]['acc']} AUROC {means[m]['mauroc']}")
+            if "held_out" in means[m]:
+                h = means[m]["held_out"]
+                print(f"  * in-distribution for {m}: {means[m]['in_distribution_subsets']}; mean over the {h['n_subsets']} "
+                      f"held-out subsets: acc {h['acc']} AUROC {h['mauroc']}")
         for b, p in probe.items():
             v = p["per_detector"].get(m)
             print(f"JPEG95 {b}: {m} d_acc={v and v['d_acc']} d_AUROC={v and v['d_mauroc']}; comparator median "
@@ -398,6 +440,8 @@ def main(argv=None) -> int:
               + (f", T4 (ambiguous) {e['table4_qwen2.5_vl_7b_ambiguous']}" if "table4_qwen2.5_vl_7b_ambiguous" in e else "")
               + (f", T5 untrained base {e['table5_qwen2.5_vl_7b_untrained']}" if "table5_qwen2.5_vl_7b_untrained" in e else "")
               + (f" | ours VLM-only {o['acc']}" if o else " | ours: " + e.get("not_held", "not run yet")))
+    for b, e in paper.get("fakevlm", {}).items():
+        print(f"fakevlm paper {b}: {e['status']} ({e['note']})")
     print(f"-> {args.out}")
     return 0
 
