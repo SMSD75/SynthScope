@@ -11,8 +11,10 @@
 # weights and data node-local:
 #   UNITS=vlm:genimage_val100k,vlm:aigcdetect17 sbatch --nodelist=ivi-cn029 repro/vlm_bench/vpp_ivi.sbatch
 #   VLM_MODEL=adb_vlm UNITS=... sbatch --job-name=adb_ivi --output=<logs>/adb_ivi_%j.out --nodelist=ivi-cn026 repro/vlm_bench/vpp_ivi.sbatch
+#   VLM_MODEL=fakevlm UNITS=... sbatch --job-name=fakevlm_bench --output=<logs>/fakevlm_bench_%j.out --nodelist=ivi-cn026 repro/vlm_bench/vpp_ivi.sbatch
 # Weights: the model's folder (veritaspp; adb_vlm = the LoRA adapter folder align_dont_blend_vlm) and, for a LoRA, its base
-# folder (qwen2.5-vl-7b-instruct), linked into a per-job checkpoint folder under the registry names.
+# folder (qwen2.5-vl-7b-instruct); fakevlm = its weights folder and the separate processor folder
+# (llava-1.5-7b-hf_a272c74_processor); all linked into a per-job checkpoint folder under the registry names.
 # On ivi-cn029 the weights and originals are used in place. On another node the job picks its local scratch (/ssdstore,
 # /nvmestore or /hddstore) and copies the weights folders and the subset files from ivi-cn029 over ssh (needs one of our jobs
 # there, e.g. keep029); the checks below then run on the copies. A :full unit's full benchmark folder (full_data_cn029.json)
@@ -30,6 +32,7 @@ VLM_MODEL=${VLM_MODEL:-veritaspp}
 case $VLM_MODEL in                                      # <registry name>:<folder under vlm_ckpts on ivi-cn029>
   veritaspp) WDIRS="veritaspp:veritaspp" ;;
   adb_vlm)   WDIRS="adb_vlm:align_dont_blend_vlm qwen2.5-vl-7b-instruct:qwen2.5-vl-7b-instruct" ;;
+  fakevlm)   WDIRS="fakevlm:fakevlm llava-1.5-7b-hf_a272c74_processor:llava-1.5-7b-hf_a272c74_processor" ;;
   *) echo "VLM_MODEL=$VLM_MODEL: no weight folders known"; exit 4 ;;
 esac
 ONSRC=0
@@ -82,6 +85,8 @@ root = Path(os.environ["SYNTHSCOPE_CKPT_DIR"])
 folders = [(spec.checkpoint, cfg.hf_repo, cfg.hf_revision)]
 if cfg.base_model:                               # a LoRA: its base folder too
     folders.append((cfg.base_model, cfg.base_hf_repo, cfg.base_hf_revision))
+if cfg.processor and cfg.processor_hf_repo:      # a separate processor folder (fakevlm: llava-hf files)
+    folders.append((cfg.processor, cfg.processor_hf_repo, cfg.processor_hf_revision))
 for name, repo, rev in folders:
     folder = root / name
     sums = dict(line.split()[::-1] for line in (folder / "SHA256SUMS").read_text().splitlines())
