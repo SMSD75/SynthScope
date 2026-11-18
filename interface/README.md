@@ -66,10 +66,10 @@ npm run dev
 
 ## Detectors & helper scripts
 
-The registry (`interface/backend/registry.py`) has 41 keys: 31 image and 10 video.
+The registry (`interface/backend/registry.py`) has 42 keys: 32 image and 10 video.
 Image: `clip`, `cnn`, `dinov2`, `dinov3`, `adapted_dino`, `safe`, `fat_former`, `aide`, `spai`, `vib_net`,
 `vib_net_official`, `bfree`, `effort`, `effort_chameleon`, `moejepa`, `co_spy`, `pgc`, `cure`, `dda`, `d3qe`, `ltf`,
-`mirror`, `probe`, `probe_resnet`, `vina`, `omniaid`, `omniaid_v1`, `omniaid_genimage`, `npr`, `veritaspp` and `adb_vlm` (VLMs: still images only, one at a time, GPU only, not on the Space).
+`mirror`, `probe`, `probe_resnet`, `vina`, `omniaid`, `omniaid_v1`, `omniaid_genimage`, `npr`, `veritaspp`, `adb_vlm` and `fakevlm` (VLMs: still images only, one at a time, GPU only, not on the Space).
 Video: `vina_video`, `waverep`, `waverep_g4`, `nsg_vd`, `nsg_vd_pika`, `nsg_vd_unbalance`, `d3`, `split`, `restrav`, `stall`. Per-model held-out numbers and the
 checkpoint-zoo table are in the top-level [README](../README.md#web-interface--checkpoint-zoo).
 

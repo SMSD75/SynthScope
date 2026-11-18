@@ -164,8 +164,9 @@ PROBE-ResNet have no clear licence and are not redistributed or served; the best
 on 14 of the 15 benchmarks). Ties for best are broken by the alphabetically first detector key, and the tied keys are
 listed in `comparison.json`. Every number is in `repro/vlm_bench/comparison.json` (built by `repro/vlm_bench/compare.py` from
 `repro/vlm_bench/results/`; logs `repro/logs/vpp_*.out`). It holds one column per VLM under `vlms.<model>` (Veritas++ under
-`vlms.veritaspp`; the second VLM, `adb_vlm`, is documented in `models/image/adb_vlm/README.md`). The ranks here count Veritas++
-and the 27 comparators only; `rank_all_*` also counts the other VLMs.
+`vlms.veritaspp`; the other VLMs, `adb_vlm` and `fakevlm`, are documented in `models/image/adb_vlm/README.md` and
+`models/image/fakevlm/README.md`). The ranks here count Veritas++ and the 27 comparators only; `rank_all_*` also counts the
+other VLMs (Align, Don't Blend and FakeVLM).
 
 ### Accuracy (balanced, %)
 
@@ -288,7 +289,9 @@ python repro/vlm_bench/compare.py          # regenerates repro/vlm_bench/compari
 weights revision, `max_new_tokens`, the prompts and the VLM code version (`identity.json` in the folder says what it
 stands for), so a cache reused after any of them changes starts empty. The code version hashes every `models/vlm/*.py`:
 the `adb_vlm` integration edits them, so caches written before it are re-keyed and a rerun scores from scratch (the
-committed result JSONs are unaffected). `repro/vlm_bench/run_units.py` runs the whole matrix
+committed result JSONs are unaffected). The `fakevlm` integration edits them again, but only with code Veritas++ does not
+use, so `python repro/vlm_bench/migrate_vlm_cache.py --cache-root <dir> --model veritaspp` carries the caches written by
+main e5749ae over unchanged (greedy and sampled). `repro/vlm_bench/run_units.py` runs the whole matrix
 (`vpp_ivi.sbatch` on the IVI cluster).
 
 ## Availability

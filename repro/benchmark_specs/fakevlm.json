@@ -1,0 +1,134 @@
+{
+  "model": "fakevlm",
+  "paper": "Spot the Fake: Large Multimodal Model-Based Synthetic Image Detection with Artifact Explanation (Wen et al., NeurIPS 2025, arXiv 2503.14905)",
+  "arxiv_id": "2503.14905",
+  "official_repo": "https://github.com/opendatalab/FakeVLM",
+  "training_set_in_paper": "Not trained in SynthScope. The official weights lingcco/fakeVLM @ dce9e88d (LLaVA-1.5-7B fine-tuned on FakeClue) with the llava-hf/llava-1.5-7b-hf @ a272c74 processor, inference only, the official greedy decoding (256 new tokens) and the official eval.py parse; unparsed answers counted wrong (1 in 16,947 scored images), 0 unscored; AUROC from the logit gap at the first fake / real word the model writes. Fidelity (job 293873): first sentence and parsed verdict equal all five official runs on 16 / 16 images; the text equals the official code run one image at a time under transformers 4.45.2 on 16 / 16. GenImage is IN-DISTRIBUTION (FakeClue contains GenImage images); overlap of FakeClue with the other benchmarks has not been checked. None of the paper's evaluation benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held, so no row is a reproduction. Benchmark subsets and per-image results: repro/vlm_bench/ (comparison.json, vlms.fakevlm, subset_means.fakevlm and paper_comparison.fakevlm).",
+  "benchmarks": [
+    {
+      "name": "14 held-out benchmarks, subsampled (L = ceil(500 / generators)), GenImage left out (in-distribution), vs Veritas++, Align, Don't Blend and 27 detectors on identical images",
+      "datasets": [
+        "ForenSynths",
+        "UniversalFakeDetect",
+        "AIGCDetect",
+        "Synthbuster",
+        "EvalGEN",
+        "SynthWildX",
+        "WildRF",
+        "AIGIBench",
+        "RRDataset",
+        "BFree-Online",
+        "Co-Spy-Bench",
+        "DiTFake",
+        "ARForensics",
+        "RealChain"
+      ],
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap, unweighted mean over the 14 subsets",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subsampled, official weights, greedy: mean of the 14 held-out accuracies 84.15, AUROC 91.16 (subset_means.fakevlm.held_out). 'Held-out' = not known to be in FakeClue; overlap was not checked beyond GenImage. 2nd of 28 on UFD-8 (97.02), DiTFake (99.30) and ARForensics (97.92); weak in the wild because real accuracy drops: SynthWildX 65.46 (real 32.93), WildRF 64.11 (real 33.41). JPEG95: DiTFake -0.40, UFD-8 -31.35 acc (reals 98.61 unchanged, fakes 95.44 -> 32.74)."
+      }
+    },
+    {
+      "name": "15 held benchmarks, subsampled (L = ceil(500 / generators)), including the in-distribution GenImage, vs Veritas++, Align, Don't Blend and 27 detectors on identical images",
+      "datasets": [
+        "GenImage",
+        "ForenSynths",
+        "UniversalFakeDetect",
+        "AIGCDetect",
+        "Synthbuster",
+        "EvalGEN",
+        "SynthWildX",
+        "WildRF",
+        "AIGIBench",
+        "RRDataset",
+        "BFree-Online",
+        "Co-Spy-Bench",
+        "DiTFake",
+        "ARForensics",
+        "RealChain"
+      ],
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap, unweighted mean over the 15 subsets",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subsampled, official weights, greedy, 1 unparsed, 0 unscored; mean of the 15 accuracies 85.19, AUROC 91.74 (Veritas++ 84.70 / 91.33, Align, Don't Blend 76.58 / 84.11). GenImage (99.70 acc, 1st of 28) is IN-DISTRIBUTION for FakeVLM, so the held-out mean of the other 14 (84.15 / 91.16) is the fair number."
+      }
+    },
+    {
+      "name": "FakeClue test set (the authors' benchmark)",
+      "datasets": [
+        "FakeClue"
+      ],
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper_number": {
+        "note": "Not compared: the FakeClue test images are not held here (FakeClue is also FakeVLM's training source)."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (test images not downloaded), so there is no comparable number and no reproduction claim."
+      }
+    },
+    {
+      "name": "LOKI",
+      "datasets": [
+        "LOKI"
+      ],
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper_number": {
+        "note": "Not compared: LOKI is not held here."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded), so there is no comparable number."
+      }
+    },
+    {
+      "name": "DMimage",
+      "datasets": [
+        "DMimage"
+      ],
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper_number": {
+        "note": "Not compared: DMimage is not held here."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded), so there is no comparable number."
+      }
+    },
+    {
+      "name": "DD-VQA (deepfake-face VQA)",
+      "datasets": [
+        "DD-VQA"
+      ],
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper_number": {
+        "note": "Not compared: DD-VQA is not held here."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded; face manipulation VQA), so there is no comparable number."
+      }
+    },
+    {
+      "name": "FaceForensics++ (FF++)",
+      "datasets": [
+        "FF++"
+      ],
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper_number": {
+        "note": "Not compared: FaceForensics++ is not held here."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded; face manipulation, not full-image generation), so there is no comparable number."
+      }
+    }
+  ]
+}

@@ -276,6 +276,14 @@ VAL = {
     ("adb_vlm", "GenImage"): {"official": {"acc": 65.97, "auroc": 79.18}},
     ("adb_vlm", "AIGCDetectBenchmark"): {"official": {"acc": 63.92, "auroc": 70.55}},
     ("adb_vlm", "15 held benchmarks"): {"official": {"acc": 76.58, "auroc": 84.11}},
+    # FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): the official weights only, inference only, greedy (the official
+    # decoding), no SynthScope-trained number. None of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held,
+    # so those rows are "missing" (no entry) and the two rows below are "reference". GenImage is IN-DISTRIBUTION (FakeClue
+    # contains GenImage images): the first row is the unweighted mean of the other 14 subsampled benchmarks
+    # (subset_means.fakevlm.held_out), the second the mean of all 15 (subset_means.fakevlm), both in
+    # repro/vlm_bench/comparison.json (results/<bench>/fakevlm.json; logs repro/logs/fakevlm_bench_293884/293885.out).
+    ("fakevlm", "14 held-out benchmarks"): {"official": {"acc": 84.15, "auroc": 91.16}},
+    ("fakevlm", "15 held benchmarks"): {"official": {"acc": 85.19, "auroc": 91.74}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

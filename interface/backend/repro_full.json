@@ -761,6 +761,78 @@
       "note": "64.59 (mAP 69.78)."
     }
   ],
+  "fakevlm": [
+    {
+      "benchmark": "14 held-out benchmarks, subsampled (L = ceil(500 / generators)), GenImage left out (in-distribution), vs Veritas++, Align, Don't Blend and 27 detectors on identical images",
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap, unweighted mean over the 14 subsets",
+      "paper": "\u2014",
+      "ours": "acc=84.15 / AUROC=91.16 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=84.15 / AUROC=91.16",
+      "status": "reference",
+      "note": "Subsampled, official weights, greedy: mean of the 14 held-out accuracies 84.15, AUROC 91.16 (subset_means.fakevlm.held_out). 'Held-out' = not known to be in FakeClue; overlap was not checked beyond GenImage. 2nd of 28 on UFD-8 (97.02), DiTFake (99.30) and ARForensics (97.92); weak in the wild because real accuracy drops: SynthWildX 65.46 (real 32.93), WildRF 64.11 (real 33.41). JPEG95: DiTFake\u2026"
+    },
+    {
+      "benchmark": "15 held benchmarks, subsampled (L = ceil(500 / generators)), including the in-distribution GenImage, vs Veritas++, Align, Don't Blend and 27 detectors on identical images",
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap, unweighted mean over the 15 subsets",
+      "paper": "\u2014",
+      "ours": "acc=85.19 / AUROC=91.74 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=85.19 / AUROC=91.74",
+      "status": "reference",
+      "note": "Subsampled, official weights, greedy, 1 unparsed, 0 unscored; mean of the 15 accuracies 85.19, AUROC 91.74 (Veritas++ 84.70 / 91.33, Align, Don't Blend 76.58 / 84.11). GenImage (99.70 acc, 1st of 28) is IN-DISTRIBUTION for FakeVLM, so the held-out mean of the other 14 (84.15 / 91.16) is the fair number."
+    },
+    {
+      "benchmark": "FakeClue test set (the authors' benchmark)",
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (test images not downloaded), so there is no comparable number and no reproduction claim."
+    },
+    {
+      "benchmark": "LOKI",
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded), so there is no comparable number."
+    },
+    {
+      "benchmark": "DMimage",
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded), so there is no comparable number."
+    },
+    {
+      "benchmark": "DD-VQA (deepfake-face VQA)",
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded; face manipulation VQA), so there is no comparable number."
+    },
+    {
+      "benchmark": "FaceForensics++ (FF++)",
+      "metric": "the paper's metric (not compared: benchmark not held)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded; face manipulation, not full-image generation), so there is no comparable number."
+    }
+  ],
   "fat_former": [
     {
       "benchmark": "GANs dataset \u2014 8 GANs (4-class ProGAN supervision) \u2014 HEADLINE",
