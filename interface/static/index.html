@@ -978,7 +978,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const years = [...new Set(all.map(p => p.year))].sort((a, b) => b - a);
       const filtered = !!(q || venue || year || tag || onlySS);
       return html`<div class="papers">
-        <div class="pagehead"><p class="muted">Top-tier conference and journal papers on AI-generated image and video detection,
+        <div class="pagehead"><p class="muted"><b>Awesome AI-Generated Image and Video Detection</b>: top-tier conference and journal papers on AI-generated image and video detection,
           grouped by venue and year. Every paper links to its official proceedings page or accepted OpenReview decision, and code
           links are checked to exist. Updated monthly; last updated <b>${data.last_updated}</b>. ✅ marks a detector you can run in
           SynthScope. Source: <a href=${PAPERS_MD} target="_blank" rel="noopener">docs/CONFERENCE_PAPERS.md</a>.</p></div>
@@ -1021,7 +1021,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
     }
 
     const TABS = [["detect", "Detect"], ["sota", "Test a generator"], ["explore", "Browse datasets"],
-                  ["leaderboard", "Leaderboard"], ["topgen", "Generator benchmarks"], ["papers", "Papers"]];
+                  ["leaderboard", "Leaderboard"], ["topgen", "Generator benchmarks"], ["papers", "Awesome papers"]];
 
     function App() {
       const [models, setModels] = useState([]);

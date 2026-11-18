@@ -1,4 +1,6 @@
-# 📚 Top-tier conference papers on AI-generated image and video detection
+# 📚 Awesome AI-Generated Image and Video Detection
+
+*Top-tier conference and journal papers on detecting AI-generated images and videos, verified and grouped by venue.*
 
 > **Last updated: 2026-11-18** · 264 papers · updated monthly · part of [SynthScope](../README.md)
 
