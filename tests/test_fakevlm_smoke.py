@@ -18,9 +18,10 @@ Checks:
     naming the weights AND the processor, a missing processor folder (not available; the engine names it);
 [E] a tiny random LLaVA (CLIP ViT patch 16 + Llama) + a tiny local llava-style processor (SentencePiece-like
     tokenizer with "▁▁") through the engine: no socket connection while loading; the processor inputs (the image tokens,
-    the left padding to max_length, the pixel values of the 4.45.2-style resize); teacher-forced score == a direct
-    forward on the prompt + "▁▁ This is a"; a forced answer "This is a fake image." scored at its "▁fake" (step 4) ==
-    the raw ``output_logits`` gap; the teacher-forced and generated gaps agree (float32); strict load: an extra or a
+    the left padding to max_length, the pixel values of the 4.45.2-style resize); the generated score (registry mode):
+    a forced answer "This is a fake image." scored at its "▁fake" (step 4) == the raw ``output_logits`` gap, "This image
+    is fake." at its own "▁fake"; the teacher-forced variant == a direct forward on the prompt + "▁▁ This is a", and
+    equal to the generated gap when the answer starts with those tokens (float32); strict load: an extra or a
     missing tensor fails; a tokenizer that appends EOS and a processor without the expansion attributes are refused;
 [F] with the released weights + processor and a GPU: strict engine load and one image (skipped otherwise).
 """
@@ -58,7 +59,7 @@ from interface.backend import config as backend_config                          
 from interface.backend import media                                                 # noqa: E402
 from interface.backend.engine import Engine                                         # noqa: E402
 from interface.backend.registry import get_spec, input_note                         # noqa: E402
-from models.image.fakevlm.fakevlm import (FAKEVLM, FAKEVLM_GENERATE, GREEDY_DECODING, PROCESSOR, USER_PROMPT,   # noqa: E402
+from models.image.fakevlm.fakevlm import (FAKEVLM, FAKEVLM_TEACHER_FORCED, GREEDY_DECODING, PROCESSOR, USER_PROMPT,   # noqa: E402
                                           VERDICT_SEQUENCES)
 from models.vlm.image import clip_resize_center_crop, transformers_rgb              # noqa: E402
 from models.vlm.parsers import parse_fakevlm                                        # noqa: E402
@@ -356,8 +357,8 @@ def test_registry() -> None:
         ("vlm", "official_vlm", "fakevlm", "official", "image")
     assert spec.transform is None and spec.overrides == [] and spec.vlm is FAKEVLM and spec.eval_batch_size(32) == 1
     assert FAKEVLM.family is LLAVA and FAKEVLM.model_class == "LlavaForConditionalGeneration"
-    assert FAKEVLM.verdict_mode == "teacher_forced" and FAKEVLM_GENERATE.verdict_mode == "generate"
-    assert dataclasses.replace(FAKEVLM, verdict_mode="generate") == FAKEVLM_GENERATE
+    assert FAKEVLM.verdict_mode == "generate" and FAKEVLM_TEACHER_FORCED.verdict_mode == "teacher_forced"
+    assert dataclasses.replace(FAKEVLM, verdict_mode="teacher_forced") == FAKEVLM_TEACHER_FORCED
     assert FAKEVLM.verdict_sequences == VERDICT_SEQUENCES and FAKEVLM.teacher_forced_suffix == ""
     assert (FAKEVLM.answer_marker, FAKEVLM.answer_end, FAKEVLM.logits, FAKEVLM.verdict_offset) == (None, None, "raw", None)
     assert FAKEVLM.image_loader is transformers_rgb and FAKEVLM.preprocess is clip_resize_center_crop
@@ -394,7 +395,7 @@ def test_registry() -> None:
             expect_raise(lambda: Detector(spec, device="cpu").predict(Path(tmp) / "clip.mp4"), ValueError, "still images only")
         finally:
             backend_config.CHECKPOINTS_DIR = original
-    print("    vlm spec (teacher-forced default, generate variant), note, NEVER_REDISTRIBUTE, LICENSES 'no licence' + "
+    print("    vlm spec (generated default, teacher-forced variant), note, NEVER_REDISTRIBUTE, LICENSES 'no licence' + "
           "Llama 2 base, not on the Space, weights + processor download hint, missing processor reported")
 
 
@@ -428,7 +429,8 @@ def test_tiny_llava() -> None:
             want = plain(clip_resize_center_crop(image, TINY_SIZE, TINY_SIZE), do_resize=False, do_center_crop=False,
                          return_tensors="pt")["pixel_values"]
             assert torch.equal(x["pixel_values"], want) and vlm.family.input_size(vlm.processor, x) == [TINY_SIZE, TINY_SIZE]
-            # teacher-forced (registry mode): prompt + "▁▁ This is a", next-token gap == a direct forward
+            # teacher-forced variant: prompt + "▁▁ This is a", next-token gap == a direct forward
+            vlm.cfg = dataclasses.replace(cfg, verdict_mode="teacher_forced")
             with quiet():
                 tf = engine.vlm_score(spec, image)
             forced = torch.cat([x["input_ids"], torch.tensor([prefix])], 1)
@@ -438,7 +440,7 @@ def test_tiny_llava() -> None:
             assert tf["score_source"] == "teacher_forced" and tf["forced_prefix"] == ["▁▁", "▁This", "▁is", "▁a"]
             assert tf["pair_tokens"] == ["▁fake", "▁real"] and math.isclose(tf["logit"], float(row[f] - row[r]), abs_tol=1e-5)
             assert tf["verdict"] == ("fake" if tf["logit"] > 0 else "real") and tf["prompt_tokens"] == 68
-            # generated (FAKEVLM_GENERATE): a forced answer "This is a fake image." -> scored at its "▁fake", step 4
+            # generated (the registry mode): a forced answer "This is a fake image." -> scored at its "▁fake", step 4
             n_prompt = x["input_ids"].shape[1]
             script = tok.convert_tokens_to_ids(["▁▁", "▁This", "▁is", "▁a", "▁fake", "▁image", "."])
             eos = tok.convert_tokens_to_ids("</s>")
@@ -510,7 +512,7 @@ def test_released_weights() -> None:
     image = media.decode_image_raw(gate.read_bytes()) if gate.exists() else rgb_image(256, 256)
     with quiet():
         out = engine.vlm_score(spec, image)
-    assert out["verdict"] in ("real", "fake") and out["score_source"] == "teacher_forced"
+    assert out["verdict"] in ("real", "fake") and out["score_source"] == "verdict_token" and out["new_tokens"] > 4
     print(f"    {n} tensors strict, no network; {gate.name if gate.exists() else 'synthetic'}: {out['verdict']} "
           f"(P(fake) {out['fake_probability']:.6f})")
 

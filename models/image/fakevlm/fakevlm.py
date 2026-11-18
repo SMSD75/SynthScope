@@ -22,18 +22,22 @@ The official request (``scripts/eval.py``, transformers 4.45.2), reproduced here
 * decoding: ``generate(max_new_tokens=256)`` with the model's generation config (greedy);
 * verdict: ``parse_fakevlm`` (``models/vlm/parsers.py``, the official rule; its random fallback is "unparsed").
 
-The answer starts "This is a fake / real image." (tokens "▁▁", "▁This", "▁is", "▁a", then "▁fake" / "▁real"), so the
-verdict is the FIRST "▁fake" / "▁real" token generated, and P(fake) = sigmoid(l(▁fake) - l(▁real)) there (the counterpart
-pair; the vocabulary has one spelling of "fake" and four of "real", so a set renormalisation would be asymmetric).
+The answer starts "This is a fake / real image." (usually "▁▁", "▁This", "▁is", "▁a", then "▁fake" / "▁real"; sometimes
+without the "▁▁", with more spaces or a newline first), so the verdict is the FIRST "▁fake" / "▁real" token generated,
+and P(fake) = sigmoid(l(▁fake) - l(▁real)) of that step's raw logits (the counterpart pair; the vocabulary has one
+spelling of "fake" and four of "real", so a set renormalisation would be asymmetric).
 
 Two scorers (``verdict_mode``):
 
-* ``FAKEVLM_GENERATE`` ("generate"): the official greedy generation (up to 256 tokens), the logits of the step that
-  emitted the verdict token; the verdict is the official parser on the generated text. The reference.
-* ``FAKEVLM`` ("teacher_forced", the registry default): one forward pass on the prompt + the four answer tokens before
-  the verdict ("▁▁ This is a", the verdict sequences' shared prefix), the logits of the next token; the verdict is the
-  sign of the gap. It reads the same position as the generated path whenever the answer starts with those four tokens
-  (every fidelity image), and agrees with it to float noise (repro/fakevlm_fidelity.json); no rationale is written.
+* ``FAKEVLM`` ("generate", the registry default): the official greedy generation (up to 256 tokens), the logits of the
+  step that emitted the verdict token; the verdict is the official parser on the generated text; the rest of the text
+  is the model's explanation. About 0.5 s for a bare verdict (9 tokens), up to 7.5 s for 256 tokens on an A5000.
+* ``FAKEVLM_TEACHER_FORCED`` ("teacher_forced", NOT the default): one forward pass on the prompt + "▁▁ This is a" (the
+  verdict sequences' shared prefix), the logits of the next token; the verdict is the sign of the gap; about 0.27 s per
+  image. It failed the default rule on the fidelity check (repro/fakevlm_fidelity.json): the generated answer does not
+  always start with those four tokens (1 of the 16 fidelity images, 5 of 224 extended images), and P(fake) differs from
+  the generated path's by up to 0.011 (0.052 on the extended set; bf16 logits, cached decoding vs one forward pass).
+  Kept for fast screening; results scored with it are not the official method.
 """
 import dataclasses
 
@@ -48,7 +52,7 @@ VERDICT_SEQUENCES = (("▁▁", "▁This", "▁is", "▁a", "▁fake"), ("▁▁
 PROCESSOR = "llava-1.5-7b-hf_a272c74_processor"             # folder under $SYNTHSCOPE_CKPT_DIR
 
 
-FAKEVLM_GENERATE = VLMConfig(
+FAKEVLM = VLMConfig(
     family=LLAVA,
     model_class="LlavaForConditionalGeneration",
     system_prompt="",
@@ -78,4 +82,4 @@ FAKEVLM_GENERATE = VLMConfig(
     processor_hf_include=("*.json", "tokenizer.model"),
 )
 
-FAKEVLM = dataclasses.replace(FAKEVLM_GENERATE, verdict_mode="teacher_forced")
+FAKEVLM_TEACHER_FORCED = dataclasses.replace(FAKEVLM, verdict_mode="teacher_forced")

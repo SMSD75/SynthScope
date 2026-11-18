@@ -3,9 +3,12 @@ call, on the same GPU, one after the other.
 
 Paths:
 
-* OFFICIAL (``repro/fakevlm_official.py eval``, run by the sbatch before this script): the unmodified ``eval.py``
-  (batches of 4, left-padded to 1024 tokens, greedy, 256 new tokens) under the authors' transformers 4.45.2 and again
-  under the SynthScope env's transformers 5.5.4; its output JSON holds ``decode(prompt + answer).split('?')[-1]``;
+* OFFICIAL (``repro/fakevlm_official.py``, run by the sbatch before this script), each output JSON holding
+  ``decode(prompt + answer).split('?')[-1]`` per image:
+    - ``eval``: the unmodified ``eval.py`` (left-padded to 1024 tokens, greedy, 256 new tokens) in batches of 4 and of 2
+      under the authors' transformers 4.45.2, and in batches of 4 under the SynthScope env's transformers 5.5.4;
+    - ``single``: eval.py's own dataset item, model and ``generate`` call one image at a time (what ``validate`` does
+      with a batch of one, which its ``.squeeze()`` breaks), under 4.45.2 and under 5.5.4;
 * REFERENCE (written independently of ``models/vlm``): ``LlavaForConditionalGeneration`` from the weights folder; the
   inputs of the official processor call under transformers 4.45.2 (``fakevlm_official.py inputs``: ``Image.open``, CLIP
   resize + crop in PIL, the raw prompt, padded to 1024) with the single ``<image>`` token expanded to the 576 tokens
@@ -14,20 +17,21 @@ Paths:
   ``▁real`` token, the gap l(▁fake) - l(▁real) there; and a teacher-forced forward on the prompt + the generated tokens
   before that step;
 * ENGINE: ``Engine._get_model`` (strict load) and ``Engine.vlm_score`` on the file decoded as ``synthscope.load(...)``
-  decodes it for a VLM detector (``media.decode_image_raw``): the registry config (teacher-forced), then
-  ``FAKEVLM_GENERATE`` (the official greedy generation).
+  decodes it for a VLM detector (``media.decode_image_raw``): the registry config ``FAKEVLM`` (the official greedy
+  generation), then ``FAKEVLM_TEACHER_FORCED`` (one forward pass on the prompt + "▁▁ This is a").
 
 Checks: (a) strict load (every tensor of the shards equal to the loaded parameter); (b) the engine's processor inputs
-== the official 4.45.2 processor's (pixel values to float rounding, token ids after the expansion); (c) identical
-greedy text and parsed verdict vs both official runs; (d) identical tokens, verdict step and max |gap diff| vs the
-reference, for the generated and the teacher-forced score; (e) teacher-forced vs generated: the generated answer starts
-with the forced prefix ("▁▁ This is a") and the verdict is the next token, |P(fake) diff|; on the 16 images and on an
+== the official 4.45.2 processor's (pixel values to float rounding, token ids after the expansion); (c) greedy text,
+first sentence and parsed verdict vs every official run, and the official runs against each other (batch size and
+transformers version); (d) identical tokens, verdict step and max |gap diff| vs the reference, for the generated and the
+teacher-forced score; (e) the teacher-forced default rule: the generated answer starts with the forced prefix
+("▁▁ This is a") and the verdict is the next token, "This is a" text, |P(fake) diff| <= 1e-3; on the 16 images and on an
 extended set (``--extended``, 8 images per class folder of GenImage val, SynthWildX and WildRF) where the generation is
 cut at 8 tokens (greedy is causal: the first 8 tokens and their logits are those of the full generation); (f)
 throughput and peak memory of both engine scorers.
 
-    python repro/fakevlm_fidelity.py --data ROOT --official-4452 OFF1.json --official-554 OFF2.json \
-        --official-inputs IN.npz [--extended EXT.txt] --out repro/fakevlm_fidelity.json
+    python repro/fakevlm_fidelity.py --data ROOT --official NAME=OUT.json [--official ...] --official-inputs IN.npz \
+        [--extended EXT.txt] --out repro/fakevlm_fidelity.json
 """
 import argparse
 import dataclasses
@@ -50,7 +54,7 @@ from interface.backend import config as backend_config               # noqa: E40
 from interface.backend import media                                  # noqa: E402
 from interface.backend.engine import Engine                          # noqa: E402
 from interface.backend.registry import get_spec                      # noqa: E402
-from models.image.fakevlm.fakevlm import FAKEVLM_GENERATE            # noqa: E402
+from models.image.fakevlm.fakevlm import FAKEVLM, FAKEVLM_TEACHER_FORCED   # noqa: E402
 from models.vlm.parsers import parse_fakevlm                         # noqa: E402
 
 # 16 images, real and fake, 256x256 to 8 MP: the gate's six GenImage val images, seven SynthWildX images, two transparent
@@ -81,7 +85,7 @@ IMAGE_TOKEN, PAD, N_IMAGE_TOKENS = 32000, 32001, 576
 def official_test_json(path: Path) -> None:
     """The official test-file format for IMAGES (labels real=1 / fake=0, as FakeClue)."""
     rows = [{"image": rel, "label": 0 if lab else 1, "cate": "fidelity",
-             "conversations": [{"from": "human", "value": FAKEVLM_GENERATE.user_prompt}, {"from": "gpt", "value": ""}]}
+             "conversations": [{"from": "human", "value": FAKEVLM.user_prompt}, {"from": "gpt", "value": ""}]}
             for rel, lab in IMAGES]
     path.write_text(json.dumps(rows, indent=1) + "\n")
 
@@ -182,11 +186,23 @@ def p_of(gap: float) -> float:
     return float(torch.sigmoid(torch.tensor(gap, dtype=torch.float64)))
 
 
+def first_sentence(text: str) -> str:
+    """What the official parser reads first: the text after the last '?', up to the first '.'."""
+    return text.split("?")[-1].split(".")[0].strip()
+
+
+def divergence(a: str, b: str):
+    """Index of the first differing character, None if equal."""
+    if a == b:
+        return None
+    return next((k for k, (x, y) in enumerate(zip(a, b)) if x != y), min(len(a), len(b)))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", help="root of the IMAGES (and --extended) paths")
-    ap.add_argument("--official-4452", help="eval.py's output JSON under transformers 4.45.2")
-    ap.add_argument("--official-554", help="eval.py's output JSON under transformers 5.5.4")
+    ap.add_argument("--official", action="append", default=[],
+                    help="NAME=PATH: an official output JSON (fakevlm_official.py eval / single), with PATH.acc.json")
     ap.add_argument("--official-inputs", help="fakevlm_official.py inputs (4.45.2) for IMAGES")
     ap.add_argument("--extended", default=None, help="extra image paths (relative to --data), one per line")
     ap.add_argument("--write-test-json", default=None, help="only write the official test JSON for IMAGES and exit")
@@ -195,11 +211,11 @@ def main() -> int:
     if args.write_test_json:
         official_test_json(Path(args.write_test_json))
         return 0
-    missing = [a for a in ("data", "official_4452", "official_554", "official_inputs") if not getattr(args, a)]
-    if missing:
-        ap.error(f"missing {missing}")
+    if not (args.data and args.official and args.official_inputs):
+        ap.error("--data, --official and --official-inputs are required")
     out_path, data = Path(args.out), Path(args.data)
     spec = get_spec("fakevlm")
+    assert spec.vlm is FAKEVLM and FAKEVLM.verdict_mode == "generate"
     folder = backend_config.CHECKPOINTS_DIR / spec.checkpoint
     proc_dir = backend_config.CHECKPOINTS_DIR / spec.vlm.processor
     result = {"weights": str(folder), "processor": str(proc_dir), "device": torch.cuda.get_device_name(0),
@@ -210,7 +226,8 @@ def main() -> int:
         out_path.write_text(json.dumps(result, indent=1, ensure_ascii=False) + "\n")
 
     official = {}
-    for name, path in (("4.45.2", args.official_4452), ("5.5.4", args.official_554)):
+    for item in args.official:
+        name, path = item.split("=", 1)
         rows = {Path(r["image_path"]).resolve(): r["output"] for r in json.loads(Path(path).read_text())}
         meta = json.loads(Path(path + ".acc.json").read_text())
         official[name] = {"outputs": [rows[(data / rel).resolve()] for rel, _ in IMAGES], "meta": meta}
@@ -221,7 +238,7 @@ def main() -> int:
     result["reference"] = ref = reference(folder, tok, inputs, fake, real)
     save()
 
-    # Engine: strict load, the registry scorer (teacher-forced) timed, then the generated path.
+    # Engine: strict load, the registry scorer (generated) timed, then the teacher-forced variant.
     engine = Engine(device="cuda")
     torch.cuda.reset_peak_memory_stats()
     t0 = time.time()
@@ -230,7 +247,6 @@ def main() -> int:
                       "weights_GB": round(torch.cuda.memory_allocated() / 1e9, 2)}
     result["load"]["tensors"] = tensor_check(model, folder)
     print("[load]", result["load"], flush=True)
-    registry_cfg = model.cfg
     checks = []
     for i, (rel, _) in enumerate(IMAGES):                    # (b) the engine's processor inputs vs official 4.45.2
         x = model.inputs(model.image(media.decode_image_raw((data / rel).read_bytes())))
@@ -242,45 +258,45 @@ def main() -> int:
     save()
     for rel, _ in IMAGES[:2]:                                # warm-up (kernels, allocator), not timed
         engine.vlm_score(spec, media.decode_image_raw((data / rel).read_bytes()))
-    tf = []
+    gen = []
     for rel, label in IMAGES:
         pil = media.decode_image_raw((data / rel).read_bytes())
         o = timed(engine, spec, pil)
+        ids = model.inputs(model.image(pil))["input_ids"][0].tolist()
+        o["official_string"] = model.tokenizer.decode(ids + o["generated_ids"], skip_special_tokens=True).split("?")[-1]
         o.update(image=rel, label_fake=label, size=list(pil.size))
-        tf.append(o)
-        print(f"[engine tf] {rel} {pil.size} logit={o['logit']:.4f} {o['seconds']}s {o['peak_GB']}GB", flush=True)
-    result["engine_teacher_forced"] = tf
-    model.cfg = FAKEVLM_GENERATE
-    gen = []
+        gen.append(o)
+        print(f"[engine gen] {rel} step={o['verdict_step']} logit={o['logit']:.4f} verdict={o['verdict']} "
+              f"{o['new_tokens']} tok {o['seconds']}s {o['peak_GB']}GB | {o['response'][:60]!r}", flush=True)
+    result["engine_generate"] = gen
+    model.cfg = FAKEVLM_TEACHER_FORCED
+    tf = []
     try:
         for rel, label in IMAGES:
             pil = media.decode_image_raw((data / rel).read_bytes())
             o = timed(engine, spec, pil)
-            ids = model.inputs(model.image(pil))["input_ids"][0].tolist()
-            o["official_string"] = model.tokenizer.decode(ids + o["generated_ids"], skip_special_tokens=True).split("?")[-1]
             o.update(image=rel, label_fake=label, size=list(pil.size))
-            gen.append(o)
-            print(f"[engine gen] {rel} step={o['verdict_step']} logit={o['logit']:.4f} verdict={o['verdict']} "
-                  f"{o['new_tokens']} tok {o['seconds']}s {o['peak_GB']}GB | {o['response'][:60]!r}", flush=True)
+            tf.append(o)
+            print(f"[engine tf] {rel} {pil.size} logit={o['logit']:.4f} {o['seconds']}s {o['peak_GB']}GB", flush=True)
     finally:
-        model.cfg = registry_cfg
-    result["engine_generate"] = gen
+        model.cfg = FAKEVLM
+    result["engine_teacher_forced"] = tf
     save()
 
     # Extended set: generated (first 8 tokens) vs teacher-forced.
     ext = []
     if args.extended:
         rels = [r for r in Path(args.extended).read_text().split("\n") if r and r not in {i for i, _ in IMAGES}]
-        short = dataclasses.replace(FAKEVLM_GENERATE, decoding={"do_sample": False, "max_new_tokens": SHORT_NEW})
+        short = dataclasses.replace(FAKEVLM, decoding={"do_sample": False, "max_new_tokens": SHORT_NEW})
         for rel in rels:
             pil = media.decode_image_raw((data / rel).read_bytes())
-            model.cfg = registry_cfg
-            t = timed(engine, spec, pil)
-            model.cfg = short
             try:
+                model.cfg = FAKEVLM_TEACHER_FORCED
+                t = timed(engine, spec, pil)
+                model.cfg = short
                 g = timed(engine, spec, pil)
             finally:
-                model.cfg = registry_cfg
+                model.cfg = FAKEVLM
             ext.append({"image": rel, "label_fake": int("/1_fake/" in rel), "size": list(pil.size),
                         "generated_ids": g["generated_ids"], "response": g["response"], "verdict_step": g["verdict_step"],
                         "generated_logit": g["logit"], "generated_p": g["fake_probability"], "parse": g["verdict"],
@@ -291,23 +307,29 @@ def main() -> int:
 
     # Summary.
     n = len(IMAGES)
-    prefix_ids = tok.convert_tokens_to_ids(list(FAKEVLM_GENERATE.verdict_sequences[0][:-1]))
+    prefix_ids = tok.convert_tokens_to_ids(list(FAKEVLM.verdict_sequences[0][:-1]))
 
     def same_position(ids, step):
         return step == len(prefix_ids) and ids[:len(prefix_ids)] == prefix_ids
 
-    s = {"n_images": n, "forced_prefix_tokens": list(FAKEVLM_GENERATE.verdict_sequences[0][:-1])}
-    for name in official:
-        o = official[name]["outputs"]
-        s[f"vs_official_{name}_identical_text_exact"] = f"{sum(a == g['official_string'] for a, g in zip(o, gen))}/{n}"
-        s[f"vs_official_{name}_identical_text_stripped"] = \
-            f"{sum(a.strip() == g['response'].strip() for a, g in zip(o, gen))}/{n}"
-        s[f"vs_official_{name}_identical_parsed_verdict"] = \
-            f"{sum(parse_fakevlm(a) == g['verdict'] for a, g in zip(o, gen))}/{n}"
-        s[f"official_{name}_accuracy"] = official[name]["meta"]["accuracy"].get("global_stats")
-        s[f"official_{name}_confusion"] = official[name]["meta"]["accuracy"]["category_acc"]["deepfake"]["confusion_matrix"]
-    s["official_4452_vs_554_identical_text"] = \
-        f"{sum(a == b for a, b in zip(official['4.45.2']['outputs'], official['5.5.4']['outputs']))}/{n}"
+    s = {"n_images": n, "registry_scorer": "generate (FAKEVLM)", "forced_prefix_tokens": list(FAKEVLM.verdict_sequences[0][:-1])}
+    vs = {}
+    for name, run in official.items():
+        o, meta = run["outputs"], run["meta"]
+        vs[name] = {
+            "transformers": meta["transformers"], "batch_size": meta["val_batch_size"],
+            "identical_text": f"{sum(a == g['official_string'] for a, g in zip(o, gen))}/{n}",
+            "identical_text_stripped": f"{sum(a.strip() == g['response'].strip() for a, g in zip(o, gen))}/{n}",
+            "identical_first_sentence": f"{sum(first_sentence(a) == first_sentence(g['response']) for a, g in zip(o, gen))}/{n}",
+            "identical_parsed_verdict": f"{sum(parse_fakevlm(a) == g['verdict'] for a, g in zip(o, gen))}/{n}",
+            "first_divergence_char": [divergence(g["official_string"], a) for a, g in zip(o, gen)],
+            "official_accuracy": meta["accuracy"].get("global_stats"),
+            "wall_seconds_incl_load": meta["wall_seconds_incl_load"], "peak_GB": meta["peak_GB"]}
+    s["engine_vs_official"] = vs
+    names = list(official)
+    s["official_vs_official_identical_text"] = {
+        f"{a} vs {b}": f"{sum(x == y for x, y in zip(official[a]['outputs'], official[b]['outputs']))}/{n}"
+        for k, a in enumerate(names) for b in names[k + 1:]}
     s["inputs_pixel_max_abs_diff_vs_official_4452"] = max(c["pixel_max_abs_diff"] for c in checks)
     s["inputs_ids_equal_vs_official_4452"] = f"{sum(c['input_ids_equal'] for c in checks)}/{n}"
     s["vs_reference_identical_tokens"] = f"{sum(r['generated_ids'] == g['generated_ids'] for r, g in zip(ref, gen))}/{n}"
@@ -316,30 +338,34 @@ def main() -> int:
     s["max_abs_logit_gap_diff_generate_engine_vs_reference"] = max(abs(r["gap"] - g["logit"]) for r, g in zip(ref, gen))
     s["max_abs_logit_gap_diff_teacher_forced_engine_vs_reference"] = \
         max(abs(r["teacher_forced_gap"] - t["logit"]) for r, t in zip(ref, tf))
+    s["verdict_steps"] = [g["verdict_step"] for g in gen]
     s["generated_starts_with_forced_prefix_and_verdict_next"] = \
         f"{sum(same_position(g['generated_ids'], g['verdict_step']) for g in gen)}/{n}"
     s["generated_text_starts_with_This_is_a"] = f"{sum(g['response'].strip().startswith('This is a') for g in gen)}/{n}"
     diffs = [abs(g["fake_probability"] - t["fake_probability"]) for g, t in zip(gen, tf)]
     s["max_abs_p_fake_diff_teacher_forced_vs_generated"] = max(diffs)
+    s["n_p_fake_diff_over_1e-3"] = sum(d > 1e-3 for d in diffs)
     s["max_abs_logit_diff_teacher_forced_vs_generated"] = max(abs(g["logit"] - t["logit"]) for g, t in zip(gen, tf))
     s["teacher_forced_vs_generated_verdict_agree"] = \
         f"{sum((t['logit'] > 0) == (g['verdict'] == 'fake') for g, t in zip(gen, tf))}/{n}"
-    s["reference_teacher_forced_vs_generated_max_abs_p_diff"] = \
+    s["reference_teacher_forced_on_generated_prefix_vs_generated_max_abs_p_diff"] = \
         max(abs(p_of(r["gap"]) - p_of(r["teacher_forced_gap"])) for r in ref)
+    s["teacher_forced_default_rule_met"] = (s["generated_starts_with_forced_prefix_and_verdict_next"] == f"{n}/{n}"
+                                            and s["max_abs_p_fake_diff_teacher_forced_vs_generated"] <= 1e-3
+                                            and s["generated_text_starts_with_This_is_a"] == f"{n}/{n}")
     s["engine_correct_generate"] = sum((g["verdict"] == "fake") == bool(g["label_fake"]) for g in gen)
     s["engine_correct_teacher_forced"] = sum((t["logit"] > 0) == bool(t["label_fake"]) for t in tf)
     s["engine_unparsed_generate"] = sum(g["verdict"] is None for g in gen)
+    s["engine_score_sources_generate"] = sorted({g["score_source"] for g in gen})
     s["tensors_all_equal"] = result["load"]["tensors"]["equal"] == result["load"]["tensors"]["checkpoint_tensors"]
-    s["teacher_forced_images_per_s"] = round(n / sum(t["seconds"] for t in tf), 3)
     s["generate_images_per_s"] = round(n / sum(g["seconds"] for g in gen), 4)
+    s["generate_seconds_per_image"] = round(sum(g["seconds"] for g in gen) / n, 2)
     s["generate_tokens_per_s"] = round(sum(g["new_tokens"] for g in gen) / sum(g["seconds"] for g in gen), 1)
-    s["teacher_forced_peak_GB_max"] = max(t["peak_GB"] for t in tf)
+    s["generate_new_tokens"] = [g["new_tokens"] for g in gen]
+    s["teacher_forced_images_per_s"] = round(n / sum(t["seconds"] for t in tf), 3)
     s["generate_peak_GB_max"] = max(g["peak_GB"] for g in gen)
+    s["teacher_forced_peak_GB_max"] = max(t["peak_GB"] for t in tf)
     s["reference_images_per_s"] = round(n / sum(r["seconds"] for r in ref), 4)
-    for name in official:
-        meta = official[name]["meta"]
-        s[f"official_{name}_wall_seconds_incl_load_bs{meta['val_batch_size']}"] = meta["wall_seconds_incl_load"]
-        s[f"official_{name}_peak_GB"] = meta["peak_GB"]
     if ext:
         m = len(ext)
         pdiff = [abs(e["generated_p"] - e["tf_p"]) for e in ext]
@@ -347,12 +373,14 @@ def main() -> int:
             "n_images": m, "generated_tokens": SHORT_NEW,
             "starts_with_forced_prefix_and_verdict_next": f"{sum(same_position(e['generated_ids'], e['verdict_step']) for e in ext)}/{m}",
             "text_starts_with_This_is_a": f"{sum(e['response'].strip().startswith('This is a') for e in ext)}/{m}",
-            "other_starts": sorted({e["response"][:40] for e in ext if not same_position(e["generated_ids"], e["verdict_step"])}),
+            "other_starts": sorted({repr(e["response"][:12]) + " ids " + str(e["generated_ids"][:5]) for e in ext
+                                    if not same_position(e["generated_ids"], e["verdict_step"])}),
             "max_abs_p_fake_diff": max(pdiff), "n_p_diff_over_1e-3": sum(d > 1e-3 for d in pdiff),
             "max_abs_logit_diff": max(abs(e["generated_logit"] - e["tf_logit"]) for e in ext),
             "verdict_agree": f"{sum((e['tf_logit'] > 0) == (e['parse'] == 'fake') for e in ext)}/{m}",
             "teacher_forced_images_per_s": round(m / sum(e["tf_seconds"] for e in ext), 3),
             "teacher_forced_peak_GB_max": max(e["tf_peak_GB"] for e in ext),
+            "correct_generated_verdict": sum((e["parse"] == "fake") == bool(e["label_fake"]) for e in ext),
             "correct_teacher_forced": sum((e["tf_logit"] > 0) == bool(e["label_fake"]) for e in ext),
         }
     result["summary"] = s

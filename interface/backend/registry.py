@@ -663,11 +663,12 @@ _add(ModelSpec(
     # llava-1.5-7b-hf_a272c74_processor (llava-hf/llava-1.5-7b-hf @ a272c74, tokenizer + processor files), as eval.py.
     overrides=[], vlm=FAKEVLM, native_res=True,
     notes="LLaVA-1.5-7B fine-tuned on FakeClue to answer \"Does the image looks real/fake?\" with \"This is a real / "
-          "fake image.\" and an explanation. Uses the OFFICIAL weights, processor and prompt. P(fake) = sigmoid of the "
-          "fake-minus-real logit at the verdict word, from one forward pass on the prompt + the answer's first words "
-          "(\"This is a\"), which matches the official greedy generation's verdict-token score (repro/fakevlm_fidelity.json); "
-          "the verdict is the sign, and no explanation is written. The image is seen as a 336x336 centre crop. GenImage "
-          "is in its training data (FakeClue). Still images only. Not on the Space (no licence).",
+          "fake image.\" and an explanation of the artifacts. Uses the OFFICIAL weights, processor, prompt and greedy "
+          "decoding (256 tokens). P(fake) = sigmoid of the fake-minus-real logit at the first \"fake\" / \"real\" "
+          "word it writes; the verdict is the official parse of the answer. The image is seen as a 336x336 centre "
+          "crop. On an RTX A5000 (bf16): about 0.5 s for a bare verdict (9 tokens), up to 7.5 s with a full explanation; "
+          "14.8 GB (repro/fakevlm_fidelity.json). GenImage is in its training data (FakeClue). Still images only. "
+          "Not on the Space (no licence).",
 ))
 
 # --- Video detectors ---------------------------------------------------------

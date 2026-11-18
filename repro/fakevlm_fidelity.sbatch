@@ -11,9 +11,10 @@
 #   sbatch --nodelist=ivi-cn026 repro/fakevlm_fidelity.sbatch
 # The weights, the llava-hf processor files and the images live on ivi-cn029 (/ssdstore/ssalehi/SynthScope). On ivi-cn029
 # they are used in place; on another node they are copied to its local scratch over ssh (needs one of our jobs on
-# ivi-cn029, e.g. keep029). Then: the pinned revisions + sha256 of both folders, the official eval.py under transformers
-# 4.45.2 (the authors' pin, from $DEPS/transformers4452) and under the env's 5.5.4, the official 4.45.2 processor inputs,
-# and the comparison (reference transformers call, engine teacher-forced and generated, extended prefix set). Any failed
+# ivi-cn029, e.g. keep029). Then: the pinned revisions + sha256 of both folders; the official eval.py under transformers
+# 4.45.2 (the authors' pin, from $DEPS/transformers4452) in batches of 4 and 2 and one image at a time, and under the
+# env's 5.5.4 in batches of 4 and one at a time; the official 4.45.2 processor inputs; and the comparison (reference
+# transformers call, engine generated and teacher-forced, extended prefix set). Any failed
 # check stops the job (set -e). The checkout's clean HEAD is copied to scratch first; the JSON is written into the checkout.
 set -euo pipefail
 unset HF_TOKEN HUGGING_FACE_HUB_TOKEN
@@ -91,19 +92,28 @@ from PIL import Image
 for p in open('$J/files.txt').read().split():
     im = Image.open('$J/data/' + p); print(im.size, im.mode, p)"
 
-echo "=== official eval.py (unmodified; batches of 4) under transformers 4.45.2 $(date +%T) ==="
+echo "=== official runs $(date +%T) ==="
 $PY repro/fakevlm_fidelity.py --write-test-json $J/test.json
-PYTHONPATH=$DEPS/transformers4452 $PY repro/fakevlm_official.py eval --model $J/ckpt/fakevlm --processor $J/ckpt/$PROC \
-   --data $J/data --test-json $J/test.json --out $J/official_4452.json --bs 4 --official-dir $REF
-echo "=== official eval.py under transformers 5.5.4 (the env) $(date +%T) ==="
-$PY repro/fakevlm_official.py eval --model $J/ckpt/fakevlm --processor $J/ckpt/$PROC \
-   --data $J/data --test-json $J/test.json --out $J/official_554.json --bs 4 --official-dir $REF
+OFF="--model $J/ckpt/fakevlm --processor $J/ckpt/$PROC --data $J/data --test-json $J/test.json --official-dir $REF"
+T4=$DEPS/transformers4452
+echo "--- eval.py (unmodified), transformers 4.45.2, batches of 4 $(date +%T)"
+PYTHONPATH=$T4 $PY repro/fakevlm_official.py eval $OFF --out $J/official_4452_bs4.json --bs 4
+echo "--- eval.py (unmodified), transformers 4.45.2, batches of 2 $(date +%T)"
+PYTHONPATH=$T4 $PY repro/fakevlm_official.py eval $OFF --out $J/official_4452_bs2.json --bs 2
+echo "--- eval.py items one at a time, transformers 4.45.2 $(date +%T)"
+PYTHONPATH=$T4 $PY repro/fakevlm_official.py single $OFF --out $J/official_4452_bs1.json
+echo "--- eval.py (unmodified), transformers 5.5.4 (the env), batches of 4 $(date +%T)"
+$PY repro/fakevlm_official.py eval $OFF --out $J/official_554_bs4.json --bs 4
+echo "--- eval.py items one at a time, transformers 5.5.4 $(date +%T)"
+$PY repro/fakevlm_official.py single $OFF --out $J/official_554_bs1.json
 echo "=== official processor inputs under transformers 4.45.2 $(date +%T) ==="
-PYTHONPATH=$DEPS/transformers4452 $PY repro/fakevlm_official.py inputs --processor $J/ckpt/$PROC --data $J/data \
+PYTHONPATH=$T4 $PY repro/fakevlm_official.py inputs --processor $J/ckpt/$PROC --data $J/data \
    --list $J/files.txt --out $J/official_inputs_4452.npz
 echo "=== reference + engine comparison $(date +%T) ==="
-$PY repro/fakevlm_fidelity.py --data $J/data --official-4452 $J/official_4452.json --official-554 $J/official_554.json \
-   --official-inputs $J/official_inputs_4452.npz --extended $J/extended.txt --out $WT/repro/fakevlm_fidelity.json
+$PY repro/fakevlm_fidelity.py --data $J/data --official-inputs $J/official_inputs_4452.npz --extended $J/extended.txt \
+   --official eval_4.45.2_bs4=$J/official_4452_bs4.json --official eval_4.45.2_bs2=$J/official_4452_bs2.json \
+   --official items_4.45.2_bs1=$J/official_4452_bs1.json --official eval_5.5.4_bs4=$J/official_554_bs4.json \
+   --official items_5.5.4_bs1=$J/official_554_bs1.json --out $WT/repro/fakevlm_fidelity.json
 echo "=== smoke test with the released files ([B] tokenizer, [F] strict load + one image) $(date +%T) ==="
 $PY tests/test_fakevlm_smoke.py 2>&1 | grep -v -i "warn\|nvml\|it/s\]"
 echo "done $(date)"
