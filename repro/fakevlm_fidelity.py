@@ -5,14 +5,15 @@ Paths:
 
 * OFFICIAL (``repro/fakevlm_official.py``, run by the sbatch before this script), each output JSON holding
   ``decode(prompt + answer).split('?')[-1]`` per image:
-    - ``eval``: the unmodified ``eval.py`` (left-padded to 1024 tokens, greedy, 256 new tokens) in batches of 4 and of 2
+    - ``eval``: the unmodified ``eval.py`` (left-padded to 1024 text tokens, greedy, 256 new tokens) in batches of 4 and 2
       under the authors' transformers 4.45.2, and in batches of 4 under the SynthScope env's transformers 5.5.4;
     - ``single``: eval.py's own dataset item, model and ``generate`` call one image at a time (what ``validate`` does
       with a batch of one, which its ``.squeeze()`` breaks), under 4.45.2 and under 5.5.4;
 * REFERENCE (written independently of ``models/vlm``): ``LlavaForConditionalGeneration`` from the weights folder; the
   inputs of the official processor call under transformers 4.45.2 (``fakevlm_official.py inputs``: ``Image.open``, CLIP
-  resize + crop in PIL, the raw prompt, padded to 1024) with the single ``<image>`` token expanded to the 576 tokens
-  transformers 5 merges at (and the left padding shortened to keep 1024); one image at a time,
+  resize + crop in PIL, the raw prompt, padded to 1024) with the single ``<image>`` token expanded in place to the 576
+  tokens transformers 5 merges at (1,599 positions, 1,013 of them padding: the layout 4.45.2 builds inside the model);
+  one image at a time,
   ``generate(do_sample=False, max_new_tokens=256, output_logits=True)``; the verdict step is the first ``▁fake`` /
   ``▁real`` token, the gap l(▁fake) - l(▁real) there; and a teacher-forced forward on the prompt + the generated tokens
   before that step;
@@ -91,12 +92,11 @@ def official_test_json(path: Path) -> None:
 
 
 def expand(ids: np.ndarray) -> torch.Tensor:
-    """A 4.45.2 input row (one ``<image>``, left-padded to 1024) with the image token repeated 576 times and the left
-    padding shortened so the row stays 1024 long (the layout transformers 5 merges the image features into)."""
-    ids = [int(t) for t in ids if t != PAD]
+    """A 4.45.2 input row (one ``<image>``, left-padded to 1024) with the image token repeated 576 times in place: the
+    1,599-position layout 4.45.2's in-model merge builds, as transformers 5 takes it (the image tokens in the ids)."""
+    ids = [int(t) for t in ids]
     k = ids.index(IMAGE_TOKEN)
-    ids = ids[:k] + [IMAGE_TOKEN] * N_IMAGE_TOKENS + ids[k + 1:]
-    return torch.tensor([[PAD] * (1024 - len(ids)) + ids])
+    return torch.tensor([ids[:k] + [IMAGE_TOKEN] * N_IMAGE_TOKENS + ids[k + 1:]])
 
 
 def first_verdict(gen: list, fake: int, real: int):

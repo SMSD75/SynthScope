@@ -16,9 +16,12 @@ The official request (``scripts/eval.py``, transformers 4.45.2), reproduced here
   processor is called with ``do_resize=False, do_center_crop=False``;
 * prompt: the raw FakeClue question ``"<image>Does the image looks real/fake?"`` (no chat template; the training
   template ``USER: <image>\\n... ASSISTANT:`` gives an empty answer), tokenised with ``padding="max_length",
-  max_length=1024, truncation=True`` (left padding); on transformers 5 the a272c74 processor expands ``<image>`` to
-  576 tokens given ``patch_size=14, vision_feature_select_strategy="default", num_additional_image_tokens=1``
-  (4.45.2 merged the image inside the model);
+  max_length=1024, truncation=True`` (left padding, ``<image>`` one token); 4.45.2 then expands ``<image>`` inside
+  the model into the 576 image features, so the model sees 1,599 positions, 1,013 of them padding. On transformers 5
+  the a272c74 processor does the expansion (given ``patch_size=14, vision_feature_select_strategy="default",
+  num_additional_image_tokens=1``) before padding, so ``max_length=1599`` (= 1024 - 1 + 576) gives the same layout.
+  The padding is masked, but its length still moves the bf16 numerics: with ``max_length=1024`` (438 pads) the greedy
+  text equalled the official one-image-at-a-time 4.45.2 run on 12 of 16 fidelity images, with 1599 on 16 of 16;
 * decoding: ``generate(max_new_tokens=256)`` with the model's generation config (greedy);
 * verdict: ``parse_fakevlm`` (``models/vlm/parsers.py``, the official rule; its random fallback is "unparsed").
 
@@ -50,6 +53,9 @@ GREEDY_DECODING = {"do_sample": False, "max_new_tokens": 256}   # eval.py: gener
 # The answer's first tokens ("  This is a" + the verdict word) under the a272c74 Llama tokenizer.
 VERDICT_SEQUENCES = (("▁▁", "▁This", "▁is", "▁a", "▁fake"), ("▁▁", "▁This", "▁is", "▁a", "▁real"))
 PROCESSOR = "llava-1.5-7b-hf_a272c74_processor"             # folder under $SYNTHSCOPE_CKPT_DIR
+# eval.py pads the text to 1024 tokens with <image> as one token; transformers 4.45.2 expands it in the model to 576
+# image features: 1024 - 1 + 576 positions. transformers 5 expands in the processor, before padding.
+MAX_LENGTH = 1024 - 1 + 576
 
 
 FAKEVLM = VLMConfig(
@@ -72,7 +78,7 @@ FAKEVLM = VLMConfig(
     processor=PROCESSOR,
     processor_overrides={"patch_size": 14, "vision_feature_select_strategy": "default",
                          "num_additional_image_tokens": 1},
-    processor_kwargs={"padding": "max_length", "max_length": 1024, "truncation": True,
+    processor_kwargs={"padding": "max_length", "max_length": MAX_LENGTH, "truncation": True,
                       "images_kwargs": {"do_resize": False, "do_center_crop": False}},
     max_pixels=None,
     hf_repo="lingcco/fakeVLM",

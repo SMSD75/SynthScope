@@ -8,7 +8,7 @@ Checks:
 [B] the prompt: the raw FakeClue question (equal to every row of the FakeClue test file when a copy is present), no chat
     template; the official decoding (greedy, 256 tokens); with the released processor folder
     ($SYNTHSCOPE_CKPT_DIR/llava-1.5-7b-hf_a272c74_processor) the verdict sequences are "▁▁ This is a" + "▁fake" / "▁real",
-    the answer "  This is a fake image." tokenises that way, and the prompt has 576 image tokens and 1024 positions; with
+    the answer "  This is a fake image." tokenises that way, and the prompt has 576 image tokens and 1,599 positions (4.45.2's layout); with
     the released weights folder, its own tokenizer (add_eos_token=true) is refused (skipped otherwise);
 [C] image handling: ``transformers_rgb`` (no EXIF rotation, alpha dropped) and ``clip_resize_center_crop`` + the processor
     with ``do_resize=False, do_center_crop=False`` == transformers 4.45.2's own CLIPImageProcessor (run in a subprocess
@@ -59,8 +59,8 @@ from interface.backend import config as backend_config                          
 from interface.backend import media                                                 # noqa: E402
 from interface.backend.engine import Engine                                         # noqa: E402
 from interface.backend.registry import get_spec, input_note                         # noqa: E402
-from models.image.fakevlm.fakevlm import (FAKEVLM, FAKEVLM_TEACHER_FORCED, GREEDY_DECODING, PROCESSOR, USER_PROMPT,   # noqa: E402
-                                          VERDICT_SEQUENCES)
+from models.image.fakevlm.fakevlm import (FAKEVLM, FAKEVLM_TEACHER_FORCED, GREEDY_DECODING, MAX_LENGTH, PROCESSOR,   # noqa: E402
+                                          USER_PROMPT, VERDICT_SEQUENCES)
 from models.vlm.image import clip_resize_center_crop, transformers_rgb              # noqa: E402
 from models.vlm.parsers import parse_fakevlm                                        # noqa: E402
 from models.vlm.vlm import LLAVA, SynthScopeVLM, VLMConfig                                     # noqa: E402
@@ -289,11 +289,11 @@ def test_prompt() -> None:
     image = FAKEVLM.preprocess(FAKEVLM.image_loader(rgb_image(500, 300)), **FAKEVLM.preprocess_kwargs)
     x = LLAVA.inputs(proc, USER_PROMPT, image, FAKEVLM, "cpu")
     ids = x["input_ids"][0].tolist()
-    assert x["input_ids"].shape == (1, 1024) and ids.count(32000) == 576 and ids[0] == 32001 and ids[-1] == 29973
+    assert x["input_ids"].shape == (1, 1599) and ids.count(32000) == 576 and ids.count(32001) == 1013 and ids[-1] == 29973
     if (WEIGHTS / "tokenizer.json").exists():               # FakeVLM's own tokenizer appends </s>: refused
         expect_raise(lambda: LLAVA.load_processor(WEIGHTS, dataclasses.replace(FAKEVLM, processor=None),
                                                   backend_config.CHECKPOINTS_DIR), ValueError, "add_eos_token=True")
-    print("    verdict sequences ▁▁ This is a + ▁fake / ▁real; 576 image tokens, left-padded to 1024; FakeVLM's own "
+    print("    verdict sequences ▁▁ This is a + ▁fake / ▁real; 576 image tokens, 1,013 pads, 1,599 positions as 4.45.2; FakeVLM's own "
           "tokenizer refused" if (WEIGHTS / "tokenizer.json").exists() else "")
 
 
@@ -365,7 +365,7 @@ def test_registry() -> None:
     assert FAKEVLM.preprocess_kwargs == {"shortest_edge": 336, "crop_size": 336} and FAKEVLM.parser is parse_fakevlm
     assert FAKEVLM.processor == PROCESSOR and FAKEVLM.processor_overrides == {
         "patch_size": 14, "vision_feature_select_strategy": "default", "num_additional_image_tokens": 1}
-    assert FAKEVLM.processor_kwargs == {"padding": "max_length", "max_length": 1024, "truncation": True,
+    assert MAX_LENGTH == 1599 and FAKEVLM.processor_kwargs == {"padding": "max_length", "max_length": 1599, "truncation": True,
                                         "images_kwargs": {"do_resize": False, "do_center_crop": False}}
     assert FAKEVLM.hf_repo == "lingcco/fakeVLM" and FAKEVLM.hf_revision.startswith("dce9e88d")
     assert FAKEVLM.processor_hf_repo == "llava-hf/llava-1.5-7b-hf" and FAKEVLM.processor_hf_revision.startswith("a272c74")
