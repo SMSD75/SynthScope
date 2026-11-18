@@ -19,6 +19,7 @@ from interface.backend import config as _config
 from interface.backend import media as _media
 from interface.backend.engine import Engine, get_engine, vlm_images_only
 from interface.backend.registry import ModelSpec, get_spec, list_specs
+from models.vlm.vlm import download_hint
 
 PathOrImage = Union[str, Path, bytes, Image.Image]
 
@@ -181,8 +182,8 @@ class Detector:
             vlm = self.spec.vlm
             raise FileNotFoundError(
                 f"'{self.spec.key}' loads the official Hugging Face folder {vlm.hf_repo} (not in the model zoo): "
-                f"hf download {vlm.hf_repo} --revision {vlm.hf_revision} "
-                f"--local-dir {_config.CHECKPOINTS_DIR / self.spec.checkpoint}, or pass checkpoint=FOLDER."
+                + download_hint(vlm, _config.CHECKPOINTS_DIR / self.spec.checkpoint, _config.CHECKPOINTS_DIR)
+                + ", or pass checkpoint=FOLDER."
             )
         if not self._auto_download:
             raise FileNotFoundError(

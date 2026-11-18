@@ -7,14 +7,17 @@ One loader / scorer (``SynthScopeVLM``) serves every such detector. What differs
   through the processor's ``size``, the input size from ``image_grid_thw``). A family decides:
     - ``load_model``: the folder loaded strictly into the official transformers class, or a LoRA adapter folder
       (``adapter_config.json``) kept unmerged on a LOCAL base folder (``base_model``; nothing is fetched from the Hub);
+    - ``adapter_key``: an adapter file's key under the current transformers module names (Qwen-VL: the 4.52 rename),
+      so that the strict adapter check accepts an adapter saved under the older layout;
     - ``load_processor``: the processor folder plus attribute overrides;
     - ``verdict_sequences``: the fake / real answers as token sequences (configurable, ``VLMConfig.verdict_sequences``);
       the score is read at their first differing token;
     - ``prompt``: the chat template on (``chat_template=True``) or the raw prompt as the official code sends it;
     - ``inputs`` / ``input_size``: the processor call and what the vision encoder saw.
 * ``VLMConfig`` (the registry spec's ``vlm``): one detector's official request and score rule: the family, model class,
-  prompts, image loader (``models/vlm/image.py``), optional PIL pre-resize hook, decoding, answer marker and end tag,
-  verdict words, verdict mode, raw or processed logits, the official parser.
+  prompts, image loader (``models/vlm/image.py``), optional PIL pre-resize hook and its parameters, decoding, answer
+  marker and end tag, verdict words, verdict mode, raw or processed logits, the official parser and, paired with it, an
+  optional ``verdict_offset`` hook (where that parser read a verdict that is not after the answer marker).
 
 Score (one image at a time; ``score`` holds a lock because the logit recorder hooks the shared LM head):
 
@@ -22,7 +25,9 @@ Score (one image at a time; ``score`` holds a lock because the logit recorder ho
     "generate" mode (reasoning models):
         generate with ``decoding`` (greedy) or ``official_decoding`` (the authors' sampling)
         verdict step = the first generated verdict word ("Ġfake" / "Ġreal", ...) after ``answer_marker`` (from the
-                       start if None) and before ``answer_end``
+                       start if None) and before ``answer_end``; or, where the official parser read its verdict
+                       somewhere else (``verdict_offset``: a character offset in the response, e.g. a tag-less final
+                       line), the generated token that holds that offset, found with the same incremental decode
         logits       = "raw": the LM head's output of that step (a forward hook, = ``output_logits``), or
                        "processed": the scores after generate's logits processors (e.g. a repetition penalty) and
                        before the sampling warpers, i.e. what greedy decoding takes the argmax of
@@ -34,9 +39,12 @@ Score (one image at a time; ``score`` holds a lock because the logit recorder ho
               differing tokens of the verdict sequences; P(fake) = sigmoid(logit)
     verdict = the official parser on the generated text (teacher-forced: the sign of the logit)
 
-No verdict token (no marker generated, e.g. a truncated output, or no verdict word between the marker and the end tag):
-P(fake) = 0.5, logit 0, ``score_source="unparsed"`` (ruling U1). Under greedy decoding with ``logits="processed"`` (or
-raw logits without a logits processor) the emitted token is the argmax, so the sign of the logit is the emitted word.
+``score_source``: "verdict_token" (after the marker), "verdict_word" (at the parser's ``verdict_offset``), or, with no
+verdict token (no marker generated, e.g. a truncated output; no verdict word between the marker and the end tag; the
+parser's word not a verdict token): P(fake) = 0.5, logit 0 and "unparsed" when the parser found no verdict either
+(ruling U1), "unscored" when it did (the verdict counts for accuracy, the 0.5 for AUROC; bench_eval reports the count).
+Under greedy decoding with ``logits="processed"`` (or raw logits without a logits processor) the emitted token is the
+argmax, so the sign of the logit is the emitted word.
 
 Relative ``base_model`` / ``processor`` folders are resolved against the checkpoint root (``SynthScopeVLM(root=...)``;
 the engine passes ``$SYNTHSCOPE_CKPT_DIR``). Batch size 1 only. Inference only: there is no training path.
@@ -54,6 +62,8 @@ from safetensors.torch import load_file
 from transformers import LogitsProcessor, LogitsProcessorList
 
 from models.vlm.image import vllm_rgb
+
+PEFT_PREFIX = "base_model.model."                     # peft's prefix of a LoRA adapter's saved keys
 
 
 class VLMFamily:
@@ -78,7 +88,13 @@ class VLMFamily:
         base = resolve_local(root, cfg.base_model)
         model, info = model_cls.from_pretrained(str(base), **kwargs)
         check_loading_info(info, f"{base} ({cfg.model_class})")
-        return load_lora_unmerged(model, path).eval()
+        return load_lora_unmerged(model, path, rename=self.adapter_key).eval()
+
+    def adapter_key(self, key: str) -> str:
+        """A LoRA adapter file's key as the current transformers names the module (the base class: unchanged). peft
+        renames keys saved under an older module layout when it loads them; this gives the strict check
+        (``load_lora_unmerged``) the same names."""
+        return key
 
     def load_processor(self, path: Path, cfg: "VLMConfig", root: Path):
         """``cfg.processor`` (relative names under ``root``), else the weights folder if it holds processor files,
@@ -157,6 +173,21 @@ class QwenVLFamily(VLMFamily):
         patch = processor.image_processor.patch_size
         return [int(grid[2] * patch), int(grid[1] * patch)]
 
+    def adapter_key(self, key: str) -> str:
+        """Adapter keys saved before transformers 4.52 moved the Qwen2-VL / Qwen2.5-VL language model under
+        ``model.language_model`` and the vision tower under ``model.visual``: the class's old
+        ``_checkpoint_conversion_mapping`` ({"^visual": "model.visual", "^model(?!\\.(language_model|visual))":
+        "model.language_model"}) applied after peft's ``base_model.model.`` prefix. Keys already in the current layout
+        (``model.language_model.*``, ``model.visual.*``, ``lm_head``) are unchanged, so Qwen3-VL adapters pass as they are."""
+        if not key.startswith(PEFT_PREFIX):
+            return key
+        rest = key[len(PEFT_PREFIX):]
+        if rest.startswith("visual."):
+            rest = "model." + rest
+        elif rest.startswith("model.") and not rest.startswith(("model.language_model.", "model.visual.")):
+            rest = "model.language_model." + rest[len("model."):]
+        return PEFT_PREFIX + rest
+
 
 QWEN_VL = QwenVLFamily()
 
@@ -174,6 +205,9 @@ class VLMConfig:
     verdict_pairs: tuple = (("fake", "real"),)        # (fake word, real word) with the same spelling
     verdict_sequences: Optional[tuple] = None         # ((fake tokens...), (real tokens...)) as token strings; None =
                                                       # the family's (the first pair with a leading space, encoded)
+    verdict_offset: Optional[Callable[[str], Optional[int]]] = None   # paired with the parser: response -> character
+                                                      # offset of the verdict word it read when that is not after
+                                                      # answer_marker (else None); None = always the marker search
     verdict_mode: str = "generate"                    # "generate" | "teacher_forced" (one forward pass)
     teacher_forced_suffix: str = ""                   # appended to the prompt in teacher_forced mode
     logits: str = "raw"                               # "raw" LM-head logits | "processed" (after logits processors)
@@ -182,7 +216,8 @@ class VLMConfig:
     chat_template: bool = True
     chat_template_kwargs: dict = field(default_factory=dict)
     image_loader: Callable[[Image.Image], Image.Image] = vllm_rgb   # decoded file -> RGB, as the official server
-    preprocess: Optional[Callable[[Image.Image], Image.Image]] = None   # PIL pre-resize hook (e.g. fetch_image)
+    preprocess: Optional[Callable[..., Image.Image]] = None   # PIL pre-resize hook (e.g. fetch_image)
+    preprocess_kwargs: dict = field(default_factory=dict)     # its parameters (e.g. max_pixels): preprocess(image, **these)
     processor: Optional[str] = None                   # processor folder (relative to CHECKPOINTS_DIR); None = the
                                                       # weights folder, or the base folder for a LoRA adapter
     processor_overrides: dict = field(default_factory=dict)   # attributes set on the loaded processor
@@ -193,6 +228,20 @@ class VLMConfig:
     attn_implementation: str = "sdpa"
     hf_repo: str = ""                                 # official weights (for the download hint)
     hf_revision: str = ""
+    base_hf_repo: str = ""                            # LoRA: the base model's repo and revision (download hint)
+    base_hf_revision: str = ""
+
+
+def download_hint(cfg: VLMConfig, folder: Path, root: Path) -> str:
+    """The ``hf download`` commands for the official weights folder ``folder`` and, for a LoRA detector, the base folder
+    (``cfg.base_model`` under ``root``); empty without ``hf_repo``."""
+    if not cfg.hf_repo:
+        return ""
+    hint = f"hf download {cfg.hf_repo} --revision {cfg.hf_revision} --local-dir {folder}"
+    if cfg.base_model and cfg.base_hf_repo:
+        base = Path(cfg.base_model) if Path(cfg.base_model).is_absolute() else Path(root) / cfg.base_model
+        hint += f"; base model: hf download {cfg.base_hf_repo} --revision {cfg.base_hf_revision} --local-dir {base}"
+    return hint
 
 
 def has_processor(folder: Path) -> bool:
@@ -216,17 +265,27 @@ def check_loading_info(info: dict, where: str) -> None:
         raise RuntimeError(f"{where}: checkpoint mismatch vs the official model class: {detail}")
 
 
-def load_lora_unmerged(model, adapter: Path):
+def load_lora_unmerged(model, adapter: Path, rename: Optional[Callable[[str], str]] = None):
     """``model`` with the LoRA adapter folder ``adapter`` (``adapter_config.json`` + ``adapter_model.safetensors``)
-    attached unmerged (merging in bf16 changes greedy outputs). Strict: the adapter tensors the model holds afterwards
-    must be exactly the file's, key for key. Needs peft, an optional dependency imported only here."""
+    attached unmerged, as ms-swift's pt backend runs it (a merge would round the LoRA delta into the bf16
+    weights; not compared). Strict: the adapter tensors the model holds afterwards
+    must be exactly the file's, key for key, after ``rename`` (the family's ``adapter_key``: the file's key under the
+    current module names, which peft also applies when it loads an adapter saved under an older layout). A key the
+    rename does not account for still fails. Needs peft, an optional dependency imported only here."""
     try:
         peft = importlib.import_module("peft")
     except ImportError as e:
         raise ImportError("a LoRA VLM detector needs peft (pip install peft)") from e
     model = peft.PeftModel.from_pretrained(model, str(adapter), is_trainable=False)
     saved = load_file(str(adapter / "adapter_model.safetensors"))
-    loaded = peft.get_peft_model_state_dict(model)
+    if rename is not None:
+        renamed = {rename(k): v for k, v in saved.items()}
+        if len(renamed) != len(saved):
+            raise RuntimeError(f"{adapter}: two adapter keys map to the same module after renaming")
+        saved = renamed
+    # save_embedding_layers given explicitly: peft's "auto" looks up the base named in adapter_config.json on the Hub
+    embeddings = any(name in k for k in saved for name in ("embed_tokens", "lm_head"))
+    loaded = peft.get_peft_model_state_dict(model, save_embedding_layers=embeddings)
     missing, unexpected = sorted(set(saved) - set(loaded)), sorted(set(loaded) - set(saved))
     differ = sorted(k for k in set(saved) & set(loaded) if not torch.equal(saved[k].to(loaded[k]), loaded[k]))
     if missing or unexpected or differ:
@@ -306,21 +365,42 @@ def locate_verdict(gen: list, pieces: list, marker: Optional[str], pair_map: dic
     return start, None
 
 
+def offset_step(gen: list, pieces: list, text: str, offset: int, pair_map: dict) -> Optional[int]:
+    """The generated step whose token holds character ``offset`` of ``text`` (the decoded response the parser read),
+    walking the per-token text ``pieces`` (``token_pieces``, the incremental decode of the marker search). None when the
+    pieces do not spell ``text`` up to that character (e.g. a special token skipped before it) or the token there is not
+    a verdict word."""
+    done = ""
+    for t, piece in enumerate(pieces):
+        if len(done) + len(piece) > offset:
+            if (done + piece)[:offset + 1] != text[:offset + 1] or gen[t] not in pair_map:
+                return None
+            return t
+        done += piece
+    return None
+
+
 def gap_fields(gap: float) -> dict:
     return {"logit": gap, "fake_probability": float(torch.sigmoid(torch.tensor(gap, dtype=torch.float64)))}
 
 
 def verdict_score(gen: list, pieces: list, rows: torch.Tensor, column: dict, marker: Optional[str], pair_map: dict,
-                  end: Optional[str] = None) -> dict:
+                  end: Optional[str] = None, offset: Optional[int] = None, text: str = "") -> dict:
     """The score fields from the generated ids ``gen``, their text ``pieces`` and the recorded verdict logits ``rows``
-    ([steps, len(column)], row t = the logits that produced ``gen[t]``; ``column``: token id -> column)."""
-    _, step = locate_verdict(gen, pieces, marker, pair_map, end)
+    ([steps, len(column)], row t = the logits that produced ``gen[t]``; ``column``: token id -> column). The verdict
+    step: with ``offset`` (where the parser read its verdict in the decoded response ``text``, ``VLMConfig.verdict_offset``)
+    the token there ("verdict_word"), else the first verdict word after ``marker`` ("verdict_token"). No step: logit 0,
+    P 0.5, "unparsed" (``SynthScopeVLM.score`` renames it "unscored" when the parser found a verdict)."""
+    if offset is not None:
+        step, source = offset_step(gen, pieces, text, offset, pair_map), "verdict_word"
+    else:
+        step, source = locate_verdict(gen, pieces, marker, pair_map, end)[1], "verdict_token"
     if step is None:
         return {"logit": 0.0, "fake_probability": 0.5, "score_source": "unparsed", "verdict_step": None,
                 "verdict_token": None, "pair_ids": None}
     pair = pair_map[gen[step]]
     row = rows[step].float()
-    return {**gap_fields(float(row[column[pair[0]]] - row[column[pair[1]]])), "score_source": "verdict_token",
+    return {**gap_fields(float(row[column[pair[0]]] - row[column[pair[1]]])), "score_source": source,
             "verdict_step": step, "verdict_token": gen[step], "pair_ids": pair}
 
 
@@ -394,7 +474,7 @@ class SynthScopeVLM(torch.nn.Module):
     def image(self, image: Image.Image) -> Image.Image:
         """The image as the official pipeline hands it to the processor: ``image_loader``, then ``preprocess``."""
         image = self.cfg.image_loader(image)
-        return self.cfg.preprocess(image) if self.cfg.preprocess else image
+        return self.cfg.preprocess(image, **self.cfg.preprocess_kwargs) if self.cfg.preprocess else image
 
     def inputs(self, image: Image.Image, suffix: str = "") -> dict:
         """The processor's model inputs for one already-loaded image (batch of one)."""
@@ -421,12 +501,16 @@ class SynthScopeVLM(torch.nn.Module):
                     seq = self.hf.generate(**inputs, **kwargs)
             gen = seq[0, n_prompt:].tolist()
             pieces = token_pieces(self.tokenizer, gen)
-            out = verdict_score(gen, pieces, rec.stacked(), self.column, self.cfg.answer_marker, self.pair_map,
-                                self.cfg.answer_end)
             response = self.tokenizer.decode(gen, skip_special_tokens=True)
+            verdict = self.cfg.parser(response)
+            offset = self.cfg.verdict_offset(response) if self.cfg.verdict_offset else None
+            out = verdict_score(gen, pieces, rec.stacked(), self.column, self.cfg.answer_marker, self.pair_map,
+                                self.cfg.answer_end, offset=offset, text=response)
+            if out["verdict_step"] is None and verdict is not None:
+                out["score_source"] = "unscored"      # a parsed verdict without a verdict token: P 0.5, reported
             rationale = response.split(self.cfg.answer_marker)[0].strip() if self.cfg.answer_marker else response
             out.update({
-                "verdict": self.cfg.parser(response),
+                "verdict": verdict,
                 "verdict_token": None if out["verdict_token"] is None else
                 self.tokenizer.convert_ids_to_tokens(out["verdict_token"]),
                 "pair_tokens": None if out["pair_ids"] is None else

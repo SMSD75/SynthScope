@@ -29,6 +29,7 @@
 | VINA | ForenSynths / UniversalFakeDetect / DiTFake / ARForensics (6 shared subsets) / GenImage (full val) / GenVideo-Val | 86.99 / 94.84 / 97.98 / 96.36 / 94.74 / 96.9 acc (ARForensics: mean of the paper's six per-subset values) | 86.93 / 94.84 / 97.98 / 96.36 / 94.74 / 96.86 acc (pooled accuracy per subset, the paper's metric) | — | ✅ official match on these 6 (every subset; ForenSynths 10 of 11). SynthWildX and WildRF are **below the paper** (91.82 vs 92.8 and 96.12 vs 97.13, the means of the paper's printed per-subset values) and AIGIBench differs (SocialRF -1.18, CommunityAI +1.83), but the unmodified official `eval.py` gives the same per-file scores on our files (max diff <= 5.8e-05, 0 flips), so the gap is the data, not the code; RRDataset 82.89 vs 82.7; Chameleon, Magic Videos, GenBuster++, DeepTraceReward not run |
 | PROBE (DINOv2 `probe` / ResNet-50 `probe_resnet`) | GenImage (val100k, fakes JPEG q96) / SynthWildX / WildRF / AIGI-Bench (CommunityAI + SocialRF); Synthbuster with different reals | DINOv2 96.8 / 96.4 / 96.9 / 89.9; ResNet-50 78.4 / 75.6 / 81.3 / 70.4 bAcc (Synthbuster 97.5 / 79.1) | DINOv2 97.47 / 97.30 / 96.92 / 89.88; ResNet-50 78.38 / 75.20 / 81.63 / 70.44 bAcc (Synthbuster, 5000 MSCOCO reals not RAISE-1k: 98.20 / 83.75) | — (training code not released) | ✅ official match on the 4 like-for-like benchmarks (DINOv2 within 0.9, ResNet-50 within 0.4 per benchmark; DINOv2 ADM / GLIDE / BigGAN about 2 points above the paper). Synthbuster is a different-reals comparison, not a reproduction claim. Chameleon and AIGI-Quality-Paradox not run (no loader), so the paper's 7-benchmark averages (93.9 / 78.1) are not comparable with our 5-benchmark means (95.95 / 77.88; paper's same 5: 95.50 / 76.96). Licence unclear: not redistributed |
 | Veritas++ (VLM, `veritaspp`) | WildRF (full data) / RealChain (1,008-image subset) / EvalGEN (500-fake subset); plus 15 held benchmarks subsampled against 27 other detectors | 96.4 / 82.3 / 99.5 acc (Tables III, III, II) | 95.65 / 82.74 / 98.20 acc (official weights, greedy decoding; EvalGEN balanced 99.10) | — (inference only, no training code in SynthScope) | ⚠️ **partial**: WildRF -0.75 on full data (sampled setting, subset: +0.06); RealChain +0.44 on a subset; EvalGEN is **not reproduced** on full data (500-fake subset, -1.30 on fakes only, which is our inference of the paper's metric; -0.40 balanced). Fidelity vs a direct transformers call: 15 / 15 identical greedy tokens and verdicts, max logit-gap diff 0.0. Apache-2.0; 17.5 GB folder, not in the zoo or on the Space |
+| Align, Don't Blend (VLM branch, `adb_vlm`) | WildRF (full data) / BFree-Online (269 real + 500 fake subset) / AIGI-Bench CommunityAI + SocialRF (40-image slices) / GenImage and AIGCDetect (subsets, fakes JPEG q96); plus 15 held benchmarks subsampled against Veritas++ and 27 other detectors | **no VLM-only number in the paper**; the full method (VLM OR the unreleased pixel expert) prints 92.9 / 97.5 / 88.8 / 91.7 / 87.7 bAcc (context only) | 93.98 / 87.96 / 82.50 / 65.97 / 63.92 bAcc (official adapter, VLM branch alone, greedy) | — (inference only, no training code in SynthScope) | ⚠️ **not reproducible**: the paper's headline is VLM OR an unreleased expert, so no row is a reproduction and none gets a delta. Full WildRF: VLM branch alone 93.98 vs the full method's 92.9 (different detectors). The AIGCDetect fake-JPEG step is our inference. Fidelity vs the official ms-swift 4.4.2 (pt backend; vLLM backend not compared): 16 / 16 identical text, tokens and verdicts. No licence: not in the zoo or on the Space |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 (training-free; AP with real as positive) | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench (Main task: 4 test generators) | 93.01 acc | — | 93.33 acc on those 4; 92.70 mAP / 86.87 acc on all 8 | ✅ close on acc on the paper's 4 generators (not the paper's train/test split) |
 | STALL (video) | GenVideo-Val | ~80 AUC | — | 83.5 AUROC (training-free) | ✅ match |
@@ -381,6 +382,78 @@ Qwen3-VL-8B fine-tuned to write a rationale and answer `<answer> real/fake </ans
 **JPEG quality 95 on every image** (same subsets): DiTFake 99.50 -> 99.60 (+0.10, AUROC +0.06; median detector -2.00 / -1.14); UFD-8 73.12 -> 67.86 (-5.26, AUROC -5.68; median -2.08 / -1.59), mostly on fakes (fake accuracy 49.2 -> 38.5). **Greedy vs the authors' sampled setting** (WildRF subset, 988 images): verdict agreement 96.96%, accuracy 95.64 -> 96.45, AUROC 99.25 -> 99.49. T 0.7 comes from the authors' `infer_vllm_single.py` (the paper states no temperature); top-p 0.8 / top-k 20 from the released `generation_config.json`.
 
 **Against the paper (Acc., VERITAS++ row):** WildRF 96.4 vs **95.65** on the full data (2,503 images; -0.75; sampled subset 96.46, +0.06); RealChain 82.3 vs **82.74** on a 1,008-image subset (+0.44, 7% of the data); EvalGEN 99.5 vs **98.20** on a 500-fake subset of 55,298 (fakes only, -1.30) or **99.10** balanced with MSCOCO reals (-0.40). The paper does not say how EvalGen is scored: fakes only is our inference from DDA's row (97.2 = DDA's fakes-only EvalGEN accuracy). EvalGEN is **not reproduced** on full data (about 55k images at 17 s each is not affordable). The WildRF full run cost about 13.8 GPU-h (8.7 h beyond the subset), over the 12 h guideline: a judgement call to get one full-data paper number. `acc_pooled` in the result JSONs counts a shared real pool once per generator (UFD, Synthbuster); the headline `acc` is unaffected.
+
+### Align, Don't Blend, VLM branch (official adapter, VLM kind; inference only; subsampled protocol)
+The released VLM branch of Align, Don't Blend (arXiv 2512.06746 v3): the authors' LoRA (Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd,
+no licence) on Qwen2.5-VL-7B-Instruct @ cc594898, which writes a short rationale and answers "This is an authentic /
+AI-generated image.". The paper's detector ORs this branch with a pixel-artifact expert that is **not released**, so the
+paper's headline numbers cannot be reproduced. **The paper prints no VLM-only number for the released adapter.**
+
+**Fidelity** (job 293634, `repro/adb_vlm_fidelity.json`), on 16 images:
+- vs the unmodified official `predict.py` (ms-swift 4.4.2, pt backend): identical text, tokens (1,570) and parsed
+  verdicts, 16 / 16;
+- vs swift with `--logprobs`: chosen-token log-probability max diff 0.0;
+- vs a direct transformers + peft call: verdict-token logit gap max diff 0.0 (this gap is not exposed by swift);
+- the vLLM backend (the official default) was not compared;
+- 0.204 images/s and a 17.26 GB peak on an RTX A5000.
+
+**Protocol.** The Veritas++ subsets (identical images, 14,937 per detector), the official greedy decoding, and 0 unparsed
+answers in every run. AUROC is read at the verdict word the official parser read: after `<answer>`, or, for the 446 of
+23,981 per-image records (386 of 19,286 scored images; at most 4.2% per result JSON) whose answer is a bare final line
+"This is an AI-generated / authentic image." without tags, at that line's word; 0 unscored answers (`n_unscored`) in
+every run. Source: `repro/vlm_bench/comparison.json` (`vlms.adb_vlm`, `subset_means.adb_vlm`,
+`paper_comparison.adb_vlm`); logs `repro/logs/adb_ivi_*.out` (the tag-less answers rescored in jobs 293800 / 293801 with
+identical text, tokens and verdicts, so no accuracy changed).
+
+| benchmark (L) | ADB acc | ADB AUROC | Veritas++ acc | best publicly licensed | median of 27 | rank of 28 (acc) | mean fake / real acc |
+|---|---:|---:|---:|---|---:|---:|---:|
+| GenImage val (100k) (L=63) | **68.05** | 82.70 | 76.88 | 96.03 (`omniaid_v1`) | 82.14 | 24 | 44.2 / 91.9 |
+| ForenSynths (13) (L=39) | **55.72** | 64.55 | 63.51 | 90.34 (`fat_former`) | 79.29 | 26 | 39.2 / 72.2 |
+| UniversalFakeDetect (8) (L=63) | **52.88** | 54.65 | 73.12 | 95.83 (`npr`) | 87.40 | 28 | 41.5 / 64.3 |
+| AIGCDetectBenchmark (17) (L=30) | **65.20** | 74.24 | 78.04 | 93.73 (`omniaid_v1`) | 83.63 | 26 | 41.0 / 89.4 |
+| Synthbuster (MSCOCO reals) (L=56) | **80.95** | 93.22 | 89.98 | 96.63 (`omniaid_v1`) | 87.80 | 21 | 63.7 / 98.2 |
+| EvalGEN (L=100) | **97.30** | 99.79 | 99.10 | 98.40 (`cure`) | 83.40 | 5 | 99.6 / 95.0 |
+| SynthWildX (L=167) | **89.22** | 97.74 | 92.11 | 96.31 (`bfree`) | 61.28 | 7 | 95.2 / 83.2 |
+| WildRF (L=167) | **93.92** | 98.81 | 95.64 | 96.24 (`cure`) | 67.16 | 5 | 95.1 / 92.7 |
+| AIGIBench (25) (L=20) | **76.70** | 87.68 | 82.40 | 87.80 (`cure` (+1 tied)) | 79.20 | 16 | 62.2 / 91.2 |
+| RRDataset (L=167) | **69.86** | 77.42 | 89.92 | 76.84 (`cure`) | 60.28 | 7 | 44.3 / 95.4 |
+| BFree-Online (269 real + 500 fake) | **87.96** | 98.36 | 79.35 | 94.93 (`dda`) | 58.03 | 6 | 77.4 / 98.5 |
+| Co-Spy-Bench (110) (L=5) | **78.36** | 84.84 | 93.82 | 98.18 (`safe`) | 89.27 | 19 | 72.7 / 84.0 |
+| DiTFake (L=167) | **95.11** | 98.86 | 99.50 | 99.10 (`safe`) | 94.31 | 10 | 93.0 / 97.2 |
+| ARForensics (L=72) | **64.78** | 68.27 | 74.40 | 97.72 (`omniaid_v1`) | 83.04 | 23 | 36.9 / 92.7 |
+| RealChain (L=72) | **72.72** | 80.57 | 82.74 | 78.17 (`cure`) | 61.71 | 8 | 63.7 / 81.8 |
+| **mean of 15** | **76.58** | **84.11** | 84.70 (AUROC 91.33) | | | | |
+
+**Reading.**
+- **In the wild it does well:** 5th to 8th of 28 on WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset and RealChain.
+  It is behind the best publicly licensed detector on all 15.
+- **Against Veritas++:** ahead in accuracy only on BFree-Online (+8.61), and in AUROC on BFree-Online and SynthWildX.
+- **Near chance on GANs, early diffusion and AR generators:** UFD-8 52.88 (last), ForenSynths 55.72, ARForensics 64.78,
+  AIGCDetect 65.20, GenImage 68.05. Fake accuracy is 37-44% on average there. This fits a VLM trained on semantic
+  implausibility whose pixel-artifact partner is not released.
+- **JPEG quality 95 on every image:** DiTFake +0.30 acc, UFD-8 -0.70 (median detector -2.00 / -2.08; Veritas++ +0.10 / -5.26).
+
+**Against the paper (balanced accuracy).** The printed AlignGemini numbers are the full method, so they are context, not
+targets:
+
+| benchmark | paper, full method (context) | SynthScope, VLM branch only |
+|---|---:|---|
+| WildRF (full, 2,503 images) | 92.9 | 93.98 |
+| BFree-Online (269 real + 500 fake subset) | 97.5 | 87.96 |
+| AIGI-Bench CommunityAI + SocialRF (20 + 20 slices) | 88.8 | 82.50 |
+| GenImage (subset, fakes q96) | 91.7 | 65.97 |
+| AIGCDetect (subset, fakes q96, **inferred protocol**) | 87.7 | 63.92 |
+| CO-SPY in-the-wild | 94.3 | not held |
+
+Notes:
+- **GenImage:** the paper JPEG-compresses the fakes "following BFree" and gives no quality; q96 is our choice, following
+  DDA's published protocol.
+- **AIGCDetect:** the paper states that step for GenImage only, so applying it here is our inference.
+- **Tables 4 / 5:** their Qwen2.5-VL-7B rows are the ambiguous / untrained base model, not the released adapter.
+- **Cache identity:** editing any `models/vlm/*.py` re-keys the per-image caches of every VLM detector, Veritas++
+  included; the identity also holds the base model's revision and the resize parameters. The committed results are
+  unaffected. The ADB caches were carried over the final-review re-key by `repro/vlm_bench/migrate_vlm_cache.py`
+  (18,900 records kept, the 386 tag-less ones rescored). Details in `models/image/adb_vlm/README.md`.
 
 ### WaveRep (official checkpoints G1 and G4; PARTIAL paper comparison)
 Fidelity: SynthScope's class == the official timm `vit_base_patch14_reg4_dinov2` model (177/177 state-dict tensors identical, strict load, both checkpoints). The unmodified official demo (`main_avideo.py` / `main_directory.py` @ `0fd6010`) and SynthScope agree: 15 videos in 6 codecs (model inputs bit-exact; video logit max diff 6.0e-7; CPU) and 180 GenVideo-Val files per checkpoint (max |logit diff| 1.02e-5 G1 / 1.05e-5 G4, 0 sign flips, 0 NaN; GPU-vs-GPU; `repro/waverep_official_parity_genvideo180.json`, DAS6 67291). Protocol: official OpenCV reader, the first 64 frames (paper App. D; the demo's default is every frame, `num_frames=0`), 504 centre crop, mean frame logit, balanced accuracy at 0.5 and AUC (the paper's metrics). Two released checkpoints: `waverep` = G1 ("a single generator" per the official demo README; we infer Pyramid Flow, the paper's detector), `waverep_g4` = G4 ("four generators", the demo's default; we infer the Table 5 set). No training code is released, so there is no SynthScope-trained number.

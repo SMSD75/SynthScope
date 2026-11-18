@@ -34,13 +34,16 @@ VLM detectors (registry ``predict_kind="vlm"``, e.g. veritaspp) are scored one i
 file decoded without an RGB conversion (``media.decode_image_raw``; the model's own ``image_loader`` does the official EXIF / alpha
 handling). With --degrade / --jpeg-fakes that loader runs first and the degradation is applied to its RGB output. Metrics:
 accuracy from the parsed verdict (an unparsed answer counts as wrong; ``*_drop`` fields drop it, as the authors' script does),
-AUROC / AP from the fake-minus-real logit, plus the unparsed count and the mean generated tokens; the per-image records go into the
+AUROC / AP from the fake-minus-real logit, plus the unparsed count, the unscored count (a parsed verdict but no verdict token, so
+P(fake) = 0.5 / logit 0 enters AUROC / AP; ``n_unscored``) and the mean generated tokens; the per-image records go into the
 output JSON (``per_image``). --vlm-decoding official samples with the authors' settings, seeded per image with --vlm-seed.
 --vlm-cache DIR keeps every scored image as a JSON line (one file per writer, keyed by its path relative to --data and checked
 against the file's sha1), so a preempted or repeated run only scores what is missing. The cache folder is also keyed by a hash of
-the weights revision (or --ckpt), max_new_tokens and sampling settings, the prompts, the detector's other VLM settings (max_pixels,
-model class, verdict pairs, markers, parser, image loader) and the VLM code version (``vlm_identity``,
-written to ``identity.json`` in the folder), so a cache reused after any of them changed starts empty.
+the weights revision (or --ckpt) and a LoRA base's revision, max_new_tokens and sampling settings, the prompts, the detector's
+other VLM settings (max_pixels, model class, verdict pairs, markers, parser and its verdict-offset hook, image loader, pre-resize
+hook and its parameters) and the VLM code version (``vlm_identity``, written to ``identity.json`` in the folder), so a cache
+reused after any of them changed starts empty (repro/vlm_bench/migrate_vlm_cache.py carries records over a re-key that does
+not change them).
 """
 from __future__ import annotations
 
@@ -351,14 +354,17 @@ def vlm_code_version() -> str:
 
 
 VLM_CONFIG_FIELDS = ("model_class", "family", "max_pixels", "verdict_pairs", "verdict_sequences", "verdict_mode",
-                     "teacher_forced_suffix", "logits", "answer_marker", "answer_end", "parser", "image_loader", "preprocess",
-                     "processor", "processor_overrides", "processor_kwargs", "base_model", "dtype", "attn_implementation")
+                     "teacher_forced_suffix", "logits", "answer_marker", "answer_end", "parser", "verdict_offset",
+                     "image_loader", "preprocess", "preprocess_kwargs", "processor", "processor_overrides",
+                     "processor_kwargs", "base_model", "dtype", "attn_implementation")
+NO_SCORE_SOURCES = ("unparsed", "unscored")      # score_source of a record without a verdict token (P 0.5, logit 0)
 
 
 def vlm_config_fingerprint(cfg) -> str:
     """Short hash of the per-detector VLM settings that change a score (``VLMConfig`` fields: model class, pixel cap,
-    verdict words / sequences / mode, logits kind, answer marker and end tag, parser, image loader, pre-resize hook,
-    processor and base folders, dtype, attention): callables by qualified name, a family by its class."""
+    verdict words / sequences / mode, logits kind, answer marker and end tag, parser and its verdict-offset hook, image
+    loader, pre-resize hook and its parameters, processor and base folders, dtype, attention): callables by qualified
+    name, a family by its class."""
     def name(v):
         if callable(v) or isinstance(v, type):
             return f"{getattr(v, '__module__', '')}.{getattr(v, '__qualname__', repr(v))}"
@@ -371,7 +377,7 @@ def vlm_config_fingerprint(cfg) -> str:
 
 def vlm_identity(spec, decoding: str, ckpt: str | None = None) -> dict:
     """Everything besides the image that determines a cached record: the weights (pinned HF revision, or the explicit
-    ``--ckpt`` path), the generation limit and sampling settings of the active decoding, a hash of the prompts and chat
+    ``--ckpt`` path; a LoRA's base revision), the generation limit and sampling settings of the active decoding, a hash of the prompts and chat
     template arguments, a fingerprint of the rest of the detector's VLM config (``vlm_config_fingerprint``: max_pixels,
     model class, verdict pairs, markers, parser, image loader, ...), and the code version. A cache folder is keyed by a
     hash of this dict."""
@@ -379,7 +385,8 @@ def vlm_identity(spec, decoding: str, ckpt: str | None = None) -> dict:
     dec = dict(cfg.official_decoding if decoding == "official" else cfg.decoding)
     prompts = json.dumps([cfg.system_prompt, cfg.user_prompt, cfg.chat_template_kwargs, cfg.chat_template],
                          sort_keys=True, default=str)
-    return {"weights_revision": cfg.hf_revision or None, "ckpt": ckpt, "max_new_tokens": dec.get("max_new_tokens"),
+    return {"weights_revision": cfg.hf_revision or None, "base_weights_revision": cfg.base_hf_revision or None,
+            "ckpt": ckpt, "max_new_tokens": dec.get("max_new_tokens"),
             "generation": dec, "prompt_sha1": hashlib.sha1(prompts.encode()).hexdigest()[:10],
             "config_sha1": vlm_config_fingerprint(cfg), "code_version": vlm_code_version()}
 
@@ -480,7 +487,8 @@ def score_vlm(det, spec, paths: list[Path], keys: list[str], labels: list[int], 
 
 def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
     """Accuracy from the parsed verdicts (unparsed = wrong; ``*_drop``: unparsed answers left out, as the authors'
-    ``cal_metrics.py``), AUROC / AP from the fake-minus-real logit (float64, rank-based), plus counts."""
+    ``cal_metrics.py``), AUROC / AP from the fake-minus-real logit (float64, rank-based), plus counts (``n_unscored``: a
+    parsed verdict without a verdict token, i.e. logit 0 / P 0.5 in AUROC / AP)."""
     if len(set(labels)) < 2:
         return None
     logits = [r["logit"] for r in recs]
@@ -504,6 +512,7 @@ def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
             "acc_pooled_drop": pct([c for c, ok in zip(correct, parsed) if ok]),
             "n_real": len(by_class[0]), "n_fake": len(by_class[1]),
             "n_unparsed": parsed.count(False),
+            "n_unscored": sum(v is not None and r["score_source"] in NO_SCORE_SOURCES for v, r in zip(verdicts, recs)),
             "n_unfinished": sum(not r["finished"] for r in recs),
             "n_logit_verdict_disagree": sum(v is not None and (v == "fake") != (r["logit"] > 0)
                                             for v, r in zip(verdicts, recs)),
@@ -653,7 +662,8 @@ def main(argv=None) -> int:
             agg[k].append(m[k])
         print(f"    {name}: acc={m['acc']} AP={m['ap']} AUROC={m['auroc']} "
               f"(real_acc={m['real_acc']} fake_acc={m['fake_acc']})"
-              + (f" unparsed={m['n_unparsed']} mean_tokens={m['mean_tokens']}" if is_vlm else ""), flush=True)
+              + (f" unparsed={m['n_unparsed']} unscored={m['n_unscored']} mean_tokens={m['mean_tokens']}" if is_vlm else ""),
+              flush=True)
 
     if not per_gen:
         print("No generator produced valid metrics.")
@@ -686,6 +696,7 @@ def main(argv=None) -> int:
         unparsed = sum(r["verdict"] is None for r in per_image)
         result["vlm"] = {
             "decoding": args.vlm_decoding, "seed": vlm_seed, "n_images": n, "n_unparsed": unparsed,
+            "n_unscored": sum(r["verdict"] is not None and r["score_source"] in NO_SCORE_SOURCES for r in per_image),
             "n_unfinished": sum(not r["finished"] for r in per_image),
             "mean_tokens": round(sum(r["new_tokens"] for r in per_image) / n, 1),
             "mean_seconds_scored": round(sum(r["seconds"] for r in per_image) / n, 2),
@@ -694,7 +705,9 @@ def main(argv=None) -> int:
                                      / (n - unparsed), 2) if n > unparsed else None,
             "cache": str(cache.folder) if cache.folder else None, "identity": identity,
             "metric_note": "acc / real_acc / fake_acc from the parsed verdict, unparsed = wrong; *_drop leave unparsed "
-                           "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit. "
+                           "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit at the "
+                           "verdict token (n_unscored: a parsed verdict without a verdict token enters AUROC / AP with "
+                           "logit 0, P(fake) 0.5). "
                            "acc_pooled counts every scored (generator, image) pair once: a real pool shared by several "
                            "generators (ufd, synthbuster layouts) is counted once per generator; the headline acc is the "
                            "balanced mean over generators and is unaffected"}

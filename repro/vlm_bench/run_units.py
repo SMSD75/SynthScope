@@ -6,7 +6,9 @@ A unit is one ``benchmark/bench_eval.py`` subprocess:
                                 (the authors' sampling, seed --seed) | full (the benchmark's FULL data from --full-data, no
                                 --limit; same per-image cache as clean, so the subset images are not scored twice);
                                 full:<gen> scores only that generator (bench_eval --select), so several workers of one node
-                                can fill the shared cache in parallel before the whole full unit reads it back
+                                can fill the shared cache in parallel before the whole full unit reads it back;
+                                jpegfakes<Q> (bench_eval --jpeg-fakes Q: only the fakes JPEG-compressed, the DDA / BFree
+                                format-alignment protocol of a paper table, e.g. jpegfakes96 on GenImage / AIGCDetect)
     cmp:<det>:<bench>[:jpeg95]  a comparator detector on the same subset (bs 32)
 
 Every unit scores ``<subsets-root>/<bench>/data`` (+ ``reals``) with ``--limit L`` of the spec (a no-op on the subset, recorded in
@@ -84,6 +86,8 @@ def command(unit: str, spec: dict, args) -> tuple[list[str], Path]:
         cmd += ["--select", gen]
     if variant == "jpeg95":
         cmd += ["--degrade", "jpeg95"]
+    elif re.fullmatch(r"jpegfakes\d+", variant):
+        cmd += ["--jpeg-fakes", variant[len("jpegfakes"):]]
     elif variant not in ("clean", "official", "full"):
         raise ValueError(f"unit {unit!r}: unknown variant {variant}")
     if kind == "vlm":
@@ -102,7 +106,9 @@ def run_unit(unit: str, spec: dict, args, lock_dir: Path) -> str:
     cmd, out = command(unit, spec, args)
     if out.exists():
         return "exists"
-    lock = (lock_dir / (re.sub(r"[^A-Za-z0-9_.-]", "_", unit) + ".lock")).open("w")
+    # a vlm unit's lock names its model (vlm:wildrf of veritaspp and of adb_vlm are different work); veritaspp keeps its old name
+    name = unit if not unit.startswith("vlm:") or args.vlm_model == "veritaspp" else f"{args.vlm_model}@{unit}"
+    lock = (lock_dir / (re.sub(r"[^A-Za-z0-9_.@-]", "_", name) + ".lock")).open("w")
     try:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except BlockingIOError:

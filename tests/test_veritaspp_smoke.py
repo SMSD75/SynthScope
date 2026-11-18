@@ -11,7 +11,8 @@ Checks:
     request equals the gate check's text (skipped otherwise);
 [C] the score math on a stub tokenizer: verdict-token pairs, the marker search, the verdict step (first verdict token
     after "<answer>", none after "</answer>"; from the start without a marker), logit = l(fake) - l(real) of that pair,
-    P(fake) = sigmoid(logit); no verdict token -> P 0.5, logit 0, "unparsed" (ruling U1); the LM-head hook;
+    P(fake) = sigmoid(logit); no verdict token -> P 0.5, logit 0, "unparsed" (ruling U1); the LM-head hook; Veritas++
+    has no verdict-offset hook, so the engine's call (offset None) is exactly the marker search;
 [D] the image loader = vLLM's (EXIF transpose, transparency on white, RGB) on every branch; the recorded comparison
     with vLLM itself (repro/vlm_image_vllm_parity.json) is all identical; VLM inputs are decoded without an RGB
     conversion (``media.decode_image_raw``, ``Detector._classify``);
@@ -20,7 +21,8 @@ Checks:
     thread on the raw file and refuses a video;
 [F] a tiny random Qwen3-VL with a tiny local processor (no released files): strict load, a removed / added tensor
     raises, an adapter folder without a base raises; ``score`` end to end (forced answer: verdict step, logit ==
-    ``output_logits`` gap, parsed verdict), hooked logits == ``output_logits``, tokens == a direct ``generate``,
+    ``output_logits`` gap, parsed verdict; a forced tag-less output is unparsed, nothing read outside the marker),
+    hooked logits == ``output_logits``, tokens == a direct ``generate``,
     processed logits == ``output_scores`` under a repetition penalty, two threads give the sequential result (lock),
     the engine's ``predict_image``; with peft importable ($VLM_PYDEPS adds a path): an unmerged LoRA on a local base
     loads strictly, matches a direct peft load, and a tampered adapter raises;
@@ -363,6 +365,14 @@ def test_score_math() -> None:
     for gen in ([0, 1, 2, 12, 7, 1, 2], [0, 1, 2, 12, 7, 1, 2, 11, 4], [11, 3, 4]):
         out = run(gen)
         assert (out["score_source"], out["fake_probability"], out["logit"]) == ("unparsed", 0.5, 0.0), gen
+    # Veritas++ pairs no verdict-offset hook with its parser (which reads only the <answer> tag): the engine passes
+    # offset None, which is exactly the marker search, on every output above
+    assert VERITASPP.verdict_offset is None
+    for gen in ([11, 5, 11, 0, 1, 2, 3, 7, 1, 2], [0, 1, 2, 9], [0, 1, 2, 12, 7, 1, 2], [0, 1, 2, 12, 7, 1, 2, 11, 4],
+                [11, 3, 4], [11, 4]):
+        pieces = [tok.decode([t]) for t in gen]
+        assert verdict_score(gen, pieces, rows[:len(gen)], column, "<answer>", pair_map, "</answer>", offset=None,
+                             text="".join(pieces)) == run(gen), gen
     # without a marker the first verdict word counts (from step 0)
     out = run([11, 4, 3], marker=None, end=None)
     assert out["verdict_step"] == 1 and out["pair_ids"] == (4, 3) and marker_end(["x"], None) == 0
@@ -615,6 +625,16 @@ def test_tiny_qwen() -> None:
             for t in threads:
                 t.join()
         assert all(r["logit"] == out["logit"] and r["generated_ids"] == out["generated_ids"] for r in results)
+        # a tag-less output ("x fake"): the Veritas parser finds no verdict and, with no verdict-offset hook, no word
+        # outside the marker is read: unparsed, P 0.5
+        script = tok.convert_tokens_to_ids(["x", "fake"])
+        tagless = ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)
+        vlm.cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "logits_processor": LogitsProcessorList([tagless])})
+        with quiet():
+            bare = vlm.score(image)
+        assert (bare["score_source"], bare["verdict"], bare["fake_probability"], bare["verdict_step"]) == \
+            ("unparsed", None, 0.5, None), bare
+        vlm.cfg = forced_cfg
         # processed logits (after a repetition penalty) == output_scores
         rp = dataclasses.replace(cfg, logits="processed", decoding={**cfg.decoding, "repetition_penalty": 1.3})
         with quiet(), torch.inference_mode():

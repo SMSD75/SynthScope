@@ -262,6 +262,20 @@ VAL = {
     ("veritaspp", "RealChain"): {"official": {"acc": 82.74}},
     ("veritaspp", "EvalGEN"): {"official": {"acc": 98.2}},
     ("veritaspp", "15 held benchmarks"): {"official": {"acc": 84.7, "auroc": 91.33}},
+    # Align, Don't Blend, VLM branch (Chen et al., arXiv 2512.06746): the official LoRA adapter only, inference only, greedy (the
+    # official decoding), no SynthScope-trained number. The paper's detector is VLM OR an unreleased pixel expert and the paper
+    # prints no VLM-only number, so the spec gives no paper number and every row is "reference". Every value traces to
+    # repro/vlm_bench/comparison.json (paper_comparison.adb_vlm / subset_means.adb_vlm; results/<bench>/adb_vlm*.json; logs
+    # repro/logs/adb_ivi_*.out). WildRF = FULL data (2,503 images, results/wildrf/adb_vlm__full*.json); BFree-Online = 269 real +
+    # 500 fake subset; AIGI-Bench = the CommunityAI + SocialRF slices of the subset (20 + 20 each); GenImage / AIGCDetect = subsets
+    # with the fakes JPEG q96 (adb_vlm__jpegfakes96.json; the AIGCDetect protocol is our inference); the last row is the
+    # unweighted mean of the 15 subsampled benchmark accuracies / AUROCs. CO-SPY in-the-wild is not held (no entry).
+    ("adb_vlm", "WildRF"): {"official": {"acc": 93.98, "auroc": 98.78}},
+    ("adb_vlm", "BFree-Online"): {"official": {"acc": 87.96, "auroc": 98.36}},
+    ("adb_vlm", "AIGI-Bench"): {"official": {"acc": 82.5}},
+    ("adb_vlm", "GenImage"): {"official": {"acc": 65.97, "auroc": 79.18}},
+    ("adb_vlm", "AIGCDetectBenchmark"): {"official": {"acc": 63.92, "auroc": 70.55}},
+    ("adb_vlm", "15 held benchmarks"): {"official": {"acc": 76.58, "auroc": 84.11}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

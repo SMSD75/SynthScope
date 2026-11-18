@@ -2,8 +2,8 @@
 
 * a vlm spec is scored one image at a time through ``vlm_score`` on the raw decoded file (an RGBA PNG reaches it as RGBA),
 * metrics: accuracy from the parsed verdict with an unparsed answer counted wrong, the ``*_drop`` fields leaving it out,
-  AUROC / AP from the logit (sklearn, rank-based), the unparsed count and the
-  mean generated tokens, equal to a hand computation,
+  AUROC / AP from the logit (sklearn, rank-based), the unparsed count, the unscored count (a parsed verdict without a
+  verdict token, under the old label "unparsed" or "unscored") and the mean generated tokens, equal to a hand computation,
 * the output JSON carries ``limit``, the ``vlm`` block and ``per_image``,
 * ``--vlm-cache``: a second run scores nothing and gives the identical JSON (apart from date and tag); a changed file
   (other sha1) is scored again; records of another decoding / degradation are kept in their own folders,
@@ -95,8 +95,9 @@ def patched(engine: StubEngine, stem_of: dict, loader_modes: list):
                                 model_class="StubForGeneration", family=StubFamily(), max_pixels=None,
                                 verdict_pairs=(("fake", "real"),), verdict_sequences=None, verdict_mode="generate",
                                 teacher_forced_suffix="", logits="raw", answer_marker="<answer>", answer_end="</answer>",
-                                parser=stub_parser, preprocess=None, processor=None, processor_overrides={},
-                                processor_kwargs={}, base_model=None, dtype="bfloat16", attn_implementation="sdpa")
+                                parser=stub_parser, verdict_offset=None, preprocess=None, preprocess_kwargs={},
+                                processor=None, processor_overrides={}, processor_kwargs={}, base_model=None,
+                                base_hf_revision="", dtype="bfloat16", attn_implementation="sdpa")
     spec = types.SimpleNamespace(predict_kind="vlm", transform=None, vlm=cfg, eval_batch_size=lambda b: 1)
     SPEC["spec"] = spec
     det = types.SimpleNamespace(_engine=engine, spec=spec, _ensure_weights=lambda: None)
@@ -146,21 +147,25 @@ def expected() -> dict:
     return {"ap": round(100 * average_precision_score(labels, logits), 2), "auroc": round(100 * roc_auc_score(labels, logits), 2),
             "real_acc": 50.0, "fake_acc": 75.0, "acc": 62.5, "acc_pooled": 62.5,
             "real_acc_drop": round(200 / 3, 2), "fake_acc_drop": 75.0, "acc_drop": round((round(200 / 3, 2) + 75) / 2, 2),
-            "acc_pooled_drop": round(500 / 7, 2), "n_real": 4, "n_fake": 4, "n_unparsed": 1, "n_unfinished": 1,
+            "acc_pooled_drop": round(500 / 7, 2), "n_real": 4, "n_fake": 4, "n_unparsed": 1, "n_unscored": 0,
+            "n_unfinished": 1,
             "n_logit_verdict_disagree": 0, "mean_tokens": round(sum(OUTPUTS[s][2] for s in STEMS) / 8, 1)}
 
 
 def check_identity(tmp: Path, stem_of: dict) -> None:
-    """The cache folder is keyed by the weights revision, max_new_tokens, the prompts and the code version: changing any
+    """The cache folder is keyed by the weights (and a LoRA base's) revision, max_new_tokens, the prompts, the VLM config
+    (including the parser's verdict-offset hook and the pre-resize hook's parameters) and the code version: changing any
     of them (each alone) gives an empty cache, so stale records are never returned; restoring it finds them again."""
     ident = bench_eval.vlm_identity(SPEC["spec"], "greedy")
     assert ident["weights_revision"] == "rev1" and ident["max_new_tokens"] == 2048 and ident["code_version"]
+    assert ident["base_weights_revision"] is None
     assert len(ident["prompt_sha1"]) == 10 and len(ident["config_sha1"]) == 10
     variants = {}
     base = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, ident)
     cfg = SPEC["spec"].vlm
     changes = {
         "weights revision": lambda: setattr(cfg, "hf_revision", "rev2"),
+        "base weights revision": lambda: setattr(cfg, "base_hf_revision", "base2"),
         "max_new_tokens": lambda: cfg.decoding.__setitem__("max_new_tokens", 4096),
         "system prompt": lambda: setattr(cfg, "system_prompt", "sys2"),
         "user prompt": lambda: setattr(cfg, "user_prompt", "usr2"),
@@ -174,6 +179,8 @@ def check_identity(tmp: Path, stem_of: dict) -> None:
         "parser": lambda: setattr(cfg, "parser", other_parser),
         "image loader": lambda: setattr(cfg, "image_loader", other_parser),
         "preprocess": lambda: setattr(cfg, "preprocess", other_parser),
+        "preprocess kwargs": lambda: cfg.preprocess_kwargs.__setitem__("max_pixels", 1003520),
+        "verdict offset hook": lambda: setattr(cfg, "verdict_offset", other_parser),
         "verdict mode": lambda: setattr(cfg, "verdict_mode", "teacher_forced"),
         "logits": lambda: setattr(cfg, "logits", "processed"),
         "family": lambda: setattr(cfg, "family", OtherFamily()),
@@ -181,6 +188,7 @@ def check_identity(tmp: Path, stem_of: dict) -> None:
     for name, change in changes.items():
         saved = dict(vars(cfg))
         saved["chat_template_kwargs"], saved["decoding"] = dict(cfg.chat_template_kwargs), dict(cfg.decoding)
+        saved["preprocess_kwargs"] = dict(cfg.preprocess_kwargs)
         change()
         variants[name] = bench_eval.vlm_variant("stubvlm", "greedy", None, None, None, bench_eval.vlm_identity(SPEC["spec"], "greedy"))
         vars(cfg).clear()
@@ -253,6 +261,15 @@ def main() -> None:
         assert json.loads((folder / "identity.json").read_text()) == ident()
         assert a["vlm"]["identity"] == ident() and "once per generator" in a["vlm"]["metric_note"]
         check_identity(tmp, stem_of)
+
+        # unscored = a parsed verdict without a verdict token, under the new label and the old one ("unparsed")
+        recs = [{"logit": 0.0, "verdict": "real", "score_source": "unscored"},
+                {"logit": 0.0, "verdict": "fake", "score_source": "unparsed"},
+                {"logit": 0.0, "verdict": None, "score_source": "unparsed"},
+                {"logit": 2.0, "verdict": "fake", "score_source": "verdict_word"}]
+        recs = [dict(r, finished=True, new_tokens=5) for r in recs]
+        m = bench_eval.vlm_metrics(recs, [0, 1, 0, 1])
+        assert (m["n_unscored"], m["n_unparsed"]) == (2, 1), m
 
         plain = bench_eval.metrics(torch.tensor([0.1, 0.9]), torch.tensor([0, 1]))
         assert list(plain) == ["ap", "auroc", "real_acc", "fake_acc", "acc"]   # the non-VLM metrics are unchanged

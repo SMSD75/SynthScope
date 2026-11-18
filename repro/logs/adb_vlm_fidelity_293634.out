@@ -1,0 +1,733 @@
+node=ivi-cn026 job=293634 Wed Nov 18 03:09:00 CET 2026 code=69c336a VLM LoRA strict check: no Hub lookup (get_peft_model_state_dict with an explicit save_embedd (69c336a464eeeda9b1401b646b004edc44fea545, copied to /ssdstore/ssalehi/SynthScope/adb_fid/293634/code)
+NVIDIA RTX A5000, 24564 MiB
+staging qwen2.5-vl-7b-instruct from ivi-cn029 03:09:00
+staging align_dont_blend_vlm from ivi-cn029 03:09:01
+=== weights: pinned revisions (hf download metadata) + sha256 ===
+adb_vlm: 4 files from Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd8b28eaab8ef14650ffee0c545934d02b; safetensors etags == SHA256SUMS
+qwen2.5-vl-7b-instruct: 16 files from Qwen/Qwen2.5-VL-7B-Instruct @ cc594898137f460bfe9f0759e9844b3ce807cfb5; safetensors etags == SHA256SUMS
+adb_vlm sha256 OK
+qwen2.5-vl-7b-instruct sha256 OK
+=== images ===
+7043c9d21cc43f1128d5834e61898b9cab4c0370  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+41227e2fb233af5f7fc93ea38ff1005f9519b902  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+cef224052a229610d5e86f7ccecf3037985a4e95  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+c72dc3dcba991e3cb7dd771d7786c64f4dac7c7e  GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+462ce1c5d95e7c225d3917abc54c0d9c78d74e98  GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+ecabd1a00ad31a429cbea8c003a357eaae017d86  GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+dea667805fff8397148d3e36a973df822804cf3a  SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+4997988e160ae956e301c2eeb342f6b7423a5730  SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+606d20f52b601a702381de9e3b97a7a731d1b184  SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+15bb160780e2998c7d449fb673e238d57b3a935c  SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+0a57109daee27f9d09903ce35f3252f8ff8ba3ef  SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+fabfd62b54d8b5cc2e6758380829b8d9a3f4f255  SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+1c80b0cc10203f02087cf0e53c3b978ecf8e074a  SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+ee9b84aa96da90e5914bef528df66f555a9a7d68  WildRF/test/reddit/0_real/000219_0219.png
+90118c951dec1b8979bb0d91f8bc1b3a0b2bcb6b  WildRF/test/reddit/0_real/000032_0032.png
+22ace0827cc0e2afb020806d0eac46cffa23226c  WildRF/test/reddit/0_real/000030_0030.jpg
+(500, 375) RGB GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+(500, 333) RGB GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+(500, 333) RGB GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+(1024, 1024) RGB GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+(512, 512) RGB GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+(256, 256) RGBA GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+(662, 1000) RGB SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+(1024, 682) RGB SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+(2048, 1365) RGB SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+(1024, 1024) RGB SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+(2048, 2048) RGB SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+(1200, 686) RGB SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+(1344, 896) RGB SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+(643, 481) RGBA WildRF/test/reddit/0_real/000219_0219.png
+(720, 962) RGBA WildRF/test/reddit/0_real/000032_0032.png
+(2448, 3264) RGB WildRF/test/reddit/0_real/000030_0030.jpg
+=== official: predict.py (unmodified), ms-swift 4.4.2 pt backend 03:09:31 ===
+run sh: `/home/ssalehi/miniconda3/envs/AGID/bin/python /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/cli/infer.py --adapters /ssdstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm --infer_backend pt --max_model_len 8192 --max_pixels 1003520 --write_batch_size 500 --temperature 0 --max_new_tokens 512 --val_dataset /ssdstore/ssalehi/SynthScope/adb_fid/293634/tmp/detector-nveihknu/vlm_input.jsonl --result_path /ssdstore/ssalehi/SynthScope/adb_fid/293634/tmp/detector-nveihknu/vlm_result.jsonl --seed 42 --model /ssdstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct --load_args false`
+[INFO:swift] Successfully registered `/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/dataset/data/dataset_info.json`.
+[WARNING:swift] args.infer_backend: `pt` is deprecated, please use args.infer_backend: `transformers`.
+[INFO:swift] rank: -1, local_rank: -1, world_size: 1, local_world_size: 1
+`torch_dtype` is deprecated! Use `dtype` instead!
+[INFO:swift] Setting torch_dtype: torch.bfloat16
+[INFO:swift] Because len(args.val_dataset) > 0, setting split_dataset_ratio: 0.0
+[INFO:swift] Setting args.eval_human: False
+[INFO:swift] Setting args.lazy_tokenize: True
+[INFO:swift] args: InferArguments(use_ray=False, ray_exp_name=None, device_groups=None, model='/ssdstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct', model_type='qwen2_5_vl', model_revision=None, task_type='causal_lm', torch_dtype=torch.bfloat16, attn_impl=None, experts_impl=None, new_special_tokens=[], num_labels=None, problem_type=None, rope_scaling=None, device_map=None, max_memory={}, max_model_len=8192, local_repo_path=None, init_strategy=None, template='qwen2_5_vl', system=None, max_length=128000, truncation_strategy='delete', max_pixels=1003520, agent_template=None, norm_bbox=None, use_chat_template=True, padding_side='right', padding_free=False, loss_scale='default', sequence_parallel_size=1, is_binary_loss_scale=None, template_backend='swift', response_prefix=None, enable_thinking=None, preserve_thinking=None, add_non_thinking_prefix=True, disable_ignore_empty_think=False, dataset=[], val_dataset=['/ssdstore/ssalehi/SynthScope/adb_fid/293634/tmp/detector-nveihknu/vlm_input.jsonl'], cached_dataset=[], cached_val_dataset=[], split_dataset_ratio=0.0, data_seed=42, dataset_num_proc=1, load_from_cache_file=False, dataset_shuffle=True, val_dataset_shuffle=False, streaming=False, interleave_prob=None, stopping_strategy='first_exhausted', shuffle_buffer_size=1000, download_mode='reuse_dataset_if_exists', columns={}, strict=False, remove_unused_columns=True, disable_auto_column_mapping=False, model_name=None, model_author=None, custom_dataset_info=[], quant_method=None, quant_bits=None, hqq_axis=None, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True, bnb_4bit_quant_storage=None, max_new_tokens=512, temperature=0.0, top_k=None, top_p=None, repetition_penalty=None, num_beams=1, stream=False, stop_words=[], logprobs=False, top_logprobs=None, structured_outputs_regex=None, tuner_backend='peft', tuner_type='lora', adapters=['/ssdstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm'], external_plugins=[], custom_register_path=[], seed=42, model_kwargs={}, enable_npu_model_patch=True, load_args=False, load_data_args=False, packing=False, packing_length=None, packing_num_proc=1, packing_strategy='binpack', lazy_tokenize=True, use_hf=False, hub_token=None, ddp_timeout=18000000, ddp_backend=None, ignore_args_error=False, use_swift_lora=False, vllm_gpu_memory_utilization=0.9, vllm_tensor_parallel_size=1, vllm_pipeline_parallel_size=1, vllm_enable_expert_parallel=False, vllm_max_num_seqs=256, vllm_max_model_len=None, vllm_disable_custom_all_reduce=True, vllm_enforce_eager=False, vllm_limit_mm_per_prompt=None, vllm_max_lora_rank=16, vllm_enable_prefix_caching=None, vllm_use_async_engine=False, vllm_quantization=None, vllm_reasoning_parser=None, vllm_disable_cascade_attn=False, vllm_mm_processor_cache_gb=None, vllm_speculative_config=None, vllm_engine_kwargs={}, vllm_data_parallel_size=1, sglang_tp_size=1, sglang_pp_size=1, sglang_dp_size=1, sglang_ep_size=1, sglang_enable_ep_moe=False, sglang_mem_fraction_static=None, sglang_context_length=None, sglang_disable_cuda_graph=False, sglang_quantization=None, sglang_kv_cache_dtype='auto', sglang_enable_dp_attention=False, sglang_disable_custom_all_reduce=True, sglang_speculative_algorithm=None, sglang_speculative_num_steps=None, sglang_speculative_eagle_topk=None, sglang_speculative_num_draft_tokens=None, lmdeploy_tp=1, lmdeploy_session_len=None, lmdeploy_cache_max_entry_count=0.8, lmdeploy_quant_policy=0, lmdeploy_vision_batch_size=1, merge_lora=False, safe_serialization=True, max_shard_size='5GB', infer_backend='transformers', result_path='/ssdstore/ssalehi/SynthScope/adb_fid/293634/tmp/detector-nveihknu/vlm_result.jsonl', write_batch_size=500, metric=None, max_batch_size=1, val_dataset_sample=None, reranker_use_activation=True)
+[INFO:swift] Global seed set to 42
+[INFO:swift] Setting max_ratio: 200. You can adjust this hyperparameter through the environment variable: `MAX_RATIO`.
+[INFO:swift] Setting frame_factor: 2. You can adjust this hyperparameter through the environment variable: `FRAME_FACTOR`.
+[INFO:swift] Setting fps: 2.0. You can adjust this hyperparameter through the environment variable: `FPS`.
+[INFO:swift] Setting fps_min_frames: 4. You can adjust this hyperparameter through the environment variable: `FPS_MIN_FRAMES`.
+[INFO:swift] Setting fps_max_frames: 768. You can adjust this hyperparameter through the environment variable: `FPS_MAX_FRAMES`.
+[INFO:swift] Using environment variable `IMAGE_MAX_TOKEN_NUM`, Setting image_max_token_num: 1280.
+[INFO:swift] Setting image_min_token_num: 4. You can adjust this hyperparameter through the environment variable: `IMAGE_MIN_TOKEN_NUM`.
+[INFO:swift] Setting spatial_merge_size: 2. You can adjust this hyperparameter through the environment variable: `SPATIAL_MERGE_SIZE`.
+[INFO:swift] Setting video_max_token_num: 768. You can adjust this hyperparameter through the environment variable: `VIDEO_MAX_TOKEN_NUM`.
+[INFO:swift] Setting video_min_token_num: 128. You can adjust this hyperparameter through the environment variable: `VIDEO_MIN_TOKEN_NUM`.
+[INFO:swift] model_kwargs: {'device_map': 'cuda:0', 'dtype': torch.bfloat16}
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 2/729 [00:00<00:59, 12.15it/s]Loading weights:   4%|▍         | 28/729 [00:00<00:05, 122.85it/s]Loading weights:   7%|▋         | 53/729 [00:00<00:04, 167.19it/s]Loading weights:  11%|█         | 78/729 [00:00<00:03, 191.70it/s]Loading weights:  15%|█▍        | 108/729 [00:00<00:02, 226.74it/s]Loading weights:  19%|█▊        | 136/729 [00:00<00:02, 238.30it/s]Loading weights:  22%|██▏       | 161/729 [00:00<00:02, 236.23it/s]Loading weights:  26%|██▌       | 186/729 [00:00<00:02, 231.82it/s]Loading weights:  30%|██▉       | 216/729 [00:01<00:02, 251.33it/s]Loading weights:  33%|███▎      | 244/729 [00:01<00:01, 250.15it/s]Loading weights:  37%|███▋      | 270/729 [00:01<00:01, 236.63it/s]Loading weights:  42%|████▏     | 303/729 [00:01<00:01, 253.06it/s]Loading weights:  45%|████▌     | 329/729 [00:01<00:01, 250.28it/s]Loading weights:  74%|███████▍  | 539/729 [00:01<00:00, 766.90it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 440.03it/s]
+[INFO:swift] default_system: 'You are a helpful assistant.'
+[INFO:swift] max_length: 128000
+[INFO:swift] response_prefix: None
+[INFO:swift] agent_template: hermes
+[INFO:swift] norm_bbox: none
+[INFO:swift] Setting ROOT_IMAGE_DIR: None. You can adjust this hyperparameter through the environment variable: `ROOT_IMAGE_DIR`.
+[INFO:swift] Setting QWENVL_BBOX_FORMAT: legacy. You can adjust this hyperparameter through the environment variable: `QWENVL_BBOX_FORMAT`.
+[INFO:swift] model: PeftModelForCausalLM(
+  (base_model): LoraModel(
+    (model): Qwen2_5_VLForConditionalGeneration(
+      (model): Qwen2_5_VLModel(
+        (visual): Qwen2_5_VisionTransformerPretrainedModel(
+          (patch_embed): Qwen2_5_VisionPatchEmbed(
+            (proj): Conv3d(3, 1280, kernel_size=(2, 14, 14), stride=(2, 14, 14), bias=False)
+          )
+          (rotary_pos_emb): Qwen2_5_VisionRotaryEmbedding()
+          (blocks): ModuleList(
+            (0-31): 32 x Qwen2_5_VLVisionBlock(
+              (norm1): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (norm2): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (attn): Qwen2_5_VLVisionAttention(
+                (qkv): Linear(in_features=1280, out_features=3840, bias=True)
+                (proj): Linear(in_features=1280, out_features=1280, bias=True)
+              )
+              (mlp): Qwen2_5_VLMLP(
+                (gate_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (up_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (down_proj): Linear(in_features=3420, out_features=1280, bias=True)
+                (act_fn): SiLUActivation()
+              )
+            )
+          )
+          (merger): Qwen2_5_VLPatchMerger(
+            (ln_q): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+            (mlp): Sequential(
+              (0): Linear(in_features=5120, out_features=5120, bias=True)
+              (1): GELU(approximate='none')
+              (2): Linear(in_features=5120, out_features=3584, bias=True)
+            )
+          )
+        )
+        (language_model): Qwen2_5_VLTextModel(
+          (embed_tokens): Embedding(152064, 3584)
+          (layers): ModuleList(
+            (0-27): 28 x Qwen2_5_VLDecoderLayer(
+              (self_attn): Qwen2_5_VLAttention(
+                (q_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (k_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (v_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (o_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+              )
+              (mlp): Qwen2MLP(
+                (gate_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (up_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (down_proj): lora.Linear(
+                  (base_layer): Linear(in_features=18944, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=18944, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (act_fn): SiLUActivation()
+              )
+              (input_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+              (post_attention_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+            )
+          )
+          (norm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+          (rotary_emb): Qwen2_5_VLRotaryEmbedding()
+        )
+      )
+      (lm_head): Linear(in_features=3584, out_features=152064, bias=False)
+    )
+  )
+)
+[INFO:swift] Start time of running main: 2026-11-18 03:09:44.794895
+[INFO:swift] swift.__version__: 4.4.2
+[INFO:swift] request_config: RequestConfig(max_tokens=512, temperature=0.0, top_k=None, top_p=None, repetition_penalty=None, num_beams=1, stop=[], seed=None, stream=False, logprobs=False, top_logprobs=None, prompt_logprobs=None, n=1, best_of=None, presence_penalty=0.0, frequency_penalty=0.0, length_penalty=1.0, return_details=False, structured_outputs_regex=None)
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 16 examples [00:00, 10377.12 examples/s]
+Map (num_proc=1):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=1): 100%|██████████| 16/16 [00:00<00:00, 100.66 examples/s]
+[INFO:swift] val_dataset: Dataset({
+    features: ['messages', 'images', 'dataset'],
+    num_rows: 16
+})
+  0%|          | 0/16 [00:00<?, ?it/s]  6%|▋         | 1/16 [00:05<01:23,  5.60s/it] 12%|█▎        | 2/16 [00:10<01:10,  5.02s/it] 19%|█▉        | 3/16 [00:15<01:05,  5.02s/it] 25%|██▌       | 4/16 [00:20<01:00,  5.01s/it] 31%|███▏      | 5/16 [00:25<00:56,  5.16s/it] 38%|███▊      | 6/16 [00:30<00:49,  4.90s/it] 44%|████▍     | 7/16 [00:34<00:43,  4.84s/it] 50%|█████     | 8/16 [00:39<00:39,  4.91s/it] 56%|█████▋    | 9/16 [00:44<00:34,  4.90s/it] 62%|██████▎   | 10/16 [00:49<00:29,  4.86s/it] 69%|██████▉   | 11/16 [00:54<00:25,  5.04s/it] 75%|███████▌  | 12/16 [00:59<00:19,  4.93s/it] 81%|████████▏ | 13/16 [01:05<00:15,  5.32s/it] 88%|████████▊ | 14/16 [01:10<00:10,  5.04s/it] 94%|█████████▍| 15/16 [01:16<00:05,  5.44s/it]100%|██████████| 16/16 [01:21<00:00,  5.29s/it]100%|██████████| 16/16 [01:21<00:00,  5.10s/it]
+{'num_prompt_tokens': 14884, 'num_generated_tokens': 1570, 'num_samples': 16, 'runtime': 81.54057350201765, 'samples/s': 0.1962213326792961, 'tokens/s': 19.254218269155928}
+[INFO:swift] The inference results have been saved to result_path: `/ssdstore/ssalehi/SynthScope/adb_fid/293634/tmp/detector-nveihknu/vlm_result.jsonl`.
+[INFO:swift] End time of running main: 2026-11-18 03:11:06.555301
+predict.py: 97s (model load included)
+=== official command again with --logprobs true 03:11:08 ===
+[swift-logprobs] /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_gate/bin/swift infer --adapters /ssdstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm --infer_backend pt --max_model_len 8192 --max_pixels 1003520 --write_batch_size 500 --temperature 0 --max_new_tokens 512 --val_dataset /ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_input.jsonl --result_path /ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_result.jsonl --seed 42 --model /ssdstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct --load_args false --logprobs true
+run sh: `/home/ssalehi/miniconda3/envs/AGID/bin/python /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/cli/infer.py --adapters /ssdstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm --infer_backend pt --max_model_len 8192 --max_pixels 1003520 --write_batch_size 500 --temperature 0 --max_new_tokens 512 --val_dataset /ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_input.jsonl --result_path /ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_result.jsonl --seed 42 --model /ssdstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct --load_args false --logprobs true`
+[INFO:swift] Successfully registered `/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/dataset/data/dataset_info.json`.
+[WARNING:swift] args.infer_backend: `pt` is deprecated, please use args.infer_backend: `transformers`.
+[INFO:swift] rank: -1, local_rank: -1, world_size: 1, local_world_size: 1
+`torch_dtype` is deprecated! Use `dtype` instead!
+[INFO:swift] Setting torch_dtype: torch.bfloat16
+[INFO:swift] Because len(args.val_dataset) > 0, setting split_dataset_ratio: 0.0
+[INFO:swift] Setting args.eval_human: False
+[INFO:swift] Setting args.lazy_tokenize: True
+[INFO:swift] args: InferArguments(use_ray=False, ray_exp_name=None, device_groups=None, model='/ssdstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct', model_type='qwen2_5_vl', model_revision=None, task_type='causal_lm', torch_dtype=torch.bfloat16, attn_impl=None, experts_impl=None, new_special_tokens=[], num_labels=None, problem_type=None, rope_scaling=None, device_map=None, max_memory={}, max_model_len=8192, local_repo_path=None, init_strategy=None, template='qwen2_5_vl', system=None, max_length=128000, truncation_strategy='delete', max_pixels=1003520, agent_template=None, norm_bbox=None, use_chat_template=True, padding_side='right', padding_free=False, loss_scale='default', sequence_parallel_size=1, is_binary_loss_scale=None, template_backend='swift', response_prefix=None, enable_thinking=None, preserve_thinking=None, add_non_thinking_prefix=True, disable_ignore_empty_think=False, dataset=[], val_dataset=['/ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_input.jsonl'], cached_dataset=[], cached_val_dataset=[], split_dataset_ratio=0.0, data_seed=42, dataset_num_proc=1, load_from_cache_file=False, dataset_shuffle=True, val_dataset_shuffle=False, streaming=False, interleave_prob=None, stopping_strategy='first_exhausted', shuffle_buffer_size=1000, download_mode='reuse_dataset_if_exists', columns={}, strict=False, remove_unused_columns=True, disable_auto_column_mapping=False, model_name=None, model_author=None, custom_dataset_info=[], quant_method=None, quant_bits=None, hqq_axis=None, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True, bnb_4bit_quant_storage=None, max_new_tokens=512, temperature=0.0, top_k=None, top_p=None, repetition_penalty=None, num_beams=1, stream=False, stop_words=[], logprobs=True, top_logprobs=None, structured_outputs_regex=None, tuner_backend='peft', tuner_type='lora', adapters=['/ssdstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm'], external_plugins=[], custom_register_path=[], seed=42, model_kwargs={}, enable_npu_model_patch=True, load_args=False, load_data_args=False, packing=False, packing_length=None, packing_num_proc=1, packing_strategy='binpack', lazy_tokenize=True, use_hf=False, hub_token=None, ddp_timeout=18000000, ddp_backend=None, ignore_args_error=False, use_swift_lora=False, vllm_gpu_memory_utilization=0.9, vllm_tensor_parallel_size=1, vllm_pipeline_parallel_size=1, vllm_enable_expert_parallel=False, vllm_max_num_seqs=256, vllm_max_model_len=None, vllm_disable_custom_all_reduce=True, vllm_enforce_eager=False, vllm_limit_mm_per_prompt=None, vllm_max_lora_rank=16, vllm_enable_prefix_caching=None, vllm_use_async_engine=False, vllm_quantization=None, vllm_reasoning_parser=None, vllm_disable_cascade_attn=False, vllm_mm_processor_cache_gb=None, vllm_speculative_config=None, vllm_engine_kwargs={}, vllm_data_parallel_size=1, sglang_tp_size=1, sglang_pp_size=1, sglang_dp_size=1, sglang_ep_size=1, sglang_enable_ep_moe=False, sglang_mem_fraction_static=None, sglang_context_length=None, sglang_disable_cuda_graph=False, sglang_quantization=None, sglang_kv_cache_dtype='auto', sglang_enable_dp_attention=False, sglang_disable_custom_all_reduce=True, sglang_speculative_algorithm=None, sglang_speculative_num_steps=None, sglang_speculative_eagle_topk=None, sglang_speculative_num_draft_tokens=None, lmdeploy_tp=1, lmdeploy_session_len=None, lmdeploy_cache_max_entry_count=0.8, lmdeploy_quant_policy=0, lmdeploy_vision_batch_size=1, merge_lora=False, safe_serialization=True, max_shard_size='5GB', infer_backend='transformers', result_path='/ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_result.jsonl', write_batch_size=500, metric=None, max_batch_size=1, val_dataset_sample=None, reranker_use_activation=True)
+[INFO:swift] Global seed set to 42
+[INFO:swift] Setting max_ratio: 200. You can adjust this hyperparameter through the environment variable: `MAX_RATIO`.
+[INFO:swift] Setting frame_factor: 2. You can adjust this hyperparameter through the environment variable: `FRAME_FACTOR`.
+[INFO:swift] Setting fps: 2.0. You can adjust this hyperparameter through the environment variable: `FPS`.
+[INFO:swift] Setting fps_min_frames: 4. You can adjust this hyperparameter through the environment variable: `FPS_MIN_FRAMES`.
+[INFO:swift] Setting fps_max_frames: 768. You can adjust this hyperparameter through the environment variable: `FPS_MAX_FRAMES`.
+[INFO:swift] Using environment variable `IMAGE_MAX_TOKEN_NUM`, Setting image_max_token_num: 1280.
+[INFO:swift] Setting image_min_token_num: 4. You can adjust this hyperparameter through the environment variable: `IMAGE_MIN_TOKEN_NUM`.
+[INFO:swift] Setting spatial_merge_size: 2. You can adjust this hyperparameter through the environment variable: `SPATIAL_MERGE_SIZE`.
+[INFO:swift] Setting video_max_token_num: 768. You can adjust this hyperparameter through the environment variable: `VIDEO_MAX_TOKEN_NUM`.
+[INFO:swift] Setting video_min_token_num: 128. You can adjust this hyperparameter through the environment variable: `VIDEO_MIN_TOKEN_NUM`.
+[INFO:swift] model_kwargs: {'device_map': 'cuda:0', 'dtype': torch.bfloat16}
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 2/729 [00:00<01:02, 11.60it/s]Loading weights:   4%|▍         | 29/729 [00:00<00:05, 123.54it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:04, 165.95it/s]Loading weights:  12%|█▏        | 88/729 [00:00<00:02, 215.97it/s]Loading weights:  16%|█▌        | 113/729 [00:00<00:02, 220.17it/s]Loading weights:  19%|█▉        | 138/729 [00:00<00:02, 223.11it/s]Loading weights:  24%|██▎       | 172/729 [00:00<00:02, 247.25it/s]Loading weights:  27%|██▋       | 198/729 [00:00<00:02, 234.79it/s]Loading weights:  31%|███       | 226/729 [00:01<00:02, 247.26it/s]Loading weights:  35%|███▌      | 256/729 [00:01<00:01, 253.56it/s]Loading weights:  39%|███▊      | 282/729 [00:01<00:01, 239.19it/s]Loading weights:  43%|████▎     | 312/729 [00:01<00:01, 254.34it/s]Loading weights:  46%|████▋     | 338/729 [00:01<00:01, 254.53it/s]Loading weights:  81%|████████  | 589/729 [00:01<00:00, 895.28it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 437.04it/s]
+[INFO:swift] default_system: 'You are a helpful assistant.'
+[INFO:swift] max_length: 128000
+[INFO:swift] response_prefix: None
+[INFO:swift] agent_template: hermes
+[INFO:swift] norm_bbox: none
+[INFO:swift] Setting ROOT_IMAGE_DIR: None. You can adjust this hyperparameter through the environment variable: `ROOT_IMAGE_DIR`.
+[INFO:swift] Setting QWENVL_BBOX_FORMAT: legacy. You can adjust this hyperparameter through the environment variable: `QWENVL_BBOX_FORMAT`.
+[INFO:swift] model: PeftModelForCausalLM(
+  (base_model): LoraModel(
+    (model): Qwen2_5_VLForConditionalGeneration(
+      (model): Qwen2_5_VLModel(
+        (visual): Qwen2_5_VisionTransformerPretrainedModel(
+          (patch_embed): Qwen2_5_VisionPatchEmbed(
+            (proj): Conv3d(3, 1280, kernel_size=(2, 14, 14), stride=(2, 14, 14), bias=False)
+          )
+          (rotary_pos_emb): Qwen2_5_VisionRotaryEmbedding()
+          (blocks): ModuleList(
+            (0-31): 32 x Qwen2_5_VLVisionBlock(
+              (norm1): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (norm2): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (attn): Qwen2_5_VLVisionAttention(
+                (qkv): Linear(in_features=1280, out_features=3840, bias=True)
+                (proj): Linear(in_features=1280, out_features=1280, bias=True)
+              )
+              (mlp): Qwen2_5_VLMLP(
+                (gate_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (up_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (down_proj): Linear(in_features=3420, out_features=1280, bias=True)
+                (act_fn): SiLUActivation()
+              )
+            )
+          )
+          (merger): Qwen2_5_VLPatchMerger(
+            (ln_q): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+            (mlp): Sequential(
+              (0): Linear(in_features=5120, out_features=5120, bias=True)
+              (1): GELU(approximate='none')
+              (2): Linear(in_features=5120, out_features=3584, bias=True)
+            )
+          )
+        )
+        (language_model): Qwen2_5_VLTextModel(
+          (embed_tokens): Embedding(152064, 3584)
+          (layers): ModuleList(
+            (0-27): 28 x Qwen2_5_VLDecoderLayer(
+              (self_attn): Qwen2_5_VLAttention(
+                (q_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (k_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (v_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (o_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+              )
+              (mlp): Qwen2MLP(
+                (gate_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (up_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (down_proj): lora.Linear(
+                  (base_layer): Linear(in_features=18944, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=18944, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (act_fn): SiLUActivation()
+              )
+              (input_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+              (post_attention_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+            )
+          )
+          (norm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+          (rotary_emb): Qwen2_5_VLRotaryEmbedding()
+        )
+      )
+      (lm_head): Linear(in_features=3584, out_features=152064, bias=False)
+    )
+  )
+)
+[INFO:swift] Start time of running main: 2026-11-18 03:11:31.234081
+[INFO:swift] swift.__version__: 4.4.2
+[INFO:swift] request_config: RequestConfig(max_tokens=512, temperature=0.0, top_k=None, top_p=None, repetition_penalty=None, num_beams=1, stop=[], seed=None, stream=False, logprobs=True, top_logprobs=None, prompt_logprobs=None, n=1, best_of=None, presence_penalty=0.0, frequency_penalty=0.0, length_penalty=1.0, return_details=False, structured_outputs_regex=None)
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 16 examples [00:00, 3394.48 examples/s]
+Map (num_proc=1):   0%|          | 0/16 [00:00<?, ? examples/s]Map (num_proc=1): 100%|██████████| 16/16 [00:00<00:00, 107.38 examples/s]
+[INFO:swift] val_dataset: Dataset({
+    features: ['messages', 'images', 'dataset'],
+    num_rows: 16
+})
+  0%|          | 0/16 [00:00<?, ?it/s]  6%|▋         | 1/16 [00:05<01:17,  5.17s/it] 12%|█▎        | 2/16 [00:09<01:08,  4.88s/it] 19%|█▉        | 3/16 [00:14<01:04,  4.99s/it] 25%|██▌       | 4/16 [00:20<01:00,  5.01s/it] 31%|███▏      | 5/16 [00:25<00:57,  5.19s/it] 38%|███▊      | 6/16 [00:29<00:49,  4.94s/it] 44%|████▍     | 7/16 [00:34<00:43,  4.88s/it] 50%|█████     | 8/16 [00:39<00:39,  4.94s/it] 56%|█████▋    | 9/16 [00:44<00:34,  4.94s/it] 62%|██████▎   | 10/16 [00:49<00:29,  4.89s/it] 69%|██████▉   | 11/16 [00:55<00:25,  5.08s/it] 75%|███████▌  | 12/16 [00:59<00:19,  4.96s/it] 81%|████████▏ | 13/16 [01:06<00:16,  5.37s/it] 88%|████████▊ | 14/16 [01:10<00:10,  5.09s/it] 94%|█████████▍| 15/16 [01:16<00:05,  5.51s/it]100%|██████████| 16/16 [01:21<00:00,  5.35s/it]100%|██████████| 16/16 [01:21<00:00,  5.12s/it]
+{'num_prompt_tokens': 14884, 'num_generated_tokens': 1570, 'num_samples': 16, 'runtime': 81.93436551903142, 'samples/s': 0.19527825593869497, 'tokens/s': 19.16167886398444}
+[INFO:swift] The inference results have been saved to result_path: `/ssdstore/ssalehi/SynthScope/adb_fid/293634/swift_lp/vlm_result.jsonl`.
+[INFO:swift] End time of running main: 2026-11-18 03:12:53.390074
+[swift-logprobs] done in 97.4s
+=== reference + engine comparison 03:12:56 ===
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 1/729 [00:00<01:52,  6.46it/s]Loading weights:   4%|▍         | 28/729 [00:00<00:05, 121.04it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:04, 168.73it/s]Loading weights:  12%|█▏        | 84/729 [00:00<00:03, 213.13it/s]Loading weights:  15%|█▌        | 112/729 [00:00<00:02, 228.35it/s]Loading weights:  19%|█▉        | 137/729 [00:00<00:02, 229.35it/s]Loading weights:  22%|██▏       | 162/729 [00:00<00:02, 229.09it/s]Loading weights:  26%|██▋       | 192/729 [00:00<00:02, 248.49it/s]Loading weights:  30%|███       | 220/729 [00:01<00:02, 252.95it/s]Loading weights:  34%|███▎      | 246/729 [00:01<00:02, 238.10it/s]Loading weights:  38%|███▊      | 274/729 [00:01<00:01, 249.73it/s]Loading weights:  42%|████▏     | 303/729 [00:01<00:01, 253.65it/s]Loading weights:  45%|████▌     | 329/729 [00:01<00:01, 245.39it/s]Loading weights:  74%|███████▎  | 537/729 [00:01<00:00, 759.21it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 440.34it/s]
+The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[ref] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG (504, 364) tokens=95 parse=real raw=-18.3125 processed=-17.44047737121582 4.9s
+[ref] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG (504, 336) tokens=95 parse=real raw=-24.25 processed=-23.095237731933594 4.4s
+[ref] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG (504, 336) tokens=104 parse=real raw=-21.5 processed=-20.47618865966797 4.9s
+[ref] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png (980, 980) tokens=93 parse=fake raw=6.375 processed=6.071428298950195 4.8s
+[ref] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png (504, 504) tokens=111 parse=fake raw=8.25 processed=7.857143402099609 5.2s
+[ref] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG (252, 252) tokens=92 parse=real raw=-19.5 processed=-18.571428298950195 4.2s
+[ref] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg (672, 1008) tokens=91 parse=real raw=-19.4375 processed=-18.511905670166016 4.5s
+[ref] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg (1036, 672) tokens=98 parse=real raw=-22.0625 processed=-21.011903762817383 4.9s
+[ref] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg (1232, 812) tokens=90 parse=real raw=-24.0625 processed=-22.916664123535156 4.7s
+[ref] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg (980, 980) tokens=88 parse=fake raw=20.9375 processed=19.940475463867188 4.5s
+[ref] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg (980, 980) tokens=102 parse=fake raw=21.1875 processed=20.178569793701172 5.2s
+[ref] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg (1204, 672) tokens=88 parse=fake raw=17.875 processed=17.0238094329834 4.5s
+[ref] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg (1232, 812) tokens=119 parse=fake raw=12.875 processed=12.261903762817383 6.0s
+[ref] WildRF/test/reddit/0_real/000219_0219.png (644, 476) tokens=88 parse=real raw=-25.25 processed=-24.047618865966797 4.2s
+[ref] WildRF/test/reddit/0_real/000032_0032.png (728, 952) tokens=126 parse=real raw=-5.125 processed=-4.880950927734375 6.1s
+[ref] WildRF/test/reddit/0_real/000030_0030.jpg (868, 1148) tokens=90 parse=real raw=-25.0 processed=-23.80952262878418 4.7s
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 1/729 [00:00<01:56,  6.23it/s]Loading weights:   4%|▍         | 28/729 [00:00<00:05, 124.98it/s]Loading weights:   7%|▋         | 53/729 [00:00<00:04, 168.77it/s]Loading weights:  11%|█         | 78/729 [00:00<00:03, 192.33it/s]Loading weights:  15%|█▍        | 107/729 [00:00<00:02, 224.30it/s]Loading weights:  19%|█▊        | 135/729 [00:00<00:02, 226.46it/s]Loading weights:  22%|██▏       | 162/729 [00:00<00:02, 233.73it/s]Loading weights:  26%|██▋       | 192/729 [00:00<00:02, 251.59it/s]Loading weights:  30%|███       | 220/729 [00:01<00:02, 254.08it/s]Loading weights:  34%|███▎      | 246/729 [00:01<00:02, 240.68it/s]Loading weights:  38%|███▊      | 275/729 [00:01<00:01, 253.88it/s]Loading weights:  42%|████▏     | 304/729 [00:01<00:01, 258.57it/s]Loading weights:  45%|████▌     | 331/729 [00:01<00:01, 242.19it/s]Loading weights:  79%|███████▉  | 575/729 [00:01<00:00, 843.61it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 441.08it/s]
+[load] {'status': 'loaded 1121 tensors from adb_vlm (missing=0, unexpected=0; Qwen2_5_VLForConditionalGeneration, bfloat16; LoRA adapter unmerged on qwen2.5-vl-7b-instruct)', 'seconds': 3.7, 'weights_GB': 16.76, 'lora_modules': 196, 'tensors': {'base_checkpoint_tensors': 729, 'base_model_tensors': 729, 'equal': 729, 'differ_or_absent': [], 'model_only': [], 'lora_tensors_in_model': 392}}
+[engine] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG (500, 375)->[504, 364] tokens=95 verdict=real logit=-18.3125 4.48s 16.88GB
+[engine] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG (500, 333)->[504, 336] tokens=95 verdict=real logit=-24.2500 4.49s 16.88GB
+[engine] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG (500, 333)->[504, 336] tokens=104 verdict=real logit=-21.5000 4.89s 16.88GB
+[engine] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png (1024, 1024)->[980, 980] tokens=93 verdict=fake logit=6.3750 4.87s 17.24GB
+[engine] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png (512, 512)->[504, 504] tokens=111 verdict=fake logit=8.2500 5.25s 16.92GB
+[engine] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG (256, 256)->[252, 252] tokens=92 verdict=real logit=-19.5000 4.29s 16.83GB
+[engine] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg (662, 1000)->[672, 1008] tokens=91 verdict=real logit=-19.4375 4.6s 17.11GB
+[engine] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg (1024, 682)->[1036, 672] tokens=98 verdict=real logit=-22.0625 4.94s 17.12GB
+[engine] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg (2048, 1365)->[1232, 812] tokens=90 verdict=real logit=-24.0625 4.77s 17.26GB
+[engine] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg (1024, 1024)->[980, 980] tokens=88 verdict=fake logit=20.9375 4.64s 17.24GB
+[engine] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg (2048, 2048)->[980, 980] tokens=102 verdict=fake logit=21.1875 5.31s 17.24GB
+[engine] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg (1200, 686)->[1204, 672] tokens=88 verdict=fake logit=17.8750 4.55s 17.17GB
+[engine] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg (1344, 896)->[1232, 812] tokens=119 verdict=fake logit=12.8750 6.1s 17.26GB
+[engine] WildRF/test/reddit/0_real/000219_0219.png (643, 481)->[644, 476] tokens=88 verdict=real logit=-25.2500 4.25s 16.94GB
+[engine] WildRF/test/reddit/0_real/000032_0032.png (720, 962)->[728, 952] tokens=126 verdict=real logit=-5.1250 6.21s 17.12GB
+[engine] WildRF/test/reddit/0_real/000030_0030.jpg (2448, 3264)->[868, 1148] tokens=90 verdict=real logit=-25.0000 4.78s 17.25GB
+[engine processed] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG logit=-17.4405
+[engine processed] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG logit=-23.0952
+[engine processed] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG logit=-20.4762
+[engine processed] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png logit=6.0714
+[engine processed] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png logit=7.8571
+[engine processed] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG logit=-18.5714
+[engine processed] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg logit=-18.5119
+[engine processed] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg logit=-21.0119
+[engine processed] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg logit=-22.9167
+[engine processed] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg logit=19.9405
+[engine processed] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg logit=20.1786
+[engine processed] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg logit=17.0238
+[engine processed] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg logit=12.2619
+[engine processed] WildRF/test/reddit/0_real/000219_0219.png logit=-24.0476
+[engine processed] WildRF/test/reddit/0_real/000032_0032.png logit=-4.8810
+[engine processed] WildRF/test/reddit/0_real/000030_0030.jpg logit=-23.8095
+[summary] {
+ "n_images": 16,
+ "vs_swift_identical_text": "16/16",
+ "vs_swift_identical_tokens": "16/16",
+ "vs_swift_identical_parsed_verdict": "16/16",
+ "swift_logprobs_run_text_equals_predict_py": "16/16",
+ "swift_vs_engine_token_counts": [
+  [
+   95,
+   95
+  ],
+  [
+   95,
+   95
+  ],
+  [
+   104,
+   104
+  ],
+  [
+   93,
+   93
+  ],
+  [
+   111,
+   111
+  ],
+  [
+   92,
+   92
+  ],
+  [
+   91,
+   91
+  ],
+  [
+   98,
+   98
+  ],
+  [
+   90,
+   90
+  ],
+  [
+   88,
+   88
+  ],
+  [
+   102,
+   102
+  ],
+  [
+   88,
+   88
+  ],
+  [
+   119,
+   119
+  ],
+  [
+   88,
+   88
+  ],
+  [
+   126,
+   126
+  ],
+  [
+   90,
+   90
+  ]
+ ],
+ "swift_vs_reference_logprobs_compared": 1570,
+ "max_abs_chosen_token_logprob_diff_swift_vs_reference": 0.0,
+ "vs_reference_identical_tokens": "16/16",
+ "vs_reference_identical_parsed_verdict": "16/16",
+ "vs_reference_verdict_steps_equal": true,
+ "max_abs_raw_logit_gap_diff": 0.0,
+ "max_abs_processed_logit_gap_diff": 0.0,
+ "processed_run_tokens_equal_raw_run": true,
+ "raw_vs_processed_gap": [
+  {
+   "image": "GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG",
+   "raw": -18.3125,
+   "processed": -17.44047737121582,
+   "p_fake_raw": 1.1142491085617436e-08,
+   "p_fake_processed": 2.664998103769909e-08
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG",
+   "raw": -24.25,
+   "processed": -23.095237731933594,
+   "p_fake_raw": 2.940077739198032e-11,
+   "p_fake_processed": 9.329657371822565e-11
+  },
+  {
+   "image": "GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG",
+   "raw": -21.5,
+   "processed": -20.47618865966797,
+   "p_fake_raw": 4.599055376537186e-10,
+   "p_fake_processed": 1.2802779156916857e-09
+  },
+  {
+   "image": "GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png",
+   "raw": 6.375,
+   "processed": 6.071428298950195,
+   "p_fake_raw": 0.9982992775885648,
+   "p_fake_processed": 0.9976974395000598
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png",
+   "raw": 8.25,
+   "processed": 7.857143402099609,
+   "p_fake_raw": 0.9997388096809043,
+   "p_fake_processed": 0.9996131719600805
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_153.PNG",
+   "raw": -19.5,
+   "processed": -18.571428298950195,
+   "p_fake_raw": 3.398267807946847e-09,
+   "p_fake_processed": 8.600647829169438e-09
+  },
+  {
+   "image": "SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg",
+   "raw": -19.4375,
+   "processed": -18.511905670166016,
+   "p_fake_raw": 3.6174372506855274e-09,
+   "p_fake_processed": 9.128123640441675e-09
+  },
+  {
+   "image": "SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg",
+   "raw": -22.0625,
+   "processed": -21.011903762817383,
+   "p_fake_raw": 2.620462764055779e-10,
+   "p_fake_processed": 7.492834518859518e-10
+  },
+  {
+   "image": "SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg",
+   "raw": -24.0625,
+   "processed": -22.916664123535156,
+   "p_fake_raw": 3.5464107046484124e-11,
+   "p_fake_processed": 1.1153706891459539e-10
+  },
+  {
+   "image": "SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg",
+   "raw": 20.9375,
+   "processed": 19.940475463867188,
+   "p_fake_raw": 0.9999999991928405,
+   "p_fake_processed": 0.9999999978124321
+  },
+  {
+   "image": "SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg",
+   "raw": 21.1875,
+   "processed": 20.178569793701172,
+   "p_fake_raw": 0.9999999993713837,
+   "p_fake_processed": 0.9999999982759158
+  },
+  {
+   "image": "SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg",
+   "raw": 17.875,
+   "processed": 17.0238094329834,
+   "p_fake_raw": 0.9999999827421723,
+   "p_fake_processed": 0.9999999595746784
+  },
+  {
+   "image": "SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg",
+   "raw": 12.875,
+   "processed": 12.261903762817383,
+   "p_fake_raw": 0.9999974387177893,
+   "p_fake_processed": 0.9999952715281857
+  },
+  {
+   "image": "WildRF/test/reddit/0_real/000219_0219.png",
+   "raw": -25.25,
+   "processed": -24.047618865966797,
+   "p_fake_raw": 1.0815941557168708e-11,
+   "p_fake_processed": 3.599579945798954e-11
+  },
+  {
+   "image": "WildRF/test/reddit/0_real/000032_0032.png",
+   "raw": -5.125,
+   "processed": -4.880950927734375,
+   "p_fake_raw": 0.005911068856243796,
+   "p_fake_processed": 0.007532622204838155
+  },
+  {
+   "image": "WildRF/test/reddit/0_real/000030_0030.jpg",
+   "raw": -25.0,
+   "processed": -23.80952262878418,
+   "p_fake_raw": 1.3887943864771144e-11,
+   "p_fake_processed": 4.567259686554274e-11
+  }
+ ],
+ "raw_processed_sign_agree": true,
+ "engine_unparsed_score": 0,
+ "engine_correct": 15,
+ "tensors_all_equal": true,
+ "engine_images_per_s": 0.204,
+ "engine_seconds_per_image": 4.9,
+ "engine_tokens_per_s": 20.0,
+ "engine_peak_GB_max": 17.26,
+ "reference_images_per_s": 0.2061,
+ "swift_official_wall_seconds_incl_load": 97.0
+}
+=== smoke test with the released files ([B] rendered request, [G] strict load + one image) 03:17:18 ===
+[A] parser = the official parse_vlm_verdict ...
+    10 cases, identical to the official parse_vlm_verdict (ValueError -> unparsed)
+[B] official prompt and chat request ...
+    system / user prompts identical to the official detector/core.py
+    rendered request == the gate check's request (released base processor)
+[C] image loading and resize = ms-swift + qwen-vl-utils ...
+    8 files (RGBA, L, EXIF, below / above the cap, 7:1): pixel-identical to ms-swift 4.4.2 load_image + rescale_image and qwen-vl-utils fetch_image; alpha dropped, no EXIF rotation
+[D] verdict words AI / authentic ...
+    ĠAI <-> Ġauthentic (and case variants); the verdict is the first one after <answer>
+[E] registry spec, decoding, note, block list, licence, Space, download hint ...
+    vlm spec, official greedy decoding (rep. penalty 1.05), note, NEVER_REDISTRIBUTE, LICENSES 'no licence', not on the Space, adapter + base download hint, missing base reported
+[F] tiny random Qwen2.5-VL + tiny LoRA through the engine: unmerged, preprocess, raw score, key rename ...
+
+
+
+    28 LoRA tensors unmerged via the engine (no network access, base named by Hub id) == direct peft; preprocess -> 308x196, pixel values == processor(do_resize=False); forced answers: verdict after <answer>, logit == RAW output_logits gap (penalised gap differs); greedy tokens == peft generate; pre-4.52 keys load with the hook, fail without it; unknown key and old vision-tower LoRA refused (peft 0.21.3)
+[G] released weights: strict engine load and one image ...
+    392 adapter tensors strict on the base; synthetic image: fake (P(fake) 0.999999, 89 tokens)
+adb_vlm smoke test passed
+done Wed Nov 18 03:17:43 CET 2026
+removed the code copy and caches (kept /ssdstore/ssalehi/SynthScope/adb_fid/293634/data, official.jsonl, swift_lp)

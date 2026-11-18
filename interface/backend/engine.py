@@ -15,6 +15,7 @@ import threading
 import time
 import warnings
 from collections import OrderedDict
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -22,7 +23,7 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from models.image.probe.preprocess import ProbePad, SlidingPatches
-from models.vlm.vlm import SynthScopeVLM
+from models.vlm.vlm import SynthScopeVLM, download_hint
 from . import config
 from .hf_compat import translate_hf_keys
 from .registry import ModelSpec, get_spec, input_note
@@ -315,15 +316,27 @@ def vlm_images_only(spec: ModelSpec) -> str:
             "still images only, not videos.")
 
 
+def vlm_base_folder(spec: ModelSpec):
+    """A LoRA VLM detector's local base folder (``vlm.base_model``, relative names under CHECKPOINTS_DIR); else None."""
+    base = spec.vlm.base_model if spec.vlm is not None else None
+    if not base:
+        return None
+    return Path(base) if Path(base).is_absolute() else config.CHECKPOINTS_DIR / base
+
+
 def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
     """Load a VLM detector strictly (``SynthScopeVLM`` raises on any missing / unexpected / mismatched tensor): a
     Hugging Face model folder (``config.json``), or a LoRA adapter folder (``adapter_config.json``) on the local
     ``base_model`` folder. Relative base / processor names are resolved under CHECKPOINTS_DIR; nothing is downloaded."""
     marker = "adapter_config.json" if spec.vlm.base_model else "config.json"
-    if path is None or not (path / marker).exists():
-        hint = (f" Download the official weights: hf download {spec.vlm.hf_repo} --revision {spec.vlm.hf_revision} "
-                f"--local-dir {path}" if spec.vlm.hf_repo else "")
-        raise FileNotFoundError(f"{spec.key}: no {marker} in {path}.{hint}")
+    base = vlm_base_folder(spec)
+    missing = [f"no {marker} in {path}"] if path is None or not (path / marker).exists() else []
+    if base is not None and not (base / "config.json").exists():
+        missing.append(f"no base model (config.json) in {base}")
+    if missing:
+        hint = download_hint(spec.vlm, path, config.CHECKPOINTS_DIR)
+        raise FileNotFoundError(f"{spec.key}: {'; '.join(missing)}." + (f" Download the official weights: {hint}"
+                                                                         if hint else ""))
     return SynthScopeVLM(path, spec.vlm, device=device, root=config.CHECKPOINTS_DIR)
 
 
@@ -372,7 +385,8 @@ class Engine:
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
         p = self.checkpoint_path(spec)
-        return bool(p and p.exists())
+        base = vlm_base_folder(spec)                # a LoRA VLM detector also needs its local base model
+        return bool(p and p.exists()) and (base is None or base.exists())
 
     # -- model lifecycle ----------------------------------------------------
     def release_gpu(self) -> None:
@@ -400,7 +414,9 @@ class Engine:
             if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
                 model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
                 self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
-                                          f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype})")
+                                          f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype}"
+                                          + (f"; LoRA adapter unmerged on {spec.vlm.base_model}" if spec.vlm.base_model
+                                             else "") + ")")
                 self._cache[spec.key] = model
                 return model
 
@@ -544,8 +560,8 @@ class Engine:
 
     def vlm_score(self, spec: ModelSpec, pil: Image.Image, decoding: str = "greedy", seed: int | None = None) -> dict:
         """A VLM detector's full output for one image (``SynthScopeVLM.score``): ``fake_probability`` (sigmoid of
-        ``logit``, the fake-minus-real logit at the answer token; 0.5 with ``score_source="unparsed"`` when no verdict
-        token was generated), the parsed ``verdict`` ("fake" / "real" / None), the ``rationale`` and ``response`` text,
+        ``logit``, the fake-minus-real logit at the answer token, or at the word the official parser read; 0.5 with
+        ``score_source`` "unparsed" (no verdict either) or "unscored" (a parsed verdict) when no verdict token was found), the parsed ``verdict`` ("fake" / "real" / None), the ``rationale`` and ``response`` text,
         the verdict token and step, and the generation length. ``decoding="official"`` uses the authors' sampling
         (seeded with ``seed``) instead of greedy decoding. Pass the decoded file without an RGB conversion
         (``media.decode_image_raw``): the config's ``image_loader`` reproduces the official server's EXIF / alpha

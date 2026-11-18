@@ -61,7 +61,10 @@ gap, so benchmarks can rank by it. The logits are the raw LM-head outputs of the
 (read with a forward hook; identical to transformers' `output_logits`). Because the model has already argued its way to
 an answer, the score is near 0 or 1, and the paper reports accuracy: the primary metric is the accuracy of the parsed
 verdict, with AUROC / AP as extras. No verdict token (no `<answer>` generated, e.g. a truncated output, or no fake / real
-word inside the answer): P(fake) = 0.5, logit 0, `score_source: "unparsed"` (ruling U1). Scoring holds a lock: the
+word inside the answer): P(fake) = 0.5, logit 0, `score_source: "unparsed"` (ruling U1); `"unscored"` if the parser
+still found a verdict (none in any Veritas++ run; bench_eval counts them as `n_unscored`). Veritas++ has no
+`verdict_offset` hook: its parser reads only the `<answer>` tag, so the score is always read after the marker.
+Scoring holds a lock: the
 logit recorder hooks the model's shared LM head, so concurrent requests are served one after the other.
 
 **Verdict.** The official repo has no parser or metric script. The verdict is parsed with the rule of the authors'
@@ -160,7 +163,9 @@ licensed" = the best comparator that is not in `internal_only` in `repro/vlm_ben
 PROBE-ResNet have no clear licence and are not redistributed or served; the best overall detector is MIRROR, VINA or PROBE
 on 14 of the 15 benchmarks). Ties for best are broken by the alphabetically first detector key, and the tied keys are
 listed in `comparison.json`. Every number is in `repro/vlm_bench/comparison.json` (built by `repro/vlm_bench/compare.py` from
-`repro/vlm_bench/results/`; logs `repro/logs/vpp_*.out`).
+`repro/vlm_bench/results/`; logs `repro/logs/vpp_*.out`). It holds one column per VLM under `vlms.<model>` (Veritas++ under
+`vlms.veritaspp`; the second VLM, `adb_vlm`, is documented in `models/image/adb_vlm/README.md`). The ranks here count Veritas++
+and the 27 comparators only; `rank_all_*` also counts the other VLMs.
 
 ### Accuracy (balanced, %)
 
@@ -208,7 +213,7 @@ way, while the headline `acc` is unaffected.
 | RealChain | **85.08** | 89.81 (`omniaid_v1`) | 89.81 (`omniaid_v1`) | 74.21 | 6 |
 
 
-### What the numbers show (computed from `comparison.json`, `vlm_balance`)
+### What the numbers show (computed from `comparison.json`, `vlms.veritaspp.balance`)
 
 - **Strong on in-the-wild and recent generators.** First among 28 on RRDataset (89.92) and RealChain (82.74), second on
   DiTFake (99.50), third on EvalGEN (99.10), fourth on WildRF (95.64), sixth on SynthWildX (92.11). Against the best publicly
@@ -281,7 +286,9 @@ python repro/vlm_bench/compare.py          # regenerates repro/vlm_bench/compari
 
 `--vlm-cache` keeps every scored image as a JSON line, so an interrupted run resumes; the cache folder is keyed by a hash of the
 weights revision, `max_new_tokens`, the prompts and the VLM code version (`identity.json` in the folder says what it
-stands for), so a cache reused after any of them changes starts empty. `repro/vlm_bench/run_units.py` runs the whole matrix
+stands for), so a cache reused after any of them changes starts empty. The code version hashes every `models/vlm/*.py`:
+the `adb_vlm` integration edits them, so caches written before it are re-keyed and a rerun scores from scratch (the
+committed result JSONs are unaffected). `repro/vlm_bench/run_units.py` runs the whole matrix
 (`vpp_ivi.sbatch` on the IVI cluster).
 
 ## Availability

@@ -1,0 +1,121 @@
+{
+  "model": "adb_vlm",
+  "paper": "Align, Don't Blend: Orthogonal Supervision Disentanglement As the Key to Generalizable AI-Generated Image Detection (Chen et al., ACM MM 2026, arXiv 2512.06746 v3)",
+  "arxiv_id": "2512.06746",
+  "official_repo": "https://github.com/GzZning/Align-Dont-Blend",
+  "training_set_in_paper": "Not trained in SynthScope. Only the released VLM branch is evaluated: the official LoRA adapter Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd on Qwen/Qwen2.5-VL-7B-Instruct @ cc594898, inference only, the official greedy decoding, unparsed answers counted wrong (0 in every run); AUROC from the verdict-token logit gap at the word the official parser read (after <answer>, or the tag-less final line's verdict word for 446 of 23,981 per-image records), 0 unscored in every run. The paper's detector is the VLM branch OR a pixel-artifact expert that is not released, so the paper's headline numbers cannot be reproduced; the paper prints no VLM-only number for the released adapter. Every row below is therefore a reference, never a reproduction. Benchmark subsets and per-image results: repro/vlm_bench/ (comparison.json, vlms.adb_vlm and paper_comparison.adb_vlm).",
+  "benchmarks": [
+    {
+      "name": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
+      "datasets": [
+        "WildRF"
+      ],
+      "metric": "balanced accuracy per platform, and their mean",
+      "paper_number": {
+        "note": "The paper prints no VLM-only number for the released adapter. Its full method (VLM OR the unreleased pixel expert), Table 1: 92.9 (Facebook 92.2 / Reddit 90.9 / Twitter 95.5); context only, not a target."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "VLM branch alone, official adapter, greedy, full data: 93.98 balanced acc (Facebook 93.13 / Reddit 93.06 / Twitter 95.75), AUROC 98.78, 0 unparsed, 0 unscored (51 tag-less answers scored at their final line's verdict word). The paper prints no VLM-only number; its full method (VLM OR the unreleased expert) prints 92.9. These are different detectors, so this is not a reproduction."
+      }
+    },
+    {
+      "name": "BFree-Online, subset of 269 real + 500 fake (769 images)",
+      "datasets": [
+        "BFree-Online"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "No VLM-only number in the paper. Full method (VLM OR the unreleased expert), Table 1: 97.5; context only."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subset (the benchmark folder holds only 269 reals), VLM branch alone, greedy: 87.96 balanced acc, AUROC 98.36 (real 98.5, fake 77.4). Ranks 6th of 28 detectors on the same images. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 97.5, context only."
+      }
+    },
+    {
+      "name": "AIGI-Bench CommunityAI + SocialRF, subset slice (20 real + 20 fake each)",
+      "datasets": [
+        "AIGIBench"
+      ],
+      "metric": "balanced accuracy per subset, and their mean",
+      "paper_number": {
+        "note": "No VLM-only number in the paper. Full method (VLM OR the unreleased expert), Table 1: 88.8 (CommunityAI 91.9 / SocialRF 85.6); context only."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "A 40-image slice of each subset (the full sets are 12,000 + 6,000 images, not run), VLM branch alone, greedy: 82.50 (CommunityAI 85.0 / SocialRF 80.0). Paper: no VLM-only number; full method (VLM OR the unreleased expert) 88.8, context only."
+      }
+    },
+    {
+      "name": "GenImage (8 generators), subset of 63 real + 63 fake per generator, fakes JPEG q96",
+      "datasets": [
+        "GenImage"
+      ],
+      "metric": "balanced accuracy (mean over generators)",
+      "paper_number": {
+        "note": "No VLM-only number in the paper. Full method (VLM OR the unreleased expert), appendix GenImage table: 91.7; context only. The paper JPEG-compresses the fakes 'following BFree' without a quality factor; q96 is our choice, following DDA's published GenImage protocol."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subset, fakes JPEG q96 (bench_eval --jpeg-fakes 96, reals untouched), VLM branch alone, greedy: 65.97 balanced acc, AUROC 79.18; clean subset 68.05. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 91.7, context only."
+      }
+    },
+    {
+      "name": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
+      "datasets": [
+        "AIGCDetect"
+      ],
+      "metric": "balanced accuracy (mean over generators)",
+      "paper_number": {
+        "note": "No VLM-only number in the paper. Full method (VLM OR the unreleased expert), appendix AIGCDetectBenchmark table: 87.7; context only. The paper states the fake-JPEG step for GenImage only; applying it here, at q96, is our inference."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subset, fakes JPEG q96 (an inferred protocol), VLM branch alone, greedy: 63.92 balanced acc, AUROC 70.55; clean subset 65.20. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 87.7, context only."
+      }
+    },
+    {
+      "name": "CO-SPY-Bench in-the-wild (Civitai, DALL-E 3, instavibe.ai, Lexica, Midjourney-v6)",
+      "datasets": [
+        "Co-Spy-Bench"
+      ],
+      "metric": "balanced accuracy",
+      "paper_number": {
+        "note": "No VLM-only number in the paper. Full method (VLM OR the unreleased expert), Table 1: 94.3; context only."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held: only Co-Spy-Bench's synthetic part is downloaded (its subset gives 78.36 in the 15-benchmark row), so there is no comparable number."
+      }
+    },
+    {
+      "name": "15 held benchmarks, subsampled (L = ceil(500 / generators)), vs Veritas++ and 27 detectors on identical images",
+      "datasets": [
+        "GenImage",
+        "ForenSynths",
+        "UniversalFakeDetect",
+        "AIGCDetect",
+        "Synthbuster",
+        "EvalGEN",
+        "SynthWildX",
+        "WildRF",
+        "AIGIBench",
+        "RRDataset",
+        "BFree-Online",
+        "Co-Spy-Bench",
+        "DiTFake",
+        "ARForensics",
+        "RealChain"
+      ],
+      "metric": "balanced accuracy (mean over generators) and AUROC of the verdict-token logit gap (at the word the official parser read)",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "Subsampled, official adapter, greedy, 0 unparsed, 0 unscored; mean of the 15 accuracies 76.58, AUROC 84.11 (Veritas++ 84.70 / 91.33). 5th-8th of 28 on WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset and RealChain; last on UFD-8 (52.88). JPEG95: DiTFake +0.30, UFD-8 -0.70 acc."
+      }
+    }
+  ]
+}

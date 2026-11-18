@@ -18,6 +18,7 @@ from typing import Callable, Optional
 
 from omegaconf import OmegaConf
 
+from models.image.adb_vlm.adb_vlm import ADB_VLM
 from models.image.veritaspp.veritaspp import VERITASPP
 from models.vlm.vlm import VLMConfig
 from transformations import IMAGENET_MEAN, IMAGENET_STD, AIGITransformations   # IMAGENET_*: the video_norm below
@@ -636,6 +637,22 @@ _add(ModelSpec(
           "(bf16): about 17 s per image and 18.9 GB peak up to 2048x2048, about 38 s and 23 GB at the processor's "
           "16.8 MP cap (repro/veritaspp_fidelity.json). Not on the Space.",
 ))
+_add(ModelSpec(
+    key="adb_vlm", name="Align, Don't Blend (VLM)", paper="Chen et al., ACM MM'26 (arXiv 2512.06746)",
+    modality="image", predict_kind="vlm", checkpoint="adb_vlm", ckpt_kind="official_vlm", weights="official",
+    # adb_vlm = the official LoRA adapter folder HF Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd unchanged (adapter_config.json +
+    # adapter_model.safetensors, 392 tensors), kept unmerged on the local base folder qwen2.5-vl-7b-instruct (HF
+    # Qwen/Qwen2.5-VL-7B-Instruct @ cc594898, loaded strictly into transformers' Qwen2_5_VLForConditionalGeneration).
+    overrides=[], vlm=ADB_VLM, native_res=True,
+    notes="The VLM branch of Align, Don't Blend: Qwen2.5-VL-7B with the authors' LoRA writes a short rationale and then "
+          "answers \"This is an authentic / AI-generated image.\" inside <answer> tags. Uses the OFFICIAL adapter, prompt "
+          "and greedy decoding (repetition penalty 1.05 from the base model). P(fake) = sigmoid of the AI-minus-"
+          "authentic logit at the verdict word the official parser reads (the answer tag, or a tag-less final line, "
+          "about 2% of outputs); mostly near 0 or 1 (2.7% of benchmark images between 0.1 and 0.9). The verdict is the "
+          "parsed answer. The paper's "
+          "final detector also ORs in a pixel-artifact expert that is not released, so this is the VLM branch alone. "
+          "Still images only. Not on the Space (no licence).",
+))
 
 # --- Video detectors ---------------------------------------------------------
 _add(ModelSpec(
@@ -744,6 +761,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
                   "upright by its EXIF orientation and any transparency is filled with white; then the whole image goes "
                   "to the vision-language model at its own resolution, resized only to a multiple of 32 px (between "
                   "0.07 and 16.8 megapixels)."),
+    "adb_vlm": ("Resized to at most 1.0 MP (multiples of 28)", "As the official ms-swift pipeline loads it, the image is "
+                "converted to RGB (no EXIF rotation; any transparency channel is dropped); an image above 1,003,520 "
+                "pixels is first shrunk to about that size (bilinear), then the whole image is resized (bicubic) so "
+                "both sides are multiples of 28 px, keeping the aspect ratio, and goes to the vision-language model."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
