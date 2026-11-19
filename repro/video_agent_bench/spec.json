@@ -66,9 +66,15 @@
    "profile": "pergen",
    "data": "GenBuster-Bench/test",
    "n_generators": 23,
-   "fraction": 0.3334,
+   "fraction": 0.4,
    "site": "023",
-   "paper": {"acc": 97.7, "fake_recall": 99.3, "fake_f1": 98.3, "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB, Acc. / R / F1)"}
+   "paper": {
+    "acc": 97.7,
+    "fake_recall": 99.3,
+    "fake_f1": 98.3,
+    "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB, Acc. / R / F1)"
+   },
+   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h."
   },
   {
    "key": "genbuster_pp",
@@ -76,9 +82,15 @@
    "profile": "pergen",
    "data": "GenBuster-Bench-plusplus/test",
    "n_generators": 1,
-   "fraction": 0.3334,
+   "fraction": 0.4,
    "site": "023",
-   "paper": {"acc": 97.5, "fake_recall": 97.2, "fake_f1": 97.4, "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB++, Acc. / R / F1)"}
+   "paper": {
+    "acc": 97.5,
+    "fake_recall": 97.2,
+    "fake_f1": 97.4,
+    "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB++, Acc. / R / F1)"
+   },
+   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h."
   }
  ]
 }
