@@ -1,0 +1,358 @@
+{
+ "what": "WeVisForensics fidelity: SynthScope engine (models/video/wevis runner) vs the official transformers backend (demo/wvf_local.py, unmodified), same isolated runtime, same clips, has_audio=False, greedy",
+ "reference_backend": "Tencent/WeVisForensics demo/wvf_local.py @ 43ae1c0 (in-process transformers); the official multi-GPU vLLM evaluator is NOT reproduced (no vLLM here)",
+ "log": "repro/logs/wevis_fidelity_295556.out",
+ "reference_env": {
+  "transformers": "5.23.0",
+  "torch": "2.11.0+cu126",
+  "gpu": "NVIDIA RTX A6000",
+  "load_seconds": 226.5,
+  "weights_gib": 19.54
+ },
+ "synthscope_info": {
+  "versions": {
+   "transformers": "5.23.0",
+   "flash-linear-attention": "0.6.0",
+   "fla-core": "0.6.0",
+   "peft": "0.21.3",
+   "torch": "2.11.0+cu126",
+   "paddlepaddle": "3.2.2",
+   "paddleocr": "3.7.0",
+   "causal_conv1d": false
+  },
+  "release": {
+   "code_commit": "43ae1c0fe2513ffc10baa1fd12fe3ca342aa21d5",
+   "code_files": 26,
+   "adapters_revision": "9fa025a02dde4f7f7de8883fe17b6f251f39098e",
+   "adapter_files": 12,
+   "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "base_files": 12,
+   "paddlex_revision": {
+    "PP-OCRv5_server_det": "ca867c897ecbca8873081573a802ad70d499cb94",
+    "PP-OCRv5_server_rec": "b26c3587fda8da3c8ec0ce357214b4d661ff1558"
+   },
+   "paddlex_files": 8
+  },
+  "adapter_tensors": {
+   "main": 496,
+   "physical_consistency": 496,
+   "visual_appearance": 496,
+   "common_sense": 496,
+   "ocr_consistency": 496
+  },
+  "gpu": "NVIDIA RTX A6000",
+  "attn": "sdpa",
+  "weights_gib": 19.54,
+  "load_seconds": 42.8,
+  "has_audio": false,
+  "verdict_pair_ids": [
+   [
+    12062,
+    1865
+   ],
+   [
+    29571,
+    7700
+   ],
+   [
+    35740,
+    8535
+   ],
+   [
+    50561,
+    12402
+   ]
+  ],
+  "network_refused": [],
+  "engine_load_seconds": 46.3,
+  "status": "official code 43ae1c0 + adapters 9fa025a0 on base 851bf6e8 (sha256 verified, adapters strict: 2480 tensors), transformers 5.23.0 in a separate process; audio off"
+ },
+ "repeat": {
+  "video": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/0_real/00000_msrvtt_1.mp4",
+  "engine_result": {
+   "fake_probability": 0.0,
+   "verdict": "real",
+   "logit": -18.75,
+   "score_source": "verdict_token",
+   "status": "answered",
+   "elapsed_ms": 57268.6,
+   "checkpoint_status": "official code 43ae1c0 + adapters 9fa025a0 on base 851bf6e8 (sha256 verified, adapters strict: 2480 tensors), transformers 5.23.0 in a separate process; audio off"
+  }
+ },
+ "summary": {
+  "clips": 3,
+  "compared": 3,
+  "identical_answer": 3,
+  "identical_status": 3,
+  "identical_tool_calls": 3,
+  "identical_raw_texts_every_turn": 3,
+  "identical_final_text": 3,
+  "direct_calls": 3,
+  "direct_ids_identical": 3,
+  "direct_logit_max_abs_diff": 0.0,
+  "direct_logit_all_exactly_equal": true,
+  "correct": 2,
+  "demo_agree_with_recorded_vllm": 0,
+  "demo_cases": 0,
+  "seconds_per_video_mean": 45.6,
+  "seconds_per_video_mean_excl_first": 39.6,
+  "seconds_per_video_range": [
+   39.0,
+   57.6
+  ],
+  "reference_seconds_mean": 51.9,
+  "peak_alloc_gib_max": 20.95,
+  "peak_reserved_gib_max": 21.48,
+  "oom": [],
+  "errors": [],
+  "unparsed": 0,
+  "unscored": 0,
+  "repeat_first_clip_identical": true
+ },
+ "clips": [
+  {
+   "subset": "gate",
+   "video": "00000_msrvtt_1.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       8.0
+      ]
+     ]
+    ],
+    "seconds": 77.2,
+    "peak_alloc_gib": 20.25,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       8.0
+      ]
+     ]
+    ],
+    "logit": -18.75,
+    "fake_probability": 7.194132978569834e-09,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 188,
+    "pair_softmax_mass": 1.000000007194133,
+    "argmax_is_emitted": true,
+    "seconds": 57.6,
+    "wall_seconds": 65.1,
+    "model_calls": 8,
+    "generated_tokens": 1410,
+    "peak_alloc_gib": 20.25,
+    "peak_reserved_gib": 20.53,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -18.75,
+    "logit_recorded": -18.75,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00001_msrvtt_2.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       22.7
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       12.0
+      ]
+     ]
+    ],
+    "seconds": 39.1,
+    "peak_alloc_gib": 20.94,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       22.7
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       12.0
+      ]
+     ]
+    ],
+    "logit": -18.0,
+    "fake_probability": 1.522997951276035e-08,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 193,
+    "pair_softmax_mass": 1.0000000152299797,
+    "argmax_is_emitted": true,
+    "seconds": 39.0,
+    "wall_seconds": 47.0,
+    "model_calls": 6,
+    "generated_tokens": 940,
+    "peak_alloc_gib": 20.95,
+    "peak_reserved_gib": 21.48,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -18.0,
+    "logit_recorded": -18.0,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00005_msrvtt_6.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       14.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       14.0
+      ]
+     ]
+    ],
+    "seconds": 39.4,
+    "peak_alloc_gib": 20.46,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       14.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       14.0
+      ]
+     ]
+    ],
+    "logit": 14.625,
+    "fake_probability": 0.9999995549149481,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 206,
+    "pair_softmax_mass": 0.9999966303935625,
+    "argmax_is_emitted": true,
+    "seconds": 40.22,
+    "wall_seconds": 48.4,
+    "model_calls": 5,
+    "generated_tokens": 957,
+    "peak_alloc_gib": 20.47,
+    "peak_reserved_gib": 21.06,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 14.625,
+    "logit_recorded": 14.625,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": false
+  }
+ ]
+}

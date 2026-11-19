@@ -118,6 +118,16 @@ HD clips and a 74 s 1080p WildScrape clip.
 
 Longer HD clips need a larger GPU: retry the videos that raise `WeVisOOMError` on a 48 GB A6000.
 
+**Spot check after fix round 1** (`repro/wevis_fidelity_spot.json`, job 295556, ivi-cn023, **RTX A6000**; log
+`repro/logs/wevis_fidelity_295556.out`). The first 3 clips were rerun with the per-video frame cache and the error
+rule changed.
+- Identical answers, tool calls and per-turn raw text: 3 / 3.
+- Logit-gap difference vs a direct call: 0.0. The repeat of clip 1 was identical.
+- Each video's frame cache was removed after scoring.
+- The A6000 logits differ from the A5000 run's (msrvtt_1: -18.75 vs -18.625; msrvtt_2: -18.0 vs -20.75), with the same
+  tool calls and verdicts. The kernels are numerically different on another GPU type. Identity holds because both
+  backends ran on the same GPU in the same job.
+
 The authors' multi-GPU vLLM evaluator is not reproduced (no vLLM here). Against its recorded demo trajectories, the
 transformers backend gives the same verdicts (7 / 7) but some tool traces differ (Task 0 gate).
 
