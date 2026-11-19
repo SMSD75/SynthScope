@@ -3520,6 +3520,97 @@ class VidProMDataset(VideoFolderDataset):
         self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
 
 
+def _sha256_of(path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 24), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+class _GenBusterZipDataset(VideoFolderDataset):
+    """Shared loader of the GenBuster benchmarks (BusterX / BusterX++, Wen et al.; Hugging Face ``l8cv``, MIT): one zip per
+    benchmark at a pinned dataset revision, fetched anonymously, safe-extracted, and laid out as
+    ``test/<group>/{0_real,1_fake}`` with the benchmark's real pool hard-linked into every group (``_link_images``: sorted
+    by file name, which is each clip's sha256, so the order carries no meaning). ``<root>/SOURCE.json`` records the repo,
+    revision, archive sha256 and the per-group counts. Subclasses map the zip's folders to groups (``_groups``)."""
+    hf_repo_id = None
+    revision = None
+    archive = None
+    marker = None                      # a folder name that identifies the zip's top folder
+
+    @classmethod
+    def _groups(cls, base: Path) -> tuple[list, list]:
+        """(reals, [(group, fakes)]) under the extracted zip's top folder ``base``."""
+        raise NotImplementedError
+
+    @classmethod
+    def prepare_split(cls, root_dir, split="test", hf_repo_id=None, force=False):
+        root_dir = Path(root_dir); dest = root_dir / split
+        if not force and _has_videos(dest):
+            return
+        from huggingface_hub import hf_hub_download
+        dl, staging = root_dir / "_downloads", root_dir / "_staging"
+        zip_path = Path(hf_hub_download(repo_id=hf_repo_id or cls.hf_repo_id, filename=cls.archive, repo_type="dataset",
+                                        revision=cls.revision, local_dir=str(dl), token=False))
+        digest = _sha256_of(zip_path)
+        _safe_extract_zip(zip_path, staging)
+        ok = lambda p: p.is_file() and p.suffix.lower() in VIDEO_EXTENSIONS and not p.name.startswith("._")   # noqa: E731
+        base = next(p for p in [staging, *sorted(staging.iterdir())] if (p / cls.marker).is_dir())   # the zip's top folder
+        reals, groups = cls._groups(base)
+        reals = sorted(p for p in reals if ok(p))
+        counts = {}
+        for name, fakes in groups:
+            fakes = sorted(p for p in fakes if ok(p))
+            _link_images(fakes, dest / name / "1_fake")
+            _link_images(reals, dest / name / "0_real")
+            counts[name] = len(fakes)
+        (root_dir / "SOURCE.json").write_text(json.dumps(
+            {"repo": hf_repo_id or cls.hf_repo_id, "revision": cls.revision, "archive": cls.archive,
+             "archive_sha256": digest, "reals": len(reals), "fakes": counts, "fakes_total": sum(counts.values()),
+             "layout": f"{split}/<group>/1_fake + the {len(reals)} reals hard-linked into every {split}/<group>/0_real"},
+            indent=1) + "\n")
+        print(f"{cls.__name__}: {len(reals)} reals + {sum(counts.values())} fakes in {len(counts)} groups -> {dest}")
+        shutil.rmtree(dl, ignore_errors=True); shutil.rmtree(staging, ignore_errors=True)
+
+    def _download_data(self, force=False):
+        self.prepare_split(self.root_dir, self.split, self.hf_repo_id, force)
+
+
+class GenBusterBenchDataset(_GenBusterZipDataset):
+    """GenBuster-Bench (BusterX, Wen et al. 2025; HF ``l8cv/GenBuster-Bench``, MIT, 2.2 GB) — the in-domain benchmark of
+    WeVisForensics (Table 4 "GB"). 1000 real clips (``id/real``, the only reals) and 2150 generated ones: ``id/fake`` (CogVideoX,
+    EasyAnimate, HunyuanVideo, LTX-Video; 1000), ``ood/fake`` (Gen-3, Jimeng, Kling, Luma, Pika, Sora, Vidu, WanX; 1000) and
+    ``wild/fake`` (11 recent commercial generators; 150). Groups are ``<split>_<generator>`` (``id_cogvideox``,
+    ``ood_sora``, ``wild_veo3.1``, ...), each with all 1000 reals. The paper's GB number is the accuracy over all 3150
+    clips, one row per clip (official ``scripts/evaluate.py``), i.e. over the distinct clips, not the per-group mean."""
+    hf_repo_id = "l8cv/GenBuster-Bench"
+    revision = "68e41ab55726013f1c7455980180114302196c23"
+    archive = "GenBuster-Bench.zip"
+    marker = "id"
+
+    @classmethod
+    def _groups(cls, base: Path):
+        reals = list((base / "id" / "real").iterdir())
+        groups = [(f"{sp}_{g.name}", list(g.iterdir())) for sp in ("id", "ood", "wild") if (base / sp / "fake").is_dir()
+                  for g in sorted(p for p in (base / sp / "fake").iterdir() if p.is_dir())]
+        return reals, groups
+
+
+class GenBusterBenchPPDataset(_GenBusterZipDataset):
+    """GenBuster-Bench++ (BusterX++, Wen et al. 2025; HF ``l8cv/GenBuster-Bench-plusplus``, MIT, 1.3 GB), video track — the
+    out-of-domain "GB++" of WeVisForensics (Table 4): 1000 real and 1000 generated clips (``video/{real,fake}``; the
+    generators are not labelled per clip), one group ``video``. The zip's image track (``image/``, 2000 JPEGs) is not used."""
+    hf_repo_id = "l8cv/GenBuster-Bench-plusplus"
+    revision = "7f184bef604882227bf2a585608d3e47e4f0b60b"
+    archive = "GenBuster-Bench-plusplus.zip"
+    marker = "video"
+
+    @classmethod
+    def _groups(cls, base: Path):
+        return list((base / "video" / "real").iterdir()), [("video", list((base / "video" / "fake").iterdir()))]
+
+
 class VideoFeedbackDatasetModule(_TestOnlyVideoModule):
     DATASET_CLASS = VideoFeedbackDataset
 
@@ -3538,6 +3629,14 @@ class VideoPhyDatasetModule(_TestOnlyVideoModule):
 
 class VidProMDatasetModule(_TestOnlyVideoModule):
     DATASET_CLASS = VidProMDataset
+
+
+class GenBusterBenchDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = GenBusterBenchDataset
+
+
+class GenBusterBenchPPDatasetModule(_TestOnlyVideoModule):
+    DATASET_CLASS = GenBusterBenchPPDataset
 
 
 SynthScopeModuleDict = {
@@ -3576,6 +3675,8 @@ SynthScopeModuleDict = {
     "videophy": VideoPhyDatasetModule,
     "evalcrafter": EvalCrafterDatasetModule,
     "vidprom": VidProMDatasetModule,
+    "genbuster": GenBusterBenchDatasetModule,
+    "genbuster_pp": GenBusterBenchPPDatasetModule,
     "genvidbench": GenVidBenchDatasetModule,
     "physics_iq": VideoFolderDatasetModule,
     "videofeedback": VideoFeedbackDatasetModule,

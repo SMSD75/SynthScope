@@ -142,6 +142,14 @@ DATASET_DEFS: list[DatasetDef] = [
                ["/hddstore/ssalehi/SynthScope/VidProM"], ["test"],
                "First 1,000 clips per generator (ModelScope, Pika, Text2Video-Zero, VideoCrafter2) vs MSR-VTT reals; "
                "CC BY-NC 4.0."),
+    DatasetDef("genbuster", "GenBuster-Bench (BusterX)", "video",
+               ["/hddstore/ssalehi/SynthScope/GenBuster-Bench"], ["test"],
+               "1,000 real vs 2,150 generated clips: in-domain (4 open generators), OOD (8 commercial) and wild (11 "
+               "recent); WeVisForensics' in-domain benchmark; MIT."),
+    DatasetDef("genbuster_pp", "GenBuster-Bench++ (BusterX++, video)", "video",
+               ["/hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus"], ["test"],
+               "Video track: 1,000 real vs 1,000 generated clips (generators not labelled); WeVisForensics' "
+               "out-of-domain GB++; MIT."),
 ]
 
 # Which dataset each detector was trained on (best-effort, from interface/scripts/train_model.sh

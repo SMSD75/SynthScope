@@ -1,0 +1,84 @@
+{
+ "version": 1,
+ "description": "Benchmark subsets of the agentic video detector WeVisForensics (wevis) and the same subsets scored by SynthScope's video detectors. Read by make_subsets.py, run_units.py, compare.py and the job scripts in this folder.",
+ "protocol": "Held video benchmarks (GenVideo-Val, VideoPhy, VidProM, EvalCrafter): bench_eval_video --limit L with L = ceil(250 / n_generators), the first L sorted reals and the first L sorted fakes of every generator (video_layout.discover order); EvalCrafter has no reals and is paired with the first L GenVideo-Val MSR-VTT reals (the convention of the merged video matrix: --reals GenVideo/test/Crafter/0_real). GenBuster-Bench / GenBuster-Bench++ (the paper's GB / GB++): the first ceil(fraction * n) sorted clips of every folder (each generator's fakes and the one real pool), keeping the benchmark's real : fake composition. subsets/<bench>.json lists every file with its sha1. The agent and every comparator score byte-identical files.",
+ "agent": "wevis",
+ "detectors": [
+  "d3",
+  "split",
+  "stall",
+  "restrav",
+  "nsg_vd",
+  "waverep",
+  "waverep_g4",
+  "vina_video"
+ ],
+ "internal_only": [
+  "nsg_vd",
+  "vina_video"
+ ],
+ "internal_only_note": "Comparators whose weights SynthScope does not redistribute (synthscope.hub.NEVER_REDISTRIBUTE). They are scored like the rest; compare.py also names the best publicly licensed comparator.",
+ "sources": {
+  "029": "ivi-cn029:/ssdstore/ssalehi/SynthScope",
+  "023": "ivi-cn023:/hddstore/ssalehi/SynthScope"
+ },
+ "benchmarks": [
+  {
+   "key": "genvideo",
+   "title": "GenVideo-Val",
+   "profile": "pergen",
+   "data": "GenVideo/test",
+   "n_generators": 10,
+   "limit": 25,
+   "site": "029"
+  },
+  {
+   "key": "videophy",
+   "title": "VideoPhy",
+   "profile": "pergen",
+   "data": "VideoPhy/test",
+   "n_generators": 8,
+   "limit": 32,
+   "site": "029"
+  },
+  {
+   "key": "vidprom",
+   "title": "VidProM",
+   "profile": "pergen",
+   "data": "VidProM/test",
+   "n_generators": 4,
+   "limit": 63,
+   "site": "029"
+  },
+  {
+   "key": "evalcrafter",
+   "title": "EvalCrafter (+ GenVideo-Val MSR-VTT reals)",
+   "profile": "fakeonly",
+   "data": "EvalCrafter/test/1_fake",
+   "reals": "GenVideo/test/Crafter/0_real",
+   "n_generators": 14,
+   "limit": 18,
+   "site": "029"
+  },
+  {
+   "key": "genbuster",
+   "title": "GenBuster-Bench (GB)",
+   "profile": "pergen",
+   "data": "GenBuster-Bench/test",
+   "n_generators": 23,
+   "fraction": 0.3334,
+   "site": "023",
+   "paper": {"acc": 97.7, "fake_recall": 99.3, "fake_f1": 98.3, "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB, Acc. / R / F1)"}
+  },
+  {
+   "key": "genbuster_pp",
+   "title": "GenBuster-Bench++ (GB++, video track)",
+   "profile": "pergen",
+   "data": "GenBuster-Bench-plusplus/test",
+   "n_generators": 1,
+   "fraction": 0.3334,
+   "site": "023",
+   "paper": {"acc": 97.5, "fake_recall": 97.2, "fake_f1": 97.4, "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB++, Acc. / R / F1)"}
+  }
+ ]
+}

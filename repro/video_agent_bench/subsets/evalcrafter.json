@@ -1,0 +1,1701 @@
+{
+"benchmark": "evalcrafter",
+"profile": "fakeonly",
+"site": "029",
+"source_root": "/ssdstore/ssalehi/SynthScope",
+"data": "EvalCrafter/test/1_fake",
+"reals": "GenVideo/test/Crafter/0_real",
+"n_generators": 14,
+"limit": 18,
+"n_files": 270,
+"n_scored": 504,
+"n_distinct": 270,
+"n_distinct_real": 18,
+"bytes": 242598508,
+"generators": [
+{
+"name": "MoonValley",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"MoonValley/0000.mp4",
+"MoonValley/0001.mp4",
+"MoonValley/0002.mp4",
+"MoonValley/0003.mp4",
+"MoonValley/0004.mp4",
+"MoonValley/0005.mp4",
+"MoonValley/0007.mp4",
+"MoonValley/0008.mp4",
+"MoonValley/0009.mp4",
+"MoonValley/0010.mp4",
+"MoonValley/0011.mp4",
+"MoonValley/0012.mp4",
+"MoonValley/0015.mp4",
+"MoonValley/0016.mp4",
+"MoonValley/0017.mp4",
+"MoonValley/0019.mp4",
+"MoonValley/0020.mp4",
+"MoonValley/0023.mp4"
+]
+},
+{
+"name": "floor33",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"floor33/0000.mp4",
+"floor33/0001.mp4",
+"floor33/0002.mp4",
+"floor33/0003.mp4",
+"floor33/0004.mp4",
+"floor33/0005.mp4",
+"floor33/0006.mp4",
+"floor33/0007.mp4",
+"floor33/0008.mp4",
+"floor33/0009.mp4",
+"floor33/0010.mp4",
+"floor33/0011.mp4",
+"floor33/0012.mp4",
+"floor33/0013.mp4",
+"floor33/0014.mp4",
+"floor33/0015.mp4",
+"floor33/0016.mp4",
+"floor33/0017.mp4"
+]
+},
+{
+"name": "gen2",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"gen2/0000.mp4",
+"gen2/0001.mp4",
+"gen2/0002.mp4",
+"gen2/0003.mp4",
+"gen2/0004.mp4",
+"gen2/0005.mp4",
+"gen2/0006.mp4",
+"gen2/0007.mp4",
+"gen2/0008.mp4",
+"gen2/0009.mp4",
+"gen2/0010.mp4",
+"gen2/0011.mp4",
+"gen2/0012.mp4",
+"gen2/0013.mp4",
+"gen2/0014.mp4",
+"gen2/0015.mp4",
+"gen2/0016.mp4",
+"gen2/0017.mp4"
+]
+},
+{
+"name": "gen2_december",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"gen2_december/0000.mp4",
+"gen2_december/0001.mp4",
+"gen2_december/0002.mp4",
+"gen2_december/0003.mp4",
+"gen2_december/0004.mp4",
+"gen2_december/0005.mp4",
+"gen2_december/0006.mp4",
+"gen2_december/0007.mp4",
+"gen2_december/0008.mp4",
+"gen2_december/0009.mp4",
+"gen2_december/0010.mp4",
+"gen2_december/0011.mp4",
+"gen2_december/0012.mp4",
+"gen2_december/0013.mp4",
+"gen2_december/0014.mp4",
+"gen2_december/0015.mp4",
+"gen2_december/0016.mp4",
+"gen2_december/0017.mp4"
+]
+},
+{
+"name": "hotshot",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"hotshot/0000.mp4",
+"hotshot/0001.mp4",
+"hotshot/0002.mp4",
+"hotshot/0003.mp4",
+"hotshot/0004.mp4",
+"hotshot/0005.mp4",
+"hotshot/0006.mp4",
+"hotshot/0007.mp4",
+"hotshot/0008.mp4",
+"hotshot/0009.mp4",
+"hotshot/0010.mp4",
+"hotshot/0011.mp4",
+"hotshot/0012.mp4",
+"hotshot/0013.mp4",
+"hotshot/0014.mp4",
+"hotshot/0015.mp4",
+"hotshot/0016.mp4",
+"hotshot/0017.mp4"
+]
+},
+{
+"name": "lavie-base",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"lavie-base/0000.mp4",
+"lavie-base/0001.mp4",
+"lavie-base/0002.mp4",
+"lavie-base/0003.mp4",
+"lavie-base/0004.mp4",
+"lavie-base/0005.mp4",
+"lavie-base/0006.mp4",
+"lavie-base/0007.mp4",
+"lavie-base/0008.mp4",
+"lavie-base/0009.mp4",
+"lavie-base/0010.mp4",
+"lavie-base/0011.mp4",
+"lavie-base/0012.mp4",
+"lavie-base/0013.mp4",
+"lavie-base/0014.mp4",
+"lavie-base/0015.mp4",
+"lavie-base/0016.mp4",
+"lavie-base/0017.mp4"
+]
+},
+{
+"name": "lavie-interpolation",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"lavie-interpolation/0000.mp4",
+"lavie-interpolation/0001.mp4",
+"lavie-interpolation/0002.mp4",
+"lavie-interpolation/0003.mp4",
+"lavie-interpolation/0004.mp4",
+"lavie-interpolation/0005.mp4",
+"lavie-interpolation/0006.mp4",
+"lavie-interpolation/0007.mp4",
+"lavie-interpolation/0008.mp4",
+"lavie-interpolation/0009.mp4",
+"lavie-interpolation/0010.mp4",
+"lavie-interpolation/0011.mp4",
+"lavie-interpolation/0012.mp4",
+"lavie-interpolation/0013.mp4",
+"lavie-interpolation/0014.mp4",
+"lavie-interpolation/0015.mp4",
+"lavie-interpolation/0016.mp4",
+"lavie-interpolation/0017.mp4"
+]
+},
+{
+"name": "mix-sr",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"mix-sr/0000.mp4",
+"mix-sr/0001.mp4",
+"mix-sr/0002.mp4",
+"mix-sr/0003.mp4",
+"mix-sr/0004.mp4",
+"mix-sr/0005.mp4",
+"mix-sr/0006.mp4",
+"mix-sr/0007.mp4",
+"mix-sr/0008.mp4",
+"mix-sr/0009.mp4",
+"mix-sr/0010.mp4",
+"mix-sr/0011.mp4",
+"mix-sr/0012.mp4",
+"mix-sr/0013.mp4",
+"mix-sr/0014.mp4",
+"mix-sr/0015.mp4",
+"mix-sr/0016.mp4",
+"mix-sr/0017.mp4"
+]
+},
+{
+"name": "modelscope",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"modelscope/0000.mp4",
+"modelscope/0001.mp4",
+"modelscope/0002.mp4",
+"modelscope/0003.mp4",
+"modelscope/0004.mp4",
+"modelscope/0005.mp4",
+"modelscope/0006.mp4",
+"modelscope/0007.mp4",
+"modelscope/0008.mp4",
+"modelscope/0009.mp4",
+"modelscope/0010.mp4",
+"modelscope/0011.mp4",
+"modelscope/0012.mp4",
+"modelscope/0013.mp4",
+"modelscope/0014.mp4",
+"modelscope/0015.mp4",
+"modelscope/0016.mp4",
+"modelscope/0017.mp4"
+]
+},
+{
+"name": "pika",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"pika/0000.mp4",
+"pika/0001.mp4",
+"pika/0002.mp4",
+"pika/0003.mp4",
+"pika/0004.mp4",
+"pika/0005.mp4",
+"pika/0006.mp4",
+"pika/0007.mp4",
+"pika/0008.mp4",
+"pika/0009.mp4",
+"pika/0010.mp4",
+"pika/0011.mp4",
+"pika/0012.mp4",
+"pika/0013.mp4",
+"pika/0014.mp4",
+"pika/0015.mp4",
+"pika/0016.mp4",
+"pika/0017.mp4"
+]
+},
+{
+"name": "pika_v1_december_1",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"pika_v1_december_1/0000.mp4",
+"pika_v1_december_1/0001.mp4",
+"pika_v1_december_1/0002.mp4",
+"pika_v1_december_1/0003.mp4",
+"pika_v1_december_1/0004.mp4",
+"pika_v1_december_1/0005.mp4",
+"pika_v1_december_1/0006.mp4",
+"pika_v1_december_1/0007.mp4",
+"pika_v1_december_1/0008.mp4",
+"pika_v1_december_1/0009.mp4",
+"pika_v1_december_1/0010.mp4",
+"pika_v1_december_1/0011.mp4",
+"pika_v1_december_1/0012.mp4",
+"pika_v1_december_1/0013.mp4",
+"pika_v1_december_1/0014.mp4",
+"pika_v1_december_1/0015.mp4",
+"pika_v1_december_1/0016.mp4",
+"pika_v1_december_1/0017.mp4"
+]
+},
+{
+"name": "show_1",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"show_1/0000.mp4",
+"show_1/0001.mp4",
+"show_1/0002.mp4",
+"show_1/0003.mp4",
+"show_1/0004.mp4",
+"show_1/0005.mp4",
+"show_1/0006.mp4",
+"show_1/0007.mp4",
+"show_1/0008.mp4",
+"show_1/0009.mp4",
+"show_1/0010.mp4",
+"show_1/0011.mp4",
+"show_1/0012.mp4",
+"show_1/0013.mp4",
+"show_1/0014.mp4",
+"show_1/0015.mp4",
+"show_1/0016.mp4",
+"show_1/0017.mp4"
+]
+},
+{
+"name": "videocrafter-v1.0",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"videocrafter-v1.0/0000.mp4",
+"videocrafter-v1.0/0001.mp4",
+"videocrafter-v1.0/0002.mp4",
+"videocrafter-v1.0/0003.mp4",
+"videocrafter-v1.0/0004.mp4",
+"videocrafter-v1.0/0005.mp4",
+"videocrafter-v1.0/0006.mp4",
+"videocrafter-v1.0/0007.mp4",
+"videocrafter-v1.0/0008.mp4",
+"videocrafter-v1.0/0009.mp4",
+"videocrafter-v1.0/0010.mp4",
+"videocrafter-v1.0/0011.mp4",
+"videocrafter-v1.0/0012.mp4",
+"videocrafter-v1.0/0013.mp4",
+"videocrafter-v1.0/0014.mp4",
+"videocrafter-v1.0/0015.mp4",
+"videocrafter-v1.0/0016.mp4",
+"videocrafter-v1.0/0017.mp4"
+]
+},
+{
+"name": "zeroscope",
+"reals": [
+"@reals/00000_msrvtt_1.mp4",
+"@reals/00001_msrvtt_2.mp4",
+"@reals/00002_msrvtt_3.mp4",
+"@reals/00003_msrvtt_4.mp4",
+"@reals/00004_msrvtt_5.mp4",
+"@reals/00005_msrvtt_6.mp4",
+"@reals/00006_msrvtt_7.mp4",
+"@reals/00007_msrvtt_8.mp4",
+"@reals/00008_msrvtt_9.mp4",
+"@reals/00009_msrvtt_10.mp4",
+"@reals/00010_msrvtt_11.mp4",
+"@reals/00011_msrvtt_12.mp4",
+"@reals/00012_msrvtt_13.mp4",
+"@reals/00013_msrvtt_14.mp4",
+"@reals/00014_msrvtt_15.mp4",
+"@reals/00015_msrvtt_16.mp4",
+"@reals/00016_msrvtt_17.mp4",
+"@reals/00017_msrvtt_18.mp4"
+],
+"fakes": [
+"zeroscope/0000.mp4",
+"zeroscope/0001.mp4",
+"zeroscope/0002.mp4",
+"zeroscope/0003.mp4",
+"zeroscope/0004.mp4",
+"zeroscope/0005.mp4",
+"zeroscope/0006.mp4",
+"zeroscope/0007.mp4",
+"zeroscope/0008.mp4",
+"zeroscope/0009.mp4",
+"zeroscope/0010.mp4",
+"zeroscope/0011.mp4",
+"zeroscope/0012.mp4",
+"zeroscope/0013.mp4",
+"zeroscope/0014.mp4",
+"zeroscope/0015.mp4",
+"zeroscope/0016.mp4",
+"zeroscope/0017.mp4"
+]
+}
+],
+"files": {
+"@reals/00000_msrvtt_1.mp4": [
+"bb5af0d3486f85f6a10c75dd5643b0c105585988",
+169482
+],
+"@reals/00001_msrvtt_2.mp4": [
+"b70d94093751d3b0819004d9ef388b1ae4f7483a",
+380710
+],
+"@reals/00002_msrvtt_3.mp4": [
+"f37618f2652803194fb68da29dcd9fd5f57410f9",
+152684
+],
+"@reals/00003_msrvtt_4.mp4": [
+"1ae6bc88b21649dd61d5b2318aed885d6c80d4b5",
+95388
+],
+"@reals/00004_msrvtt_5.mp4": [
+"fe1166a813a670c016aba4fcd88c0f2698b96865",
+158567
+],
+"@reals/00005_msrvtt_6.mp4": [
+"a00c332cbcb18569cfdce4446ac9a9e15ccd4b94",
+325121
+],
+"@reals/00006_msrvtt_7.mp4": [
+"1dd04385ca26f45e2b3c32a59c4ae33fd5838fe8",
+467874
+],
+"@reals/00007_msrvtt_8.mp4": [
+"c4c18923b7e0c87ce0f10b0b63d3041d339f319d",
+128851
+],
+"@reals/00008_msrvtt_9.mp4": [
+"da33fd49d88fdec53759b6d4d418b1671bd7bc12",
+255655
+],
+"@reals/00009_msrvtt_10.mp4": [
+"d94c29f73e2b28840e73c113d3851023f8e7b8d3",
+305983
+],
+"@reals/00010_msrvtt_11.mp4": [
+"fed7ede9ea1c09984e1addef5c128967c106e508",
+193094
+],
+"@reals/00011_msrvtt_12.mp4": [
+"0d2263e47edaa96a19740e8a7d063348515128b3",
+169265
+],
+"@reals/00012_msrvtt_13.mp4": [
+"c93546444d548a62945252e5ddee95cd3991cdbd",
+110348
+],
+"@reals/00013_msrvtt_14.mp4": [
+"62b629cae86eb4331a2fcd6c24ac60e629ce69c4",
+124531
+],
+"@reals/00014_msrvtt_15.mp4": [
+"7959f0230d085465018540e53d8a0e3d6709e7eb",
+93392
+],
+"@reals/00015_msrvtt_16.mp4": [
+"a6f46fa82ceb4a69700256cf553e480bc57cda4b",
+112293
+],
+"@reals/00016_msrvtt_17.mp4": [
+"cb3ada3b515920c0ee2f87ac781bf9df176dc44f",
+156066
+],
+"@reals/00017_msrvtt_18.mp4": [
+"ddb5dcf1e47b7c2a66c7480d417427d22631461e",
+225841
+],
+"MoonValley/0000.mp4": [
+"0a7f6d8762ca8cf094a874666d461e3560b106ae",
+1132848
+],
+"MoonValley/0001.mp4": [
+"8c97ca9cabe1c484ee3577eefa49ea481411fda8",
+286457
+],
+"MoonValley/0002.mp4": [
+"bbf2cf75735690ac9ff3628f90e45b439dd663a2",
+896025
+],
+"MoonValley/0003.mp4": [
+"16eac6ac7efb4086cbd701abfdf1fdd62ff03968",
+730218
+],
+"MoonValley/0004.mp4": [
+"b8fb7ec2177c3b1685d3d23de18c263507cbd557",
+375440
+],
+"MoonValley/0005.mp4": [
+"c5898cd71566e21cc6e8587447d27b27f87f6bf5",
+859872
+],
+"MoonValley/0007.mp4": [
+"a7caf982a8a0470eddc211cda5166515a0aedfc3",
+1348254
+],
+"MoonValley/0008.mp4": [
+"2d36f3b723e212f08488cd9c19ccfaa153ae8611",
+414261
+],
+"MoonValley/0009.mp4": [
+"bc9182ac2f0b05b5203aca3764fb430ed18d6675",
+506901
+],
+"MoonValley/0010.mp4": [
+"0b1a28d554c7ad54601967c2a8da38c9d2a283d6",
+716994
+],
+"MoonValley/0011.mp4": [
+"562ae6d72db13fe279f524e1c1c6217ba973baff",
+542325
+],
+"MoonValley/0012.mp4": [
+"009eecf9b37680cf6fd276e8888ab586d4773b02",
+1046224
+],
+"MoonValley/0015.mp4": [
+"7641a82e38d3d8f70f86e6610c00ad4beadc6316",
+946733
+],
+"MoonValley/0016.mp4": [
+"d3a51798e16c84b0add2af9f7234f30d07889a9e",
+704337
+],
+"MoonValley/0017.mp4": [
+"c8c001bd7b123796184ac6253d04d2d2b4544595",
+702503
+],
+"MoonValley/0019.mp4": [
+"228b04248f7d5d48cd6e574daa3ea310df13d0c3",
+515423
+],
+"MoonValley/0020.mp4": [
+"471028fe1374fd005425163dcc5a8a14913a19d9",
+700643
+],
+"MoonValley/0023.mp4": [
+"88b5d582cc538165d570a53e40ed63495dcd644c",
+824849
+],
+"floor33/0000.mp4": [
+"44bc31bca5435072ba0e860876ef7721aba2790a",
+387653
+],
+"floor33/0001.mp4": [
+"15af4cc3b0af16c24c437e07bcb76160619f20cc",
+406745
+],
+"floor33/0002.mp4": [
+"c759be8b4b98bdbef369b8e32cfd6dd88f66031f",
+438520
+],
+"floor33/0003.mp4": [
+"3ba0a8baba5241a0366dbf25d39aecffc66a9140",
+164505
+],
+"floor33/0004.mp4": [
+"ae244e7fe1d13afb9b46d207b4055602f2425f31",
+157511
+],
+"floor33/0005.mp4": [
+"9bf2cba052f8c3ac8d18a027d4b890637926b411",
+333099
+],
+"floor33/0006.mp4": [
+"a667044905ac3a7faa05618f0bf2b13556a4239e",
+438277
+],
+"floor33/0007.mp4": [
+"e1ddc95372e420e78f9487f79d78de709a1d8516",
+592473
+],
+"floor33/0008.mp4": [
+"8e240d6371c4fa9039579c916d6e3439037b0211",
+121703
+],
+"floor33/0009.mp4": [
+"248150bbef7514d272ccb952327ec16cadf0ecab",
+363559
+],
+"floor33/0010.mp4": [
+"5703470768aa6f43544e2adef4947f273ee56354",
+1111402
+],
+"floor33/0011.mp4": [
+"7980de9da3e78f4b5855fc51c96500223dce1f92",
+598208
+],
+"floor33/0012.mp4": [
+"7be4a451fb827af1f0d0f64c202aa6f098d49012",
+1209216
+],
+"floor33/0013.mp4": [
+"2c38e77a908629d01f24e39c6a8a3f4e2f5483d6",
+998498
+],
+"floor33/0014.mp4": [
+"6a172a7d6a6c6008c8cbaa1696fcc02962485c0e",
+532920
+],
+"floor33/0015.mp4": [
+"250a5ab903f3033d2de32077fed7780926c5d01d",
+854546
+],
+"floor33/0016.mp4": [
+"6e07cd58bdc4205f27a2cf035759c293a81c1830",
+344529
+],
+"floor33/0017.mp4": [
+"0f0eed890fe66a20819a199831127ecc60c0eb61",
+524215
+],
+"gen2/0000.mp4": [
+"529bd0163bb433646c3198afe01800793712106f",
+531203
+],
+"gen2/0001.mp4": [
+"ecc500c2a83e56e29474e13c8f6d2757b788c398",
+302757
+],
+"gen2/0002.mp4": [
+"494f1e0894b73e6f8f5b2746ce507ab0707f31bf",
+210084
+],
+"gen2/0003.mp4": [
+"4ebcee8f767a312201ec92dd3d5c2f59e78477b4",
+259809
+],
+"gen2/0004.mp4": [
+"de320e40aa5d0615788897bee335cddc10ca6843",
+231538
+],
+"gen2/0005.mp4": [
+"e2ed14b080c0c0d8aec852cd2e3de1b53b4e331b",
+260577
+],
+"gen2/0006.mp4": [
+"03c7e4ba6bd30d46d027d81d20543b0ce9cb1887",
+331898
+],
+"gen2/0007.mp4": [
+"8209211a4e38191df620f58cf8b03fcb3cc2f7aa",
+320087
+],
+"gen2/0008.mp4": [
+"14b9c2d2aaf379ccc2cb2c51d515baba094b56cf",
+214653
+],
+"gen2/0009.mp4": [
+"902c4e0925e57c2254b2c5ef8a14d42d621fd7db",
+253649
+],
+"gen2/0010.mp4": [
+"253b011531379e457cd373097fd61ce4a86663d2",
+349434
+],
+"gen2/0011.mp4": [
+"92ec73fb99f76146e0f853e3fcd982d59ecb7e83",
+222929
+],
+"gen2/0012.mp4": [
+"a0694bf1ffd907ddbfba489852885407cf281cb7",
+347985
+],
+"gen2/0013.mp4": [
+"a43675838134ac04180627901a86777f5469dd9a",
+259658
+],
+"gen2/0014.mp4": [
+"0583225eeb04f0c0de37f125ef310854f01198e0",
+340543
+],
+"gen2/0015.mp4": [
+"a3e8e71dc101420844d9c5542f67a8dfd7b97224",
+406492
+],
+"gen2/0016.mp4": [
+"0dd3d6ab2adcbd4933dea6462aeb87fa612ac88d",
+510436
+],
+"gen2/0017.mp4": [
+"7d55caea6fdd386c41e00503b166761879fac64a",
+252266
+],
+"gen2_december/0000.mp4": [
+"e42c31ffa92aee3875ed95e4cd2d2add389ae485",
+2455114
+],
+"gen2_december/0001.mp4": [
+"0917045024bfaa12150a2969f960b7c4f3fd4eac",
+2081933
+],
+"gen2_december/0002.mp4": [
+"25836979fc00e21330e46963e485d148cf5c4b1d",
+1108492
+],
+"gen2_december/0003.mp4": [
+"ccae48cc087b51e86bf47adf66e38fc73a65c2cb",
+2418749
+],
+"gen2_december/0004.mp4": [
+"7e70018add24b4d1444dd4301db4d1a37ef96a2b",
+1963452
+],
+"gen2_december/0005.mp4": [
+"60af0f056ce11bf4d2e5628df9ac12c2a55aac20",
+3123326
+],
+"gen2_december/0006.mp4": [
+"e8e5f7e95a24c2cd7e80c024bfdd7bbb71f28cc9",
+1888298
+],
+"gen2_december/0007.mp4": [
+"1677463a85efb5ef2960976d4b271c22396b3cc3",
+4411181
+],
+"gen2_december/0008.mp4": [
+"4704270a798ec4ed139d709f9d6013792ea28429",
+1672897
+],
+"gen2_december/0009.mp4": [
+"bf8a6bab7eac25f8e99c6d10c03a16ef37ce6614",
+1774293
+],
+"gen2_december/0010.mp4": [
+"8d037384babc26acb0d8d357d29be129f9b4919d",
+1913187
+],
+"gen2_december/0011.mp4": [
+"861037ab5685c2971103075c523d9ac9d9af51f7",
+2279400
+],
+"gen2_december/0012.mp4": [
+"7f5f508949c9855da3a3c2c5eced36d0e0a71518",
+3160171
+],
+"gen2_december/0013.mp4": [
+"621f42c30133ce6eaf7af0a0fe1279813c86d7ee",
+2100123
+],
+"gen2_december/0014.mp4": [
+"d6cbaba61ecd31d07b3637447888d0a3248701ef",
+3022065
+],
+"gen2_december/0015.mp4": [
+"193e882d12dbb77025a632e7485bac89717af723",
+4118086
+],
+"gen2_december/0016.mp4": [
+"d25cb45146f15212f3d48e2f0cd5c0d67f8c8176",
+2189480
+],
+"gen2_december/0017.mp4": [
+"a328491c3fc4f35e8954533213be0b7d1a7bdebc",
+3693798
+],
+"hotshot/0000.mp4": [
+"dc40f65f71aad7b569ef3b59b31e68b6304b44d6",
+222943
+],
+"hotshot/0001.mp4": [
+"37e50993b9086f9e905979143c684d13e7b1a37f",
+562896
+],
+"hotshot/0002.mp4": [
+"9635f2c9493d553e0d289e2c78744d3d3baab4cb",
+30299
+],
+"hotshot/0003.mp4": [
+"9a6e78e9617136538378d6bf514cfedac9ef6697",
+151497
+],
+"hotshot/0004.mp4": [
+"b7fb984c66768bcfe054e720922aa0db888bda59",
+115013
+],
+"hotshot/0005.mp4": [
+"813c7c55c87eaed7b18fedd0af67382619534869",
+493369
+],
+"hotshot/0006.mp4": [
+"e8ccc1b5a8319460d5fc9a5c2b0d11d6fad96d46",
+51043
+],
+"hotshot/0007.mp4": [
+"e66598c42a2402884c80ac500c4ef7ae8f1cf2d2",
+177332
+],
+"hotshot/0008.mp4": [
+"5da3a7d717f7e0f2110e8434dd3c29e85b735869",
+75145
+],
+"hotshot/0009.mp4": [
+"85cf0835ffe5a9ef0917e2e62fe87e6148a8d4b1",
+74870
+],
+"hotshot/0010.mp4": [
+"3481d1fa9547598fd9a349dd0c84cce051401593",
+193769
+],
+"hotshot/0011.mp4": [
+"906a56553bc19fa674a7d2160f4186bfe27680ad",
+199237
+],
+"hotshot/0012.mp4": [
+"6cb383ef956571b403b65dbcdf65effb6138b4f7",
+309732
+],
+"hotshot/0013.mp4": [
+"26789a352154d0d865d4199d38d90e02001eecf2",
+205089
+],
+"hotshot/0014.mp4": [
+"73171f7a13113fee476f3af6baca1441050bae67",
+399361
+],
+"hotshot/0015.mp4": [
+"c948eb4894fd315f7a85e788acff88532a343fb3",
+303545
+],
+"hotshot/0016.mp4": [
+"6769d1bc4f7dc3a4c530ffeae95f12a61f2784b8",
+158252
+],
+"hotshot/0017.mp4": [
+"1ec2f3572b6bb66c94343b647b562b63ce2754eb",
+224159
+],
+"lavie-base/0000.mp4": [
+"6eef120095cb8bf2b1876a6bf661617cb8cc0ef4",
+620033
+],
+"lavie-base/0001.mp4": [
+"a963983e6209eac8b8c06afb797f96d699c62be7",
+633748
+],
+"lavie-base/0002.mp4": [
+"577d3a469c07e99c5786d07624815fcb4f650448",
+386071
+],
+"lavie-base/0003.mp4": [
+"c6b549ec6a31fe5b39368c501beabc725b626f68",
+821243
+],
+"lavie-base/0004.mp4": [
+"11c3dd80404f7a76ac12170cff42e851c51048cc",
+239592
+],
+"lavie-base/0005.mp4": [
+"10d2c138e977eb7a0e173613d4bed86e03409aff",
+960031
+],
+"lavie-base/0006.mp4": [
+"d502d52a4fe69f15ad89990844cac3b26eb1e322",
+592978
+],
+"lavie-base/0007.mp4": [
+"82638a1f513c95657ca341c84307bf1a517f7a26",
+886568
+],
+"lavie-base/0008.mp4": [
+"077c7c20ef56755f9acf6967d80ccb2c5918ed34",
+399112
+],
+"lavie-base/0009.mp4": [
+"c7f1762b4653d0e49e6fa49833f430738d19fd94",
+405547
+],
+"lavie-base/0010.mp4": [
+"190c422c7163d1215e5f8e9d0ce42352da733a0a",
+1064644
+],
+"lavie-base/0011.mp4": [
+"aa495a77109b7a4957a5b2bac6c00ad642ed7293",
+1653697
+],
+"lavie-base/0012.mp4": [
+"5f83516121d33e6b39c802caf9ad06f1b34e6a9f",
+1111489
+],
+"lavie-base/0013.mp4": [
+"27b55f4927f56565380becf977bae8968c1ad871",
+1017273
+],
+"lavie-base/0014.mp4": [
+"76156d8a6e9af1a5207cef7e12c63cb7634fc203",
+1004618
+],
+"lavie-base/0015.mp4": [
+"d09eb9331abe75299ec7800d27414b5ac820bc1b",
+1398723
+],
+"lavie-base/0016.mp4": [
+"c60a5855eee41accbe557c642935e88e2b1fd5fc",
+192002
+],
+"lavie-base/0017.mp4": [
+"a38de9677365967242d50eb7d06f0fac8b0c2e66",
+1165455
+],
+"lavie-interpolation/0000.mp4": [
+"a8485f0d9192d143c2257ca1eaee5481eee198ab",
+327037
+],
+"lavie-interpolation/0001.mp4": [
+"c9bc6b64209b2225fa5983d369082164e7659fe2",
+311171
+],
+"lavie-interpolation/0002.mp4": [
+"006c9b5faead6ffd7001664e84895f33f13e9b68",
+308209
+],
+"lavie-interpolation/0003.mp4": [
+"dff7c8436481e81eedf895c05941bb11cb2b7544",
+315869
+],
+"lavie-interpolation/0004.mp4": [
+"b5a673e2f2fc2f6fdc82861149e7167de744c9b5",
+268091
+],
+"lavie-interpolation/0005.mp4": [
+"25f85ccab8e8adefa686807401674ba9e1823e4d",
+320084
+],
+"lavie-interpolation/0006.mp4": [
+"0df7f74b112d997e4389a54fe7bb6ec378fb6dad",
+310375
+],
+"lavie-interpolation/0007.mp4": [
+"d86f9e96fb3b16b34591c5703c063efda9a7c1c7",
+339053
+],
+"lavie-interpolation/0008.mp4": [
+"935a4ac98a94682a5db41b0d5f18b74bf449c005",
+309406
+],
+"lavie-interpolation/0009.mp4": [
+"6de6203fa48324c51d451414e9e08d4205064640",
+296926
+],
+"lavie-interpolation/0010.mp4": [
+"25c3767d268d0ed81461ae84153db29c711e3827",
+316841
+],
+"lavie-interpolation/0011.mp4": [
+"a0526e9a6b4f723955178a8427bdbfb7483a437b",
+338946
+],
+"lavie-interpolation/0012.mp4": [
+"62476906cffddc179c02648e3e70cee5f8e1871f",
+311243
+],
+"lavie-interpolation/0013.mp4": [
+"eed68337c79e5bd50aabbc4f7821762eb80ed609",
+316421
+],
+"lavie-interpolation/0014.mp4": [
+"df9d8f118608c047b8404f6d8e23eb80189c6391",
+313379
+],
+"lavie-interpolation/0015.mp4": [
+"e895484121f06ccb84f79935fb916c04963d1bd8",
+302132
+],
+"lavie-interpolation/0016.mp4": [
+"f0b716c279909fe3b684d93a70094392ab3d4474",
+299120
+],
+"lavie-interpolation/0017.mp4": [
+"fa5657b1856f1f2d7448e3c7115a692e0bff94f6",
+392270
+],
+"mix-sr/0000.mp4": [
+"28d0a774d873d0f7895066d08ecc202017870c82",
+2993994
+],
+"mix-sr/0001.mp4": [
+"260d2dbe177cddaf99a336bd796dc52f659f0423",
+3616293
+],
+"mix-sr/0002.mp4": [
+"abbf16a7b35b95c92abaa03a1ee7c297f16a39af",
+3268896
+],
+"mix-sr/0003.mp4": [
+"ef355311e23ff349fbc218a220f1343ab7334392",
+3612352
+],
+"mix-sr/0004.mp4": [
+"50f7c7650be8ffdcc52ef65234361be725c1f058",
+2909830
+],
+"mix-sr/0005.mp4": [
+"5d83c71deae46798e146be855a555cc69c1985b0",
+3297632
+],
+"mix-sr/0006.mp4": [
+"f1e7a5664a3515635fb8f1e73b2526a924b5e7c5",
+3300238
+],
+"mix-sr/0007.mp4": [
+"be43200cc5c5bf326844489b5ea4612ce872f680",
+3813350
+],
+"mix-sr/0008.mp4": [
+"cc323e94e232da018c43f474af58017bc9fdb37f",
+2117490
+],
+"mix-sr/0009.mp4": [
+"53a7b4de50dc8c7c8c9ef6d262e60a52ffb9c62a",
+2410807
+],
+"mix-sr/0010.mp4": [
+"19c6dfe384f498db4d1e3e270e88fc1e642cd500",
+2738434
+],
+"mix-sr/0011.mp4": [
+"9ea47376f3b4d6f691b832003f841f80e6b67994",
+3096577
+],
+"mix-sr/0012.mp4": [
+"4df1dbe8ca4e5423db345bc3127e90df7c8ebab7",
+3901152
+],
+"mix-sr/0013.mp4": [
+"0a8df8c3bbbfaf52b5baf16ceb47c44e81c73ea4",
+4224717
+],
+"mix-sr/0014.mp4": [
+"020a35f8fd1824255afd99219a55ca8c318c3f42",
+2712374
+],
+"mix-sr/0015.mp4": [
+"e08b4d33d488bde977352341d3c3a53a2d82e420",
+2549109
+],
+"mix-sr/0016.mp4": [
+"6a4252433a4b36ac5079aed0805f3e7a18e8ff9e",
+2921427
+],
+"mix-sr/0017.mp4": [
+"340b6e873d20d4584e76954025d23f68a2e3af6c",
+3294004
+],
+"modelscope/0000.mp4": [
+"6f5f0c95907afda46294a9570c2e51be244b9972",
+1293139
+],
+"modelscope/0001.mp4": [
+"40993657052079b80c43dc20e4b1bca438aecff7",
+697380
+],
+"modelscope/0002.mp4": [
+"8cd931965c9abcc0136b4076f451f6cb2ee333e7",
+638087
+],
+"modelscope/0003.mp4": [
+"f9e9be513eae8cfa7148c19636212c3df8cada4d",
+550756
+],
+"modelscope/0004.mp4": [
+"6e5315a986189f1e79727ed3abcd21d317e0e936",
+1053588
+],
+"modelscope/0005.mp4": [
+"eb2e86fa1e6fffa7f342f8eaa50fa27bf91d98b4",
+1073604
+],
+"modelscope/0006.mp4": [
+"08a4d8016ea088d3d222ca1f078976366d999b4f",
+752040
+],
+"modelscope/0007.mp4": [
+"bf69e8f37865f76f3368d9047acbcc518e966b69",
+865767
+],
+"modelscope/0008.mp4": [
+"659329c75ad7c3beb9469b32c3f0e7ad22c8f2dc",
+512739
+],
+"modelscope/0009.mp4": [
+"d46f0c95873fd3f5a828fb10ec8101d121bbaafb",
+1045496
+],
+"modelscope/0010.mp4": [
+"1dcf338c16c393c860ba2b4ba623d4914e34288b",
+618259
+],
+"modelscope/0011.mp4": [
+"87d3f3dd0b8d45341c85e2790bc67caedc32ae5f",
+506224
+],
+"modelscope/0012.mp4": [
+"348156273be53dd64339ac84098bff734d68ccff",
+579793
+],
+"modelscope/0013.mp4": [
+"86865bce9dd7105b58c5ee1aaefea478baf45f3f",
+431760
+],
+"modelscope/0014.mp4": [
+"edfbcc5283807badbe5d99b3f6d36ac3e8d26f1e",
+983953
+],
+"modelscope/0015.mp4": [
+"86a12071b2443d858a904a7685d40cb49477cca8",
+614606
+],
+"modelscope/0016.mp4": [
+"58e7be1d2b4290846853e0be558160b2e275f3e4",
+1310015
+],
+"modelscope/0017.mp4": [
+"93c033c52d2239284e7701b140cef454f0b5432a",
+703979
+],
+"pika/0000.mp4": [
+"e86f0ef431d10d1dd43292ff302b7998449115b4",
+213991
+],
+"pika/0001.mp4": [
+"a676a23370d4458f4aa9a57b2faf604bd4e29c81",
+223774
+],
+"pika/0002.mp4": [
+"99b00f36a09b72f135352450233176e5ddbeb938",
+296701
+],
+"pika/0003.mp4": [
+"267ef8dfa1dceae2d23f949481d17e2b9a2cfe4d",
+245702
+],
+"pika/0004.mp4": [
+"844afa871962380e4266ca37d09c30d6ffbdde51",
+213663
+],
+"pika/0005.mp4": [
+"2595691daed9f486a947369aa1debd30ba38e974",
+289197
+],
+"pika/0006.mp4": [
+"ea38e018a620c8d85b1087ffe4ba81025c257708",
+376338
+],
+"pika/0007.mp4": [
+"e43484b1132a3c4d87ed603a177ec9d7da11dae5",
+509156
+],
+"pika/0008.mp4": [
+"c74ea0336520694ed1c0680a52cea68c649ddf86",
+208209
+],
+"pika/0009.mp4": [
+"f44c91937c66605a3b7c4e553816ee4be079affa",
+146383
+],
+"pika/0010.mp4": [
+"5ece62d09b1bfaecda51ff0a677c3eee0c3ff7b2",
+289916
+],
+"pika/0011.mp4": [
+"0de28f081515682e01d0b3eec2b10c5f3a525936",
+205710
+],
+"pika/0012.mp4": [
+"cf1ec7edcc5d551d8985b929ea40ff44182663ab",
+157531
+],
+"pika/0013.mp4": [
+"76c5e1af625e0b23ea85d0dc2473a6182cb7f1d0",
+135411
+],
+"pika/0014.mp4": [
+"38bc9d8c16cbaa4c098144f74e6a202d83f669b3",
+198289
+],
+"pika/0015.mp4": [
+"e3c86b80d2bc2ad0a62a7feec5937c5e881b4b04",
+309348
+],
+"pika/0016.mp4": [
+"572fc3cd47b74f25a81ba31760c112cf5a98fe36",
+323866
+],
+"pika/0017.mp4": [
+"1305e065b5e69152454e5b08f967bdc5d98a4143",
+416503
+],
+"pika_v1_december_1/0000.mp4": [
+"325edb9fe2216c431b92e89e53217020b541f997",
+936650
+],
+"pika_v1_december_1/0001.mp4": [
+"452bf6677ed1c87de1d7e564c12c360c7968cf18",
+581445
+],
+"pika_v1_december_1/0002.mp4": [
+"b8c2bfa3d7ab5e4eca32d6cb86a06504381ee5a2",
+883642
+],
+"pika_v1_december_1/0003.mp4": [
+"3e03a29550a1d7906bd3a3447e57446732cd90bb",
+435002
+],
+"pika_v1_december_1/0004.mp4": [
+"5899d173bc76ef3645c028ca363bbabe023066f9",
+352495
+],
+"pika_v1_december_1/0005.mp4": [
+"fe39873ae12805a9d1fa6d66b6f78c7e30cd0ec1",
+801717
+],
+"pika_v1_december_1/0006.mp4": [
+"ba0121090c137b88e1235150e981278fb9b399d4",
+1084747
+],
+"pika_v1_december_1/0007.mp4": [
+"e920835aeb3c50bc6a91b1edb00d67eff791ddc3",
+1445887
+],
+"pika_v1_december_1/0008.mp4": [
+"9303e2045c5b53f926e5c16c93ac9aa03306f551",
+256865
+],
+"pika_v1_december_1/0009.mp4": [
+"339a187a4d5db7db8a2167474f092e818bc7cfb1",
+277187
+],
+"pika_v1_december_1/0010.mp4": [
+"4941d37951d8d04cca7b4e2c22ddf9292975acf6",
+729512
+],
+"pika_v1_december_1/0011.mp4": [
+"26e7843394c73555f21e8f039d890fde0aea6eaa",
+849577
+],
+"pika_v1_december_1/0012.mp4": [
+"d5d55404d5e0d59ee8e07797fea17d4ccdbb6725",
+1059112
+],
+"pika_v1_december_1/0013.mp4": [
+"ee1fd3f31571c9dd925e2ed923d416133b21b6ae",
+485332
+],
+"pika_v1_december_1/0014.mp4": [
+"c5f9e4f7dd6d50b0c714811d65c4ba3560d70e4c",
+1019736
+],
+"pika_v1_december_1/0015.mp4": [
+"8e6f1b2a4f477fe5879288fdd03f437d80be7e60",
+653914
+],
+"pika_v1_december_1/0016.mp4": [
+"81349874298d0801a5c3184c6e299909e82bf8cf",
+676840
+],
+"pika_v1_december_1/0017.mp4": [
+"014ece383d9552d3879b658933d4ab3d35180c40",
+687898
+],
+"show_1/0000.mp4": [
+"98cd5f26f2ecedbb3b202708998a7eb49ba0ccce",
+170954
+],
+"show_1/0001.mp4": [
+"8773bb754fb0e7e249cc1a3f04edf79edf57e480",
+94142
+],
+"show_1/0002.mp4": [
+"5141c393086f42e7ec7702fbc044b91aac61c758",
+91813
+],
+"show_1/0003.mp4": [
+"ee8871d9d5d1799c5ac73643b43550fde98d5eef",
+109471
+],
+"show_1/0004.mp4": [
+"38675d2baeda62c500e2d4526419a0de527188b1",
+92493
+],
+"show_1/0005.mp4": [
+"8c1a5c01bb792c76f721d38b70e836df3ad8f2ed",
+141802
+],
+"show_1/0006.mp4": [
+"d57649ead1529aa1c045225174e597c34f2220cf",
+108752
+],
+"show_1/0007.mp4": [
+"45a44ae27f64b61f937867b87fd26d319b17a628",
+131833
+],
+"show_1/0008.mp4": [
+"be9f42eec5ef23314fc1c5b18095d2d9eb64f2ce",
+76187
+],
+"show_1/0009.mp4": [
+"5759cd59bf64370dda05e333651a574959a92f50",
+38134
+],
+"show_1/0010.mp4": [
+"b6de1af78cf2a35cddc7a5ff2aaffc5ee38fa1d4",
+233965
+],
+"show_1/0011.mp4": [
+"2b62b579f155073356d855875c58c9a501151a0f",
+241894
+],
+"show_1/0012.mp4": [
+"206ac8a413c9b950daaa7c352d98d05bdbd0ebbf",
+208359
+],
+"show_1/0013.mp4": [
+"30c2f002e48d15f27adb8f489cfe2f2dd68f07ef",
+138783
+],
+"show_1/0014.mp4": [
+"55b7936c0b14690a19834822c1d8b28851c9f1c7",
+197971
+],
+"show_1/0015.mp4": [
+"c2ed16bb58571ef2d5a1958e2cf8a90134315ead",
+150498
+],
+"show_1/0016.mp4": [
+"e5dc615b27accb14d7fb8032634feea025259dfd",
+244759
+],
+"show_1/0017.mp4": [
+"89d965ea722bb8c297a1e8d34b3bde338e6b9093",
+469493
+],
+"videocrafter-v1.0/0000.mp4": [
+"65b4de87277fe1bc8cee7b7d464988fd575f115b",
+2209747
+],
+"videocrafter-v1.0/0001.mp4": [
+"6354582fbecf752fea5fbe4f2d8d6fd5db64fbef",
+2103528
+],
+"videocrafter-v1.0/0002.mp4": [
+"84bf11aa08c2d0e806d23156bbf84fc36445f897",
+2083151
+],
+"videocrafter-v1.0/0003.mp4": [
+"a55e75be5d34756ed32ce0d53b87f11e60df273a",
+1097766
+],
+"videocrafter-v1.0/0004.mp4": [
+"5ecb1b9091f20cf686e889f75fefa85621335b95",
+1316576
+],
+"videocrafter-v1.0/0005.mp4": [
+"a6b77a9b07aeb462cbbdeb693747f04e59aae1f6",
+1481920
+],
+"videocrafter-v1.0/0006.mp4": [
+"6ed9bb8f4412be1310faa9d8cbc6a5c2c34c6505",
+2272086
+],
+"videocrafter-v1.0/0007.mp4": [
+"8a76bcda2c9059d9c07d10aa566a011e078aa927",
+2650995
+],
+"videocrafter-v1.0/0008.mp4": [
+"169141aab5649f64cd63d99a2a0127b90e531fb8",
+751352
+],
+"videocrafter-v1.0/0009.mp4": [
+"e56c19b4d5d5f94f80c9108ca97fa02aabf94d03",
+1443110
+],
+"videocrafter-v1.0/0010.mp4": [
+"e48105e954a35ff03253ad7efbba0f0bf755d4d1",
+2507455
+],
+"videocrafter-v1.0/0011.mp4": [
+"05e3848c2a48b5612fddce8e03a35a193f283409",
+2484613
+],
+"videocrafter-v1.0/0012.mp4": [
+"b4b335ccf38bb2d84e18febaa68e91c2e31f1c77",
+2379953
+],
+"videocrafter-v1.0/0013.mp4": [
+"f428743be1f7afbc2c7fcc52c7e72bdf315af15a",
+4017713
+],
+"videocrafter-v1.0/0014.mp4": [
+"685b532fdc62efdbd8c5dd847aa47c4d98c765ac",
+1857061
+],
+"videocrafter-v1.0/0015.mp4": [
+"13976569440c6cec8432dfa08b1b6003abca840c",
+1398690
+],
+"videocrafter-v1.0/0016.mp4": [
+"f9037f5a5a5068318d7efa9c3860f7d7e0b9d80e",
+1821757
+],
+"videocrafter-v1.0/0017.mp4": [
+"1f8ba9ecc5e4c1c9d00abc336aede0cc2bf0b99e",
+1511597
+],
+"zeroscope/0000.mp4": [
+"720c86404d83dbe7bbb0cf9827531a46ae31d031",
+1312001
+],
+"zeroscope/0001.mp4": [
+"eb5ec6177f25a5bd5cf2189800f4af3e4564890a",
+443990
+],
+"zeroscope/0002.mp4": [
+"1080c80544f4757d7873a0a1966fdc17f3592edd",
+1277725
+],
+"zeroscope/0003.mp4": [
+"9268d68e38ffbf32539b2b869b7f7d5eb2dbd1eb",
+489596
+],
+"zeroscope/0004.mp4": [
+"8e4c11a39a8a3dc9c7db2dcd91af1245f5226487",
+575559
+],
+"zeroscope/0005.mp4": [
+"371596eb0c78bb014277bd74fe809f922857c163",
+382879
+],
+"zeroscope/0006.mp4": [
+"20c975d57b052f86adf08f17a1e944cb69369f16",
+373412
+],
+"zeroscope/0007.mp4": [
+"754f6c3292e772c90eb5831c6aa92779b0a04997",
+613383
+],
+"zeroscope/0008.mp4": [
+"4de675435a6e75bc949f795723463e86caec4170",
+476392
+],
+"zeroscope/0009.mp4": [
+"40299d164954b0122176cd8e8b4f1db6d827a82e",
+496958
+],
+"zeroscope/0010.mp4": [
+"43610bea9006eccebb4535a42a8cba2775bd63ba",
+855932
+],
+"zeroscope/0011.mp4": [
+"3aa52f4c1c3202671767c83ae5a618b1f5300c6b",
+755752
+],
+"zeroscope/0012.mp4": [
+"177f0f90e91f5aebcdcccb0aa23a39091e95918f",
+815399
+],
+"zeroscope/0013.mp4": [
+"2a761ec567261f8c97b26327069987f467d9768f",
+1672736
+],
+"zeroscope/0014.mp4": [
+"722065a3e27c15406fa16b73d6db3cb021229092",
+1071937
+],
+"zeroscope/0015.mp4": [
+"e8c4f8896192dc3f8ac33da800b5f34b2215617b",
+632825
+],
+"zeroscope/0016.mp4": [
+"7672b6f9c91dcbd22a7733f36d02cace65f108bf",
+607046
+],
+"zeroscope/0017.mp4": [
+"253d665bf196774585de1a57a97567b3288a2a8b",
+797484
+]
+}
+}
