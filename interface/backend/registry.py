@@ -723,7 +723,7 @@ _add(ModelSpec(
           "OFFICIAL code and weights, run unmodified with greedy decoding in a separate process; audio tools are off "
           "(every video is run as silent). P(fake) = sigmoid of the fake-minus-real logit at the investigator's final "
           "verdict token, so it is near 0 or 1; the verdict is the agent's answer (no valid answer: unparsed, counted "
-          "wrong). About 40-70 s per video and up to 22.4 GB on an RTX A5000. Not on the Space.",
+          "wrong). About 47 s per video (20-71 s) and up to 22.4 GB on an RTX A5000 (repro/wevis_fidelity.json); long HD clips can run out of memory there. Not on the Space.",
 ))
 # DINOv3 ViT-L/16 gated weights. STALL is training-free but needs them: $DINO_V3_WEIGHTS (the Space sets it to the copy
 # fetched from the weights repo), else the maintainers' local copy.

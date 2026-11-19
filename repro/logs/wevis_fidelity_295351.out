@@ -1,0 +1,318 @@
+node=ivi-cn029 job=295351 Thu Nov 19 15:23:20 CET 2026 code=399f4b8 WeVisForensics (wevis): agentic video detector run by the official code in an isolated runne (399f4b8bb3f1e5f72c05aa047547faab6c09538e, copied to /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351/code)
+NVIDIA RTX A5000, 24564 MiB, 1 MiB
+              total        used        free      shared  buff/cache   available
+Mem:            251           3         241           6           6         240
+=== staged files: sha256 15:23:20 ===
+qwen3.5-4b sha256 OK
+wevisforensics_lora sha256 OK
+gate real /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/0_real/00000_msrvtt_1.mp4 True
+gate real /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/0_real/00001_msrvtt_2.mp4 True
+gate real /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/0_real/00005_msrvtt_6.mp4 True
+gate fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/1_fake/00000_sora_1.mp4 True
+gate fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/VideoPhy/test/Dream-Machine/1_fake/00000_02335_3783b0e2-3546-40a1-be7e-8f44fda5d8ef_raw_video_0.mp4_video0ebc55cd30cbb472aab1a01c62c913daa.mp4 True
+gate fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/VidProM/test/Pika/1_fake/00000_pika-001820a9-a6ba-51b0-95bb-1bdfeb0b8f5a.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/20f264bc072e9705eae3.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/d969ec07e1a3712aa5c4.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/1e3532a6e8e3806556b9.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/166e6d7d7a4fa0cd8de0.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/c04559bab78f9a8b5b7e.mp4 True
+demo fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/bc17e255219ee0bf3ac3.mp4 True
+demo real /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/examples/46e56aa8b3e5a99ef1aa.mp4 True
+extra fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Gen2/1_fake/00000_gen2_1.mp4 True
+extra fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/WildScrape/1_fake/00000_D1.mp4 True
+extra fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/MoonValley/1_fake/00000_MoonValley_1.mp4 True
+extra fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/HotShot/1_fake/00000_hotshot_1.mp4 True
+extra fake /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/WildScrape/1_fake/00360_D174.mp4 True
+=== 1. official backend (demo/wvf_local.py, unmodified), has_audio=False 15:24:46 ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/723 [00:00<?, ?it/s]Loading weights: 100%|██████████| 723/723 [00:00<00:00, 8445.35it/s]
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/modeling_utils.py:3303: FutureWarning: `is_gradient_checkpointing` is deprecated and will be removed in v6. Use `is_activation_checkpointing` instead.
+  warnings.warn(
+prefetch skipped Systran/faster-whisper-small: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped pyannote/speaker-diarization-community-1: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped alibabasglab/MossFormer2_SS_16K: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped audeering/wav2vec2-large-robust-24-ft-age-gender: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+REF ENV {"transformers": "5.23.0", "torch": "2.11.0+cu126", "gpu": "NVIDIA RTX A5000", "load_seconds": 299.2, "weights_gib": 19.54}
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `causal_conv1d_update` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+REF 00000_msrvtt_1.mp4 {"label": "real", "answer": "real", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 2.5]], ["physical_consistency", [0.0, 2.5]], ["ocr_consistency", [8.0]]], "seconds": 89.2, "peak_alloc_gib": 20.26, "error": null}
+REF 00001_msrvtt_2.mp4 {"label": "real", "answer": "real", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 22.7]], ["ocr_consistency", [12.0]]], "seconds": 40.5, "peak_alloc_gib": 20.94, "error": null}
+REF 00005_msrvtt_6.mp4 {"label": "real", "answer": "fake", "status": "answered", "tool_calls": [["physical_consistency", [0.0, 14.0]], ["visual_appearance", [0.0, 14.0]]], "seconds": 39.7, "peak_alloc_gib": 20.46, "error": null}
+REF 00000_sora_1.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 20.0]], ["physical_consistency", [0.0, 20.0]]], "seconds": 52.2, "peak_alloc_gib": 22.37, "error": null}
+REF 00000_02335_3783b0e2-3546-40a1-be7e-8f44fda5d8ef_raw_video_0 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["physical_consistency", [0.0, 5.0]], ["visual_appearance", [0.0, 5.0]]], "seconds": 38.5, "peak_alloc_gib": 20.37, "error": null}
+REF 00000_pika-001820a9-a6ba-51b0-95bb-1bdfeb0b8f5a.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 3.0]], ["ocr_consistency", [2.0]]], "seconds": 41.0, "peak_alloc_gib": 20.12, "error": null}
+REF 20f264bc072e9705eae3.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 5.9]], ["ocr_consistency", [2.0]]], "seconds": 44.3, "peak_alloc_gib": 20.5, "error": null}
+REF d969ec07e1a3712aa5c4.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 8.0]], ["physical_consistency", [0.0, 8.0]]], "seconds": 40.7, "peak_alloc_gib": 20.73, "error": null}
+REF 1e3532a6e8e3806556b9.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 5.0]], ["physical_consistency", [0.0, 5.0]], ["ocr_consistency", [3.0]]], "seconds": 67.3, "peak_alloc_gib": 20.37, "error": null}
+REF 166e6d7d7a4fa0cd8de0.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 5.9]], ["ocr_consistency", [4.0]]], "seconds": 50.8, "peak_alloc_gib": 20.5, "error": null}
+REF c04559bab78f9a8b5b7e.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["common_sense", [0.0, 5.0]], ["visual_appearance", [0.0, 5.0]], ["ocr_consistency", [2.0]]], "seconds": 53.9, "peak_alloc_gib": 20.28, "error": null}
+REF bc17e255219ee0bf3ac3.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 4.0]], ["physical_consistency", [4.0, 10.0]], ["common_sense", [6.0, 15.0]]], "seconds": 60.4, "peak_alloc_gib": 20.77, "error": null}
+REF 46e56aa8b3e5a99ef1aa.mp4 {"label": "real", "answer": "real", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 8.3]], ["physical_consistency", [0.0, 8.3]], ["ocr_consistency", [4.0]]], "seconds": 70.5, "peak_alloc_gib": 20.82, "error": null}
+REF 00000_gen2_1.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 4.0]], ["physical_consistency", [0.0, 4.0]]], "seconds": 38.8, "peak_alloc_gib": 20.24, "error": null}
+REF 00000_D1.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 3.0]], ["physical_consistency", [0.0, 3.0]]], "seconds": 36.1, "peak_alloc_gib": 20.11, "error": null}
+REF 00000_MoonValley_1.mp4 {"label": "fake", "answer": "fake", "status": "answered", "tool_calls": [["visual_appearance", [0.0, 1.8]], ["physical_consistency", [0.0, 1.8]]], "seconds": 37.0, "peak_alloc_gib": 20.0, "error": null}
+REF 00000_hotshot_1.mp4 {"label": "fake", "answer": "real", "status": "answered", "tool_calls": [["physical_consistency", [0.0, 1.0]]], "seconds": 19.9, "peak_alloc_gib": 19.85, "error": null}
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351/code/repro/wevis_fidelity.py", line 94, in reference
+    traj = asyncio.run(wvf_local.AGENT.run(str(path), has_audio=False))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 122, in run
+    await self._run_engine(traj, messages, paths)
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 154, in _run_engine
+    if not await self._consume_turn(traj, turn, result.text, result.finish_reason, executed):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 220, in _consume_turn
+    observation, tool_trace = await self._execute(action, traj)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 251, in _execute
+    return await super()._execute(action, traj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 244, in _execute
+    return await run(action, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/sub_agents/appearance.py", line 11, in run
+    return await run_visual_specialist(SKILL, action, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/sub_agents/base.py", line 35, in run_visual_specialist
+    result = await endpoint.chat(messages, max_tokens=max_tokens)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 204, in chat
+    return await asyncio.to_thread(self.runtime.chat, self.adapter, with_card(messages, self.skill_card),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 191, in chat
+    ids, finish = self._generate(self.work, inputs, max_new_tokens)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 147, in _generate
+    out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False, temperature=None,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 2909, in generate
+    model_kwargs = self._maybe_prepare_encoder_kwargs_for_generation(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 978, in _maybe_prepare_encoder_kwargs_for_generation
+    return self._prepare_multimodal_encoder_kwargs_for_generation(model_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 1048, in _prepare_multimodal_encoder_kwargs_for_generation
+    model_kwargs["mm_encoder_outputs"][modality] = encoder_fn(**encoder_kwargs)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 1006, in wrapper
+    return func(*args, **translated)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1475, in get_image_features
+    vision_outputs = self.visual(pixel_values, grid_thw=image_grid_thw, **kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/output_capturing.py", line 361, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1187, in forward
+    hidden_states = blk(
+                    ^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/modeling_layers.py", line 121, in forward_with_checkpointing
+    return forward(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1107, in forward
+    hidden_states = hidden_states + self.attn(
+                                    ^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1031, in forward
+    query_states, key_states = apply_rotary_pos_emb_vision(query_states, key_states, cos, sin)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 998, in apply_rotary_pos_emb_vision
+    k_embed = (k * cos) + (rotate_half(k) * sin)
+                           ~~~~~~~~~~~~~~~^~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 210.00 MiB is free. Including non-PyTorch memory, this process has 23.33 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 513.76 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+REF 00360_D174.mp4 {"label": "fake", "answer": null, "status": null, "tool_calls": null, "seconds": 29.2, "peak_alloc_gib": 22.72, "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 210.00 MiB is free. Including non-PyTorch memory, this process has 23.33 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 513.76 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"}
+REF DONE
+=== 2. SynthScope engine (runner process) 15:44:00 ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/723 [00:00<?, ?it/s]Loading weights: 100%|██████████| 723/723 [00:00<00:00, 8562.20it/s]
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/modeling_utils.py:3303: FutureWarning: `is_gradient_checkpointing` is deprecated and will be removed in v6. Use `is_activation_checkpointing` instead.
+  warnings.warn(
+prefetch skipped Systran/faster-whisper-small: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped pyannote/speaker-diarization-community-1: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped alibabasglab/MossFormer2_SS_16K: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped audeering/wav2vec2-large-robust-12-ft-emotion-msp-dim: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+prefetch skipped audeering/wav2vec2-large-robust-24-ft-age-gender: Cannot find an appropriate cached snapshot folder for the specified revision on the local disk and outgoing traffic has been disabled. To enable repo look-ups and downloads online, set 'HF_HUB_OFFLINE=0' as environment variable.
+[wevis runner] ready: {"versions": {"transformers": "5.23.0", "peft": "0.21.3", "paddlepaddle": "3.2.2", "paddleocr": "3.7.0", "torch": "2.11.0+cu126", "fla": "0.6.0", "causal_conv1d": false}, "release": {"code_commit": "43ae1c0fe2513ffc10baa1fd12fe3ca342aa21d5", "code_files": 26, "adapters_revision": "9fa025a02dde4f7f7de8883fe17b6f251f39098e", "adapter_files": 12, "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a", "base_files": 12, "paddlex_revision": {"PP-OCRv5_server_det": "ca867c897ecbca8873081573a802ad70d499cb94", "PP-OCRv5_server_rec": "b26c3587fda8da3c8ec0ce357214b4d661ff1558"}, "paddlex_files": 8}, "adapter_tensors": {"main": 496, "physical_consistency": 496, "visual_appearance": 496, "common_sense": 496, "ocr_consistency": 496}, "gpu": "NVIDIA RTX A5000", "attn": "sdpa", "weights_gib": 19.54, "load_seconds": 40.1, "has_audio": false, "verdict_pair_ids": [[12062, 1865], [29571, 7700], [35740, 8535], [50561, 12402]], "network_refused": []}
+OURS INFO {"versions": {"transformers": "5.23.0", "peft": "0.21.3", "paddlepaddle": "3.2.2", "paddleocr": "3.7.0", "torch": "2.11.0+cu126", "fla": "0.6.0", "causal_conv1d": false}, "release": {"code_commit": "43ae1c0fe2513ffc10baa1fd12fe3ca342aa21d5", "code_files": 26, "adapters_revision": "9fa025a02dde4f7f7de8883fe17b6f251f39098e", "adapter_files": 12, "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a", "base_files": 12, "paddlex_revision": {"PP-OCRv5_server_det": "ca867c897ecbca8873081573a802ad70d499cb94", "PP-OCRv5_server_rec": "b26c3587fda8da3c8ec0ce357214b4d661ff1558"}, "paddlex_files": 8}, "adapter_tensors": {"main": 496, "physical_consistency": 496, "visual_appearance": 496, "common_sense": 496, "ocr_consistency": 496}, "gpu": "NVIDIA RTX A5000", "attn": "sdpa", "weights_gib": 19.54, "load_seconds": 40.1, "has_audio": false, "verdict_pair_ids": [[12062, 1865], [29571, 7700], [35740, 8535], [50561, 12402]], "network_refused": [], "engine_load_seconds": 43.5, "status": "official code 43ae1c0 + adapters 9fa025a0 on base 851bf6e8 (sha256 verified, adapters strict: 2480 tensors), transformers 5.23.0 in a separate process; audio off"}
+[transformers] `causal_conv1d_fn` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+[transformers] `causal_conv1d_update` is falling back to its reference PyTorch implementation because `causal_conv1d` is not installed. This is correct but much slower; install `causal_conv1d` for the optimized kernel.
+OURS 00000_msrvtt_1.mp4 {"label": "real", "answer": "real", "logit": -18.625, "direct": {"ids_identical": true, "logit_direct": -18.625, "logit_recorded": -18.625, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 2.5]], ["physical_consistency", [0.0, 2.5]], ["ocr_consistency", [8.0]]], "cost": {"seconds": 61.94, "model_calls": 8, "peak_alloc_gib": 20.26}, "error": null}
+OURS 00001_msrvtt_2.mp4 {"label": "real", "answer": "real", "logit": -20.75, "direct": {"ids_identical": true, "logit_direct": -20.75, "logit_recorded": -20.75, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 22.7]], ["ocr_consistency", [12.0]]], "cost": {"seconds": 40.73, "model_calls": 6, "peak_alloc_gib": 20.95}, "error": null}
+OURS 00005_msrvtt_6.mp4 {"label": "real", "answer": "fake", "logit": 15.125, "direct": {"ids_identical": true, "logit_direct": 15.125, "logit_recorded": 15.125, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["physical_consistency", [0.0, 14.0]], ["visual_appearance", [0.0, 14.0]]], "cost": {"seconds": 39.7, "model_calls": 5, "peak_alloc_gib": 20.47}, "error": null}
+OURS 00000_sora_1.mp4 {"label": "fake", "answer": "fake", "logit": 16.75, "direct": {"ids_identical": true, "logit_direct": 16.75, "logit_recorded": 16.75, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 20.0]], ["physical_consistency", [0.0, 20.0]]], "cost": {"seconds": 50.83, "model_calls": 5, "peak_alloc_gib": 22.38}, "error": null}
+OURS 00000_02335_3783b0e2-3546-40a1-be7e-8f44fda5d8ef_raw_video_0 {"label": "fake", "answer": "fake", "logit": 14.375, "direct": {"ids_identical": true, "logit_direct": 14.375, "logit_recorded": 14.375, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["physical_consistency", [0.0, 5.0]], ["visual_appearance", [0.0, 5.0]]], "cost": {"seconds": 38.39, "model_calls": 5, "peak_alloc_gib": 20.38}, "error": null}
+OURS 00000_pika-001820a9-a6ba-51b0-95bb-1bdfeb0b8f5a.mp4 {"label": "fake", "answer": "fake", "logit": 14.375, "direct": {"ids_identical": true, "logit_direct": 14.375, "logit_recorded": 14.375, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 3.0]], ["ocr_consistency", [2.0]]], "cost": {"seconds": 40.64, "model_calls": 6, "peak_alloc_gib": 20.13}, "error": null}
+OURS 20f264bc072e9705eae3.mp4 {"label": "fake", "answer": "fake", "logit": 15.125, "direct": {"ids_identical": true, "logit_direct": 15.125, "logit_recorded": 15.125, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 5.9]], ["ocr_consistency", [2.0]]], "cost": {"seconds": 43.86, "model_calls": 6, "peak_alloc_gib": 20.52}, "error": null}
+OURS d969ec07e1a3712aa5c4.mp4 {"label": "fake", "answer": "fake", "logit": 16.5, "direct": {"ids_identical": true, "logit_direct": 16.5, "logit_recorded": 16.5, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 8.0]], ["physical_consistency", [0.0, 8.0]]], "cost": {"seconds": 40.56, "model_calls": 5, "peak_alloc_gib": 20.74}, "error": null}
+OURS 1e3532a6e8e3806556b9.mp4 {"label": "fake", "answer": "fake", "logit": 14.125, "direct": {"ids_identical": true, "logit_direct": 14.125, "logit_recorded": 14.125, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 5.0]], ["physical_consistency", [0.0, 5.0]], ["ocr_consistency", [3.0]]], "cost": {"seconds": 67.14, "model_calls": 8, "peak_alloc_gib": 20.38}, "error": null}
+OURS 166e6d7d7a4fa0cd8de0.mp4 {"label": "fake", "answer": "fake", "logit": 15.25, "direct": {"ids_identical": true, "logit_direct": 15.25, "logit_recorded": 15.25, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 5.9]], ["ocr_consistency", [4.0]]], "cost": {"seconds": 50.5, "model_calls": 6, "peak_alloc_gib": 20.51}, "error": null}
+OURS c04559bab78f9a8b5b7e.mp4 {"label": "fake", "answer": "fake", "logit": 15.125, "direct": {"ids_identical": true, "logit_direct": 15.125, "logit_recorded": 15.125, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["common_sense", [0.0, 5.0]], ["visual_appearance", [0.0, 5.0]], ["ocr_consistency", [2.0]]], "cost": {"seconds": 54.41, "model_calls": 8, "peak_alloc_gib": 20.29}, "error": null}
+OURS bc17e255219ee0bf3ac3.mp4 {"label": "fake", "answer": "fake", "logit": 15.25, "direct": {"ids_identical": true, "logit_direct": 15.25, "logit_recorded": 15.25, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 4.0]], ["physical_consistency", [4.0, 10.0]], ["common_sense", [6.0, 15.0]]], "cost": {"seconds": 60.27, "model_calls": 7, "peak_alloc_gib": 20.78}, "error": null}
+OURS 46e56aa8b3e5a99ef1aa.mp4 {"label": "real", "answer": "real", "logit": -18.875, "direct": {"ids_identical": true, "logit_direct": -18.875, "logit_recorded": -18.875, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 8.3]], ["physical_consistency", [0.0, 8.3]], ["ocr_consistency", [4.0]]], "cost": {"seconds": 70.91, "model_calls": 8, "peak_alloc_gib": 20.83}, "error": null}
+OURS 00000_gen2_1.mp4 {"label": "fake", "answer": "fake", "logit": 12.5, "direct": {"ids_identical": true, "logit_direct": 12.5, "logit_recorded": 12.5, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 4.0]], ["physical_consistency", [0.0, 4.0]]], "cost": {"seconds": 39.07, "model_calls": 5, "peak_alloc_gib": 20.25}, "error": null}
+OURS 00000_D1.mp4 {"label": "fake", "answer": "fake", "logit": 15.0, "direct": {"ids_identical": true, "logit_direct": 15.0, "logit_recorded": 15.0, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 3.0]], ["physical_consistency", [0.0, 3.0]]], "cost": {"seconds": 35.79, "model_calls": 5, "peak_alloc_gib": 20.12}, "error": null}
+OURS 00000_MoonValley_1.mp4 {"label": "fake", "answer": "fake", "logit": 14.625, "direct": {"ids_identical": true, "logit_direct": 14.625, "logit_recorded": 14.625, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["visual_appearance", [0.0, 1.8]], ["physical_consistency", [0.0, 1.8]]], "cost": {"seconds": 37.24, "model_calls": 5, "peak_alloc_gib": 20.02}, "error": null}
+OURS 00000_hotshot_1.mp4 {"label": "fake", "answer": "real", "logit": -13.125, "direct": {"ids_identical": true, "logit_direct": -13.125, "logit_recorded": -13.125, "diff": 0.0, "argmax_is_emitted": true}, "tool_calls": [["physical_consistency", [0.0, 1.0]]], "cost": {"seconds": 20.0, "model_calls": 3, "peak_alloc_gib": 19.86}, "error": null}
+Traceback (most recent call last):
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351/code/models/video/wevis/runner.py", line 404, in serve
+    result = session.score(req["video"], bool(req.get("verify_direct")))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351/code/models/video/wevis/runner.py", line 340, in score
+    traj = asyncio.run(self.agent.run(video, has_audio=bool(self.cfg["has_audio"])))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 122, in run
+    await self._run_engine(traj, messages, paths)
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 154, in _run_engine
+    if not await self._consume_turn(traj, turn, result.text, result.finish_reason, executed):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 220, in _consume_turn
+    observation, tool_trace = await self._execute(action, traj)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 251, in _execute
+    return await super()._execute(action, traj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/main_agent/loop.py", line 244, in _execute
+    return await run(action, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/sub_agents/appearance.py", line 11, in run
+    return await run_visual_specialist(SKILL, action, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/sub_agents/base.py", line 35, in run_visual_specialist
+    result = await endpoint.chat(messages, max_tokens=max_tokens)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 204, in chat
+    return await asyncio.to_thread(self.runtime.chat, self.adapter, with_card(messages, self.skill_card),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/asyncio/threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351/code/models/video/wevis/runner.py", line 272, in _wrapped_chat
+    result = self._chat(adapter, messages, max_new_tokens)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 191, in chat
+    ids, finish = self._generate(self.work, inputs, max_new_tokens)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/WeVisForensics/demo/wvf_local.py", line 147, in _generate
+    out = model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=False, temperature=None,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 2909, in generate
+    model_kwargs = self._maybe_prepare_encoder_kwargs_for_generation(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 978, in _maybe_prepare_encoder_kwargs_for_generation
+    return self._prepare_multimodal_encoder_kwargs_for_generation(model_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/generation/utils.py", line 1048, in _prepare_multimodal_encoder_kwargs_for_generation
+    model_kwargs["mm_encoder_outputs"][modality] = encoder_fn(**encoder_kwargs)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 1006, in wrapper
+    return func(*args, **translated)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1475, in get_image_features
+    vision_outputs = self.visual(pixel_values, grid_thw=image_grid_thw, **kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/utils/output_capturing.py", line 361, in wrapper
+    outputs = func(self, *args, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1187, in forward
+    hidden_states = blk(
+                    ^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/modeling_layers.py", line 121, in forward_with_checkpointing
+    return forward(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1107, in forward
+    hidden_states = hidden_states + self.attn(
+                                    ^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ssalehi/miniconda3/envs/SynthScope/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 1031, in forward
+    query_states, key_states = apply_rotary_pos_emb_vision(query_states, key_states, cos, sin)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/wevis/transformers/models/qwen3_5/modeling_qwen3_5.py", line 998, in apply_rotary_pos_emb_vision
+    k_embed = (k * cos) + (rotate_half(k) * sin)
+                           ~~~~~~~~~~~~~~~^~~~~
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 206.00 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 497.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+OURS 00360_D174.mp4 {"label": "fake", "answer": null, "logit": null, "direct": null, "tool_calls": null, "cost": {"seconds": null, "model_calls": null, "peak_alloc_gib": null}, "error": "WeVisOOMError: OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 206.00 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 497.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"}
+OURS DONE
+=== 3. comparison 16:01:46 ===
+SUMMARY {"clips": 18, "compared": 17, "identical_answer": 17, "identical_status": 17, "identical_tool_calls": 17, "identical_raw_texts_every_turn": 17, "identical_final_text": 17, "direct_calls": 17, "direct_ids_identical": 17, "direct_logit_max_abs_diff": 0.0, "direct_logit_all_exactly_equal": true, "correct": 15, "demo_agree_with_recorded_vllm": 7, "demo_cases": 7, "seconds_per_video_mean": 46.6, "seconds_per_video_mean_excl_first": 45.6, "seconds_per_video_range": [20.0, 70.91], "reference_seconds_mean": 48.3, "peak_alloc_gib_max": 22.38, "peak_reserved_gib_max": 23.13, "oom": ["00360_D174.mp4"], "errors": [["00360_D174.mp4", "OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 210.00 MiB is free. Including non-PyTorch memory, this process has 23.33 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 513.76 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)", "WeVisOOMError: OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 206.00 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 497.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"]], "unparsed": 0, "unscored": 0, "repeat_first_clip_identical": true}
+done Thu Nov 19 16:01:48 CET 2026
+removed the code copy (kept /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/fid/295351: reference.json, ours.json, frame caches)

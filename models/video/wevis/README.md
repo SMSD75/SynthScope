@@ -38,8 +38,8 @@ to the local machine.
 **Score.** P(fake) = sigmoid(l(fake) - l(real)), from the investigator's raw LM-head logits at the verdict token of its
 final turn (`..."content":"fake"`, the single token `fake` 29571 / `real` 7700). The logits are read during the official
 generation by a forward hook, so the text does not change. The verdict is the agent's answer. If the agent gives no
-valid answer, the result is `unparsed`: counted wrong, logit 0, P 0.5. The score is near 0 or 1 (|logit| about 14-21 in
-the gate run), so AUROC adds little to accuracy.
+valid answer, the result is `unparsed`: counted wrong, logit 0, P 0.5. The score is near 0 or 1 (|logit| 12.5-20.75 in
+the fidelity run), so AUROC adds little to accuracy.
 
 **Audio is off.** Every video runs with `has_audio=False`, the official manifest field. The audio tools need a gated
 diarization model and non-commercial voice models. Also, in our benchmarks some fakes have an audio track and every
@@ -68,12 +68,38 @@ real is silent, so the audio flag alone would give the label away.
    frame cache and OCR worker files, default `<cache dir>/wevis_work`).
 
 ## Fidelity
-See `repro/wevis_fidelity.json` (job log in `repro/logs/wevis_fidelity_*.out`). On 18 clips (the 6 gate clips, the 7
-demo cases whose recorded traces use no audio tool, and 5 GenVideo fakes), our engine is compared with the official
-backend, run the same way in the same runtime. The comparison covers answers, tool-call traces, every turn's raw text
-and the verdict logit against a direct `generate(output_logits=True)` call. The authors' multi-GPU vLLM evaluator is
-not reproduced (no vLLM here). Against its recorded demo trajectories, the transformers backend gives the same verdicts
-but some tool traces differ (Task 0 gate).
+`repro/wevis_fidelity.json` (job 295351, ivi-cn029, RTX A5000; log `repro/logs/wevis_fidelity_295351.out`). On 18
+clips, our engine is compared with the official backend (`demo/wvf_local.py`, unmodified), run the same way
+(`has_audio=False`, greedy) in the same runtime (transformers 5.23.0, fla 0.6.0, torch 2.11.0+cu126, bf16, SDPA). The
+18 clips are the 6 gate clips, the 7 demo cases whose recorded traces use no audio tool, and 5 GenVideo fakes: 4 short
+HD clips and a 74 s 1080p WildScrape clip.
+
+| check | result |
+|---|---|
+| clips compared (both backends finished) | 17 / 18 |
+| same answer and status | 17 / 17 |
+| same tool-call trace (skill + window) | 17 / 17 |
+| same raw text of every investigator turn, same final text | 17 / 17 |
+| verdict logit vs a direct `generate(output_logits=True)` on the final turn's inputs: same ids | 17 / 17 |
+| max abs difference of the logit gap | **0.0** (exactly equal on 17 / 17) |
+| same video scored again through `Engine.predict_video_clip` | identical trace and logit |
+| demo cases: verdict = the recorded vLLM trajectory's | 7 / 7 |
+| correct vs the label | 15 / 17 (MSR-VTT real `msrvtt_6` called fake, HotShot `hotshot_1` called real) |
+| unparsed / unscored | 0 / 0 |
+| verdict pair's softmax mass at the verdict token; argmax = emitted | >= 0.999996; 17 / 17 |
+| out of memory | 1: `WildScrape/00360_D174.mp4` (74 s, 1080p) in **both** backends (a 72-frame inspector window; 22.6 GiB allocated when the vision encoder asked for 286 MiB more). The engine raised `WeVisOOMError` and the runner kept serving |
+
+**Cost on an RTX A5000.**
+- 46.6 s per video on average, 45.6 s without the first (warm-up) video; range 20.0-70.9 s; 3-8 model calls.
+- The official backend took 48.3 s per video.
+- Peak GPU memory: 22.38 GiB allocated, 23.13 GiB reserved (a 20 s 720p Sora clip); 19.54 GiB is resident weights.
+- The runner loads in about 40 s with warm file caches (the official reference: 299 s cold, including the
+  sha256-checked first read). Job MaxRSS 26.7 GiB.
+
+Longer HD clips need a larger GPU: retry the videos that raise `WeVisOOMError` on a 48 GB A6000.
+
+The authors' multi-GPU vLLM evaluator is not reproduced (no vLLM here). Against its recorded demo trajectories, the
+transformers backend gives the same verdicts (7 / 7) but some tool traces differ (Task 0 gate).
 
 ## Licence
 - Code and adapters: Apache-2.0 (Tencent preamble + the Qwen3.5-4B attribution).
