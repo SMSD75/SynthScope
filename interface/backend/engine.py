@@ -23,6 +23,7 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from models.image.probe.preprocess import ProbePad, SlidingPatches
+from models.video.wevis import wevis as wevis_agent
 from models.vlm.vlm import SynthScopeVLM, download_hint
 from . import config
 from .hf_compat import translate_hf_keys
@@ -352,6 +353,32 @@ def _load_vlm(spec: ModelSpec, path, device: str) -> SynthScopeVLM:
     return SynthScopeVLM(path, spec.vlm, device=device, root=config.CHECKPOINTS_DIR)
 
 
+def agent_missing(spec: ModelSpec) -> list:
+    """Why an agentic video detector (``predict_kind="video_agent"``) cannot run here; empty when it can."""
+    return wevis_agent.missing(spec.agent, config.CHECKPOINTS_DIR, config.CACHE_DIR)
+
+
+def _load_agent(spec: ModelSpec, device: str) -> "wevis_agent.WeVisRunner":
+    """Start an agentic video detector's runner process (WeVisForensics: the official code under its own pinned
+    dependencies; it verifies the sha256 of every pinned file and loads the adapters strictly; local files only)."""
+    if device != "cuda":
+        raise RuntimeError(f"'{spec.key}' runs the official agent on a CUDA GPU (about 22 GB); no GPU here.")
+    reasons = agent_missing(spec)
+    if reasons:
+        raise FileNotFoundError(f"{spec.key}: {'; '.join(reasons)}. Get the official release: "
+                                + wevis_agent.download_hint(spec.agent))
+    runner = wevis_agent.WeVisRunner(spec.agent, config.CHECKPOINTS_DIR, config.CACHE_DIR)
+    runner.start()
+    return runner
+
+
+def _close(model) -> None:
+    """Stop what an evicted detector runs outside this process (an agent's runner); no-op for torch modules."""
+    close = getattr(model, "close", None)
+    if callable(close) and not isinstance(model, torch.nn.Module):
+        close()
+
+
 class Engine:
     """Lazily builds, caches, and runs the detectors."""
 
@@ -396,6 +423,8 @@ class Engine:
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
+        if spec.predict_kind == "video_agent":     # adapters, base, OCR models, official code and the isolated runtime
+            return not agent_missing(spec)
         p = self.checkpoint_path(spec)
         base = vlm_base_folder(spec)                # a LoRA VLM detector also needs its local base model
         proc = vlm_processor_folder(spec)           # ... and a VLM with a separate processor, that folder
@@ -406,6 +435,8 @@ class Engine:
         """Drop every resident detector (they reload lazily on the next request) so a heavy local image generator,
         which runs in its own process and wants most of the GPU, does not collide with them."""
         with self._lock:
+            for model in self._cache.values():
+                _close(model)
             self._cache.clear()
         gc.collect()
         if self.device == "cuda":
@@ -420,6 +451,7 @@ class Engine:
             # Evict LRU entries if at capacity.
             while len(self._cache) >= config.MAX_RESIDENT_MODELS:
                 old_key, old_model = self._cache.popitem(last=False)
+                _close(old_model)
                 del old_model
                 if self.device == "cuda":
                     torch.cuda.empty_cache()
@@ -433,6 +465,19 @@ class Engine:
                                           + (f"; processor {spec.vlm.processor}" if spec.vlm.processor else "") + ")")
                 self._cache[spec.key] = model
                 return model
+
+            if spec.predict_kind == "video_agent":   # the official agent in its own process (models/video/wevis)
+                runner = _load_agent(spec, self.device)
+                info = runner.info or {}
+                rel = info.get("release", {})
+                self._status[spec.key] = (f"official code {str(rel.get('code_commit', '?'))[:7]} + adapters "
+                                          f"{str(rel.get('adapters_revision', '?'))[:8]} on base "
+                                          f"{str(rel.get('base_revision', '?'))[:8]} (sha256 verified, adapters strict: "
+                                          f"{sum((info.get('adapter_tensors') or {}).values())} tensors), transformers "
+                                          f"{(info.get('versions') or {}).get('transformers')} in a separate process; "
+                                          f"audio off")
+                self._cache[spec.key] = runner
+                return runner
 
             from config_utils import compose_config
 
@@ -687,8 +732,29 @@ class Engine:
             raise media.VideoDecodeError("Could not decode any frames from the video.")
         return torch.cat(logits)
 
+    def agent_score(self, spec: ModelSpec, path, verify_direct: bool = False) -> dict:
+        """An agentic video detector's full output for one video (``WeVisRunner.score``): ``fake_probability``,
+        ``logit``, ``score_source``, the agent's ``verdict`` ("real" / "fake" / None), ``status``, ``trace`` and ``cost``.
+        Raises ``WeVisOOMError`` (retry on a larger GPU), ``WeVisToolError`` (the official tool_error) or
+        ``WeVisRunnerError``."""
+        return self._get_model(spec).score(path, verify_direct=verify_direct)
+
+    def _predict_agent(self, spec: ModelSpec, path) -> dict:
+        self._get_model(spec)                       # load first: elapsed covers the investigation only
+        t0 = time.time()
+        out = self.agent_score(spec, path)
+        res = self._result(spec, out["fake_probability"], time.time() - t0)
+        res["verdict"] = out["verdict"] or "unparsed"     # the agent's answer; no valid answer counts as wrong
+        res["logit"] = round(out["logit"], 6)
+        for key in ("score_source", "status", "verdict_token", "trace", "cost"):
+            res[key] = out.get(key)
+        res["input_note"] = input_note(spec)
+        return res
+
     def predict_video_clip(self, spec: ModelSpec, path) -> dict:
         """Run a native *video* detector on a decoded clip."""
+        if spec.predict_kind == "video_agent":         # WeVisForensics: the official agent, one video at a time
+            return self._predict_agent(spec, path)
         if spec.video_sampler == "cv2_frames":          # frame-level: P(fake) = sigmoid(mean frame logit), official
             self._get_model(spec)                       # load first: elapsed covers decoding and scoring only
             t0 = time.time()

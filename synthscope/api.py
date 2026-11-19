@@ -17,8 +17,9 @@ from PIL import Image
 # torch/torchvision and the repo decoders, so keep it at module scope (this is an ML library).
 from interface.backend import config as _config
 from interface.backend import media as _media
-from interface.backend.engine import Engine, get_engine, vlm_images_only
+from interface.backend.engine import Engine, agent_missing, get_engine, vlm_images_only
 from interface.backend.registry import ModelSpec, get_spec, list_specs
+from models.video.wevis.wevis import download_hint as agent_download_hint
 from models.vlm.vlm import download_hint
 
 PathOrImage = Union[str, Path, bytes, Image.Image]
@@ -178,6 +179,9 @@ class Detector:
             return  # already present, user-managed, or training-free
         if self._engine.ffmpeg_missing(self.spec):
             raise FileNotFoundError(self._engine.ffmpeg_missing_message(self.spec))
+        if self.spec.agent is not None:             # an agent's official release (several folders + code), not in the zoo
+            raise FileNotFoundError(f"'{self.spec.key}' cannot run here: {'; '.join(agent_missing(self.spec))}. "
+                                    f"Get the official release: {agent_download_hint(self.spec.agent)}")
         if self.spec.vlm is not None:               # a multi-GB Hugging Face folder, not in the model zoo
             vlm = self.spec.vlm
             raise FileNotFoundError(

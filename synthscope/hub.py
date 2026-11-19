@@ -46,6 +46,7 @@ NEVER_REDISTRIBUTE = {
     # Not a licence problem (Apache-2.0): the release is a 17.5 GB multi-file Hugging Face folder, which the zoo's
     # one-file-per-key layout does not hold; users fetch it from the authors' repo at the pinned revision.
     "veritaspp": "Veritas++ weights: Apache-2.0, but a 17.5 GB Hugging Face folder; fetched from EricTan7/VeritasPP, not mirrored",
+    "wevis": "WeVisForensics: Apache-2.0, but five LoRA folders on a separate 9.3 GB base folder plus the OCR models and the official code; fetched at the pinned revisions, not mirrored",
 }
 
 

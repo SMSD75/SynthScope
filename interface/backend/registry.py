@@ -21,6 +21,7 @@ from omegaconf import OmegaConf
 from models.image.adb_vlm.adb_vlm import ADB_VLM
 from models.image.fakevlm.fakevlm import FAKEVLM
 from models.image.veritaspp.veritaspp import VERITASPP
+from models.video.wevis.wevis import WEVIS, WeVisConfig
 from models.vlm.vlm import VLMConfig
 from transformations import IMAGENET_MEAN, IMAGENET_STD, AIGITransformations   # IMAGENET_*: the video_norm below
 
@@ -174,7 +175,7 @@ class ModelSpec:
     paper: str                     # short citation
     modality: str                  # "image" (also runs frame-by-frame on video) or "video"
     overrides: list[str]           # Hydra overrides for config_utils.compose_config
-    predict_kind: str              # ce | bce | bce_npr | vib | video | vlm
+    predict_kind: str              # ce | bce | bce_npr | vib | video | vlm | video_agent
     checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file; a folder for "vlm")
     ckpt_kind: str                 # synthscope | official_* (strict) | none
     transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video and VLM models)
@@ -230,6 +231,10 @@ class ModelSpec:
     # (ckpt_kind "official_vlm": strict ``from_pretrained``, local files only), or a LoRA adapter folder when the config
     # names a local ``base_model`` (relative to CHECKPOINTS_DIR; kept unmerged). Still images only.
     vlm: Optional[VLMConfig] = field(default=None, repr=False)
+    # predict_kind "video_agent": an agentic video detector run by the official code in its own process (WeVisForensics,
+    # models/video/wevis/). ``checkpoint`` is the adapter folder; the config names the base model, the OCR models, the
+    # official code and the isolated runtime. No ``transform``, no ``overrides``: the official agent samples its frames.
+    agent: Optional[WeVisConfig] = field(default=None, repr=False)
 
     def eval_batch_size(self, batch_size: int) -> int:
         """Batch size an evaluation loop may use: 1 for a ``native_res`` spec (its inputs differ in size and cannot be
@@ -703,6 +708,23 @@ _add(ModelSpec(
     window_center=True, resize_interp="bicubic",
     notes="Frozen DINOv2 ViT-S/14 trajectory-geometry + standardized MLP. Raw [0,1], center window + BICUBIC (official ReStraV).",
 ))
+_add(ModelSpec(
+    key="wevis", name="WeVisForensics (video agent)", paper="Du et al., arXiv 2611.21373",
+    modality="video", predict_kind="video_agent", checkpoint="wevisforensics_lora", ckpt_kind="official_wevis",
+    weights="official",
+    # wevisforensics_lora = the official HF folder tencent/WeVisForensics @ 9fa025a0 unchanged (Apache-2.0; five LoRA
+    # adapters r64 + skill_card.json) on the local base folder qwen3.5-4b (HF Qwen/Qwen3.5-4B @ 851bf6e8, Apache-2.0); the
+    # official code Tencent/WeVisForensics @ 43ae1c0 runs them (demo/wvf_local.py, unmodified) in its own process under
+    # transformers 5.23.0. Every file's sha256 is pinned in models/video/wevis/manifest.json.
+    overrides=[], agent=WEVIS,
+    notes="An agent investigates the video: a Qwen3.5-4B investigator (LoRA) looks at a 1 fps overview (at most 16 "
+          "frames), calls up to four inspectors (visual appearance, physical consistency, common sense on a time "
+          "window, text/OCR at a time point; the same base with their own LoRAs) and answers real or fake. Uses the "
+          "OFFICIAL code and weights, run unmodified with greedy decoding in a separate process; audio tools are off "
+          "(every video is run as silent). P(fake) = sigmoid of the fake-minus-real logit at the investigator's final "
+          "verdict token, so it is near 0 or 1; the verdict is the agent's answer (no valid answer: unparsed, counted "
+          "wrong). About 40-70 s per video and up to 22.4 GB on an RTX A5000. Not on the Space.",
+))
 # DINOv3 ViT-L/16 gated weights. STALL is training-free but needs them: $DINO_V3_WEIGHTS (the Space sets it to the copy
 # fetched from the weights repo), else the maintainers' local copy.
 DINOV3_WEIGHTS = os.environ.get("DINO_V3_WEIGHTS") or \
@@ -786,6 +808,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
     "fakevlm": ("Resize + center-crop 336", "As the official code loads it, the image is converted to RGB (no EXIF "
                 "rotation; any transparency channel is dropped), the shorter side is scaled to 336 px (bicubic) and the "
                 "central 336x336 square goes to the vision-language model; anything outside it is not seen."),
+    "wevis": ("Agent: 1 fps overview + inspected windows", "As the official agent samples them: a 1 fps overview of at "
+              "most 16 frames, each resized to at most 393,216 pixels (multiples of 32), then the frames of each time "
+              "window an inspector is asked about at 2 fps (at most 72), and for the text check one full-resolution "
+              "frame read by PP-OCRv5. Audio is not used."),
     "cure": ("Paper-specific pipeline", "As in the paper: PNG images are re-saved as JPEG, the shorter side is scaled to "
              "390 and center-cropped, resized to 336, then JPEG-compressed again (quality 70)."),
 }
@@ -815,6 +841,9 @@ def input_note(spec: ModelSpec) -> dict:
                                f"central {spec.frame_size}×{spec.frame_size} pixels of each frame are used exactly "
                                "as they are (no scaling; a smaller frame is padded with black), and the frame scores "
                                "are averaged. This matches the paper's evaluation."}
+    if spec.predict_kind == "video_agent":
+        label, expl = INPUT_NOTES[spec.key]
+        return {"label": label, "explanation": expl + " This matches the official inference."}
     if spec.modality == "video":
         crop = f", after trimming {int(spec.edge_crop * 100)}% off every edge" if spec.edge_crop else ""
         return {"label": f"{spec.num_frames} sampled frames",

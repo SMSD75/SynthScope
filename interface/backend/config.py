@@ -78,6 +78,7 @@ _DEFAULT_CACHE = Path(os.environ.get("SYNTHSCOPE_CACHE_DIR", str(_HOME / "cache"
 os.environ.setdefault("HF_HOME", str(_DEFAULT_CACHE / "huggingface"))
 os.environ.setdefault("TORCH_HOME", str(_DEFAULT_CACHE / "torch"))
 os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "0")
+CACHE_DIR = _DEFAULT_CACHE      # also holds the working files of detectors that need some (WeVisForensics' frame cache)
 
 # Upload / decoding limits.
 MAX_UPLOAD_BYTES = int(os.environ.get("SYNTHSCOPE_MAX_UPLOAD_MB", "200")) * 1024 * 1024
