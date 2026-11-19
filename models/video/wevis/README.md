@@ -28,12 +28,24 @@ about 3-4 min) and sends it one video at a time (JSON lines). Per video the runn
 Before loading, the runner refuses to start unless:
 - the official code files, the adapters, the base and the PP-OCRv5 models match the sha256 values pinned in
   `manifest.json`;
-- transformers is 5.23.0 and paddlepaddle is 3.2.2;
+- every pinned package has its pinned version (the gate / fidelity runtime): transformers 5.23.0,
+  flash-linear-attention and fla-core 0.6.0, peft 0.21.3, torch 2.11.0+cu126, paddlepaddle 3.2.2, paddleocr 3.7.0;
 - every adapter loads with no missing and no unexpected key, and each role's LoRA factor count equals its file's
   tensor count.
 
-Everything is read from local folders: Hugging Face is offline, and a socket guard refuses any connection that is not
-to the local machine.
+Everything is read from local folders, and Hugging Face is offline (also in the OCR worker, which inherits the
+environment). In the runner process itself, a socket guard also refuses every Python connection that is not to the
+local machine. The guard does not cover the OCR worker subprocess or non-Python clients; offline settings and
+pre-verified local files are what keep those local.
+
+**Process and files.**
+- The runner runs in its own process group. Every way of stopping it (per-video timeout, load timeout, protocol error,
+  `close()`) sends SIGTERM and then SIGKILL to the whole group, so the official CPU OCR worker it starts is never left
+  running.
+- `close()` (model eviction, `release_gpu`) first waits for the video in progress.
+- Each video gets its own frame cache (decoded frames, OCR crops), deleted after the video unless
+  `$SYNTHSCOPE_WEVIS_KEEP_FRAMES=1`. Web uploads would otherwise grow the cache without bound. The trace in the result
+  keeps what a benchmark needs.
 
 **Score.** P(fake) = sigmoid(l(fake) - l(real)), from the investigator's raw LM-head logits at the verdict token of its
 final turn (`..."content":"fake"`, the single token `fake` 29571 / `real` 7700). The logits are read during the official
@@ -45,11 +57,15 @@ the fidelity run), so AUROC adds little to accuracy.
 diarization model and non-commercial voice models. Also, in our benchmarks some fakes have an audio track and every
 real is silent, so the audio flag alone would give the label away.
 
-**Errors.**
-- Out of memory (long HD clips): `WeVisOOMError`. Retry the video on a larger GPU; it does not count as wrong.
-- An official `ToolError` (decode / OCR failure): `WeVisToolError`. The official evaluator retries such videos and then
-  leaves them out.
-- A runner that dies: `WeVisRunnerError`. The next call restarts it.
+**Errors.** The official `scripts/evaluate.py` turns *any* exception from `agent.run` into a `tool_error` row. It
+retries the row and, if it still fails, leaves it out of the strict accuracy's denominator and reports how many it left
+out. SynthScope follows it:
+- Out of memory (long HD clips): `WeVisOOMError`. Kept apart so the video can be retried on a 48 GB A6000; it is not
+  counted as wrong.
+- Any other exception from the agent (the official `ToolError`, a decode / OCR / engine failure, or anything else):
+  `WeVisToolError`. Benchmarks retry it, then leave it out of the accuracy and report the count, as the official
+  evaluator does. They also report the stricter variant that counts these videos wrong.
+- A runner that dies or stops answering: `WeVisRunnerError`. The next call restarts it.
 
 ## Setup
 1. Isolated dependencies, installed with `pip install --target`, never into the SynthScope environment. Put them on
@@ -64,8 +80,11 @@ real is silent, so the audio flag alone would give the label away.
    - `wevis_paddlex/official_models/PP-OCRv5_server_{det,rec}/` (PaddleOCR's own download, or HF
      `PaddlePaddle/PP-OCRv5_server_det` @ `ca867c89` / `_rec` @ `b26c3587`; or set `$SYNTHSCOPE_WEVIS_PADDLEX`);
    - `WeVisForensics/` (a checkout of the code at `43ae1c0`; or set `$SYNTHSCOPE_WEVIS_CODE`).
-3. Optional: `$SYNTHSCOPE_WEVIS_PYTHON` (the interpreter, default the current one) and `$SYNTHSCOPE_WEVIS_WORK_DIR` (the
-   frame cache and OCR worker files, default `<cache dir>/wevis_work`).
+3. Optional:
+   - `$SYNTHSCOPE_WEVIS_PYTHON`: the interpreter (default: the current one).
+   - `$SYNTHSCOPE_WEVIS_WORK_DIR`: the per-video frame caches, OCR worker files and the sha256 memo (default:
+     `<cache dir>/wevis_work`).
+   - `$SYNTHSCOPE_WEVIS_KEEP_FRAMES=1`: keep each video's frames, for debugging.
 
 ## Fidelity
 `repro/wevis_fidelity.json` (job 295351, ivi-cn029, RTX A5000; log `repro/logs/wevis_fidelity_295351.out`). On 18
@@ -93,8 +112,9 @@ HD clips and a 74 s 1080p WildScrape clip.
 - 46.6 s per video on average, 45.6 s without the first (warm-up) video; range 20.0-70.9 s; 3-8 model calls.
 - The official backend took 48.3 s per video.
 - Peak GPU memory: 22.38 GiB allocated, 23.13 GiB reserved (a 20 s 720p Sora clip); 19.54 GiB is resident weights.
-- The runner loads in about 40 s with warm file caches (the official reference: 299 s cold, including the
-  sha256-checked first read). Job MaxRSS 26.7 GiB.
+- The runner loads in about 40 s with warm file caches. The official reference took 299 s when it ran first in the
+  job: a cold read of the weights from network storage, plus the OCR worker start and prefetch. Job MaxRSS was
+  26.7 GiB.
 
 Longer HD clips need a larger GPU: retry the videos that raise `WeVisOOMError` on a 48 GB A6000.
 

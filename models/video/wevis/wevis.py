@@ -28,9 +28,17 @@ a manifest's ``has_audio`` to ``ForensicAgent.run``). The audio tools need a gat
 voice models, and in our benchmarks only some fakes carry an audio track while every real is silent, so the audio
 flag alone would separate them.
 
-Errors: an out-of-memory error raises ``WeVisOOMError`` (retry the video on a larger GPU; it is neither right nor
-wrong); an official ``ToolError`` (a decode / OCR failure, which the official evaluator retries and then leaves out)
-raises ``WeVisToolError``; a runner that dies or stops answering raises ``WeVisRunnerError``.
+Errors (the official ``scripts/evaluate.py`` records ANY exception from ``agent.run`` as a ``tool_error`` row, retries
+it, and leaves rows that still fail out of the strict accuracy's denominator, reporting their count):
+  * out of memory: ``WeVisOOMError``, kept apart so the video can be retried on a larger GPU (a 48 GB A6000);
+  * every other exception from the agent (the official ``ToolError``: decode / OCR / engine failures, and anything
+    else): ``WeVisToolError``. Benchmarks treat it as the official evaluator does: retried, then excluded from the
+    accuracy denominator, with the number of excluded videos reported next to the accuracy (Task 2 also reports the
+    stricter variant that counts them wrong);
+  * a runner that dies or stops answering: ``WeVisRunnerError`` (the runner and its OCR worker are killed together).
+
+The runner runs in its own session (process group): every kill path (per-video timeout, load timeout, protocol error,
+``close`` timeout) signals the whole group, so the official CPU OCR worker it starts is never left behind.
 """
 from __future__ import annotations
 
@@ -39,9 +47,11 @@ import json
 import os
 import queue
 import re
+import signal
 import subprocess
 import sys
 import threading
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -89,11 +99,15 @@ class WeVisConfig:
     paddlex: str = "wevis_paddlex"            # PaddleX cache home holding official_models/PP-OCRv5_server_{det,rec}
     code: str = "WeVisForensics"              # a checkout of Tencent/WeVisForensics @ 43ae1c0
     has_audio: bool = False                   # passed to ForensicAgent.run for every video (see the module docstring)
-    transformers_version: str = "5.23.0"      # the isolated runtime the fidelity run used
-    paddle_version: str = "3.2.2"             # 3.3.x crashes in oneDNN on the CPU (PaddleOCR worker)
+    # The runtime the fidelity run used (gate env: SynthScope's torch + peft, vlm_pydeps/wevis, vlm_pydeps/wevis_ocr);
+    # the runner refuses another version of any of them. paddlepaddle 3.3.x crashes in oneDNN on the CPU (OCR worker).
+    pins: tuple = (("transformers", "5.23.0"), ("flash-linear-attention", "0.6.0"), ("fla-core", "0.6.0"),
+                   ("peft", "0.21.3"), ("torch", "2.11.0+cu126"), ("paddlepaddle", "3.2.2"), ("paddleocr", "3.7.0"))
     verdict_pairs: tuple = (("fake", "real"), ("Fake", "Real"), ("FAKE", "REAL"))
     timeout: float = 3600.0                   # seconds per video before the runner is killed
     ready_timeout: float = 3600.0             # seconds to load (weights sha256 on first use, two 4B copies, OCR worker)
+    close_timeout: float = 3600.0             # close(): seconds to wait for the video in progress
+    kill_grace: float = 10.0                  # seconds between SIGTERM and SIGKILL to the runner's process group
 
 
 WEVIS = WeVisConfig()
@@ -103,6 +117,7 @@ ENV_PYTHON = "SYNTHSCOPE_WEVIS_PYTHON"             # the interpreter (default: t
 ENV_CODE = "SYNTHSCOPE_WEVIS_CODE"                 # the official checkout (default: $SYNTHSCOPE_CKPT_DIR/WeVisForensics)
 ENV_PADDLEX = "SYNTHSCOPE_WEVIS_PADDLEX"           # PaddleX cache home (default: $SYNTHSCOPE_CKPT_DIR/wevis_paddlex)
 ENV_WORK_DIR = "SYNTHSCOPE_WEVIS_WORK_DIR"         # frame cache + OCR worker files (default: <cache dir>/wevis_work)
+ENV_KEEP_FRAMES = "SYNTHSCOPE_WEVIS_KEEP_FRAMES"   # 1: keep each video's decoded frames / crops (debugging)
 
 
 def load_manifest(path: Path = MANIFEST) -> dict:
@@ -139,7 +154,7 @@ def missing(cfg: WeVisConfig, ckpt_dir: Path, cache_dir: Path, environ=None) -> 
     p = runner_paths(cfg, ckpt_dir, cache_dir, environ)
     out = []
     if not environ.get(ENV_PYTHONPATH):
-        out.append(f"${ENV_PYTHONPATH} is not set (the isolated transformers {cfg.transformers_version} + PaddleOCR "
+        out.append(f"${ENV_PYTHONPATH} is not set (the isolated transformers {dict(cfg.pins)['transformers']} + PaddleOCR "
                    "dependency folders)")
     checks = [("adapters", p["adapters"] / "main" / "adapter_config.json", "the LoRA adapters (HF tencent/WeVisForensics)"),
               ("base", p["base"] / "config.json", "the base model (HF Qwen/Qwen3.5-4B)"),
@@ -197,8 +212,8 @@ class WeVisRunner:
 
     def config_json(self) -> str:
         return json.dumps({"paths": {k: str(v) for k, v in self.paths.items()}, "has_audio": self.cfg.has_audio,
-                           "transformers_version": self.cfg.transformers_version,
-                           "paddle_version": self.cfg.paddle_version,
+                           "pins": dict(self.cfg.pins),
+                           "keep_frames": self.env.get(ENV_KEEP_FRAMES, "") not in ("", "0"),
                            "verdict_pairs": [list(p) for p in self.cfg.verdict_pairs]})
 
     @property
@@ -211,14 +226,24 @@ class WeVisRunner:
         lines.put(None)
 
     def _read(self, timeout: float) -> dict:
+        """The runner's next JSON line. The runner exiting (EOF, or the process gone while a child it started still
+        holds the pipe open) and a timeout both kill its process group and raise ``WeVisRunnerError``."""
+        deadline = time.monotonic() + timeout
         while True:
-            try:
-                line = self._lines.get(timeout=timeout)
-            except queue.Empty:
+            left = deadline - time.monotonic()
+            if left <= 0:
                 self._kill()
                 raise WeVisRunnerError(f"the WeVisForensics runner gave no answer within {timeout:.0f} s (killed)")
+            try:
+                line = self._lines.get(timeout=min(left, 1.0))
+            except queue.Empty:
+                if self._proc is not None and self._proc.poll() is not None and self._lines.empty():
+                    line = None
+                else:
+                    continue
             if line is None:
                 code = self._proc.wait() if self._proc is not None else None
+                self._kill()                             # a dead runner's children (the OCR worker) go with it
                 raise WeVisRunnerError(f"the WeVisForensics runner exited (code {code}); its log is on stderr")
             try:
                 return json.loads(line)
@@ -231,7 +256,7 @@ class WeVisRunner:
         self._lines = queue.Queue()
         self._proc = subprocess.Popen(self.command + ["--config", self.config_json()], stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE, stderr=None, text=True, bufsize=1, env=self.env,
-                                      cwd=str(self.paths["work_dir"]))
+                                      cwd=str(self.paths["work_dir"]), start_new_session=True)
         threading.Thread(target=self._pump, args=(self._proc, self._lines), daemon=True).start()
         msg = self._read(self.cfg.ready_timeout)
         if msg.get("event") != "ready":
@@ -263,29 +288,65 @@ class WeVisRunner:
                 return msg["result"]
             raise ERRORS.get(msg.get("error_kind"), WeVisError)(msg.get("error", "unknown error"))
 
-    def _kill(self) -> None:
-        proc, self._proc = self._proc, None
-        if proc is None or proc.poll() is not None:
-            return
-        proc.kill()
-        proc.wait()
+    @staticmethod
+    def _signal_group(pgid: int, sig) -> bool:
+        """Send ``sig`` to the process group; False when the group no longer exists."""
+        try:
+            os.killpg(pgid, sig)
+            return True
+        except ProcessLookupError:
+            return False
 
-    def close(self) -> None:
-        """Ask the runner to exit (it stops its OCR worker), then make sure it is gone."""
-        proc = self._proc
+    def _kill(self) -> None:
+        """Stop the runner AND everything it started (the official CPU OCR worker): SIGTERM to its process group, then
+        SIGKILL after ``kill_grace`` seconds. Also run after a normal exit, for children the runner left behind."""
+        proc, self._proc = self._proc, None
         if proc is None:
             return
-        if proc.poll() is None:
-            try:
-                proc.stdin.write(json.dumps({"cmd": "shutdown"}) + "\n")
-                proc.stdin.flush()
-                proc.wait(timeout=60)
-            except (BrokenPipeError, OSError, subprocess.TimeoutExpired):
-                pass
-        self._kill()
+        pgid = proc.pid                                  # start_new_session: the runner leads its own group
+        if self._signal_group(pgid, signal.SIGTERM):
+            deadline = time.monotonic() + self.cfg.kill_grace
+            while time.monotonic() < deadline:
+                if proc.poll() is not None and not self._group_alive(pgid):
+                    break
+                time.sleep(0.1)
+            self._signal_group(pgid, signal.SIGKILL)
+        try:
+            proc.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            pass
+
+    def _group_alive(self, pgid: int) -> bool:
+        try:
+            os.killpg(pgid, 0)
+            return True
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+
+    def close(self, timeout: Optional[float] = None) -> None:
+        """Wait for the video in progress (up to ``timeout``, default ``cfg.close_timeout``), ask the runner to exit (it
+        stops its OCR worker), then kill its process group, so nothing it started is left behind."""
+        got = self._lock.acquire(timeout=self.cfg.close_timeout if timeout is None else timeout)
+        try:
+            proc = self._proc
+            if proc is None:
+                return
+            if proc.poll() is None and got:
+                try:
+                    proc.stdin.write(json.dumps({"cmd": "shutdown"}) + "\n")
+                    proc.stdin.flush()
+                    proc.wait(timeout=60)
+                except (BrokenPipeError, OSError, ValueError, subprocess.TimeoutExpired):
+                    pass
+            self._kill()
+        finally:
+            if got:
+                self._lock.release()
 
     def __del__(self):
         try:
-            self.close()
+            self.close(timeout=0)
         except Exception:  # noqa: BLE001 — interpreter shutdown
             pass

@@ -54,7 +54,8 @@ def clips():
     out += [("demo", c["label"], REF / "demo" / "examples" / c["video"]) for c in CASES
             if not any(st.get("skill") in AUDIO_TOOLS for st in c["steps"])]
     out += [(s, label, CLIPS / rel) for s, label, rel in EXTRA]
-    return out
+    limit = int(os.environ.get("WEVIS_FID_LIMIT") or 0)     # a spot check: only the first N clips
+    return out[:limit] if limit else out
 
 
 def write(path, obj):

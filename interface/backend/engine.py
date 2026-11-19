@@ -644,6 +644,9 @@ class Engine:
         return res
 
     def predict_image(self, spec: ModelSpec, pil: Image.Image) -> dict:
+        if spec.predict_kind == "video_agent":        # refused before the runner is started
+            raise ValueError(f"'{spec.key}' is a video-only detector (an agent that investigates a video); it cannot "
+                             "score a still image.")
         if spec.predict_kind == "vlm":
             return self._predict_vlm(spec, pil)
         model = self._get_model(spec)
@@ -674,6 +677,8 @@ class Engine:
 
     def predict_video_frames(self, spec: ModelSpec, frames: list[Image.Image]) -> dict:
         """Run an *image* detector on sampled video frames and aggregate (mean P(fake))."""
+        if spec.predict_kind == "video_agent":
+            raise ValueError(f"'{spec.key}' scores the video file itself (Engine.predict_video_clip), not sampled frames.")
         if spec.predict_kind == "vlm":
             raise ValueError(vlm_images_only(spec))
         model = self._get_model(spec)

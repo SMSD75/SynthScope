@@ -9,7 +9,9 @@
 #SBATCH --output=/ivi/zfs/s0/original_homes/ssalehi/SynthScope/repro/logs/wevis_fidelity_%j.out
 # WeVisForensics fidelity (repro/wevis_fidelity.py) on one cees A5000, from the shared staged copies of the Task 0 gate
 # (SynthScope_shared/wevis_gate/stage: base + adapters + PP-OCRv5 models, sha256-verified; the clips):
-#   sbatch --nodelist=ivi-cn027 repro/wevis_fidelity.sbatch          (submit from the worktree root)
+#   sbatch --nodelist=ivi-cn029 repro/wevis_fidelity.sbatch          (submit from the worktree root; any free cees A5000;
+#   the reported run, 295351, was on ivi-cn029)
+# WEVIS_FID_LIMIT=N runs only the first N clips into repro/wevis_fidelity_spot.json (a spot check).
 # 1. the official backend (demo/wvf_local.py, unmodified) on 18 clips, under the isolated dependencies;
 # 2. SynthScope's engine (runner process, sha256 + strict adapters, verdict logit during generation + a direct call);
 # 3. the comparison -> repro/wevis_fidelity.json in the worktree.
@@ -52,8 +54,10 @@ SYNTHSCOPE_CKPT_DIR=$ST/ckpts SYNTHSCOPE_CACHE_DIR=$J/cache SYNTHSCOPE_WEVIS_PYT
   SYNTHSCOPE_WEVIS_CODE=$REF SYNTHSCOPE_WEVIS_PADDLEX=$ST/ckpts/_cache/paddlex PYTHONPATH=$W \
   $PY repro/wevis_fidelity.py ours --out $J/ours.json
 
+OUT=$WT/repro/wevis_fidelity.json
+[ -n "${WEVIS_FID_LIMIT:-}" ] && OUT=$WT/repro/wevis_fidelity_spot.json
 echo "=== 3. comparison $(date +%T) ==="
 $PY repro/wevis_fidelity.py compare --reference $J/reference.json --ours $J/ours.json \
-  --log "repro/logs/wevis_fidelity_${SLURM_JOB_ID}.out" --out $WT/repro/wevis_fidelity.json
+  --log "repro/logs/wevis_fidelity_${SLURM_JOB_ID}.out" --out $OUT
 echo "done $(date)"
 cd / && rm -rf $W $J/tmp && echo "removed the code copy (kept $J: reference.json, ours.json, frame caches)"

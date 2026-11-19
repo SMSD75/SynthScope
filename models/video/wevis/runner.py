@@ -11,16 +11,19 @@ installed into the SynthScope environment.
 Protocol (JSON lines; this process writes nothing else to its stdout, its logs go to stderr):
     -> {"event": "ready", "info": {...}}  once loaded, or {"event": "error", "error_kind", "error"}
     <- {"id": N, "video": PATH, "verify_direct": false}
-    -> {"id": N, "ok": true, "result": {...}}  or  {"id": N, "ok": false, "error_kind": "oom"|"tool_error"|"other", ...}
+    -> {"id": N, "ok": true, "result": {...}}  or  {"id": N, "ok": false, "error_kind": "oom"|"tool_error", ...}
+       (any exception from agent.run that is not out of memory is a tool_error, as in the official evaluate.py)
     <- {"cmd": "shutdown"}
 
 Loading (each step fails loudly):
-  1. versions: transformers == the pin (5.23.0), flash-linear-attention present, paddlepaddle == 3.2.2;
+  1. versions: every pinned package (WeVisConfig.pins: transformers 5.23.0, flash-linear-attention / fla-core 0.6.0,
+     peft 0.21.3, torch 2.11.0+cu126, paddlepaddle 3.2.2, paddleocr 3.7.0) at its pinned version, fla importable;
   2. sha256 of every pinned file (models/video/wevis/manifest.json): the official code files (commit 43ae1c0), the five
      adapters + skill card (tencent/WeVisForensics @ 9fa025a0), the base (Qwen/Qwen3.5-4B @ 851bf6e8) and the PP-OCRv5
      models. Weight checks are remembered per (path, size, mtime) in <work_dir>/sha256_ok.json;
-  3. no network: Hugging Face offline, a socket guard refuses every non-loopback connection in this process (the OCR
-     worker is reached on 127.0.0.1), local folders only;
+  3. no network: Hugging Face offline (also for the OCR worker, which inherits the environment), local folders only,
+     and a socket guard in THIS process (not in the OCR worker subprocess, nor in non-Python clients) that refuses
+     every non-loopback connection (the OCR worker is reached on 127.0.0.1);
   4. ``import wvf_local`` (the official module builds its Runtime: base + working copy + every role's LoRA factors,
      the agent and the CPU OCR worker); every ``PeftModel.load_adapter`` result is recorded and must have no missing and
      no unexpected adapter key, and each role's LoRA factor count must equal its file's tensor count (strict).
@@ -40,6 +43,7 @@ import importlib.util
 import json
 import math
 import os
+import shutil
 import socket
 import sys
 import time
@@ -135,16 +139,16 @@ def protocol_stream():
 
 
 def check_versions(cfg: dict) -> dict:
-    have = {name: importlib.metadata.version(name) for name in ("transformers", "peft", "paddlepaddle", "paddleocr")}
+    """The installed version of every pinned package (``WeVisConfig.pins``: the gate / fidelity runtime); any other
+    version is refused, since the traces depend on the kernels (transformers, fla, torch) and on the OCR stack."""
+    have = {name: importlib.metadata.version(name) for name in cfg["pins"]}
     have["torch"] = torch.__version__
-    if have["transformers"] != cfg["transformers_version"]:
-        raise RuntimeError(f"transformers {have['transformers']} is not the pinned {cfg['transformers_version']}: put the "
-                           "isolated dependency folder first on $SYNTHSCOPE_WEVIS_PYTHONPATH")
-    if have["paddlepaddle"] != cfg["paddle_version"]:
-        raise RuntimeError(f"paddlepaddle {have['paddlepaddle']} is not the pinned {cfg['paddle_version']}")
+    wrong = {name: (have[name], want) for name, want in cfg["pins"].items() if have[name] != want}
+    if wrong:
+        raise RuntimeError("not the pinned runtime (installed, pinned): " + json.dumps(wrong) + "; put the isolated "
+                           "dependency folders first on $SYNTHSCOPE_WEVIS_PYTHONPATH")
     if importlib.util.find_spec("fla") is None:
         raise RuntimeError("flash-linear-attention (fla) is not importable: the gated-delta kernels the fidelity run used")
-    have["fla"] = importlib.metadata.version("flash-linear-attention")
     have["causal_conv1d"] = importlib.util.find_spec("causal_conv1d") is not None
     return have
 
@@ -224,6 +228,7 @@ class Session:
         self.cfg = cfg
         self.paths = {k: Path(v) for k, v in cfg["paths"].items()}
         self.calls: list = []
+        self.n_videos = 0
         t0 = time.monotonic()
         self.versions = check_versions(cfg)
         self.release = verify_release(self.paths)
@@ -332,6 +337,19 @@ class Session:
         return res
 
     def score(self, video: str, verify_direct: bool = False) -> dict:
+        """One video with its own frame cache (decoded frames + OCR crops), deleted afterwards unless ``keep_frames``:
+        the official cache is keyed by path + size + mtime, so web uploads (a new temporary file each) would otherwise
+        grow it without bound. The cache is only a cache: frames are decoded deterministically either way."""
+        self.n_videos += 1
+        frames_root = self.paths["work_dir"] / "videos" / f"{os.getpid()}_{self.n_videos}"
+        self.agent.frames = self.media.FrameCache(frames_root)
+        try:
+            return self._score(video, verify_direct)
+        finally:
+            if not self.cfg.get("keep_frames"):
+                shutil.rmtree(frames_root, ignore_errors=True)
+
+    def _score(self, video: str, verify_direct: bool) -> dict:
         self.calls = []
         torch.cuda.synchronize()
         torch.cuda.reset_peak_memory_stats()
@@ -371,9 +389,7 @@ class Session:
         errs = chain(exc)
         if any(isinstance(e, torch.OutOfMemoryError) or "out of memory" in str(e).lower() for e in errs):
             return "oom"
-        if any(isinstance(e, self.common.ToolError) for e in errs):
-            return "tool_error"
-        return "other"
+        return "tool_error"                     # as the official evaluate.py: any exception from agent.run
 
     def recover(self) -> None:
         """After a failed video: drop its tensors, and force the next role switch to rebuild every adapted layer from

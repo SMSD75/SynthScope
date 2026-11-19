@@ -22,6 +22,7 @@ Checks:
 
 from __future__ import annotations
 
+import importlib.util
 import json
 import math
 import os
@@ -29,9 +30,13 @@ import socket
 import stat
 import sys
 import tempfile
+import threading
+import time
+from dataclasses import replace
 from pathlib import Path
 
 import torch
+from PIL import Image
 from safetensors.torch import save_file
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,8 +46,8 @@ from interface.backend import config as backend_config                          
 from interface.backend.engine import Engine                                         # noqa: E402
 from interface.backend.registry import get_spec, input_note                         # noqa: E402
 from models.video.wevis import runner                                               # noqa: E402
-from models.video.wevis.wevis import (ENV_CODE, ENV_PADDLEX, ENV_PYTHON, ENV_PYTHONPATH, ENV_WORK_DIR, WEVIS,   # noqa: E402
-                                      WeVisOOMError, WeVisRunnerError, WeVisToolError, download_hint,
+from models.video.wevis.wevis import (ENV_CODE, ENV_PADDLEX, ENV_PYTHON, ENV_PYTHONPATH, ENV_WORK_DIR, RUNNER,   # noqa: E402
+                                      WEVIS, WeVisOOMError, WeVisRunner, WeVisRunnerError, WeVisToolError, download_hint,
                                       load_manifest, missing, sha256_file)
 from models.vlm.vlm import verdict_pair_map                                         # noqa: E402
 from synthscope import hub                                                          # noqa: E402
@@ -55,14 +60,18 @@ ROLES = ("main", "physical_consistency", "visual_appearance", "common_sense", "o
 FINAL_TURN = '{"reasoning": "Both inspectors found issues.", "action": {"type": "answer", "content": "fake"}}'
 
 FAKE_RUNNER = r'''#!{python}
-import json, os, sys
+import json, os, signal, subprocess, sys, time
 args = sys.argv[1:]
 assert args[0].endswith("runner.py") and args[1] == "--serve" and args[2] == "--config", args
 cfg = json.loads(args[3])
 env = {{k: os.environ.get(k) for k in ("HF_HUB_OFFLINE", "TRANSFORMERS_OFFLINE", "HF_TOKEN", "PYTHONPATH", "WVF_BASE",
                                       "WVF_ADAPTERS", "WVF_OCR_DEVICE", "PADDLE_PDX_CACHE_HOME")}}
 out = sys.stdout
-out.write(json.dumps({{"event": "ready", "info": {{"cfg": cfg, "env": env, "pid": os.getpid(),
+child = None
+if os.environ.get("FAKE_WEVIS_CHILD"):              # like the official CPU OCR worker: a long-lived child process
+    child = subprocess.Popen(["sleep", "600"]).pid
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)    # a runner deaf to SIGTERM: the kill must escalate to SIGKILL
+out.write(json.dumps({{"event": "ready", "info": {{"cfg": cfg, "env": env, "pid": os.getpid(), "child": child,
     "release": {{"code_commit": "43ae1c0fe25", "adapters_revision": "9fa025a02d", "base_revision": "851bf6e806"}},
     "adapter_tensors": {{"main": 2}}, "versions": {{"transformers": "5.23.0"}}}}}}) + "\n"); out.flush()
 for line in sys.stdin:
@@ -72,6 +81,10 @@ for line in sys.stdin:
     name = os.path.basename(req["video"])
     if name == "crash.mp4":
         sys.exit(3)
+    if name == "hang.mp4":
+        time.sleep(600)
+    if name == "slow.mp4":
+        time.sleep(2)
     if name in ("oom.mp4", "tool.mp4"):
         kind = "oom" if name == "oom.mp4" else "tool_error"
         out.write(json.dumps({{"id": req["id"], "ok": False, "error_kind": kind, "error": kind + " on " + name}}) + "\n")
@@ -154,7 +167,15 @@ def test_release() -> None:
     assert "skill_card.json" in m["adapters"]["files"] and "demo/wvf_local.py" in m["code"]["files"]
     assert {f.split("/")[1] for f in m["paddlex"]["files"]} == {"PP-OCRv5_server_det", "PP-OCRv5_server_rec"}
     assert all(len(v) == 64 for part in ("code", "adapters", "base", "paddlex") for v in m[part]["files"].values())
-    assert WEVIS.has_audio is False and WEVIS.transformers_version == "5.23.0" and WEVIS.paddle_version == "3.2.2"
+    pins = dict(WEVIS.pins)
+    assert WEVIS.has_audio is False and pins["transformers"] == "5.23.0" and pins["paddlepaddle"] == "3.2.2"
+    assert pins["flash-linear-attention"] == pins["fla-core"] == "0.6.0" and pins["peft"] == "0.21.3"
+    assert pins["torch"] == "2.11.0+cu126"
+    deps = SHARED / "vlm_pydeps" / "wevis"
+    if deps.is_dir():                                    # the pins are the gate env's versions
+        for name in ("transformers", "flash_linear_attention", "fla_core"):
+            want = pins[name.replace("_", "-")]
+            assert (deps / f"{name}-{want}.dist-info").is_dir(), (name, want)
     if not OFFICIAL_DIR.is_dir():
         print(f"    official clone not found ({OFFICIAL_DIR}): code sha256 skipped")
         return
@@ -227,7 +248,41 @@ def test_runner_helpers() -> None:
     assert s.classify(wrapped(torch.OutOfMemoryError("CUDA out of memory"), s.common.ToolError("main-agent generation failed"))) == "oom"
     assert s.classify(wrapped(RuntimeError("CUDA error: out of memory"), ValueError("x"))) == "oom"
     assert s.classify(s.common.ToolError("could not decode overview frames")) == "tool_error"
-    assert s.classify(ValueError("bad")) == "other"
+    assert s.classify(ValueError("bad")) == "tool_error"          # official evaluate.py: any exception -> tool_error
+    expect_raise(lambda: runner.check_versions({"pins": {"torch": "0.0"}}), RuntimeError, "not the pinned runtime")
+    if importlib.util.find_spec("fla") is None:        # the SynthScope env has no fla: refused for that reason only
+        expect_raise(lambda: runner.check_versions({"pins": {"torch": torch.__version__}}), RuntimeError, "(fla)")
+    else:
+        assert runner.check_versions({"pins": {"torch": torch.__version__}})["torch"] == torch.__version__
+    # each video gets its own frame cache, deleted afterwards unless keep_frames
+    with tempfile.TemporaryDirectory() as tmp:
+        roots = []
+
+        class Frames:
+            def __init__(self, root):
+                self.root = Path(root)
+
+        sess = object.__new__(runner.Session)
+        sess.paths, sess.n_videos = {"work_dir": Path(tmp)}, 0
+        sess.media = type("media", (), {"FrameCache": Frames})
+        sess.agent = type("agent", (), {})()
+
+        def fake_score(video, verify_direct):
+            root = sess.agent.frames.root
+            (root / "frames").mkdir(parents=True)
+            (root / "frames" / "f.jpg").write_bytes(b"x")
+            roots.append(root)
+            if video == "bad":
+                raise ValueError("boom")
+            return {"ok": video}
+        sess._score = fake_score
+        sess.cfg = {"keep_frames": False}
+        assert sess.score("a") == {"ok": "a"} and not roots[-1].exists()
+        expect_raise(lambda: sess.score("bad"), ValueError, "boom")
+        assert not roots[-1].exists() and roots[0] != roots[1]
+        sess.cfg = {"keep_frames": True}
+        sess.score("c")
+        assert (roots[-1] / "frames" / "f.jpg").exists()
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "a.bin").write_bytes(b"abc")
@@ -305,6 +360,16 @@ def test_registry_and_engine() -> None:
             os.environ["HF_TOKEN"] = "secret"
             assert engine.is_available(spec)
             expect_raise(lambda: Engine(device="cpu")._get_model(spec), RuntimeError, "CUDA GPU")
+            # a still image is refused before any runner starts (API and engine)
+            img = Image.new("RGB", (64, 64))
+            png = Path(tmp, "x.png")
+            img.save(png)
+            det = Detector(spec, device="cuda", auto_download=False)
+            for source in (img, png, png.read_bytes()):
+                expect_raise(lambda: det.predict(source), ValueError, "video-only detector")
+            expect_raise(lambda: engine.predict_image(spec, img), ValueError, "video-only detector")
+            expect_raise(lambda: engine.predict_video_frames(spec, [img]), ValueError, "video file itself")
+            assert "wevis" not in engine._cache and "wevis" not in det._engine._cache
             fake = Path(tmp, "fake_python")
             fake.write_text(FAKE_RUNNER.format(python=sys.executable))
             fake.chmod(fake.stat().st_mode | stat.S_IEXEC)
@@ -344,9 +409,96 @@ def test_registry_and_engine() -> None:
     print("    spec, licences, hint; mocked runner: env/config, score, unparsed, OOM / tool / crash errors, restart, release")
 
 
+def alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    try:                                              # a zombie still answers signal 0: check its state
+        return Path(f"/proc/{pid}/stat").read_text().split(")")[-1].split()[0] != "Z"
+    except OSError:
+        return False
+
+
+def gone(pid: int, seconds: float = 10.0) -> bool:
+    deadline = time.monotonic() + seconds
+    while time.monotonic() < deadline:
+        if not alive(pid):
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def test_process_group() -> None:
+    print("[E] runner process group: kill paths take the child (OCR worker) with them; close waits for a video ...")
+    saved = os.environ.get("FAKE_WEVIS_CHILD")
+    os.environ["FAKE_WEVIS_CHILD"] = "1"
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            fake = Path(tmp, "fake_python")
+            fake.write_text(FAKE_RUNNER.format(python=sys.executable))
+            fake.chmod(fake.stat().st_mode | stat.S_IEXEC)
+            cfg = replace(WEVIS, timeout=3.0, kill_grace=1.0)
+            env = dict(os.environ, **{ENV_PYTHONPATH: "/deps"})
+
+            def make():
+                return WeVisRunner(cfg, Path(tmp, "ck"), Path(tmp, "cache"), command=[str(fake), str(RUNNER), "--serve"],
+                                   environ=env)
+            # 1. per-video timeout: the runner ignores SIGTERM, so SIGKILL to the group is needed
+            r = make()
+            info = r.start()
+            child, pid = info["child"], info["pid"]
+            assert alive(child) and os.getpgid(child) == pid != os.getpgid(0)
+            expect_raise(lambda: r.score(Path(tmp, "hang.mp4")), WeVisRunnerError, "no answer within 3 s")
+            assert gone(pid) and gone(child), "runner or its child survived the timeout kill"
+            # 2. close(): shutdown, then the group (the fake runner leaves its child running on exit)
+            r = make()
+            child = r.start()["child"]
+            r.close()
+            assert gone(child), "child survived close()"
+            # 3. close() while a video is in progress waits for it, then stops the runner
+            r = make()
+            child = r.start()["child"]
+            box = {}
+            t = threading.Thread(target=lambda: box.update(res=r.score(Path(tmp, "slow.mp4"))))
+            t.start()
+            time.sleep(0.5)
+            r.close()
+            t.join(10)
+            assert box["res"]["verdict"] == "fake" and gone(child) and not r.running
+            # 4. close(timeout) on a stuck video gives up waiting and kills the group; the video fails
+            r = make()
+            child = r.start()["child"]
+            box = {}
+
+            def stuck():
+                try:
+                    r.score(Path(tmp, "hang.mp4"))
+                except WeVisRunnerError as e:
+                    box["err"] = str(e)
+            t = threading.Thread(target=stuck)
+            t.start()
+            time.sleep(0.5)
+            r.close(timeout=0.5)
+            t.join(10)
+            assert "exited" in box.get("err", "") and gone(child)
+            # 5. a runner that crashes: its child is killed with it
+            r = make()
+            child = r.start()["child"]
+            expect_raise(lambda: r.score(Path(tmp, "crash.mp4")), WeVisRunnerError, "exited (code 3)")
+            assert gone(child), "child survived the runner's crash"
+    finally:
+        if saved is None:
+            os.environ.pop("FAKE_WEVIS_CHILD", None)
+        else:
+            os.environ["FAKE_WEVIS_CHILD"] = saved
+    print("    timeout kill (TERM ignored -> KILL), close, close while busy, close timeout, crash: no process left")
+
+
 if __name__ == "__main__":
     test_release()
     test_score()
     test_runner_helpers()
     test_registry_and_engine()
+    test_process_group()
     print("wevis smoke test passed")
