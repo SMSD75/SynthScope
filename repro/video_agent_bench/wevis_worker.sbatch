@@ -47,7 +47,7 @@ cd $W
 
 if [ "${CMP:-0}" = 1 ]; then
   echo "=== comparators in the background $(date +%T)"
-  bash $W/repro/video_agent_bench/comparators.sh > >(sed -u 's/^/[cmp] /') 2>&1 &
+  W=$W R=$R bash $W/repro/video_agent_bench/comparators.sh > >(sed -u 's/^/[cmp] /') 2>&1 &
   CMP_PID=$!
 fi
 
