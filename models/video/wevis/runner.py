@@ -213,6 +213,42 @@ def check_adapters(rt, loads: list, roles: tuple, adapter_root: Path) -> dict:
     return counts
 
 
+def frames_dir_name(n: int) -> str:
+    """A video's frame-cache folder under ``<work_dir>/videos``: ``<host>_<pid>_<n>``. The host and pid say which runner
+    owns it (the work folder may be on storage shared by several nodes)."""
+    return f"{socket.gethostname()}_{os.getpid()}_{n}"
+
+
+def _pid_alive(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def sweep_stale_frames(work_dir: Path) -> list:
+    """Remove the frame caches of runners on THIS host that no longer run (a runner killed on a timeout, a crash or the
+    OOM killer never reaches its per-video cleanup). A folder of a live process, of another host, or not named by
+    ``frames_dir_name`` is kept. Returns the removed folders."""
+    videos = Path(work_dir) / "videos"
+    if not videos.is_dir():
+        return []
+    host, removed = socket.gethostname(), []
+    for d in sorted(videos.iterdir()):
+        parts = d.name.rsplit("_", 2)
+        if not d.is_dir() or len(parts) != 3 or parts[0] != host or not (parts[1].isdigit() and parts[2].isdigit()):
+            continue
+        pid = int(parts[1])
+        if pid == os.getpid() or _pid_alive(pid):
+            continue
+        shutil.rmtree(d, ignore_errors=True)
+        removed.append(d)
+    return removed
+
+
 def chain(exc):
     seen = []
     while exc is not None and exc not in seen:
@@ -230,6 +266,10 @@ class Session:
         self.calls: list = []
         self.n_videos = 0
         t0 = time.monotonic()
+        swept = [] if cfg.get("keep_frames") else sweep_stale_frames(self.paths["work_dir"])
+        if swept:
+            print(f"[wevis runner] removed {len(swept)} stale frame cache(s) of runners that no longer run",
+                  file=sys.stderr, flush=True)
         self.versions = check_versions(cfg)
         self.release = verify_release(self.paths)
         socket.socket.connect, socket.socket.connect_ex = _guarded_connect, _guarded_connect_ex
@@ -339,9 +379,11 @@ class Session:
     def score(self, video: str, verify_direct: bool = False) -> dict:
         """One video with its own frame cache (decoded frames + OCR crops), deleted afterwards unless ``keep_frames``:
         the official cache is keyed by path + size + mtime, so web uploads (a new temporary file each) would otherwise
-        grow it without bound. The cache is only a cache: frames are decoded deterministically either way."""
+        grow it without bound. The cache is only a cache: frames are decoded deterministically either way. A runner that is
+        killed mid-video leaves its folder behind; the next runner on the host removes it (``sweep_stale_frames``, not
+        with ``keep_frames``)."""
         self.n_videos += 1
-        frames_root = self.paths["work_dir"] / "videos" / f"{os.getpid()}_{self.n_videos}"
+        frames_root = self.paths["work_dir"] / "videos" / frames_dir_name(self.n_videos)
         self.agent.frames = self.media.FrameCache(frames_root)
         try:
             return self._score(video, verify_direct)

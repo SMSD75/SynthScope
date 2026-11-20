@@ -142,14 +142,14 @@ class Detector:
         how many frames are sampled. ``input_size``/``orig_size``/``input_note`` describe what the detector saw;
         pass ``return_input_image=True`` to also get that image as a PNG data URL (the web page shows it).
         """
-        self._ensure_weights()
         kind, pil, path = self._classify(source)
+        if kind == "image" and self.spec.modality == "video":   # video-only (also the agent), before weights or a load
+            raise ValueError(
+                f"'{self.spec.key}' is a video-only detector and cannot score a still image."
+            )
+        self._ensure_weights()
 
         if kind == "image":
-            if self.spec.modality == "video":         # video-only (also the agent, video_agent), before any load
-                raise ValueError(
-                    f"'{self.spec.key}' is a video-only detector and cannot score a still image."
-                )
             result = self._engine.predict_image(self.spec, pil)
             if not return_input_image:
                 result.pop("input_image", None)      # a large base64 string; only the web page needs it

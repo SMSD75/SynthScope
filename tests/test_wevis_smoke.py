@@ -17,13 +17,19 @@ Checks:
     MOCKED runner process ($SYNTHSCOPE_WEVIS_PYTHON = a fake interpreter that speaks the runner protocol): the runner's
     command line, environment (offline, no Hub token, isolated deps first) and config (has_audio False), a scored
     video (P(fake) = sigmoid(logit), the agent's verdict, trace, cost), an unparsed one (verdict "unparsed", P 0.5),
-    the typed errors (OOM, tool error, a crashed runner, which is restarted on the next call), release_gpu stopping it.
+    the typed errors (OOM, tool error, a crashed runner, which is restarted on the next call), release_gpu stopping it;
+    a still image is refused as video-only before the weights check;
+[E] the runner's process group: every kill path takes the OCR-worker-like child with it; SIGKILL only for a group that
+    is still alive; a runner nulled by close() mid-score raises WeVisRunnerError (not AttributeError);
+[F] the engine stops an evicted / released agent OUTSIDE its lock: other requests are not blocked while close() waits.
 """
 
 from __future__ import annotations
 
 import importlib.util
 import json
+import signal
+import subprocess
 import math
 import os
 import socket
@@ -283,6 +289,22 @@ def test_runner_helpers() -> None:
         sess.cfg = {"keep_frames": True}
         sess.score("c")
         assert (roots[-1] / "frames" / "f.jpg").exists()
+        assert roots[0].name == f"{socket.gethostname()}_{os.getpid()}_1" and roots[0].parent.name == "videos"
+    # a killed runner's frame caches are removed by the next runner on the same host; live / foreign ones are kept
+    with tempfile.TemporaryDirectory() as tmp:
+        videos = Path(tmp, "videos")
+        host = socket.gethostname()
+        dead = subprocess.Popen([sys.executable, "-c", "pass"])
+        dead.wait()                                       # reaped: its pid is free
+        names = {"stale": f"{host}_{dead.pid}_3", "own": f"{host}_{os.getpid()}_1", "live": f"{host}_{os.getppid()}_2",
+                 "other_host": f"not-{host}_{dead.pid}_1", "legacy": f"{dead.pid}_7", "odd": f"{host}_x_1"}
+        for name in names.values():
+            (videos / name / "frames").mkdir(parents=True)
+        (videos / "note.txt").write_text("x")
+        removed = runner.sweep_stale_frames(Path(tmp))
+        assert [d.name for d in removed] == [names["stale"]] and not (videos / names["stale"]).exists()
+        assert all((videos / names[k]).is_dir() for k in names if k != "stale") and (videos / "note.txt").exists()
+        assert runner.sweep_stale_frames(Path(tmp, "absent")) == []
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / "a.bin").write_bytes(b"abc")
@@ -349,6 +371,8 @@ def test_registry_and_engine() -> None:
             assert not engine.is_available(spec) and len(missing(WEVIS, ck, cache)) == 5
             det = Detector(spec, device="cpu", auto_download=True)
             expect_raise(det._ensure_weights, FileNotFoundError, "hf download tencent/WeVisForensics")
+            # nothing is installed, yet a still image gets the video-only error (not the missing-weights one)
+            expect_raise(lambda: det.predict(Image.new("RGB", (8, 8))), ValueError, "video-only detector")
             for rel in ("wevisforensics_lora/main/adapter_config.json", "qwen3.5-4b/config.json",
                         "wevis_paddlex/official_models/PP-OCRv5_server_det/inference.pdiparams",
                         "WeVisForensics/demo/wvf_local.py"):
@@ -487,12 +511,101 @@ def test_process_group() -> None:
             child = r.start()["child"]
             expect_raise(lambda: r.score(Path(tmp, "crash.mp4")), WeVisRunnerError, "exited (code 3)")
             assert gone(child), "child survived the runner's crash"
+            # 6. SIGKILL only while the group lives: a runner that ignores SIGTERM gets it ...
+            r = make()
+            r.start()
+            sent = []
+            r._signal_group = lambda pgid, sig: (sent.append(sig), WeVisRunner._signal_group(pgid, sig))[1]
+            r._kill()
+            assert sent == [signal.SIGTERM, signal.SIGKILL], sent
+        os.environ.pop("FAKE_WEVIS_CHILD", None)
+        with tempfile.TemporaryDirectory() as tmp:
+            fake = Path(tmp, "fake_python")
+            fake.write_text(FAKE_RUNNER.format(python=sys.executable))
+            fake.chmod(fake.stat().st_mode | stat.S_IEXEC)
+            r = WeVisRunner(replace(WEVIS, kill_grace=5.0), Path(tmp, "ck"), Path(tmp, "cache"),
+                            command=[str(fake), str(RUNNER), "--serve"], environ=dict(os.environ, **{ENV_PYTHONPATH: "/deps"}))
+            # ... one that exits on SIGTERM (group empty, leader reaped) does not: its pgid may be reused
+            r.start()
+            sent = []
+            r._signal_group = lambda pgid, sig: (sent.append(sig), WeVisRunner._signal_group(pgid, sig))[1]
+            r._kill()
+            assert sent == [signal.SIGTERM], sent
+            # 7. close() nulls _proc while a score is reading (its wait timed out): WeVisRunnerError, not AttributeError
+            del r._signal_group
+            r.start()
+            proc = r._proc
+            r._proc = None
+            os.killpg(proc.pid, signal.SIGKILL)
+            expect_raise(lambda: r._read(10.0, proc), WeVisRunnerError, "exited")
+            proc.wait()
+            r._lines = __import__("queue").Queue()
+            expect_raise(lambda: r._read(10.0), WeVisRunnerError, "exited")      # no runner at all
     finally:
         if saved is None:
             os.environ.pop("FAKE_WEVIS_CHILD", None)
         else:
             os.environ["FAKE_WEVIS_CHILD"] = saved
-    print("    timeout kill (TERM ignored -> KILL), close, close while busy, close timeout, crash: no process left")
+    print("    timeout kill (TERM ignored -> KILL), close, close while busy, close timeout, crash: no process left; "
+          "no SIGKILL to an empty group; a nulled runner raises WeVisRunnerError")
+
+
+class BlockingAgent:
+    """Stands in for a WeVisRunner whose close() waits for a video in progress."""
+
+    def __init__(self):
+        self.entered, self.release, self.closed = threading.Event(), threading.Event(), False
+
+    def close(self):
+        self.entered.set()
+        assert self.release.wait(10)
+        self.closed = True
+
+
+def test_engine_lock() -> None:
+    print("[F] engine: an evicted / released agent is closed outside the engine lock ...")
+    saved = backend_config.MAX_RESIDENT_MODELS
+    backend_config.MAX_RESIDENT_MODELS = 1
+    try:
+        engine = Engine(device="cpu")
+        loaded = []
+
+        def fake_load(spec):                     # stands in for building a detector (the caller holds the lock)
+            assert engine._lock.locked()
+            loaded.append(spec.key)
+            engine._cache[spec.key] = f"model:{spec.key}"
+            return engine._cache[spec.key]
+        engine._load = fake_load
+        # eviction: loading another detector evicts the agent; while its close() waits, the lock is free
+        agent = BlockingAgent()
+        engine._cache["wevis"] = agent
+        box = {}
+        t = threading.Thread(target=lambda: box.update(m=engine._get_model(get_spec("clip"))))
+        t.start()
+        assert agent.entered.wait(10)
+        assert engine._lock.acquire(timeout=2), "engine lock held while the evicted agent closes"
+        engine._lock.release()
+        assert "wevis" not in engine._cache and not loaded           # evicted first, loaded only after the close
+        agent.release.set()
+        t.join(10)
+        assert agent.closed and box["m"] == "model:clip" and loaded == ["clip"]
+        assert engine._get_model(get_spec("clip")) == "model:clip" and loaded == ["clip"]   # cached
+        # release_gpu: the cache is cleared at once, the agent closed outside the lock
+        agent = BlockingAgent()
+        engine._cache.clear()
+        engine._cache["wevis"] = agent
+        t = threading.Thread(target=engine.release_gpu)
+        t.start()
+        assert agent.entered.wait(10)
+        assert engine._lock.acquire(timeout=2), "engine lock held while release_gpu closes the agent"
+        assert not engine._cache
+        engine._lock.release()
+        agent.release.set()
+        t.join(10)
+        assert agent.closed and not t.is_alive()
+    finally:
+        backend_config.MAX_RESIDENT_MODELS = saved
+    print("    eviction and release_gpu close the agent with the engine lock free; load after the close")
 
 
 if __name__ == "__main__":
@@ -501,4 +614,5 @@ if __name__ == "__main__":
     test_runner_helpers()
     test_registry_and_engine()
     test_process_group()
+    test_engine_lock()
     print("wevis smoke test passed")

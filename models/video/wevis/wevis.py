@@ -218,16 +218,20 @@ class WeVisRunner:
 
     @property
     def running(self) -> bool:
-        return self._proc is not None and self._proc.poll() is None
+        proc = self._proc                                # one read: close() may null it from another thread
+        return proc is not None and proc.poll() is None
 
     def _pump(self, proc, lines) -> None:
         for line in proc.stdout:
             lines.put(line)
         lines.put(None)
 
-    def _read(self, timeout: float) -> dict:
+    def _read(self, timeout: float, proc: Optional[subprocess.Popen] = None) -> dict:
         """The runner's next JSON line. The runner exiting (EOF, or the process gone while a child it started still
-        holds the pipe open) and a timeout both kill its process group and raise ``WeVisRunnerError``."""
+        holds the pipe open) and a timeout both kill its process group and raise ``WeVisRunnerError``. ``proc`` is the
+        runner the caller is talking to (default: the current one): ``close()`` may set ``self._proc`` to None from
+        another thread (after its wait timed out), which must surface as ``WeVisRunnerError``, never AttributeError."""
+        proc = self._proc if proc is None else proc
         deadline = time.monotonic() + timeout
         while True:
             left = deadline - time.monotonic()
@@ -237,12 +241,12 @@ class WeVisRunner:
             try:
                 line = self._lines.get(timeout=min(left, 1.0))
             except queue.Empty:
-                if self._proc is not None and self._proc.poll() is not None and self._lines.empty():
+                if (proc is None or proc.poll() is not None) and self._lines.empty():
                     line = None
                 else:
                     continue
             if line is None:
-                code = self._proc.wait() if self._proc is not None else None
+                code = proc.wait() if proc is not None else None
                 self._kill()                             # a dead runner's children (the OCR worker) go with it
                 raise WeVisRunnerError(f"the WeVisForensics runner exited (code {code}); its log is on stderr")
             try:
@@ -258,7 +262,7 @@ class WeVisRunner:
                                       stdout=subprocess.PIPE, stderr=None, text=True, bufsize=1, env=self.env,
                                       cwd=str(self.paths["work_dir"]), start_new_session=True)
         threading.Thread(target=self._pump, args=(self._proc, self._lines), daemon=True).start()
-        msg = self._read(self.cfg.ready_timeout)
+        msg = self._read(self.cfg.ready_timeout, self._proc)
         if msg.get("event") != "ready":
             self._kill()
             raise ERRORS.get(msg.get("error_kind"), WeVisRunnerError)(
@@ -272,15 +276,18 @@ class WeVisRunner:
         with self._lock:
             if not self.running:
                 self.start()
+            proc = self._proc                            # close() (after its wait timed out) may null self._proc
+            if proc is None:
+                raise WeVisRunnerError("the WeVisForensics runner was closed")
             self._n += 1
             req = {"id": self._n, "video": str(Path(path).resolve()), "verify_direct": bool(verify_direct)}
             try:
-                self._proc.stdin.write(json.dumps(req) + "\n")
-                self._proc.stdin.flush()
-            except (BrokenPipeError, OSError) as e:
+                proc.stdin.write(json.dumps(req) + "\n")
+                proc.stdin.flush()
+            except (BrokenPipeError, OSError, ValueError) as e:      # ValueError: the pipe was closed under us
                 self._kill()
                 raise WeVisRunnerError(f"the WeVisForensics runner is gone: {e}") from e
-            msg = self._read(self.cfg.timeout)
+            msg = self._read(self.cfg.timeout, proc)
             if msg.get("id") != req["id"]:
                 self._kill()
                 raise WeVisRunnerError(f"protocol error: answer {msg.get('id')} for request {req['id']}")
@@ -306,11 +313,15 @@ class WeVisRunner:
         pgid = proc.pid                                  # start_new_session: the runner leads its own group
         if self._signal_group(pgid, signal.SIGTERM):
             deadline = time.monotonic() + self.cfg.kill_grace
+            empty = False
             while time.monotonic() < deadline:
                 if proc.poll() is not None and not self._group_alive(pgid):
+                    empty = True
                     break
                 time.sleep(0.1)
-            self._signal_group(pgid, signal.SIGKILL)
+            # Only a group still alive gets SIGKILL: once it is empty and the leader reaped, its id could be reused.
+            if not empty and self._group_alive(pgid):
+                self._signal_group(pgid, signal.SIGKILL)
         try:
             proc.wait(timeout=60)
         except subprocess.TimeoutExpired:

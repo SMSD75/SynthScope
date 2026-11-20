@@ -372,11 +372,17 @@ def _load_agent(spec: ModelSpec, device: str) -> "wevis_agent.WeVisRunner":
     return runner
 
 
+def _external(model) -> bool:
+    """True for a detector that runs outside this process (an agent's runner) and must be stopped with ``close()``."""
+    return callable(getattr(model, "close", None)) and not isinstance(model, torch.nn.Module)
+
+
 def _close(model) -> None:
-    """Stop what an evicted detector runs outside this process (an agent's runner); no-op for torch modules."""
-    close = getattr(model, "close", None)
-    if callable(close) and not isinstance(model, torch.nn.Module):
-        close()
+    """Stop what an evicted detector runs outside this process (an agent's runner); no-op for torch modules. An agent's
+    ``close()`` first waits for the video in progress (up to ``close_timeout``), so callers run it OUTSIDE
+    ``Engine._lock``: the other detectors keep serving meanwhile."""
+    if _external(model):
+        model.close()
 
 
 class Engine:
@@ -435,61 +441,79 @@ class Engine:
         """Drop every resident detector (they reload lazily on the next request) so a heavy local image generator,
         which runs in its own process and wants most of the GPU, does not collide with them."""
         with self._lock:
-            for model in self._cache.values():
-                _close(model)
+            dropped = list(self._cache.values())
             self._cache.clear()
+        for model in dropped:                      # outside the lock: an agent finishes its video in progress first
+            _close(model)
+        del dropped
         gc.collect()
         if self.device == "cuda":
             torch.cuda.empty_cache()
 
     def _get_model(self, spec: ModelSpec) -> torch.nn.Module:
-        with self._lock:
-            if spec.key in self._cache:
-                self._cache.move_to_end(spec.key)
-                return self._cache[spec.key]
+        while True:
+            with self._lock:
+                if spec.key in self._cache:
+                    self._cache.move_to_end(spec.key)
+                    return self._cache[spec.key]
 
-            # Evict LRU entries if at capacity.
-            while len(self._cache) >= config.MAX_RESIDENT_MODELS:
-                old_key, old_model = self._cache.popitem(last=False)
-                _close(old_model)
-                del old_model
-                if self.device == "cuda":
-                    torch.cuda.empty_cache()
+                # Evict LRU entries if at capacity.
+                external = []
+                while len(self._cache) >= config.MAX_RESIDENT_MODELS:
+                    old_key, old_model = self._cache.popitem(last=False)
+                    if _external(old_model):
+                        external.append(old_model)
+                    del old_model
+                    if self.device == "cuda":
+                        torch.cuda.empty_cache()
+                if not external:
+                    return self._load(spec)
+            # An evicted agent's runner holds most of the GPU and may still be scoring a video for another request:
+            # stop it OUTSIDE the lock (close() waits for that video), so the other resident detectors keep serving,
+            # then take the lock again and load (the loop re-checks the cache, which may have changed meanwhile).
+            for model in external:
+                _close(model)
+            del external
+            gc.collect()
+            if self.device == "cuda":
+                torch.cuda.empty_cache()
 
-            if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
-                model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
-                self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
-                                          f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype}"
-                                          + (f"; LoRA adapter unmerged on {spec.vlm.base_model}" if spec.vlm.base_model
-                                             else "")
-                                          + (f"; processor {spec.vlm.processor}" if spec.vlm.processor else "") + ")")
-                self._cache[spec.key] = model
-                return model
-
-            if spec.predict_kind == "video_agent":   # the official agent in its own process (models/video/wevis)
-                runner = _load_agent(spec, self.device)
-                info = runner.info or {}
-                rel = info.get("release", {})
-                self._status[spec.key] = (f"official code {str(rel.get('code_commit', '?'))[:7]} + adapters "
-                                          f"{str(rel.get('adapters_revision', '?'))[:8]} on base "
-                                          f"{str(rel.get('base_revision', '?'))[:8]} (sha256 verified, adapters strict: "
-                                          f"{sum((info.get('adapter_tensors') or {}).values())} tensors), transformers "
-                                          f"{(info.get('versions') or {}).get('transformers')} in a separate process; "
-                                          f"audio off")
-                self._cache[spec.key] = runner
-                return runner
-
-            from config_utils import compose_config
-
-            cfg = compose_config(spec.overrides + aux_overrides(spec))
-            model = _build_model(cfg)
-            if spec.ckpt_kind != "none":
-                self._status[spec.key] = _load_checkpoint(model, spec)
-            else:
-                self._status[spec.key] = "training-free (no checkpoint)"
-            model = model.to(self.device).float().eval()
+    def _load(self, spec: ModelSpec) -> torch.nn.Module:
+        """Build ``spec``'s detector and add it to the cache; the caller holds ``self._lock`` and has made room."""
+        if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
+            model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
+            self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
+                                      f"(missing=0, unexpected=0; {spec.vlm.model_class}, {spec.vlm.dtype}"
+                                      + (f"; LoRA adapter unmerged on {spec.vlm.base_model}" if spec.vlm.base_model
+                                         else "")
+                                      + (f"; processor {spec.vlm.processor}" if spec.vlm.processor else "") + ")")
             self._cache[spec.key] = model
             return model
+
+        if spec.predict_kind == "video_agent":   # the official agent in its own process (models/video/wevis)
+            runner = _load_agent(spec, self.device)
+            info = runner.info or {}
+            rel = info.get("release", {})
+            self._status[spec.key] = (f"official code {str(rel.get('code_commit', '?'))[:7]} + adapters "
+                                      f"{str(rel.get('adapters_revision', '?'))[:8]} on base "
+                                      f"{str(rel.get('base_revision', '?'))[:8]} (sha256 verified, adapters strict: "
+                                      f"{sum((info.get('adapter_tensors') or {}).values())} tensors), transformers "
+                                      f"{(info.get('versions') or {}).get('transformers')} in a separate process; "
+                                      f"audio off")
+            self._cache[spec.key] = runner
+            return runner
+
+        from config_utils import compose_config
+
+        cfg = compose_config(spec.overrides + aux_overrides(spec))
+        model = _build_model(cfg)
+        if spec.ckpt_kind != "none":
+            self._status[spec.key] = _load_checkpoint(model, spec)
+        else:
+            self._status[spec.key] = "training-free (no checkpoint)"
+        model = model.to(self.device).float().eval()
+        self._cache[spec.key] = model
+        return model
 
     # -- prediction helpers -------------------------------------------------
     @torch.no_grad()
