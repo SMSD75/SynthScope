@@ -27,7 +27,12 @@ training-free "raw" score, taken from the logit instead of a second diffusion pa
 (failed_to_decode: decode failures only, cached); any other error (OOM, I/O) is counted in failed_other, never cached
 and retried; both kinds are left out of the metrics. The cache directory carries cache_meta.json (model key, sha256 of
 the resolved checkpoint, frame count / sampler / transform, format version): a run whose setup differs is refused.
-The result JSON also records limit, reals, ckpt_sha256 and cache_dir (and, for a detector with aux files or an ffmpeg
+An agentic detector (``wevis``, predict_kind "video_agent"): accuracy from its verdict (unparsed = wrong for both
+classes), AUROC / AP from the verdict-token logit gap; tool_error / OOM / runner failures are retried (--agent-*-retries);
+final tool_error / OOM videos are left out of the official ``acc`` (the official evaluate.py rule) and counted wrong in
+``acc_strict``; every row records its GPU; the JSON adds per-video records and a pooled one-row-per-video block; the
+cache is keyed by the pinned release manifest. A full run in which a video still failed with a runner / other error exits
+2 (``--shard`` runs too). The result JSON also records limit, reals, ckpt_sha256 and cache_dir (and, for a detector with aux files or an ffmpeg
 pin, the aux-file sha256s and the ffmpeg version + binary sha256).
 
 Benchmark layouts:
@@ -693,6 +698,15 @@ def main(argv=None) -> int:
                      f"gpus={'|'.join(sorted(g.replace(' ', '_') for g in pb['gpus']))}")
     print(f"\n=== RESULT {args.tag}: mAP={means['map']} mAP_real={means['map_real']} mAUROC={means['mauroc']} acc={means['acc']}"
           f"{extra} over {len(per_gen)} gens -> {out} ===", flush=True)
+    if agent:
+        pb, n_other = means["pooled"], failed_other["fake"] + failed_other["real_unique"]
+        if pb["n_tool_error"] or pb["n_oom"]:
+            print(f"!!! WARNING {args.tag}: {pb['n_tool_error']} tool_error + {pb['n_oom']} oom video(s) left out of the "
+                  f"official accuracy (counted wrong in acc_strict)", flush=True)
+        if n_other:                                  # runner / other errors: not cached, dropped from every metric
+            print(f"!!! WARNING {args.tag}: {n_other} video(s) failed with a runner / other error and are MISSING from "
+                  f"every metric (failed_other {failed_other}); rerun to score them. Exit code 2.", flush=True)
+            return 2
     return 0
 
 

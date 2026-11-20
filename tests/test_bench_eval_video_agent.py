@@ -13,7 +13,9 @@ Checks:
   as final and a scoring run tries it again (the official retry on every run);
 * out of memory: retried (twice by default) and counted (``oom_retries``, ``n_retried_oom``); a video that still runs out
   of memory is a final "oom" row (excluded / strict wrong, like a tool_error, counted apart);
-* a runner that died is retried; a video whose runner keeps dying is not cached, and its shard returns 2 (incomplete);
+* a runner that died is retried; a video whose runner keeps dying is not cached, its shard returns 2 (incomplete), and a
+  full (non-shard) run writes its JSON but warns loudly and exits 2 (the video is missing from every metric); final
+  tool_error / oom rows give a loud warning with their count (exit 0: the official rule excludes them);
 * the GPU of every row is recorded (per-video record, pooled ``gpus`` count, RESULT line);
 * the pooled one-row-per-video block (official WeVisForensics accuracy, fake recall / F1) counts a real pool shared by
   several generators once;
@@ -273,6 +275,19 @@ def test_main_end_to_end() -> None:
             with contextlib.redirect_stdout(io.StringIO()):
                 rcs = [bev.main(common + ["--tag", "ag", "--shard", f"{k}/2"]) for k in range(2)]
             assert sorted(rcs) == [0, 2], rcs
+            assert "!!! WARNING ag: 1 tool_error + 1 oom video(s) left out of the official accuracy" in log
+            # a full (non-shard) run with that video: the JSON is written, but the run warns and exits 2 (the video is
+            # missing from every metric); without it the run exits 0 and only warns about the tool_error / oom rows
+            buf2 = io.StringIO()
+            with contextlib.redirect_stdout(buf2):
+                rc = bev.main(common + ["--tag", "ag_full", "--out", str(tmp / "full.json")])
+            assert rc == 2, rc
+            full = json.loads((tmp / "full.json").read_text())
+            assert full["failed_other"] == {"fake": 1, "real_unique": 0}
+            assert "!!! WARNING ag_full: 1 video(s) failed with a runner / other error and are MISSING" in buf2.getvalue()
+            (tmp / "data" / "genB" / "1_fake" / "b4__fake__11.0__runneralways.mp4").unlink()
+            with contextlib.redirect_stdout(io.StringIO()):
+                assert bev.main(common + ["--tag", "ag_full2", "--out", str(tmp / "full2.json")]) == 0
             # an ordinary detector with --per-video: per-video records + pooled block, otherwise the usual JSON
             from test_bench_eval_video_cache import MockEngine, MockSpec, make_tree as plain_tree
             ckpt = tmp / "mock.pth"
