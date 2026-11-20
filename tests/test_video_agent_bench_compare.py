@@ -7,7 +7,9 @@ Checks:
   means, or one agent record's logit, was edited no longer traces;
 * compare: the agent's acc / acc_strict / AUROC, the comparators' best / median and the agent's ranks
   (1 + the number of comparators strictly better), the internal-only exclusion of the best public comparator, and the
-  GenBuster paper block (pooled accuracy, Wilson interval, Table 11 groups, deltas against the paper's numbers).
+  GenBuster paper block (pooled accuracy, Wilson interval, Table 11 groups with the OOD mean pooled per clip, deltas
+  against the paper's numbers, no folder-weighted estimate); GenBuster rows flagged in-distribution for the agent with
+  the pooled metric as their headline; held4 is the headline mean and all6 is labelled as including in-domain data.
 """
 
 from __future__ import annotations
@@ -114,6 +116,16 @@ def test_trace_and_compare() -> None:
             assert pc["delta_acc_vs_paper"] == round(gbr["acc"] - 97.7, 2) and len(pc["acc_wilson95"]) == 2
             assert pc["table11"]["id"] == 100.0 and pc["table11"]["ood"] == {"sora": 0.0} and pc["table11"]["wild"] == 100.0
             assert pc["table11"]["real_acc"] == round(200 / 3, 2)
+            # in-domain flags (GenBuster-200K is in wevis's training data), pooled OOD mean, no stratified estimate
+            gpc = c["paper_comparison"]["genbuster"]
+            assert gpc["in_distribution"] is True and "GenBuster-200K" in gpc["in_distribution_note"]
+            assert "IN-DOMAIN" in c["paper_note"] and c["headline_mean"] == "held4"
+            grow = next(r for r in c["subsets"] if r["benchmark"] == "genbuster")
+            assert grow["wevis"]["in_distribution"] is True and "pooled" in grow["headline"]["metric"]
+            assert row.get("headline") is None and not row["wevis"].get("in_distribution")
+            assert "stratified_full_set_acc_estimate" not in pc and pc["table11"]["ood_mean"] == 0.0
+            assert pc["table11"]["n"]["wild_per_generator"] == {"v": 1}
+            assert "in-domain" in c["subset_means"]["all6"]["label"] and "HEADLINE" in c["subset_means"]["held4"]["label"]
 
             # a tampered JSON no longer traces
             agent["means"]["acc"] += 1

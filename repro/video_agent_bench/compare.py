@@ -13,11 +13,18 @@ printed summary:
   ``internal_only``) and the median comparator per metric; the agent's rank among the comparators plus itself (``rank_*``;
   1 = best, ties share the better rank: 1 + the number of comparators strictly better). Best and median are over the
   comparators only; ties for best are broken alphabetically and listed under ``tied``;
-* ``subset_means``: the unweighted mean over the four held subsets and over all six, for the agent and every comparator;
+* in-distribution flags (``IN_DISTRIBUTION``, as repro/vlm_bench flags GenImage for FakeVLM): GenBuster-Bench and ++ are
+  IN-DOMAIN for wevis (GenBuster-200K is in its training data), so its GB / GB++ rows are marked ``in_distribution`` and
+  are not held-out results; on those two rows the headline is the pooled one-row-per-clip accuracy (the paper's metric,
+  ``headline``), because the per-generator balanced mean rests on generators with as few as 4 fakes;
+* ``subset_means``: the unweighted mean over the four held subsets (``held4``, the HEADLINE: held out for every detector)
+  and over all six (``all6``, labelled as including the in-domain GB / GB++ for wevis), for the agent and every comparator;
 * ``paper_comparison``: GenBuster-Bench (GB) and GenBuster-Bench++ (GB++) vs the paper's Table 4 / 12 (Acc., fake recall
-  R, F1) and, for GB, Table 11's breakdown (ID / OOD per generator / Wild fake detection rates, All). Ours is a
-  documented SUBSAMPLE (spec.json ``fraction`` of every folder); the pooled accuracy gets a 95 % Wilson interval and a
-  stratified estimate of the full-set accuracy (each folder's rate weighted by its full size);
+  R, F1) and, for GB, Table 11's breakdown (ID / OOD per generator / Wild fake detection rates, All; the OOD mean pooled
+  per clip, like the paper's). Ours is a documented SUBSAMPLE (spec.json ``fraction`` of every folder); the pooled
+  accuracy gets a 95 % Wilson interval. The subsample takes exactly 0.4 of every folder (every folder size is a multiple
+  of 5), so a folder-size-weighted estimate of the full-set accuracy would equal the subset accuracy by construction and
+  is not reported;
 * ``determinism``: the first L MSR-VTT reals are the same files in all four held subsets (sha1 in the manifests) and were
   scored once per subset: same verdict / logit across the repeats?
 """
@@ -43,7 +50,19 @@ PAPER_NOTE = ("WeVisForensics arXiv 2611.21373: Table 4 / Table 12 report accura
               "audio off (has_audio=False for every clip; GenBuster clips are silent), on a documented subsample. "
               "implied_real_acc is derived from Acc. and R and the benchmark's composition (an inference, not printed). "
               "The paper's NSG-VD and ReStraV rows are those detectors RETRAINED by the authors on their training data, "
-              "not the public checkpoints scored here.")
+              "not the public checkpoints scored here. IN-DOMAIN: GenBuster-Bench is the paper's in-domain benchmark and "
+              "GenBuster-200K is in WeVisForensics' training data (paper Sec. 3, training sources), so GB and GB++ are NOT "
+              "held out for wevis, while every comparator here was trained elsewhere: wevis ranking first on them is not "
+              "a held-out result. The held-out comparison is the four held subsets (subset_means.held4).")
+IN_DOMAIN_NOTE = ("IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training "
+                  "data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out "
+                  "for wevis; the comparators were trained on other data")
+IN_DISTRIBUTION = {"wevis": {"genbuster": IN_DOMAIN_NOTE, "genbuster_pp": IN_DOMAIN_NOTE + " (GB++ is the paper's "
+                                                                                          "out-of-domain set, but it comes "
+                                                                                          "from the same BusterX family)"}}
+SMALL_N_NOTE = ("GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: "
+                "per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled "
+                "metrics")
 
 
 def load(path: Path) -> dict | None:
@@ -102,6 +121,10 @@ def subset_row(b: dict, dets: list[str], res: Path, internal: set) -> dict | Non
            "n_comparators": len(comps), "missing_comparators": sorted(set(dets) - set(comps)), "comparators": comps}
     if a is not None:
         row[AGENT] = agent_summary(a)
+        if b["key"] in IN_DISTRIBUTION.get(AGENT, {}):
+            row[AGENT].update(in_distribution=True, in_distribution_note=IN_DISTRIBUTION[AGENT][b["key"]])
+        if "fraction" in b:                          # GenBuster: the paper's pooled metric is the headline
+            row["headline"] = {"metric": "pooled one-row-per-clip accuracy (the paper's)", "note": SMALL_N_NOTE}
     metrics = [("acc", "acc"), ("acc_strict", "acc"), ("mauroc", "mauroc"), ("acc_pooled", "acc_pooled")]
     for agent_metric, comp_metric in metrics:
         vals = [(c.get(comp_metric), d) for d, c in comps.items() if c.get(comp_metric) is not None]
@@ -120,9 +143,12 @@ def subset_row(b: dict, dets: list[str], res: Path, internal: set) -> dict | Non
 
 def subset_means(rows: list[dict], dets: list[str]) -> dict:
     out = {}
+    labels = {"held4": "HEADLINE: the four held subsets, held out for every detector",
+              "all6": "includes the in-domain GenBuster-Bench / ++ for wevis (GenBuster-200K is in its training data); "
+                      "not a held-out mean for wevis"}
     for name, keys in (("held4", HELD), ("all6", tuple(r["benchmark"] for r in rows))):
         sel = [r for r in rows if r["benchmark"] in keys]
-        block = {"subsets": [r["benchmark"] for r in sel]}
+        block = {"label": labels[name], "subsets": [r["benchmark"] for r in sel]}
         if all(AGENT in r for r in sel) and sel:
             block[AGENT] = {k: round(statistics.mean(r[AGENT][k] for r in sel), 2) for k in ("acc", "acc_strict", "mauroc")}
         for d in dets:
@@ -151,7 +177,8 @@ def genbuster_paper(b: dict, res: Path, spec: dict) -> dict | None:
     n_fake_full = 2150 if b["key"] == "genbuster" else 1000
     entry = {"paper": p, "paper_implied_real_acc": round((p["acc"] * (n_real_full + n_fake_full)
                                                           - p["fake_recall"] * n_fake_full) / n_real_full, 1),
-             "full_set": {"n_real": n_real_full, "n_fake": n_fake_full}, "subsample": {"fraction": b["fraction"]}}
+             "full_set": {"n_real": n_real_full, "n_fake": n_fake_full}, "subsample": {"fraction": b["fraction"]},
+             "in_distribution": True, "in_distribution_note": IN_DISTRIBUTION[AGENT][b["key"]]}
     if r is None:
         return entry
     pb = r["means"]["pooled"]
@@ -167,26 +194,28 @@ def genbuster_paper(b: dict, res: Path, spec: dict) -> dict | None:
     ours["paper_acc_inside_wilson95"] = ours["acc_wilson95"][0] <= p["acc"] <= ours["acc_wilson95"][1]
     ours["delta_fake_recall_vs_paper"] = round(pb["fake_recall"] - p["fake_recall"], 2)
     ours["delta_fake_f1_vs_paper"] = round(pb["fake_f1"] - p["fake_f1"], 2)
-    # stratified estimate of the full-set accuracy: the real rate weighted by 1000, each folder's fake rate by its size
-    full_counts = FULL_FAKES.get(b["key"])
     groups = {}
     for x in rows:
         g = x.get("gen") if x["label"] else "__real__"
         groups.setdefault(g, []).append(x["verdict"] == ("fake" if x["label"] else "real"))
-    if full_counts and "__real__" in groups:
-        tot = n_real_full * statistics.mean(groups["__real__"]) + sum(
-            full_counts[g] * statistics.mean(groups[g]) for g in full_counts if g in groups)
-        ours["stratified_full_set_acc_estimate"] = round(100 * tot / (n_real_full + n_fake_full), 2)
     if b["key"] == "genbuster":
         rate = lambda xs: round(100 * statistics.mean(xs), 2) if xs else None            # noqa: E731
         fk = {g: v for g, v in groups.items() if g != "__real__"}
         idv = [o for g, v in fk.items() if g.startswith("id_") for o in v]
         wild = [o for g, v in fk.items() if g.startswith("wild_") for o in v]
+        oodv = [o for g, v in fk.items() if g.startswith("ood_") for o in v]
         ood = {g[4:]: rate(v) for g, v in sorted(fk.items()) if g.startswith("ood_")}
-        ours["table11"] = {"id": rate(idv), "ood": ood, "ood_mean": round(statistics.mean(ood.values()), 2) if ood else None,
+        ours["table11"] = {"id": rate(idv), "ood": ood, "ood_mean": rate(oodv),
+                           "ood_mean_note": "pooled over the OOD clips (as the paper's 99.6, which is the Table 11 "
+                                            "per-generator rates weighted by folder size); ood_mean_unweighted is the "
+                                            "plain mean of the eight per-generator rates",
+                           "ood_mean_unweighted": round(statistics.mean(ood.values()), 2) if ood else None,
                            "wild": rate(wild), "all": pb["acc"], "real_acc": pb["real_acc"],
                            "n": {"id": len(idv), "ood": {g[4:]: len(v) for g, v in sorted(fk.items()) if g.startswith("ood_")},
-                                 "wild": len(wild), "real": len(groups["__real__"])}}
+                                 "wild": len(wild), "wild_per_generator": {g[5:]: len(v) for g, v in sorted(fk.items())
+                                                                           if g.startswith("wild_")},
+                                 "real": len(groups["__real__"])},
+                           "small_n_note": SMALL_N_NOTE}
         entry["paper_table11"] = GB_TABLE11
     entry["ours_subsample"] = ours
     comps = {}
@@ -201,18 +230,6 @@ def genbuster_paper(b: dict, res: Path, spec: dict) -> dict | None:
         entry["median_comparator_pooled_acc"] = round(statistics.median(v for v, _ in vals), 2)
         entry["rank_pooled_acc"] = 1 + sum(v > pb["acc"] for v, _ in vals)
     return entry
-
-
-# GenBuster-Bench / ++ full fake counts per folder (the loader's SOURCE.json, job wevis_gbdl_295596), for the stratified
-# full-set estimate.
-FULL_FAKES = {
-    "genbuster": {"id_cogvideox": 300, "id_easyanimate": 400, "id_hunyuanvideo": 100, "id_ltxvideo": 200, "ood_gen3": 100,
-                  "ood_jimeng": 100, "ood_kling": 100, "ood_luma": 100, "ood_pika": 100, "ood_sora": 200, "ood_vidu": 150,
-                  "ood_wanx": 150, "wild_gen4.5": 10, "wild_hailuo2.3": 20, "wild_kling2.5_turbo": 15, "wild_kling2.6": 20,
-                  "wild_pixverse_v5": 10, "wild_seedance1.5_pro": 20, "wild_seedance2.0": 15, "wild_sora2": 10,
-                  "wild_veo3.1": 10, "wild_wan2.5": 10, "wild_wan2.6": 10},
-    "genbuster_pp": {"video": 1000},
-}
 
 
 def determinism(res: Path) -> dict:
@@ -258,12 +275,15 @@ def main(argv=None) -> int:
                        "official = final tool_error / oom videos excluded with their counts reported, strict = counted "
                        "wrong. pooled: one row per distinct video (the paper's metric)",
            "subsets": rows, "subset_means": subset_means(rows, dets), "determinism": determinism(res),
+           "in_distribution": IN_DISTRIBUTION, "headline_mean": "held4",
            "paper_note": PAPER_NOTE,
            "paper_comparison": {b["key"]: genbuster_paper(b, res, spec) for b in spec["benchmarks"] if "paper" in b}}
     Path(args.out).write_text(json.dumps(out, indent=1) + "\n")
     print(f"{'subset':14s} {'wevis acc':>9s} {'strict':>6s} {'AUROC':>6s} | {'best cmp acc':>22s} {'median':>6s} "
           f"{'rank':>5s} | {'best cmp AUROC':>22s} {'median':>6s} {'rank':>5s} | te/oom/unp/oomR")
     for r in rows:
+        if "headline" in r:
+            continue                                  # GenBuster: printed below with the pooled (paper) metric
         a = r.get(AGENT, {})
         ba, bm = r.get("best_acc") or {}, r.get("best_mauroc") or {}
         pb = a.get("pooled", {})
@@ -273,11 +293,19 @@ def main(argv=None) -> int:
               f"{fmt(bm.get('value'), 7)} {fmt(r.get('median_mauroc'))} {a.get('rank_mauroc', '-')!s:>2}/"
               f"{a.get('rank_mauroc_of', '-')!s:<2} | {pb.get('n_tool_error', '-')}/{pb.get('n_oom', '-')}/"
               f"{pb.get('n_unparsed', '-')}/{pb.get('oom_retries', '-')}")
+    h = out["subset_means"]["held4"]
+    if AGENT in h:
+        print(f"HEADLINE held4 mean: wevis acc {h[AGENT]['acc']} (rank {h[AGENT].get('rank_acc')}/{len(dets) + 1}) AUROC "
+              f"{h[AGENT]['mauroc']} (rank {h[AGENT].get('rank_mauroc')}) | best {h['best_acc']['detector']} "
+              f"{h['best_acc']['value']}, median {h['median_acc']}")
     for k, e in out["paper_comparison"].items():
         o = (e or {}).get("ours_subsample")
         if o:
+            print(f"{k} [IN-DOMAIN for wevis] pooled: rank {e.get('rank_pooled_acc')}/{len(dets) + 1}, best comparator "
+                  f"{(e.get('best_comparator_pooled_acc') or {}).get('detector')} "
+                  f"{(e.get('best_comparator_pooled_acc') or {}).get('value')}, median {e.get('median_comparator_pooled_acc')}")
             print(f"{k}: paper {e['paper']['acc']} | ours (subsample n={o['n']}) acc {o['acc']} strict {o['acc_strict']} "
-                  f"95% {o['acc_wilson95']} stratified {o.get('stratified_full_set_acc_estimate')} | R {o['fake_recall']} "
+                  f"95% {o['acc_wilson95']} | R {o['fake_recall']} "
                   f"(paper {e['paper']['fake_recall']}) F1 {o['fake_f1']} (paper {e['paper']['fake_f1']}) | real acc "
                   f"{o['real_acc']} (paper implied {e['paper_implied_real_acc']})")
     print(f"determinism: {out['determinism']}")

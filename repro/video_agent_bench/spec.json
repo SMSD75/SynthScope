@@ -74,7 +74,10 @@
     "fake_f1": 98.3,
     "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB, Acc. / R / F1)"
    },
-   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h."
+   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h.",
+   "in_distribution_for": [
+    "wevis"
+   ]
   },
   {
    "key": "genbuster_pp",
@@ -90,7 +93,17 @@
     "fake_f1": 97.4,
     "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB++, Acc. / R / F1)"
    },
-   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h."
+   "subsample_note": "Cost estimate (pilot job 295610, RTX A6000, ivi-cn023): 41.8 s per GenBuster clip (25 clips: 10 GB fakes over id / ood / wild, 5 GB reals, 5 + 5 GB++ clips). Full data = 3150 (GB) + 2000 (GB++) clips = about 60 GPU-h, over the 25 GPU-h allowance, so a documented subsample: the first ceil(0.4 n) sorted clips of every folder, 1260 (GB: 400 real + 860 fake) + 800 (GB++: 400 + 400) clips, about 24 GPU-h.",
+   "in_distribution_for": [
+    "wevis"
+   ]
   }
- ]
+ ],
+ "in_distribution": {
+  "wevis": {
+   "genbuster": "IN-DISTRIBUTION for wevis: GenBuster-200K (the source of GenBuster-Bench) is in WeVisForensics' training data (arXiv 2611.21373 Sec. 3; GB is the paper's in-domain benchmark); GB / GB++ are not held out for wevis, the comparators were trained elsewhere.",
+   "genbuster_pp": "IN-DISTRIBUTION for wevis: same BusterX family as GenBuster-200K, which is in WeVisForensics' training data (GB++ is the paper's out-of-domain set); not held out for wevis in the sense of the held subsets."
+  }
+ },
+ "headline": "The held-out headline is the mean over the four held subsets (genvideo, videophy, vidprom, evalcrafter). Means that include genbuster / genbuster_pp include in-domain data for wevis. On genbuster / genbuster_pp quote the pooled one-row-per-clip metrics (wild generators have 4-8 fakes each in the subsample)."
 }

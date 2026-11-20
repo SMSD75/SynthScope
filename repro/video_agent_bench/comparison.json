@@ -1585,6 +1585,8 @@
      "generator": "wild_sora2",
      "value": 75.0
     },
+    "in_distribution": true,
+    "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
     "rank_acc": 1,
     "rank_acc_of": 9,
     "rank_acc_strict": 1,
@@ -1593,6 +1595,10 @@
     "rank_mauroc_of": 9,
     "rank_acc_pooled": 1,
     "rank_acc_pooled_of": 9
+   },
+   "headline": {
+    "metric": "pooled one-row-per-clip accuracy (the paper's)",
+    "note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
    },
    "best_acc": {
     "detector": "vina_video",
@@ -1909,6 +1915,8 @@
      "generator": "video",
      "value": 97.5
     },
+    "in_distribution": true,
+    "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)",
     "rank_acc": 1,
     "rank_acc_of": 9,
     "rank_acc_strict": 1,
@@ -1917,6 +1925,10 @@
     "rank_mauroc_of": 9,
     "rank_acc_pooled": 1,
     "rank_acc_pooled_of": 9
+   },
+   "headline": {
+    "metric": "pooled one-row-per-clip accuracy (the paper's)",
+    "note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
    },
    "best_acc": {
     "detector": "vina_video",
@@ -1967,6 +1979,7 @@
  ],
  "subset_means": {
   "held4": {
+   "label": "HEADLINE: the four held subsets, held out for every detector",
    "subsets": [
     "genvideo",
     "videophy",
@@ -2030,6 +2043,7 @@
    "median_mauroc": 96.31
   },
   "all6": {
+   "label": "includes the in-domain GenBuster-Bench / ++ for wevis (GenBuster-200K is in its training data); not a held-out mean for wevis",
    "subsets": [
     "genvideo",
     "videophy",
@@ -2103,7 +2117,14 @@
   "tool_calls_identical": 136,
   "max_abs_logit_diff": 0.0
  },
- "paper_note": "WeVisForensics arXiv 2611.21373: Table 4 / Table 12 report accuracy (Acc.), fake recall (R) and F1 with the generated videos as the positive class, one row per clip (official scripts/evaluate.py: invalid answers count wrong, tool_error rows are excluded). The paper's run is the official vLLM engine (multi-GPU, its own kernels); ours is the official transformers backend (demo/wvf_local.py) under SynthScope's runner, greedy, audio off (has_audio=False for every clip; GenBuster clips are silent), on a documented subsample. implied_real_acc is derived from Acc. and R and the benchmark's composition (an inference, not printed). The paper's NSG-VD and ReStraV rows are those detectors RETRAINED by the authors on their training data, not the public checkpoints scored here.",
+ "in_distribution": {
+  "wevis": {
+   "genbuster": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
+   "genbuster_pp": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)"
+  }
+ },
+ "headline_mean": "held4",
+ "paper_note": "WeVisForensics arXiv 2611.21373: Table 4 / Table 12 report accuracy (Acc.), fake recall (R) and F1 with the generated videos as the positive class, one row per clip (official scripts/evaluate.py: invalid answers count wrong, tool_error rows are excluded). The paper's run is the official vLLM engine (multi-GPU, its own kernels); ours is the official transformers backend (demo/wvf_local.py) under SynthScope's runner, greedy, audio off (has_audio=False for every clip; GenBuster clips are silent), on a documented subsample. implied_real_acc is derived from Acc. and R and the benchmark's composition (an inference, not printed). The paper's NSG-VD and ReStraV rows are those detectors RETRAINED by the authors on their training data, not the public checkpoints scored here. IN-DOMAIN: GenBuster-Bench is the paper's in-domain benchmark and GenBuster-200K is in WeVisForensics' training data (paper Sec. 3, training sources), so GB and GB++ are NOT held out for wevis, while every comparator here was trained elsewhere: wevis ranking first on them is not a held-out result. The held-out comparison is the four held subsets (subset_means.held4).",
  "paper_comparison": {
   "genbuster": {
    "paper": {
@@ -2120,6 +2141,8 @@
    "subsample": {
     "fraction": 0.4
    },
+   "in_distribution": true,
+   "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
    "paper_table11": {
     "id": 99.7,
     "ood": {
@@ -2160,7 +2183,6 @@
     "paper_acc_inside_wilson95": true,
     "delta_fake_recall_vs_paper": -0.11,
     "delta_fake_f1_vs_paper": -0.25,
-    "stratified_full_set_acc_estimate": 97.3,
     "table11": {
      "id": 99.5,
      "ood": {
@@ -2173,7 +2195,9 @@
       "vidu": 100,
       "wanx": 100
      },
-     "ood_mean": 99.22,
+     "ood_mean": 99.25,
+     "ood_mean_note": "pooled over the OOD clips (as the paper's 99.6, which is the Table 11 per-generator rates weighted by folder size); ood_mean_unweighted is the plain mean of the eight per-generator rates",
+     "ood_mean_unweighted": 99.22,
      "wild": 96.67,
      "all": 97.3,
      "real_acc": 93.25,
@@ -2190,8 +2214,22 @@
        "wanx": 60
       },
       "wild": 60,
+      "wild_per_generator": {
+       "gen4.5": 4,
+       "hailuo2.3": 8,
+       "kling2.5_turbo": 6,
+       "kling2.6": 8,
+       "pixverse_v5": 4,
+       "seedance1.5_pro": 8,
+       "seedance2.0": 6,
+       "sora2": 4,
+       "veo3.1": 4,
+       "wan2.5": 4,
+       "wan2.6": 4
+      },
       "real": 400
-     }
+     },
+     "small_n_note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
     }
    },
    "comparators_pooled": {
@@ -2269,6 +2307,8 @@
    "subsample": {
     "fraction": 0.4
    },
+   "in_distribution": true,
+   "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)",
    "ours_subsample": {
     "n": 800,
     "n_real": 400,
@@ -2292,8 +2332,7 @@
     "delta_acc_strict_vs_paper": 0.38,
     "paper_acc_inside_wilson95": true,
     "delta_fake_recall_vs_paper": 0.3,
-    "delta_fake_f1_vs_paper": 0.47,
-    "stratified_full_set_acc_estimate": 97.88
+    "delta_fake_f1_vs_paper": 0.47
    },
    "comparators_pooled": {
     "d3": {
