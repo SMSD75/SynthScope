@@ -37,6 +37,7 @@
 | SPLIT (video) | GenVideo-Val, fake recall at FPR 0.1 / 1 / 5% | 82.1 / 91.7 / 97.2 | 82.22 / 90.17 / 96.89 (official code) | 98.87 / 99.86 / 99.98 (training-free) | ✅ the official code reproduces the paper; SynthScope's SPLIT skips the official JPEG frame round trip, so it scores higher (see `models/video/split/README.md`) |
 | WaveRep (video; `waverep` = G1, the paper's model) | The 8 GenVideo generators of the paper's Tables 1 and 7, on GenVideo-Val (PARTIAL: the paper's own 7-generator test set is not held) | 94.83 bAcc / 98.03 AUC (means of the printed per-generator values) | 90.30 bAcc / 95.73 AUC (official G1 weights; G4, trained on four generators, 96.30 / 99.05, reference only) | — (no training code) | ⚠️ **partial**: faithful port (the unmodified official demo agrees on 180 of 180 benchmark files, max logit diff 1.05e-5, and on 15 videos / 6 codecs with bit-exact inputs); 5 of the 8 generators within about 2 points, but HotShot (60.10 vs 81.4 bAcc), Show-1 (79.67 vs 92.1) and LaVie (92.06 vs 95.5) are **not reproduced** (HotShot fake recall 21%, AUC 75.6 vs 91.0, so not a threshold offset; cause untested; the paper does not say which reals it paired, we use GenVideo-Val's 10,000). Zero-shot reference rows only for VideoPhy / VidProM / EvalCrafter. GRIP non-profit licence: not redistributed |
 | NSG-VD (video; `nsg_vd` = standard-SEINE-mp, also `nsg_vd_pika`, `nsg_vd_unbalance`) | GenVideo-Val, the authors' released-CSV protocol (500 per generator, Sora 51 + 56). The paper's own protocol (120 + 120 per generator, confirmed by the authors 2026-11-13) is run as L120 (Table 2 reproduces, Tables 1 and 3 do not; below) | released results CSV (not the paper): 88.97 acc / 97.68 AUROC; paper Table 2 (120 per generator): 86.05 / 95.46 | 89.22 acc / 97.51 AUROC (official code on our data) | 88.96 acc / 97.50 AUROC (served path; official pooled accuracy) | ⚠️ **partial**: the released-CSV protocol **reproduces** for all 3 keys on both paths (per-generator accuracy, recall, F1 and precision within 0.43 of the CSVs, Avg accuracy within 0.25); under the paper's own confirmed protocol (L120) the default key **reproduces paper Table 2** on all four metrics (within 2 points; Sora 51 fakes here, 56 in the paper), while Table 1 (Pika-mp) and Table 3 (unbalance-SEINE-mp) are **not reproduced** (recall +8.65 and +5.45 above the paper); the released checkpoints are separate training runs, not those behind the tables, per the authors (2026-11-15), and the released CSVs differ from the tables by up to 7.8; Sora AUROC is below the CSV for every checkpoint (unexplained). Exact parity with the official code at its own batching. Details below and in `models/video/nsg_vd/README.md` |
+| WeVisForensics (video agent, `wevis`) | GenBuster-Bench / GenBuster-Bench++ (the paper's GB / GB++; 40% subsample of every folder, 1,260 / 800 clips; IN-DISTRIBUTION); plus 4 held subsets against 8 video detectors | 97.7 / 97.5 acc (Table 4) | 97.30 [96.25, 98.06] / 97.88 [96.62, 98.67] acc (official adapters + code, greedy, audio off; one row per clip, 95% Wilson) | — (inference only, no training code in SynthScope) | ⚠️ **partial**: GB / GB++ **reproduce the paper on a 40% subsample** (-0.40 / +0.38, both paper values inside our intervals), but GenBuster-200K is in its training data, so they are **in-distribution, not held out**. **Held-out headline:** 4 held subsets (GenVideo-Val, VideoPhy, VidProM, EvalCrafter), 85.59 acc / 90.23 AUROC, **7th of 9** (SPLIT 99.41): real accuracy 72-75 on the low-resolution MSR-VTT reals vs fake accuracy 97.7-98.4. Fidelity vs the official transformers backend: 17 / 17 identical traces, texts and verdicts, logit-gap diff 0.0 (vLLM engine not reproduced). Apache-2.0; needs a ~22 GB GPU, not in the zoo or on the Space |
 | B-Free | SynthWildX / WildRF | 95.6 / 95.6 · 86.2 · 97.3 bAcc | 95.64 / 95.31 · 86.47 · 97.66 bAcc | — | ✅ official match (details in `models/image/bfree/README.md`) |
 | MoE-JEPA | SID-Set (3-way) | 95.54 acc | 96.37 acc | — | ✅ official match (details in `models/image/moejepa/README.md`) |
 
@@ -566,6 +567,69 @@ All three registered keys (Avg. accuracy / AUROC; released CSV, official code, S
 * **Zero-shot reference rows** (`nsg_vd` only; the reference set stays the 100 MSR-VTT val videos; NOT paper results; `--limit 1000`; jobs 286717-286719): VidProM (4 generators) accuracy 86.80 / recall 95.80 / precision 81.16 / AUROC 95.49; VideoPhy (8) 83.17 / 99.23 / 59.87 / 97.88; EvalCrafter (14, reals = GenVideo-Val's MSR-VTT) 86.47 / 99.12 / 75.35 / 97.79. The false-positive rate at s > 1 is 22.2% on every real pool, so accuracy and precision look low where fakes are few. 12 of the 100 reference reals are in each real pool; removing them changes accuracy, recall and AUROC by at most 0.03 and precision / F1 by up to 0.22 / 0.17 (averages).
 * **Deviations.** Frames for the official run were extracted beforehand by the official `process_video` (job 286532) because the official moviepy readers were OOM-killed (jobs 286429 / 286438 / 286449); every official number is a warm-cache run (a cold run, job 286533, was OOM-killed after the extraction); seed 42 (seeds 1 and 2 are in the JSON); a pandas `applymap` alias was needed (applied after the metrics; the logged metrics equal the recomputed ones); the official `.py` sources were identical to the repository's in every job (only `__pycache__` differed; the job check did not list files present only in the staged copy). Drivers are private and named by job id; the `_tmp` paths in `repro/bench_results/nsg_vd*.json` are node-local.
 * **Availability and licence.** Apache-2.0 code and checkpoints, MIT guided-diffusion; the reference file is derived from MSR-VTT (research use), so it is not redistributed. Not on the Space or in the model zoo: that needs approval, the MSR-VTT terms check, the 2.2 GB diffusion model plus the 482 MB reference file, ffmpeg 4.2 in the image, and CPU time (logged job 286994, `repro/nsg_vd_cpu_timing.json`: about 76 s per clip with 2 threads, 32-35 s with 8, 25 s with 16; one clip, shared node; 0.45-0.73 s per video on an RTX A5000).
+
+### WeVisForensics (official adapters + code, agent kind; inference only; subsampled protocol; GenBuster in-distribution)
+WeVisForensics (arXiv 2611.21373; Tencent/WeVisForensics @ 43ae1c0, HF tencent/WeVisForensics @ 9fa025a0, Apache-2.0) is an
+agentic detector. A Qwen3.5-4B investigator (`main` LoRA) looks at a 1 fps overview, calls up to four inspector LoRAs on
+the same base (visual appearance, physical consistency, common sense, OCR) and answers real or fake.
+
+How SynthScope runs it:
+- the official transformers backend (`demo/wvf_local.py`) runs unmodified in a separate process (`models/video/wevis/runner.py`),
+  with transformers 5.23.0, flash-linear-attention 0.6.0 and PaddleOCR 3.7 / paddlepaddle 3.2.2 pinned and checked;
+- greedy decoding;
+- audio off (`has_audio=False`): the audio tools need gated / non-commercial models, and in our benchmarks only some fakes
+  carry audio, so the flag alone would give the label away;
+- the verdict is the agent's answer, and AUROC ranks the fake-minus-real logit at the final verdict token, read during
+  generation.
+
+**Fidelity** (job 295351, RTX A5000, `repro/wevis_fidelity.json`):
+- 17 / 17 clips identical to the official backend in answer, tool calls, every turn's raw text and the final text;
+- the logit gap equals a direct `generate(output_logits=True)` call exactly;
+- 7 / 7 demo verdicts equal the recorded vLLM trajectories, but some tool traces differ there; the authors' multi-GPU
+  vLLM evaluator is not reproduced;
+- one 74 s 1080p clip ran out of memory on 24 GB in both backends.
+
+A spot check after the fix round (job 295556, RTX A6000) gave 3 / 3 identical. The A6000 logits differ from the A5000
+ones by up to 2.75, with the same traces, so every benchmark row ran on RTX A6000s (ivi-cn023).
+
+**Protocol** (`repro/video_agent_bench/`: `spec.json`, `comparison.json`, `results/<subset>/*.json`; logs
+`repro/logs/wevis_wevis_w0_295637.out`, `wevis_wevis_w1_295640.out`, `wevis_wevis_w0_295611.out`):
+- GenVideo-Val, VideoPhy, VidProM and EvalCrafter at L = ceil(250 / generators) per class per generator (EvalCrafter vs
+  the first L GenVideo-Val MSR-VTT reals);
+- GenBuster-Bench / ++ at the first ceil(0.4 n) sorted clips of every folder (the full sets would cost about 60 GPU-h);
+- the agent and 8 video detectors score byte-identical files;
+- 3,208 agent rows: 0 tool errors, 0 OOM, 0 unparsed; 41.1 s and 5.2 model calls per video; peak 22.69 GiB; 36.6 GPU-h;
+- `trace_check.py`: 54 / 54 JSONs and 3,208 / 3,208 per-video records trace to the logs.
+
+| subset | wevis acc | AUROC | real / fake acc | rank acc (of 9) | best comparator acc | median acc |
+|---|---:|---:|---:|---:|---|---:|
+| GenVideo-Val (L=25) | 85.20 | 92.20 | 72.00 / 98.40 | 7 | SPLIT 100.0 | 88.60 |
+| VideoPhy (L=32) | 86.33 | 90.05 | 75.00 / 97.66 | 7 | VINA 99.41 (public: SPLIT 98.44) | 92.19 |
+| VidProM (L=63) | 85.52 | 89.11 | 73.02 / 98.02 | 7 | SPLIT 99.21 | 89.68 |
+| EvalCrafter + MSR-VTT reals (L=18) | 85.32 | 89.57 | 72.22 / 98.41 | 6 | SPLIT 100.0 | 92.85 |
+| **mean of the 4 held (headline)** | **85.59** | **90.23** | | **7** | SPLIT 99.41 | 91.40 |
+| GenBuster-Bench, **in-distribution**, pooled per clip (n = 1,260) | 97.30 | 96.11 | 93.25 / 99.19 | 1 | VINA 89.37 (public: WaveRep-G4 85.63) | 69.80 |
+| GenBuster-Bench++, **in-distribution**, pooled per clip (n = 800) | 97.88 | 98.65 | 98.25 / 97.50 | 1 | VINA 89.00 (public: WaveRep-G4 80.00) | 52.56 |
+
+The held-subset accuracy is balanced: real and fake per generator, then the mean over generators. The GenBuster rows
+are the paper's metric, one row per clip, and their AUROC is the per-generator mean.
+
+**Reading.**
+- **The held-out headline is 7th of 9.** The real videos drive it: the agent calls about 1 in 4 of the low-resolution
+  GenVideo-Val MSR-VTT reals fake (37 of 138 real rows), while fake accuracy is 97.7-98.4. All 63 distinct reals are
+  298x224 at 3 fps; the fakes' median frame height is 512 (`repro/video_agent_bench/msrvtt_probe.json`). The real pools are small
+  (18-63 per subset).
+- **GenBuster-Bench / ++ reproduce the paper** on the 40% subsample: 97.30 vs 97.7 and 97.88 vs 97.5, both paper values
+  inside our 95% intervals. Also fake recall 99.19 / 97.50 vs 99.3 / 97.2, and in-domain / OOD / wild fakes 99.5 /
+  99.25 / 96.67 vs 99.7 / 99.6 / 95.3.
+- **GenBuster is not a held-out result.** GenBuster-200K is in its training data, and the comparators were trained
+  elsewhere (SPLIT and D3 call nearly every GenBuster real fake). The 6-subset mean (89.29, 2nd of 9) includes these
+  sets, so it is not a held-out number either.
+- **Near-binary scores:** |logit| 9.1-24.75, so AUROC adds little to accuracy.
+- **Determinism:** 136 / 136 repeated-file pairs are identical.
+- **Not held:** the paper's MintVid (mean 88.0) and AgenticCue benchmarks.
+
+Details: `models/video/wevis/README.md`.
 
 ### Video detectors (D3, SPLIT and STALL are training-free; ReStraV is trained in SynthScope; no official weights)
 | Method · Benchmark | Paper | SynthScope |

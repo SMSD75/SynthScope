@@ -1,0 +1,1854 @@
+{
+  "tag": "vab_evalcrafter_vina_video",
+  "model": "vina_video",
+  "ckpt": "registry-default",
+  "benchmark": "video:fakeonly",
+  "data_root": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/evalcrafter/EvalCrafter/test/1_fake",
+  "n_generators": 14,
+  "means": {
+    "acc": 99.6,
+    "map": 99.96,
+    "map_real": 99.96,
+    "mauroc": 99.96,
+    "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 99.26,
+      "acc_strict": 99.26,
+      "real_acc": 100.0,
+      "fake_recall": 99.21,
+      "fake_f1": 99.6
+    }
+  },
+  "per_generator": {
+    "MoonValley": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "floor33": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "gen2": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "gen2_december": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "hotshot": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "lavie-base": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "lavie-interpolation": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "mix-sr": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "modelscope": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "pika": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "pika_v1_december_1": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "show_1": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "videocrafter-v1.0": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "zeroscope": {
+      "ap": 99.44,
+      "ap_real": 99.4,
+      "auroc": 99.38,
+      "real_acc": 100.0,
+      "fake_acc": 88.89,
+      "acc": 94.44,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 18,
+  "reals": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/evalcrafter/GenVideo/test/Crafter/0_real",
+  "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+  "cache_dir": "/hddstore/ssalehi/SynthScope/video_agent_bench/cache/vina_video/evalcrafter",
+  "date": "2026-11-19T22:09:41",
+  "synthscope_version": "video",
+  "per_video": [
+    {
+      "p": 0.000334,
+      "k": "Crafter/0_real/00000_msrvtt_1.mp4",
+      "label": 0
+    },
+    {
+      "p": 2.7e-05,
+      "k": "Crafter/0_real/00001_msrvtt_2.mp4",
+      "label": 0
+    },
+    {
+      "p": 2.7e-05,
+      "k": "Crafter/0_real/00002_msrvtt_3.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.184692,
+      "k": "Crafter/0_real/00003_msrvtt_4.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000286,
+      "k": "Crafter/0_real/00004_msrvtt_5.mp4",
+      "label": 0
+    },
+    {
+      "p": 3.2e-05,
+      "k": "Crafter/0_real/00005_msrvtt_6.mp4",
+      "label": 0
+    },
+    {
+      "p": 3.1e-05,
+      "k": "Crafter/0_real/00006_msrvtt_7.mp4",
+      "label": 0
+    },
+    {
+      "p": 3.4e-05,
+      "k": "Crafter/0_real/00007_msrvtt_8.mp4",
+      "label": 0
+    },
+    {
+      "p": 2.5e-05,
+      "k": "Crafter/0_real/00008_msrvtt_9.mp4",
+      "label": 0
+    },
+    {
+      "p": 7.9e-05,
+      "k": "Crafter/0_real/00009_msrvtt_10.mp4",
+      "label": 0
+    },
+    {
+      "p": 7.3e-05,
+      "k": "Crafter/0_real/00010_msrvtt_11.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000324,
+      "k": "Crafter/0_real/00011_msrvtt_12.mp4",
+      "label": 0
+    },
+    {
+      "p": 6.4e-05,
+      "k": "Crafter/0_real/00012_msrvtt_13.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.269601,
+      "k": "Crafter/0_real/00013_msrvtt_14.mp4",
+      "label": 0
+    },
+    {
+      "p": 4.3e-05,
+      "k": "Crafter/0_real/00014_msrvtt_15.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.020831,
+      "k": "Crafter/0_real/00015_msrvtt_16.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.0001,
+      "k": "Crafter/0_real/00016_msrvtt_17.mp4",
+      "label": 0
+    },
+    {
+      "p": 4e-05,
+      "k": "Crafter/0_real/00017_msrvtt_18.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.999976,
+      "k": "1_fake/MoonValley/0000.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/MoonValley/0001.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999962,
+      "k": "1_fake/MoonValley/0002.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/MoonValley/0003.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/MoonValley/0004.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/MoonValley/0005.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/MoonValley/0007.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999957,
+      "k": "1_fake/MoonValley/0008.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/MoonValley/0009.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/MoonValley/0010.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/MoonValley/0011.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/MoonValley/0012.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/MoonValley/0015.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/MoonValley/0016.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/MoonValley/0017.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999957,
+      "k": "1_fake/MoonValley/0019.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/MoonValley/0020.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/MoonValley/0023.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/floor33/0000.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/floor33/0001.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/floor33/0002.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/floor33/0003.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/floor33/0004.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/floor33/0005.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999875,
+      "k": "1_fake/floor33/0006.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/floor33/0007.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/floor33/0008.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/floor33/0009.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/floor33/0010.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/floor33/0011.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/floor33/0012.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999647,
+      "k": "1_fake/floor33/0013.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/floor33/0014.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/floor33/0015.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/floor33/0016.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/floor33/0017.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/gen2/0000.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/gen2/0001.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/gen2/0002.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/gen2/0003.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999921,
+      "k": "1_fake/gen2/0004.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/gen2/0005.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/gen2/0006.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999927,
+      "k": "1_fake/gen2/0007.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/gen2/0008.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/gen2/0009.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/gen2/0010.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/gen2/0011.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/gen2/0012.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/gen2/0013.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "k": "1_fake/gen2/0014.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/gen2/0015.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999976,
+      "k": "1_fake/gen2/0016.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/gen2/0017.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "k": "1_fake/gen2_december/0000.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/gen2_december/0001.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/gen2_december/0002.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/gen2_december/0003.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.99996,
+      "k": "1_fake/gen2_december/0004.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/gen2_december/0005.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/gen2_december/0006.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/gen2_december/0007.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/gen2_december/0008.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/gen2_december/0009.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999962,
+      "k": "1_fake/gen2_december/0010.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999944,
+      "k": "1_fake/gen2_december/0011.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/gen2_december/0012.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/gen2_december/0013.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "k": "1_fake/gen2_december/0014.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/gen2_december/0015.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/gen2_december/0016.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/gen2_december/0017.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.999931,
+      "k": "1_fake/hotshot/0000.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/hotshot/0001.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999897,
+      "k": "1_fake/hotshot/0002.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999865,
+      "k": "1_fake/hotshot/0003.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "k": "1_fake/hotshot/0004.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/hotshot/0005.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.984729,
+      "k": "1_fake/hotshot/0006.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999125,
+      "k": "1_fake/hotshot/0007.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/hotshot/0008.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.993613,
+      "k": "1_fake/hotshot/0009.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/hotshot/0010.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "k": "1_fake/hotshot/0011.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999746,
+      "k": "1_fake/hotshot/0012.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999795,
+      "k": "1_fake/hotshot/0013.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/hotshot/0014.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/hotshot/0015.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999953,
+      "k": "1_fake/hotshot/0016.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999944,
+      "k": "1_fake/hotshot/0017.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/lavie-base/0000.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/lavie-base/0001.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999942,
+      "k": "1_fake/lavie-base/0002.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999917,
+      "k": "1_fake/lavie-base/0003.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999916,
+      "k": "1_fake/lavie-base/0004.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/lavie-base/0005.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/lavie-base/0006.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999903,
+      "k": "1_fake/lavie-base/0007.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "k": "1_fake/lavie-base/0008.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999906,
+      "k": "1_fake/lavie-base/0009.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/lavie-base/0010.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/lavie-base/0011.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/lavie-base/0012.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999959,
+      "k": "1_fake/lavie-base/0013.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/lavie-base/0014.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/lavie-base/0015.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999935,
+      "k": "1_fake/lavie-base/0016.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999962,
+      "k": "1_fake/lavie-base/0017.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "k": "1_fake/lavie-interpolation/0000.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/lavie-interpolation/0001.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/lavie-interpolation/0002.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999936,
+      "k": "1_fake/lavie-interpolation/0003.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "k": "1_fake/lavie-interpolation/0004.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/lavie-interpolation/0005.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/lavie-interpolation/0006.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.995819,
+      "k": "1_fake/lavie-interpolation/0007.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/lavie-interpolation/0008.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/lavie-interpolation/0009.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/lavie-interpolation/0010.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "k": "1_fake/lavie-interpolation/0011.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/lavie-interpolation/0012.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/lavie-interpolation/0013.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "k": "1_fake/lavie-interpolation/0014.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999325,
+      "k": "1_fake/lavie-interpolation/0015.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/lavie-interpolation/0016.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999908,
+      "k": "1_fake/lavie-interpolation/0017.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/mix-sr/0000.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/mix-sr/0001.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999957,
+      "k": "1_fake/mix-sr/0002.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/mix-sr/0003.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/mix-sr/0004.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/mix-sr/0005.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/mix-sr/0006.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/mix-sr/0007.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/mix-sr/0008.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/mix-sr/0009.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/mix-sr/0010.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/mix-sr/0011.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/mix-sr/0012.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/mix-sr/0013.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/mix-sr/0014.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "k": "1_fake/mix-sr/0015.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/mix-sr/0016.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/mix-sr/0017.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/modelscope/0000.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999856,
+      "k": "1_fake/modelscope/0001.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/modelscope/0002.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/modelscope/0003.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/modelscope/0004.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/modelscope/0005.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/modelscope/0006.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.997953,
+      "k": "1_fake/modelscope/0007.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999934,
+      "k": "1_fake/modelscope/0008.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999699,
+      "k": "1_fake/modelscope/0009.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999939,
+      "k": "1_fake/modelscope/0010.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/modelscope/0011.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/modelscope/0012.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.997612,
+      "k": "1_fake/modelscope/0013.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999959,
+      "k": "1_fake/modelscope/0014.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/modelscope/0015.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999938,
+      "k": "1_fake/modelscope/0016.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999976,
+      "k": "1_fake/modelscope/0017.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika/0000.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika/0001.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/pika/0002.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/pika/0003.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "k": "1_fake/pika/0004.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/pika/0005.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/pika/0006.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/pika/0007.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/pika/0008.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/pika/0009.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/pika/0010.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.99984,
+      "k": "1_fake/pika/0011.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/pika/0012.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/pika/0013.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "k": "1_fake/pika/0014.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/pika/0015.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "k": "1_fake/pika/0016.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "k": "1_fake/pika/0017.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika_v1_december_1/0000.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999941,
+      "k": "1_fake/pika_v1_december_1/0001.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/pika_v1_december_1/0002.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika_v1_december_1/0003.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/pika_v1_december_1/0004.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999978,
+      "k": "1_fake/pika_v1_december_1/0005.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika_v1_december_1/0006.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "k": "1_fake/pika_v1_december_1/0007.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/pika_v1_december_1/0008.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99996,
+      "k": "1_fake/pika_v1_december_1/0009.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/pika_v1_december_1/0010.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999951,
+      "k": "1_fake/pika_v1_december_1/0011.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/pika_v1_december_1/0012.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/pika_v1_december_1/0013.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/pika_v1_december_1/0014.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/pika_v1_december_1/0015.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/pika_v1_december_1/0016.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/pika_v1_december_1/0017.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.999725,
+      "k": "1_fake/show_1/0000.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999884,
+      "k": "1_fake/show_1/0001.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/show_1/0002.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999952,
+      "k": "1_fake/show_1/0003.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999939,
+      "k": "1_fake/show_1/0004.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "k": "1_fake/show_1/0005.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999923,
+      "k": "1_fake/show_1/0006.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999934,
+      "k": "1_fake/show_1/0007.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/show_1/0008.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999914,
+      "k": "1_fake/show_1/0009.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/show_1/0010.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/show_1/0011.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/show_1/0012.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/show_1/0013.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "k": "1_fake/show_1/0014.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "k": "1_fake/show_1/0015.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999939,
+      "k": "1_fake/show_1/0016.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "k": "1_fake/show_1/0017.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "k": "1_fake/videocrafter-v1.0/0000.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/videocrafter-v1.0/0001.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999961,
+      "k": "1_fake/videocrafter-v1.0/0002.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/videocrafter-v1.0/0003.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/videocrafter-v1.0/0004.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/videocrafter-v1.0/0005.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "k": "1_fake/videocrafter-v1.0/0006.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/videocrafter-v1.0/0007.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999973,
+      "k": "1_fake/videocrafter-v1.0/0008.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/videocrafter-v1.0/0009.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/videocrafter-v1.0/0010.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "k": "1_fake/videocrafter-v1.0/0011.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/videocrafter-v1.0/0012.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999908,
+      "k": "1_fake/videocrafter-v1.0/0013.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/videocrafter-v1.0/0014.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "k": "1_fake/videocrafter-v1.0/0015.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "k": "1_fake/videocrafter-v1.0/0016.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999331,
+      "k": "1_fake/videocrafter-v1.0/0017.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "k": "1_fake/zeroscope/0000.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999895,
+      "k": "1_fake/zeroscope/0001.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.998093,
+      "k": "1_fake/zeroscope/0002.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999043,
+      "k": "1_fake/zeroscope/0003.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999481,
+      "k": "1_fake/zeroscope/0004.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999948,
+      "k": "1_fake/zeroscope/0005.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999815,
+      "k": "1_fake/zeroscope/0006.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.442134,
+      "k": "1_fake/zeroscope/0007.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999909,
+      "k": "1_fake/zeroscope/0008.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.998957,
+      "k": "1_fake/zeroscope/0009.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999932,
+      "k": "1_fake/zeroscope/0010.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.998009,
+      "k": "1_fake/zeroscope/0011.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999959,
+      "k": "1_fake/zeroscope/0012.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.982403,
+      "k": "1_fake/zeroscope/0013.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999912,
+      "k": "1_fake/zeroscope/0014.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "k": "1_fake/zeroscope/0015.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.12776,
+      "k": "1_fake/zeroscope/0016.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.997352,
+      "k": "1_fake/zeroscope/0017.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    }
+  ]
+}

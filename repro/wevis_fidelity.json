@@ -1,0 +1,1543 @@
+{
+ "what": "WeVisForensics fidelity: SynthScope engine (models/video/wevis runner) vs the official transformers backend (demo/wvf_local.py, unmodified), same isolated runtime, same clips, has_audio=False, greedy",
+ "reference_backend": "Tencent/WeVisForensics demo/wvf_local.py @ 43ae1c0 (in-process transformers); the official multi-GPU vLLM evaluator is NOT reproduced (no vLLM here)",
+ "log": "repro/logs/wevis_fidelity_295351.out",
+ "reference_env": {
+  "transformers": "5.23.0",
+  "torch": "2.11.0+cu126",
+  "gpu": "NVIDIA RTX A5000",
+  "load_seconds": 299.2,
+  "weights_gib": 19.54
+ },
+ "synthscope_info": {
+  "versions": {
+   "transformers": "5.23.0",
+   "peft": "0.21.3",
+   "paddlepaddle": "3.2.2",
+   "paddleocr": "3.7.0",
+   "torch": "2.11.0+cu126",
+   "fla": "0.6.0",
+   "causal_conv1d": false
+  },
+  "release": {
+   "code_commit": "43ae1c0fe2513ffc10baa1fd12fe3ca342aa21d5",
+   "code_files": 26,
+   "adapters_revision": "9fa025a02dde4f7f7de8883fe17b6f251f39098e",
+   "adapter_files": 12,
+   "base_revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+   "base_files": 12,
+   "paddlex_revision": {
+    "PP-OCRv5_server_det": "ca867c897ecbca8873081573a802ad70d499cb94",
+    "PP-OCRv5_server_rec": "b26c3587fda8da3c8ec0ce357214b4d661ff1558"
+   },
+   "paddlex_files": 8
+  },
+  "adapter_tensors": {
+   "main": 496,
+   "physical_consistency": 496,
+   "visual_appearance": 496,
+   "common_sense": 496,
+   "ocr_consistency": 496
+  },
+  "gpu": "NVIDIA RTX A5000",
+  "attn": "sdpa",
+  "weights_gib": 19.54,
+  "load_seconds": 40.1,
+  "has_audio": false,
+  "verdict_pair_ids": [
+   [
+    12062,
+    1865
+   ],
+   [
+    29571,
+    7700
+   ],
+   [
+    35740,
+    8535
+   ],
+   [
+    50561,
+    12402
+   ]
+  ],
+  "network_refused": [],
+  "engine_load_seconds": 43.5,
+  "status": "official code 43ae1c0 + adapters 9fa025a0 on base 851bf6e8 (sha256 verified, adapters strict: 2480 tensors), transformers 5.23.0 in a separate process; audio off"
+ },
+ "repeat": {
+  "video": "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/wevis_gate/stage/clips/GenVideo/test/Sora/0_real/00000_msrvtt_1.mp4",
+  "engine_result": {
+   "fake_probability": 0.0,
+   "verdict": "real",
+   "logit": -18.625,
+   "score_source": "verdict_token",
+   "status": "answered",
+   "elapsed_ms": 60475.9,
+   "checkpoint_status": "official code 43ae1c0 + adapters 9fa025a0 on base 851bf6e8 (sha256 verified, adapters strict: 2480 tensors), transformers 5.23.0 in a separate process; audio off"
+  }
+ },
+ "summary": {
+  "clips": 18,
+  "compared": 17,
+  "identical_answer": 17,
+  "identical_status": 17,
+  "identical_tool_calls": 17,
+  "identical_raw_texts_every_turn": 17,
+  "identical_final_text": 17,
+  "direct_calls": 17,
+  "direct_ids_identical": 17,
+  "direct_logit_max_abs_diff": 0.0,
+  "direct_logit_all_exactly_equal": true,
+  "correct": 15,
+  "demo_agree_with_recorded_vllm": 7,
+  "demo_cases": 7,
+  "seconds_per_video_mean": 46.6,
+  "seconds_per_video_mean_excl_first": 45.6,
+  "seconds_per_video_range": [
+   20.0,
+   70.91
+  ],
+  "reference_seconds_mean": 48.3,
+  "peak_alloc_gib_max": 22.38,
+  "peak_reserved_gib_max": 23.13,
+  "oom": [
+   "00360_D174.mp4"
+  ],
+  "errors": [
+   [
+    "00360_D174.mp4",
+    "OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 210.00 MiB is free. Including non-PyTorch memory, this process has 23.33 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 513.76 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+    "WeVisOOMError: OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 206.00 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 497.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)"
+   ]
+  ],
+  "unparsed": 0,
+  "unscored": 0,
+  "repeat_first_clip_identical": true
+ },
+ "clips": [
+  {
+   "subset": "gate",
+   "video": "00000_msrvtt_1.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       8.0
+      ]
+     ]
+    ],
+    "seconds": 89.2,
+    "peak_alloc_gib": 20.26,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       2.5
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       8.0
+      ]
+     ]
+    ],
+    "logit": -18.625,
+    "fake_probability": 8.152020648014727e-09,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 203,
+    "pair_softmax_mass": 1.0000000081520206,
+    "argmax_is_emitted": true,
+    "seconds": 61.94,
+    "wall_seconds": 70.3,
+    "model_calls": 8,
+    "generated_tokens": 1470,
+    "peak_alloc_gib": 20.26,
+    "peak_reserved_gib": 20.53,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -18.625,
+    "logit_recorded": -18.625,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00001_msrvtt_2.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       22.7
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       12.0
+      ]
+     ]
+    ],
+    "seconds": 40.5,
+    "peak_alloc_gib": 20.94,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       22.7
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       12.0
+      ]
+     ]
+    ],
+    "logit": -20.75,
+    "fake_probability": 9.736200303530205e-10,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 213,
+    "pair_softmax_mass": 1.00000000097362,
+    "argmax_is_emitted": true,
+    "seconds": 40.73,
+    "wall_seconds": 49.5,
+    "model_calls": 6,
+    "generated_tokens": 944,
+    "peak_alloc_gib": 20.95,
+    "peak_reserved_gib": 21.48,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -20.75,
+    "logit_recorded": -20.75,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00005_msrvtt_6.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       14.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       14.0
+      ]
+     ]
+    ],
+    "seconds": 39.7,
+    "peak_alloc_gib": 20.46,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       14.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       14.0
+      ]
+     ]
+    ],
+    "logit": 15.125,
+    "fake_probability": 0.9999997300422225,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 192,
+    "pair_softmax_mass": 0.9999964552668309,
+    "argmax_is_emitted": true,
+    "seconds": 39.7,
+    "wall_seconds": 47.7,
+    "model_calls": 5,
+    "generated_tokens": 925,
+    "peak_alloc_gib": 20.47,
+    "peak_reserved_gib": 21.06,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.125,
+    "logit_recorded": 15.125,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": false
+  },
+  {
+   "subset": "gate",
+   "video": "00000_sora_1.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       20.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       20.0
+      ]
+     ]
+    ],
+    "seconds": 52.2,
+    "peak_alloc_gib": 22.37,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       20.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       20.0
+      ]
+     ]
+    ],
+    "logit": 16.75,
+    "fake_probability": 0.9999999468421502,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 170,
+    "pair_softmax_mass": 0.9999962384676601,
+    "argmax_is_emitted": true,
+    "seconds": 50.83,
+    "wall_seconds": 58.8,
+    "model_calls": 5,
+    "generated_tokens": 875,
+    "peak_alloc_gib": 22.38,
+    "peak_reserved_gib": 23.13,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 16.75,
+    "logit_recorded": 16.75,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00000_02335_3783b0e2-3546-40a1-be7e-8f44fda5d8ef_raw_video_0.mp4_video0ebc55cd30cbb472aab1a01c62c913daa.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ]
+    ],
+    "seconds": 38.5,
+    "peak_alloc_gib": 20.37,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ]
+    ],
+    "logit": 14.375,
+    "fake_probability": 0.999999428499553,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 193,
+    "pair_softmax_mass": 0.9999967568086039,
+    "argmax_is_emitted": true,
+    "seconds": 38.39,
+    "wall_seconds": 46.4,
+    "model_calls": 5,
+    "generated_tokens": 889,
+    "peak_alloc_gib": 20.38,
+    "peak_reserved_gib": 20.74,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 14.375,
+    "logit_recorded": 14.375,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "gate",
+   "video": "00000_pika-001820a9-a6ba-51b0-95bb-1bdfeb0b8f5a.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       3.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "seconds": 41.0,
+    "peak_alloc_gib": 20.12,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       3.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "logit": 14.375,
+    "fake_probability": 0.999999428499553,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 198,
+    "pair_softmax_mass": 0.9999967568086039,
+    "argmax_is_emitted": true,
+    "seconds": 40.64,
+    "wall_seconds": 48.6,
+    "model_calls": 6,
+    "generated_tokens": 952,
+    "peak_alloc_gib": 20.13,
+    "peak_reserved_gib": 20.64,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 14.375,
+    "logit_recorded": 14.375,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "demo",
+   "video": "20f264bc072e9705eae3.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.9
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "seconds": 44.3,
+    "peak_alloc_gib": 20.5,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.9
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "logit": 15.125,
+    "fake_probability": 0.9999997300422225,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 188,
+    "pair_softmax_mass": 0.9999964552668309,
+    "argmax_is_emitted": true,
+    "seconds": 43.86,
+    "wall_seconds": 51.6,
+    "model_calls": 6,
+    "generated_tokens": 978,
+    "peak_alloc_gib": 20.52,
+    "peak_reserved_gib": 21.1,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.125,
+    "logit_recorded": 15.125,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "d969ec07e1a3712aa5c4.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       8.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       8.0
+      ]
+     ]
+    ],
+    "seconds": 40.7,
+    "peak_alloc_gib": 20.73,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       8.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       8.0
+      ]
+     ]
+    ],
+    "logit": 16.5,
+    "fake_probability": 0.999999931743971,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 174,
+    "pair_softmax_mass": 0.9999962535657837,
+    "argmax_is_emitted": true,
+    "seconds": 40.56,
+    "wall_seconds": 47.9,
+    "model_calls": 5,
+    "generated_tokens": 896,
+    "peak_alloc_gib": 20.74,
+    "peak_reserved_gib": 21.32,
+    "audio_stream_present": true,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 16.5,
+    "logit_recorded": 16.5,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "1e3532a6e8e3806556b9.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       3.0
+      ]
+     ]
+    ],
+    "seconds": 67.3,
+    "peak_alloc_gib": 20.37,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       3.0
+      ]
+     ]
+    ],
+    "logit": 14.125,
+    "fake_probability": 0.9999992661790194,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 190,
+    "pair_softmax_mass": 0.99999691912873,
+    "argmax_is_emitted": true,
+    "seconds": 67.14,
+    "wall_seconds": 75.0,
+    "model_calls": 8,
+    "generated_tokens": 1544,
+    "peak_alloc_gib": 20.38,
+    "peak_reserved_gib": 21.04,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 14.125,
+    "logit_recorded": 14.125,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "166e6d7d7a4fa0cd8de0.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.9
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       4.0
+      ]
+     ]
+    ],
+    "seconds": 50.8,
+    "peak_alloc_gib": 20.5,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.9
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       4.0
+      ]
+     ]
+    ],
+    "logit": 15.25,
+    "fake_probability": 0.9999997617630899,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 176,
+    "pair_softmax_mass": 0.9999964235460683,
+    "argmax_is_emitted": true,
+    "seconds": 50.5,
+    "wall_seconds": 57.8,
+    "model_calls": 6,
+    "generated_tokens": 1115,
+    "peak_alloc_gib": 20.51,
+    "peak_reserved_gib": 21.15,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.25,
+    "logit_recorded": 15.25,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "c04559bab78f9a8b5b7e.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "common_sense",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "seconds": 53.9,
+    "peak_alloc_gib": 20.28,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "common_sense",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "visual_appearance",
+      [
+       0.0,
+       5.0
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       2.0
+      ]
+     ]
+    ],
+    "logit": 15.125,
+    "fake_probability": 0.9999997300422225,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 203,
+    "pair_softmax_mass": 0.9999964552668309,
+    "argmax_is_emitted": true,
+    "seconds": 54.41,
+    "wall_seconds": 62.6,
+    "model_calls": 8,
+    "generated_tokens": 1280,
+    "peak_alloc_gib": 20.29,
+    "peak_reserved_gib": 20.89,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.125,
+    "logit_recorded": 15.125,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "bc17e255219ee0bf3ac3.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       4.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       4.0,
+       10.0
+      ]
+     ],
+     [
+      "common_sense",
+      [
+       6.0,
+       15.0
+      ]
+     ]
+    ],
+    "seconds": 60.4,
+    "peak_alloc_gib": 20.77,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       4.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       4.0,
+       10.0
+      ]
+     ],
+     [
+      "common_sense",
+      [
+       6.0,
+       15.0
+      ]
+     ]
+    ],
+    "logit": 15.25,
+    "fake_probability": 0.9999997617630899,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 210,
+    "pair_softmax_mass": 0.9999964235460683,
+    "argmax_is_emitted": true,
+    "seconds": 60.27,
+    "wall_seconds": 69.4,
+    "model_calls": 7,
+    "generated_tokens": 1332,
+    "peak_alloc_gib": 20.78,
+    "peak_reserved_gib": 21.35,
+    "audio_stream_present": true,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.25,
+    "logit_recorded": 15.25,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "fake",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "demo",
+   "video": "46e56aa8b3e5a99ef1aa.mp4",
+   "label": "real",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       8.3
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       8.3
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       4.0
+      ]
+     ]
+    ],
+    "seconds": 70.5,
+    "peak_alloc_gib": 20.82,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       8.3
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       8.3
+      ]
+     ],
+     [
+      "ocr_consistency",
+      [
+       4.0
+      ]
+     ]
+    ],
+    "logit": -18.875,
+    "fake_probability": 6.348800075736418e-09,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 192,
+    "pair_softmax_mass": 1.0000000063488002,
+    "argmax_is_emitted": true,
+    "seconds": 70.91,
+    "wall_seconds": 79.1,
+    "model_calls": 8,
+    "generated_tokens": 1458,
+    "peak_alloc_gib": 20.83,
+    "peak_reserved_gib": 21.37,
+    "audio_stream_present": true,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -18.875,
+    "logit_recorded": -18.875,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true,
+   "recorded_vllm_answer": "real",
+   "agrees_with_recorded": true
+  },
+  {
+   "subset": "extra",
+   "video": "00000_gen2_1.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       4.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       4.0
+      ]
+     ]
+    ],
+    "seconds": 38.8,
+    "peak_alloc_gib": 20.24,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       4.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       4.0
+      ]
+     ]
+    ],
+    "logit": 12.5,
+    "fake_probability": 0.9999962733607158,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 188,
+    "pair_softmax_mass": 0.9999960972593126,
+    "argmax_is_emitted": true,
+    "seconds": 39.07,
+    "wall_seconds": 46.7,
+    "model_calls": 5,
+    "generated_tokens": 926,
+    "peak_alloc_gib": 20.25,
+    "peak_reserved_gib": 20.66,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 12.5,
+    "logit_recorded": 12.5,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "extra",
+   "video": "00000_D1.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       3.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       3.0
+      ]
+     ]
+    ],
+    "seconds": 36.1,
+    "peak_alloc_gib": 20.11,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       3.0
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       3.0
+      ]
+     ]
+    ],
+    "logit": 15.0,
+    "fake_probability": 0.999999694097773,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 180,
+    "pair_softmax_mass": 0.999996491211164,
+    "argmax_is_emitted": true,
+    "seconds": 35.79,
+    "wall_seconds": 43.0,
+    "model_calls": 5,
+    "generated_tokens": 871,
+    "peak_alloc_gib": 20.12,
+    "peak_reserved_gib": 20.7,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 15.0,
+    "logit_recorded": 15.0,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "extra",
+   "video": "00000_MoonValley_1.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       1.8
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       1.8
+      ]
+     ]
+    ],
+    "seconds": 37.0,
+    "peak_alloc_gib": 20.0,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "fake",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "visual_appearance",
+      [
+       0.0,
+       1.8
+      ]
+     ],
+     [
+      "physical_consistency",
+      [
+       0.0,
+       1.8
+      ]
+     ]
+    ],
+    "logit": 14.625,
+    "fake_probability": 0.9999995549149481,
+    "score_source": "verdict_token",
+    "verdict_token": "fake",
+    "verdict_step": 172,
+    "pair_softmax_mass": 0.9999966303935625,
+    "argmax_is_emitted": true,
+    "seconds": 37.24,
+    "wall_seconds": 44.1,
+    "model_calls": 5,
+    "generated_tokens": 911,
+    "peak_alloc_gib": 20.02,
+    "peak_reserved_gib": 20.63,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": 14.625,
+    "logit_recorded": 14.625,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": true
+  },
+  {
+   "subset": "extra",
+   "video": "00000_hotshot_1.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       1.0
+      ]
+     ]
+    ],
+    "seconds": 19.9,
+    "peak_alloc_gib": 19.85,
+    "error": null,
+    "oom": null
+   },
+   "synthscope": {
+    "answer": "real",
+    "status": "answered",
+    "tool_calls": [
+     [
+      "physical_consistency",
+      [
+       0.0,
+       1.0
+      ]
+     ]
+    ],
+    "logit": -13.125,
+    "fake_probability": 1.994729721527057e-06,
+    "score_source": "verdict_token",
+    "verdict_token": "real",
+    "verdict_step": 175,
+    "pair_softmax_mass": 0.9999981800361015,
+    "argmax_is_emitted": true,
+    "seconds": 20.0,
+    "wall_seconds": 26.8,
+    "model_calls": 3,
+    "generated_tokens": 504,
+    "peak_alloc_gib": 19.86,
+    "peak_reserved_gib": 20.4,
+    "audio_stream_present": false,
+    "error": null,
+    "error_kind": null
+   },
+   "direct": {
+    "ids_identical": true,
+    "logit_direct": -13.125,
+    "logit_recorded": -13.125,
+    "diff": 0.0,
+    "argmax_is_emitted": true
+   },
+   "same_answer": true,
+   "same_status": true,
+   "same_tool_calls": true,
+   "same_raw_texts": true,
+   "same_final_text": true,
+   "correct": false
+  },
+  {
+   "subset": "extra",
+   "video": "00360_D174.mp4",
+   "label": "fake",
+   "reference": {
+    "answer": null,
+    "status": null,
+    "tool_calls": null,
+    "seconds": 29.2,
+    "peak_alloc_gib": 22.72,
+    "error": "OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 210.00 MiB is free. Including non-PyTorch memory, this process has 23.33 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 513.76 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+    "oom": true
+   },
+   "synthscope": {
+    "answer": null,
+    "status": null,
+    "tool_calls": null,
+    "logit": null,
+    "fake_probability": null,
+    "score_source": null,
+    "verdict_token": null,
+    "verdict_step": null,
+    "pair_softmax_mass": null,
+    "argmax_is_emitted": null,
+    "seconds": null,
+    "wall_seconds": 24.3,
+    "model_calls": null,
+    "generated_tokens": null,
+    "peak_alloc_gib": null,
+    "peak_reserved_gib": null,
+    "audio_stream_present": null,
+    "error": "WeVisOOMError: OutOfMemoryError: CUDA out of memory. Tried to allocate 286.00 MiB. GPU 0 has a total capacity of 23.55 GiB of which 206.00 MiB is free. Including non-PyTorch memory, this process has 23.34 GiB memory in use. Of the allocated memory 22.58 GiB is allocated by PyTorch, and 497.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)",
+    "error_kind": "oom"
+   },
+   "direct": {},
+   "same_answer": false,
+   "same_status": false,
+   "same_tool_calls": false,
+   "same_raw_texts": false,
+   "same_final_text": false,
+   "correct": null
+  }
+ ]
+}

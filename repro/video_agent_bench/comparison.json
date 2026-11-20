@@ -1,0 +1,2398 @@
+{
+ "agent": "wevis",
+ "protocol": "Held video benchmarks (GenVideo-Val, VideoPhy, VidProM, EvalCrafter): bench_eval_video --limit L with L = ceil(250 / n_generators), the first L sorted reals and the first L sorted fakes of every generator (video_layout.discover order); EvalCrafter has no reals and is paired with the first L GenVideo-Val MSR-VTT reals (the convention of the merged video matrix: --reals GenVideo/test/Crafter/0_real). GenBuster-Bench / GenBuster-Bench++ (the paper's GB / GB++): the first ceil(fraction * n) sorted clips of every folder (each generator's fakes and the one real pool), keeping the benchmark's real : fake composition. subsets/<bench>.json lists every file with its sha1. The agent and every comparator score byte-identical files.",
+ "detectors": [
+  "d3",
+  "split",
+  "stall",
+  "restrav",
+  "nsg_vd",
+  "waverep",
+  "waverep_g4",
+  "vina_video"
+ ],
+ "internal_only": [
+  "nsg_vd",
+  "vina_video"
+ ],
+ "rank_note": "rank_<metric> = 1 + the number of comparators strictly better (the agent among the comparators plus itself); acc_strict is ranked against the comparators' acc (they have no tool errors); best and median are over the comparators only",
+ "acc_note": "acc: bench_eval_video's balanced accuracy (mean of real and fake accuracy per generator, then the mean over generators); for the agent from its verdict (unparsed = wrong for both classes), official = final tool_error / oom videos excluded with their counts reported, strict = counted wrong. pooled: one row per distinct video (the paper's metric)",
+ "subsets": [
+  {
+   "benchmark": "genvideo",
+   "title": "GenVideo-Val",
+   "protocol": {
+    "limit": 25
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 99.6,
+     "mauroc": 99.97,
+     "map": 99.97,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 99.27,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 99.27,
+      "acc_strict": 99.27,
+      "real_acc": 100.0,
+      "fake_recall": 99.2,
+      "fake_f1": 99.6
+     }
+    },
+    "split": {
+     "acc": 100.0,
+     "mauroc": 100.0,
+     "map": 100.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 100.0,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 100.0,
+      "acc_strict": 100.0,
+      "real_acc": 100.0,
+      "fake_recall": 100.0,
+      "fake_f1": 100.0
+     }
+    },
+    "stall": {
+     "acc": 51.4,
+     "mauroc": 84.29,
+     "map": 84.02,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 90.18,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 90.18,
+      "acc_strict": 90.18,
+      "real_acc": 4.0,
+      "fake_recall": 98.8,
+      "fake_f1": 94.82
+     }
+    },
+    "restrav": {
+     "acc": 28.4,
+     "mauroc": 41.43,
+     "map": 59.95,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 51.64,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 51.64,
+      "acc_strict": 51.64,
+      "real_acc": 0.0,
+      "fake_recall": 56.8,
+      "fake_f1": 68.11
+     }
+    },
+    "nsg_vd": {
+     "acc": 87.2,
+     "mauroc": 94.79,
+     "map": 89.32,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 96.36,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 96.36,
+      "acc_strict": 96.36,
+      "real_acc": 76.0,
+      "fake_recall": 98.4,
+      "fake_f1": 98.01
+     }
+    },
+    "waverep": {
+     "acc": 86.8,
+     "mauroc": 91.09,
+     "map": 93.37,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 76.0,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 76.0,
+      "acc_strict": 76.0,
+      "real_acc": 100.0,
+      "fake_recall": 73.6,
+      "fake_f1": 84.79
+     }
+    },
+    "waverep_g4": {
+     "acc": 90.0,
+     "mauroc": 94.98,
+     "map": 96.08,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 88.36,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 88.36,
+      "acc_strict": 88.36,
+      "real_acc": 92.0,
+      "fake_recall": 88.0,
+      "fake_f1": 93.22
+     }
+    },
+    "vina_video": {
+     "acc": 97.2,
+     "mauroc": 98.97,
+     "map": 99.2,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 94.91,
+     "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 94.91,
+      "acc_strict": 94.91,
+      "real_acc": 100.0,
+      "fake_recall": 94.4,
+      "fake_f1": 97.12
+     }
+    }
+   },
+   "wevis": {
+    "acc": 85.2,
+    "acc_strict": 85.2,
+    "mauroc": 92.2,
+    "map": 91.31,
+    "pooled": {
+     "n": 275,
+     "n_real": 25,
+     "n_fake": 250,
+     "acc": 96.0,
+     "acc_strict": 96.0,
+     "real_acc": 72.0,
+     "fake_recall": 98.4,
+     "fake_f1": 97.81,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 275
+     },
+     "mean_seconds": 41.29,
+     "mean_model_calls": 5.23,
+     "max_peak_alloc_gib": 22.38
+    },
+    "mean_real_acc": 72.0,
+    "mean_fake_acc": 98.4,
+    "n_generators": 10,
+    "limit": 25,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "HotShot",
+     "value": 96.0
+    },
+    "rank_acc": 7,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 7,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 6,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 4,
+    "rank_acc_pooled_of": 9
+   },
+   "best_acc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc": 88.6,
+   "best_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_mauroc": 94.89,
+   "best_acc_pooled": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc_pooled": 92.55
+  },
+  {
+   "benchmark": "videophy",
+   "title": "VideoPhy",
+   "protocol": {
+    "limit": 32
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 97.07,
+     "mauroc": 97.38,
+     "map": 95.19,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 97.22,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 97.22,
+      "acc_strict": 97.22,
+      "real_acc": 96.88,
+      "fake_recall": 97.27,
+      "fake_f1": 98.42
+     }
+    },
+    "split": {
+     "acc": 98.44,
+     "mauroc": 100.0,
+     "map": 100.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 99.65,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 99.65,
+      "acc_strict": 99.65,
+      "real_acc": 96.88,
+      "fake_recall": 100.0,
+      "fake_f1": 99.81
+     }
+    },
+    "stall": {
+     "acc": 52.92,
+     "mauroc": 83.69,
+     "map": 80.93,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 89.24,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 89.24,
+      "acc_strict": 89.24,
+      "real_acc": 6.25,
+      "fake_recall": 99.61,
+      "fake_f1": 94.27
+     }
+    },
+    "restrav": {
+     "acc": 42.19,
+     "mauroc": 59.27,
+     "map": 70.32,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 72.57,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 72.57,
+      "acc_strict": 72.57,
+      "real_acc": 3.12,
+      "fake_recall": 81.25,
+      "fake_f1": 84.04
+     }
+    },
+    "nsg_vd": {
+     "acc": 89.06,
+     "mauroc": 96.43,
+     "map": 91.87,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 97.57,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 97.57,
+      "acc_strict": 97.57,
+      "real_acc": 78.12,
+      "fake_recall": 100.0,
+      "fake_f1": 98.65
+     }
+    },
+    "waverep": {
+     "acc": 90.23,
+     "mauroc": 97.4,
+     "map": 97.54,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 82.64,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 82.64,
+      "acc_strict": 82.64,
+      "real_acc": 100.0,
+      "fake_recall": 80.47,
+      "fake_f1": 89.18
+     }
+    },
+    "waverep_g4": {
+     "acc": 94.14,
+     "mauroc": 99.06,
+     "map": 98.88,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 94.44,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 94.44,
+      "acc_strict": 94.44,
+      "real_acc": 93.75,
+      "fake_recall": 94.53,
+      "fake_f1": 96.8
+     }
+    },
+    "vina_video": {
+     "acc": 99.41,
+     "mauroc": 99.9,
+     "map": 99.91,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 98.96,
+     "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 98.96,
+      "acc_strict": 98.96,
+      "real_acc": 100.0,
+      "fake_recall": 98.83,
+      "fake_f1": 99.41
+     }
+    }
+   },
+   "wevis": {
+    "acc": 86.33,
+    "acc_strict": 86.33,
+    "mauroc": 90.05,
+    "map": 84.35,
+    "pooled": {
+     "n": 288,
+     "n_real": 32,
+     "n_fake": 256,
+     "acc": 95.14,
+     "acc_strict": 95.14,
+     "real_acc": 75.0,
+     "fake_recall": 97.66,
+     "fake_f1": 97.28,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 288
+     },
+     "mean_seconds": 41.38,
+     "mean_model_calls": 5.08,
+     "max_peak_alloc_gib": 21.38
+    },
+    "mean_real_acc": 75.0,
+    "mean_fake_acc": 97.66,
+    "n_generators": 8,
+    "limit": 32,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "SVD",
+     "value": 84.38
+    },
+    "rank_acc": 7,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 7,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 7,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 5,
+    "rank_acc_pooled_of": 9
+   },
+   "best_acc": {
+    "detector": "vina_video",
+    "value": 99.41,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "split",
+    "value": 98.44,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc": 92.19,
+   "best_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_mauroc": 97.39,
+   "best_acc_pooled": {
+    "detector": "split",
+    "value": 99.65,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "split",
+    "value": 99.65,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc_pooled": 95.83
+  },
+  {
+   "benchmark": "vidprom",
+   "title": "VidProM",
+   "protocol": {
+    "limit": 63
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 87.3,
+     "mauroc": 90.93,
+     "map": 89.86,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 81.59,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 81.59,
+      "acc_strict": 81.59,
+      "real_acc": 96.83,
+      "fake_recall": 77.78,
+      "fake_f1": 87.11
+     }
+    },
+    "split": {
+     "acc": 99.21,
+     "mauroc": 100.0,
+     "map": 100.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 99.68,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 99.68,
+      "acc_strict": 99.68,
+      "real_acc": 98.41,
+      "fake_recall": 100.0,
+      "fake_f1": 99.8
+     }
+    },
+    "stall": {
+     "acc": 56.94,
+     "mauroc": 86.59,
+     "map": 83.03,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 82.54,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 82.54,
+      "acc_strict": 82.54,
+      "real_acc": 14.29,
+      "fake_recall": 99.6,
+      "fake_f1": 90.13
+     }
+    },
+    "restrav": {
+     "acc": 36.31,
+     "mauroc": 55.32,
+     "map": 67.87,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 57.14,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 57.14,
+      "acc_strict": 57.14,
+      "real_acc": 1.59,
+      "fake_recall": 71.03,
+      "fake_f1": 72.62
+     }
+    },
+    "nsg_vd": {
+     "acc": 85.91,
+     "mauroc": 95.6,
+     "map": 93.04,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 91.75,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 91.75,
+      "acc_strict": 91.75,
+      "real_acc": 76.19,
+      "fake_recall": 95.63,
+      "fake_f1": 94.88
+     }
+    },
+    "waverep": {
+     "acc": 92.06,
+     "mauroc": 97.01,
+     "map": 97.54,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 87.3,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 87.3,
+      "acc_strict": 87.3,
+      "real_acc": 100.0,
+      "fake_recall": 84.13,
+      "fake_f1": 91.38
+     }
+    },
+    "waverep_g4": {
+     "acc": 92.26,
+     "mauroc": 98.39,
+     "map": 98.52,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 93.33,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 93.33,
+      "acc_strict": 93.33,
+      "real_acc": 90.48,
+      "fake_recall": 94.05,
+      "fake_f1": 95.76
+     }
+    },
+    "vina_video": {
+     "acc": 97.42,
+     "mauroc": 99.57,
+     "map": 99.51,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 97.78,
+     "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 97.78,
+      "acc_strict": 97.78,
+      "real_acc": 96.83,
+      "fake_recall": 98.02,
+      "fake_f1": 98.6
+     }
+    }
+   },
+   "wevis": {
+    "acc": 85.52,
+    "acc_strict": 85.52,
+    "mauroc": 89.11,
+    "map": 81.5,
+    "pooled": {
+     "n": 315,
+     "n_real": 63,
+     "n_fake": 252,
+     "acc": 93.02,
+     "acc_strict": 93.02,
+     "real_acc": 73.02,
+     "fake_recall": 98.02,
+     "fake_f1": 95.74,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 315
+     },
+     "mean_seconds": 41.14,
+     "mean_model_calls": 5.16,
+     "max_peak_alloc_gib": 21.38
+    },
+    "mean_real_acc": 73.02,
+    "mean_fake_acc": 98.02,
+    "n_generators": 4,
+    "limit": 63,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "Pika",
+     "value": 95.24
+    },
+    "rank_acc": 7,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 7,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 7,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 4,
+    "rank_acc_pooled_of": 9
+   },
+   "best_acc": {
+    "detector": "split",
+    "value": 99.21,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "split",
+    "value": 99.21,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc": 89.68,
+   "best_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_mauroc": 96.31,
+   "best_acc_pooled": {
+    "detector": "split",
+    "value": 99.68,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "split",
+    "value": 99.68,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc_pooled": 89.53
+  },
+  {
+   "benchmark": "evalcrafter",
+   "title": "EvalCrafter (+ GenVideo-Val MSR-VTT reals)",
+   "protocol": {
+    "limit": 18
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 99.8,
+     "mauroc": 100.0,
+     "map": 100.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 99.63,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 99.63,
+      "acc_strict": 99.63,
+      "real_acc": 100.0,
+      "fake_recall": 99.6,
+      "fake_f1": 99.8
+     }
+    },
+    "split": {
+     "acc": 100.0,
+     "mauroc": 100.0,
+     "map": 100.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 100.0,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 100.0,
+      "acc_strict": 100.0,
+      "real_acc": 100.0,
+      "fake_recall": 100.0,
+      "fake_f1": 100.0
+     }
+    },
+    "stall": {
+     "acc": 52.78,
+     "mauroc": 92.17,
+     "map": 92.11,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 93.7,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 93.7,
+      "acc_strict": 93.7,
+      "real_acc": 5.56,
+      "fake_recall": 100.0,
+      "fake_f1": 96.74
+     }
+    },
+    "restrav": {
+     "acc": 33.73,
+     "mauroc": 44.52,
+     "map": 61.13,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 62.96,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 62.96,
+      "acc_strict": 62.96,
+      "real_acc": 0.0,
+      "fake_recall": 67.46,
+      "fake_f1": 77.27
+     }
+    },
+    "nsg_vd": {
+     "acc": 83.13,
+     "mauroc": 94.01,
+     "map": 87.52,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 97.41,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 97.41,
+      "acc_strict": 97.41,
+      "real_acc": 66.67,
+      "fake_recall": 99.6,
+      "fake_f1": 98.62
+     }
+    },
+    "waverep": {
+     "acc": 93.05,
+     "mauroc": 96.74,
+     "map": 97.37,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 87.04,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 87.04,
+      "acc_strict": 87.04,
+      "real_acc": 100.0,
+      "fake_recall": 86.11,
+      "fake_f1": 92.54
+     }
+    },
+    "waverep_g4": {
+     "acc": 92.66,
+     "mauroc": 98.48,
+     "map": 98.54,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 95.93,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 95.93,
+      "acc_strict": 95.93,
+      "real_acc": 88.89,
+      "fake_recall": 96.43,
+      "fake_f1": 97.79
+     }
+    },
+    "vina_video": {
+     "acc": 99.6,
+     "mauroc": 99.96,
+     "map": 99.96,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 99.26,
+     "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 99.26,
+      "acc_strict": 99.26,
+      "real_acc": 100.0,
+      "fake_recall": 99.21,
+      "fake_f1": 99.6
+     }
+    }
+   },
+   "wevis": {
+    "acc": 85.32,
+    "acc_strict": 85.32,
+    "mauroc": 89.57,
+    "map": 88.41,
+    "pooled": {
+     "n": 270,
+     "n_real": 18,
+     "n_fake": 252,
+     "acc": 96.67,
+     "acc_strict": 96.67,
+     "real_acc": 72.22,
+     "fake_recall": 98.41,
+     "fake_f1": 98.22,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 270
+     },
+     "mean_seconds": 39.61,
+     "mean_model_calls": 5.23,
+     "max_peak_alloc_gib": 21.38
+    },
+    "mean_real_acc": 72.22,
+    "mean_fake_acc": 98.41,
+    "n_generators": 14,
+    "limit": 18,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "zeroscope",
+     "value": 88.89
+    },
+    "rank_acc": 6,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 6,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 8,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 5,
+    "rank_acc_pooled_of": 9
+   },
+   "best_acc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc": 92.85,
+   "best_mauroc": {
+    "detector": "d3",
+    "value": 100.0,
+    "tied": [
+     "d3",
+     "split"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "d3",
+    "value": 100.0,
+    "tied": [
+     "d3",
+     "split"
+    ]
+   },
+   "median_mauroc": 97.61,
+   "best_acc_pooled": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc_pooled": 96.67
+  },
+  {
+   "benchmark": "genbuster",
+   "title": "GenBuster-Bench (GB)",
+   "protocol": {
+    "fraction": 0.4
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 49.07,
+     "mauroc": 53.32,
+     "map": 16.0,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 67.22,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 67.22,
+      "acc_strict": 67.22,
+      "real_acc": 0.75,
+      "fake_recall": 98.14,
+      "fake_f1": 80.34
+     }
+    },
+    "split": {
+     "acc": 50.0,
+     "mauroc": 29.0,
+     "map": 8.48,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 68.25,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 68.25,
+      "acc_strict": 68.25,
+      "real_acc": 0.0,
+      "fake_recall": 100.0,
+      "fake_f1": 81.13
+     }
+    },
+    "stall": {
+     "acc": 54.64,
+     "mauroc": 68.56,
+     "map": 23.86,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 71.35,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 71.35,
+      "acc_strict": 71.35,
+      "real_acc": 10.5,
+      "fake_recall": 99.65,
+      "fake_f1": 82.6
+     }
+    },
+    "restrav": {
+     "acc": 59.56,
+     "mauroc": 59.56,
+     "map": 23.08,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 50.63,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 50.63,
+      "acc_strict": 50.63,
+      "real_acc": 97.0,
+      "fake_recall": 29.07,
+      "fake_f1": 44.56
+     }
+    },
+    "nsg_vd": {
+     "acc": 49.5,
+     "mauroc": 49.64,
+     "map": 8.3,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 65.48,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 65.48,
+      "acc_strict": 65.48,
+      "real_acc": 0.5,
+      "fake_recall": 95.7,
+      "fake_f1": 79.1
+     }
+    },
+    "waverep": {
+     "acc": 70.72,
+     "mauroc": 87.58,
+     "map": 53.29,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 81.03,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 81.03,
+      "acc_strict": 81.03,
+      "real_acc": 48.75,
+      "fake_recall": 96.05,
+      "fake_f1": 87.36
+     }
+    },
+    "waverep_g4": {
+     "acc": 77.45,
+     "mauroc": 93.05,
+     "map": 71.53,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 85.63,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 85.63,
+      "acc_strict": 85.63,
+      "real_acc": 61.25,
+      "fake_recall": 96.98,
+      "fake_f1": 90.21
+     }
+    },
+    "vina_video": {
+     "acc": 83.11,
+     "mauroc": 94.2,
+     "map": 60.89,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 89.37,
+     "pooled": {
+      "n": 1260,
+      "n_real": 400,
+      "n_fake": 860,
+      "acc": 89.37,
+      "acc_strict": 89.37,
+      "real_acc": 73.0,
+      "fake_recall": 96.98,
+      "fake_f1": 92.56
+     }
+    }
+   },
+   "wevis": {
+    "acc": 95.51,
+    "acc_strict": 95.51,
+    "mauroc": 96.11,
+    "map": 48.56,
+    "pooled": {
+     "n": 1260,
+     "n_real": 400,
+     "n_fake": 860,
+     "acc": 97.3,
+     "acc_strict": 97.3,
+     "real_acc": 93.25,
+     "fake_recall": 99.19,
+     "fake_f1": 98.05,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 1260
+     },
+     "mean_seconds": 40.47,
+     "mean_model_calls": 5.21,
+     "max_peak_alloc_gib": 20.56
+    },
+    "mean_real_acc": 93.25,
+    "mean_fake_acc": 97.77,
+    "n_generators": 23,
+    "limit": null,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "wild_sora2",
+     "value": 75.0
+    },
+    "in_distribution": true,
+    "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
+    "rank_acc": 1,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 1,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 1,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 1,
+    "rank_acc_pooled_of": 9
+   },
+   "headline": {
+    "metric": "pooled one-row-per-clip accuracy (the paper's)",
+    "note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
+   },
+   "best_acc": {
+    "detector": "vina_video",
+    "value": 83.11,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "waverep_g4",
+    "value": 77.45,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_acc": 57.1,
+   "best_mauroc": {
+    "detector": "vina_video",
+    "value": 94.2,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "waverep_g4",
+    "value": 93.05,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_mauroc": 64.06,
+   "best_acc_pooled": {
+    "detector": "vina_video",
+    "value": 89.37,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "waverep_g4",
+    "value": 85.63,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_acc_pooled": 69.8
+  },
+  {
+   "benchmark": "genbuster_pp",
+   "title": "GenBuster-Bench++ (GB++, video track)",
+   "protocol": {
+    "fraction": 0.4
+   },
+   "n_comparators": 8,
+   "missing_comparators": [],
+   "comparators": {
+    "d3": {
+     "acc": 48.62,
+     "mauroc": 47.56,
+     "map": 50.73,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 48.62,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 48.62,
+      "acc_strict": 48.62,
+      "real_acc": 1.0,
+      "fake_recall": 96.25,
+      "fake_f1": 65.2
+     }
+    },
+    "split": {
+     "acc": 50.0,
+     "mauroc": 72.99,
+     "map": 78.96,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 50.0,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 50.0,
+      "acc_strict": 50.0,
+      "real_acc": 0.0,
+      "fake_recall": 100.0,
+      "fake_f1": 66.67
+     }
+    },
+    "stall": {
+     "acc": 55.13,
+     "mauroc": 77.03,
+     "map": 78.59,
+     "internal_only": false,
+     "ckpt_sha256": null,
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 55.12,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 55.12,
+      "acc_strict": 55.12,
+      "real_acc": 12.75,
+      "fake_recall": 97.5,
+      "fake_f1": 68.48
+     }
+    },
+    "restrav": {
+     "acc": 47.25,
+     "mauroc": 41.78,
+     "map": 45.59,
+     "internal_only": false,
+     "ckpt_sha256": "ad4cccc85f168d1c4469953f9d41c62dd8e96ed9f4186d9c43b8665e0c1c3da2",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 47.25,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 47.25,
+      "acc_strict": 47.25,
+      "real_acc": 83.5,
+      "fake_recall": 11.0,
+      "fake_f1": 17.25
+     }
+    },
+    "nsg_vd": {
+     "acc": 49.63,
+     "mauroc": 52.0,
+     "map": 53.09,
+     "internal_only": true,
+     "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 49.62,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 49.62,
+      "acc_strict": 49.62,
+      "real_acc": 0.5,
+      "fake_recall": 98.75,
+      "fake_f1": 66.22
+     }
+    },
+    "waverep": {
+     "acc": 64.12,
+     "mauroc": 80.63,
+     "map": 82.6,
+     "internal_only": false,
+     "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 64.12,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 64.12,
+      "acc_strict": 64.12,
+      "real_acc": 38.0,
+      "fake_recall": 90.25,
+      "fake_f1": 71.56
+     }
+    },
+    "waverep_g4": {
+     "acc": 80.0,
+     "mauroc": 92.32,
+     "map": 92.58,
+     "internal_only": false,
+     "ckpt_sha256": "50d639049d928986ba7d69861a4fe4f3e7afbba1843e3e089cdf6b4748f53d5b",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 80.0,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 80.0,
+      "acc_strict": 80.0,
+      "real_acc": 66.5,
+      "fake_recall": 93.5,
+      "fake_f1": 82.38
+     }
+    },
+    "vina_video": {
+     "acc": 89.0,
+     "mauroc": 95.43,
+     "map": 95.94,
+     "internal_only": true,
+     "ckpt_sha256": "1c46c9d82be7d4ecb618b2735d9701f09321dfc90c3b338ee88af32033d1c59d",
+     "failed_to_decode": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "failed_other": {
+      "fake": 0,
+      "real_unique": 0
+     },
+     "acc_pooled": 89.0,
+     "pooled": {
+      "n": 800,
+      "n_real": 400,
+      "n_fake": 400,
+      "acc": 89.0,
+      "acc_strict": 89.0,
+      "real_acc": 86.75,
+      "fake_recall": 91.25,
+      "fake_f1": 89.24
+     }
+    }
+   },
+   "wevis": {
+    "acc": 97.88,
+    "acc_strict": 97.88,
+    "mauroc": 98.65,
+    "map": 96.98,
+    "pooled": {
+     "n": 800,
+     "n_real": 400,
+     "n_fake": 400,
+     "acc": 97.88,
+     "acc_strict": 97.88,
+     "real_acc": 98.25,
+     "fake_recall": 97.5,
+     "fake_f1": 97.87,
+     "n_tool_error": 0,
+     "n_oom": 0,
+     "n_unparsed": 0,
+     "n_unscored": 0,
+     "oom_retries": 0,
+     "tool_error_retries": 0,
+     "runner_retries": 0,
+     "n_retried_oom": 0,
+     "gpus": {
+      "NVIDIA RTX A6000": 800
+     },
+     "mean_seconds": 42.4,
+     "mean_model_calls": 5.23,
+     "max_peak_alloc_gib": 22.69
+    },
+    "mean_real_acc": 98.25,
+    "mean_fake_acc": 97.5,
+    "n_generators": 1,
+    "limit": null,
+    "ckpt_sha256": "9fda7d1343cb7fe2fbeae20fc475bbb51d2307c064ae9d9de8c23b2dccc9572a",
+    "agent_retries": {
+     "oom": 2,
+     "tool_error": 1,
+     "runner": 1
+    },
+    "failed_other": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "failed_to_decode": {
+     "fake": 0,
+     "real_unique": 0
+    },
+    "lowest_fake_acc": {
+     "generator": "video",
+     "value": 97.5
+    },
+    "in_distribution": true,
+    "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)",
+    "rank_acc": 1,
+    "rank_acc_of": 9,
+    "rank_acc_strict": 1,
+    "rank_acc_strict_of": 9,
+    "rank_mauroc": 1,
+    "rank_mauroc_of": 9,
+    "rank_acc_pooled": 1,
+    "rank_acc_pooled_of": 9
+   },
+   "headline": {
+    "metric": "pooled one-row-per-clip accuracy (the paper's)",
+    "note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
+   },
+   "best_acc": {
+    "detector": "vina_video",
+    "value": 89.0,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_acc": {
+    "detector": "waverep_g4",
+    "value": 80.0,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_acc": 52.56,
+   "best_mauroc": {
+    "detector": "vina_video",
+    "value": 95.43,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_mauroc": {
+    "detector": "waverep_g4",
+    "value": 92.32,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_mauroc": 75.01,
+   "best_acc_pooled": {
+    "detector": "vina_video",
+    "value": 89.0,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "best_public_acc_pooled": {
+    "detector": "waverep_g4",
+    "value": 80.0,
+    "tied": [
+     "waverep_g4"
+    ]
+   },
+   "median_acc_pooled": 52.56
+  }
+ ],
+ "subset_means": {
+  "held4": {
+   "label": "HEADLINE: the four held subsets, held out for every detector",
+   "subsets": [
+    "genvideo",
+    "videophy",
+    "vidprom",
+    "evalcrafter"
+   ],
+   "wevis": {
+    "acc": 85.59,
+    "acc_strict": 85.59,
+    "mauroc": 90.23,
+    "rank_acc": 7,
+    "rank_mauroc": 7
+   },
+   "d3": {
+    "acc": 95.94,
+    "mauroc": 97.07
+   },
+   "split": {
+    "acc": 99.41,
+    "mauroc": 100.0
+   },
+   "stall": {
+    "acc": 53.51,
+    "mauroc": 86.69
+   },
+   "restrav": {
+    "acc": 35.16,
+    "mauroc": 50.14
+   },
+   "nsg_vd": {
+    "acc": 86.33,
+    "mauroc": 95.21
+   },
+   "waverep": {
+    "acc": 90.53,
+    "mauroc": 95.56
+   },
+   "waverep_g4": {
+    "acc": 92.27,
+    "mauroc": 97.73
+   },
+   "vina_video": {
+    "acc": 98.41,
+    "mauroc": 99.6
+   },
+   "best_acc": {
+    "detector": "split",
+    "value": 99.41,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_acc": 91.4,
+   "best_mauroc": {
+    "detector": "split",
+    "value": 100.0,
+    "tied": [
+     "split"
+    ]
+   },
+   "median_mauroc": 96.31
+  },
+  "all6": {
+   "label": "includes the in-domain GenBuster-Bench / ++ for wevis (GenBuster-200K is in its training data); not a held-out mean for wevis",
+   "subsets": [
+    "genvideo",
+    "videophy",
+    "vidprom",
+    "evalcrafter",
+    "genbuster",
+    "genbuster_pp"
+   ],
+   "wevis": {
+    "acc": 89.29,
+    "acc_strict": 89.29,
+    "mauroc": 92.61,
+    "rank_acc": 2,
+    "rank_mauroc": 3
+   },
+   "d3": {
+    "acc": 80.24,
+    "mauroc": 81.53
+   },
+   "split": {
+    "acc": 82.94,
+    "mauroc": 83.66
+   },
+   "stall": {
+    "acc": 53.97,
+    "mauroc": 82.06
+   },
+   "restrav": {
+    "acc": 41.24,
+    "mauroc": 50.31
+   },
+   "nsg_vd": {
+    "acc": 74.07,
+    "mauroc": 80.41
+   },
+   "waverep": {
+    "acc": 82.83,
+    "mauroc": 91.74
+   },
+   "waverep_g4": {
+    "acc": 87.75,
+    "mauroc": 96.05
+   },
+   "vina_video": {
+    "acc": 94.29,
+    "mauroc": 98.0
+   },
+   "best_acc": {
+    "detector": "vina_video",
+    "value": 94.29,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "median_acc": 81.53,
+   "best_mauroc": {
+    "detector": "vina_video",
+    "value": 98.0,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "median_mauroc": 82.86
+  }
+ },
+ "determinism": {
+  "n_files_scored_more_than_once": 32,
+  "n_pairs": 136,
+  "verdict_identical": 136,
+  "logit_identical": 136,
+  "tool_calls_identical": 136,
+  "max_abs_logit_diff": 0.0
+ },
+ "in_distribution": {
+  "wevis": {
+   "genbuster": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
+   "genbuster_pp": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)"
+  }
+ },
+ "headline_mean": "held4",
+ "paper_note": "WeVisForensics arXiv 2611.21373: Table 4 / Table 12 report accuracy (Acc.), fake recall (R) and F1 with the generated videos as the positive class, one row per clip (official scripts/evaluate.py: invalid answers count wrong, tool_error rows are excluded). The paper's run is the official vLLM engine (multi-GPU, its own kernels); ours is the official transformers backend (demo/wvf_local.py) under SynthScope's runner, greedy, audio off (has_audio=False for every clip; GenBuster clips are silent), on a documented subsample. implied_real_acc is derived from Acc. and R and the benchmark's composition (an inference, not printed). The paper's NSG-VD and ReStraV rows are those detectors RETRAINED by the authors on their training data, not the public checkpoints scored here. IN-DOMAIN: GenBuster-Bench is the paper's in-domain benchmark and GenBuster-200K is in WeVisForensics' training data (paper Sec. 3, training sources), so GB and GB++ are NOT held out for wevis, while every comparator here was trained elsewhere: wevis ranking first on them is not a held-out result. The held-out comparison is the four held subsets (subset_means.held4).",
+ "paper_comparison": {
+  "genbuster": {
+   "paper": {
+    "acc": 97.7,
+    "fake_recall": 99.3,
+    "fake_f1": 98.3,
+    "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB, Acc. / R / F1)"
+   },
+   "paper_implied_real_acc": 94.3,
+   "full_set": {
+    "n_real": 1000,
+    "n_fake": 2150
+   },
+   "subsample": {
+    "fraction": 0.4
+   },
+   "in_distribution": true,
+   "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data",
+   "paper_table11": {
+    "id": 99.7,
+    "ood": {
+     "sora": 100.0,
+     "pika": 99.0,
+     "gen3": 99.0,
+     "luma": 100.0,
+     "wanx": 100.0,
+     "kling": 99.0,
+     "jimeng": 100.0,
+     "vidu": 99.3
+    },
+    "ood_mean": 99.6,
+    "wild": 95.3,
+    "all": 97.7
+   },
+   "ours_subsample": {
+    "n": 1260,
+    "n_real": 400,
+    "n_fake": 860,
+    "acc": 97.3,
+    "acc_strict": 97.3,
+    "acc_wilson95": [
+     96.25,
+     98.06
+    ],
+    "real_acc": 93.25,
+    "fake_recall": 99.19,
+    "fake_f1": 98.05,
+    "n_tool_error": 0,
+    "n_oom": 0,
+    "n_unparsed": 0,
+    "gpus": {
+     "NVIDIA RTX A6000": 1260
+    },
+    "delta_acc_vs_paper": -0.4,
+    "delta_acc_strict_vs_paper": -0.4,
+    "paper_acc_inside_wilson95": true,
+    "delta_fake_recall_vs_paper": -0.11,
+    "delta_fake_f1_vs_paper": -0.25,
+    "table11": {
+     "id": 99.5,
+     "ood": {
+      "gen3": 100,
+      "jimeng": 100,
+      "kling": 97.5,
+      "luma": 100,
+      "pika": 97.5,
+      "sora": 98.75,
+      "vidu": 100,
+      "wanx": 100
+     },
+     "ood_mean": 99.25,
+     "ood_mean_note": "pooled over the OOD clips (as the paper's 99.6, which is the Table 11 per-generator rates weighted by folder size); ood_mean_unweighted is the plain mean of the eight per-generator rates",
+     "ood_mean_unweighted": 99.22,
+     "wild": 96.67,
+     "all": 97.3,
+     "real_acc": 93.25,
+     "n": {
+      "id": 400,
+      "ood": {
+       "gen3": 40,
+       "jimeng": 40,
+       "kling": 40,
+       "luma": 40,
+       "pika": 40,
+       "sora": 80,
+       "vidu": 60,
+       "wanx": 60
+      },
+      "wild": 60,
+      "wild_per_generator": {
+       "gen4.5": 4,
+       "hailuo2.3": 8,
+       "kling2.5_turbo": 6,
+       "kling2.6": 8,
+       "pixverse_v5": 4,
+       "seedance1.5_pro": 8,
+       "seedance2.0": 6,
+       "sora2": 4,
+       "veo3.1": 4,
+       "wan2.5": 4,
+       "wan2.6": 4
+      },
+      "real": 400
+     },
+     "small_n_note": "GenBuster wild generators have 4-8 fakes each in the subsample (4 for six of them), OOD generators 40-80: per-generator rates (Table 11 'ood', the per-generator balanced acc / AP) are noisy; quote the pooled metrics"
+    }
+   },
+   "comparators_pooled": {
+    "d3": {
+     "acc": 67.22,
+     "real_acc": 0.75,
+     "fake_recall": 98.14,
+     "fake_f1": 80.34
+    },
+    "split": {
+     "acc": 68.25,
+     "real_acc": 0.0,
+     "fake_recall": 100.0,
+     "fake_f1": 81.13
+    },
+    "stall": {
+     "acc": 71.35,
+     "real_acc": 10.5,
+     "fake_recall": 99.65,
+     "fake_f1": 82.6
+    },
+    "restrav": {
+     "acc": 50.63,
+     "real_acc": 97.0,
+     "fake_recall": 29.07,
+     "fake_f1": 44.56
+    },
+    "nsg_vd": {
+     "acc": 65.48,
+     "real_acc": 0.5,
+     "fake_recall": 95.7,
+     "fake_f1": 79.1
+    },
+    "waverep": {
+     "acc": 81.03,
+     "real_acc": 48.75,
+     "fake_recall": 96.05,
+     "fake_f1": 87.36
+    },
+    "waverep_g4": {
+     "acc": 85.63,
+     "real_acc": 61.25,
+     "fake_recall": 96.98,
+     "fake_f1": 90.21
+    },
+    "vina_video": {
+     "acc": 89.37,
+     "real_acc": 73.0,
+     "fake_recall": 96.98,
+     "fake_f1": 92.56
+    }
+   },
+   "best_comparator_pooled_acc": {
+    "detector": "vina_video",
+    "value": 89.37,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "median_comparator_pooled_acc": 69.8,
+   "rank_pooled_acc": 1
+  },
+  "genbuster_pp": {
+   "paper": {
+    "acc": 97.5,
+    "fake_recall": 97.2,
+    "fake_f1": 97.4,
+    "source": "WeVisForensics arXiv 2611.21373 Table 4 / Table 12 (GB++, Acc. / R / F1)"
+   },
+   "paper_implied_real_acc": 97.8,
+   "full_set": {
+    "n_real": 1000,
+    "n_fake": 1000
+   },
+   "subsample": {
+    "fraction": 0.4
+   },
+   "in_distribution": true,
+   "in_distribution_note": "IN-DISTRIBUTION for wevis: GenBuster-200K, the source of GenBuster-Bench, is in WeVisForensics' training data (arXiv 2611.21373, Sec. 3; GB is the paper's in-domain benchmark), so this subset is not held out for wevis; the comparators were trained on other data (GB++ is the paper's out-of-domain set, but it comes from the same BusterX family)",
+   "ours_subsample": {
+    "n": 800,
+    "n_real": 400,
+    "n_fake": 400,
+    "acc": 97.88,
+    "acc_strict": 97.88,
+    "acc_wilson95": [
+     96.62,
+     98.67
+    ],
+    "real_acc": 98.25,
+    "fake_recall": 97.5,
+    "fake_f1": 97.87,
+    "n_tool_error": 0,
+    "n_oom": 0,
+    "n_unparsed": 0,
+    "gpus": {
+     "NVIDIA RTX A6000": 800
+    },
+    "delta_acc_vs_paper": 0.38,
+    "delta_acc_strict_vs_paper": 0.38,
+    "paper_acc_inside_wilson95": true,
+    "delta_fake_recall_vs_paper": 0.3,
+    "delta_fake_f1_vs_paper": 0.47
+   },
+   "comparators_pooled": {
+    "d3": {
+     "acc": 48.62,
+     "real_acc": 1.0,
+     "fake_recall": 96.25,
+     "fake_f1": 65.2
+    },
+    "split": {
+     "acc": 50.0,
+     "real_acc": 0.0,
+     "fake_recall": 100.0,
+     "fake_f1": 66.67
+    },
+    "stall": {
+     "acc": 55.12,
+     "real_acc": 12.75,
+     "fake_recall": 97.5,
+     "fake_f1": 68.48
+    },
+    "restrav": {
+     "acc": 47.25,
+     "real_acc": 83.5,
+     "fake_recall": 11.0,
+     "fake_f1": 17.25
+    },
+    "nsg_vd": {
+     "acc": 49.62,
+     "real_acc": 0.5,
+     "fake_recall": 98.75,
+     "fake_f1": 66.22
+    },
+    "waverep": {
+     "acc": 64.12,
+     "real_acc": 38.0,
+     "fake_recall": 90.25,
+     "fake_f1": 71.56
+    },
+    "waverep_g4": {
+     "acc": 80.0,
+     "real_acc": 66.5,
+     "fake_recall": 93.5,
+     "fake_f1": 82.38
+    },
+    "vina_video": {
+     "acc": 89.0,
+     "real_acc": 86.75,
+     "fake_recall": 91.25,
+     "fake_f1": 89.24
+    }
+   },
+   "best_comparator_pooled_acc": {
+    "detector": "vina_video",
+    "value": 89.0,
+    "tied": [
+     "vina_video"
+    ]
+   },
+   "median_comparator_pooled_acc": 52.56,
+   "rank_pooled_acc": 1
+  }
+ }
+}

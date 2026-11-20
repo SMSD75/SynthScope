@@ -12,13 +12,16 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ## 1. What's already integrated
 
-`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (42 registry keys on
-2026-11-18: 32 image, 10 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (43 registry keys on
+2026-11-20: 32 image, 11 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`. The one exception is
 the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`, `fakevlm`): an inference-only released model with no training path, so it has no
 `SynthScope<Name>Model`, no `conf/model` yaml and no trainer branch; it is a `ModelSpec` carrying a `VLMConfig`
 (`models/vlm/vlm.py`, `models/image/veritaspp/veritaspp.py`, `models/image/adb_vlm/adb_vlm.py`, `models/image/fakevlm/fakevlm.py`), served by `SynthScopeVLM`.
+The agent kind (`predict_kind="video_agent"`: `wevis`) is the other exception: the official agent code runs unmodified in its own
+process (`models/video/wevis/runner.py`, pinned transformers 5.23 / PaddleOCR runtime on `$SYNTHSCOPE_WEVIS_PYTHONPATH`); the
+`ModelSpec` carries a `WeVisConfig` (`agent=`) and the engine talks to the runner through `WeVisRunner` (`models/video/wevis/wevis.py`).
 
 | key | modality | predict_kind | weights | interp map | method |
 |---|---|---|---|---|---|
@@ -54,6 +57,7 @@ the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`, `fakevlm`): an infer
 | `stall` | video | video | training-free | – | Spatio-temporal whitened log-likelihoods (DINOv3) |
 | `waverep` (+ `waverep_g4`) | video | video | official | – | DINOv2 ViT-B/14 + registers fine-tuned frame by frame with a wavelet-band augmentation; the first 64 frames (OpenCV), center 504 crop, sigmoid of the mean frame logit (`waverep` = trained on one generator, `waverep_g4` on four) |
 | `nsg_vd` (+ `nsg_vd_pika`, `nsg_vd_unbalance`) | video | video | official | – | Normalized spatiotemporal gradient of 8 ffmpeg-selected frames from a pre-trained 256x256 diffusion model, a deep-kernel MMD against 100 MSR-VTT reference videos (their features are a file built locally by `build_reference.py`, not distributed), fake iff the statistic is above 1 (needs ffmpeg 4.2 and two extra files, `aux_files`: the 2.2 GB diffusion model and the 482 MB reference) |
+| `wevis` | video | video_agent | official | – | WeVisForensics: a Qwen3.5-4B investigator (LoRA) on a 1 fps overview calls up to four inspector LoRAs (visual appearance, physical consistency, common sense on a time window; OCR with PP-OCRv5 on a frame) and answers real / fake; the official code and adapters run unmodified, greedy, audio off, in a separate process; P(fake) the fake-minus-real logit at the final verdict token, read during generation; about 41 s and 22 GB per video. Apache-2.0, not in the zoo or on the Space |
 | `vina_video` | video | video | official | – | The `vina` model with the paper's video protocol: ffmpeg 2 fps JPEG frames, the central frame, sigmoid of the mean logit (needs ffmpeg) |
 
 `*` served via official weights remapped into the SynthScope class. **`predict_kind`** sets the score
@@ -104,7 +108,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 ## 4. Evaluation / benchmarking
 
 - **Image** (a `vlm` detector is scored one image at a time, greedy, with `--vlm-cache DIR` to resume; see `models/image/veritaspp/README.md`, `models/image/adb_vlm/README.md` and `models/image/fakevlm/README.md`): `benchmark/bench_eval.py --model <k> --benchmark {forensynths|ufd|pergen|pool} --data <root> [--ckpt <pth>] [--native-res] --tag <t>`. Auto-discovers `<gen>/{0_real,1_fake}` (or `{ai,nature}`, shared-reals) layouts; prints per-generator acc/AP/AUROC + mean; writes `repro/bench_results/<tag>.json`.
-- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video|waverep|waverep_g4|nsg_vd|nsg_vd_pika|nsg_vd_unbalance} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`.
+- **Video**: `benchmark/bench_eval_video.py --model {d3|split|restrav|stall|vina_video|waverep|waverep_g4|nsg_vd|nsg_vd_pika|nsg_vd_unbalance|wevis} --dataset NAME` (auto-download) or `--benchmark {genvideo|fakeonly|pergen} --data DIR`. The agent (`wevis`): accuracy from its verdict, AUROC from the verdict-token logit, OOM / tool-error / runner retries (`--agent-*-retries`), per-video records and a pooled one-row-per-clip block (`--per-video`); see `models/video/wevis/README.md` and `repro/video_agent_bench/`.
 - `--ckpt` overrides the registry checkpoint (for official-vs-SynthScope side-by-side).
 - `--model-config NAME` (needs `--ckpt`) scores that checkpoint with `conf/model/NAME.yaml` instead of the served model config, keeping the registry's other overrides (e.g. `image/effort_ufd`: a training recipe with its own test preprocessing).
 - `benchmark/aggregate_results.py`, `leaderboard.py`, `evaluate.py`, `schema.json` aggregate runs.
@@ -119,7 +123,7 @@ To wire it in: `conf/model/<modality>/<key>.yaml` (`model_type: <key>`), a branc
 Known image sets: `cnndetection` (ForenSynths/ProGAN), `genimage`, `genimage_full` (8-gen),
 `universialfakedetection` (Ojha UFD), `aigibench`, `synthbuster`, `ditfake`, `diffusionforensics`,
 `diffusion1kstep`, `aigcdetect`, `commgen15`, `realchain`, `evalgen`, `synthwildx`, `wildrf`, `bfree_online`, `rrdataset`, `mirage_test`, `arforensics`, `cospy`/`cospy_subset`, `spai_ldm`, `freqnetdetection`.
-Video: `genvideo_val`, `genvideo`, `videophy`, `vidprom`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
+Video: `genvideo_val`, `genvideo`, `videophy`, `vidprom`, `genbuster`, `genbuster_pp`, `restrav_data`, `evalcrafter`, `genvidbench`, `videofeedback`, `comgenvid`.
 
 Each `DatasetDef` lists candidate roots; **`_resolve_root` is node-portable** — it remaps the configured
 `/hddstore` path onto whatever scratch mount exists (`/hddstore`↔`/ssdstore`↔`/nvmestore`), overridable

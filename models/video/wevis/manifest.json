@@ -1,0 +1,91 @@
+{
+ "about": "Pinned WeVisForensics release for the `wevis` detector: the official code (Tencent/WeVisForensics), the LoRA adapters (HF tencent/WeVisForensics), the base model (HF Qwen/Qwen3.5-4B) and the PP-OCRv5 models PaddleOCR reads. models/video/wevis/runner.py refuses to run when a file's sha256 differs.",
+ "code": {
+  "repo": "https://github.com/Tencent/WeVisForensics",
+  "commit": "43ae1c0fe2513ffc10baa1fd12fe3ca342aa21d5",
+  "files": {
+   "core/__init__.py": "2df85ef6e7a7b66573d19a426cdeb1454fd205432be11f1f263e39bb17335752",
+   "core/client.py": "bad8ead63441b1ec065d349198dfbd622be6037dab269b846a3995bea53637bb",
+   "core/common.py": "4c1768fb00e305a1e3510ae4656807420e03d824bcde4e9ecdc586b5fdce0084",
+   "core/media.py": "327a14a0ff022cfccb96f6cb47d48883d41c8c9410561ea39f4bf4f00c03fb2e",
+   "core/metrics.py": "db0fbd8476a1797dde915a39d2d594d112f29685bfa062bbe8415985d6decf92",
+   "core/skill_card.py": "114a9d296e653a05fb57919f607389f3ddb805bb28beb03970043dace22c3d48",
+   "main_agent/__init__.py": "3cf72f6528bf87314cc50de7993fba95b84db87ad9b9093405f010b14303078b",
+   "main_agent/config.py": "c0a7bd42047d6fb6423258a6a3ef14cdf32aa73099bc83afa1fda76571495623",
+   "main_agent/continuation.py": "b510c1003b33089fcf5b3adb4c7d755daad71ec21aafc5fd93f975782d7d5207",
+   "main_agent/engine.py": "6d4e42ef13da6ea4bfee6d2b926fbf6a240dd21fa00d71637367b3491b2b503d",
+   "main_agent/loop.py": "d2c385d123c9103a1018eb275fe50817819ad1977aaccd2933d26eada199bc63",
+   "main_agent/prompts.py": "642f6ea18e2ddae21701556c9695deb0fcbf95a334767e85e56991f1d10c8247",
+   "main_agent/protocol.py": "ec6bfdd80b8cc80f2cfe0357abe5b42e87ac3f3bca937a5a3d88791def342d49",
+   "sub_agents/__init__.py": "3e3f085b4e8a9556b3ed8a7774c3fe106702ea038e070268711774f94bdd9d98",
+   "sub_agents/appearance.py": "b30267a953a1bbf6257fd332c27934229eb000dcb6bf63915dbe235fbdf50bea",
+   "sub_agents/audio.py": "b030a7ee7502679f81ac349fc047a331744b1b9896257a8fa047e27e5c471aec",
+   "sub_agents/base.py": "d9703fc289c3ea2c4ac84a7f3b2193276d907fc584bad6480ab6bf12e3cc300b",
+   "sub_agents/common_sense.py": "e0e4e9e989aad9a10d475c1163e1e7189ee4e8a769ec8a3d69b3265afacb2f9d",
+   "sub_agents/ocr.py": "1bf760519294f9e4a58263ce488ca459f1210af29608cf3451868f000f859758",
+   "sub_agents/physical.py": "2f9250c8d67a2992cb2fdb039e700efeb4f1e804c8123cf47833441cfa601dad",
+   "sub_agents/prompts.py": "999a915ef8b5b4b698785501e926cd8893d758a3bd909bdcf9c3c31fc229e5d9",
+   "demo/wvf_local.py": "b029ad32bb4312b6373f8b7bd3eee95838a7e78805d4d25810d344b43f387c16",
+   "demo/wvf_cpu_ocr.py": "42c3b2f124a02c53830943197a76b5ffb8680c48433f6e23f7e726d2e749b491",
+   "demo/parity_check.py": "98c7839f6c4296025a190412c3bbfee301320a8bb020c7c587057df1e22d082c",
+   "demo/configs/chat_template.jinja": "f8eb498b767e9e3d1256948542b80acfbedb0ea336664b9aa4e07d9127419d08",
+   "LICENSE.txt": "f40347a79bc24ee75dad77a356a144a415136f014f8c89197870b1ddff1a6569"
+  }
+ },
+ "adapters": {
+  "repo": "tencent/WeVisForensics",
+  "revision": "9fa025a02dde4f7f7de8883fe17b6f251f39098e",
+  "files": {
+   "LICENSE": "f40347a79bc24ee75dad77a356a144a415136f014f8c89197870b1ddff1a6569",
+   "common_sense/adapter_config.json": "a6e392bc00e23038febc2a2e7d4f0f241613c3266a5b82893564928daa27b3d3",
+   "common_sense/adapter_model.safetensors": "39273b80bf5a2efca668e4bf598d2e4a86d7309542f9dbb72dcb669c355993ce",
+   "main/adapter_config.json": "f513cac5151091ea5e2e243789a5625020241a2e0f2e3be0cf5fdee45af25ee0",
+   "main/adapter_model.safetensors": "fe0e9d1556ab5e7e331a071c82905a50fdc08e4a37a98f3a739df09bf7d89523",
+   "ocr_consistency/adapter_config.json": "fd236c397941ffcd696407b13ce763edd95d1cc173a4342bf5155d2f664b4c57",
+   "ocr_consistency/adapter_model.safetensors": "d9eeac0f434eb116d9b81f35ae52afd3e7f799daeb88a5a5f7b04a28c4344064",
+   "physical_consistency/adapter_config.json": "3997abbf203a1d1c3be0dbc0c674a6abc76c5847b9619d7e509f970d50b8314b",
+   "physical_consistency/adapter_model.safetensors": "be8b1f1eb27bd7b0da1f9366b7e9dc23662e96d0d6776a8fed8d2e8fbcddb2ac",
+   "skill_card.json": "46270e4e0aea1801995ebccded49134c131d29fd5fde9a38cc2f0928549807e1",
+   "visual_appearance/adapter_config.json": "511ead83062f62945f79274d451176c391e4fe225fbf744015ff034da90dfd4f",
+   "visual_appearance/adapter_model.safetensors": "4ca3d2b287aad535838f8609039c06cf3cb384832758847624ec41ce1183d42b"
+  }
+ },
+ "base": {
+  "repo": "Qwen/Qwen3.5-4B",
+  "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "files": {
+   "LICENSE": "bbedc3fda3305820b977265f01b8619d87570a6739de3a5582c3464840f1e57a",
+   "chat_template.jinja": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+   "config.json": "ddc63e1c717afa86c865bb5e01313d89d72bb53b97ad4a8a03ba8510c0621670",
+   "merges.txt": "a9d356d7bdf1ef4949e3e748e95b8e10ad9d4e2e838eddc38a0a7b6b94d1db8d",
+   "model.safetensors-00001-of-00002.safetensors": "26a93f066e1916adb13453dae5a0c707c0fbc71299ed98779571a907b8e74c61",
+   "model.safetensors-00002-of-00002.safetensors": "cb544bd9bfae93dc59b0f22b292f5933573854a7f9b97835c67060d7d910e188",
+   "model.safetensors.index.json": "cf3f798ee02ba45f9622aa8892a47369ab667d0afbf154ee7c2212de42e6302d",
+   "preprocessor_config.json": "27225450ac9c6529872ee1924fcb0962ff5634834f817040f444118116f4e516",
+   "tokenizer.json": "5f9e4d4901a92b997e463c1f46055088b6cca5ca61a6522d1b9f64c4bb81cb42",
+   "tokenizer_config.json": "316230d6a809701f4db5ea8f8fc862bc3a6f3229c937c174e674ff3ca0a64ac8",
+   "video_preprocessor_config.json": "7768af27c1fafa9cc9011c1dc20067e03f8915e03b63504550e11d5066986d13",
+   "vocab.json": "ce99b4cb2983d118806ce0a8b777a35b093e2000a503ebde25853284c9dfa003"
+  }
+ },
+ "paddlex": {
+  "repo": {
+   "PP-OCRv5_server_det": "PaddlePaddle/PP-OCRv5_server_det",
+   "PP-OCRv5_server_rec": "PaddlePaddle/PP-OCRv5_server_rec"
+  },
+  "revision": {
+   "PP-OCRv5_server_det": "ca867c897ecbca8873081573a802ad70d499cb94",
+   "PP-OCRv5_server_rec": "b26c3587fda8da3c8ec0ce357214b4d661ff1558"
+  },
+  "files": {
+   "official_models/PP-OCRv5_server_det/config.json": "436bf19010fe3879477e8599a870a0ec8ccd14ca39056805ec4ed20ab318ec04",
+   "official_models/PP-OCRv5_server_det/inference.json": "af5876933d8806a1b50d895867e0781e135cd92ff37381992828fc8d1b842d28",
+   "official_models/PP-OCRv5_server_det/inference.pdiparams": "183146fe9d9910352f68482f623bcbbb9fa7b9e8fa1463b9ad288cef00524d2d",
+   "official_models/PP-OCRv5_server_det/inference.yml": "28fb721efc3634fc8aa677e474b9602cb815a91cf569ef357a7a553d7b3ce685",
+   "official_models/PP-OCRv5_server_rec/config.json": "6a780e213d7a830058ae1b6899c62cc13ca9c1f0f04ae39a27ebb2610fae7c51",
+   "official_models/PP-OCRv5_server_rec/inference.json": "8e6e12e5d42531840310977fffb58165bf889fc5061408c5a8afdb6985f47fcb",
+   "official_models/PP-OCRv5_server_rec/inference.pdiparams": "63853f062a5f4089befc16f565a68277618e0da5cb45468b49d11079de0ada77",
+   "official_models/PP-OCRv5_server_rec/inference.yml": "2c719dba044c4e2228aef8ff92f5f575394d75d24c16de096a33b7cfd902f66d"
+  }
+ }
+}

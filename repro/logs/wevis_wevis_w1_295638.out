@@ -1,0 +1,8 @@
+node=ivi-cn023 job=295638 Thu Nov 19 20:26:26 CET 2026 code=4e28a36 wevis Task 2: GenBuster subsample fixed at 0.4 per folder (pilot cost estimate), compare / t (4e28a36c65ffa95ac4041746b96e5c047058e4c6)
+NVIDIA RTX A6000, 49140 MiB, 1 MiB
+              total        used        free      shared  buff/cache   available
+Mem:            503           7         411           6          84         486
+=== comparators in the background 20:26:26
+[cmp] /hddstore/ssalehi/SynthScope/video_agent_bench/code/295638/repro/video_agent_bench/comparators.sh: line 11: W: the code copy
+=== unit wevis:genvideo:0of4 START 2026-11-19 20:26:35 on ivi-cn023 pid 116310: bench_eval_video -m wevis --benchmark pergen --data /hddstore/ssalehi/SynthScope/video_agent_bench/subsets/genvideo/GenVideo/test --tag vab_genvideo_wevis --cache-dir /hddstore/ssalehi/SynthScope/video_agent_bench/cache/wevis/genvideo --limit 25 --shard 0/4
+[2026-11-19T20:26:46.558] error: *** JOB 295638 ON ivi-cn023 CANCELLED AT 2026-11-19T20:26:46 DUE to SIGNAL Terminated ***

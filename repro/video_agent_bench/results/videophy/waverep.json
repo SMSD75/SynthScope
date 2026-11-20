@@ -1,0 +1,2146 @@
+{
+  "tag": "vab_videophy_waverep",
+  "model": "waverep",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/videophy/VideoPhy/test",
+  "n_generators": 8,
+  "means": {
+    "acc": 90.23,
+    "map": 97.54,
+    "map_real": 97.49,
+    "mauroc": 97.4,
+    "pooled": {
+      "n": 288,
+      "n_real": 32,
+      "n_fake": 256,
+      "acc": 82.64,
+      "acc_strict": 82.64,
+      "real_acc": 100.0,
+      "fake_recall": 80.47,
+      "fake_f1": 89.18
+    }
+  },
+  "per_generator": {
+    "Dream-Machine": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "Gen-2": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "LaVie": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "OpenSora": {
+      "ap": 92.16,
+      "ap_real": 93.37,
+      "auroc": 92.29,
+      "real_acc": 100.0,
+      "fake_acc": 28.12,
+      "acc": 64.06,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "Pika": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "SVD": {
+      "ap": 99.72,
+      "ap_real": 99.72,
+      "auroc": 99.71,
+      "real_acc": 100.0,
+      "fake_acc": 90.62,
+      "acc": 95.31,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "VideoCrafter2": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    },
+    "ZeroScope": {
+      "ap": 88.46,
+      "ap_real": 86.8,
+      "auroc": 87.21,
+      "real_acc": 100.0,
+      "fake_acc": 25.0,
+      "acc": 62.5,
+      "n_real": 32,
+      "n_fake": 32,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 32,
+  "reals": null,
+  "ckpt_sha256": "1c7566b26c0b0afe3f5642dd4e454039328d59f512a5d815d5edaa10b544a897",
+  "cache_dir": "/hddstore/ssalehi/SynthScope/video_agent_bench/cache/waverep/videophy",
+  "date": "2026-11-19T21:13:17",
+  "synthscope_version": "video",
+  "per_video": [
+    {
+      "p": 0.005708,
+      "logit": -5.160142,
+      "k": "Dream-Machine/0_real/00001_msrvtt_1.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000653,
+      "logit": -7.333432,
+      "k": "Dream-Machine/0_real/00003_msrvtt_2.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001025,
+      "logit": -6.88165,
+      "k": "Dream-Machine/0_real/00005_msrvtt_3.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.085382,
+      "logit": -2.371369,
+      "k": "Dream-Machine/0_real/00007_msrvtt_4.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.003882,
+      "logit": -5.547563,
+      "k": "Dream-Machine/0_real/00009_msrvtt_5.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.005809,
+      "logit": -5.142479,
+      "k": "Dream-Machine/0_real/00011_msrvtt_6.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000371,
+      "logit": -7.900032,
+      "k": "Dream-Machine/0_real/00013_msrvtt_7.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000141,
+      "logit": -8.870133,
+      "k": "Dream-Machine/0_real/00015_msrvtt_8.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002905,
+      "logit": -5.838423,
+      "k": "Dream-Machine/0_real/00017_msrvtt_9.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001112,
+      "logit": -6.800688,
+      "k": "Dream-Machine/0_real/00019_msrvtt_10.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002739,
+      "logit": -5.897519,
+      "k": "Dream-Machine/0_real/00021_msrvtt_11.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.009486,
+      "logit": -4.648403,
+      "k": "Dream-Machine/0_real/00023_msrvtt_12.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.006017,
+      "logit": -5.107126,
+      "k": "Dream-Machine/0_real/00025_msrvtt_13.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001865,
+      "logit": -6.2824,
+      "k": "Dream-Machine/0_real/00027_msrvtt_14.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.024263,
+      "logit": -3.694243,
+      "k": "Dream-Machine/0_real/00029_msrvtt_15.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.273536,
+      "logit": -0.976756,
+      "k": "Dream-Machine/0_real/00031_msrvtt_16.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.005364,
+      "logit": -5.222671,
+      "k": "Dream-Machine/0_real/00033_msrvtt_17.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001414,
+      "logit": -6.560004,
+      "k": "Dream-Machine/0_real/00035_msrvtt_18.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.030025,
+      "logit": -3.475238,
+      "k": "Dream-Machine/0_real/00037_msrvtt_19.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001965,
+      "logit": -6.230081,
+      "k": "Dream-Machine/0_real/00039_msrvtt_20.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.018088,
+      "logit": -3.994241,
+      "k": "Dream-Machine/0_real/00041_msrvtt_21.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.00235,
+      "logit": -6.051197,
+      "k": "Dream-Machine/0_real/00043_msrvtt_22.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000436,
+      "logit": -7.737481,
+      "k": "Dream-Machine/0_real/00045_msrvtt_23.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.005027,
+      "logit": -5.287853,
+      "k": "Dream-Machine/0_real/00047_msrvtt_24.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.039342,
+      "logit": -3.195329,
+      "k": "Dream-Machine/0_real/00049_msrvtt_25.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.025751,
+      "logit": -3.633186,
+      "k": "Dream-Machine/0_real/00051_msrvtt_26.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.023035,
+      "logit": -3.747422,
+      "k": "Dream-Machine/0_real/00053_msrvtt_27.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.000401,
+      "logit": -7.820302,
+      "k": "Dream-Machine/0_real/00055_msrvtt_28.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.004066,
+      "logit": -5.500954,
+      "k": "Dream-Machine/0_real/00057_msrvtt_29.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.032124,
+      "logit": -3.405494,
+      "k": "Dream-Machine/0_real/00059_msrvtt_30.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.004633,
+      "logit": -5.369801,
+      "k": "Dream-Machine/0_real/00061_msrvtt_31.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001076,
+      "logit": -6.833319,
+      "k": "Dream-Machine/0_real/00063_msrvtt_32.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.999927,
+      "logit": 9.529635,
+      "k": "Dream-Machine/1_fake/00000_02335_3783b0e2-3546-40a1-be7e-8f44fda5d8ef_raw_video_0.mp4_video0ebc55cd30cbb472aab1a01c62c913daa.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999966,
+      "logit": 10.283559,
+      "k": "Dream-Machine/1_fake/00001_02336_b7a7eeb8-40bf-4cf5-acc0-a2b25fd3122d_raw_video_0.mp4_video096adfb23e97f4429808e8900789ac027.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999941,
+      "logit": 9.73279,
+      "k": "Dream-Machine/1_fake/00002_02337_e2515ea9-49a7-4fca-8e7f-9ffdd512be3c_raw_video_0.mp4_video026667c0f16b449c5a7d41db31f0750af.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999955,
+      "logit": 10.015255,
+      "k": "Dream-Machine/1_fake/00003_02338_123d8d9d-674a-4ca1-a31e-916c4e9074d9_raw_video_0.mp4_video02ab075f58fbf4a869416dc97f3269a4b.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.994927,
+      "logit": 5.278806,
+      "k": "Dream-Machine/1_fake/00004_02339_9f5cf2c0-acc1-4422-a933-1d4988c66445_raw_video_0.mp4_video04b31aa29392a49a7a28f3b691b6a71ad.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.996035,
+      "logit": 5.526221,
+      "k": "Dream-Machine/1_fake/00005_02340_1d94918b-6eb7-4021-87ac-e9ac4bfcef41_raw_video_0.mp4_video005778adaec36457e93f7bd9a103a8bcd.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999445,
+      "logit": 7.495139,
+      "k": "Dream-Machine/1_fake/00006_02341_05fca15f-f2bd-4a3d-bb91-5c94992f9b2d_raw_video_0.mp4_video06fcd5888eeb8429a877608ec50dc6069.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999782,
+      "logit": 8.429866,
+      "k": "Dream-Machine/1_fake/00007_02342_1c29d656-3512-4133-90a9-a13502f796eb_raw_video_0.mp4_video0970cdbac223048aba39a050b313f71a4.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999962,
+      "logit": 10.175067,
+      "k": "Dream-Machine/1_fake/00008_02343_fb36f6dc-2eb2-4324-9970-b8c78438dc15_raw_video_0.mp4_video033c8896186a544e09c20c84dc2731c64.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999902,
+      "logit": 9.227873,
+      "k": "Dream-Machine/1_fake/00009_02344_0e82b1a6-fc9d-4957-b588-3aa992f752df_raw_video_0.mp4_video09e35e41c32a24640be9a032a50b4fc88.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999926,
+      "logit": 9.513892,
+      "k": "Dream-Machine/1_fake/00010_02345_9d86afd4-88ef-463a-b05e-1b73a18f04b9_raw_video_0.mp4_video038b81c9b4e4f4c1f9996d4777c621ecb.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999981,
+      "logit": 10.859721,
+      "k": "Dream-Machine/1_fake/00011_02346_5c02d820-af6e-4087-80d6-5ad0611e8d92_raw_video_0.mp4_video01ee2f7879ff24c61be29435ee07eaa32.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999926,
+      "logit": 9.510308,
+      "k": "Dream-Machine/1_fake/00012_02347_e2663ce4-57fc-48e2-ae88-372ef531db2f_raw_video_0.mp4_video074be9c9b0cc044098b04186f001db556.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999925,
+      "logit": 9.504361,
+      "k": "Dream-Machine/1_fake/00013_02348_724fce87-e022-41f8-8978-39cee4779677_raw_video_0.mp4_video01fcfe8e4627e419797f61c8a451ef39e.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999675,
+      "logit": 8.032557,
+      "k": "Dream-Machine/1_fake/00014_02349_7c973288-6bac-40c7-bd6e-f0f810c83d94_raw_video_0.mp4_video03bdfccdca38242449b62c69d0135d1d6.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "logit": 10.343464,
+      "k": "Dream-Machine/1_fake/00015_02350_4120c850-8877-4ddf-9765-8e1450aa1b59_raw_video_0.mp4_video0ebdee2c6eaf344c0879cc993f3d1c987.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999938,
+      "logit": 9.690473,
+      "k": "Dream-Machine/1_fake/00016_02351_324e7601-ed22-4dc3-8d76-aa551bbb4713_raw_video_0.mp4_video055e792590592496ab4b57d2e9c849bbc.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999669,
+      "logit": 8.01377,
+      "k": "Dream-Machine/1_fake/00017_02352_fa9d7341-f4b8-414c-8494-4d220eddf4f7_raw_video_0.mp4_video09d770745570a414394c11c7bf5703f72.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999727,
+      "logit": 8.204294,
+      "k": "Dream-Machine/1_fake/00018_02353_98f0e5de-152e-4b0b-a8a6-22df3917190f_raw_video_0.mp4_video0fc56caa68fb34dc2a4d7663c1f4e6740.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "logit": 10.032889,
+      "k": "Dream-Machine/1_fake/00019_02354_d9377830-e5cb-483a-9dd2-40f4bcb532a2_raw_video_0.mp4_video026cc0d348a4844cd913fba764dbc5970.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.99983,
+      "logit": 8.682485,
+      "k": "Dream-Machine/1_fake/00020_02355_0212de20-7fc0-49d0-85b5-1e14d3b99305_raw_video_0.mp4_video0258d68d9a1574e9baf12bfe2cb6c0c59.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999824,
+      "logit": 8.646428,
+      "k": "Dream-Machine/1_fake/00021_02356_83d08296-3517-44dd-8039-a40d14e3d126_raw_video_0.mp4_video0ffd82f44870b4cf289a6082b8bab78ce.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999876,
+      "logit": 8.991173,
+      "k": "Dream-Machine/1_fake/00022_02357_c3ecd35d-2233-43a5-b76d-34e676c3e07c_raw_video_0.mp4_video0647c202172504401b105762f4bcb19d6.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999674,
+      "logit": 8.029569,
+      "k": "Dream-Machine/1_fake/00023_02358_67bc6005-1cf5-45b6-9950-035b8100df64_raw_video_0.mp4_video0cac57acfffd0437ab81c04dea9b2f3b0.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999981,
+      "logit": 10.865578,
+      "k": "Dream-Machine/1_fake/00024_02359_8499f26e-80bd-4c61-9eb1-dc55e21b3728_raw_video_0.mp4_video0281529959ede4431a14266246f4b486e.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.99988,
+      "logit": 9.031642,
+      "k": "Dream-Machine/1_fake/00025_02360_df531b3b-6dec-4547-b886-dda444ef9d0c_raw_video_0.mp4_video02bc5b64b8ce349f4b546f0137b109c1e.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999753,
+      "logit": 8.304394,
+      "k": "Dream-Machine/1_fake/00026_02361_99d92789-f2c2-402b-bb06-9ca2ba161044_raw_video_0.mp4_video0911b26955d6f40309d242925bd9c5773.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999935,
+      "logit": 9.638983,
+      "k": "Dream-Machine/1_fake/00027_02362_6c3b1a62-c3e7-4adb-bc28-ef4149717c8c_raw_video_0.mp4_video078be5050d30e4dd59d7010abc83d7b71.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999797,
+      "logit": 8.50274,
+      "k": "Dream-Machine/1_fake/00028_02363_cfed70e2-72ed-4d20-89fa-f197ca05e5fa_raw_video_0.mp4_video0fd7984489cfc4cb8abc88f83dd25c312.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999477,
+      "logit": 7.554917,
+      "k": "Dream-Machine/1_fake/00029_02364_e05f7962-7ad3-4b00-ba37-90380181aad1_raw_video_0.mp4_video042fe1614b78a475b80c6e21d8884a1a1.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999651,
+      "logit": 7.960194,
+      "k": "Dream-Machine/1_fake/00030_02365_2f7bde22-cb8b-4805-9ef2-f27640d07283_raw_video_0.mp4_video0bee7c465bca64221b78a79d64d439cf1.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "logit": 10.350523,
+      "k": "Dream-Machine/1_fake/00031_02366_782fecec-6cd8-4038-af2b-e3a1a8e35fca_raw_video_0.mp4_video0b740a8abeb5d42f89d844c4183113a20.mp4",
+      "gen": "Dream-Machine",
+      "label": 1
+    },
+    {
+      "p": 0.999929,
+      "logit": 9.546877,
+      "k": "Gen-2/1_fake/00000_01375_Beer_clashes_into_white_frothy_foam._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99998,
+      "logit": 10.805367,
+      "k": "Gen-2/1_fake/00001_01376_Bubble_experiences_a_splashy_burst_in_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99994,
+      "logit": 9.713088,
+      "k": "Gen-2/1_fake/00002_01377_Bursting_bubbles_top_off_carbonated_soda._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999985,
+      "logit": 11.139224,
+      "k": "Gen-2/1_fake/00003_01378_Champagne_mixing_with_fresh_orange_juice._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "logit": 10.409007,
+      "k": "Gen-2/1_fake/00004_01379_Cream_swirling_dreamily_into_coffee._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999988,
+      "logit": 11.371497,
+      "k": "Gen-2/1_fake/00005_01380_Detergent_flowing_into_a_bucket_of_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999982,
+      "logit": 10.913066,
+      "k": "Gen-2/1_fake/00006_01381_Drops_of_honey_on_smooth_yogurt._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999984,
+      "logit": 11.022148,
+      "k": "Gen-2/1_fake/00007_01382_Honey_diffusing_into_warm_milk._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99998,
+      "logit": 10.824367,
+      "k": "Gen-2/1_fake/00008_01383_Honey_pours_into_a_cup_of_tea._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99998,
+      "logit": 10.841665,
+      "k": "Gen-2/1_fake/00009_01384_Honey_threading_slowly_into_tea._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999937,
+      "logit": 9.675526,
+      "k": "Gen-2/1_fake/00010_01385_Ink_billowing_into_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "logit": 10.337257,
+      "k": "Gen-2/1_fake/00011_01386_Ink_spreading_in_still_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "logit": 10.698259,
+      "k": "Gen-2/1_fake/00012_01387_Juice_and_fizz_shake_in_a_bottle._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "logit": 10.688431,
+      "k": "Gen-2/1_fake/00013_01388_Lemon_juice_drops_splash_into_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999967,
+      "logit": 10.323384,
+      "k": "Gen-2/1_fake/00014_01389_Milk_blending_into_hot_chocolate._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "logit": 10.454536,
+      "k": "Gen-2/1_fake/00015_01390_Milk_blending_seamlessly_into_tea._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "logit": 10.577003,
+      "k": "Gen-2/1_fake/00016_01391_Milk_colliding_with_piping_hot_black_coffee._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999988,
+      "logit": 11.372932,
+      "k": "Gen-2/1_fake/00017_01392_Milk_spilling_into_coffee_crate_waves._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999981,
+      "logit": 10.86336,
+      "k": "Gen-2/1_fake/00018_01393_Milk_streaming_into_hot_tea._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999985,
+      "logit": 11.109668,
+      "k": "Gen-2/1_fake/00019_01394_Milk_whirls_in_black_coffee._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999987,
+      "logit": 11.257035,
+      "k": "Gen-2/1_fake/00020_01395_Oil_cascades_into_vinegar_for_vinaigrette._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999974,
+      "logit": 10.550305,
+      "k": "Gen-2/1_fake/00021_01396_Oil_floating_atop_crystal_clear_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "logit": 10.596914,
+      "k": "Gen-2/1_fake/00022_01397_Paint_swirling_in_jar_of_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.99998,
+      "logit": 10.804194,
+      "k": "Gen-2/1_fake/00023_01398_Perfume_mist_diffusing_through_the_air._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999985,
+      "logit": 11.112711,
+      "k": "Gen-2/1_fake/00024_01399_Pouring_milk_into_still_tea._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999306,
+      "logit": 7.272167,
+      "k": "Gen-2/1_fake/00025_01400_Rain_creates_concentric_ripples_in_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999824,
+      "logit": 8.646128,
+      "k": "Gen-2/1_fake/00026_01401_Rain_splashing_on_a_still_pond._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.995522,
+      "logit": 5.404083,
+      "k": "Gen-2/1_fake/00027_01402_Raindrops_breaking_tranquil_lake_surface._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999946,
+      "logit": 9.823173,
+      "k": "Gen-2/1_fake/00028_01403_Raindrops_cause_ripples_in_pond_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999975,
+      "logit": 10.612281,
+      "k": "Gen-2/1_fake/00029_01404_Raindrops_disturb_quiet_puddles._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999916,
+      "logit": 9.381391,
+      "k": "Gen-2/1_fake/00030_01405_Raindrops_tinkling_on_a_calm_lake._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999978,
+      "logit": 10.734544,
+      "k": "Gen-2/1_fake/00031_01406_Red_wine_swirling_in_water._0.mp4",
+      "gen": "Gen-2",
+      "label": 1
+    },
+    {
+      "p": 0.999824,
+      "logit": 8.644926,
+      "k": "LaVie/1_fake/00000_00000_A_blender_spins%2C_mixing_squeezed_juice_within_it._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999952,
+      "logit": 9.944882,
+      "k": "LaVie/1_fake/00001_00001_Honey_diffusing_into_warm_milk._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999946,
+      "logit": 9.817992,
+      "k": "LaVie/1_fake/00002_00002_A_brave_diver_splashes_into_a_pool_from_a_great_height._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.997321,
+      "logit": 5.919645,
+      "k": "LaVie/1_fake/00003_00003_A_sailboat_cuts_through_the_choppy_sea_waves._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999664,
+      "logit": 7.998819,
+      "k": "LaVie/1_fake/00004_00004_A_wooden_spoon_stirs_the_hot_soup_in_the_pot._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.995707,
+      "logit": 5.446521,
+      "k": "LaVie/1_fake/00005_00005_The_metal_pancake_turner_flips_the_cooking_pancake._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.998154,
+      "logit": 6.292844,
+      "k": "LaVie/1_fake/00006_00006_A_sponge_rinses_dish_soap_under_running_water._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.996862,
+      "logit": 5.760896,
+      "k": "LaVie/1_fake/00007_00007_Bristles_of_paintbrush_sweeping_across_canvas._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999897,
+      "logit": 9.183048,
+      "k": "LaVie/1_fake/00008_00008_A_whisk_mixes_an_egg_in_a_bowl._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999618,
+      "logit": 7.869301,
+      "k": "LaVie/1_fake/00009_00009_Wine_pouring_from_a_bottle_into_a_glass._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999328,
+      "logit": 7.3048,
+      "k": "LaVie/1_fake/00010_00010_Refrigerator_door_closing_after_getting_a_soda._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999946,
+      "logit": 9.83493,
+      "k": "LaVie/1_fake/00011_00011_Bottle_topples_off_the_table._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999908,
+      "logit": 9.29113,
+      "k": "LaVie/1_fake/00012_00012_Coffee_pouring_from_a_coffee_pot_into_a_mug._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999868,
+      "logit": 8.928824,
+      "k": "LaVie/1_fake/00013_00013_The_eraser_rubs_against_the_paper%2C_removing_pencil_marks._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999077,
+      "logit": 6.986726,
+      "k": "LaVie/1_fake/00014_00014_Cork_being_twisted_out_of_a_bottle._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "logit": 10.20692,
+      "k": "LaVie/1_fake/00015_00015_Paint_swirling_in_jar_of_water_1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.99494,
+      "logit": 5.281379,
+      "k": "LaVie/1_fake/00016_00016_Leather_glove_catching_a_hard_baseball._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999821,
+      "logit": 8.630556,
+      "k": "LaVie/1_fake/00017_00017_A_spray_bottle_sprays_water_onto_a_garden_plant._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999962,
+      "logit": 10.174796,
+      "k": "LaVie/1_fake/00018_00018_Pouring_milk_into_still_tea_1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999868,
+      "logit": 8.929171,
+      "k": "LaVie/1_fake/00019_00019_A_cloth_soaking_up_laundry_detergent_in_a_bucket._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.975548,
+      "logit": 3.686302,
+      "k": "LaVie/1_fake/00020_00020_Skateboard_rolls_swiftly_over_the_bumpy_sidewalk._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.862294,
+      "logit": 1.834472,
+      "k": "LaVie/1_fake/00021_00021_Metal_marbles_jostling_inside_a_marble_run._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999762,
+      "logit": 8.341502,
+      "k": "LaVie/1_fake/00022_00022_Yogurt_merging_with_strawberry_puree._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999581,
+      "logit": 7.777911,
+      "k": "LaVie/1_fake/00023_00023_The_coffee_cup_rests_on_a_cork_coaster._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999937,
+      "logit": 9.675312,
+      "k": "LaVie/1_fake/00024_00024_A_mixing_spoon_stirring_hot_chocolate_in_a_cup._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.997322,
+      "logit": 5.919993,
+      "k": "LaVie/1_fake/00025_00025_A_wheel_steadily_rolls_across_a_cement_path._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.999428,
+      "logit": 7.465422,
+      "k": "LaVie/1_fake/00026_00026_An_inflated_basketball_dribbling_on_the_concrete_court._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.99991,
+      "logit": 9.31228,
+      "k": "LaVie/1_fake/00027_00027_Cloth_banner_hanging_from_wooden_twig._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.919286,
+      "logit": 2.43269,
+      "k": "LaVie/1_fake/00028_00028_Water_flows_down_a_circular_drain._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.996842,
+      "logit": 5.754798,
+      "k": "LaVie/1_fake/00029_00029_Well-used_broom_leans_against_the_kitchen_pantry_door._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.973264,
+      "logit": 3.594627,
+      "k": "LaVie/1_fake/00030_00030_Comb_running_through_tangled_hair._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.992267,
+      "logit": 4.85447,
+      "k": "LaVie/1_fake/00031_00031_A_diver_splashing_into_the_pool_water._1.mp4",
+      "gen": "LaVie",
+      "label": 1
+    },
+    {
+      "p": 0.042267,
+      "logit": -3.120561,
+      "k": "OpenSora/1_fake/00000_00687_Clamping_a_wire_with_pliers._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.048851,
+      "logit": -2.968901,
+      "k": "OpenSora/1_fake/00001_00688_Razor_shaves_skin_smooth._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.054713,
+      "logit": -2.849397,
+      "k": "OpenSora/1_fake/00002_00689_Ball_bounces_off_the_floor._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.229278,
+      "logit": -1.212393,
+      "k": "OpenSora/1_fake/00003_00690_Potato_squashed_by_wooden_masher._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.068494,
+      "logit": -2.610062,
+      "k": "OpenSora/1_fake/00004_00691_Lifting_a_weight_with_hand._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.995045,
+      "logit": 5.302357,
+      "k": "OpenSora/1_fake/00005_00692_Hand_flipping_open_book_cover._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.26054,
+      "logit": -1.043166,
+      "k": "OpenSora/1_fake/00006_00693_Rope_being_used_to_pull_wooden_sled._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.868416,
+      "logit": 1.887029,
+      "k": "OpenSora/1_fake/00007_00694_Bristles_of_paintbrush_sweeping_across_canvas._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.93653,
+      "logit": 2.691616,
+      "k": "OpenSora/1_fake/00008_00695_Brush_strokes_paint_on_canvas._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.277602,
+      "logit": -0.956387,
+      "k": "OpenSora/1_fake/00009_00696_Hand_squeezes_the_stress_ball._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.038768,
+      "logit": -3.210634,
+      "k": "OpenSora/1_fake/00010_00697_Frog_leaping_from_one_lilypad_to_another._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.010112,
+      "logit": -4.583879,
+      "k": "OpenSora/1_fake/00011_00698_Bottle_topples_off_the_table._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.55141,
+      "logit": 0.20637,
+      "k": "OpenSora/1_fake/00012_00699_The_eraser_rubs_against_the_paper%2C_removing_pencil_marks._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.047397,
+      "logit": -3.000638,
+      "k": "OpenSora/1_fake/00013_00700_String_being_pulled_to_turn_on_light._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.039411,
+      "logit": -3.193501,
+      "k": "OpenSora/1_fake/00014_00701_Hook_clinging_onto_a_fish._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.005113,
+      "logit": -5.270858,
+      "k": "OpenSora/1_fake/00015_00702_Skateboard_rolls_swiftly_over_the_bumpy_sidewalk._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.270997,
+      "logit": -0.98957,
+      "k": "OpenSora/1_fake/00016_00703_Tongue_licking_a_popsicle._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.441196,
+      "logit": -0.236309,
+      "k": "OpenSora/1_fake/00017_00704_Knife_carves_into_the_wood._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.963804,
+      "logit": 3.281945,
+      "k": "OpenSora/1_fake/00018_00705_Cloth_banner_hanging_from_wooden_twig._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.021765,
+      "logit": -3.805448,
+      "k": "OpenSora/1_fake/00019_00706_Cloth_wiping_away_dust_from_the_table._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.015305,
+      "logit": -4.164162,
+      "k": "OpenSora/1_fake/00020_00707_Hand_shaking_salt_shaker._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.561581,
+      "logit": 0.247582,
+      "k": "OpenSora/1_fake/00021_00708_The_rock_topples_the_carefully_stacked_pile_of_cans._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.987162,
+      "logit": 4.342392,
+      "k": "OpenSora/1_fake/00022_00709_Comb_teeth_slide_through_the_fine_hair._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.471727,
+      "logit": -0.113214,
+      "k": "OpenSora/1_fake/00023_00710_Dominoes_toppling_one_after_another_on_the_table._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.190498,
+      "logit": -1.446778,
+      "k": "OpenSora/1_fake/00024_00711_A_tower_of_jenga_blocks_teetering._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.023446,
+      "logit": -3.729329,
+      "k": "OpenSora/1_fake/00025_00712_Pouring_sand_into_a_plastic_bottle._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.117259,
+      "logit": -2.018645,
+      "k": "OpenSora/1_fake/00026_00713_A_wooden_spoon_stirs_the_steaming_pot_of_soup._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.075422,
+      "logit": -2.506244,
+      "k": "OpenSora/1_fake/00027_00714_Wooden_swing_dangles_over_the_sand_in_the_sandpit._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.905073,
+      "logit": 2.254904,
+      "k": "OpenSora/1_fake/00028_00715_Tape_rips_open_a_package._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.042273,
+      "logit": -3.120414,
+      "k": "OpenSora/1_fake/00029_00716_Spatula_scraping_food_off_fry_pan._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.018768,
+      "logit": -3.956632,
+      "k": "OpenSora/1_fake/00030_00717_A_hooked_sled_is_being_pulled_through_the_snow._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.918965,
+      "logit": 2.428369,
+      "k": "OpenSora/1_fake/00031_00718_Bricks_pile_up_high_on_the_wooden_pallet._1.mp4",
+      "gen": "OpenSora",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "logit": 10.086783,
+      "k": "Pika/1_fake/00000_02031_Beer_clashes_into_white_frothy_foam._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.99869,
+      "logit": 6.636525,
+      "k": "Pika/1_fake/00001_02032_Bubble_experiences_a_splashy_burst_in_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.9999,
+      "logit": 9.211237,
+      "k": "Pika/1_fake/00002_02033_Bursting_bubbles_top_off_carbonated_soda._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.996648,
+      "logit": 5.694751,
+      "k": "Pika/1_fake/00003_02034_Champagne_mixing_with_fresh_orange_juice._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999892,
+      "logit": 9.131512,
+      "k": "Pika/1_fake/00004_02035_Cream_swirling_dreamily_into_coffee._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "logit": 10.341318,
+      "k": "Pika/1_fake/00005_02036_Detergent_flowing_into_a_bucket_of_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999963,
+      "logit": 10.196402,
+      "k": "Pika/1_fake/00006_02037_Drops_of_honey_on_smooth_yogurt._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999935,
+      "logit": 9.645494,
+      "k": "Pika/1_fake/00007_02038_Honey_diffusing_into_warm_milk._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "logit": 10.250302,
+      "k": "Pika/1_fake/00008_02039_Honey_pours_into_a_cup_of_tea._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999939,
+      "logit": 9.712705,
+      "k": "Pika/1_fake/00009_02040_Honey_threading_slowly_into_tea._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.99968,
+      "logit": 8.045906,
+      "k": "Pika/1_fake/00010_02041_Ink_billowing_into_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999945,
+      "logit": 9.808982,
+      "k": "Pika/1_fake/00011_02042_Ink_spreading_in_still_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999988,
+      "logit": 11.297955,
+      "k": "Pika/1_fake/00012_02043_Juice_and_fizz_shake_in_a_bottle._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999955,
+      "logit": 10.001068,
+      "k": "Pika/1_fake/00013_02044_Lemon_juice_drops_splash_into_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.99989,
+      "logit": 9.11123,
+      "k": "Pika/1_fake/00014_02045_Milk_blending_seamlessly_into_tea._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999965,
+      "logit": 10.260999,
+      "k": "Pika/1_fake/00015_02046_Milk_spilling_into_coffee_crate_waves._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999951,
+      "logit": 9.925301,
+      "k": "Pika/1_fake/00016_02047_Milk_streaming_into_hot_tea._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999958,
+      "logit": 10.084775,
+      "k": "Pika/1_fake/00017_02048_Milk_whirls_in_black_coffee._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "logit": 10.240031,
+      "k": "Pika/1_fake/00018_02049_Oil_cascades_into_vinegar_for_vinaigrette._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999968,
+      "logit": 10.342464,
+      "k": "Pika/1_fake/00019_02050_Oil_floating_atop_crystal_clear_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999977,
+      "logit": 10.669295,
+      "k": "Pika/1_fake/00020_02051_Paint_swirling_in_jar_of_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999879,
+      "logit": 9.019818,
+      "k": "Pika/1_fake/00021_02052_Perfume_mist_diffusing_through_the_air._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "logit": 10.027067,
+      "k": "Pika/1_fake/00022_02053_Pouring_milk_into_still_tea._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999949,
+      "logit": 9.883334,
+      "k": "Pika/1_fake/00023_02054_Rain_creates_concentric_ripples_in_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.998355,
+      "logit": 6.408157,
+      "k": "Pika/1_fake/00024_02055_Rain_falling_softly_on_the_ocean_surface._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999822,
+      "logit": 8.635817,
+      "k": "Pika/1_fake/00025_02056_Rain_splashing_on_a_still_pond._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999901,
+      "logit": 9.21971,
+      "k": "Pika/1_fake/00026_02057_Raindrops_breaking_tranquil_lake_surface._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999983,
+      "logit": 10.985341,
+      "k": "Pika/1_fake/00027_02058_Raindrops_cause_ripples_in_pond_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999938,
+      "logit": 9.683304,
+      "k": "Pika/1_fake/00028_02059_Raindrops_disturb_quiet_puddles._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999924,
+      "logit": 9.479172,
+      "k": "Pika/1_fake/00029_02060_Raindrops_tinkling_on_a_calm_lake._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999982,
+      "logit": 10.918259,
+      "k": "Pika/1_fake/00030_02061_Red_wine_swirling_in_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.999908,
+      "logit": 9.29821,
+      "k": "Pika/1_fake/00031_02062_Refreshing_lemon_juice_combines_with_water._0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.997147,
+      "logit": 5.856382,
+      "k": "SVD/1_fake/00000_01687_Beer_clashes_into_white_frothy_foam._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999778,
+      "logit": 8.410884,
+      "k": "SVD/1_fake/00001_01688_Bubble_experiences_a_splashy_burst_in_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.99985,
+      "logit": 8.804707,
+      "k": "SVD/1_fake/00002_01689_Bursting_bubbles_top_off_carbonated_soda._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999903,
+      "logit": 9.237186,
+      "k": "SVD/1_fake/00003_01690_Champagne_mixing_with_fresh_orange_juice._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.996915,
+      "logit": 5.778273,
+      "k": "SVD/1_fake/00004_01691_Cream_swirling_dreamily_into_coffee._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999956,
+      "logit": 10.031175,
+      "k": "SVD/1_fake/00005_01692_Detergent_flowing_into_a_bucket_of_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.996873,
+      "logit": 5.764449,
+      "k": "SVD/1_fake/00006_01693_Drops_of_honey_on_smooth_yogurt._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999917,
+      "logit": 9.39331,
+      "k": "SVD/1_fake/00007_01694_Honey_diffusing_into_warm_milk._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999976,
+      "logit": 10.619044,
+      "k": "SVD/1_fake/00008_01695_Honey_pours_into_a_cup_of_tea._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999912,
+      "logit": 9.33311,
+      "k": "SVD/1_fake/00009_01696_Honey_threading_slowly_into_tea._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.067338,
+      "logit": -2.628323,
+      "k": "SVD/1_fake/00010_01697_Ink_billowing_into_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.988917,
+      "logit": 4.491225,
+      "k": "SVD/1_fake/00011_01698_Ink_combining_with_clear_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.149093,
+      "logit": -1.741733,
+      "k": "SVD/1_fake/00012_01699_Ink_spreading_in_still_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.99996,
+      "logit": 10.126098,
+      "k": "SVD/1_fake/00013_01700_Juice_and_fizz_shake_in_a_bottle._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.979301,
+      "logit": 3.856778,
+      "k": "SVD/1_fake/00014_01701_Lemon_juice_drops_splash_into_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.99997,
+      "logit": 10.422213,
+      "k": "SVD/1_fake/00015_01702_Milk_blending_into_hot_chocolate._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.998603,
+      "logit": 6.572327,
+      "k": "SVD/1_fake/00016_01703_Milk_blending_seamlessly_into_tea._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999765,
+      "logit": 8.355874,
+      "k": "SVD/1_fake/00017_01704_Milk_colliding_with_piping_hot_black_coffee._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999972,
+      "logit": 10.475181,
+      "k": "SVD/1_fake/00018_01705_Milk_spilling_into_coffee_crate_waves._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.99998,
+      "logit": 10.835497,
+      "k": "SVD/1_fake/00019_01706_Milk_streaming_into_hot_tea._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.995832,
+      "logit": 5.476214,
+      "k": "SVD/1_fake/00020_01707_Milk_whirls_in_black_coffee._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999938,
+      "logit": 9.690322,
+      "k": "SVD/1_fake/00021_01708_Oil_cascades_into_vinegar_for_vinaigrette._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999593,
+      "logit": 7.806151,
+      "k": "SVD/1_fake/00022_01709_Oil_floating_atop_crystal_clear_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999879,
+      "logit": 9.018091,
+      "k": "SVD/1_fake/00023_01710_Paint_swirling_in_jar_of_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999969,
+      "logit": 10.397229,
+      "k": "SVD/1_fake/00024_01711_Perfume_mist_diffusing_through_the_air._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999756,
+      "logit": 8.318867,
+      "k": "SVD/1_fake/00025_01712_Pouring_milk_into_still_tea._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.859068,
+      "logit": 1.807566,
+      "k": "SVD/1_fake/00026_01713_Rain_creates_concentric_ripples_in_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.976802,
+      "logit": 3.740206,
+      "k": "SVD/1_fake/00027_01714_Rain_falling_softly_on_the_ocean_surface._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999872,
+      "logit": 8.961877,
+      "k": "SVD/1_fake/00028_01715_Rain_splashing_on_a_still_pond._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.329657,
+      "logit": -0.709739,
+      "k": "SVD/1_fake/00029_01716_Raindrops_breaking_tranquil_lake_surface._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.975179,
+      "logit": 3.670938,
+      "k": "SVD/1_fake/00030_01717_Raindrops_cause_ripples_in_pond_water._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.938791,
+      "logit": 2.730292,
+      "k": "SVD/1_fake/00031_01718_Raindrops_disturb_quiet_puddles._0.mp4",
+      "gen": "SVD",
+      "label": 1
+    },
+    {
+      "p": 0.999964,
+      "logit": 10.229406,
+      "k": "VideoCrafter2/1_fake/00000_00343_A_tower_of_jenga_blocks_teetering_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999871,
+      "logit": 8.957138,
+      "k": "VideoCrafter2/1_fake/00001_00344_Bottle_topples_off_the_table_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.998111,
+      "logit": 6.269605,
+      "k": "VideoCrafter2/1_fake/00002_00345_Door_swings_against_the_polished_door_frame_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.990923,
+      "logit": 4.692937,
+      "k": "VideoCrafter2/1_fake/00003_00346_A_sharp_razor_shaves_the_facial_hair_close_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999924,
+      "logit": 9.484927,
+      "k": "VideoCrafter2/1_fake/00004_00347_Ceramic_mug_stands_on_a_smooth_kitchen_counter_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999794,
+      "logit": 8.489457,
+      "k": "VideoCrafter2/1_fake/00005_00348_Cheese_is_grating_through_the_stainless_steel_grater_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999918,
+      "logit": 9.407848,
+      "k": "VideoCrafter2/1_fake/00006_00349_Paint_stripper_strips_the_wall_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.99705,
+      "logit": 5.822964,
+      "k": "VideoCrafter2/1_fake/00007_00350_Brush_strokes_paint_on_canvas_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999495,
+      "logit": 7.590204,
+      "k": "VideoCrafter2/1_fake/00008_00351_Plastic_fidget_spinner_rotating_on_rubber_mat_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999819,
+      "logit": 8.615363,
+      "k": "VideoCrafter2/1_fake/00009_00352_The_cue_strikes_the_pool_ball_sharply_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999933,
+      "logit": 9.615952,
+      "k": "VideoCrafter2/1_fake/00010_00353_Tongue_licking_a_popsicle_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999671,
+      "logit": 8.019497,
+      "k": "VideoCrafter2/1_fake/00011_00354_Placing_an_egg_in_a_pan_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "logit": 10.460583,
+      "k": "VideoCrafter2/1_fake/00012_00355_Cloth_wiping_away_dust_from_the_table_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999932,
+      "logit": 9.601017,
+      "k": "VideoCrafter2/1_fake/00013_00356_Ring_slides_onto_the_finger_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999637,
+      "logit": 7.919465,
+      "k": "VideoCrafter2/1_fake/00014_00357_The_coffee_cup_rests_on_a_cork_coaster_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999838,
+      "logit": 8.726115,
+      "k": "VideoCrafter2/1_fake/00015_00358_Coin_flicking_into_a_sparkling_fountain_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999959,
+      "logit": 10.099963,
+      "k": "VideoCrafter2/1_fake/00016_00359_The_eraser_rubs_against_the_paper%2C_removing_pencil_marks_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.99936,
+      "logit": 7.353652,
+      "k": "VideoCrafter2/1_fake/00017_00360_Tying_a_rope_to_a_pole_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999399,
+      "logit": 7.415938,
+      "k": "VideoCrafter2/1_fake/00018_00361_Batteries_slot_into_the_back_of_remote_control_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999044,
+      "logit": 6.951497,
+      "k": "VideoCrafter2/1_fake/00019_00362_Metal_marbles_jostling_inside_a_marble_run_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.95825,
+      "logit": 3.133408,
+      "k": "VideoCrafter2/1_fake/00020_00363_Leather_glove_catching_a_hard_baseball_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999923,
+      "logit": 9.46814,
+      "k": "VideoCrafter2/1_fake/00021_00364_Milk_colliding_with_piping_hot_black_coffee_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999581,
+      "logit": 7.778302,
+      "k": "VideoCrafter2/1_fake/00022_00365_A_wheel_steadily_rolls_across_a_cement_path_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999335,
+      "logit": 7.31505,
+      "k": "VideoCrafter2/1_fake/00023_00366_Wood_carving_tool_skilfully_shapes_the_wood_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999893,
+      "logit": 9.145261,
+      "k": "VideoCrafter2/1_fake/00024_00367_Honey_threading_slowly_into_tea_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999929,
+      "logit": 9.552518,
+      "k": "VideoCrafter2/1_fake/00025_00368_Bristles_of_paintbrush_sweeping_across_canvas_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999938,
+      "logit": 9.691029,
+      "k": "VideoCrafter2/1_fake/00026_00369_A_swing_swinging_freely_in_the_air_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999905,
+      "logit": 9.257409,
+      "k": "VideoCrafter2/1_fake/00027_00370_Milk_blending_into_hot_chocolate_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999731,
+      "logit": 8.221727,
+      "k": "VideoCrafter2/1_fake/00028_00371_Tablecloth_is_draped_over_the_polished_oak_dining_table_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999951,
+      "logit": 9.913619,
+      "k": "VideoCrafter2/1_fake/00029_00372_Stirring_soup_with_a_spoon_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999942,
+      "logit": 9.762121,
+      "k": "VideoCrafter2/1_fake/00030_00373_Pouring_sand_into_a_plastic_bottle_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.999971,
+      "logit": 10.436638,
+      "k": "VideoCrafter2/1_fake/00031_00374_Hand_folds_the_paper_0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.021298,
+      "logit": -3.827636,
+      "k": "ZeroScope/1_fake/00000_01031_A_tower_of_jenga_blocks_teetering_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.002106,
+      "logit": -6.160979,
+      "k": "ZeroScope/1_fake/00001_01032_Bottle_topples_off_the_table_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.984918,
+      "logit": 4.179063,
+      "k": "ZeroScope/1_fake/00002_01033_Door_swings_against_the_polished_door_frame_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.025897,
+      "logit": -3.627403,
+      "k": "ZeroScope/1_fake/00003_01034_A_sharp_razor_shaves_the_facial_hair_close_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.587814,
+      "logit": 0.354934,
+      "k": "ZeroScope/1_fake/00004_01035_A_car_drives_through_the_pouring_rain_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.00116,
+      "logit": -6.757833,
+      "k": "ZeroScope/1_fake/00005_01036_A_mixer_spins%2C_thoroughly_blending_the_batter_in_the_bowl_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.813796,
+      "logit": 1.474865,
+      "k": "ZeroScope/1_fake/00006_01037_Ceramic_mug_stands_on_a_smooth_kitchen_counter_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.052057,
+      "logit": -2.901946,
+      "k": "ZeroScope/1_fake/00007_01038_A_spray_bottle_sprays_cleaning_solution_onto_a_countertop_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.199668,
+      "logit": -1.38837,
+      "k": "ZeroScope/1_fake/00008_01039_Cheese_is_grating_through_the_stainless_steel_grater_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.1974,
+      "logit": -1.402627,
+      "k": "ZeroScope/1_fake/00009_01040_Milk_colliding_with_piping_hot_black_coffee_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.069004,
+      "logit": -2.602088,
+      "k": "ZeroScope/1_fake/00010_01041_An_apple_falls_into_a_vat_of_cider%2C_sending_up_a_spray_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.475497,
+      "logit": -0.098092,
+      "k": "ZeroScope/1_fake/00011_01042_Brush_strokes_paint_on_canvas_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.144094,
+      "logit": -1.781692,
+      "k": "ZeroScope/1_fake/00012_01043_Paint_stripper_strips_the_wall_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.267374,
+      "logit": -1.007986,
+      "k": "ZeroScope/1_fake/00013_01044_A_perfume_bottle_spritzes_fragrance_into_the_air_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.04647,
+      "logit": -3.021373,
+      "k": "ZeroScope/1_fake/00014_01045_Honey_threading_slowly_into_tea_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.934363,
+      "logit": 2.655725,
+      "k": "ZeroScope/1_fake/00015_01046_The_cue_strikes_the_pool_ball_sharply_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.892435,
+      "logit": 2.115855,
+      "k": "ZeroScope/1_fake/00016_01047_Plastic_fidget_spinner_rotating_on_rubber_mat_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.093249,
+      "logit": -2.274592,
+      "k": "ZeroScope/1_fake/00017_01048_Tongue_licking_a_popsicle_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.007884,
+      "logit": -4.835046,
+      "k": "ZeroScope/1_fake/00018_01049_Milk_blending_into_hot_chocolate_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.016051,
+      "logit": -4.115813,
+      "k": "ZeroScope/1_fake/00019_01050_A_leaf_floating_on_the_stream_water_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.055715,
+      "logit": -2.830173,
+      "k": "ZeroScope/1_fake/00020_01051_Placing_an_egg_in_a_pan_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.031521,
+      "logit": -3.425058,
+      "k": "ZeroScope/1_fake/00021_01052_Cloth_wiping_away_dust_from_the_table_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.081451,
+      "logit": -2.422798,
+      "k": "ZeroScope/1_fake/00022_01053_Ring_slides_onto_the_finger_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.004884,
+      "logit": -5.316794,
+      "k": "ZeroScope/1_fake/00023_01054_The_coffee_cup_rests_on_a_cork_coaster_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.565831,
+      "logit": 0.264861,
+      "k": "ZeroScope/1_fake/00024_01055_Sour_cream_swirls_in_hot_soup_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.008543,
+      "logit": -4.754108,
+      "k": "ZeroScope/1_fake/00025_01056_An_electric_beater_whips_cream_in_a_bowl_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.039916,
+      "logit": -3.180243,
+      "k": "ZeroScope/1_fake/00026_01057_Coin_flicking_into_a_sparkling_fountain_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.695512,
+      "logit": 0.826016,
+      "k": "ZeroScope/1_fake/00027_01058_Water_streams_into_fresh_juice_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.695902,
+      "logit": 0.82786,
+      "k": "ZeroScope/1_fake/00028_01059_A_plastic_bottle_slides_down_a_water_slide_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.389602,
+      "logit": -0.448984,
+      "k": "ZeroScope/1_fake/00029_01060_The_eraser_rubs_against_the_paper%2C_removing_pencil_marks_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.222664,
+      "logit": -1.250211,
+      "k": "ZeroScope/1_fake/00030_01061_Oil_floating_atop_crystal_clear_water_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    },
+    {
+      "p": 0.023333,
+      "logit": -3.734257,
+      "k": "ZeroScope/1_fake/00031_01062_A_rubber_duck_floats_in_a_bubble_bath_0.mp4",
+      "gen": "ZeroScope",
+      "label": 1
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+node=ivi-cn023 job=295596 Thu Nov 19 19:55:10 CET 2026 code=2a95069 wevis fix round 1 spot check: 3/3 identical traces and 0.0 gap diff afte dirty=3
+=== genbuster -> /hddstore/ssalehi/SynthScope/GenBuster-Bench 19:55:10
+[dataset] genbuster: nothing under /hddstore/ssalehi/SynthScope/GenBuster-Bench, downloading with the built-in loader ...
+Downloading test video split into /hddstore/ssalehi/SynthScope/GenBuster-Bench/test...
+GenBusterBenchDataset: 1000 reals + 2150 fakes in 23 groups -> /hddstore/ssalehi/SynthScope/GenBuster-Bench/test
+/hddstore/ssalehi/SynthScope/GenBuster-Bench
+{
+ "repo": "l8cv/GenBuster-Bench",
+ "revision": "68e41ab55726013f1c7455980180114302196c23",
+ "archive": "GenBuster-Bench.zip",
+ "archive_sha256": "8c8ea82738ccd6229bb2c4778cbaa234007d702043ba79e501aca5427368d71f",
+ "reals": 1000,
+ "fakes": {
+  "id_cogvideox": 300,
+  "id_easyanimate": 400,
+  "id_hunyuanvideo": 100,
+  "id_ltxvideo": 200,
+  "ood_gen3": 100,
+  "ood_jimeng": 100,
+  "ood_kling": 100,
+  "ood_luma": 100,
+  "ood_pika": 100,
+  "ood_sora": 200,
+  "ood_vidu": 150,
+  "ood_wanx": 150,
+  "wild_gen4.5": 10,
+  "wild_hailuo2.3": 20,
+  "wild_kling2.5_turbo": 15,
+  "wild_kling2.6": 20,
+  "wild_pixverse_v5": 10,
+  "wild_seedance1.5_pro": 20,
+  "wild_seedance2.0": 15,
+  "wild_sora2": 10,
+  "wild_veo3.1": 10,
+  "wild_wan2.5": 10,
+  "wild_wan2.6": 10
+ },
+ "fakes_total": 2150,
+ "layout": "test/<group>/1_fake + the 1000 reals hard-linked into every test/<group>/0_real"
+}
+  id_cogvideox: 1000 real, 300 fake
+  id_easyanimate: 1000 real, 400 fake
+  id_hunyuanvideo: 1000 real, 100 fake
+  id_ltxvideo: 1000 real, 200 fake
+  ood_gen3: 1000 real, 100 fake
+  ood_jimeng: 1000 real, 100 fake
+  ood_kling: 1000 real, 100 fake
+  ood_luma: 1000 real, 100 fake
+  ood_pika: 1000 real, 100 fake
+  ood_sora: 1000 real, 200 fake
+  ood_vidu: 1000 real, 150 fake
+  ood_wanx: 1000 real, 150 fake
+  wild_gen4.5: 1000 real, 10 fake
+  wild_hailuo2.3: 1000 real, 20 fake
+  wild_kling2.5_turbo: 1000 real, 15 fake
+  wild_kling2.6: 1000 real, 20 fake
+  wild_pixverse_v5: 1000 real, 10 fake
+  wild_seedance1.5_pro: 1000 real, 20 fake
+  wild_seedance2.0: 1000 real, 15 fake
+  wild_sora2: 1000 real, 10 fake
+  wild_veo3.1: 1000 real, 10 fake
+  wild_wan2.5: 1000 real, 10 fake
+  wild_wan2.6: 1000 real, 10 fake
+2.1G	/hddstore/ssalehi/SynthScope/GenBuster-Bench
+=== genbuster_pp -> /hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus 19:56:00
+[dataset] genbuster_pp: nothing under /hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus, downloading with the built-in loader ...
+Downloading test video split into /hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus/test...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+GenBusterBenchPPDataset: 1000 reals + 1000 fakes in 1 groups -> /hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus/test
+/hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus
+{
+ "repo": "l8cv/GenBuster-Bench-plusplus",
+ "revision": "7f184bef604882227bf2a585608d3e47e4f0b60b",
+ "archive": "GenBuster-Bench-plusplus.zip",
+ "archive_sha256": "b203126f81715d4338ab21f784791eda359a955acb32c4f1c9f2c353ba553c71",
+ "reals": 1000,
+ "fakes": {
+  "video": 1000
+ },
+ "fakes_total": 1000,
+ "layout": "test/<group>/1_fake + the 1000 reals hard-linked into every test/<group>/0_real"
+}
+  video: 1000 real, 1000 fake
+1.1G	/hddstore/ssalehi/SynthScope/GenBuster-Bench-plusplus
+done Thu Nov 19 19:56:22 CET 2026

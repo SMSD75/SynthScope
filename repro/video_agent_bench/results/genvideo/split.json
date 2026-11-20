@@ -1,0 +1,2152 @@
+{
+  "tag": "vab_genvideo_split",
+  "model": "split",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/genvideo/GenVideo/test",
+  "n_generators": 10,
+  "means": {
+    "acc": 100.0,
+    "map": 100.0,
+    "map_real": 100.0,
+    "mauroc": 100.0,
+    "fake_recall_at_fpr": {
+      "0.1": 100.0,
+      "1": 100.0,
+      "5": 100.0
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 100.0,
+      "1": 100.0,
+      "5": 100.0
+    },
+    "pooled": {
+      "n": 275,
+      "n_real": 25,
+      "n_fake": 250,
+      "acc": 100.0,
+      "acc_strict": 100.0,
+      "real_acc": 100.0,
+      "fake_recall": 100.0,
+      "fake_f1": 100.0
+    }
+  },
+  "per_generator": {
+    "Crafter": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "Gen2": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "HotShot": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "Lavie": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "ModelScope": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "MoonValley": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "MorphStudio": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "Show_1": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "Sora": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    },
+    "WildScrape": {
+      "ap": 100.0,
+      "ap_real": 100.0,
+      "auroc": 100.0,
+      "real_acc": 100.0,
+      "fake_acc": 100.0,
+      "acc": 100.0,
+      "n_real": 25,
+      "n_fake": 25,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability",
+      "fake_recall_at_fpr": {
+        "0.1": 100.0,
+        "1": 100.0,
+        "5": 100.0
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 25,
+  "reals": null,
+  "ckpt_sha256": null,
+  "cache_dir": "/hddstore/ssalehi/SynthScope/video_agent_bench/cache/split/genvideo",
+  "date": "2026-11-19T20:31:40",
+  "synthscope_version": "video",
+  "per_video": [
+    {
+      "p": 0.067853,
+      "raw": 4.4132608678637553e-10,
+      "k": "Crafter/0_real/00000_msrvtt_1.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.050053,
+      "raw": 1.382090969448413e-10,
+      "k": "Crafter/0_real/00001_msrvtt_2.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.004789,
+      "raw": 2.5502405295494378e-14,
+      "k": "Crafter/0_real/00002_msrvtt_3.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.489334,
+      "raw": 4.634941433323547e-06,
+      "k": "Crafter/0_real/00003_msrvtt_4.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.053281,
+      "raw": 1.7513375472066883e-10,
+      "k": "Crafter/0_real/00004_msrvtt_5.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.208382,
+      "raw": 4.4694637324482756e-08,
+      "k": "Crafter/0_real/00005_msrvtt_6.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.092809,
+      "raw": 1.4987394658660946e-09,
+      "k": "Crafter/0_real/00006_msrvtt_7.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.036336,
+      "raw": 4.1541804718381314e-11,
+      "k": "Crafter/0_real/00007_msrvtt_8.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.010599,
+      "raw": 4.5197095306821755e-13,
+      "k": "Crafter/0_real/00008_msrvtt_9.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001914,
+      "raw": 9.354473050798883e-16,
+      "k": "Crafter/0_real/00009_msrvtt_10.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.075285,
+      "raw": 6.597977719735582e-10,
+      "k": "Crafter/0_real/00010_msrvtt_11.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.036287,
+      "raw": 4.133369341241533e-11,
+      "k": "Crafter/0_real/00011_msrvtt_12.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.365747,
+      "raw": 7.477241297237924e-07,
+      "k": "Crafter/0_real/00012_msrvtt_13.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.016982,
+      "raw": 2.5158987306678204e-12,
+      "k": "Crafter/0_real/00013_msrvtt_14.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.454482,
+      "raw": 2.8039601147611393e-06,
+      "k": "Crafter/0_real/00014_msrvtt_15.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.0002,
+      "raw": 2.781396360673204e-19,
+      "k": "Crafter/0_real/00015_msrvtt_16.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.031693,
+      "raw": 2.498637928505243e-11,
+      "k": "Crafter/0_real/00016_msrvtt_17.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.03715,
+      "raw": 4.5120993746872173e-11,
+      "k": "Crafter/0_real/00017_msrvtt_18.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.032431,
+      "raw": 2.7214891798466034e-11,
+      "k": "Crafter/0_real/00018_msrvtt_19.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.048192,
+      "raw": 1.1977399627660645e-10,
+      "k": "Crafter/0_real/00019_msrvtt_20.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.010175,
+      "raw": 3.897129743479083e-13,
+      "k": "Crafter/0_real/00020_msrvtt_21.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.051953,
+      "raw": 1.591396459055261e-10,
+      "k": "Crafter/0_real/00021_msrvtt_22.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.031371,
+      "raw": 2.4056052289056495e-11,
+      "k": "Crafter/0_real/00022_msrvtt_23.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.419017,
+      "raw": 1.6700870446584304e-06,
+      "k": "Crafter/0_real/00023_msrvtt_24.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.054284,
+      "raw": 1.8797721712537907e-10,
+      "k": "Crafter/0_real/00024_msrvtt_25.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.975603,
+      "raw": 3.0721893310546875,
+      "k": "Crafter/1_fake/00000_Crafter_1.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.96691,
+      "raw": 0.9954313039779663,
+      "k": "Crafter/1_fake/00001_Crafter_2.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.97051,
+      "raw": 1.525846004486084,
+      "k": "Crafter/1_fake/00002_Crafter_3.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.957121,
+      "raw": 0.3782545030117035,
+      "k": "Crafter/1_fake/00003_Crafter_4.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.964845,
+      "raw": 0.7947306632995605,
+      "k": "Crafter/1_fake/00004_Crafter_5.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.978402,
+      "raw": 4.808841705322266,
+      "k": "Crafter/1_fake/00005_Crafter_6.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.966258,
+      "raw": 0.9257319569587708,
+      "k": "Crafter/1_fake/00006_Crafter_7.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.963502,
+      "raw": 0.6911333799362183,
+      "k": "Crafter/1_fake/00007_Crafter_8.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.974386,
+      "raw": 2.5678200721740723,
+      "k": "Crafter/1_fake/00008_Crafter_9.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.970232,
+      "raw": 1.4737176895141602,
+      "k": "Crafter/1_fake/00009_Crafter_10.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.968124,
+      "raw": 1.1435714960098267,
+      "k": "Crafter/1_fake/00010_Crafter_11.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.966791,
+      "raw": 0.9821462631225586,
+      "k": "Crafter/1_fake/00011_Crafter_12.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.95104,
+      "raw": 0.22959059476852417,
+      "k": "Crafter/1_fake/00012_Crafter_13.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.983355,
+      "raw": 12.483055114746094,
+      "k": "Crafter/1_fake/00013_Crafter_14.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.922483,
+      "raw": 0.03949012607336044,
+      "k": "Crafter/1_fake/00014_Crafter_15.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.964434,
+      "raw": 0.761040985584259,
+      "k": "Crafter/1_fake/00015_Crafter_16.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.969147,
+      "raw": 1.2906230688095093,
+      "k": "Crafter/1_fake/00016_Crafter_17.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.983844,
+      "raw": 13.920868873596191,
+      "k": "Crafter/1_fake/00017_Crafter_18.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.978131,
+      "raw": 4.593315601348877,
+      "k": "Crafter/1_fake/00018_Crafter_19.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.960391,
+      "raw": 0.5091681480407715,
+      "k": "Crafter/1_fake/00019_Crafter_20.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.978112,
+      "raw": 4.578641414642334,
+      "k": "Crafter/1_fake/00020_Crafter_21.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.975194,
+      "raw": 2.8896548748016357,
+      "k": "Crafter/1_fake/00021_Crafter_22.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.95634,
+      "raw": 0.35348260402679443,
+      "k": "Crafter/1_fake/00022_Crafter_23.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.975269,
+      "raw": 2.9221084117889404,
+      "k": "Crafter/1_fake/00023_Crafter_24.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.968539,
+      "raw": 1.200486660003662,
+      "k": "Crafter/1_fake/00024_Crafter_25.mp4",
+      "gen": "Crafter",
+      "label": 1
+    },
+    {
+      "p": 0.938087,
+      "raw": 0.0940433070063591,
+      "k": "Gen2/1_fake/00000_gen2_1.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.951511,
+      "raw": 0.2381179928779602,
+      "k": "Gen2/1_fake/00001_gen2_10.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.904781,
+      "raw": 0.017593707889318466,
+      "k": "Gen2/1_fake/00002_gen2_100.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.951583,
+      "raw": 0.23945245146751404,
+      "k": "Gen2/1_fake/00003_gen2_1000.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.967473,
+      "raw": 1.0609278678894043,
+      "k": "Gen2/1_fake/00004_gen2_1001.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.957671,
+      "raw": 0.39704006910324097,
+      "k": "Gen2/1_fake/00005_gen2_1002.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.944833,
+      "raw": 0.14604777097702026,
+      "k": "Gen2/1_fake/00006_gen2_1003.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.938963,
+      "raw": 0.09931569546461105,
+      "k": "Gen2/1_fake/00007_gen2_1004.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.96362,
+      "raw": 0.699518084526062,
+      "k": "Gen2/1_fake/00008_gen2_1005.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.954729,
+      "raw": 0.3084564805030823,
+      "k": "Gen2/1_fake/00009_gen2_1006.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.9616,
+      "raw": 0.5717709064483643,
+      "k": "Gen2/1_fake/00010_gen2_1007.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.964116,
+      "raw": 0.7362401485443115,
+      "k": "Gen2/1_fake/00011_gen2_1008.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.953672,
+      "raw": 0.2827969491481781,
+      "k": "Gen2/1_fake/00012_gen2_1009.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.928407,
+      "raw": 0.053765784949064255,
+      "k": "Gen2/1_fake/00013_gen2_101.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.941467,
+      "raw": 0.11655564606189728,
+      "k": "Gen2/1_fake/00014_gen2_1010.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.958452,
+      "raw": 0.4257761538028717,
+      "k": "Gen2/1_fake/00015_gen2_1011.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.921912,
+      "raw": 0.03837637975811958,
+      "k": "Gen2/1_fake/00016_gen2_1012.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.955005,
+      "raw": 0.31563490629196167,
+      "k": "Gen2/1_fake/00017_gen2_1013.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.969118,
+      "raw": 1.2860839366912842,
+      "k": "Gen2/1_fake/00018_gen2_1014.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.951237,
+      "raw": 0.23311632871627808,
+      "k": "Gen2/1_fake/00019_gen2_1015.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.958969,
+      "raw": 0.44619572162628174,
+      "k": "Gen2/1_fake/00020_gen2_1016.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.962694,
+      "raw": 0.6369047164916992,
+      "k": "Gen2/1_fake/00021_gen2_1017.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.963381,
+      "raw": 0.6826475262641907,
+      "k": "Gen2/1_fake/00022_gen2_1018.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.928608,
+      "raw": 0.05435434728860855,
+      "k": "Gen2/1_fake/00023_gen2_1019.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.953278,
+      "raw": 0.27390795946121216,
+      "k": "Gen2/1_fake/00024_gen2_102.mp4",
+      "gen": "Gen2",
+      "label": 1
+    },
+    {
+      "p": 0.980298,
+      "raw": 6.7366108894348145,
+      "k": "HotShot/1_fake/00000_hotshot_1.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978541,
+      "raw": 4.924193859100342,
+      "k": "HotShot/1_fake/00001_hotshot_2.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978561,
+      "raw": 4.941381931304932,
+      "k": "HotShot/1_fake/00002_hotshot_3.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.977532,
+      "raw": 4.159483432769775,
+      "k": "HotShot/1_fake/00003_hotshot_4.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.968311,
+      "raw": 1.1687557697296143,
+      "k": "HotShot/1_fake/00004_hotshot_5.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.982484,
+      "raw": 10.358973503112793,
+      "k": "HotShot/1_fake/00005_hotshot_6.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.972552,
+      "raw": 1.9893964529037476,
+      "k": "HotShot/1_fake/00006_hotshot_7.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978045,
+      "raw": 4.527926921844482,
+      "k": "HotShot/1_fake/00007_hotshot_8.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.968467,
+      "raw": 1.1903520822525024,
+      "k": "HotShot/1_fake/00008_hotshot_9.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.975608,
+      "raw": 3.0746328830718994,
+      "k": "HotShot/1_fake/00009_hotshot_10.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978765,
+      "raw": 5.11787748336792,
+      "k": "HotShot/1_fake/00010_hotshot_11.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.976134,
+      "raw": 3.331507921218872,
+      "k": "HotShot/1_fake/00011_hotshot_12.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.979462,
+      "raw": 5.784609794616699,
+      "k": "HotShot/1_fake/00012_hotshot_13.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.974989,
+      "raw": 2.8035569190979004,
+      "k": "HotShot/1_fake/00013_hotshot_14.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.97843,
+      "raw": 4.83176851272583,
+      "k": "HotShot/1_fake/00014_hotshot_15.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978132,
+      "raw": 4.594326019287109,
+      "k": "HotShot/1_fake/00015_hotshot_16.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.971656,
+      "raw": 1.7667133808135986,
+      "k": "HotShot/1_fake/00016_hotshot_17.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.98361,
+      "raw": 13.206945419311523,
+      "k": "HotShot/1_fake/00017_hotshot_18.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.982627,
+      "raw": 10.675963401794434,
+      "k": "HotShot/1_fake/00018_hotshot_19.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.976762,
+      "raw": 3.6747472286224365,
+      "k": "HotShot/1_fake/00019_hotshot_20.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.978123,
+      "raw": 4.587338924407959,
+      "k": "HotShot/1_fake/00020_hotshot_21.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.984365,
+      "raw": 15.690482139587402,
+      "k": "HotShot/1_fake/00021_hotshot_22.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.976621,
+      "raw": 3.5941696166992188,
+      "k": "HotShot/1_fake/00022_hotshot_23.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.976773,
+      "raw": 3.681462526321411,
+      "k": "HotShot/1_fake/00023_hotshot_24.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.976019,
+      "raw": 3.273042917251587,
+      "k": "HotShot/1_fake/00024_hotshot_25.mp4",
+      "gen": "HotShot",
+      "label": 1
+    },
+    {
+      "p": 0.969958,
+      "raw": 1.424448847770691,
+      "k": "Lavie/1_fake/00000_lavie_1.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.969134,
+      "raw": 1.288552165031433,
+      "k": "Lavie/1_fake/00001_lavie_2.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.956772,
+      "raw": 0.3669194281101227,
+      "k": "Lavie/1_fake/00002_lavie_3.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.979012,
+      "raw": 5.342374324798584,
+      "k": "Lavie/1_fake/00003_lavie_4.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.963647,
+      "raw": 0.7014301419258118,
+      "k": "Lavie/1_fake/00004_lavie_5.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.960091,
+      "raw": 0.49500930309295654,
+      "k": "Lavie/1_fake/00005_lavie_6.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.965949,
+      "raw": 0.8948503136634827,
+      "k": "Lavie/1_fake/00006_lavie_7.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.978321,
+      "raw": 4.743501663208008,
+      "k": "Lavie/1_fake/00007_lavie_8.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.973556,
+      "raw": 2.2828211784362793,
+      "k": "Lavie/1_fake/00008_lavie_9.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.968827,
+      "raw": 1.2422436475753784,
+      "k": "Lavie/1_fake/00009_lavie_10.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.958744,
+      "raw": 0.4371544122695923,
+      "k": "Lavie/1_fake/00010_lavie_11.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.970893,
+      "raw": 1.601407527923584,
+      "k": "Lavie/1_fake/00011_lavie_12.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.965072,
+      "raw": 0.814133882522583,
+      "k": "Lavie/1_fake/00012_lavie_13.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.972798,
+      "raw": 2.0565123558044434,
+      "k": "Lavie/1_fake/00013_lavie_14.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.971235,
+      "raw": 1.6728805303573608,
+      "k": "Lavie/1_fake/00014_lavie_15.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.969133,
+      "raw": 1.2884584665298462,
+      "k": "Lavie/1_fake/00015_lavie_16.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.980198,
+      "raw": 6.612257957458496,
+      "k": "Lavie/1_fake/00016_lavie_17.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.978423,
+      "raw": 4.8262786865234375,
+      "k": "Lavie/1_fake/00017_lavie_18.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.965055,
+      "raw": 0.8126422166824341,
+      "k": "Lavie/1_fake/00018_lavie_19.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.961761,
+      "raw": 0.5808039903640747,
+      "k": "Lavie/1_fake/00019_lavie_20.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.97197,
+      "raw": 1.8409086465835571,
+      "k": "Lavie/1_fake/00020_lavie_21.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.959541,
+      "raw": 0.47029802203178406,
+      "k": "Lavie/1_fake/00021_lavie_22.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.962147,
+      "raw": 0.6031955480575562,
+      "k": "Lavie/1_fake/00022_lavie_23.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.971475,
+      "raw": 1.7255756855010986,
+      "k": "Lavie/1_fake/00023_lavie_24.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.963934,
+      "raw": 0.7224903106689453,
+      "k": "Lavie/1_fake/00024_lavie_25.mp4",
+      "gen": "Lavie",
+      "label": 1
+    },
+    {
+      "p": 0.961365,
+      "raw": 0.5588535666465759,
+      "k": "ModelScope/1_fake/00000_modelscope_1.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.904583,
+      "raw": 0.01744934730231762,
+      "k": "ModelScope/1_fake/00001_modelscope_2.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.973141,
+      "raw": 2.155237913131714,
+      "k": "ModelScope/1_fake/00002_modelscope_3.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970173,
+      "raw": 1.4628758430480957,
+      "k": "ModelScope/1_fake/00003_modelscope_4.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.969742,
+      "raw": 1.3871545791625977,
+      "k": "ModelScope/1_fake/00004_modelscope_5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.968772,
+      "raw": 1.2340309619903564,
+      "k": "ModelScope/1_fake/00005_modelscope_6.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.965913,
+      "raw": 0.8914423584938049,
+      "k": "ModelScope/1_fake/00006_modelscope_7.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.974973,
+      "raw": 2.7966959476470947,
+      "k": "ModelScope/1_fake/00007_modelscope_8.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.966521,
+      "raw": 0.9531331062316895,
+      "k": "ModelScope/1_fake/00008_modelscope_9.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97189,
+      "raw": 1.8217170238494873,
+      "k": "ModelScope/1_fake/00009_modelscope_10.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.930672,
+      "raw": 0.06087885797023773,
+      "k": "ModelScope/1_fake/00010_modelscope_11.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.964401,
+      "raw": 0.7583990097045898,
+      "k": "ModelScope/1_fake/00011_modelscope_12.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97292,
+      "raw": 2.091120958328247,
+      "k": "ModelScope/1_fake/00012_modelscope_13.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.946795,
+      "raw": 0.16758878529071808,
+      "k": "ModelScope/1_fake/00013_modelscope_14.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.962026,
+      "raw": 0.5960988402366638,
+      "k": "ModelScope/1_fake/00014_modelscope_15.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.949294,
+      "raw": 0.20109842717647552,
+      "k": "ModelScope/1_fake/00015_modelscope_16.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.969732,
+      "raw": 1.3855026960372925,
+      "k": "ModelScope/1_fake/00016_modelscope_17.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.96899,
+      "raw": 1.2666205167770386,
+      "k": "ModelScope/1_fake/00017_modelscope_18.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.979805,
+      "raw": 6.152251720428467,
+      "k": "ModelScope/1_fake/00018_modelscope_19.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.9651,
+      "raw": 0.816562831401825,
+      "k": "ModelScope/1_fake/00019_modelscope_20.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.944693,
+      "raw": 0.14465321600437164,
+      "k": "ModelScope/1_fake/00020_modelscope_21.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970013,
+      "raw": 1.4341946840286255,
+      "k": "ModelScope/1_fake/00021_modelscope_22.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.954001,
+      "raw": 0.290483295917511,
+      "k": "ModelScope/1_fake/00022_modelscope_23.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977102,
+      "raw": 3.8797569274902344,
+      "k": "ModelScope/1_fake/00023_modelscope_24.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977441,
+      "raw": 4.098259449005127,
+      "k": "ModelScope/1_fake/00024_modelscope_25.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.967254,
+      "raw": 1.034775972366333,
+      "k": "MoonValley/1_fake/00000_MoonValley_1.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.929234,
+      "raw": 0.05623792111873627,
+      "k": "MoonValley/1_fake/00001_MoonValley_2.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.955655,
+      "raw": 0.3333851993083954,
+      "k": "MoonValley/1_fake/00002_MoonValley_3.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.944938,
+      "raw": 0.14711065590381622,
+      "k": "MoonValley/1_fake/00003_MoonValley_4.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.938103,
+      "raw": 0.09413990378379822,
+      "k": "MoonValley/1_fake/00004_MoonValley_5.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.942355,
+      "raw": 0.12355191260576248,
+      "k": "MoonValley/1_fake/00005_MoonValley_6.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.958652,
+      "raw": 0.4335406720638275,
+      "k": "MoonValley/1_fake/00006_MoonValley_7.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.946232,
+      "raw": 0.16102536022663116,
+      "k": "MoonValley/1_fake/00007_MoonValley_8.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.945825,
+      "raw": 0.15647239983081818,
+      "k": "MoonValley/1_fake/00008_MoonValley_9.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.966208,
+      "raw": 0.9206603765487671,
+      "k": "MoonValley/1_fake/00009_MoonValley_10.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.958054,
+      "raw": 0.4108053147792816,
+      "k": "MoonValley/1_fake/00010_MoonValley_11.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.953862,
+      "raw": 0.28719815611839294,
+      "k": "MoonValley/1_fake/00011_MoonValley_12.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.95355,
+      "raw": 0.2799980342388153,
+      "k": "MoonValley/1_fake/00012_MoonValley_13.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.938172,
+      "raw": 0.09453928470611572,
+      "k": "MoonValley/1_fake/00013_MoonValley_14.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.9577,
+      "raw": 0.39806780219078064,
+      "k": "MoonValley/1_fake/00014_MoonValley_15.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.944108,
+      "raw": 0.13897453248500824,
+      "k": "MoonValley/1_fake/00015_MoonValley_16.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.949885,
+      "raw": 0.2102123647928238,
+      "k": "MoonValley/1_fake/00016_MoonValley_17.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.966627,
+      "raw": 0.9643954634666443,
+      "k": "MoonValley/1_fake/00017_MoonValley_18.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.946201,
+      "raw": 0.1606733351945877,
+      "k": "MoonValley/1_fake/00018_MoonValley_19.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.953732,
+      "raw": 0.284173846244812,
+      "k": "MoonValley/1_fake/00019_MoonValley_20.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.944051,
+      "raw": 0.13843543827533722,
+      "k": "MoonValley/1_fake/00020_MoonValley_21.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.951033,
+      "raw": 0.2294512242078781,
+      "k": "MoonValley/1_fake/00021_MoonValley_22.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.919143,
+      "raw": 0.033497732132673264,
+      "k": "MoonValley/1_fake/00022_MoonValley_23.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.954598,
+      "raw": 0.305120587348938,
+      "k": "MoonValley/1_fake/00023_MoonValley_24.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.960984,
+      "raw": 0.5387608408927917,
+      "k": "MoonValley/1_fake/00024_MoonValley_25.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.975918,
+      "raw": 3.2229843139648438,
+      "k": "MorphStudio/1_fake/00000_MorphStudio_1.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.969774,
+      "raw": 1.3926126956939697,
+      "k": "MorphStudio/1_fake/00001_MorphStudio_2.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.967397,
+      "raw": 1.0517420768737793,
+      "k": "MorphStudio/1_fake/00002_MorphStudio_3.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.972166,
+      "raw": 1.8894178867340088,
+      "k": "MorphStudio/1_fake/00003_MorphStudio_4.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.969012,
+      "raw": 1.2698568105697632,
+      "k": "MorphStudio/1_fake/00004_MorphStudio_5.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.970941,
+      "raw": 1.6112556457519531,
+      "k": "MorphStudio/1_fake/00005_MorphStudio_6.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.979371,
+      "raw": 5.691150665283203,
+      "k": "MorphStudio/1_fake/00006_MorphStudio_7.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.970083,
+      "raw": 1.4467276334762573,
+      "k": "MorphStudio/1_fake/00007_MorphStudio_8.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.963949,
+      "raw": 0.723564863204956,
+      "k": "MorphStudio/1_fake/00008_MorphStudio_9.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.966981,
+      "raw": 1.0034219026565552,
+      "k": "MorphStudio/1_fake/00009_MorphStudio_10.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.968654,
+      "raw": 1.2168883085250854,
+      "k": "MorphStudio/1_fake/00010_MorphStudio_11.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.969026,
+      "raw": 1.272044062614441,
+      "k": "MorphStudio/1_fake/00011_MorphStudio_12.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.980416,
+      "raw": 6.8854851722717285,
+      "k": "MorphStudio/1_fake/00012_MorphStudio_13.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.983632,
+      "raw": 13.27157211303711,
+      "k": "MorphStudio/1_fake/00013_MorphStudio_14.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.972729,
+      "raw": 2.0376076698303223,
+      "k": "MorphStudio/1_fake/00014_MorphStudio_15.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.974051,
+      "raw": 2.447659730911255,
+      "k": "MorphStudio/1_fake/00015_MorphStudio_16.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.976571,
+      "raw": 3.565798044204712,
+      "k": "MorphStudio/1_fake/00016_MorphStudio_17.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.98212,
+      "raw": 9.61022663116455,
+      "k": "MorphStudio/1_fake/00017_MorphStudio_18.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.972243,
+      "raw": 1.9089086055755615,
+      "k": "MorphStudio/1_fake/00018_MorphStudio_19.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.961145,
+      "raw": 0.5471364855766296,
+      "k": "MorphStudio/1_fake/00019_MorphStudio_20.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.974481,
+      "raw": 2.6031270027160645,
+      "k": "MorphStudio/1_fake/00020_MorphStudio_21.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.984517,
+      "raw": 16.258058547973633,
+      "k": "MorphStudio/1_fake/00021_MorphStudio_22.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.933455,
+      "raw": 0.07129412889480591,
+      "k": "MorphStudio/1_fake/00022_MorphStudio_23.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.970401,
+      "raw": 1.5050547122955322,
+      "k": "MorphStudio/1_fake/00023_MorphStudio_24.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.975465,
+      "raw": 3.009004831314087,
+      "k": "MorphStudio/1_fake/00024_MorphStudio_25.mp4",
+      "gen": "MorphStudio",
+      "label": 1
+    },
+    {
+      "p": 0.982255,
+      "raw": 9.879969596862793,
+      "k": "Show_1/1_fake/00000_show1_1.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.941138,
+      "raw": 0.11408749967813492,
+      "k": "Show_1/1_fake/00001_show1_10.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.982635,
+      "raw": 10.692465782165527,
+      "k": "Show_1/1_fake/00002_show1_100.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.976067,
+      "raw": 3.2970027923583984,
+      "k": "Show_1/1_fake/00003_show1_101.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.967647,
+      "raw": 1.0822056531906128,
+      "k": "Show_1/1_fake/00004_show1_102.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.974571,
+      "raw": 2.637343168258667,
+      "k": "Show_1/1_fake/00005_show1_103.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.969985,
+      "raw": 1.4293543100357056,
+      "k": "Show_1/1_fake/00006_show1_104.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.968619,
+      "raw": 1.2119460105895996,
+      "k": "Show_1/1_fake/00007_show1_105.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.964334,
+      "raw": 0.7531337738037109,
+      "k": "Show_1/1_fake/00008_show1_106.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.96634,
+      "raw": 0.9342111349105835,
+      "k": "Show_1/1_fake/00009_show1_107.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.980253,
+      "raw": 6.680462837219238,
+      "k": "Show_1/1_fake/00010_show1_108.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.982579,
+      "raw": 10.568486213684082,
+      "k": "Show_1/1_fake/00011_show1_109.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.963134,
+      "raw": 0.6657193899154663,
+      "k": "Show_1/1_fake/00012_show1_11.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.973569,
+      "raw": 2.28692364692688,
+      "k": "Show_1/1_fake/00013_show1_110.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.970789,
+      "raw": 1.5804275274276733,
+      "k": "Show_1/1_fake/00014_show1_111.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.979574,
+      "raw": 5.90091609954834,
+      "k": "Show_1/1_fake/00015_show1_112.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.966835,
+      "raw": 0.9870121479034424,
+      "k": "Show_1/1_fake/00016_show1_113.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.961018,
+      "raw": 0.5405210852622986,
+      "k": "Show_1/1_fake/00017_show1_114.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.982102,
+      "raw": 9.574197769165039,
+      "k": "Show_1/1_fake/00018_show1_115.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.969163,
+      "raw": 1.2931499481201172,
+      "k": "Show_1/1_fake/00019_show1_116.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.97312,
+      "raw": 2.1490683555603027,
+      "k": "Show_1/1_fake/00020_show1_117.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.96612,
+      "raw": 0.9117864370346069,
+      "k": "Show_1/1_fake/00021_show1_118.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.965372,
+      "raw": 0.8406640291213989,
+      "k": "Show_1/1_fake/00022_show1_119.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.964999,
+      "raw": 0.8077835440635681,
+      "k": "Show_1/1_fake/00023_show1_12.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.953911,
+      "raw": 0.2883489429950714,
+      "k": "Show_1/1_fake/00024_show1_120.mp4",
+      "gen": "Show_1",
+      "label": 1
+    },
+    {
+      "p": 0.973145,
+      "raw": 2.1564624309539795,
+      "k": "Sora/1_fake/00000_sora_1.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.971952,
+      "raw": 1.8365521430969238,
+      "k": "Sora/1_fake/00001_sora_2.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.976447,
+      "raw": 3.4969699382781982,
+      "k": "Sora/1_fake/00002_sora_3.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.968576,
+      "raw": 1.2057939767837524,
+      "k": "Sora/1_fake/00003_sora_4.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.979657,
+      "raw": 5.9896111488342285,
+      "k": "Sora/1_fake/00004_sora_5.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.963015,
+      "raw": 0.6578036546707153,
+      "k": "Sora/1_fake/00005_sora_6.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.970231,
+      "raw": 1.4734652042388916,
+      "k": "Sora/1_fake/00006_sora_7.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.976357,
+      "raw": 3.448335886001587,
+      "k": "Sora/1_fake/00007_sora_8.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.976379,
+      "raw": 3.4601330757141113,
+      "k": "Sora/1_fake/00008_sora_9.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.964327,
+      "raw": 0.7525626420974731,
+      "k": "Sora/1_fake/00009_sora_10.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.9732,
+      "raw": 2.1727964878082275,
+      "k": "Sora/1_fake/00010_sora_11.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.974475,
+      "raw": 2.6010327339172363,
+      "k": "Sora/1_fake/00011_sora_12.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.96766,
+      "raw": 1.0837992429733276,
+      "k": "Sora/1_fake/00012_sora_13.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.977859,
+      "raw": 4.389646530151367,
+      "k": "Sora/1_fake/00013_sora_14.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.976399,
+      "raw": 3.4713191986083984,
+      "k": "Sora/1_fake/00014_sora_15.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.968429,
+      "raw": 1.185092568397522,
+      "k": "Sora/1_fake/00015_sora_16.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.965951,
+      "raw": 0.8950443863868713,
+      "k": "Sora/1_fake/00016_sora_17.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.974172,
+      "raw": 2.4900710582733154,
+      "k": "Sora/1_fake/00017_sora_18.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.951963,
+      "raw": 0.24668510258197784,
+      "k": "Sora/1_fake/00018_sora_19.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.975868,
+      "raw": 3.1979904174804688,
+      "k": "Sora/1_fake/00019_sora_20.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.941716,
+      "raw": 0.11846267431974411,
+      "k": "Sora/1_fake/00020_sora_21.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.977547,
+      "raw": 4.169527530670166,
+      "k": "Sora/1_fake/00021_sora_22.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.978679,
+      "raw": 5.042176246643066,
+      "k": "Sora/1_fake/00022_sora_23.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.968849,
+      "raw": 1.2454065084457397,
+      "k": "Sora/1_fake/00023_sora_24.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.961448,
+      "raw": 0.5633803009986877,
+      "k": "Sora/1_fake/00024_sora_25.mp4",
+      "gen": "Sora",
+      "label": 1
+    },
+    {
+      "p": 0.961471,
+      "raw": 0.5646379590034485,
+      "k": "WildScrape/1_fake/00000_D1.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.966057,
+      "raw": 0.9055611491203308,
+      "k": "WildScrape/1_fake/00001_O1.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.977017,
+      "raw": 3.826829195022583,
+      "k": "WildScrape/1_fake/00002_T1.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.98163,
+      "raw": 8.705102920532227,
+      "k": "WildScrape/1_fake/00003_D2.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.905715,
+      "raw": 0.01829594187438488,
+      "k": "WildScrape/1_fake/00004_O2.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.954287,
+      "raw": 0.2973884642124176,
+      "k": "WildScrape/1_fake/00005_T2.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.977337,
+      "raw": 4.029566764831543,
+      "k": "WildScrape/1_fake/00006_D3.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.913797,
+      "raw": 0.026062941178679466,
+      "k": "WildScrape/1_fake/00007_O3.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.97436,
+      "raw": 2.558262586593628,
+      "k": "WildScrape/1_fake/00008_T3.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.95937,
+      "raw": 0.4629325270652771,
+      "k": "WildScrape/1_fake/00009_D4.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.977179,
+      "raw": 3.92781925201416,
+      "k": "WildScrape/1_fake/00010_O4.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.96823,
+      "raw": 1.1577322483062744,
+      "k": "WildScrape/1_fake/00011_T4.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.96721,
+      "raw": 1.029624581336975,
+      "k": "WildScrape/1_fake/00012_D5.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.961009,
+      "raw": 0.5400516986846924,
+      "k": "WildScrape/1_fake/00013_O5.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.97624,
+      "raw": 3.386532783508301,
+      "k": "WildScrape/1_fake/00014_T5.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.957361,
+      "raw": 0.38632646203041077,
+      "k": "WildScrape/1_fake/00015_D6.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.976387,
+      "raw": 3.4646224975585938,
+      "k": "WildScrape/1_fake/00016_O6.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.968765,
+      "raw": 1.2330082654953003,
+      "k": "WildScrape/1_fake/00017_T6.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.971555,
+      "raw": 1.7435520887374878,
+      "k": "WildScrape/1_fake/00018_D7.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.974314,
+      "raw": 2.5413763523101807,
+      "k": "WildScrape/1_fake/00019_O7.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.966087,
+      "raw": 0.9084958434104919,
+      "k": "WildScrape/1_fake/00020_T7.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.962887,
+      "raw": 0.6493748426437378,
+      "k": "WildScrape/1_fake/00021_D8.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.969415,
+      "raw": 1.333019495010376,
+      "k": "WildScrape/1_fake/00022_O8.gif",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.966058,
+      "raw": 0.9056479930877686,
+      "k": "WildScrape/1_fake/00023_T8.mp4",
+      "gen": "WildScrape",
+      "label": 1
+    },
+    {
+      "p": 0.95613,
+      "raw": 0.34716689586639404,
+      "k": "WildScrape/1_fake/00024_D9.gif",
+      "gen": "WildScrape",
+      "label": 1
+    }
+  ]
+}

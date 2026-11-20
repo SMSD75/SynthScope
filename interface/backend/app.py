@@ -115,7 +115,9 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as tmp:
             tmp.write(data)
             tmp.flush()
-            if spec.modality == "video":
+            if spec.agent is not None:      # an agent (about a minute per video): run off the event loop
+                result = await asyncio.to_thread(engine.predict_video_clip, spec, tmp.name)
+            elif spec.modality == "video":
                 result = engine.predict_video_clip(spec, tmp.name)
             else:
                 frames = media.sample_video_pil(tmp.name, config.VIDEO_IMAGE_FRAMES)

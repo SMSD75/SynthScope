@@ -1,0 +1,1854 @@
+{
+  "tag": "vab_evalcrafter_stall",
+  "model": "stall",
+  "ckpt": "registry-default",
+  "benchmark": "video:fakeonly",
+  "data_root": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/evalcrafter/EvalCrafter/test/1_fake",
+  "n_generators": 14,
+  "means": {
+    "acc": 52.78,
+    "map": 92.11,
+    "map_real": 93.12,
+    "mauroc": 92.17,
+    "pooled": {
+      "n": 270,
+      "n_real": 18,
+      "n_fake": 252,
+      "acc": 93.7,
+      "acc_strict": 93.7,
+      "real_acc": 5.56,
+      "fake_recall": 100.0,
+      "fake_f1": 96.74
+    }
+  },
+  "per_generator": {
+    "MoonValley": {
+      "ap": 88.42,
+      "ap_real": 87.77,
+      "auroc": 87.35,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "floor33": {
+      "ap": 90.38,
+      "ap_real": 93.89,
+      "auroc": 91.67,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "gen2": {
+      "ap": 92.15,
+      "ap_real": 93.4,
+      "auroc": 92.28,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "gen2_december": {
+      "ap": 98.24,
+      "ap_real": 98.37,
+      "auroc": 98.15,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "hotshot": {
+      "ap": 85.89,
+      "ap_real": 84.2,
+      "auroc": 84.26,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "lavie-base": {
+      "ap": 95.61,
+      "ap_real": 97.03,
+      "auroc": 95.99,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "lavie-interpolation": {
+      "ap": 95.61,
+      "ap_real": 97.03,
+      "auroc": 95.99,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "mix-sr": {
+      "ap": 98.24,
+      "ap_real": 98.37,
+      "auroc": 98.15,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "modelscope": {
+      "ap": 89.81,
+      "ap_real": 88.1,
+      "auroc": 88.27,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "pika": {
+      "ap": 93.06,
+      "ap_real": 93.99,
+      "auroc": 92.9,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "pika_v1_december_1": {
+      "ap": 97.13,
+      "ap_real": 97.78,
+      "auroc": 97.22,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "show_1": {
+      "ap": 91.87,
+      "ap_real": 95.11,
+      "auroc": 93.21,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "videocrafter-v1.0": {
+      "ap": 94.87,
+      "ap_real": 96.96,
+      "auroc": 95.68,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    },
+    "zeroscope": {
+      "ap": 78.29,
+      "ap_real": 81.64,
+      "auroc": 79.32,
+      "real_acc": 5.56,
+      "fake_acc": 100.0,
+      "acc": 52.78,
+      "n_real": 18,
+      "n_fake": 18,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "fake_probability"
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 18,
+  "reals": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/evalcrafter/GenVideo/test/Crafter/0_real",
+  "ckpt_sha256": null,
+  "cache_dir": "/hddstore/ssalehi/SynthScope/video_agent_bench/cache/stall/evalcrafter",
+  "date": "2026-11-19T21:49:06",
+  "synthscope_version": "video",
+  "per_video": [
+    {
+      "p": 0.630592,
+      "k": "Crafter/0_real/00000_msrvtt_1.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.607797,
+      "k": "Crafter/0_real/00001_msrvtt_2.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.881475,
+      "k": "Crafter/0_real/00002_msrvtt_3.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.980942,
+      "k": "Crafter/0_real/00003_msrvtt_4.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.167751,
+      "k": "Crafter/0_real/00004_msrvtt_5.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.854574,
+      "k": "Crafter/0_real/00005_msrvtt_6.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.899458,
+      "k": "Crafter/0_real/00006_msrvtt_7.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.919885,
+      "k": "Crafter/0_real/00007_msrvtt_8.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.557114,
+      "k": "Crafter/0_real/00008_msrvtt_9.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.652902,
+      "k": "Crafter/0_real/00009_msrvtt_10.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.63898,
+      "k": "Crafter/0_real/00010_msrvtt_11.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.922946,
+      "k": "Crafter/0_real/00011_msrvtt_12.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.859268,
+      "k": "Crafter/0_real/00012_msrvtt_13.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.91235,
+      "k": "Crafter/0_real/00013_msrvtt_14.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.98727,
+      "k": "Crafter/0_real/00014_msrvtt_15.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.823552,
+      "k": "Crafter/0_real/00015_msrvtt_16.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.832617,
+      "k": "Crafter/0_real/00016_msrvtt_17.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.862123,
+      "k": "Crafter/0_real/00017_msrvtt_18.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.816959,
+      "k": "1_fake/MoonValley/0000.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.993378,
+      "k": "1_fake/MoonValley/0001.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.922489,
+      "k": "1_fake/MoonValley/0002.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.994746,
+      "k": "1_fake/MoonValley/0003.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.987947,
+      "k": "1_fake/MoonValley/0004.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.991877,
+      "k": "1_fake/MoonValley/0005.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.955424,
+      "k": "1_fake/MoonValley/0007.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.985813,
+      "k": "1_fake/MoonValley/0008.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.983635,
+      "k": "1_fake/MoonValley/0009.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.906081,
+      "k": "1_fake/MoonValley/0010.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.988595,
+      "k": "1_fake/MoonValley/0011.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.977425,
+      "k": "1_fake/MoonValley/0012.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.9912,
+      "k": "1_fake/MoonValley/0015.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.855192,
+      "k": "1_fake/MoonValley/0016.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.95619,
+      "k": "1_fake/MoonValley/0017.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.989036,
+      "k": "1_fake/MoonValley/0019.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.974673,
+      "k": "1_fake/MoonValley/0020.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.980913,
+      "k": "1_fake/MoonValley/0023.mp4",
+      "gen": "MoonValley",
+      "label": 1
+    },
+    {
+      "p": 0.902431,
+      "k": "1_fake/floor33/0000.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.986593,
+      "k": "1_fake/floor33/0001.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.973938,
+      "k": "1_fake/floor33/0002.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.96808,
+      "k": "1_fake/floor33/0003.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.927184,
+      "k": "1_fake/floor33/0004.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.988212,
+      "k": "1_fake/floor33/0005.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.968051,
+      "k": "1_fake/floor33/0006.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.982252,
+      "k": "1_fake/floor33/0007.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.990155,
+      "k": "1_fake/floor33/0008.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.985313,
+      "k": "1_fake/floor33/0009.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.976145,
+      "k": "1_fake/floor33/0010.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.994246,
+      "k": "1_fake/floor33/0011.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.989272,
+      "k": "1_fake/floor33/0012.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.964048,
+      "k": "1_fake/floor33/0013.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.998263,
+      "k": "1_fake/floor33/0014.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.993775,
+      "k": "1_fake/floor33/0015.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.951863,
+      "k": "1_fake/floor33/0016.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.911158,
+      "k": "1_fake/floor33/0017.mp4",
+      "gen": "floor33",
+      "label": 1
+    },
+    {
+      "p": 0.973069,
+      "k": "1_fake/gen2/0000.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.959677,
+      "k": "1_fake/gen2/0001.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.857296,
+      "k": "1_fake/gen2/0002.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.994437,
+      "k": "1_fake/gen2/0003.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.92555,
+      "k": "1_fake/gen2/0004.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.987889,
+      "k": "1_fake/gen2/0005.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.977411,
+      "k": "1_fake/gen2/0006.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.964254,
+      "k": "1_fake/gen2/0007.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.979309,
+      "k": "1_fake/gen2/0008.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.990582,
+      "k": "1_fake/gen2/0009.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.991818,
+      "k": "1_fake/gen2/0010.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.985431,
+      "k": "1_fake/gen2/0011.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.993157,
+      "k": "1_fake/gen2/0012.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.988227,
+      "k": "1_fake/gen2/0013.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.998146,
+      "k": "1_fake/gen2/0014.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.981134,
+      "k": "1_fake/gen2/0015.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.946168,
+      "k": "1_fake/gen2/0016.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.992671,
+      "k": "1_fake/gen2/0017.mp4",
+      "gen": "gen2",
+      "label": 1
+    },
+    {
+      "p": 0.994496,
+      "k": "1_fake/gen2_december/0000.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.995659,
+      "k": "1_fake/gen2_december/0001.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.947787,
+      "k": "1_fake/gen2_december/0002.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994908,
+      "k": "1_fake/gen2_december/0003.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.996748,
+      "k": "1_fake/gen2_december/0004.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994275,
+      "k": "1_fake/gen2_december/0005.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994908,
+      "k": "1_fake/gen2_december/0006.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.966535,
+      "k": "1_fake/gen2_december/0007.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994496,
+      "k": "1_fake/gen2_december/0008.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.99039,
+      "k": "1_fake/gen2_december/0009.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.996056,
+      "k": "1_fake/gen2_december/0010.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994172,
+      "k": "1_fake/gen2_december/0011.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.995821,
+      "k": "1_fake/gen2_december/0012.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.993451,
+      "k": "1_fake/gen2_december/0013.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.998175,
+      "k": "1_fake/gen2_december/0014.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.998411,
+      "k": "1_fake/gen2_december/0015.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.980045,
+      "k": "1_fake/gen2_december/0016.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.994599,
+      "k": "1_fake/gen2_december/0017.mp4",
+      "gen": "gen2_december",
+      "label": 1
+    },
+    {
+      "p": 0.830866,
+      "k": "1_fake/hotshot/0000.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.980884,
+      "k": "1_fake/hotshot/0001.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.942077,
+      "k": "1_fake/hotshot/0002.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.967816,
+      "k": "1_fake/hotshot/0003.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.815134,
+      "k": "1_fake/hotshot/0004.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.974659,
+      "k": "1_fake/hotshot/0005.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.984651,
+      "k": "1_fake/hotshot/0006.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.994658,
+      "k": "1_fake/hotshot/0007.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.993643,
+      "k": "1_fake/hotshot/0008.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.947389,
+      "k": "1_fake/hotshot/0009.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.983371,
+      "k": "1_fake/hotshot/0010.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.993128,
+      "k": "1_fake/hotshot/0011.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.990464,
+      "k": "1_fake/hotshot/0012.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.987035,
+      "k": "1_fake/hotshot/0013.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.984268,
+      "k": "1_fake/hotshot/0014.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.994261,
+      "k": "1_fake/hotshot/0015.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.653682,
+      "k": "1_fake/hotshot/0016.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.968404,
+      "k": "1_fake/hotshot/0017.mp4",
+      "gen": "hotshot",
+      "label": 1
+    },
+    {
+      "p": 0.971789,
+      "k": "1_fake/lavie-base/0000.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.995188,
+      "k": "1_fake/lavie-base/0001.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.988771,
+      "k": "1_fake/lavie-base/0002.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.989213,
+      "k": "1_fake/lavie-base/0003.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.986461,
+      "k": "1_fake/lavie-base/0004.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.98134,
+      "k": "1_fake/lavie-base/0005.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.978558,
+      "k": "1_fake/lavie-base/0006.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.954836,
+      "k": "1_fake/lavie-base/0007.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.999294,
+      "k": "1_fake/lavie-base/0008.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.997336,
+      "k": "1_fake/lavie-base/0009.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.968183,
+      "k": "1_fake/lavie-base/0010.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.993157,
+      "k": "1_fake/lavie-base/0011.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.996071,
+      "k": "1_fake/lavie-base/0012.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.98805,
+      "k": "1_fake/lavie-base/0013.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.993628,
+      "k": "1_fake/lavie-base/0014.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.994467,
+      "k": "1_fake/lavie-base/0015.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.982856,
+      "k": "1_fake/lavie-base/0016.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.970155,
+      "k": "1_fake/lavie-base/0017.mp4",
+      "gen": "lavie-base",
+      "label": 1
+    },
+    {
+      "p": 0.940546,
+      "k": "1_fake/lavie-interpolation/0000.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.99017,
+      "k": "1_fake/lavie-interpolation/0001.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.972893,
+      "k": "1_fake/lavie-interpolation/0002.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.986476,
+      "k": "1_fake/lavie-interpolation/0003.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.969935,
+      "k": "1_fake/lavie-interpolation/0004.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.985416,
+      "k": "1_fake/lavie-interpolation/0005.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.96886,
+      "k": "1_fake/lavie-interpolation/0006.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.989728,
+      "k": "1_fake/lavie-interpolation/0007.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.996527,
+      "k": "1_fake/lavie-interpolation/0008.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.994923,
+      "k": "1_fake/lavie-interpolation/0009.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.994776,
+      "k": "1_fake/lavie-interpolation/0010.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.992318,
+      "k": "1_fake/lavie-interpolation/0011.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.994217,
+      "k": "1_fake/lavie-interpolation/0012.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.992966,
+      "k": "1_fake/lavie-interpolation/0013.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.998411,
+      "k": "1_fake/lavie-interpolation/0014.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.994629,
+      "k": "1_fake/lavie-interpolation/0015.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.985887,
+      "k": "1_fake/lavie-interpolation/0016.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.950494,
+      "k": "1_fake/lavie-interpolation/0017.mp4",
+      "gen": "lavie-interpolation",
+      "label": 1
+    },
+    {
+      "p": 0.968434,
+      "k": "1_fake/mix-sr/0000.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.995541,
+      "k": "1_fake/mix-sr/0001.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.932349,
+      "k": "1_fake/mix-sr/0002.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.994835,
+      "k": "1_fake/mix-sr/0003.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.990699,
+      "k": "1_fake/mix-sr/0004.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.993672,
+      "k": "1_fake/mix-sr/0005.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.992612,
+      "k": "1_fake/mix-sr/0006.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.987624,
+      "k": "1_fake/mix-sr/0007.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99326,
+      "k": "1_fake/mix-sr/0008.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.987285,
+      "k": "1_fake/mix-sr/0009.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.995276,
+      "k": "1_fake/mix-sr/0010.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.992024,
+      "k": "1_fake/mix-sr/0011.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99273,
+      "k": "1_fake/mix-sr/0012.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99532,
+      "k": "1_fake/mix-sr/0013.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.997896,
+      "k": "1_fake/mix-sr/0014.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99223,
+      "k": "1_fake/mix-sr/0015.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.975806,
+      "k": "1_fake/mix-sr/0016.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.99507,
+      "k": "1_fake/mix-sr/0017.mp4",
+      "gen": "mix-sr",
+      "label": 1
+    },
+    {
+      "p": 0.96602,
+      "k": "1_fake/modelscope/0000.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.991994,
+      "k": "1_fake/modelscope/0001.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.99351,
+      "k": "1_fake/modelscope/0002.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.988139,
+      "k": "1_fake/modelscope/0003.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.834133,
+      "k": "1_fake/modelscope/0004.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.974438,
+      "k": "1_fake/modelscope/0005.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.971627,
+      "k": "1_fake/modelscope/0006.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.962709,
+      "k": "1_fake/modelscope/0007.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.988757,
+      "k": "1_fake/modelscope/0008.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.99507,
+      "k": "1_fake/modelscope/0009.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.982856,
+      "k": "1_fake/modelscope/0010.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.985004,
+      "k": "1_fake/modelscope/0011.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.987285,
+      "k": "1_fake/modelscope/0012.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.687235,
+      "k": "1_fake/modelscope/0013.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.99713,
+      "k": "1_fake/modelscope/0014.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.990846,
+      "k": "1_fake/modelscope/0015.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.91753,
+      "k": "1_fake/modelscope/0016.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.979324,
+      "k": "1_fake/modelscope/0017.mp4",
+      "gen": "modelscope",
+      "label": 1
+    },
+    {
+      "p": 0.898208,
+      "k": "1_fake/pika/0000.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.983326,
+      "k": "1_fake/pika/0001.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.994319,
+      "k": "1_fake/pika/0002.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.97666,
+      "k": "1_fake/pika/0003.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.982929,
+      "k": "1_fake/pika/0004.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.996483,
+      "k": "1_fake/pika/0005.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.990905,
+      "k": "1_fake/pika/0006.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.989846,
+      "k": "1_fake/pika/0007.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.986682,
+      "k": "1_fake/pika/0008.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.995232,
+      "k": "1_fake/pika/0009.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.973378,
+      "k": "1_fake/pika/0010.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.978912,
+      "k": "1_fake/pika/0011.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.99429,
+      "k": "1_fake/pika/0012.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.997469,
+      "k": "1_fake/pika/0013.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.992568,
+      "k": "1_fake/pika/0014.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.993319,
+      "k": "1_fake/pika/0015.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.896942,
+      "k": "1_fake/pika/0016.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.955513,
+      "k": "1_fake/pika/0017.mp4",
+      "gen": "pika",
+      "label": 1
+    },
+    {
+      "p": 0.986608,
+      "k": "1_fake/pika_v1_december_1/0000.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.976807,
+      "k": "1_fake/pika_v1_december_1/0001.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.987859,
+      "k": "1_fake/pika_v1_december_1/0002.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.990464,
+      "k": "1_fake/pika_v1_december_1/0003.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.980722,
+      "k": "1_fake/pika_v1_december_1/0004.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.991259,
+      "k": "1_fake/pika_v1_december_1/0005.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.983518,
+      "k": "1_fake/pika_v1_december_1/0006.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.99039,
+      "k": "1_fake/pika_v1_december_1/0007.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.994996,
+      "k": "1_fake/pika_v1_december_1/0008.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.991303,
+      "k": "1_fake/pika_v1_december_1/0009.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.987992,
+      "k": "1_fake/pika_v1_december_1/0010.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.987682,
+      "k": "1_fake/pika_v1_december_1/0011.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.994673,
+      "k": "1_fake/pika_v1_december_1/0012.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.986844,
+      "k": "1_fake/pika_v1_december_1/0013.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.995232,
+      "k": "1_fake/pika_v1_december_1/0014.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.974968,
+      "k": "1_fake/pika_v1_december_1/0015.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.990493,
+      "k": "1_fake/pika_v1_december_1/0016.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.989905,
+      "k": "1_fake/pika_v1_december_1/0017.mp4",
+      "gen": "pika_v1_december_1",
+      "label": 1
+    },
+    {
+      "p": 0.907361,
+      "k": "1_fake/show_1/0000.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.982458,
+      "k": "1_fake/show_1/0001.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.928376,
+      "k": "1_fake/show_1/0002.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.985902,
+      "k": "1_fake/show_1/0003.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.950333,
+      "k": "1_fake/show_1/0004.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.972878,
+      "k": "1_fake/show_1/0005.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.978146,
+      "k": "1_fake/show_1/0006.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.990037,
+      "k": "1_fake/show_1/0007.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.981281,
+      "k": "1_fake/show_1/0008.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.986284,
+      "k": "1_fake/show_1/0009.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.983621,
+      "k": "1_fake/show_1/0010.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.993584,
+      "k": "1_fake/show_1/0011.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.991111,
+      "k": "1_fake/show_1/0012.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.991479,
+      "k": "1_fake/show_1/0013.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.99738,
+      "k": "1_fake/show_1/0014.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.994746,
+      "k": "1_fake/show_1/0015.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.938162,
+      "k": "1_fake/show_1/0016.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.95747,
+      "k": "1_fake/show_1/0017.mp4",
+      "gen": "show_1",
+      "label": 1
+    },
+    {
+      "p": 0.943548,
+      "k": "1_fake/videocrafter-v1.0/0000.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.994702,
+      "k": "1_fake/videocrafter-v1.0/0001.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.936028,
+      "k": "1_fake/videocrafter-v1.0/0002.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.981413,
+      "k": "1_fake/videocrafter-v1.0/0003.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.986711,
+      "k": "1_fake/videocrafter-v1.0/0004.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.995158,
+      "k": "1_fake/videocrafter-v1.0/0005.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.98546,
+      "k": "1_fake/videocrafter-v1.0/0006.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.982576,
+      "k": "1_fake/videocrafter-v1.0/0007.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.992068,
+      "k": "1_fake/videocrafter-v1.0/0008.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.984886,
+      "k": "1_fake/videocrafter-v1.0/0009.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.9829,
+      "k": "1_fake/videocrafter-v1.0/0010.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.991656,
+      "k": "1_fake/videocrafter-v1.0/0011.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.99142,
+      "k": "1_fake/videocrafter-v1.0/0012.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.946006,
+      "k": "1_fake/videocrafter-v1.0/0013.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.994055,
+      "k": "1_fake/videocrafter-v1.0/0014.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.997233,
+      "k": "1_fake/videocrafter-v1.0/0015.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.97145,
+      "k": "1_fake/videocrafter-v1.0/0016.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.993437,
+      "k": "1_fake/videocrafter-v1.0/0017.mp4",
+      "gen": "videocrafter-v1.0",
+      "label": 1
+    },
+    {
+      "p": 0.833206,
+      "k": "1_fake/zeroscope/0000.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.797695,
+      "k": "1_fake/zeroscope/0001.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.886847,
+      "k": "1_fake/zeroscope/0002.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.932099,
+      "k": "1_fake/zeroscope/0003.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.923343,
+      "k": "1_fake/zeroscope/0004.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.955056,
+      "k": "1_fake/zeroscope/0005.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.964269,
+      "k": "1_fake/zeroscope/0006.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.952496,
+      "k": "1_fake/zeroscope/0007.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.994702,
+      "k": "1_fake/zeroscope/0008.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.743613,
+      "k": "1_fake/zeroscope/0009.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.922489,
+      "k": "1_fake/zeroscope/0010.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.979824,
+      "k": "1_fake/zeroscope/0011.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.988801,
+      "k": "1_fake/zeroscope/0012.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.943313,
+      "k": "1_fake/zeroscope/0013.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.963474,
+      "k": "1_fake/zeroscope/0014.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.990817,
+      "k": "1_fake/zeroscope/0015.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.89575,
+      "k": "1_fake/zeroscope/0016.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    },
+    {
+      "p": 0.924535,
+      "k": "1_fake/zeroscope/0017.mp4",
+      "gen": "zeroscope",
+      "label": 1
+    }
+  ]
+}

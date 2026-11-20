@@ -2156,5 +2156,67 @@
       "status": "reference",
       "note": "Zero-shot reference, NOT a paper reproduction. EvalCrafter has no reals of its own: the reals are the first 1000 GenVideo-Val MSR-VTT videos (--limit 1000), the same for every generator."
     }
+  ],
+  "wevis": [
+    {
+      "benchmark": "GenBuster-Bench (GB), 40% subsample of every folder (1,260 clips: 400 real + 860 fake), IN-DISTRIBUTION",
+      "metric": "accuracy over the clips, one row per clip, fake = positive (official scripts/evaluate.py: invalid answers wrong, tool errors excluded; none here)",
+      "paper": "acc=97.7 / fake_recall=99.3 / fake_f1=98.3",
+      "ours": "acc=97.3 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=97.3",
+      "status": "reference",
+      "note": "IN-DISTRIBUTION, 40% subsample (status reference, as Veritas++'s subsets), so not a held-out result. Official weights, greedy, audio off (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 /\u2026"
+    },
+    {
+      "benchmark": "GenBuster-Bench++ (GB++, video track), 40% subsample (800 clips: 400 real + 400 fake), IN-DISTRIBUTION",
+      "metric": "accuracy over the clips, one row per clip, fake = positive (official scripts/evaluate.py)",
+      "paper": "acc=97.5 / fake_recall=97.2 / fake_f1=97.4",
+      "ours": "acc=97.88 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=97.88",
+      "status": "reference",
+      "note": "IN-DISTRIBUTION, 40% subsample (status reference), so not a held-out result. Official weights, greedy, audio off: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
+    },
+    {
+      "benchmark": "4 held subsets (GenVideo-Val, VideoPhy, VidProM, EvalCrafter; L = ceil(250 / generators)) vs 8 video detectors on identical files",
+      "metric": "balanced accuracy (mean over generators) from the agent's verdict and AUROC of the verdict-token logit gap, unweighted mean over the 4 subsets",
+      "paper": "\u2014",
+      "ours": "acc=85.59 / AUROC=90.23 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=85.59 / AUROC=90.23",
+      "status": "reference",
+      "note": "HEADLINE (held out for every detector): 85.59 acc / 90.23 AUROC, 7th of 9 (SPLIT 99.41 / 100.0; median 91.40 / 96.31). Per subset 85.20 / 86.33 / 85.52 / 85.32 acc. Fake accuracy 97.7-98.4, real accuracy 72-75: it calls about 1 in 4 of the low-resolution GenVideo-Val MSR-VTT reals fake (37 of 138 real rows); the pooled one-row-per-clip accuracy is 93.0-96.7."
+    },
+    {
+      "benchmark": "6 subsets including the in-distribution GenBuster-Bench / ++ (not a held-out mean)",
+      "metric": "balanced accuracy (mean over generators) and AUROC, unweighted mean over the 6 subsets",
+      "paper": "\u2014",
+      "ours": "acc=89.29 / AUROC=92.61 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=89.29 / AUROC=92.61",
+      "status": "reference",
+      "note": "89.29 acc / 92.61 AUROC, 2nd of 9 by accuracy (VINA 94.29), but GenBuster-Bench / ++ are in its training distribution, so the fair number is the held-out mean of the 4 (85.59 / 90.23, 7th of 9)."
+    },
+    {
+      "benchmark": "MintVid General (6 generator categories: Hailuo, Jimeng, Kling, Seedance, Sora2, Wan2.5)",
+      "metric": "accuracy, the official repeated-reference protocol (not compared: benchmark not held)",
+      "paper": "acc=88.0",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded), so there is no comparable number."
+    },
+    {
+      "benchmark": "AgenticCue OOD-Agentic (Visual, Physical, OCR, Common sense, Audio; 500 generated + 500 real each)",
+      "metric": "accuracy per category (not compared: benchmark not held; the audio category needs the audio tools, which are off here)",
+      "paper": "\u2014",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (not downloaded), so there is no comparable number."
+    }
   ]
 }

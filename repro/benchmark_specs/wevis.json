@@ -1,0 +1,119 @@
+{
+  "model": "wevis",
+  "paper": "WeVisForensics: agentic AI-generated video detection (Du, Li, Zhang, Sun, Li, Lyu, Tai; arXiv 2611.21373, Nanjing University + Tencent WeChat Vision)",
+  "arxiv_id": "2611.21373",
+  "official_repo": "https://github.com/Tencent/WeVisForensics",
+  "training_set_in_paper": "Not trained in SynthScope. The official release, inference only: the five LoRA adapters of HF tencent/WeVisForensics @ 9fa025a0 (Apache-2.0) on Qwen/Qwen3.5-4B @ 851bf6e8, run by the official in-process transformers backend (demo/wvf_local.py @ 43ae1c0, unmodified) in a separate process with transformers 5.23.0, greedy decoding, audio tools off (has_audio=False for every clip). The verdict is the agent's answer; AUROC ranks the fake-minus-real logit at the final verdict token. Fidelity (job 295351, RTX A5000): answers, tool calls, every turn's raw text and the verdicts identical to the official backend on 17 / 17 clips, logit gap equal to a direct generate call (max diff 0.0); the authors' vLLM engine is not reproduced. Every benchmark row ran on an RTX A6000 (ivi-cn023; 3,208 rows, 0 tool errors, 0 OOM, 0 unparsed; 36.6 GPU-h). GenBuster-200K, the source of GenBuster-Bench, is in its training data (paper Sec. 3), so GenBuster-Bench / ++ are IN-DISTRIBUTION; overlap of its other training sources (VBench-2.0, AIGVDBench, RewardData) with the four held subsets was not checked. Results: repro/video_agent_bench/ (spec.json, comparison.json, results/<subset>/*.json; logs repro/logs/wevis_wevis_w0_295637.out, wevis_wevis_w1_295640.out, wevis_wevis_w0_295611.out).",
+  "benchmarks": [
+    {
+      "name": "GenBuster-Bench (GB), 40% subsample of every folder (1,260 clips: 400 real + 860 fake), IN-DISTRIBUTION",
+      "datasets": [
+        "GenBuster-Bench"
+      ],
+      "subsets_or_generators": [
+        "id (CogVideoX, EasyAnimate, HunyuanVideo, LTX-Video)",
+        "ood (Gen-3, Jimeng, Kling, Luma, Pika, Sora, Vidu, WanX)",
+        "wild (11 recent generators)"
+      ],
+      "metric": "accuracy over the clips, one row per clip, fake = positive (official scripts/evaluate.py: invalid answers wrong, tool errors excluded; none here)",
+      "paper_number": {
+        "acc": 97.7,
+        "fake_recall": 99.3,
+        "fake_f1": 98.3,
+        "note": "WeVisForensics paper Table 4 (ID column, WeVisForensics-DTPO) and Table 12 (R / F1); the paper ran the official vLLM engine on the full 3,150 clips."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "IN-DISTRIBUTION, 40% subsample (status reference, as Veritas++'s subsets), so not a held-out result. Official weights, greedy, audio off (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 / 95.3. IN-DISTRIBUTION (GenBuster-200K is in its training data): 1st of 9 vs 8 video detectors (VINA 89.37), not a held-out result."
+      },
+      "dataset_source": "HF l8cv/GenBuster-Bench @ 68e41ab5 (MIT), dataset.py GenBusterBenchDataset; subset manifest repro/video_agent_bench/subsets/genbuster.json"
+    },
+    {
+      "name": "GenBuster-Bench++ (GB++, video track), 40% subsample (800 clips: 400 real + 400 fake), IN-DISTRIBUTION",
+      "datasets": [
+        "GenBuster-Bench++"
+      ],
+      "subsets_or_generators": [
+        "video (generators not labelled)"
+      ],
+      "metric": "accuracy over the clips, one row per clip, fake = positive (official scripts/evaluate.py)",
+      "paper_number": {
+        "acc": 97.5,
+        "fake_recall": 97.2,
+        "fake_f1": 97.4,
+        "note": "WeVisForensics paper Table 4 (GB++ column, WeVisForensics-DTPO) and Table 12 (R / F1); full 2,000 clips, vLLM engine."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "IN-DISTRIBUTION, 40% subsample (status reference), so not a held-out result. Official weights, greedy, audio off: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
+      },
+      "dataset_source": "HF l8cv/GenBuster-Bench-plusplus @ 7f184bef (MIT), dataset.py GenBusterBenchPPDataset; subset manifest repro/video_agent_bench/subsets/genbuster_pp.json"
+    },
+    {
+      "name": "4 held subsets (GenVideo-Val, VideoPhy, VidProM, EvalCrafter; L = ceil(250 / generators)) vs 8 video detectors on identical files",
+      "datasets": [
+        "GenVideo-Val",
+        "VideoPhy",
+        "VidProM",
+        "EvalCrafter"
+      ],
+      "metric": "balanced accuracy (mean over generators) from the agent's verdict and AUROC of the verdict-token logit gap, unweighted mean over the 4 subsets",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "HEADLINE (held out for every detector): 85.59 acc / 90.23 AUROC, 7th of 9 (SPLIT 99.41 / 100.0; median 91.40 / 96.31). Per subset 85.20 / 86.33 / 85.52 / 85.32 acc. Fake accuracy 97.7-98.4, real accuracy 72-75: it calls about 1 in 4 of the low-resolution GenVideo-Val MSR-VTT reals fake (37 of 138 real rows); the pooled one-row-per-clip accuracy is 93.0-96.7."
+      },
+      "dataset_source": "repro/video_agent_bench/subsets/{genvideo,videophy,vidprom,evalcrafter}.json (EvalCrafter paired with the first 18 GenVideo-Val MSR-VTT reals)"
+    },
+    {
+      "name": "6 subsets including the in-distribution GenBuster-Bench / ++ (not a held-out mean)",
+      "datasets": [
+        "GenVideo-Val",
+        "VideoPhy",
+        "VidProM",
+        "EvalCrafter",
+        "GenBuster-Bench",
+        "GenBuster-Bench++"
+      ],
+      "metric": "balanced accuracy (mean over generators) and AUROC, unweighted mean over the 6 subsets",
+      "paper_number": {
+        "note": "No paper numbers: a cross-benchmark comparison, not in the paper."
+      },
+      "our_status": "reference",
+      "our_number": {
+        "note": "89.29 acc / 92.61 AUROC, 2nd of 9 by accuracy (VINA 94.29), but GenBuster-Bench / ++ are in its training distribution, so the fair number is the held-out mean of the 4 (85.59 / 90.23, 7th of 9)."
+      }
+    },
+    {
+      "name": "MintVid General (6 generator categories: Hailuo, Jimeng, Kling, Seedance, Sora2, Wan2.5)",
+      "datasets": [
+        "MintVid"
+      ],
+      "metric": "accuracy, the official repeated-reference protocol (not compared: benchmark not held)",
+      "paper_number": {
+        "acc": 88.0,
+        "note": "Paper Table 4, the six-generator MintVid mean (88.9 / 82.9 / 89.6 / 98.6 / 82.4 / 85.6)."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded), so there is no comparable number."
+      }
+    },
+    {
+      "name": "AgenticCue OOD-Agentic (Visual, Physical, OCR, Common sense, Audio; 500 generated + 500 real each)",
+      "datasets": [
+        "AgenticCue"
+      ],
+      "metric": "accuracy per category (not compared: benchmark not held; the audio category needs the audio tools, which are off here)",
+      "paper_number": {
+        "note": "Paper Table 4, WeVisForensics-DTPO: 97.3 / 98.0 / 98.0 / 98.8 / 97.0."
+      },
+      "our_status": "missing",
+      "our_number": {
+        "note": "Not held (not downloaded), so there is no comparable number."
+      }
+    }
+  ]
+}

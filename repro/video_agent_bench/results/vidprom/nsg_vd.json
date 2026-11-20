@@ -1,0 +1,2916 @@
+{
+  "tag": "vab_vidprom_nsg_vd",
+  "model": "nsg_vd",
+  "ckpt": "registry-default",
+  "benchmark": "video:pergen",
+  "data_root": "/hddstore/ssalehi/SynthScope/video_agent_bench/subsets/vidprom/VidProM/test",
+  "n_generators": 4,
+  "means": {
+    "acc": 85.91,
+    "map": 93.04,
+    "map_real": 95.73,
+    "mauroc": 95.6,
+    "fake_recall_at_fpr": {
+      "0.1": 13.89,
+      "1": 13.89,
+      "5": 86.51
+    },
+    "overall_fake_recall_at_fpr": {
+      "0.1": 13.89,
+      "1": 13.89,
+      "5": 86.51
+    },
+    "pooled": {
+      "n": 315,
+      "n_real": 63,
+      "n_fake": 252,
+      "acc": 91.75,
+      "acc_strict": 91.75,
+      "real_acc": 76.19,
+      "fake_recall": 95.63,
+      "fake_f1": 94.88
+    }
+  },
+  "per_generator": {
+    "ModelScope": {
+      "ap": 92.92,
+      "ap_real": 94.8,
+      "auroc": 95.21,
+      "real_acc": 76.19,
+      "fake_acc": 95.24,
+      "acc": 85.71,
+      "n_real": 63,
+      "n_fake": 63,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 9.52,
+        "1": 9.52,
+        "5": 85.71
+      }
+    },
+    "Pika": {
+      "ap": 96.99,
+      "ap_real": 99.16,
+      "auroc": 98.66,
+      "real_acc": 76.19,
+      "fake_acc": 100.0,
+      "acc": 88.1,
+      "n_real": 63,
+      "n_fake": 63,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 38.1,
+        "1": 38.1,
+        "5": 100.0
+      }
+    },
+    "Text2Video-Zero": {
+      "ap": 87.74,
+      "ap_real": 90.08,
+      "auroc": 90.41,
+      "real_acc": 76.19,
+      "fake_acc": 87.3,
+      "acc": 81.75,
+      "n_real": 63,
+      "n_fake": 63,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 1.59,
+        "1": 1.59,
+        "5": 65.08
+      }
+    },
+    "VideoCrafter2": {
+      "ap": 94.52,
+      "ap_real": 98.88,
+      "auroc": 98.14,
+      "real_acc": 76.19,
+      "fake_acc": 100.0,
+      "acc": 88.1,
+      "n_real": 63,
+      "n_fake": 63,
+      "failed_real": 0,
+      "failed_fake": 0,
+      "failed_other_real": 0,
+      "failed_other_fake": 0,
+      "rank_by": "logit",
+      "acc_by": "engine_verdict",
+      "fake_recall_at_fpr": {
+        "0.1": 6.35,
+        "1": 6.35,
+        "5": 95.24
+      }
+    }
+  },
+  "failed_to_decode": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "failed_other": {
+    "fake": 0,
+    "real_unique": 0
+  },
+  "limit": 63,
+  "reals": null,
+  "ckpt_sha256": "a7c6d2100353c20e00b355c97b878b357bff05374e899413fef8ddfa40e99310",
+  "cache_dir": "/hddstore/ssalehi/SynthScope/video_agent_bench/cache/nsg_vd/vidprom",
+  "date": "2026-11-19T21:31:51",
+  "synthscope_version": "video",
+  "ffmpeg": {
+    "version": "4.2.2",
+    "sha256": "700073daef5c23bbcb18c2eae60553a454a5221ec19b4a88c8c367a664671a7c"
+  },
+  "aux_sha256": {
+    "256x256_diffusion_uncond.pt": "a37c32fffd316cd494cf3f35b339936debdc1576dad13fe57c42399a5dbc78b1",
+    "nsg_vd_reference_msrvtt_val100.safetensors": "982120df54edcbc936a656101dd387f2e5eccae8b4eac7f9647fdbc59ef930fa"
+  },
+  "per_video": [
+    {
+      "p": 0.002842,
+      "logit": 0.413968,
+      "verdict": "real",
+      "raw": 0.413968,
+      "k": "ModelScope/0_real/00001_msrvtt_1.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.008492,
+      "logit": 0.523987,
+      "verdict": "real",
+      "raw": 0.523987,
+      "k": "ModelScope/0_real/00003_msrvtt_2.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002978,
+      "logit": 0.418658,
+      "verdict": "real",
+      "raw": 0.418658,
+      "k": "ModelScope/0_real/00005_msrvtt_3.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.892284,
+      "logit": 1.211429,
+      "verdict": "fake",
+      "raw": 1.211429,
+      "k": "ModelScope/0_real/00007_msrvtt_4.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001353,
+      "logit": 0.339608,
+      "verdict": "real",
+      "raw": 0.339608,
+      "k": "ModelScope/0_real/00009_msrvtt_5.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.949492,
+      "logit": 1.293379,
+      "verdict": "fake",
+      "raw": 1.293379,
+      "k": "ModelScope/0_real/00011_msrvtt_6.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.017929,
+      "logit": 0.599675,
+      "verdict": "real",
+      "raw": 0.599675,
+      "k": "ModelScope/0_real/00013_msrvtt_7.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.826221,
+      "logit": 1.155908,
+      "verdict": "fake",
+      "raw": 1.155908,
+      "k": "ModelScope/0_real/00015_msrvtt_8.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.009561,
+      "logit": 0.535952,
+      "verdict": "real",
+      "raw": 0.535952,
+      "k": "ModelScope/0_real/00017_msrvtt_9.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.484161,
+      "logit": 0.993662,
+      "verdict": "real",
+      "raw": 0.993662,
+      "k": "ModelScope/0_real/00019_msrvtt_10.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.034139,
+      "logit": 0.665742,
+      "verdict": "real",
+      "raw": 0.665742,
+      "k": "ModelScope/0_real/00021_msrvtt_11.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.037814,
+      "logit": 0.676348,
+      "verdict": "real",
+      "raw": 0.676348,
+      "k": "ModelScope/0_real/00023_msrvtt_12.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002693,
+      "logit": 0.408578,
+      "verdict": "real",
+      "raw": 0.408578,
+      "k": "ModelScope/0_real/00025_msrvtt_13.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.966049,
+      "logit": 1.334828,
+      "verdict": "fake",
+      "raw": 1.334828,
+      "k": "ModelScope/0_real/00027_msrvtt_14.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.961987,
+      "logit": 1.323107,
+      "verdict": "fake",
+      "raw": 1.323107,
+      "k": "ModelScope/0_real/00029_msrvtt_15.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/0_real/00031_msrvtt_16.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001402,
+      "logit": 0.343187,
+      "verdict": "real",
+      "raw": 0.343187,
+      "k": "ModelScope/0_real/00033_msrvtt_17.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.040804,
+      "logit": 0.684268,
+      "verdict": "real",
+      "raw": 0.684268,
+      "k": "ModelScope/0_real/00035_msrvtt_18.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.161807,
+      "logit": 0.835516,
+      "verdict": "real",
+      "raw": 0.835516,
+      "k": "ModelScope/0_real/00037_msrvtt_19.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.062352,
+      "logit": 0.728941,
+      "verdict": "real",
+      "raw": 0.728941,
+      "k": "ModelScope/0_real/00039_msrvtt_20.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001559,
+      "logit": 0.353794,
+      "verdict": "real",
+      "raw": 0.353794,
+      "k": "ModelScope/0_real/00041_msrvtt_21.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.377691,
+      "logit": 0.950064,
+      "verdict": "real",
+      "raw": 0.950064,
+      "k": "ModelScope/0_real/00043_msrvtt_22.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002758,
+      "logit": 0.410951,
+      "verdict": "real",
+      "raw": 0.410951,
+      "k": "ModelScope/0_real/00045_msrvtt_23.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.00144,
+      "logit": 0.345845,
+      "verdict": "real",
+      "raw": 0.345845,
+      "k": "ModelScope/0_real/00047_msrvtt_24.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002549,
+      "logit": 0.403047,
+      "verdict": "real",
+      "raw": 0.403047,
+      "k": "ModelScope/0_real/00049_msrvtt_25.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001909,
+      "logit": 0.374093,
+      "verdict": "real",
+      "raw": 0.374093,
+      "k": "ModelScope/0_real/00051_msrvtt_26.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.013326,
+      "logit": 0.569535,
+      "verdict": "real",
+      "raw": 0.569535,
+      "k": "ModelScope/0_real/00053_msrvtt_27.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.012471,
+      "logit": 0.562821,
+      "verdict": "real",
+      "raw": 0.562821,
+      "k": "ModelScope/0_real/00055_msrvtt_28.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002101,
+      "logit": 0.383677,
+      "verdict": "real",
+      "raw": 0.383677,
+      "k": "ModelScope/0_real/00057_msrvtt_29.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.041289,
+      "logit": 0.6855,
+      "verdict": "real",
+      "raw": 0.6855,
+      "k": "ModelScope/0_real/00059_msrvtt_30.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001217,
+      "logit": 0.328966,
+      "verdict": "real",
+      "raw": 0.328966,
+      "k": "ModelScope/0_real/00061_msrvtt_31.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.522379,
+      "logit": 1.008958,
+      "verdict": "fake",
+      "raw": 1.008958,
+      "k": "ModelScope/0_real/00063_msrvtt_32.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.593842,
+      "logit": 1.037987,
+      "verdict": "fake",
+      "raw": 1.037987,
+      "k": "ModelScope/0_real/00065_msrvtt_33.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.007374,
+      "logit": 0.509756,
+      "verdict": "real",
+      "raw": 0.509756,
+      "k": "ModelScope/0_real/00067_msrvtt_34.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.148587,
+      "logit": 0.825428,
+      "verdict": "real",
+      "raw": 0.825428,
+      "k": "ModelScope/0_real/00069_msrvtt_35.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.687447,
+      "logit": 1.078821,
+      "verdict": "fake",
+      "raw": 1.078821,
+      "k": "ModelScope/0_real/00071_msrvtt_36.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.010013,
+      "logit": 0.540621,
+      "verdict": "real",
+      "raw": 0.540621,
+      "k": "ModelScope/0_real/00073_msrvtt_37.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.009364,
+      "logit": 0.53385,
+      "verdict": "real",
+      "raw": 0.53385,
+      "k": "ModelScope/0_real/00075_msrvtt_38.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.879883,
+      "logit": 1.199132,
+      "verdict": "fake",
+      "raw": 1.199132,
+      "k": "ModelScope/0_real/00077_msrvtt_39.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.004076,
+      "logit": 0.450147,
+      "verdict": "real",
+      "raw": 0.450147,
+      "k": "ModelScope/0_real/00079_msrvtt_40.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.961597,
+      "logit": 1.322047,
+      "verdict": "fake",
+      "raw": 1.322047,
+      "k": "ModelScope/0_real/00081_msrvtt_41.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.09952,
+      "logit": 0.779743,
+      "verdict": "real",
+      "raw": 0.779743,
+      "k": "ModelScope/0_real/00083_msrvtt_42.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.327876,
+      "logit": 0.928219,
+      "verdict": "real",
+      "raw": 0.928219,
+      "k": "ModelScope/0_real/00085_msrvtt_43.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.580013,
+      "logit": 1.032283,
+      "verdict": "fake",
+      "raw": 1.032283,
+      "k": "ModelScope/0_real/00087_msrvtt_44.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.007319,
+      "logit": 0.509,
+      "verdict": "real",
+      "raw": 0.509,
+      "k": "ModelScope/0_real/00089_msrvtt_45.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.00138,
+      "logit": 0.341592,
+      "verdict": "real",
+      "raw": 0.341592,
+      "k": "ModelScope/0_real/00091_msrvtt_46.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.003234,
+      "logit": 0.426923,
+      "verdict": "real",
+      "raw": 0.426923,
+      "k": "ModelScope/0_real/00093_msrvtt_47.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.063235,
+      "logit": 0.730443,
+      "verdict": "real",
+      "raw": 0.730443,
+      "k": "ModelScope/0_real/00095_msrvtt_48.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.005812,
+      "logit": 0.485801,
+      "verdict": "real",
+      "raw": 0.485801,
+      "k": "ModelScope/0_real/00097_msrvtt_49.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.018353,
+      "logit": 0.602054,
+      "verdict": "real",
+      "raw": 0.602054,
+      "k": "ModelScope/0_real/00099_msrvtt_50.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.001037,
+      "logit": 0.312969,
+      "verdict": "real",
+      "raw": 0.312969,
+      "k": "ModelScope/0_real/00101_msrvtt_51.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.86894,
+      "logit": 1.189162,
+      "verdict": "fake",
+      "raw": 1.189162,
+      "k": "ModelScope/0_real/00103_msrvtt_52.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.026144,
+      "logit": 0.638236,
+      "verdict": "real",
+      "raw": 0.638236,
+      "k": "ModelScope/0_real/00105_msrvtt_53.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.00849,
+      "logit": 0.523972,
+      "verdict": "real",
+      "raw": 0.523972,
+      "k": "ModelScope/0_real/00107_msrvtt_54.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.002608,
+      "logit": 0.405332,
+      "verdict": "real",
+      "raw": 0.405332,
+      "k": "ModelScope/0_real/00109_msrvtt_55.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.165603,
+      "logit": 0.838289,
+      "verdict": "real",
+      "raw": 0.838289,
+      "k": "ModelScope/0_real/00111_msrvtt_56.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.003857,
+      "logit": 0.444613,
+      "verdict": "real",
+      "raw": 0.444613,
+      "k": "ModelScope/0_real/00113_msrvtt_57.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.871941,
+      "logit": 1.191823,
+      "verdict": "fake",
+      "raw": 1.191823,
+      "k": "ModelScope/0_real/00115_msrvtt_58.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.021826,
+      "logit": 0.619742,
+      "verdict": "real",
+      "raw": 0.619742,
+      "k": "ModelScope/0_real/00117_msrvtt_59.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.023116,
+      "logit": 0.625618,
+      "verdict": "real",
+      "raw": 0.625618,
+      "k": "ModelScope/0_real/00119_msrvtt_60.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.595492,
+      "logit": 1.038672,
+      "verdict": "fake",
+      "raw": 1.038672,
+      "k": "ModelScope/0_real/00121_msrvtt_61.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.003703,
+      "logit": 0.440514,
+      "verdict": "real",
+      "raw": 0.440514,
+      "k": "ModelScope/0_real/00123_msrvtt_62.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.049519,
+      "logit": 0.704539,
+      "verdict": "real",
+      "raw": 0.704539,
+      "k": "ModelScope/0_real/00125_msrvtt_63.mp4",
+      "label": 0
+    },
+    {
+      "p": 0.970641,
+      "logit": 1.349837,
+      "verdict": "fake",
+      "raw": 1.349837,
+      "k": "ModelScope/1_fake/00000_ms-000075b7-ddc2-5703-9d30-495ec942814b.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976945,
+      "logit": 1.374654,
+      "verdict": "fake",
+      "raw": 1.374654,
+      "k": "ModelScope/1_fake/00001_ms-00b62d63-510a-59e9-a694-cdf5a95ba537.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.974619,
+      "logit": 1.364806,
+      "verdict": "fake",
+      "raw": 1.364806,
+      "k": "ModelScope/1_fake/00002_ms-00d4b673-93a7-573f-a27e-f184d361c429.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976295,
+      "logit": 1.371809,
+      "verdict": "fake",
+      "raw": 1.371809,
+      "k": "ModelScope/1_fake/00003_ms-0175cf78-ea88-58d6-98f5-2d8d765ae993.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977109,
+      "logit": 1.375387,
+      "verdict": "fake",
+      "raw": 1.375387,
+      "k": "ModelScope/1_fake/00004_ms-0184932a-e073-5b07-a6b5-9672f93d8da1.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977082,
+      "logit": 1.375264,
+      "verdict": "fake",
+      "raw": 1.375264,
+      "k": "ModelScope/1_fake/00005_ms-018a1142-48ba-5950-9926-2a4424e62d48.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.845651,
+      "logit": 1.170089,
+      "verdict": "fake",
+      "raw": 1.170089,
+      "k": "ModelScope/1_fake/00006_ms-019030c3-d58a-547a-8c18-2747a259befa.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.971988,
+      "logit": 1.35467,
+      "verdict": "fake",
+      "raw": 1.35467,
+      "k": "ModelScope/1_fake/00007_ms-01bca16d-4a3a-58e9-b2ef-21b7865be8da.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97664,
+      "logit": 1.373307,
+      "verdict": "fake",
+      "raw": 1.373307,
+      "k": "ModelScope/1_fake/00008_ms-02253a51-c90f-56ea-9fad-5a3748e9ce63.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.005774,
+      "logit": 0.48514,
+      "verdict": "real",
+      "raw": 0.48514,
+      "k": "ModelScope/1_fake/00009_ms-026ca05b-5858-52b8-8250-9c35e334583a.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.967012,
+      "logit": 1.337806,
+      "verdict": "fake",
+      "raw": 1.337806,
+      "k": "ModelScope/1_fake/00010_ms-02da23d8-9faf-5d4f-92c5-7968d7fd1238.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.971338,
+      "logit": 1.352311,
+      "verdict": "fake",
+      "raw": 1.352311,
+      "k": "ModelScope/1_fake/00011_ms-0380efba-c20e-508e-baac-a774786fbe98.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.975831,
+      "logit": 1.36982,
+      "verdict": "fake",
+      "raw": 1.36982,
+      "k": "ModelScope/1_fake/00012_ms-0390afdd-6fc8-52d2-9930-58b5ecded63e.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00013_ms-039ee2eb-9888-5bd5-b83f-3a9961f68e1c.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.972326,
+      "logit": 1.355921,
+      "verdict": "fake",
+      "raw": 1.355921,
+      "k": "ModelScope/1_fake/00014_ms-04108568-9797-5e71-bc96-65e06d33227a.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.968939,
+      "logit": 1.344024,
+      "verdict": "fake",
+      "raw": 1.344024,
+      "k": "ModelScope/1_fake/00015_ms-0410e4df-0692-537f-a254-b65597b41df5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976232,
+      "logit": 1.371538,
+      "verdict": "fake",
+      "raw": 1.371538,
+      "k": "ModelScope/1_fake/00016_ms-047f9980-6d94-5fcd-9c07-98d2bb7b0de5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00017_ms-04b4b333-be6c-5a15-bd4c-0fd1057cb97a.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.968683,
+      "logit": 1.343178,
+      "verdict": "fake",
+      "raw": 1.343178,
+      "k": "ModelScope/1_fake/00018_ms-04b69bc9-ee73-562c-aa36-aedbf8d7501a.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.969387,
+      "logit": 1.345523,
+      "verdict": "fake",
+      "raw": 1.345523,
+      "k": "ModelScope/1_fake/00019_ms-0560dd46-2bc5-541a-8501-2467a774569c.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.969528,
+      "logit": 1.346,
+      "verdict": "fake",
+      "raw": 1.346,
+      "k": "ModelScope/1_fake/00020_ms-059868b3-c536-54a5-ac0d-3ef7e62255eb.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970545,
+      "logit": 1.3495,
+      "verdict": "fake",
+      "raw": 1.3495,
+      "k": "ModelScope/1_fake/00021_ms-05b10f4a-a4ba-501a-93ee-c836712a1306.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.972228,
+      "logit": 1.355555,
+      "verdict": "fake",
+      "raw": 1.355555,
+      "k": "ModelScope/1_fake/00022_ms-06558d99-4434-5a1b-bd31-62a3675b8486.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977108,
+      "logit": 1.375383,
+      "verdict": "fake",
+      "raw": 1.375383,
+      "k": "ModelScope/1_fake/00023_ms-065f9f94-8ee2-52e3-afff-7004461d23ca.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.971614,
+      "logit": 1.353306,
+      "verdict": "fake",
+      "raw": 1.353306,
+      "k": "ModelScope/1_fake/00024_ms-06631a21-4508-56ba-9eed-d979f97539f3.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97272,
+      "logit": 1.357395,
+      "verdict": "fake",
+      "raw": 1.357395,
+      "k": "ModelScope/1_fake/00025_ms-06662e03-e422-58b2-a953-6754c09965b1.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976612,
+      "logit": 1.373186,
+      "verdict": "fake",
+      "raw": 1.373186,
+      "k": "ModelScope/1_fake/00026_ms-067232b5-66bc-5bb4-88ac-74742863e239.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976913,
+      "logit": 1.374511,
+      "verdict": "fake",
+      "raw": 1.374511,
+      "k": "ModelScope/1_fake/00027_ms-069f2234-e902-577c-8cd9-0a7811441bbb.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.410477,
+      "logit": 0.963801,
+      "verdict": "real",
+      "raw": 0.963801,
+      "k": "ModelScope/1_fake/00028_ms-0743b9bc-d1b0-5f3b-b61f-f1cb377832a5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970235,
+      "logit": 1.348422,
+      "verdict": "fake",
+      "raw": 1.348422,
+      "k": "ModelScope/1_fake/00029_ms-075bf3b2-4110-583f-9350-1cb60c846c03.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.974773,
+      "logit": 1.365428,
+      "verdict": "fake",
+      "raw": 1.365428,
+      "k": "ModelScope/1_fake/00030_ms-07b2ee1d-45ac-58ec-875c-3d27267ec317.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.975723,
+      "logit": 1.369364,
+      "verdict": "fake",
+      "raw": 1.369364,
+      "k": "ModelScope/1_fake/00031_ms-0804ef65-58bd-513b-a923-e4bdb0819cb0.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00032_ms-0820d026-8f50-53bb-bbde-3a0e3ffd30b5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.729251,
+      "logit": 1.099082,
+      "verdict": "fake",
+      "raw": 1.099082,
+      "k": "ModelScope/1_fake/00033_ms-0861196d-adf3-5ff0-b21c-0a240d8703eb.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970526,
+      "logit": 1.349433,
+      "verdict": "fake",
+      "raw": 1.349433,
+      "k": "ModelScope/1_fake/00034_ms-08e427f6-6eb4-5228-8318-144190d4c3a5.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00035_ms-08e7c12c-ca61-5a6a-b956-d66f652aa746.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977048,
+      "logit": 1.375113,
+      "verdict": "fake",
+      "raw": 1.375113,
+      "k": "ModelScope/1_fake/00036_ms-0980fbe8-491a-5e2d-a89e-9433dca2e8e2.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.971251,
+      "logit": 1.351998,
+      "verdict": "fake",
+      "raw": 1.351998,
+      "k": "ModelScope/1_fake/00037_ms-0987aa00-33ce-5780-8579-c475dcb136ec.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00038_ms-09a9ad61-c88b-51f9-ba58-f0f528fdeaeb.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97489,
+      "logit": 1.365906,
+      "verdict": "fake",
+      "raw": 1.365906,
+      "k": "ModelScope/1_fake/00039_ms-09bd0d0b-62ef-5f9f-a59e-f474349d8fdd.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.967319,
+      "logit": 1.338774,
+      "verdict": "fake",
+      "raw": 1.338774,
+      "k": "ModelScope/1_fake/00040_ms-0a233594-f0a6-5a08-9771-47599b91fcdc.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.008021,
+      "logit": 0.518232,
+      "verdict": "real",
+      "raw": 0.518232,
+      "k": "ModelScope/1_fake/00041_ms-0a8a1bed-6ecf-5101-bfb8-d78707a1d2fe.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976981,
+      "logit": 1.374817,
+      "verdict": "fake",
+      "raw": 1.374817,
+      "k": "ModelScope/1_fake/00042_ms-0ae90d67-d6b2-54e0-a8ad-06ef9adcc2ff.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.971495,
+      "logit": 1.352874,
+      "verdict": "fake",
+      "raw": 1.352874,
+      "k": "ModelScope/1_fake/00043_ms-0b275ad1-af45-56f2-bed4-dfa5328443ba.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.967129,
+      "logit": 1.338173,
+      "verdict": "fake",
+      "raw": 1.338173,
+      "k": "ModelScope/1_fake/00044_ms-0b4c93a3-4d43-5cb7-a5c5-e9b5a0aceecc.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "ModelScope/1_fake/00045_ms-0bfcb8a6-d284-5deb-b580-d2828b82b674.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.943337,
+      "logit": 1.281231,
+      "verdict": "fake",
+      "raw": 1.281231,
+      "k": "ModelScope/1_fake/00046_ms-0c1ae605-e06e-5ada-ae89-f4414329c444.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970852,
+      "logit": 1.350579,
+      "verdict": "fake",
+      "raw": 1.350579,
+      "k": "ModelScope/1_fake/00047_ms-0cad125d-453f-5099-87df-92c49d13047e.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977055,
+      "logit": 1.375145,
+      "verdict": "fake",
+      "raw": 1.375145,
+      "k": "ModelScope/1_fake/00048_ms-0cced93f-932b-528e-878f-98666afcbadb.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.968943,
+      "logit": 1.344039,
+      "verdict": "fake",
+      "raw": 1.344039,
+      "k": "ModelScope/1_fake/00049_ms-0cec97ce-63f0-5338-a3eb-b92b5ab75663.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976285,
+      "logit": 1.371764,
+      "verdict": "fake",
+      "raw": 1.371764,
+      "k": "ModelScope/1_fake/00050_ms-0d3f287f-c42e-5649-ac29-9e983ff486ba.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.972468,
+      "logit": 1.356449,
+      "verdict": "fake",
+      "raw": 1.356449,
+      "k": "ModelScope/1_fake/00051_ms-0d8c8557-09c7-5b83-9021-dd083a772dca.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.969185,
+      "logit": 1.344845,
+      "verdict": "fake",
+      "raw": 1.344845,
+      "k": "ModelScope/1_fake/00052_ms-0dadbb9d-30f9-5d0e-8294-962c2d43e129.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.961433,
+      "logit": 1.321603,
+      "verdict": "fake",
+      "raw": 1.321603,
+      "k": "ModelScope/1_fake/00053_ms-0db23090-18c6-577f-a195-1df528c10030.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.964582,
+      "logit": 1.330448,
+      "verdict": "fake",
+      "raw": 1.330448,
+      "k": "ModelScope/1_fake/00054_ms-0dc5a3b1-6387-5696-a21e-5c282fb94d2a.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97176,
+      "logit": 1.353838,
+      "verdict": "fake",
+      "raw": 1.353838,
+      "k": "ModelScope/1_fake/00055_ms-0dd29921-cea7-5099-ab6f-7e0e9432fb72.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.970037,
+      "logit": 1.347738,
+      "verdict": "fake",
+      "raw": 1.347738,
+      "k": "ModelScope/1_fake/00056_ms-0e3e2d95-4e22-58cb-9ecb-b07b6b88081e.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.977064,
+      "logit": 1.375186,
+      "verdict": "fake",
+      "raw": 1.375186,
+      "k": "ModelScope/1_fake/00057_ms-0e870d48-90c3-558f-8099-251462a40e33.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "ModelScope/1_fake/00058_ms-0e8c92be-c008-567d-bf1b-dfda16735dad.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.976268,
+      "logit": 1.37169,
+      "verdict": "fake",
+      "raw": 1.37169,
+      "k": "ModelScope/1_fake/00059_ms-0f203352-365c-57f6-bb6e-34df26f05ed2.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.972323,
+      "logit": 1.355908,
+      "verdict": "fake",
+      "raw": 1.355908,
+      "k": "ModelScope/1_fake/00060_ms-0f40cb75-78de-5a24-bd3a-77632e1f5381.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.922536,
+      "logit": 1.247731,
+      "verdict": "fake",
+      "raw": 1.247731,
+      "k": "ModelScope/1_fake/00061_ms-0fcf3c2a-d876-5d64-8038-249badede877.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.956542,
+      "logit": 1.309152,
+      "verdict": "fake",
+      "raw": 1.309152,
+      "k": "ModelScope/1_fake/00062_ms-0fed5004-4881-55d2-bae7-6cce78a4f867.mp4",
+      "gen": "ModelScope",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00000_pika-001820a9-a6ba-51b0-95bb-1bdfeb0b8f5a.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00001_pika-002d0fc3-36e1-5111-973f-da59a4ac5ef6.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00002_pika-0073962c-9225-5601-9d99-e4902dd6e9b9.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977105,
+      "logit": 1.375369,
+      "verdict": "fake",
+      "raw": 1.375369,
+      "k": "Pika/1_fake/00003_pika-01221e4d-3dd6-5517-b9bd-aa518448cf43.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.963009,
+      "logit": 1.325939,
+      "verdict": "fake",
+      "raw": 1.325939,
+      "k": "Pika/1_fake/00004_pika-0291b50f-9542-5ae2-a4d1-9d5e7657aa95.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97567,
+      "logit": 1.369143,
+      "verdict": "fake",
+      "raw": 1.369143,
+      "k": "Pika/1_fake/00005_pika-0454fb0b-a6fd-5bb1-a98f-1a480b16f986.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97684,
+      "logit": 1.374191,
+      "verdict": "fake",
+      "raw": 1.374191,
+      "k": "Pika/1_fake/00006_pika-0470318c-8e60-503e-ad1b-a477ecdff0e0.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00007_pika-04fcfdf5-bd26-5b05-88c8-9a468ea02219.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.976171,
+      "logit": 1.371274,
+      "verdict": "fake",
+      "raw": 1.371274,
+      "k": "Pika/1_fake/00008_pika-0519b53b-67d3-57a5-a1c5-86f2037a0988.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97664,
+      "logit": 1.373307,
+      "verdict": "fake",
+      "raw": 1.373307,
+      "k": "Pika/1_fake/00009_pika-05c3801c-8521-5771-86ba-e94fc6e731eb.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00010_pika-063bb561-2a87-5c4f-bd46-48d68e56c548.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00011_pika-0679bc2e-2cab-562b-ac70-ddd90642d2dc.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00012_pika-06b7fe45-313a-5765-a2aa-d414f8882ded.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.975413,
+      "logit": 1.368065,
+      "verdict": "fake",
+      "raw": 1.368065,
+      "k": "Pika/1_fake/00013_pika-06d4db12-cab0-5072-8ffe-ed743be0d44b.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.972241,
+      "logit": 1.355604,
+      "verdict": "fake",
+      "raw": 1.355604,
+      "k": "Pika/1_fake/00014_pika-06f29e90-67bc-5dcb-96b4-c31ae806c7a1.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00015_pika-070929b8-6106-542f-b177-2d641bf5c137.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00016_pika-0725a4a3-a37b-5b0b-90b3-5495a708b375.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977107,
+      "logit": 1.375377,
+      "verdict": "fake",
+      "raw": 1.375377,
+      "k": "Pika/1_fake/00017_pika-07278f40-474a-5250-9abc-477e43be4084.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.975067,
+      "logit": 1.366632,
+      "verdict": "fake",
+      "raw": 1.366632,
+      "k": "Pika/1_fake/00018_pika-07580d72-daca-5559-9d80-5c18f47dc790.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00019_pika-07587c4d-fcf3-5654-963e-682dcd16fc4e.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00020_pika-07b59283-f4a7-5890-87b5-c4883581b42f.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977021,
+      "logit": 1.374991,
+      "verdict": "fake",
+      "raw": 1.374991,
+      "k": "Pika/1_fake/00021_pika-082c9f4e-ec1e-5ecf-96cb-7e40f6f2e135.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00022_pika-08d2d2e0-f694-58f7-b798-058f430c9c1f.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00023_pika-08f56bfe-1d52-5442-86ea-dd63c8746d34.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.975723,
+      "logit": 1.369365,
+      "verdict": "fake",
+      "raw": 1.369365,
+      "k": "Pika/1_fake/00024_pika-0942c985-7e1b-5dfa-81c7-e4f2543e4144.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00025_pika-095407dd-6f16-5b1c-8893-93b55b5a4dc9.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00026_pika-09717ab2-055b-58e3-8a8c-0f3e53494698.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.976946,
+      "logit": 1.374661,
+      "verdict": "fake",
+      "raw": 1.374661,
+      "k": "Pika/1_fake/00027_pika-09718681-f0a3-5665-a5f5-1106d8b05254.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00028_pika-0981930d-3d0e-567d-912f-fc9225c943ae.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00029_pika-098acb8f-5c7a-50a6-96c3-72aed262b83b.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.976747,
+      "logit": 1.373778,
+      "verdict": "fake",
+      "raw": 1.373778,
+      "k": "Pika/1_fake/00030_pika-099e4c49-a0a4-5a2d-833d-a54c5bb76635.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977031,
+      "logit": 1.375038,
+      "verdict": "fake",
+      "raw": 1.375038,
+      "k": "Pika/1_fake/00031_pika-09ee7af9-6ec9-5667-a146-c8c39b2eba48.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977094,
+      "logit": 1.375316,
+      "verdict": "fake",
+      "raw": 1.375316,
+      "k": "Pika/1_fake/00032_pika-0a75ecbe-46a8-5d41-a119-768efc30682e.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977109,
+      "logit": 1.375387,
+      "verdict": "fake",
+      "raw": 1.375387,
+      "k": "Pika/1_fake/00033_pika-0aaf168f-3bc3-512b-8eb7-83d9407a7ed1.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.976697,
+      "logit": 1.373559,
+      "verdict": "fake",
+      "raw": 1.373559,
+      "k": "Pika/1_fake/00034_pika-0addae33-795a-52b3-a030-7e47bb6bd762.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.968503,
+      "logit": 1.342586,
+      "verdict": "fake",
+      "raw": 1.342586,
+      "k": "Pika/1_fake/00035_pika-0c273e6c-a7df-5eff-a28d-8528be667a90.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00036_pika-0c43a303-7445-534c-a1b7-693b6ce35e5f.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00037_pika-0c600e6f-39e6-5f7a-a918-bd14924a4677.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.974092,
+      "logit": 1.362695,
+      "verdict": "fake",
+      "raw": 1.362695,
+      "k": "Pika/1_fake/00038_pika-0c7ea528-5bfe-532a-a392-d0ef498e0552.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00039_pika-0c934fd8-1259-573a-ba37-8839c47c9567.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.963552,
+      "logit": 1.327473,
+      "verdict": "fake",
+      "raw": 1.327473,
+      "k": "Pika/1_fake/00040_pika-0c95d3c8-e866-5a78-a4fa-d191b7a7cc19.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00041_pika-0c9e6303-61df-5e9f-833c-d6e86bd5baab.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00042_pika-0cac0119-5429-57aa-8f51-1127be1926e4.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977104,
+      "logit": 1.375363,
+      "verdict": "fake",
+      "raw": 1.375363,
+      "k": "Pika/1_fake/00043_pika-0cbe107e-eaec-513c-aaaa-e496d19fabd7.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00044_pika-0d01ba4b-3d48-5de1-bf4b-dc69be9ab83c.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.973638,
+      "logit": 1.36091,
+      "verdict": "fake",
+      "raw": 1.36091,
+      "k": "Pika/1_fake/00045_pika-0d1f3c2a-3591-5755-8699-703771f1c2fe.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.9758,
+      "logit": 1.369693,
+      "verdict": "fake",
+      "raw": 1.369693,
+      "k": "Pika/1_fake/00046_pika-0d440274-1693-5ea2-85f0-bd66f667ea2d.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.971141,
+      "logit": 1.351606,
+      "verdict": "fake",
+      "raw": 1.351606,
+      "k": "Pika/1_fake/00047_pika-0da4f578-983f-5656-96c3-38ba319a8c5c.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00048_pika-0db7de93-4dba-5199-9d35-c2b5de11c95c.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00049_pika-0dd45419-59a6-53c0-b278-e2751074a7a9.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00050_pika-0e3875c5-cebc-580c-88d4-7ae4e1256ed1.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977099,
+      "logit": 1.375341,
+      "verdict": "fake",
+      "raw": 1.375341,
+      "k": "Pika/1_fake/00051_pika-0e3d87f7-d116-5c39-a552-1c9a011861dc.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Pika/1_fake/00052_pika-0ef45624-af54-5bd3-8114-404c296eb7fd.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00053_pika-0f020dbb-3074-56e0-abe9-080411ccb6a9.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.967814,
+      "logit": 1.34035,
+      "verdict": "fake",
+      "raw": 1.34035,
+      "k": "Pika/1_fake/00054_pika-0f341f10-f556-5eac-88e3-1251e5c15a8d.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00055_pika-0f36c44e-3038-5e5e-ab59-2911dc71e5dc.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977103,
+      "logit": 1.375356,
+      "verdict": "fake",
+      "raw": 1.375356,
+      "k": "Pika/1_fake/00056_pika-0f38173c-5f4c-5862-9151-6e523c461ee3.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977015,
+      "logit": 1.374967,
+      "verdict": "fake",
+      "raw": 1.374967,
+      "k": "Pika/1_fake/00057_pika-0f4cb780-41b7-5e19-90a4-64367dda7ff2.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977107,
+      "logit": 1.375376,
+      "verdict": "fake",
+      "raw": 1.375376,
+      "k": "Pika/1_fake/00058_pika-0f5d83d9-901e-5caa-876b-c044054d867b.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977105,
+      "logit": 1.375369,
+      "verdict": "fake",
+      "raw": 1.375369,
+      "k": "Pika/1_fake/00059_pika-0f8a12d1-5127-5e45-bd1e-66e4c9b65244.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00060_pika-100daef5-6b0f-55fb-98f8-289379f47151.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Pika/1_fake/00061_pika-10d018c9-928b-5236-b838-24635ef29b82.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.977026,
+      "logit": 1.375017,
+      "verdict": "fake",
+      "raw": 1.375017,
+      "k": "Pika/1_fake/00062_pika-10fd08e3-a787-504b-b581-d1270558f014.mp4",
+      "gen": "Pika",
+      "label": 1
+    },
+    {
+      "p": 0.913205,
+      "logit": 1.235341,
+      "verdict": "fake",
+      "raw": 1.235341,
+      "k": "Text2Video-Zero/1_fake/00000_t2vz-0030ab5c-c2e2-5a65-a239-99728e5a2b2a.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.014833,
+      "logit": 0.580404,
+      "verdict": "real",
+      "raw": 0.580404,
+      "k": "Text2Video-Zero/1_fake/00001_t2vz-00812fc8-af63-553e-80c5-4c81b93e2336.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969905,
+      "logit": 1.347283,
+      "verdict": "fake",
+      "raw": 1.347283,
+      "k": "Text2Video-Zero/1_fake/00002_t2vz-011e722d-a6d6-5a57-bcfe-1fba6af9fc05.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.976936,
+      "logit": 1.374614,
+      "verdict": "fake",
+      "raw": 1.374614,
+      "k": "Text2Video-Zero/1_fake/00003_t2vz-016ebe7f-432b-5248-b605-14d9d6555853.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.962234,
+      "logit": 1.323785,
+      "verdict": "fake",
+      "raw": 1.323785,
+      "k": "Text2Video-Zero/1_fake/00004_t2vz-01bfb0d2-e634-5aa1-bc1b-f9202f21ffe4.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969798,
+      "logit": 1.346919,
+      "verdict": "fake",
+      "raw": 1.346919,
+      "k": "Text2Video-Zero/1_fake/00005_t2vz-02021c43-f609-54d9-be1f-e07c7828d363.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.95702,
+      "logit": 1.310309,
+      "verdict": "fake",
+      "raw": 1.310309,
+      "k": "Text2Video-Zero/1_fake/00006_t2vz-0220dcc7-d18d-59c6-a99b-42d8d35aa549.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.053162,
+      "logit": 0.712021,
+      "verdict": "real",
+      "raw": 0.712021,
+      "k": "Text2Video-Zero/1_fake/00007_t2vz-0265fe10-5592-54f0-9c82-0d1cc5141656.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969486,
+      "logit": 1.345858,
+      "verdict": "fake",
+      "raw": 1.345858,
+      "k": "Text2Video-Zero/1_fake/00008_t2vz-02d2440f-3070-5169-9c0e-8582c25f29ae.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.028421,
+      "logit": 0.64682,
+      "verdict": "real",
+      "raw": 0.64682,
+      "k": "Text2Video-Zero/1_fake/00009_t2vz-02ea17da-5544-511b-8052-e28ea399e94c.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.974224,
+      "logit": 1.363222,
+      "verdict": "fake",
+      "raw": 1.363222,
+      "k": "Text2Video-Zero/1_fake/00010_t2vz-035e6ffd-c6d1-5d62-80cd-614e7a07083d.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.968744,
+      "logit": 1.343378,
+      "verdict": "fake",
+      "raw": 1.343378,
+      "k": "Text2Video-Zero/1_fake/00011_t2vz-0363d623-1900-535d-9955-68c8e5c5887f.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.304784,
+      "logit": 0.917538,
+      "verdict": "real",
+      "raw": 0.917538,
+      "k": "Text2Video-Zero/1_fake/00012_t2vz-04308443-575e-54cf-8637-47763309ec06.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.977088,
+      "logit": 1.37529,
+      "verdict": "fake",
+      "raw": 1.37529,
+      "k": "Text2Video-Zero/1_fake/00013_t2vz-04380d0d-2053-586b-856e-c88bfaa1f350.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.907493,
+      "logit": 1.22834,
+      "verdict": "fake",
+      "raw": 1.22834,
+      "k": "Text2Video-Zero/1_fake/00014_t2vz-0441a9dc-62a4-5aad-97f5-e6307871b925.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.975527,
+      "logit": 1.368539,
+      "verdict": "fake",
+      "raw": 1.368539,
+      "k": "Text2Video-Zero/1_fake/00015_t2vz-044bc38e-56e7-5f3b-adec-6cc2d01e634f.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.968654,
+      "logit": 1.343082,
+      "verdict": "fake",
+      "raw": 1.343082,
+      "k": "Text2Video-Zero/1_fake/00016_t2vz-046f684b-3644-54aa-9771-0fe5fcefa693.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.964506,
+      "logit": 1.330226,
+      "verdict": "fake",
+      "raw": 1.330226,
+      "k": "Text2Video-Zero/1_fake/00017_t2vz-049588c7-2bb7-51a1-b455-fe93e3b4e841.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.976936,
+      "logit": 1.374614,
+      "verdict": "fake",
+      "raw": 1.374614,
+      "k": "Text2Video-Zero/1_fake/00018_t2vz-0528e38b-dbbe-5c42-a3a5-36570378b0b3.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.940844,
+      "logit": 1.276659,
+      "verdict": "fake",
+      "raw": 1.276659,
+      "k": "Text2Video-Zero/1_fake/00019_t2vz-05486555-2322-5b90-b352-13e7bda6269e.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.819054,
+      "logit": 1.150995,
+      "verdict": "fake",
+      "raw": 1.150995,
+      "k": "Text2Video-Zero/1_fake/00020_t2vz-056fec5c-719a-5576-afc7-693860476ad0.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.971505,
+      "logit": 1.352913,
+      "verdict": "fake",
+      "raw": 1.352913,
+      "k": "Text2Video-Zero/1_fake/00021_t2vz-05737b55-d5dc-5634-b680-814fda19f402.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.96802,
+      "logit": 1.341013,
+      "verdict": "fake",
+      "raw": 1.341013,
+      "k": "Text2Video-Zero/1_fake/00022_t2vz-067964c7-f8f0-53a4-a19e-62e7dbcae97a.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969244,
+      "logit": 1.345043,
+      "verdict": "fake",
+      "raw": 1.345043,
+      "k": "Text2Video-Zero/1_fake/00023_t2vz-06ea204e-5745-5f4a-8f48-c99fc815d39e.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.79077,
+      "logit": 1.132957,
+      "verdict": "fake",
+      "raw": 1.132957,
+      "k": "Text2Video-Zero/1_fake/00024_t2vz-072322d5-537e-5733-bbac-c2c71b39cb31.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.973676,
+      "logit": 1.361062,
+      "verdict": "fake",
+      "raw": 1.361062,
+      "k": "Text2Video-Zero/1_fake/00025_t2vz-088df49d-91a1-5d6b-93e1-0926a60d5c20.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.968648,
+      "logit": 1.343061,
+      "verdict": "fake",
+      "raw": 1.343061,
+      "k": "Text2Video-Zero/1_fake/00026_t2vz-089df788-af5c-55b8-950d-5aa90c2af567.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.973241,
+      "logit": 1.359377,
+      "verdict": "fake",
+      "raw": 1.359377,
+      "k": "Text2Video-Zero/1_fake/00027_t2vz-08a874f5-50f8-5391-9fea-9b03bb7d417f.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.975895,
+      "logit": 1.370094,
+      "verdict": "fake",
+      "raw": 1.370094,
+      "k": "Text2Video-Zero/1_fake/00028_t2vz-093944b7-a7cb-5f51-a3e0-ed20f9fe47c5.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.396539,
+      "logit": 0.958009,
+      "verdict": "real",
+      "raw": 0.958009,
+      "k": "Text2Video-Zero/1_fake/00029_t2vz-094b9976-5ae5-5511-9de4-27ce6faede2d.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.942209,
+      "logit": 1.27914,
+      "verdict": "fake",
+      "raw": 1.27914,
+      "k": "Text2Video-Zero/1_fake/00030_t2vz-09ca9ae4-7d31-5cec-8786-2bf2ed54c0ca.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "Text2Video-Zero/1_fake/00031_t2vz-0a1e22f6-5863-5c21-8514-78baee8d8a92.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.583767,
+      "logit": 1.033826,
+      "verdict": "fake",
+      "raw": 1.033826,
+      "k": "Text2Video-Zero/1_fake/00032_t2vz-0a662f09-4db4-51ca-8540-10eb6bcde83c.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969874,
+      "logit": 1.347177,
+      "verdict": "fake",
+      "raw": 1.347177,
+      "k": "Text2Video-Zero/1_fake/00033_t2vz-0a6f8c06-69b4-5336-b957-caec839509dc.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.96956,
+      "logit": 1.346108,
+      "verdict": "fake",
+      "raw": 1.346108,
+      "k": "Text2Video-Zero/1_fake/00034_t2vz-0aa8113f-ee4a-5086-a7a6-e1c6d8b245aa.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.974033,
+      "logit": 1.362463,
+      "verdict": "fake",
+      "raw": 1.362463,
+      "k": "Text2Video-Zero/1_fake/00035_t2vz-0ae8758e-456d-5c4f-94ae-10557e308ce3.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.9771,
+      "logit": 1.375347,
+      "verdict": "fake",
+      "raw": 1.375347,
+      "k": "Text2Video-Zero/1_fake/00036_t2vz-0af26172-e937-594a-b4ed-93bf783084fd.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.846189,
+      "logit": 1.170502,
+      "verdict": "fake",
+      "raw": 1.170502,
+      "k": "Text2Video-Zero/1_fake/00037_t2vz-0ba78f49-6e34-566b-9f1f-713f361b5ceb.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.51716,
+      "logit": 1.006867,
+      "verdict": "fake",
+      "raw": 1.006867,
+      "k": "Text2Video-Zero/1_fake/00038_t2vz-0ba89109-f052-5fbf-9975-7f0bbd71dfef.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.967579,
+      "logit": 1.339599,
+      "verdict": "fake",
+      "raw": 1.339599,
+      "k": "Text2Video-Zero/1_fake/00039_t2vz-0c371bcf-8269-58e8-a53f-00600a60ce9d.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.970298,
+      "logit": 1.348639,
+      "verdict": "fake",
+      "raw": 1.348639,
+      "k": "Text2Video-Zero/1_fake/00040_t2vz-0c56144f-ef02-52c8-ba82-233b36ab98d8.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.003261,
+      "logit": 0.427741,
+      "verdict": "real",
+      "raw": 0.427741,
+      "k": "Text2Video-Zero/1_fake/00041_t2vz-0c9b78ee-6982-5e7b-82eb-788ca381c343.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.970556,
+      "logit": 1.349538,
+      "verdict": "fake",
+      "raw": 1.349538,
+      "k": "Text2Video-Zero/1_fake/00042_t2vz-0cac6be2-22ba-584f-bb08-8a30e663bd94.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.970694,
+      "logit": 1.350021,
+      "verdict": "fake",
+      "raw": 1.350021,
+      "k": "Text2Video-Zero/1_fake/00043_t2vz-0cfb474c-4a19-53ef-93d9-81f41186a0f1.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.968886,
+      "logit": 1.343848,
+      "verdict": "fake",
+      "raw": 1.343848,
+      "k": "Text2Video-Zero/1_fake/00044_t2vz-0d113a3b-b4fc-5f55-8517-4e888a73027f.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969207,
+      "logit": 1.344918,
+      "verdict": "fake",
+      "raw": 1.344918,
+      "k": "Text2Video-Zero/1_fake/00045_t2vz-0d203fc2-c110-56fe-805d-b0f88c799589.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.97598,
+      "logit": 1.370457,
+      "verdict": "fake",
+      "raw": 1.370457,
+      "k": "Text2Video-Zero/1_fake/00046_t2vz-0d2f5965-d103-5f33-930d-ad14103402a9.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.881035,
+      "logit": 1.200226,
+      "verdict": "fake",
+      "raw": 1.200226,
+      "k": "Text2Video-Zero/1_fake/00047_t2vz-0d5a06c7-2d72-5afb-b7a1-d3d2435a4976.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.977094,
+      "logit": 1.37532,
+      "verdict": "fake",
+      "raw": 1.37532,
+      "k": "Text2Video-Zero/1_fake/00048_t2vz-0dc5fe75-d266-5a5b-a1bc-199c20728eff.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.327547,
+      "logit": 0.92807,
+      "verdict": "real",
+      "raw": 0.92807,
+      "k": "Text2Video-Zero/1_fake/00049_t2vz-0e8caee3-aca8-560a-b36c-debf38e5b368.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.969514,
+      "logit": 1.345952,
+      "verdict": "fake",
+      "raw": 1.345952,
+      "k": "Text2Video-Zero/1_fake/00050_t2vz-0ed8923b-8bcd-5f14-a040-1d81e637fc16.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.005177,
+      "logit": 0.474162,
+      "verdict": "real",
+      "raw": 0.474162,
+      "k": "Text2Video-Zero/1_fake/00051_t2vz-0efd924a-e2a9-51fa-8c7b-7b40d41e44bf.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.975301,
+      "logit": 1.367596,
+      "verdict": "fake",
+      "raw": 1.367596,
+      "k": "Text2Video-Zero/1_fake/00052_t2vz-0fd7c3dc-bdeb-561f-8eab-8d93c0081bf3.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.951895,
+      "logit": 1.298506,
+      "verdict": "fake",
+      "raw": 1.298506,
+      "k": "Text2Video-Zero/1_fake/00053_t2vz-101c1105-5488-53b1-805c-6c3c8dc1071e.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.974005,
+      "logit": 1.362353,
+      "verdict": "fake",
+      "raw": 1.362353,
+      "k": "Text2Video-Zero/1_fake/00054_t2vz-10d5a88a-41e3-5eb3-9ecb-54ae32a62ef4.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.965365,
+      "logit": 1.332763,
+      "verdict": "fake",
+      "raw": 1.332763,
+      "k": "Text2Video-Zero/1_fake/00055_t2vz-10db122a-3237-5036-9546-75e9e5a9d52f.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.882297,
+      "logit": 1.201437,
+      "verdict": "fake",
+      "raw": 1.201437,
+      "k": "Text2Video-Zero/1_fake/00056_t2vz-1113e112-8083-5f9a-bb2b-09b6ba7d74d4.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "Text2Video-Zero/1_fake/00057_t2vz-116acc38-d0f9-581f-a224-3ecc03dc29af.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.976888,
+      "logit": 1.374404,
+      "verdict": "fake",
+      "raw": 1.374404,
+      "k": "Text2Video-Zero/1_fake/00058_t2vz-118394e0-6fe9-5468-95fd-c05bb4ddb7a3.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.968941,
+      "logit": 1.34403,
+      "verdict": "fake",
+      "raw": 1.34403,
+      "k": "Text2Video-Zero/1_fake/00059_t2vz-11ed462a-58d7-5fe9-a402-ef1c7b62625a.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.976417,
+      "logit": 1.372338,
+      "verdict": "fake",
+      "raw": 1.372338,
+      "k": "Text2Video-Zero/1_fake/00060_t2vz-12215c19-2c0d-52dd-b794-61ade13f47c7.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.794066,
+      "logit": 1.134961,
+      "verdict": "fake",
+      "raw": 1.134961,
+      "k": "Text2Video-Zero/1_fake/00061_t2vz-1273078a-eee3-5d6b-bf8d-d37e233b8717.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.975596,
+      "logit": 1.368831,
+      "verdict": "fake",
+      "raw": 1.368831,
+      "k": "Text2Video-Zero/1_fake/00062_t2vz-12770f27-1b5a-5102-9201-7eaea3c9d6f7.mp4",
+      "gen": "Text2Video-Zero",
+      "label": 1
+    },
+    {
+      "p": 0.971647,
+      "logit": 1.353426,
+      "verdict": "fake",
+      "raw": 1.353426,
+      "k": "VideoCrafter2/1_fake/00000_vc-00033c5b-324f-523e-a673-8d39d2391023.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975817,
+      "logit": 1.369762,
+      "verdict": "fake",
+      "raw": 1.369762,
+      "k": "VideoCrafter2/1_fake/00001_vc-00353584-8783-56cc-bba2-0704cc1be510.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975895,
+      "logit": 1.370092,
+      "verdict": "fake",
+      "raw": 1.370092,
+      "k": "VideoCrafter2/1_fake/00002_vc-00762f26-2430-5ebe-90ba-c5f35f9859b2.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.900983,
+      "logit": 1.220819,
+      "verdict": "fake",
+      "raw": 1.220819,
+      "k": "VideoCrafter2/1_fake/00003_vc-007f3147-7300-5a13-b8a6-e79793100fb5.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972454,
+      "logit": 1.356397,
+      "verdict": "fake",
+      "raw": 1.356397,
+      "k": "VideoCrafter2/1_fake/00004_vc-00a0b76e-5de7-5684-b4b4-154ab7004dd4.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971145,
+      "logit": 1.35162,
+      "verdict": "fake",
+      "raw": 1.35162,
+      "k": "VideoCrafter2/1_fake/00005_vc-00e1997f-7e96-5c62-90dd-3288dce5e0c9.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97247,
+      "logit": 1.356455,
+      "verdict": "fake",
+      "raw": 1.356455,
+      "k": "VideoCrafter2/1_fake/00006_vc-00f204cd-c183-583f-bdbf-cc5a8f931c74.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971448,
+      "logit": 1.352705,
+      "verdict": "fake",
+      "raw": 1.352705,
+      "k": "VideoCrafter2/1_fake/00007_vc-011835c3-319c-52d5-bc84-ae75689bfb36.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.968047,
+      "logit": 1.341102,
+      "verdict": "fake",
+      "raw": 1.341102,
+      "k": "VideoCrafter2/1_fake/00008_vc-0122bef9-1d52-5e7f-a8bf-3b0cb8f6f5c4.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971178,
+      "logit": 1.351738,
+      "verdict": "fake",
+      "raw": 1.351738,
+      "k": "VideoCrafter2/1_fake/00009_vc-01530fa2-3a63-58a5-aa2b-c0d71617d9d6.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.969711,
+      "logit": 1.346621,
+      "verdict": "fake",
+      "raw": 1.346621,
+      "k": "VideoCrafter2/1_fake/00010_vc-015a48ab-4f02-5187-bbf6-460330b43b68.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971523,
+      "logit": 1.352976,
+      "verdict": "fake",
+      "raw": 1.352976,
+      "k": "VideoCrafter2/1_fake/00011_vc-01a43ceb-fb59-58b2-8d1a-724a12189208.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976913,
+      "logit": 1.374514,
+      "verdict": "fake",
+      "raw": 1.374514,
+      "k": "VideoCrafter2/1_fake/00012_vc-01ceaae8-07f2-5f32-aa5e-0652c231afab.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.969911,
+      "logit": 1.347305,
+      "verdict": "fake",
+      "raw": 1.347305,
+      "k": "VideoCrafter2/1_fake/00013_vc-021d376c-2f1a-54eb-a40b-c882d3e2dd56.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975533,
+      "logit": 1.368568,
+      "verdict": "fake",
+      "raw": 1.368568,
+      "k": "VideoCrafter2/1_fake/00014_vc-02316333-f848-5031-be52-94fae2cc8fd0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976788,
+      "logit": 1.373959,
+      "verdict": "fake",
+      "raw": 1.373959,
+      "k": "VideoCrafter2/1_fake/00015_vc-025fa108-3efe-5724-a416-3fd17f7b69b9.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975739,
+      "logit": 1.369434,
+      "verdict": "fake",
+      "raw": 1.369434,
+      "k": "VideoCrafter2/1_fake/00016_vc-02e5d0af-dfe2-504c-99a6-ae6ef7301158.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.9769,
+      "logit": 1.374454,
+      "verdict": "fake",
+      "raw": 1.374454,
+      "k": "VideoCrafter2/1_fake/00017_vc-02f515dc-5a5e-515a-882f-cb2bef384ef0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.969417,
+      "logit": 1.345626,
+      "verdict": "fake",
+      "raw": 1.345626,
+      "k": "VideoCrafter2/1_fake/00018_vc-03149e9b-8a30-57c4-95e1-b9cc3f2c62a9.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976887,
+      "logit": 1.3744,
+      "verdict": "fake",
+      "raw": 1.3744,
+      "k": "VideoCrafter2/1_fake/00019_vc-033cca39-dec5-58ae-b3c4-a23619da5f89.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.977105,
+      "logit": 1.375366,
+      "verdict": "fake",
+      "raw": 1.375366,
+      "k": "VideoCrafter2/1_fake/00020_vc-03940a2f-e24d-5ee6-95e3-45395967048b.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972313,
+      "logit": 1.35587,
+      "verdict": "fake",
+      "raw": 1.35587,
+      "k": "VideoCrafter2/1_fake/00021_vc-041d2923-1f97-577c-a77e-08f583cba5f0.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.947516,
+      "logit": 1.289333,
+      "verdict": "fake",
+      "raw": 1.289333,
+      "k": "VideoCrafter2/1_fake/00022_vc-042894fe-c094-5b0e-8e9e-f347f635bcf8.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970067,
+      "logit": 1.34784,
+      "verdict": "fake",
+      "raw": 1.34784,
+      "k": "VideoCrafter2/1_fake/00023_vc-0436696b-498c-50b3-9715-de5e9bb1d843.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976341,
+      "logit": 1.372005,
+      "verdict": "fake",
+      "raw": 1.372005,
+      "k": "VideoCrafter2/1_fake/00024_vc-04504ff3-63cd-5731-a1bf-69889aad0fa3.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.973297,
+      "logit": 1.359592,
+      "verdict": "fake",
+      "raw": 1.359592,
+      "k": "VideoCrafter2/1_fake/00025_vc-0472ae56-8d26-502a-929e-31309fb9cad9.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970986,
+      "logit": 1.351054,
+      "verdict": "fake",
+      "raw": 1.351054,
+      "k": "VideoCrafter2/1_fake/00026_vc-04a54e8d-e7df-51ac-ba10-71c6a48ec10f.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.977094,
+      "logit": 1.375316,
+      "verdict": "fake",
+      "raw": 1.375316,
+      "k": "VideoCrafter2/1_fake/00027_vc-04e638ec-4eae-5781-9803-6cf9a56b259a.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "VideoCrafter2/1_fake/00028_vc-04f0e608-bf79-5294-9378-f55f85dd524d.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.9751,
+      "logit": 1.366768,
+      "verdict": "fake",
+      "raw": 1.366768,
+      "k": "VideoCrafter2/1_fake/00029_vc-056853fa-eb84-5092-b09c-e52d5abbde64.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.973601,
+      "logit": 1.360768,
+      "verdict": "fake",
+      "raw": 1.360768,
+      "k": "VideoCrafter2/1_fake/00030_vc-05861e6a-4060-5a2b-a173-ba70c15954c1.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972553,
+      "logit": 1.356767,
+      "verdict": "fake",
+      "raw": 1.356767,
+      "k": "VideoCrafter2/1_fake/00031_vc-05dc5e1b-2c76-5105-b385-eed9a6e17fa5.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.919805,
+      "logit": 1.24397,
+      "verdict": "fake",
+      "raw": 1.24397,
+      "k": "VideoCrafter2/1_fake/00032_vc-05e05e7a-a1ae-5aef-af91-bab3c4f3390a.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97589,
+      "logit": 1.370072,
+      "verdict": "fake",
+      "raw": 1.370072,
+      "k": "VideoCrafter2/1_fake/00033_vc-05e20bcd-b774-5abd-bc75-358a09054c81.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976718,
+      "logit": 1.373652,
+      "verdict": "fake",
+      "raw": 1.373652,
+      "k": "VideoCrafter2/1_fake/00034_vc-066fa8ef-076f-5a3d-9c98-8305585d7271.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.977074,
+      "logit": 1.375229,
+      "verdict": "fake",
+      "raw": 1.375229,
+      "k": "VideoCrafter2/1_fake/00035_vc-06886fd3-a8c7-501b-baee-ed04c0dcc74e.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970164,
+      "logit": 1.348176,
+      "verdict": "fake",
+      "raw": 1.348176,
+      "k": "VideoCrafter2/1_fake/00036_vc-06aeb761-e47e-5cbf-bb82-6f29a958a462.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.974304,
+      "logit": 1.363537,
+      "verdict": "fake",
+      "raw": 1.363537,
+      "k": "VideoCrafter2/1_fake/00037_vc-06c122fe-fed0-5aa5-917d-79cacb8ce63e.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971865,
+      "logit": 1.35422,
+      "verdict": "fake",
+      "raw": 1.35422,
+      "k": "VideoCrafter2/1_fake/00038_vc-06da2166-3227-5c66-81fe-633644ffca26.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976857,
+      "logit": 1.374265,
+      "verdict": "fake",
+      "raw": 1.374265,
+      "k": "VideoCrafter2/1_fake/00039_vc-0763f003-5889-53d5-a621-73f282d72b35.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "VideoCrafter2/1_fake/00040_vc-07d9512a-3b19-5be1-b7fc-1922d022db99.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375388,
+      "verdict": "fake",
+      "raw": 1.375388,
+      "k": "VideoCrafter2/1_fake/00041_vc-083a069a-762f-57c4-b83a-b7ddabaf013a.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970466,
+      "logit": 1.349223,
+      "verdict": "fake",
+      "raw": 1.349223,
+      "k": "VideoCrafter2/1_fake/00042_vc-087be4de-6c24-5678-ab47-3264d86ba5dc.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970228,
+      "logit": 1.348396,
+      "verdict": "fake",
+      "raw": 1.348396,
+      "k": "VideoCrafter2/1_fake/00043_vc-0896cb95-bc03-5d41-8ab1-fe333a814968.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976048,
+      "logit": 1.370747,
+      "verdict": "fake",
+      "raw": 1.370747,
+      "k": "VideoCrafter2/1_fake/00044_vc-089c14b3-a664-53bf-a1a0-5b83335ba2f1.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.977103,
+      "logit": 1.37536,
+      "verdict": "fake",
+      "raw": 1.37536,
+      "k": "VideoCrafter2/1_fake/00045_vc-08bf81f9-65da-5410-8410-ade330da50b1.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97439,
+      "logit": 1.363883,
+      "verdict": "fake",
+      "raw": 1.363883,
+      "k": "VideoCrafter2/1_fake/00046_vc-08e6438d-8648-54d2-a1f4-b10ce60d6ef1.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971148,
+      "logit": 1.351631,
+      "verdict": "fake",
+      "raw": 1.351631,
+      "k": "VideoCrafter2/1_fake/00047_vc-098891d3-66f0-5994-aec1-eb5ea4f6fe0f.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975273,
+      "logit": 1.367481,
+      "verdict": "fake",
+      "raw": 1.367481,
+      "k": "VideoCrafter2/1_fake/00048_vc-09a6fbe7-b1ef-5d6d-a91f-bcde4efece76.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.965832,
+      "logit": 1.334171,
+      "verdict": "fake",
+      "raw": 1.334171,
+      "k": "VideoCrafter2/1_fake/00049_vc-09f5c8f5-7298-5ff8-ad44-f7b84449821f.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.968782,
+      "logit": 1.343503,
+      "verdict": "fake",
+      "raw": 1.343503,
+      "k": "VideoCrafter2/1_fake/00050_vc-0a1a5148-c869-5d79-8d57-42e6fa79b19a.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.975788,
+      "logit": 1.369639,
+      "verdict": "fake",
+      "raw": 1.369639,
+      "k": "VideoCrafter2/1_fake/00051_vc-0af2d506-017e-5c07-af98-9d8658dc854c.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "VideoCrafter2/1_fake/00052_vc-0b6bea82-719b-5a1a-8160-527218c165f1.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.971075,
+      "logit": 1.35137,
+      "verdict": "fake",
+      "raw": 1.35137,
+      "k": "VideoCrafter2/1_fake/00053_vc-0b9a7221-d2d4-5f78-9506-d6b07a49a55d.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.969613,
+      "logit": 1.34629,
+      "verdict": "fake",
+      "raw": 1.34629,
+      "k": "VideoCrafter2/1_fake/00054_vc-0bda443c-02a0-5031-8f1e-e5c9f841b199.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972554,
+      "logit": 1.356771,
+      "verdict": "fake",
+      "raw": 1.356771,
+      "k": "VideoCrafter2/1_fake/00055_vc-0c04084d-4b3b-564e-bec0-b69f99854956.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.97711,
+      "logit": 1.375389,
+      "verdict": "fake",
+      "raw": 1.375389,
+      "k": "VideoCrafter2/1_fake/00056_vc-0c825a52-a94f-5703-a59d-270f99f50e3e.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976436,
+      "logit": 1.372419,
+      "verdict": "fake",
+      "raw": 1.372419,
+      "k": "VideoCrafter2/1_fake/00057_vc-0ce9478b-639b-5335-98ef-5685fe29db21.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972523,
+      "logit": 1.356655,
+      "verdict": "fake",
+      "raw": 1.356655,
+      "k": "VideoCrafter2/1_fake/00058_vc-0cef4c60-9042-58be-aa76-835c33392a5d.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.972769,
+      "logit": 1.357577,
+      "verdict": "fake",
+      "raw": 1.357577,
+      "k": "VideoCrafter2/1_fake/00059_vc-0d3b52f4-a114-5f8f-b05c-f200f5da140d.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.970343,
+      "logit": 1.348796,
+      "verdict": "fake",
+      "raw": 1.348796,
+      "k": "VideoCrafter2/1_fake/00060_vc-0d8c8ffb-50e8-55dc-944d-aecfc034f92a.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.976356,
+      "logit": 1.37207,
+      "verdict": "fake",
+      "raw": 1.37207,
+      "k": "VideoCrafter2/1_fake/00061_vc-0db1706b-ec28-5d16-97ba-c94283b3b49d.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    },
+    {
+      "p": 0.974188,
+      "logit": 1.363078,
+      "verdict": "fake",
+      "raw": 1.363078,
+      "k": "VideoCrafter2/1_fake/00062_vc-0e3e4a90-5407-5ecc-b4e3-fab7c53331c7.mp4",
+      "gen": "VideoCrafter2",
+      "label": 1
+    }
+  ]
+}
