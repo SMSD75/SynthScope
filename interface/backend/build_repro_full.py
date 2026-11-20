@@ -284,6 +284,17 @@ VAL = {
     # repro/vlm_bench/comparison.json (results/<bench>/fakevlm.json; logs repro/logs/fakevlm_bench_293884/293885.out).
     ("fakevlm", "14 held-out benchmarks"): {"official": {"acc": 84.15, "auroc": 91.16}},
     ("fakevlm", "15 held benchmarks"): {"official": {"acc": 85.19, "auroc": 91.74}},
+    # WeVisForensics (arXiv 2611.21373): the official adapters + code only, inference only, greedy, audio off, no SynthScope-trained
+    # number. "official" = the official release through SynthScope's runner. Every value traces to repro/video_agent_bench/
+    # comparison.json (paper_comparison.<bench>.ours_subsample.acc for GB / GB++, subset_means.held4 / all6 .wevis; results/<bench>/
+    # wevis.json; logs repro/logs/wevis_wevis_w0_295637.out / w1_295640.out). GB / GB++ = 40% subsamples of every folder (1,260 / 800
+    # clips), pooled one-row-per-clip accuracy (the paper's metric), and IN-DISTRIBUTION (GenBuster-200K is in its training data):
+    # the paper values (97.7 / 97.5) are inside our 95% Wilson intervals. The held-out headline is the "4 held subsets" row
+    # (rank 7 of 9); the "6 subsets" row averages in the in-distribution GenBuster sets. MintVid and AgenticCue are not held.
+    ("wevis", "GenBuster-Bench (GB)"): {"official": {"acc": 97.3}},
+    ("wevis", "GenBuster-Bench++ (GB++"): {"official": {"acc": 97.88}},
+    ("wevis", "4 held subsets"): {"official": {"acc": 85.59, "auroc": 90.23}},
+    ("wevis", "6 subsets including"): {"official": {"acc": 89.29, "auroc": 92.61}},
     # synthscope = trained in SynthScope with the reconstructed recipe at native resolution (experiments/image/vib_net.sh;
     # job 267846, eval 267928): 15 generators (7 GenImage + 8 ForenSynths GANs), registry vib_net_official.
     ("vib_net", "Diffusion-source (SDv1.4-trained)"):        {"synthscope": {"map": 94.08, "acc": 85.22}},

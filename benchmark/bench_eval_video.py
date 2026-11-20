@@ -1,5 +1,5 @@
 """Unified VIDEO benchmark eval for SynthScope video detectors (d3, split, restrav, stall, vina_video, waverep,
-waverep_g4, nsg_vd, nsg_vd_pika, nsg_vd_unbalance).
+waverep_g4, nsg_vd, nsg_vd_pika, nsg_vd_unbalance, and the agent wevis).
 
 Scores each video through the SAME verified synthscope engine path the web app uses
 (engine.predict_video_clip -> native clip pipeline + per-model norm + fake-prob), computes
