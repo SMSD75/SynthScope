@@ -1,0 +1,904 @@
+{
+ "audio": {
+  "what": "distinct videos with an audio stream (trace.audio_stream_present, the official probe_media in the runner), by label; every video was run with has_audio=False",
+  "per_subset": {
+   "genvideo": {
+    "n_videos": 275,
+    "n_traced": 275,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 8
+    },
+    "n_real": 25,
+    "n_fake": 250
+   },
+   "videophy": {
+    "n_videos": 288,
+    "n_traced": 288,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 0
+    },
+    "n_real": 32,
+    "n_fake": 256
+   },
+   "vidprom": {
+    "n_videos": 315,
+    "n_traced": 315,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 0
+    },
+    "n_real": 63,
+    "n_fake": 252
+   },
+   "evalcrafter": {
+    "n_videos": 270,
+    "n_traced": 270,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 0
+    },
+    "n_real": 18,
+    "n_fake": 252
+   },
+   "genbuster": {
+    "n_videos": 1260,
+    "n_traced": 1260,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 0
+    },
+    "n_real": 400,
+    "n_fake": 860
+   },
+   "genbuster_pp": {
+    "n_videos": 800,
+    "n_traced": 800,
+    "missing_traces": 0,
+    "audio_stream": {
+     "real": 0,
+     "fake": 0
+    },
+    "n_real": 400,
+    "n_fake": 400
+   }
+  }
+ },
+ "media": {
+  "what": "distinct videos of the four held subsets, by sha1 (the subsets share the GenVideo-Val MSR-VTT reals); OpenCV header properties after a sha1 check against subsets/<bench>.json",
+  "reals": {
+   "n_distinct": 63,
+   "frame_sizes": {
+    "298x224": 63
+   },
+   "fps": {
+    "3.0": 63
+   },
+   "median_height": 224,
+   "median_frames": 38
+  },
+  "fakes": {
+   "n_distinct": 896,
+   "frame_sizes": {
+    "512x320": 170,
+    "1024x576": 104,
+    "256x256": 97,
+    "1088x640": 86,
+    "512x512": 72,
+    "576x320": 71,
+    "1280x720": 55,
+    "1408x768": 53,
+    "896x504": 38,
+    "1360x752": 32,
+    "672x384": 25,
+    "1184x672": 25,
+    "1024x640": 18,
+    "1088x612": 18,
+    "1920x1080": 7,
+    "512x896": 6,
+    "1920x1088": 4,
+    "576x1024": 4,
+    "720x1280": 2,
+    "560x800": 2,
+    "854x480": 1,
+    "434x482": 1,
+    "256x448": 1,
+    "384x384": 1,
+    "704x128": 1,
+    "128x128": 1,
+    "768x768": 1
+   },
+   "fps": {
+    "8.0": 366,
+    "24.0": 263,
+    "10.0": 107,
+    "4.0": 63,
+    "7.0": 32,
+    "30.0": 28,
+    "50.0": 25,
+    "12.5": 5,
+    "7.692": 4,
+    "6.25": 2,
+    "15.0": 1
+   },
+   "median_height": 512.0,
+   "median_frames": 32.0
+  },
+  "real_files": [
+   {
+    "sha1": "bb5af0d3486f85f6a10c75dd5643b0c105585988",
+    "name": "00000_msrvtt_1.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "b70d94093751d3b0819004d9ef388b1ae4f7483a",
+    "name": "00001_msrvtt_2.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 68
+   },
+   {
+    "sha1": "f37618f2652803194fb68da29dcd9fd5f57410f9",
+    "name": "00002_msrvtt_3.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "1ae6bc88b21649dd61d5b2318aed885d6c80d4b5",
+    "name": "00003_msrvtt_4.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "fe1166a813a670c016aba4fcd88c0f2698b96865",
+    "name": "00004_msrvtt_5.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "a00c332cbcb18569cfdce4446ac9a9e15ccd4b94",
+    "name": "00005_msrvtt_6.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 92
+   },
+   {
+    "sha1": "1dd04385ca26f45e2b3c32a59c4ae33fd5838fe8",
+    "name": "00006_msrvtt_7.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 53
+   },
+   {
+    "sha1": "c4c18923b7e0c87ce0f10b0b63d3041d339f319d",
+    "name": "00007_msrvtt_8.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "da33fd49d88fdec53759b6d4d418b1671bd7bc12",
+    "name": "00008_msrvtt_9.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 92
+   },
+   {
+    "sha1": "d94c29f73e2b28840e73c113d3851023f8e7b8d3",
+    "name": "00009_msrvtt_10.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 92
+   },
+   {
+    "sha1": "fed7ede9ea1c09984e1addef5c128967c106e508",
+    "name": "00010_msrvtt_11.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 41
+   },
+   {
+    "sha1": "0d2263e47edaa96a19740e8a7d063348515128b3",
+    "name": "00011_msrvtt_12.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "c93546444d548a62945252e5ddee95cd3991cdbd",
+    "name": "00012_msrvtt_13.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "62b629cae86eb4331a2fcd6c24ac60e629ce69c4",
+    "name": "00013_msrvtt_14.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "7959f0230d085465018540e53d8a0e3d6709e7eb",
+    "name": "00014_msrvtt_15.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "a6f46fa82ceb4a69700256cf553e480bc57cda4b",
+    "name": "00015_msrvtt_16.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 77
+   },
+   {
+    "sha1": "cb3ada3b515920c0ee2f87ac781bf9df176dc44f",
+    "name": "00016_msrvtt_17.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 65
+   },
+   {
+    "sha1": "ddb5dcf1e47b7c2a66c7480d417427d22631461e",
+    "name": "00017_msrvtt_18.mp4",
+    "subsets": [
+     "evalcrafter",
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "73cb88c0ca11639253ee262053ec030f6b2d0666",
+    "name": "00018_msrvtt_19.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 44
+   },
+   {
+    "sha1": "89449fce2c2f4ab50b68fafb74e1f1fc7c1a6c2d",
+    "name": "00019_msrvtt_20.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 50
+   },
+   {
+    "sha1": "7f1463868cfbbc497e473607c19c9edb3eccd63c",
+    "name": "00020_msrvtt_21.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 44
+   },
+   {
+    "sha1": "b545ff83596bb093c5807d6c695714e53a3f7ce5",
+    "name": "00021_msrvtt_22.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 86
+   },
+   {
+    "sha1": "30befd7f15a467725c786efda1d5c2969375a42b",
+    "name": "00022_msrvtt_23.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "f8c6362dc48cf021d27bbd4a898b3d762afb9ed6",
+    "name": "00023_msrvtt_24.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "76b911592d26d8b243489bfdc3aeec47bdc6e060",
+    "name": "00024_msrvtt_25.mp4",
+    "subsets": [
+     "genvideo",
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "942f10289660d38c8af4b5a431b41bb9736aae4d",
+    "name": "00051_msrvtt_26.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 50
+   },
+   {
+    "sha1": "2a1d7f9839bfa7f056fa6ad2016ca45cb7133314",
+    "name": "00053_msrvtt_27.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 53
+   },
+   {
+    "sha1": "ec202f203b7c51fd78856836ef8addd1946b6822",
+    "name": "00055_msrvtt_28.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 53
+   },
+   {
+    "sha1": "de907d7ccf8ad150116cd53cf49ac1d43573f86f",
+    "name": "00057_msrvtt_29.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "a37260725644cc881a6b649a7d3833d926e36665",
+    "name": "00059_msrvtt_30.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "18c41a3551d4b685a128495300a73e802bd4685e",
+    "name": "00061_msrvtt_31.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "5ba087d110627588f58cecbd16ed90adb540f178",
+    "name": "00063_msrvtt_32.mp4",
+    "subsets": [
+     "videophy",
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 50
+   },
+   {
+    "sha1": "645b2bac1f05e3a93f0026cd23059bc67f0356da",
+    "name": "00065_msrvtt_33.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "a2f23164a65b871129e9102ed7844f3cd74f5472",
+    "name": "00067_msrvtt_34.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 86
+   },
+   {
+    "sha1": "ebdc13237d8b8698e4cba7a0a2fd3901a21f51d4",
+    "name": "00069_msrvtt_35.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "59646b44cd12a97c9d6092c08aa771b27752ce66",
+    "name": "00071_msrvtt_36.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 62
+   },
+   {
+    "sha1": "acafbd78cd4bde64c1a24d954b62911853e6fe51",
+    "name": "00073_msrvtt_37.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "77fa43c2ffa9f6905b9ac0ed0da1c5ecf63c2fb7",
+    "name": "00075_msrvtt_38.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "55f2339be3c5d78450fbb43c7f36a624009cb4f8",
+    "name": "00077_msrvtt_39.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "31dc5567cf6116650efcb076975d09e7a2ae29bf",
+    "name": "00079_msrvtt_40.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 50
+   },
+   {
+    "sha1": "bf06ea7f3c6bdeae2eb5bc1e3fa2207ebc455957",
+    "name": "00081_msrvtt_41.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 68
+   },
+   {
+    "sha1": "404cf696566679b7081e5840d9b9318f6230d4fd",
+    "name": "00083_msrvtt_42.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "f292b2ad6984e9b85c27b59b4e9301a3c8fc910a",
+    "name": "00085_msrvtt_43.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 68
+   },
+   {
+    "sha1": "fc78a56e675d3cd207930404995104f98dc85ce8",
+    "name": "00087_msrvtt_44.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "c8261e8c34f5ea7d7cea2183836c337269ed39bb",
+    "name": "00089_msrvtt_45.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "1b8d803a408cf863c3d85939f469768836898224",
+    "name": "00091_msrvtt_46.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 68
+   },
+   {
+    "sha1": "8b454a4e034e3060c9ac2932d2ae71f2a952b229",
+    "name": "00093_msrvtt_47.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 32
+   },
+   {
+    "sha1": "c3a746e3194d8c3fbf7ece8de8db10c99736a657",
+    "name": "00095_msrvtt_48.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "d36afaaf8a9f918e8b2245e01d294dc4cceed808",
+    "name": "00097_msrvtt_49.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 59
+   },
+   {
+    "sha1": "7582be5a6205aa55624f5af85d45f1603fd1f166",
+    "name": "00099_msrvtt_50.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "618dac408a6f9a876dd1b457a7f0c7718df04cfe",
+    "name": "00101_msrvtt_51.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "c458d6ebcf5a8b38cf71d6954350d690bc3f9eb1",
+    "name": "00103_msrvtt_52.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "fdead2f2a85e901b3902ec031a253beb632780cf",
+    "name": "00105_msrvtt_53.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 44
+   },
+   {
+    "sha1": "4a47d9646b3695563668dc1fee2c62848bcb738c",
+    "name": "00107_msrvtt_54.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 44
+   },
+   {
+    "sha1": "e6ec9880d63dd5acc45abbdf5b15e8918f76c4ef",
+    "name": "00109_msrvtt_55.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 41
+   },
+   {
+    "sha1": "8fd86d4de334f366099983e705613863897a45ee",
+    "name": "00111_msrvtt_56.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 41
+   },
+   {
+    "sha1": "81ec8891044d254752ca6894e4866191493e3647",
+    "name": "00113_msrvtt_57.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 56
+   },
+   {
+    "sha1": "c9760b11c120fc153214a8d6716ce4be2c23f215",
+    "name": "00115_msrvtt_58.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "4781e75988bf4f55939495d093b33428964bfdaa",
+    "name": "00117_msrvtt_59.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "ca9c36f576237e2c34f43c013fa81838226bcfc8",
+    "name": "00119_msrvtt_60.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 62
+   },
+   {
+    "sha1": "4581ccd7c29304a66e2d5ce42911fa837a573180",
+    "name": "00121_msrvtt_61.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 38
+   },
+   {
+    "sha1": "a055a9ab3bef1882700a986cc61c4ad460f9fce7",
+    "name": "00123_msrvtt_62.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 35
+   },
+   {
+    "sha1": "4c9ec2c3d299ef99411968ec9ee6de3d2fbffc21",
+    "name": "00125_msrvtt_63.mp4",
+    "subsets": [
+     "vidprom"
+    ],
+    "width": 298,
+    "height": 224,
+    "fps": 3.0,
+    "frames": 74
+   }
+  ]
+ }
+}

@@ -54,6 +54,11 @@ pre-verified local files are what keep those local.
   running.
 - `close()` (model eviction, `release_gpu`) first waits for the video in progress. The web engine calls it outside its
   own lock, so other detectors keep serving while an evicted agent finishes its video.
+- A closed client is finished: `score()` raises `WeVisClosedError` instead of starting a new runner, and the engine
+  fetches the detector again (a fresh runner) once. A client that is dropped is garbage-collected (the reader thread
+  holds only the pipe), and its `__del__` stops the runner.
+- **Loading holds the engine lock**, as for every detector. For the agent that is the runner's start: about 40 s with
+  warm file caches, 3-4 min on a cold node. Every other detector request on the same engine (web app) waits meanwhile.
 - SIGKILL is sent only to a group that is still alive (an empty group's id could be reused).
 - If `close()` stops the runner while a video is being scored, that video fails with `WeVisRunnerError`.
 - Each video gets its own frame cache (decoded frames, OCR crops) in `<work dir>/videos/<host>_<pid>_<n>`. It is deleted
@@ -73,7 +78,9 @@ the fidelity run), so AUROC adds little to accuracy.
 
 **Audio is off.** Every video runs with `has_audio=False`, the official manifest field. The audio tools need a gated
 diarization model and non-commercial voice models. Also, in our benchmarks some fakes have an audio track and every
-real is silent, so the audio flag alone would give the label away.
+real is silent, so the audio flag alone would give the label away. In the scored subsets, 8 GenVideo-Val fakes have an
+audio stream; no real does, and none of the 2,060 GenBuster-Bench / ++ clips does (`repro/video_agent_bench/msrvtt_probe.json`,
+`audio`, from the runner's `audio_stream_present` probe).
 
 **Errors.** The official `scripts/evaluate.py` turns *any* exception from `agent.run` into a `tool_error` row. It
 retries the row and, if it still fails, leaves it out of the strict accuracy's denominator and reports how many it left
@@ -204,7 +211,9 @@ the official backend, while the vision encoder read a 72-frame inspector window.
 **Reading.**
 - **The real videos drive the rank.** Fake accuracy is 97.7-98.4 on every held subset, but real accuracy is only
   72-75: the agent calls about 1 in 4 MSR-VTT reals fake (37 of the 138 real rows).
-- These reals are low-resolution: the GenVideo-Val MSR-VTT clips we probed are 298x224 at 3 fps. On GenBuster's own
+- These reals are low-resolution: all 63 distinct MSR-VTT reals of the four subsets are 298x224 at 3 fps (median 38
+  frames), while the fakes' median frame height is 512 (`repro/video_agent_bench/msrvtt_probe.json`, `media`, from
+  `media_probe.py`; every file sha1-checked against the manifests). On GenBuster's own
   reals the agent does much better (real accuracy 93.25 on GB, 98.25 on GB++; below).
 - The fidelity run predicted this: `msrvtt_6` was called fake.
 - The real pools are small (18-63 clips per subset), so real accuracy is noisy, about +-9 points at n = 25.
@@ -237,7 +246,8 @@ which keeps the real : fake composition. The files are sha256-named, so the sort
 
 **Metric.** The paper's metric, one row per clip, as the official `scripts/evaluate.py` computes it: fakes are the
 positive class, invalid answers count wrong, and tool errors are excluded (there were none). The paper ran the authors'
-vLLM engine; we ran the official transformers backend, greedy, with audio off (GenBuster clips are silent).
+vLLM engine; we ran the official transformers backend, greedy, with audio off (none of the 2,060 GenBuster clips has an
+audio stream: `msrvtt_probe.json`).
 
 | | SynthScope (40 % subsample) | paper (arXiv 2611.21373) |
 |---|---:|---:|
