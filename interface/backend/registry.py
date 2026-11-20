@@ -884,6 +884,8 @@ _PRIMARY = {
     "clip": "UniversalFakeDetect", "cnn": "ForenSynths", "safe": "GenImage", "spai": "GenImage",
     "vib_net": "Diffusion-source (SDv1.4-trained), AP", "pgc": "GenImage", "d3": "GenVideo",
     "restrav": "GenVidBench", "stall": "GenVideo",
+    # WeVisForensics: the held-out headline, not the in-distribution GenBuster-Bench (the spec's first row).
+    "wevis": "4 held subsets",
 }
 _MATCH = {"reproduced": "match", "official": "match", "below": "below",
           "reference": "partial", "missing": "pending"}

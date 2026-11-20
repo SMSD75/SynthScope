@@ -22,9 +22,9 @@
         "fake_f1": 98.3,
         "note": "WeVisForensics paper Table 4 (ID column, WeVisForensics-DTPO) and Table 12 (R / F1); the paper ran the official vLLM engine on the full 3,150 clips."
       },
-      "our_status": "official",
+      "our_status": "reference",
       "our_number": {
-        "note": "Official weights, greedy, audio off, a 40% subsample (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 / 95.3. IN-DISTRIBUTION (GenBuster-200K is in its training data): 1st of 9 vs 8 video detectors (VINA 89.37), not a held-out result."
+        "note": "IN-DISTRIBUTION, 40% subsample (status reference, as Veritas++'s subsets), so not a held-out result. Official weights, greedy, audio off (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 / 95.3. IN-DISTRIBUTION (GenBuster-200K is in its training data): 1st of 9 vs 8 video detectors (VINA 89.37), not a held-out result."
       },
       "dataset_source": "HF l8cv/GenBuster-Bench @ 68e41ab5 (MIT), dataset.py GenBusterBenchDataset; subset manifest repro/video_agent_bench/subsets/genbuster.json"
     },
@@ -43,9 +43,9 @@
         "fake_f1": 97.4,
         "note": "WeVisForensics paper Table 4 (GB++ column, WeVisForensics-DTPO) and Table 12 (R / F1); full 2,000 clips, vLLM engine."
       },
-      "our_status": "official",
+      "our_status": "reference",
       "our_number": {
-        "note": "Official weights, greedy, audio off, a 40% subsample: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
+        "note": "IN-DISTRIBUTION, 40% subsample (status reference), so not a held-out result. Official weights, greedy, audio off: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
       },
       "dataset_source": "HF l8cv/GenBuster-Bench-plusplus @ 7f184bef (MIT), dataset.py GenBusterBenchPPDataset; subset manifest repro/video_agent_bench/subsets/genbuster_pp.json"
     },

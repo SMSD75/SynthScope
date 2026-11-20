@@ -2165,8 +2165,8 @@
       "ours": "acc=97.3 (official wts)",
       "ours_synthscope": "",
       "ours_official": "acc=97.3",
-      "status": "official",
-      "note": "Official weights, greedy, audio off, a 40% subsample (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 / 95.3. IN-DISTRIBUTION (GenBuster-200K is in its training data): 1st of 9 vs 8 video\u2026"
+      "status": "reference",
+      "note": "IN-DISTRIBUTION, 40% subsample (status reference, as Veritas++'s subsets), so not a held-out result. Official weights, greedy, audio off (the first ceil(0.4 n) sorted, sha256-named clips of every folder): 97.30 acc (95% Wilson 96.25-98.06; paper 97.7 inside), fake recall 99.19, F1 98.05, real acc 93.25 (paper, implied: 94.3); in-domain / OOD / wild fakes 99.5 / 99.25 / 96.67 vs 99.7 / 99.6 /\u2026"
     },
     {
       "benchmark": "GenBuster-Bench++ (GB++, video track), 40% subsample (800 clips: 400 real + 400 fake), IN-DISTRIBUTION",
@@ -2175,8 +2175,8 @@
       "ours": "acc=97.88 (official wts)",
       "ours_synthscope": "",
       "ours_official": "acc=97.88",
-      "status": "official",
-      "note": "Official weights, greedy, audio off, a 40% subsample: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
+      "status": "reference",
+      "note": "IN-DISTRIBUTION, 40% subsample (status reference), so not a held-out result. Official weights, greedy, audio off: 97.88 acc (95% Wilson 96.62-98.67; paper 97.5 inside), fake recall 97.50, F1 97.87, real acc 98.25. The paper's out-of-domain set, but from the same BusterX family as GenBuster-200K (in its training data): 1st of 9 (VINA 89.00), not a held-out result."
     },
     {
       "benchmark": "4 held subsets (GenVideo-Val, VideoPhy, VidProM, EvalCrafter; L = ceil(250 / generators)) vs 8 video detectors on identical files",
