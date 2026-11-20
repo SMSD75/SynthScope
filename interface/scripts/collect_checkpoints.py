@@ -16,7 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from backend import config            # noqa: E402  (sets paths)
-from backend.registry import list_specs  # noqa: E402
+from backend.registry import get_spec, list_specs  # noqa: E402
 
 # Known source locations of the official weights on this node. Every entry must be the file the registry (and the
 # public Space) actually serves under that name:
@@ -70,6 +70,10 @@ def main():
     for spec in list_specs():
         if spec.ckpt_kind == "none":
             status, present = "training-free", True
+        elif spec.fusion is not None:           # no weights of its own (adb_full): present when both components are
+            parts = [get_spec(spec.fusion.vlm), get_spec(spec.fusion.expert)]
+            present = all((dst / part.checkpoint).exists() for part in parts)
+            status = f"fusion of {parts[0].key} + {parts[1].key}"
         else:
             p = dst / spec.checkpoint
             present = p.exists()

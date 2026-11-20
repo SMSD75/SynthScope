@@ -601,6 +601,9 @@ def main(argv=None) -> int:
         det = Detector(spec, device=args.device, **load_kw)
     else:
         det = synthscope.load(args.model, device=args.device, **load_kw)
+    if det.spec.predict_kind == "fusion":
+        ap.error(f"{args.model} combines two detectors: score both per image (the VLM with --vlm-cache) and fuse them "
+                 "with fuse_components (models/image/adb_full/adb_full.py)")
     det._ensure_weights()
     spec = det.spec
     model = det._engine._get_model(spec)

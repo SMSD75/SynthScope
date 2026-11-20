@@ -23,6 +23,7 @@ from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
 from models.image.probe.preprocess import ProbePad, SlidingPatches
+from models.image.adb_full.adb_full import fuse_components
 from models.video.wevis import wevis as wevis_agent
 from models.vlm.vlm import SynthScopeVLM, download_hint
 from . import config
@@ -313,8 +314,14 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
 
 
 def vlm_images_only(spec: ModelSpec) -> str:
-    return (f"'{spec.key}' is a VLM detector that writes a rationale per image (seconds per image on a GPU): it scores "
+    what = "combines a VLM detector, which" if spec.fusion is not None else "is a VLM detector that"
+    return (f"'{spec.key}' {what} writes a rationale per image (seconds per image on a GPU): it scores "
             "still images only, not videos.")
+
+
+def fusion_components(spec: ModelSpec) -> tuple[ModelSpec, ModelSpec]:
+    """The (VLM, expert) specs of a ``predict_kind="fusion"`` detector."""
+    return get_spec(spec.fusion.vlm), get_spec(spec.fusion.expert)
 
 
 def vlm_base_folder(spec: ModelSpec):
@@ -425,6 +432,8 @@ class Engine:
             return os.path.exists(os.environ.get("DINO_V3_WEIGHTS") or DINOV3_WEIGHTS)
         if self.ffmpeg_missing(spec):
             return False
+        if spec.fusion is not None:                 # no weights of its own: both components must be runnable
+            return all(self.is_available(part) for part in fusion_components(spec))
         if not all((config.CHECKPOINTS_DIR / f).exists() for f in spec.aux_files.values()):
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
@@ -484,6 +493,9 @@ class Engine:
         Loading runs UNDER the engine lock, as for every detector: other requests wait for it. For a torch model that is
         seconds; for the agent (``video_agent``) it is the runner's start, about 40 s with warm file caches and 3-4 min
         on a cold node (``ready_timeout`` 3600 s), during which every other detector request on this engine waits."""
+        if spec.predict_kind == "fusion":    # its components load and cache under their own keys
+            raise ValueError(f"'{spec.key}' combines {spec.fusion.vlm} and {spec.fusion.expert}, which load on their own; "
+                             "score it with Engine.predict_image or Engine.fusion_score.")
         if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
             model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
             self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
@@ -655,6 +667,47 @@ class Engine:
         handling."""
         return self._get_model(spec).score(pil, decoding=decoding, seed=seed)
 
+    @torch.no_grad()
+    def expert_probability(self, spec: ModelSpec, pil: Image.Image) -> float:
+        """An image detector's P(fake) for one RGB image, unrounded (a fusion's threshold is applied to it)."""
+        x = spec.transform(pil).unsqueeze(0).to(self.device)
+        return float(self._fake_prob(self._get_model(spec), spec, x).item())
+
+    def fusion_score(self, spec: ModelSpec, pil: Image.Image) -> dict:
+        """A ``fusion`` detector's output for one image (Align, Don't Blend's full method, ``models/image/adb_full``): the
+        VLM component's full output (``vlm_score``, on the decoded file as a VLM gets it), the expert's unrounded
+        P(fake) (on the RGB conversion, ``media.to_rgb``: the official ``Image.open(path).convert("RGB")``), and the
+        official decision and SynthScope's score (``fuse_components``)."""
+        vspec, espec = fusion_components(spec)
+        vlm = self.vlm_score(vspec, pil)
+        p_expert = self.expert_probability(espec, media.to_rgb(pil))
+        fused = fuse_components(vlm["fake_probability"], vlm["verdict"], p_expert)
+        return {**fused, "vlm": vlm, "expert_fake_probability": p_expert}
+
+    def _predict_fusion(self, spec: ModelSpec, pil: Image.Image) -> dict:
+        vspec, espec = fusion_components(spec)
+        self._get_model(vspec)                      # load first: elapsed covers scoring only
+        self._get_model(espec)
+        t0 = time.time()
+        out = self.fusion_score(spec, pil)
+        res = self._result(spec, out["score"], time.time() - t0)
+        res["verdict"] = out["verdict"]             # the official rule, not the rounded score (it can round to 0.5)
+        res["fused_score"] = out["score"]           # unrounded: >= 0.5 exactly when the verdict is "fake"
+        res["decided_by"] = out["decided_by"]       # "vlm" | "expert" | "both" | "neither"
+        vlm = out["vlm"]
+        res["components"] = {
+            vspec.key: {"verdict": out["vlm_verdict"], "fake_probability": vlm["fake_probability"],
+                        "logit": round(vlm["logit"], 6), "score_source": vlm["score_source"],
+                        "verdict_token": vlm["verdict_token"], "new_tokens": vlm["new_tokens"],
+                        "finished": vlm["finished"], "input_size": vlm["input_size"]},
+            espec.key: {"verdict": out["expert_verdict"], "fake_probability": out["expert_fake_probability"],
+                        "threshold": spec.fusion.expert_threshold},
+        }
+        res["rationale"], res["response"] = vlm["rationale"], vlm["response"]
+        res["orig_size"] = [pil.width, pil.height]
+        res["input_note"] = input_note(spec)
+        return res
+
     def _predict_vlm(self, spec: ModelSpec, pil: Image.Image) -> dict:
         self._get_model(spec)                       # load first: elapsed covers scoring only
         t0 = time.time()
@@ -677,6 +730,8 @@ class Engine:
                              "score a still image.")
         if spec.predict_kind == "vlm":
             return self._predict_vlm(spec, pil)
+        if spec.predict_kind == "fusion":
+            return self._predict_fusion(spec, pil)
         model = self._get_model(spec)
         x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
@@ -707,7 +762,7 @@ class Engine:
         """Run an *image* detector on sampled video frames and aggregate (mean P(fake))."""
         if spec.predict_kind == "video_agent":
             raise ValueError(f"'{spec.key}' scores the video file itself (Engine.predict_video_clip), not sampled frames.")
-        if spec.predict_kind == "vlm":
+        if spec.predict_kind in ("vlm", "fusion"):
             raise ValueError(vlm_images_only(spec))
         model = self._get_model(spec)
         batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)

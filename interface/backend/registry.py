@@ -18,6 +18,7 @@ from typing import Callable, Optional
 
 from omegaconf import OmegaConf
 
+from models.image.adb_full.adb_full import ADB_FULL, FusionConfig
 from models.image.adb_vlm.adb_vlm import ADB_VLM
 from models.image.fakevlm.fakevlm import FAKEVLM
 from models.image.veritaspp.veritaspp import VERITASPP
@@ -175,7 +176,7 @@ class ModelSpec:
     paper: str                     # short citation
     modality: str                  # "image" (also runs frame-by-frame on video) or "video"
     overrides: list[str]           # Hydra overrides for config_utils.compose_config
-    predict_kind: str              # ce | bce | bce_npr | vib | video | vlm | video_agent
+    predict_kind: str              # ce | bce | bce_npr | vib | video | vlm | video_agent | fusion
     checkpoint: Optional[str]      # filename inside CHECKPOINTS_DIR (None = no weights file; a folder for "vlm")
     ckpt_kind: str                 # synthscope | official_* (strict) | none
     transform: Optional[AIGITransformations] = None   # image preprocessing (None for pure-video and VLM models)
@@ -235,6 +236,16 @@ class ModelSpec:
     # models/video/wevis/). ``checkpoint`` is the adapter folder; the config names the base model, the OCR models, the
     # official code and the isolated runtime. No ``transform``, no ``overrides``: the official agent samples its frames.
     agent: Optional[WeVisConfig] = field(default=None, repr=False)
+    # predict_kind "fusion": an official decision rule over two registered detectors (Align, Don't Blend's full method:
+    # its VLM branch OR its pixel expert, models/image/adb_full/). No weights of its own (``checkpoint`` None,
+    # ``ckpt_kind`` "fusion"): it is available when both components are, and each loads and caches under its own key.
+    fusion: Optional[FusionConfig] = field(default=None, repr=False)
+
+    @property
+    def has_vlm(self) -> bool:
+        """A VLM detector, or a fusion with one: it gets the decoded file without an RGB conversion, scores one still
+        image at a time (seconds on a GPU) and no video."""
+        return self.vlm is not None or self.fusion is not None
 
     def eval_batch_size(self, batch_size: int) -> int:
         """Batch size an evaluation loop may use: 1 for a ``native_res`` spec (its inputs differ in size and cannot be
@@ -655,9 +666,21 @@ _add(ModelSpec(
           "and greedy decoding (repetition penalty 1.05 from the base model). P(fake) = sigmoid of the AI-minus-"
           "authentic logit at the verdict word the official parser reads (the answer tag, or a tag-less final line, "
           "about 2% of outputs); mostly near 0 or 1 (2.7% of benchmark images between 0.1 and 0.9). The verdict is the "
-          "parsed answer. The paper's "
-          "final detector also ORs in a pixel-artifact expert that is not released, so this is the VLM branch alone. "
-          "Still images only. Not on the Space (no licence).",
+          "parsed answer. This is the VLM branch alone; the paper's full method ORs it with the DDA pixel expert "
+          "(adb_full). Still images only. Apache-2.0 code and adapter; not on the Space (a 7B VLM needs a GPU).",
+))
+_add(ModelSpec(
+    key="adb_full", name="Align, Don't Blend (VLM + DDA)", paper="Chen et al., ACM MM'26 (arXiv 2512.06746)",
+    modality="image", predict_kind="fusion", checkpoint=None, ckpt_kind="fusion", weights="official",
+    # The official final decision of predict.py (GzZning/Align-Dont-Blend @ 5d83e40): adb_vlm's parsed verdict OR dda's
+    # P(fake) >= 0.5. The expert is the released DDA_ckpt.pth (= dda.pth); no weights of its own.
+    overrides=[], fusion=ADB_FULL, native_res=True,
+    notes="The full Align, Don't Blend detector: the VLM branch (adb_vlm: Qwen2.5-VL-7B + the authors' LoRA judges "
+          "semantic plausibility) OR the pixel-artifact expert (dda: the released DDA checkpoint, DINOv2 ViT-L/14 + "
+          "LoRA on the central 336x336 pixels), the official rule of predict.py: fake if the VLM answers "
+          "\"AI-generated\" or DDA's P(fake) >= 0.5. P(fake) = max(the VLM's P(fake) clamped to its verdict's side of "
+          "0.5, DDA's P(fake)), so P(fake) >= 0.5 exactly when the official decision is fake. Both components are loaded "
+          "(about 19 GB on a GPU). Still images only. Apache-2.0; not on the Space (a 7B VLM needs a GPU).",
 ))
 
 _add(ModelSpec(
@@ -805,6 +828,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
                 "converted to RGB (no EXIF rotation; any transparency channel is dropped); an image above 1,003,520 "
                 "pixels is first shrunk to about that size (bilinear), then the whole image is resized (bicubic) so "
                 "both sides are multiples of 28 px, keeping the aspect ratio, and goes to the vision-language model."),
+    "adb_full": ("Two views: whole image ≤1.0 MP + center-crop 336", "The vision-language model sees the whole image as "
+                 "the official ms-swift pipeline loads it (RGB, no EXIF rotation, transparency dropped; shrunk to at "
+                 "most 1,003,520 pixels, sides multiples of 28 px). The pixel expert (DDA) sees the central 336×336 "
+                 "pixels exactly as they are, with no scaling (a smaller image is padded with black)."),
     "fakevlm": ("Resize + center-crop 336", "As the official code loads it, the image is converted to RGB (no EXIF "
                 "rotation; any transparency channel is dropped), the shorter side is scaled to 336 px (bicubic) and the "
                 "central 336x336 square goes to the vision-language model; anything outside it is not seen."),

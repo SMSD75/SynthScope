@@ -156,7 +156,7 @@ class Detector:
             return result
 
         # kind == "video"
-        if self.spec.vlm is not None:
+        if self.spec.has_vlm:
             raise ValueError(vlm_images_only(self.spec))
         if self.spec.modality == "video":
             return self._engine.predict_video_clip(self.spec, path)
@@ -175,6 +175,10 @@ class Detector:
                 f"'{self.spec.key}' needs {', '.join(missing_aux)} in $SYNTHSCOPE_CKPT_DIR ({_config.CHECKPOINTS_DIR}); "
                 "they are not in the model zoo; the detector's README (models/<modality>/) says how to get them."
             )
+        if self.spec.fusion is not None:            # no weights of its own: each component fetches (or explains) its own
+            for key in (self.spec.fusion.vlm, self.spec.fusion.expert):
+                Detector(get_spec(key), auto_download=self._auto_download, repo=self._repo)._ensure_weights()
+            return
         if self.available or self._custom_ckpt or self.spec.checkpoint is None:
             return  # already present, user-managed, or training-free
         if self._engine.ffmpeg_missing(self.spec):
@@ -201,9 +205,9 @@ class Detector:
 
     # -- helpers ------------------------------------------------------------
     def _classify(self, source: PathOrImage):
-        """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``. A VLM detector gets the decoded file
-        without an RGB conversion (its own loader applies the official EXIF / transparency handling)."""
-        vlm = self.spec.vlm is not None
+        """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``. A VLM detector (or a fusion with one) gets
+        the decoded file without an RGB conversion (its own loader applies the official EXIF / transparency handling)."""
+        vlm = self.spec.has_vlm
         if isinstance(source, Image.Image):
             return "image", (source if vlm else _media.to_rgb(source)), None
         if isinstance(source, (bytes, bytearray)):
