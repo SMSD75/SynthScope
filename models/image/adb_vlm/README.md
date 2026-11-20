@@ -2,15 +2,16 @@
 
 **Paper:** Chen et al., *Align, Don't Blend: Orthogonal Supervision Disentanglement As the Key to Generalizable
 AI-Generated Image Detection*, ACM MM 2026 ([arXiv 2512.06746](https://arxiv.org/abs/2512.06746)).
-**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `f4b4794` (no licence file).
+**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `f4b4794` (Apache-2.0 since 2026-11-20,
+checked at `5d83e40`).
 **Weights:** LoRA adapter [Gaffeyzz/Align-Dont-Blend-VLM](https://huggingface.co/Gaffeyzz/Align-Dont-Blend-VLM) @
-`49975ccd` (no licence), on the base model [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
+`49975ccd` (Apache-2.0: the card's licence tag, added at `ff7973df` with identical adapter files), on the base model [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
 @ `cc594898` (Apache-2.0).
 
 **Status.** Inference only, with the official adapter. This is **the VLM branch alone**: the paper's detector also ORs
 in a pixel-artifact expert that is not released, so **the paper's headline numbers (VLM OR expert) cannot be
-reproduced**, and the paper prints no VLM-only number for the released adapter. It is not on the Space and not in the
-model zoo, because neither the code nor the adapter has a licence ([Licence](#licence)).
+reproduced**, and the paper prints no VLM-only number for the released adapter. It is not on the Space, because a 7B
+VLM needs a GPU, and the adapter is not mirrored to the model zoo ([Licence](#licence)).
 
 - **Fidelity** against the official ms-swift 4.4.2 inference (pt backend): identical text, tokens and verdicts on 16 / 16
   images ([Fidelity](#fidelity)).
@@ -311,17 +312,22 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
     them over byte for byte (rule `unchanged`, see its docstring).
 
 ## Availability
-- Not on the Hugging Face Space: no licence, and a 7B model needs a GPU (17.26 GB peak).
+- Not on the Hugging Face Space: a 7B model needs a GPU (17.26 GB peak).
 - Not in the model zoo (`NEVER_REDISTRIBUTE` in `synthscope/hub.py`). `synthscope.load("adb_vlm")` without the folders
   prints the download commands below.
 
 ## Licence
-Neither the code nor the adapter has a licence:
-- the code repository has no LICENSE file;
-- the Hugging Face and ModelScope adapter cards give none.
+The code and the VLM adapter are **Apache-2.0** (since 2026-11-20):
+- the code repository has an Apache-2.0 `LICENSE` (commit `4ce147f`; its README: "The code and VLM adapter are licensed
+  under Apache-2.0");
+- the Hugging Face adapter card has the `license: apache-2.0` tag and a `LICENSE` file since revision `ff7973df`. That
+  revision changes only the card and adds the licence: `adapter_model.safetensors` (sha256 `78b127c5c7623c01c25d9f57d039033bee4d6de608b077a507c326d293f11b5f`) and
+  `adapter_config.json` are byte-identical to the pinned `49975ccd`, so the pin is kept (it also keys the VLM caches).
 
-So the adapter is **not redistributed**: it is not in the model zoo and not on the Space. The base model Qwen2.5-VL-7B-Instruct is
-Apache-2.0. See [LICENSES.md](../../../LICENSES.md). Download both folders yourself into `$SYNTHSCOPE_CKPT_DIR`:
+The base model Qwen2.5-VL-7B-Instruct is Apache-2.0. Redistribution is therefore allowed, but the adapter is **not
+mirrored** to the model zoo: it needs the separate 16 GB base folder, and mirroring it is the maintainers' call (the key
+stays in `NEVER_REDISTRIBUTE`). See [LICENSES.md](../../../LICENSES.md). Download both folders yourself into
+`$SYNTHSCOPE_CKPT_DIR`:
 
 ```
 hf download Gaffeyzz/Align-Dont-Blend-VLM --revision 49975ccd8b28eaab8ef14650ffee0c545934d02b --local-dir $SYNTHSCOPE_CKPT_DIR/adb_vlm

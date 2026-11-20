@@ -387,7 +387,7 @@ Qwen3-VL-8B fine-tuned to write a rationale and answer `<answer> real/fake </ans
 
 ### Align, Don't Blend, VLM branch (official adapter, VLM kind; inference only; subsampled protocol)
 The released VLM branch of Align, Don't Blend (arXiv 2512.06746 v3): the authors' LoRA (Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd,
-no licence) on Qwen2.5-VL-7B-Instruct @ cc594898, which writes a short rationale and answers "This is an authentic /
+Apache-2.0) on Qwen2.5-VL-7B-Instruct @ cc594898, which writes a short rationale and answers "This is an authentic /
 AI-generated image.". The paper's detector ORs this branch with a pixel-artifact expert that is **not released**, so the
 paper's headline numbers cannot be reproduced. **The paper prints no VLM-only number for the released adapter.**
 

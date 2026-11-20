@@ -1,8 +1,9 @@
 """Align, Don't Blend (AlignGemini; arXiv 2512.06746, ACM MM 2026): the VLM branch, a LoRA on Qwen2.5-VL-7B-Instruct
 that writes a short rationale and then answers "This is an authentic image." or "This is an AI-generated image.".
 
-Official code: github.com/GzZning/Align-Dont-Blend @ f4b4794 (no licence file); adapter: HF Gaffeyzz/Align-Dont-Blend-VLM
-@ 49975ccd (r16, alpha 32, 196 LoRA modules on the language model's attention and MLP projections; no licence); base: HF
+Official code: github.com/GzZning/Align-Dont-Blend @ f4b4794 (Apache-2.0 since 2026-11-20); adapter: HF
+Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd (r16, alpha 32, 196 LoRA modules on the language model's attention and MLP
+projections; Apache-2.0 on the card since ff7973df, same files); base: HF
 Qwen/Qwen2.5-VL-7B-Instruct @ cc594898 (Apache-2.0). SynthScope loads the base with transformers into
 ``Qwen2_5_VLForConditionalGeneration`` from a LOCAL folder (``base_model``, relative to $SYNTHSCOPE_CKPT_DIR) and keeps
 the adapter UNMERGED (peft), as ms-swift's pt backend runs it. Only the VLM branch is released: the paper's

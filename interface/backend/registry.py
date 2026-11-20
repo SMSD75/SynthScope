@@ -680,7 +680,7 @@ _add(ModelSpec(
           "LoRA on the central 336x336 pixels), the official rule of predict.py: fake if the VLM answers "
           "\"AI-generated\" or DDA's P(fake) >= 0.5. P(fake) = max(the VLM's P(fake) clamped to its verdict's side of "
           "0.5, DDA's P(fake)), so P(fake) >= 0.5 exactly when the official decision is fake. Both components are loaded "
-          "(about 19 GB on a GPU). Still images only. Apache-2.0; not on the Space (a 7B VLM needs a GPU).",
+          "(18.5 GB peak in bf16 on an RTX A6000, about 5 s per image; repro/adb_full_fidelity.json). Still images only. Apache-2.0; not on the Space (a 7B VLM needs a GPU).",
 ))
 
 _add(ModelSpec(

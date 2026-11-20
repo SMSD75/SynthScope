@@ -12,8 +12,8 @@ serves a web UI + a Python/CLI API. Read this before adding a method, then follo
 
 ## 1. What's already integrated
 
-`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (43 registry keys on
-2026-11-20: 32 image, 11 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
+`synthscope.list_models()` / `from synthscope.api import list_specs` give the current set (44 registry keys on
+2026-11-20: 33 image, 11 video; the table groups related keys such as the OmniAID, PROBE and Effort variants). Each is an `SynthScope<Name>Model` with a
 matching `conf/model/<modality>/<key>.yaml`, a `trainer.py._build_model` branch, an
 `interface/backend/registry.py` `ModelSpec`, a per-model `README.md`, and a `tests/test_<k>_smoke.py`. The one exception is
 the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`, `fakevlm`): an inference-only released model with no training path, so it has no
@@ -22,6 +22,9 @@ the VLM kind (`predict_kind="vlm"`: `veritaspp`, `adb_vlm`, `fakevlm`): an infer
 The agent kind (`predict_kind="video_agent"`: `wevis`) is the other exception: the official agent code runs unmodified in its own
 process (`models/video/wevis/runner.py`, pinned transformers 5.23 / PaddleOCR runtime on `$SYNTHSCOPE_WEVIS_PYTHONPATH`); the
 `ModelSpec` carries a `WeVisConfig` (`agent=`) and the engine talks to the runner through `WeVisRunner` (`models/video/wevis/wevis.py`).
+The fusion kind (`predict_kind="fusion"`: `adb_full`) has no model or weights of its own: its `ModelSpec` carries a
+`FusionConfig` (`fusion=`, `models/image/adb_full/adb_full.py`) naming two registered detectors (`adb_vlm`, `dda`) and the
+official decision rule; the engine scores both and fuses them (`Engine.fusion_score`).
 
 | key | modality | predict_kind | weights | interp map | method |
 |---|---|---|---|---|---|
@@ -45,6 +48,7 @@ process (`models/video/wevis/runner.py`, pinned transformers 5.23 / PaddleOCR ru
 | `probe`, `probe_resnet` | image | bce | official | – | PROBE: DINOv2 ViT-L/14 + registers (`probe`, patches of 336) or ResNet-50 (`probe_resnet`, patches of 224), single-logit head; the score is the mean logit of the image's non-overlapping patches at native resolution |
 | `veritaspp` | image | vlm | official | – | Veritas++: Qwen3-VL-8B that writes a rationale and answers `<answer> real/fake </answer>` (official weights, inference only, still images one at a time; the verdict is the parsed answer, P(fake) the fake-minus-real logit at the answer token; 17.5 GB folder, not in the zoo or on the Space). First member of the VLM kind (`models/vlm/`, a family adapter: see `docs/ADD_DETECTOR.md`) |
 | `adb_vlm` | image | vlm | official | – | Align, Don't Blend, VLM branch only: Qwen2.5-VL-7B-Instruct + the authors' LoRA (unmerged, on a local base folder) writes a short rationale and answers "This is an authentic / AI-generated image." (official adapter and ms-swift request: plain RGB, ≤ 1,003,520 px resize to multiples of 28, greedy, repetition penalty 1.05; P(fake) the raw AI-minus-authentic logit at the answer token). The paper's pixel expert is not released. No licence: not in the zoo or on the Space |
+| `adb_full` | image | fusion | official | – | Align, Don't Blend, full method: `adb_vlm` OR `dda` (the released DDA checkpoint is the paper's pixel expert), the official rule of `predict.py` (the VLM's parsed verdict OR DDA P(fake) >= 0.5); P(fake) = max(the VLM's P(fake) clamped to its verdict's side of 0.5, DDA's), >= 0.5 exactly when the official decision is fake; no weights of its own, not on the Space |
 | `fakevlm` | image | vlm | official | – | FakeVLM: LLaVA-1.5-7B fine-tuned on FakeClue answers "This is a real / fake image." and explains the artifacts (official weights + the llava-hf a272c74 processor folder, inference only, still images one at a time; the official raw prompt, transformers 4.45.2's CLIP resize + 336 centre crop and 1,599-position padding ported to transformers 5, greedy 256 tokens, the official eval.py parse; P(fake) the raw fake-minus-real logit at the first verdict word). GenImage is in its training data. No licence (Llama 2-licensed base): not in the zoo or on the Space |
 | `moejepa` | image | ce | official | – | Frozen V-JEPA 2 ViT-L + residual MoE + gated-attention MIL + BayarConv noise branch (3-way head) |
 | `effort` (+ `effort_chameleon`) | image | ce | official | – | CLIP ViT-L/14 + SVD-residual attention (orthogonal subspace decomposition) |
