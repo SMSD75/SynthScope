@@ -33,7 +33,10 @@ WT=${SYNTHSCOPE_REPO:-${SLURM_SUBMIT_DIR:-$(git -C "$(dirname "${BASH_SOURCE[0]}
 ONSRC=0
 if [ "$(hostname -s)" = ivi-cn029 ]; then S=$SRC; ONSRC=1
 else
-  for d in /ssdstore /nvmestore /hddstore; do [ -d $d/ssalehi ] && { S=$d/ssalehi/SynthScope; break; }; done
+  # the node-local SynthScope folder that already holds checkpoints (ivi-cn023: /hddstore; its /ssdstore is nearly full)
+  for d in /ssdstore /nvmestore /hddstore; do
+    [ -d $d/ssalehi/SynthScope/checkpoints ] || [ -d $d/ssalehi/SynthScope/zoo_ckpts ] && { S=$d/ssalehi/SynthScope; break; }
+  done
   : "${S:?no local scratch on $(hostname -s)}"
 fi
 CK=$S/vlm_ckpts
