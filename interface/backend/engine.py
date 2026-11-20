@@ -479,7 +479,11 @@ class Engine:
                 torch.cuda.empty_cache()
 
     def _load(self, spec: ModelSpec) -> torch.nn.Module:
-        """Build ``spec``'s detector and add it to the cache; the caller holds ``self._lock`` and has made room."""
+        """Build ``spec``'s detector and add it to the cache; the caller holds ``self._lock`` and has made room.
+
+        Loading runs UNDER the engine lock, as for every detector: other requests wait for it. For a torch model that is
+        seconds; for the agent (``video_agent``) it is the runner's start, about 40 s with warm file caches and 3-4 min
+        on a cold node (``ready_timeout`` 3600 s), during which every other detector request on this engine waits."""
         if spec.predict_kind == "vlm":       # a released HF folder: strict from_pretrained, kept in its own dtype
             model = _load_vlm(spec, self.checkpoint_path(spec), self.device)
             self._status[spec.key] = (f"loaded {len(model.hf.state_dict())} tensors from {model.path.name} "
@@ -765,8 +769,16 @@ class Engine:
         """An agentic video detector's full output for one video (``WeVisRunner.score``): ``fake_probability``,
         ``logit``, ``score_source``, the agent's ``verdict`` ("real" / "fake" / None), ``status``, ``trace`` and ``cost``.
         Raises ``WeVisOOMError`` (retry on a larger GPU), ``WeVisToolError`` (the official tool_error) or
-        ``WeVisRunnerError``."""
-        return self._get_model(spec).score(path, verify_direct=verify_direct)
+        ``WeVisRunnerError``. A runner client evicted (closed) by another request between ``_get_model`` and ``score``
+        raises ``WeVisClosedError``: the detector is fetched again (a fresh runner) once."""
+        runner = self._get_model(spec)
+        try:
+            return runner.score(path, verify_direct=verify_direct)
+        except wevis_agent.WeVisClosedError:
+            again = self._get_model(spec)
+            if again is runner:
+                raise
+            return again.score(path, verify_direct=verify_direct)
 
     def _predict_agent(self, spec: ModelSpec, path) -> dict:
         self._get_model(spec)                       # load first: elapsed covers the investigation only

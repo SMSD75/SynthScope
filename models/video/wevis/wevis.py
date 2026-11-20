@@ -87,6 +87,11 @@ class WeVisRunnerError(WeVisError):
     kind = "runner"
 
 
+class WeVisClosedError(WeVisRunnerError):
+    """This runner client was closed (an evicted or released detector): it never starts a new process. Get the detector
+    again (``Engine._get_model``), which builds a fresh runner."""
+
+
 ERRORS = {"oom": WeVisOOMError, "tool_error": WeVisToolError, "runner": WeVisRunnerError}
 
 
@@ -195,7 +200,9 @@ def runner_env(cfg: WeVisConfig, paths: dict, environ=None) -> dict:
 class WeVisRunner:
     """Client of one long-lived runner process (``runner.py --serve``): the model loads once (about 3-4 min, plus the
     sha256 check of the weights on first use) and then scores one video per ``score`` call. Thread-safe (one video at a
-    time). A runner that died is restarted on the next call. ``command`` replaces the runner command line (tests)."""
+    time). A runner that died is restarted on the next call; after ``close()`` the client is finished: ``start`` and
+    ``score`` raise ``WeVisClosedError`` instead of starting a new process (a request still holding an evicted client
+    would otherwise start an untracked ~22 GB runner). ``command`` replaces the runner command line (tests)."""
 
     def __init__(self, cfg: WeVisConfig, ckpt_dir: Path, cache_dir: Path, *, command: Optional[list] = None,
                  environ: Optional[dict] = None):
@@ -209,6 +216,7 @@ class WeVisRunner:
         self._lines: "queue.Queue" = queue.Queue()
         self._lock = threading.Lock()
         self._n = 0
+        self._closed = False
 
     def config_json(self) -> str:
         return json.dumps({"paths": {k: str(v) for k, v in self.paths.items()}, "has_audio": self.cfg.has_audio,
@@ -221,8 +229,11 @@ class WeVisRunner:
         proc = self._proc                                # one read: close() may null it from another thread
         return proc is not None and proc.poll() is None
 
-    def _pump(self, proc, lines) -> None:
-        for line in proc.stdout:
+    @staticmethod
+    def _pump(stdout, lines) -> None:
+        """Copy the runner's stdout lines into ``lines`` (None at EOF). Holds only the pipe and the queue, never the
+        client, so a dropped client is collected and ``__del__`` stops its runner."""
+        for line in stdout:
             lines.put(line)
         lines.put(None)
 
@@ -255,13 +266,15 @@ class WeVisRunner:
                 continue
 
     def start(self) -> dict:
+        if self._closed:
+            raise WeVisClosedError("the WeVisForensics runner client was closed; load the detector again")
         self._kill()
         self.paths["work_dir"].mkdir(parents=True, exist_ok=True)
         self._lines = queue.Queue()
         self._proc = subprocess.Popen(self.command + ["--config", self.config_json()], stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE, stderr=None, text=True, bufsize=1, env=self.env,
                                       cwd=str(self.paths["work_dir"]), start_new_session=True)
-        threading.Thread(target=self._pump, args=(self._proc, self._lines), daemon=True).start()
+        threading.Thread(target=WeVisRunner._pump, args=(self._proc.stdout, self._lines), daemon=True).start()
         msg = self._read(self.cfg.ready_timeout, self._proc)
         if msg.get("event") != "ready":
             self._kill()
@@ -274,6 +287,8 @@ class WeVisRunner:
         """The runner's result for one video (see the module docstring). ``verify_direct`` also re-generates the final
         investigator turn with a direct ``generate(output_logits=True)`` call and reports the gap difference."""
         with self._lock:
+            if self._closed:
+                raise WeVisClosedError("the WeVisForensics runner client was closed; load the detector again")
             if not self.running:
                 self.start()
             proc = self._proc                            # close() (after its wait timed out) may null self._proc
@@ -338,7 +353,9 @@ class WeVisRunner:
 
     def close(self, timeout: Optional[float] = None) -> None:
         """Wait for the video in progress (up to ``timeout``, default ``cfg.close_timeout``), ask the runner to exit (it
-        stops its OCR worker), then kill its process group, so nothing it started is left behind."""
+        stops its OCR worker), then kill its process group, so nothing it started is left behind. The client is then
+        closed for good: a later ``score`` raises ``WeVisClosedError``."""
+        self._closed = True                              # first: a score waiting for the lock must not restart it
         got = self._lock.acquire(timeout=self.cfg.close_timeout if timeout is None else timeout)
         try:
             proc = self._proc

@@ -26,6 +26,7 @@ Checks:
 
 from __future__ import annotations
 
+import gc
 import importlib.util
 import json
 import signal
@@ -53,7 +54,7 @@ from interface.backend.engine import Engine                                     
 from interface.backend.registry import get_spec, input_note                         # noqa: E402
 from models.video.wevis import runner                                               # noqa: E402
 from models.video.wevis.wevis import (ENV_CODE, ENV_PADDLEX, ENV_PYTHON, ENV_PYTHONPATH, ENV_WORK_DIR, RUNNER,   # noqa: E402
-                                      WEVIS, WeVisOOMError, WeVisRunner, WeVisRunnerError, WeVisToolError, download_hint,
+                                      WEVIS, WeVisClosedError, WeVisOOMError, WeVisRunner, WeVisRunnerError, WeVisToolError, download_hint,
                                       load_manifest, missing, sha256_file)
 from models.vlm.vlm import verdict_pair_map                                         # noqa: E402
 from synthscope import hub                                                          # noqa: E402
@@ -350,6 +351,10 @@ def test_registry_and_engine() -> None:
     note = input_note(spec)
     assert "overview" in note["label"] and "Audio is not used" in note["explanation"]
     assert "wevis" in hub.NEVER_REDISTRIBUTE
+    from interface.backend.registry import _headline
+    card = _headline("wevis")                        # the held-out result, not the in-distribution GenBuster row
+    assert card["benchmark"].startswith("4 held subsets") and card["match"] == "partial", card
+    assert "acc=85.59" in card["ours"] and "AUROC=90.23" in card["ours"], card
     rows = [line for line in Path(ROOT, "LICENSES.md").read_text().splitlines() if line.startswith("| `wevis` |")]
     assert len(rows) == 1 and "Apache-2.0" in rows[0] and "disabled" in rows[0] and "not on the Space" in rows[0], rows
     assert "`Qwen/Qwen3.5-4B` @ `851bf6e8`" in Path(ROOT, "LICENSES.md").read_text()
@@ -541,13 +546,29 @@ def test_process_group() -> None:
             proc.wait()
             r._lines = __import__("queue").Queue()
             expect_raise(lambda: r._read(10.0), WeVisRunnerError, "exited")      # no runner at all
+            # 8. a closed client never starts a new runner (an evicted client still held by a request would leak one)
+            pid = r.start()["pid"]
+            r.close()
+            assert gone(pid) and not r.running
+            expect_raise(lambda: r.score(Path(tmp, "clip.mp4")), WeVisClosedError, "closed")
+            expect_raise(r.start, WeVisClosedError, "closed")
+            assert not r.running and r._proc is None
+            # 9. a dropped client is collected (the pump thread holds only the pipe) and __del__ stops its runner
+            r = WeVisRunner(replace(WEVIS, kill_grace=5.0), Path(tmp, "ck"), Path(tmp, "cache"),
+                            command=[str(fake), str(RUNNER), "--serve"], environ=dict(os.environ, **{ENV_PYTHONPATH: "/deps"}))
+            pid = r.start()["pid"]
+            assert r.score(Path(tmp, "clip.mp4"))["verdict"] == "fake"
+            del r
+            gc.collect()
+            assert gone(pid), "a dropped runner client left its runner process alive"
     finally:
         if saved is None:
             os.environ.pop("FAKE_WEVIS_CHILD", None)
         else:
             os.environ["FAKE_WEVIS_CHILD"] = saved
     print("    timeout kill (TERM ignored -> KILL), close, close while busy, close timeout, crash: no process left; "
-          "no SIGKILL to an empty group; a nulled runner raises WeVisRunnerError")
+          "no SIGKILL to an empty group; a nulled runner raises WeVisRunnerError; a closed client never restarts; a "
+          "dropped client stops its runner")
 
 
 class BlockingAgent:
@@ -603,9 +624,36 @@ def test_engine_lock() -> None:
         agent.release.set()
         t.join(10)
         assert agent.closed and not t.is_alive()
+        # a runner client closed between _get_model and score (evicted by another request): fetched again once
+        engine._cache.clear()
+
+        class ClosedAgent:
+            def close(self):
+                pass
+
+            def score(self, path, verify_direct=False):
+                engine._cache.pop("wevis", None)          # what an eviction did meanwhile
+                raise WeVisClosedError("the WeVisForensics runner client was closed")
+
+        class FreshAgent(ClosedAgent):
+            def score(self, path, verify_direct=False):
+                return {"verdict": "fake", "path": str(path)}
+        engine._cache["wevis"] = ClosedAgent()
+
+        def load_fresh(spec):
+            engine._cache[spec.key] = FreshAgent()
+            return engine._cache[spec.key]
+        engine._load = load_fresh
+        assert engine.agent_score(get_spec("wevis"), "v.mp4") == {"verdict": "fake", "path": "v.mp4"}
+        assert isinstance(engine._cache["wevis"], FreshAgent)
+        stuck = ClosedAgent()                               # the same closed client again: surfaced, no loop
+        stuck.score = lambda path, verify_direct=False: (_ for _ in ()).throw(WeVisClosedError("closed"))
+        engine._cache["wevis"] = stuck
+        expect_raise(lambda: engine.agent_score(get_spec("wevis"), "v.mp4"), WeVisClosedError, "closed")
     finally:
         backend_config.MAX_RESIDENT_MODELS = saved
-    print("    eviction and release_gpu close the agent with the engine lock free; load after the close")
+    print("    eviction and release_gpu close the agent with the engine lock free; load after the close; a closed "
+          "client is fetched again once")
 
 
 if __name__ == "__main__":
