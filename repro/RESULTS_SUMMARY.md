@@ -1,6 +1,6 @@
 # SynthScope Full-Benchmark Reproduction & Gap-Closing — Results Summary
 
-*Updated 2026-11-18. Numbers trace to `repro/bench_results/*.json` and `repro/MASTER_RESULTS.jsonl`. Format: **mAP** (acc@0.5), % — unless noted.*
+*Updated 2026-11-21. Numbers trace to `repro/bench_results/*.json` and `repro/MASTER_RESULTS.jsonl`. Format: **mAP** (acc@0.5), % — unless noted.*
 
 ## Three number columns (consistent everywhere)
 - **Paper** — figure reported in the paper.
@@ -29,7 +29,8 @@
 | VINA | ForenSynths / UniversalFakeDetect / DiTFake / ARForensics (6 shared subsets) / GenImage (full val) / GenVideo-Val | 86.99 / 94.84 / 97.98 / 96.36 / 94.74 / 96.9 acc (ARForensics: mean of the paper's six per-subset values) | 86.93 / 94.84 / 97.98 / 96.36 / 94.74 / 96.86 acc (pooled accuracy per subset, the paper's metric) | — | ✅ official match on these 6 (every subset; ForenSynths 10 of 11). SynthWildX and WildRF are **below the paper** (91.82 vs 92.8 and 96.12 vs 97.13, the means of the paper's printed per-subset values) and AIGIBench differs (SocialRF -1.18, CommunityAI +1.83), but the unmodified official `eval.py` gives the same per-file scores on our files (max diff <= 5.8e-05, 0 flips), so the gap is the data, not the code; RRDataset 82.89 vs 82.7; Chameleon, Magic Videos, GenBuster++, DeepTraceReward not run |
 | PROBE (DINOv2 `probe` / ResNet-50 `probe_resnet`) | GenImage (val100k, fakes JPEG q96) / SynthWildX / WildRF / AIGI-Bench (CommunityAI + SocialRF); Synthbuster with different reals | DINOv2 96.8 / 96.4 / 96.9 / 89.9; ResNet-50 78.4 / 75.6 / 81.3 / 70.4 bAcc (Synthbuster 97.5 / 79.1) | DINOv2 97.47 / 97.30 / 96.92 / 89.88; ResNet-50 78.38 / 75.20 / 81.63 / 70.44 bAcc (Synthbuster, 5000 MSCOCO reals not RAISE-1k: 98.20 / 83.75) | — (training code not released) | ✅ official match on the 4 like-for-like benchmarks (DINOv2 within 0.9, ResNet-50 within 0.4 per benchmark; DINOv2 ADM / GLIDE / BigGAN about 2 points above the paper). Synthbuster is a different-reals comparison, not a reproduction claim. Chameleon and AIGI-Quality-Paradox not run (no loader), so the paper's 7-benchmark averages (93.9 / 78.1) are not comparable with our 5-benchmark means (95.95 / 77.88; paper's same 5: 95.50 / 76.96). Licence unclear: not redistributed |
 | Veritas++ (VLM, `veritaspp`) | WildRF (full data) / RealChain (1,008-image subset) / EvalGEN (500-fake subset); plus 15 held benchmarks subsampled against 27 other detectors | 96.4 / 82.3 / 99.5 acc (Tables III, III, II) | 95.65 / 82.74 / 98.20 acc (official weights, greedy decoding; EvalGEN balanced 99.10) | — (inference only, no training code in SynthScope) | ⚠️ **partial**: WildRF -0.75 on full data (sampled setting, subset: +0.06); RealChain +0.44 on a subset; EvalGEN is **not reproduced** on full data (500-fake subset, -1.30 on fakes only, which is our inference of the paper's metric; -0.40 balanced). Fidelity vs a direct transformers call: 15 / 15 identical greedy tokens and verdicts, max logit-gap diff 0.0. Apache-2.0; 17.5 GB folder, not in the zoo or on the Space |
-| Align, Don't Blend (VLM branch, `adb_vlm`) | WildRF (full data) / BFree-Online (269 real + 500 fake subset) / AIGI-Bench CommunityAI + SocialRF (40-image slices) / GenImage and AIGCDetect (subsets, fakes JPEG q96); plus 15 held benchmarks subsampled against Veritas++ and 27 other detectors | **no VLM-only number in the paper**; the full method (VLM OR the unreleased pixel expert) prints 92.9 / 97.5 / 88.8 / 91.7 / 87.7 bAcc (context only) | 93.98 / 87.96 / 82.50 / 65.97 / 63.92 bAcc (official adapter, VLM branch alone, greedy) | — (inference only, no training code in SynthScope) | ⚠️ **not reproducible**: the paper's headline is VLM OR an unreleased expert, so no row is a reproduction and none gets a delta. Full WildRF: VLM branch alone 93.98 vs the full method's 92.9 (different detectors). The AIGCDetect fake-JPEG step is our inference. Fidelity vs the official ms-swift 4.4.2 (pt backend; vLLM backend not compared): 16 / 16 identical text, tokens and verdicts. No licence: not in the zoo or on the Space |
+| Align, Don't Blend (full method, `adb_full` = VLM OR DDA) | WildRF (full data) / BFree-Online (807 of 1,111 held) / AIGI-Bench (SocialRF full + CommunityAI 3,000 of 12,000) / GenImage and AIGCDetect (subsets, fakes JPEG q96) | 92.9 / 97.5 / 88.8 / 91.7 / 87.7 bAcc | 91.22 / 96.93 / 87.52 / 85.12 / 83.82 bAcc (official adapter + official DDA checkpoint, the official rule; VLM bf16 greedy, RTX A5000) | — (inference only) | ✅ official match on full WildRF (-1.68, within 2 pt); BFree-Online -0.57 and AIGI-Bench -1.28 on partial data; the GenImage / AIGCDetect subsets are below (-6.58 / -3.88, reference: subsets, DDA alone is above the fused number there). Fidelity vs the unmodified official `predict.py` (VLM + DDA): identical final, DDA and VLM decisions 24 / 24, bf16 and float32. Float32 + eager (the README command) vs bf16 on full WildRF: +0.12. CO-SPY in-the-wild not held. Apache-2.0; not on the Space |
+| Align, Don't Blend (VLM branch, `adb_vlm`) | WildRF (full data) / BFree-Online (269 real + 500 fake subset) / AIGI-Bench CommunityAI + SocialRF (40-image slices) / GenImage and AIGCDetect (subsets, fakes JPEG q96); plus 15 held benchmarks subsampled against Veritas++ and 27 other detectors | **no VLM-only number in the paper**; the printed numbers are the full method (row above) | 93.98 / 87.96 / 82.50 / 65.97 / 63.92 bAcc (official adapter, VLM branch alone, greedy) | — (inference only, no training code in SynthScope) | reference (no paper number for the branch alone; the full method is `adb_full`). Fidelity vs the official ms-swift 4.4.2 (pt backend; vLLM backend not compared): 16 / 16 identical text, tokens and verdicts. Apache-2.0; not mirrored to the zoo, not on the Space |
 | FakeVLM (VLM, `fakevlm`) | none of the paper's benchmarks is held (FakeClue, LOKI, DMimage, DD-VQA, FF++); 15 held benchmarks subsampled against Veritas++, Align, Don't Blend and 27 other detectors | — (not held) | held-out mean of 14 (without the in-distribution GenImage) 84.15 acc / 91.16 AUROC; all 15: 85.19 / 91.74 (official weights, greedy) | — (inference only, no training code in SynthScope) | ⚠️ **not compared**: no paper benchmark is held, so no reproduction claim. GenImage is IN-DISTRIBUTION (FakeClue contains GenImage; 99.70, 1st of 28). Fidelity vs the official `eval.py`: first sentence and parsed verdict 16 / 16 against all five official runs; text 16 / 16 against the official code run one image at a time under transformers 4.45.2. JPEG95 drops UFD-8 by 31.35 acc (reals 98.61 unchanged, fakes 95.44 -> 32.74). No licence: not in the zoo or on the Space |
 | D3 (video) | GenVideo-Val | 98.5 AP | 97.93 (official code) | 98.95 (training-free; AP with real as positive) | ✅ reproduced (D3 protocol; preprocessing matched to the official code) |
 | ReStraV (video) | GenVidBench (Main task: 4 test generators) | 93.01 acc | — | 93.33 acc on those 4; 92.70 mAP / 86.87 acc on all 8 | ✅ close on acc on the paper's 4 generators (not the paper's train/test split) |
@@ -388,8 +389,9 @@ Qwen3-VL-8B fine-tuned to write a rationale and answer `<answer> real/fake </ans
 ### Align, Don't Blend, VLM branch (official adapter, VLM kind; inference only; subsampled protocol)
 The released VLM branch of Align, Don't Blend (arXiv 2512.06746 v3): the authors' LoRA (Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd,
 Apache-2.0) on Qwen2.5-VL-7B-Instruct @ cc594898, which writes a short rationale and answers "This is an authentic /
-AI-generated image.". The paper's detector ORs this branch with a pixel-artifact expert that is **not released**, so the
-paper's headline numbers cannot be reproduced. **The paper prints no VLM-only number for the released adapter.**
+AI-generated image.". The paper's detector ORs this branch with a pixel-artifact expert, the released DDA checkpoint
+(confirmed by the authors, 2026-11-20): that full method is `adb_full` (next section), which reproduces the paper's full
+WildRF number within 2 points. **The paper prints no VLM-only number for the released adapter.**
 
 **Fidelity** (job 293634, `repro/adb_vlm_fidelity.json`), on 16 images:
 - vs the unmodified official `predict.py` (ms-swift 4.4.2, pt backend): identical text, tokens (1,570) and parsed
@@ -432,11 +434,11 @@ identical text, tokens and verdicts, so no accuracy changed).
 - **Against Veritas++:** ahead in accuracy only on BFree-Online (+8.61), and in AUROC on BFree-Online and SynthWildX.
 - **Near chance on GANs, early diffusion and AR generators:** UFD-8 52.88 (last), ForenSynths 55.72, ARForensics 64.78,
   AIGCDetect 65.20, GenImage 68.05. Fake accuracy is 37-44% on average there. This fits a VLM trained on semantic
-  implausibility whose pixel-artifact partner is not released.
+  implausibility that leaves pixel artifacts to its DDA partner (`adb_full`).
 - **JPEG quality 95 on every image:** DiTFake +0.30 acc, UFD-8 -0.70 (median detector -2.00 / -2.08; Veritas++ +0.10 / -5.26).
 
-**Against the paper (balanced accuracy).** The printed AlignGemini numbers are the full method, so they are context, not
-targets:
+**Against the paper (balanced accuracy).** The printed AlignGemini numbers are the full method (`adb_full`, next
+section), so for the VLM branch alone they are context, not targets:
 
 | benchmark | paper, full method (context) | SynthScope, VLM branch only |
 |---|---:|---|
@@ -456,6 +458,46 @@ Notes:
   included; the identity also holds the base model's revision and the resize parameters. The committed results are
   unaffected. The ADB caches were carried over the final-review re-key by `repro/vlm_bench/migrate_vlm_cache.py`
   (18,900 records kept, the 386 tag-less ones rescored). Details in `models/image/adb_vlm/README.md`.
+
+### Align, Don't Blend, full method (`adb_full` = VLM OR DDA; official weights, the official decision rule)
+The paper's detector, as released: the `adb_vlm` adapter OR the DDA checkpoint (`dda.pth` = HF `DDA_ckpt.pth`, sha256
+identical), fused per image by the rule of the official `predict.py` (GzZning/Align-Dont-Blend @ 5d83e40): fake if the VLM's
+parsed verdict is "AI-generated" or DDA's P(fake) >= 0.5. AUROC / AP use SynthScope's fused score, `max(P_vlm clamped to
+its verdict's side of 0.5, P_dda)`, which is >= 0.5 exactly when the official decision is fake.
+
+**Fidelity** (job 296802, RTX A6000, `repro/adb_full_fidelity.json`): the unmodified official `predict.py` with the
+README's expert command, on 24 images (the 16 `adb_vlm` fidelity images + 8 GenImage images where the components
+disagree). Final, DDA and VLM decisions and the VLM text are identical 24 / 24 in bf16 (pt backend) and in the README's
+float32 / eager command. DDA P(fake) is within 2.1e-6 of the official expert's. A CPU test runs the official `predict.py`
+on mocked component outputs, including the 0.5 threshold edge: 28 / 28 identical.
+
+**Paper benchmarks** (`repro/adb_full/paper_comparison.json`; VLM bf16 greedy on RTX A5000; DDA per image on the same files):
+
+| benchmark | data (n) | paper | `adb_full` | delta | AUROC | VLM alone | DDA alone |
+|---|---|---:|---:|---:|---:|---:|---:|
+| WildRF | full (2,503) | 92.9 | **91.22** | -1.68 | 99.22 | 93.98 | 90.20 |
+| BFree-Online | 807 of 1,111 held | 97.5 | **96.93** | -0.57 | 99.11 | 87.08 | 94.98 |
+| AIGI-Bench CommunityAI + SocialRF | SocialRF full + CommunityAI first 1,500 + 1,500 (9,000) | 88.8 | **87.52** | -1.28 | 97.35 | 89.65 | 82.41 |
+| GenImage (fakes q96) | subset 63 + 63 per generator (1,008) | 91.7 | **85.12** | -6.58 | 92.23 | 65.97 | 87.30 |
+| AIGCDetect (fakes q96, inferred protocol) | subset 30 + 30 per generator (1,020) | 87.7 | **83.82** | -3.88 | 90.05 | 63.92 | 86.86 |
+| CO-SPY in-the-wild | not held | 94.3 | — | | | | |
+
+- **WildRF** is the one like-for-like row: within 2 points of the paper.
+- **BFree-Online and AIGI-Bench** are close, on partial data.
+- **GenImage and AIGCDetect** are subsets. There, DDA alone is above the fused number: the OR adds the VLM's false
+  positives on reals.
+- **One unparsed VLM answer** (a SocialRF fake; the official script would stop on it). DDA calls it fake, so it counts as
+  fake.
+- **Float32 spot check** (job 297123, RTX A6000; the README's float32 + eager command) on full WildRF: 91.34 vs 91.22
+  bf16 (+0.12, AUROC +0.03). 72 of 2,503 VLM verdicts and 41 final decisions differ, and the changes nearly cancel.
+- **The bf16 text depends on the GPU model.** On the 16 fidelity images, the A5000 and A6000 runs give the same text on
+  7. Every row above is A5000. The 80 AIGI-Bench images scored on two A5000 nodes gave identical records.
+- **Logs:**
+  - fusion: `repro/logs/adb_full_fuse.out`;
+  - new VLM units and the DDA per-image runs: `repro/logs/adbfull_bench_297122*.out`;
+  - float32: `repro/logs/adbfull_fp32_297123.out`.
+
+  `trace_check.py` traces every JSON to them.
 
 ### FakeVLM (official weights, VLM kind; inference only; subsampled protocol; GenImage in-distribution)
 FakeVLM (arXiv 2503.14905, NeurIPS 2025): LLaVA-1.5-7B fine-tuned on FakeClue (HF lingcco/fakeVLM @ dce9e88d, no licence;

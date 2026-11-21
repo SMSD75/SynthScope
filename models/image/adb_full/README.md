@@ -12,6 +12,14 @@ AI-Generated Image Detection*, ACM MM 2026 ([arXiv 2512.06746](https://arxiv.org
 **Status.** Inference only, with the official weights and the official decision rule. The authors confirmed that the
 expert is the released DDA checkpoint (2026-11-20). The official repository now ships the expert's inference
 (`detector/expert.py`) and the fused `predict.py`.
+- **Fidelity:** identical final, DDA and VLM decisions and VLM text against the unmodified official `predict.py` on 24
+  images, in bf16 and in float32 ([Fidelity results](#fidelity-results)).
+- **Paper benchmarks** ([Results](#results)):
+  - WildRF, full data: 91.22 vs 92.9 (-1.68, within 2 points).
+  - BFree-Online, 807 of the 1,111 images: 96.93 vs 97.5.
+  - AIGI-Bench, 9,000 images: 87.52 vs 88.8.
+  - GenImage and AIGCDetect, subsets: 85.12 vs 91.7 and 83.82 vs 87.7.
+- **Float32 vs bf16** (WildRF): +0.12 accuracy.
 
 ## Method
 The paper keeps two detectors with orthogonal supervision apart and ORs their verdicts:
@@ -80,9 +88,15 @@ r = det.predict("photo.jpg")               # verdict, fake_probability (score), 
 r["components"]["adb_vlm"]["verdict"], r["components"]["dda"]["fake_probability"]
 ```
 
-Both components stay loaded: 18.5 GB peak in bf16 (the VLM and DDA), about 5.2 s per image on an RTX A6000. `decided_by` says which component made an image
-fake: "vlm", "expert", "both" or "neither". `bench_eval` refuses the key. A benchmark scores the two components per
-image and fuses the records with `fuse_components`, so the cached `adb_vlm` per-image results can be reused.
+Both components stay loaded: 18.5 GB peak in bf16 (the VLM and DDA), about 5.2 s per image on an RTX A6000.
+`decided_by` says which component made an image fake: "vlm", "expert", "both" or "neither".
+
+`bench_eval` refuses the key. A benchmark scores the components separately, so the cached `adb_vlm` per-image results are
+reused:
+- the VLM: `bench_eval --model adb_vlm --vlm-cache`;
+- DDA: `bench_eval --model dda --per-image`, on the same files with the same `--jpeg-fakes` / `--limit` / `--select`.
+
+`repro/adb_full/fuse.py` then fuses the per-image records with `fuse_components`.
 
 ## Fidelity
 **Identity checks (CPU, `tests/test_adb_full_smoke.py`):**
@@ -145,7 +159,77 @@ transformers 5.5.4 and Pillow 12.1.1, where the README pins Python 3.12, torch 2
   18 of 24, the VLM on 13 and DDA on 23.
 
 ## Results
-Pending: the paper's benchmarks with the full method.
+**The paper's benchmarks, full method, official weights** (SynthScope did not train either component). Balanced
+accuracy, mean over the paper's subsets. Per image, the `adb_vlm` record (bf16, greedy) is fused with the `dda` record of
+the same file by the official rule (`repro/adb_full/fuse.py`). Every VLM row ran on RTX A5000s, the GPU model of the
+committed `adb_vlm` runs. Sources: `repro/adb_full/paper_comparison.json` and `repro/adb_full/results/<row>.json`.
+
+| benchmark (paper table) | data (n images) | paper | SynthScope `adb_full` | delta | AUROC | VLM alone | DDA alone |
+|---|---|---:|---:|---:|---:|---:|---:|
+| WildRF (Table 1) | **full** test split (2,503) | 92.9 | **91.22** | -1.68 | 99.22 | 93.98 | 90.20 |
+| BFree-Online (Table 1) | all held images: 269 real + 538 fake of the 1,111 listed (807) | 97.5 | **96.93** | -0.57 | 99.11 | 87.08 | 94.98 |
+| AIGI-Bench CommunityAI + SocialRF (Table 1) | SocialRF **full** (6,000); CommunityAI the first 1,500 + 1,500 of 6,000 + 6,000 (3,000) | 88.8 | **87.52** | -1.28 | 97.35 | 89.65 | 82.41 |
+| GenImage (Table 6), fakes JPEG q96 | **subset**, 63 + 63 per generator (1,008) | 91.7 | **85.12** | -6.58 | 92.23 | 65.97 | 87.30 |
+| AIGCDetectBenchmark (Table 8), fakes JPEG q96 (**inferred protocol**) | **subset**, 30 + 30 per generator (1,020) | 87.7 | **83.82** | -3.88 | 90.05 | 63.92 | 86.86 |
+| CO-SPY-Bench in-the-wild (Table 1) | not held | 94.3 | — | | | | |
+
+Per subset:
+- WildRF: Facebook 90.94 / Reddit 89.33 / Twitter 93.40 (paper 92.2 / 90.9 / 95.5).
+- AIGI-Bench: CommunityAI 91.20 / SocialRF 83.83 (paper 91.9 / 85.6).
+
+**Status.** WildRF is the one like-for-like row; it is within 2 points (the repository's tolerance), 1.68 below the
+paper. BFree-Online and AIGI-Bench are close (-0.57, -1.28) but not on the paper's exact data:
+- BFree-Online: 807 of the 1,111 listed images are still online;
+- AIGI-Bench: CommunityAI is a quarter of its images, chosen as the first 1,500 per class.
+
+GenImage and AIGCDetect are subsets of the VLM benchmark campaign: 63 or 30 images per class and generator, the
+affordable VLM cost. They are not reproductions. On these two sets DDA alone is above the fused number (87.30 vs 85.12,
+86.86 vs 83.82): the OR adds the VLM's false positives on reals. DDA on the full data gives 89.37 and 87.84
+([`dda` README](../dda/README.md)).
+
+**What the OR does.** By construction, the fused real accuracy is below either component's and the fused fake accuracy
+above it. On full WildRF (all 2,503 images pooled), the real accuracy is 91.4 for the VLM alone, 89.0 for DDA alone and
+81.5 fused; the fake accuracy rises to 99.8 fused. The VLM alone is
+above the full method on WildRF (93.98) and AIGI-Bench (89.65). DDA alone is above it on GenImage and AIGCDetect.
+
+**Notes.**
+- **GenImage.** The paper JPEG-compresses the fakes "following BFree" without a quality factor; q96 is our choice
+  (DDA's protocol). The paper's AlignGemini per-generator values in Tables 6 and 8 share numbers in permuted columns, so
+  compare the averages only.
+- **AIGCDetect.** The paper states the fake-JPEG step for GenImage only; applying it here is our inference.
+- **One unparsed VLM answer** (a SocialRF fake): the official script would stop on it. DDA calls it fake, so the OR is
+  fake (see [the rule](#synthscopes-score-for-auroc--ap)). No other row has one.
+- **File identity.** The two components scored the same files. For new runs the sha1 of each file is checked against
+  the VLM record (AIGI-Bench, BFree-Online). For committed runs it is checked against the subset manifests (GenImage,
+  AIGCDetect, the 769-image BFree subset). For WildRF, both runs copied ivi-cn029's `WildRF/test`, each sha1-list
+  identical to it.
+- **Reused VLM records.** WildRF, GenImage and AIGCDetect use the committed `adb_vlm` per-image records, as they are.
+  BFree-Online reused 769 cached records on the same node after `migrate_vlm_cache.py` (rule `unchanged`). They are
+  identical to the committed ones, and 38 images were new. AIGI-Bench was scored new; its 80 images shared with the
+  committed slice give identical verdicts and logits (A5000 on ivi-cn027 vs ivi-cn026).
+- **GPU and precision.** bf16 greedy text depends on the GPU model (A5000 vs A6000: the same text on 7 of 16 fidelity
+  images). Every row above is A5000.
+
+### Precision spot check: float32 (the official README's command)
+WildRF full data, the VLM in float32 + eager attention on an RTX A6000 (job 297123), fused with the same DDA records:
+
+| VLM precision (GPU) | adb_full acc | AUROC | VLM alone | Facebook / Reddit / Twitter |
+|---|---:|---:|---:|---|
+| bf16, SDPA (RTX A5000; the registry default) | 91.22 | 99.22 | 93.98 | 90.94 / 89.33 / 93.40 |
+| float32, eager (RTX A6000; the README command) | 91.34 | 99.25 | 94.00 | 90.94 / 89.67 / 93.40 |
+
+72 of 2,503 VLM verdicts (2.9%) and 41 final decisions (1.6%) differ between the two runs. The changes nearly cancel:
++0.12 accuracy, +0.03 AUROC. The precision and the GPU change together here, so this measures both.
+
+### Reproduce
+```bash
+sbatch --nodelist=ivi-cn027 repro/adb_full/bench_a5000.sbatch   # dda --per-image on every row + the new bf16 VLM units
+sbatch --nodelist=ivi-cn023 repro/adb_full/fp32_a6000.sbatch    # WildRF full, VLM float32 + eager
+python repro/adb_full/fuse.py | tee repro/logs/adb_full_fuse.out
+python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adb_ivi_*.out,adbfull_*.out' --results repro/adb_full/vlm
+python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adbfull_bench_*.out' --results repro/adb_full/dda
+python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adb_full_fuse.out' --results repro/adb_full
+```
 
 ## Availability and licence
 - Code and VLM adapter: Apache-2.0 (the repository's `LICENSE`, added 2026-11-20; the adapter's HF card at `ff7973df`,

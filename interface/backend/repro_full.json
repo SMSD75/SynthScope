@@ -1,4 +1,66 @@
 {
+  "adb_full": [
+    {
+      "benchmark": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
+      "metric": "balanced accuracy per platform, and their mean",
+      "paper": "acc=92.9",
+      "ours": "acc=91.22 / AUROC=99.22 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=91.22 / AUROC=99.22",
+      "status": "official",
+      "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command, RTX A6000): 91.34 (AUROC 99.25)."
+    },
+    {
+      "benchmark": "BFree-Online, all held images (269 real + 538 fake still online of the 1,111 listed)",
+      "metric": "balanced accuracy",
+      "paper": "acc=97.5",
+      "ours": "acc=96.93 / AUROC=99.11 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=96.93 / AUROC=99.11",
+      "status": "reference",
+      "note": "807 of the paper's 1,111 images (the rest are offline): 96.93 balanced acc, AUROC 99.11 (-0.57); VLM alone 87.08, DDA alone 94.98; VLM bf16 on RTX A5000. The vlm_bench subset (269 + 500): 97.08. Not the paper's full set, so reference."
+    },
+    {
+      "benchmark": "AIGI-Bench CommunityAI + SocialRF (SocialRF full; CommunityAI the first 1,500 real + 1,500 fake of 12,000)",
+      "metric": "balanced accuracy per subset, and their mean",
+      "paper": "acc=88.8",
+      "ours": "acc=87.52 / AUROC=97.35 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=87.52 / AUROC=97.35",
+      "status": "reference",
+      "note": "9,000 images, VLM bf16 on RTX A5000: 87.52 balanced acc (CommunityAI 91.2 / SocialRF 83.83), AUROC 97.35 (-1.28); VLM alone 89.65, DDA alone 82.41. One VLM answer (a SocialRF fake) is unparsed (the official script would stop on it); DDA calls it fake, so it counts as fake. CommunityAI is a quarter of its images, so reference. The 20 + 20 vlm_bench slices: 81.25."
+    },
+    {
+      "benchmark": "GenImage (8 generators), subset of 63 real + 63 fake per generator, fakes JPEG q96",
+      "metric": "balanced accuracy (mean over generators)",
+      "paper": "acc=91.7",
+      "ours": "acc=85.12 / AUROC=92.23 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=85.12 / AUROC=92.23",
+      "status": "reference",
+      "note": "Subset (1,008 images), VLM bf16 on RTX A5000: 85.12 balanced acc, AUROC 92.23 (-6.58); VLM alone 65.97, DDA alone 87.3 (DDA on the full data: 89.37). A subset, so reference."
+    },
+    {
+      "benchmark": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
+      "metric": "balanced accuracy (mean over generators)",
+      "paper": "acc=87.7",
+      "ours": "acc=83.82 / AUROC=90.05 (official wts)",
+      "ours_synthscope": "",
+      "ours_official": "acc=83.82 / AUROC=90.05",
+      "status": "reference",
+      "note": "Subset (1,020 images), VLM bf16 on RTX A5000: 83.82 balanced acc, AUROC 90.05 (-3.88); VLM alone 63.92, DDA alone 86.86 (DDA on the full data: 87.84). A subset and an inferred protocol, so reference."
+    },
+    {
+      "benchmark": "CO-SPY-Bench in-the-wild (Civitai, DALL-E 3, instavibe.ai, Lexica, Midjourney-v6)",
+      "metric": "balanced accuracy",
+      "paper": "acc=94.3",
+      "ours": "",
+      "ours_synthscope": "",
+      "ours_official": "",
+      "status": "missing",
+      "note": "Not held (only the synthetic part of Co-Spy-Bench is downloaded)."
+    }
+  ],
   "adb_vlm": [
     {
       "benchmark": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
@@ -8,7 +70,7 @@
       "ours_synthscope": "",
       "ours_official": "acc=93.98 / AUROC=98.78",
       "status": "reference",
-      "note": "VLM branch alone, official adapter, greedy, full data: 93.98 balanced acc (Facebook 93.13 / Reddit 93.06 / Twitter 95.75), AUROC 98.78, 0 unparsed, 0 unscored (51 tag-less answers scored at their final line's verdict word). The paper prints no VLM-only number; its full method (VLM OR the unreleased expert) prints 92.9. These are different detectors, so this is not a reproduction."
+      "note": "VLM branch alone, official adapter, greedy, full data: 93.98 balanced acc (Facebook 93.13 / Reddit 93.06 / Twitter 95.75), AUROC 98.78, 0 unparsed, 0 unscored (51 tag-less answers scored at their final line's verdict word). The paper prints no VLM-only number; its full method (VLM OR the DDA expert) prints 92.9, and adb_full gives 91.22 on the same images. These are different detectors, so this\u2026"
     },
     {
       "benchmark": "BFree-Online, subset of 269 real + 500 fake (769 images)",
@@ -18,7 +80,7 @@
       "ours_synthscope": "",
       "ours_official": "acc=87.96 / AUROC=98.36",
       "status": "reference",
-      "note": "Subset (the benchmark folder holds only 269 reals), VLM branch alone, greedy: 87.96 balanced acc, AUROC 98.36 (real 98.5, fake 77.4). Ranks 6th of 28 detectors on the same images. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 97.5, context only."
+      "note": "Subset (the benchmark folder holds only 269 reals), VLM branch alone, greedy: 87.96 balanced acc, AUROC 98.36 (real 98.5, fake 77.4). Ranks 6th of 28 detectors on the same images. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 97.5, context only."
     },
     {
       "benchmark": "AIGI-Bench CommunityAI + SocialRF, subset slice (20 real + 20 fake each)",
@@ -28,7 +90,7 @@
       "ours_synthscope": "",
       "ours_official": "acc=82.5",
       "status": "reference",
-      "note": "A 40-image slice of each subset (the full sets are 12,000 + 6,000 images, not run), VLM branch alone, greedy: 82.50 (CommunityAI 85.0 / SocialRF 80.0). Paper: no VLM-only number; full method (VLM OR the unreleased expert) 88.8, context only."
+      "note": "A 40-image slice of each subset (the full sets are 12,000 + 6,000 images, not run), VLM branch alone, greedy: 82.50 (CommunityAI 85.0 / SocialRF 80.0). Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 88.8, context only."
     },
     {
       "benchmark": "GenImage (8 generators), subset of 63 real + 63 fake per generator, fakes JPEG q96",
@@ -38,7 +100,7 @@
       "ours_synthscope": "",
       "ours_official": "acc=65.97 / AUROC=79.18",
       "status": "reference",
-      "note": "Subset, fakes JPEG q96 (bench_eval --jpeg-fakes 96, reals untouched), VLM branch alone, greedy: 65.97 balanced acc, AUROC 79.18; clean subset 68.05. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 91.7, context only."
+      "note": "Subset, fakes JPEG q96 (bench_eval --jpeg-fakes 96, reals untouched), VLM branch alone, greedy: 65.97 balanced acc, AUROC 79.18; clean subset 68.05. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 91.7, context only."
     },
     {
       "benchmark": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
@@ -48,7 +110,7 @@
       "ours_synthscope": "",
       "ours_official": "acc=63.92 / AUROC=70.55",
       "status": "reference",
-      "note": "Subset, fakes JPEG q96 (an inferred protocol), VLM branch alone, greedy: 63.92 balanced acc, AUROC 70.55; clean subset 65.20. Paper: no VLM-only number; full method (VLM OR the unreleased expert) 87.7, context only."
+      "note": "Subset, fakes JPEG q96 (an inferred protocol), VLM branch alone, greedy: 63.92 balanced acc, AUROC 70.55; clean subset 65.20. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 87.7, context only."
     },
     {
       "benchmark": "CO-SPY-Bench in-the-wild (Civitai, DALL-E 3, instavibe.ai, Lexica, Midjourney-v6)",

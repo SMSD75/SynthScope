@@ -6,8 +6,8 @@ Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd (r16, alpha 32, 196 LoRA modules on the
 projections; Apache-2.0 on the card since ff7973df, same files); base: HF
 Qwen/Qwen2.5-VL-7B-Instruct @ cc594898 (Apache-2.0). SynthScope loads the base with transformers into
 ``Qwen2_5_VLForConditionalGeneration`` from a LOCAL folder (``base_model``, relative to $SYNTHSCOPE_CKPT_DIR) and keeps
-the adapter UNMERGED (peft), as ms-swift's pt backend runs it. Only the VLM branch is released: the paper's
-final verdict is VLM OR a pixel-artifact expert, which is not released, so this detector is the VLM branch alone.
+the adapter UNMERGED (peft), as ms-swift's pt backend runs it. This detector is the VLM branch alone: the paper's final
+verdict is VLM OR a pixel-artifact expert (the released DDA checkpoint), which is ``adb_full`` (models/image/adb_full).
 
 The official inference is ``predict.py`` -> ``swift infer`` (ms-swift; vLLM backend by default, or ``--infer_backend
 pt``). The request is reproduced here (checked token for token against ms-swift 4.4.2 with the pt backend; the vLLM

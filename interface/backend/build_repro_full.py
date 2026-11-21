@@ -263,8 +263,8 @@ VAL = {
     ("veritaspp", "EvalGEN"): {"official": {"acc": 98.2}},
     ("veritaspp", "15 held benchmarks"): {"official": {"acc": 84.7, "auroc": 91.33}},
     # Align, Don't Blend, VLM branch (Chen et al., arXiv 2512.06746): the official LoRA adapter only, inference only, greedy (the
-    # official decoding), no SynthScope-trained number. The paper's detector is VLM OR an unreleased pixel expert and the paper
-    # prints no VLM-only number, so the spec gives no paper number and every row is "reference". Every value traces to
+    # official decoding), no SynthScope-trained number. The paper's detector is VLM OR the DDA pixel expert (adb_full, below) and
+    # the paper prints no VLM-only number, so the spec gives no paper number and every row is "reference". Every value traces to
     # repro/vlm_bench/comparison.json (paper_comparison.adb_vlm / subset_means.adb_vlm; results/<bench>/adb_vlm*.json; logs
     # repro/logs/adb_ivi_*.out). WildRF = FULL data (2,503 images, results/wildrf/adb_vlm__full*.json); BFree-Online = 269 real +
     # 500 fake subset; AIGI-Bench = the CommunityAI + SocialRF slices of the subset (20 + 20 each); GenImage / AIGCDetect = subsets
@@ -276,6 +276,16 @@ VAL = {
     ("adb_vlm", "GenImage"): {"official": {"acc": 65.97, "auroc": 79.18}},
     ("adb_vlm", "AIGCDetectBenchmark"): {"official": {"acc": 63.92, "auroc": 70.55}},
     ("adb_vlm", "15 held benchmarks"): {"official": {"acc": 76.58, "auroc": 84.11}},
+    # Align, Don't Blend, FULL method (adb_full = adb_vlm OR dda, the official rule of predict.py): official weights only, no
+    # SynthScope-trained number. Every value traces to repro/adb_full/paper_comparison.json (results/<row>.json; fusion log
+    # repro/logs/adb_full_fuse.out; VLM logs adb_ivi_*.out and adbfull_bench_297122*.out, dda per-image logs adbfull_bench_297122.out).
+    # VLM bf16 greedy on RTX A5000. WildRF = full data (status computed); BFree-Online = the 807 held of 1,111; AIGI-Bench = SocialRF
+    # full + CommunityAI first 1,500 + 1,500; GenImage / AIGCDetect = vlm_bench subsets, fakes JPEG q96 (all "reference" by the spec).
+    ("adb_full", "WildRF"): {"official": {"acc": 91.22, "auroc": 99.22}},
+    ("adb_full", "BFree-Online"): {"official": {"acc": 96.93, "auroc": 99.11}},
+    ("adb_full", "AIGI-Bench"): {"official": {"acc": 87.52, "auroc": 97.35}},
+    ("adb_full", "GenImage"): {"official": {"acc": 85.12, "auroc": 92.23}},
+    ("adb_full", "AIGCDetectBenchmark"): {"official": {"acc": 83.82, "auroc": 90.05}},
     # FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): the official weights only, inference only, greedy (the official
     # decoding), no SynthScope-trained number. None of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held,
     # so those rows are "missing" (no entry) and the two rows below are "reference". GenImage is IN-DISTRIBUTION (FakeClue

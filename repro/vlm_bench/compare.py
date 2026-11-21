@@ -24,9 +24,10 @@ Reads ``repro/vlm_bench/results/<bench>/<model>[__variant].json`` (bench_eval ou
     say; the paper's DDA row 97.2 matches DDA's fakes-only EvalGEN accuracy), reported next to the balanced accuracy (fakes +
     MSCOCO reals); RealChain / WildRF = accuracy over all images, each with unparsed answers dropped as in the authors'
     cal_metrics.py (and with them counted wrong, for reference); WildRF from the full-data run when it exists;
-  - adb_vlm (arXiv 2512.06746 v3, balanced accuracy): every PRINTED number is the full method (VLM OR the unreleased pixel
-    expert), so none is reproducible with the released VLM branch; they are listed as context only, with no delta. The paper
-    prints no VLM-only number for the released adapter. Table 4's "Qwen2.5-VL-7B" row is ambiguous (base or trained) and
+  - adb_vlm (arXiv 2512.06746 v3, balanced accuracy): every PRINTED number is the full method (VLM OR the DDA pixel
+    expert), which is ``adb_full``; its reproduction, with deltas, is repro/adb_full/paper_comparison.json. Here the VLM
+    branch alone is listed next to the printed number as context, with no delta. The paper prints no VLM-only number for
+    the released adapter. Table 4's "Qwen2.5-VL-7B" row is ambiguous (base or trained) and
     Table 5's is the UNTRAINED base: both are listed, never as a reproduction target.
   - fakevlm (arXiv 2503.14905): none of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held here, so
     each is recorded as "not held" and nothing is claimed as a reproduction.
@@ -48,8 +49,8 @@ PAPER = {  # arXiv 2607.27113 v1, Table II (standard OOD) and Table III (in-the-
 }
 
 # Align, Don't Blend (AlignGemini), arXiv 2512.06746 v3, balanced accuracy (%). "full_method" = the printed AlignGemini row,
-# i.e. the VLM branch OR the pixel expert (Qwen2.5-VL-7B + "SD" expert); the expert is not released, so these are context,
-# never reproduction targets. The paper prints no VLM-only number for the released adapter. Generator keys are this
+# i.e. the VLM branch OR the pixel expert (the released DDA checkpoint, confirmed by the authors 2026-11-20): adb_full, reproduced
+# in repro/adb_full. For the VLM branch alone they are context, never targets; the paper prints no VLM-only number. Generator keys are this
 # repository's generator folder names.
 _AIGCD = ("ADM", "DALLE2", "Glide", "Midjourney", "VQDM", "biggan", "cyclegan", "gaugan", "progan", "sd_xl",
           "stable_diffusion_v_1_4", "stable_diffusion_v_1_5", "stargan", "stylegan", "stylegan2", "whichfaceisreal", "wukong")
@@ -106,9 +107,10 @@ ADB_PAPER = {
 }
 ADB_PAPER_NOTE = (
     "Align, Don't Blend (AlignGemini) arXiv 2512.06746 v3. The paper's detector is the VLM branch OR a pixel-artifact expert "
-    "(DINOv2 + LoRA trained on VAE reconstructions); only the VLM branch is released, so NONE of the paper's tables is "
-    "reproducible here. Printed numbers (full_method) are context, not targets. The paper prints no VLM-only number for the "
-    "released adapter, so no row gets a delta. Table 4 'Qwen2.5-VL-7B' ('baseline methods under the same training set', "
+    "(DINOv2 + LoRA trained on VAE reconstructions: the released DDA checkpoint, as the authors confirmed on 2026-11-20). "
+    "The full method is SynthScope's adb_full; its paper reproduction, with deltas, is repro/adb_full/paper_comparison.json. "
+    "This column is the VLM branch alone: the printed numbers (full_method) are context for it, not targets. The paper "
+    "prints no VLM-only number for the released adapter, so no row here gets a delta. Table 4 'Qwen2.5-VL-7B' ('baseline methods under the same training set', "
     "retrained on the same semantic and pixel corpora) is ambiguous between the base and a trained VLM; Table 5 "
     "'Qwen2.5-VL-7B (Untrained)' is the base model without the adapter. Neither is the released adapter. GenImage / "
     "AIGCDetect: ours are also run with the fakes JPEG-compressed at q96 (jpegfakes96): the paper states that step for "
@@ -322,7 +324,8 @@ def adb_paper(model: str, res: Path) -> dict:
                     r.update(mauroc=j["means"]["mauroc"], map=j["means"]["map"])
         if r is not None:
             entry["ours_vlm_only"] = r
-            entry["full_method_note"] = "context only, no delta: the paper's number includes the unreleased pixel expert"
+            entry["full_method_note"] = ("context only, no delta: the paper's number is the full method (VLM OR the DDA "
+                                         "expert), adb_full in repro/adb_full/paper_comparison.json")
         out[b] = entry
     return out
 

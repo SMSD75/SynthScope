@@ -207,7 +207,7 @@ class Detector:
     def _classify(self, source: PathOrImage):
         """Resolve ``source`` to ``(kind, pil_image_or_None, path_or_None)``. A VLM detector (or a fusion with one) gets
         the decoded file without an RGB conversion (its own loader applies the official EXIF / transparency handling)."""
-        vlm = self.spec.has_vlm
+        vlm = getattr(self, "spec", None) is not None and self.spec.has_vlm   # (a bare Detector in tests has no spec)
         if isinstance(source, Image.Image):
             return "image", (source if vlm else _media.to_rgb(source)), None
         if isinstance(source, (bytes, bytearray)):

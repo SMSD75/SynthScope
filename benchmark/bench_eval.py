@@ -610,10 +610,10 @@ def main(argv=None) -> int:
         det = Detector(spec, device=args.device, **load_kw)
     else:
         det = synthscope.load(args.model, device=args.device, **load_kw)
-    if det.spec.predict_kind == "fusion":
+    if getattr(det.spec, "predict_kind", None) == "fusion":
         ap.error(f"{args.model} combines two detectors: score both per image (the VLM with --vlm-cache, the expert with "
                  "--per-image) and fuse them with repro/adb_full/fuse.py (fuse_components, models/image/adb_full/adb_full.py)")
-    if (args.vlm_dtype or args.vlm_attn) and det.spec.vlm is None:
+    if (args.vlm_dtype or args.vlm_attn) and getattr(det.spec, "vlm", None) is None:
         ap.error("--vlm-dtype / --vlm-attn apply to VLM detectors only")
     if args.vlm_dtype or args.vlm_attn:
         vlm_cfg = dataclasses.replace(det.spec.vlm, dtype=args.vlm_dtype or det.spec.vlm.dtype,
