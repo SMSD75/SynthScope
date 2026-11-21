@@ -119,8 +119,9 @@ steps 1-3. It is a family-adapter design:
   code runs here, against it too (Align, Don't Blend: ms-swift's pt backend; name any backend you did not compare), memory
   and speed, and the licence. Compare with the paper only on the paper's own data and metric; a subset or a metric you
   had to guess is "reference", never "reproduced". If the paper's number is for a larger system than the released model
-  (e.g. VLM OR an unreleased expert), say that it is not reproducible and list the printed number as context, with no
-  delta.
+  (e.g. VLM OR an expert the authors have not released), say that it is not reproducible and list the printed number
+  as context, with no delta. When the rest is released, add the full system as its own key (Align, Don't Blend:
+  `adb_full`, ``predict_kind="fusion"``, `models/image/adb_full/`) and compare that with the paper.
 
 ## Verify reproduction (required)
 Run the detector on the **paper's own benchmark(s)** and compare to the paper's reported numbers:

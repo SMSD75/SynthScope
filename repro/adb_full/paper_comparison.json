@@ -35,7 +35,13 @@
   "vlm_gpu": [
    "RTX A5000 (IVI, committed adb_vlm run)"
   ],
-  "source": "repro/adb_full/results/wildrf_full.json"
+  "source": "repro/adb_full/results/wildrf_full.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "wildrf_full_fp32": {
   "paper_benchmark": "WildRF",
@@ -73,7 +79,13 @@
   "vlm_gpu": [
    "NVIDIA RTX A6000"
   ],
-  "source": "repro/adb_full/results/wildrf_full_fp32.json"
+  "source": "repro/adb_full/results/wildrf_full_fp32.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_fp32_297123.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "aigibench": {
   "paper_benchmark": "AIGI-Bench",
@@ -105,7 +117,14 @@
   "vlm_gpu": [
    "NVIDIA RTX A5000"
   ],
-  "source": "repro/adb_full/results/aigibench.json"
+  "source": "repro/adb_full/results/aigibench.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_bench_297122.out",
+   "repro/logs/adbfull_bench_297122_w2.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "aigibench_subset": {
   "paper_benchmark": "AIGI-Bench",
@@ -137,7 +156,13 @@
   "vlm_gpu": [
    "RTX A5000 (IVI, committed adb_vlm run)"
   ],
-  "source": "repro/adb_full/results/aigibench_subset.json"
+  "source": "repro/adb_full/results/aigibench_subset.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "bfree_online_full": {
   "paper_benchmark": "BFree-Online",
@@ -163,7 +188,14 @@
   "vlm_gpu": [
    "NVIDIA RTX A5000"
   ],
-  "source": "repro/adb_full/results/bfree_online_full.json"
+  "source": "repro/adb_full/results/bfree_online_full.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_bench_297122_w2.out",
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "bfree_online_subset": {
   "paper_benchmark": "BFree-Online",
@@ -189,7 +221,13 @@
   "vlm_gpu": [
    "RTX A5000 (IVI, committed adb_vlm run)"
   ],
-  "source": "repro/adb_full/results/bfree_online_subset.json"
+  "source": "repro/adb_full/results/bfree_online_subset.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "genimage_subset_jpegfakes96": {
   "paper_benchmark": "GenImage",
@@ -257,7 +295,13 @@
   "vlm_gpu": [
    "RTX A5000 (IVI, committed adb_vlm run)"
   ],
-  "source": "repro/adb_full/results/genimage_subset_jpegfakes96.json"
+  "source": "repro/adb_full/results/genimage_subset_jpegfakes96.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  },
  "aigcdetect_subset_jpegfakes96": {
   "paper_benchmark": "AIGCDetectBenchmark",
@@ -379,6 +423,12 @@
   "vlm_gpu": [
    "RTX A5000 (IVI, committed adb_vlm run)"
   ],
-  "source": "repro/adb_full/results/aigcdetect_subset_jpegfakes96.json"
+  "source": "repro/adb_full/results/aigcdetect_subset_jpegfakes96.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
  }
 }

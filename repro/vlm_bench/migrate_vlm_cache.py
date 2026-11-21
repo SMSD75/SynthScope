@@ -27,6 +27,10 @@ Known re-keys (``PREDECESSORS``):
   kept, byte for byte (rule ``unchanged``). Such an entry names the code versions it may migrate TO
   (``to_code_versions``): after any further edit of ``models/vlm/*.py`` the folder is left alone until someone checks
   that edit and adds its code version.
+* adb_vlm, veritaspp and fakevlm, detector/adb-full (2026-11-21): from code version 4a950958ed (main ca433a7) to
+  53f470222c. The only change is a docstring line of ``models/vlm/parsers.py`` (Align, Don't Blend's licence is now
+  Apache-2.0), so every record is kept (rule ``unchanged``); 53f470222c is also added to the e5749ae entries' targets,
+  so a folder not yet migrated goes straight to it.
 * fakevlm, the same branch: from the identity its benchmark jobs wrote (code version 02852acf62; folders
   ``fakevlm__greedy__ee254109e9`` and ``fakevlm__greedy__jpeg95__ee254109e9``) to 4a950958ed. The only change for FakeVLM
   is the load check, which its config passes (all three fields are in ``processor_overrides``); rule ``unchanged``.
@@ -59,7 +63,8 @@ from interface.backend.registry import get_spec                     # noqa: E402
 # main e5749ae -> detector/fakevlm: only the code version differs (see the module doc); identities as bench_eval.vlm_identity
 # printed them at e5749ae (adb_vlm's official decoding is greedy too, so it shares the greedy identity)
 _MAIN_E5749AE = "b490c64477"
-_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed"]
+_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed", "53f470222c"]   # 53f470222c: detector/adb-full's docstring-only edit
+_ADB_FULL_BRANCH = ["53f470222c"]
 _ADB_E5749AE = {
     "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
     "ckpt": None, "max_new_tokens": 512, "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05},
@@ -79,6 +84,14 @@ _FAKEVLM_02852ACF62 = {
     "config_sha1": "02eebd2c47", "code_version": "02852acf62",
 }
 
+# main ca433a7 (code version 4a950958ed): the identities its runs wrote, the same as e5749ae's apart from the code version
+_CA433A7 = "4a950958ed"
+
+
+def _at(identity: dict, code_version: str) -> dict:
+    return dict(identity, code_version=code_version)
+
+
 # {model: [{"identity": an older cache identity, "rule": how its records carry over, "to_code_versions": (rule "unchanged")
 # the code versions it may be migrated to}]}
 PREDECESSORS = {
@@ -89,13 +102,17 @@ PREDECESSORS = {
             "prompt_sha1": "91db63b292", "config_sha1": "65977eff07", "code_version": "cf179eee30",
         }, "rule": "adb_verdict_offset"},
         {"identity": _ADB_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
+        {"identity": _at(_ADB_E5749AE, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
     ],
     "veritaspp": [
         {"identity": _VPP_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _VPP_E5749AE_OFFICIAL, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
+        {"identity": _at(_VPP_E5749AE, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
+        {"identity": _at(_VPP_E5749AE_OFFICIAL, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
     ],
     "fakevlm": [
         {"identity": _FAKEVLM_02852ACF62, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
+        {"identity": _at(_FAKEVLM_02852ACF62, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
     ],
 }
 

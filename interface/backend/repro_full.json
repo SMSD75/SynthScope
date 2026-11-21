@@ -7,8 +7,8 @@
       "ours": "acc=91.22 / AUROC=99.22 (official wts)",
       "ours_synthscope": "",
       "ours_official": "acc=91.22 / AUROC=99.22",
-      "status": "official",
-      "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command, RTX A6000): 91.34 (AUROC 99.25)."
+      "status": "below",
+      "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper; every platform below it: Facebook -1.26, Reddit -1.57, Twitter -2.10, so below, as VINA's WildRF row). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command) on an RTX A6000 (precision and GPU both\u2026"
     },
     {
       "benchmark": "BFree-Online, all held images (269 real + 538 fake still online of the 1,111 listed)",

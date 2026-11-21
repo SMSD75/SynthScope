@@ -15,9 +15,9 @@
                 "acc": 92.9,
                 "note": "Table 1: 92.2 / 90.9 / 95.5"
             },
-            "our_status": "official",
+            "our_status": "below",
             "our_number": {
-                "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command, RTX A6000): 91.34 (AUROC 99.25)."
+                "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper; every platform below it: Facebook -1.26, Reddit -1.57, Twitter -2.10, so below, as VINA's WildRF row). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command) on an RTX A6000 (precision and GPU both change): 91.34 (AUROC 99.25)."
             }
         },
         {

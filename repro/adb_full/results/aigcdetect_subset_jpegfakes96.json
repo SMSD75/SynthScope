@@ -373,6 +373,15 @@
    "repro/adb_full/dda/aigcdetect17/dda__jpegfakes96.json"
   ]
  },
+ "logs": {
+  "vlm": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "fusion": "repro/logs/adb_full_fuse.out"
+ },
  "file_identity": {
   "sha1_vs_vlm_record": 0,
   "sha1_vs_subset_manifest": 1020,

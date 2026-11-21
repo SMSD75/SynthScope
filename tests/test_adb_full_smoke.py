@@ -408,7 +408,8 @@ def test_benchmark_path() -> None:
              "sha1": r["sha1"]} for r, v, lg in zip(recs, verdicts, logits)]}
         (tmp / "vlm.json").write_text(json.dumps(vlm))
         cfg = {"paper": "BFree-Online", "main": True, "data": "stub", "precision": "bf16", "gpu": None,
-               "vlm": [str(tmp / "vlm.json")], "dda": [str(tmp / "dda.json")], "generators": None, "manifest": None}
+               "vlm": [str(tmp / "vlm.json")], "dda": [str(tmp / "dda.json")], "generators": None, "manifest": None,
+               "vlm_logs": ["stub.out"]}
         res = fuse.fuse_row("stub", cfg)
         want = ["fake" if v == "fake" or r["prob"] >= 0.5 else "real" for r, v in zip(recs, verdicts)]
         assert [x["verdict"] for x in res["per_image"]] == want
@@ -418,6 +419,7 @@ def test_benchmark_path() -> None:
         assert m["acc"] == round((real_acc + fake_acc) / 2, 2) and m["n_real"] == m["n_fake"] == 4
         assert m["auroc"] == round(100 * roc_auc_score([r["label"] for r in recs], [x["score"] for x in res["per_image"]]), 2)
         assert res["file_identity"]["sha1_vs_vlm_record"] == 8 and res["vlm_gpu"] == ["stub"]
+        assert res["logs"]["vlm"] == ["stub.out"] and all(r.get("vlm_logs") for r in fuse.ROWS.values())
         vlm["per_image"][0]["sha1"] = "0" * 40
         (tmp / "vlm.json").write_text(json.dumps(vlm))
         for bad in ("sha1", "missing"):

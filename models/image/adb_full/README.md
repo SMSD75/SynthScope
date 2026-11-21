@@ -15,11 +15,11 @@ expert is the released DDA checkpoint (2026-11-20). The official repository now 
 - **Fidelity:** identical final, DDA and VLM decisions and VLM text against the unmodified official `predict.py` on 24
   images, in bf16 and in float32 ([Fidelity results](#fidelity-results)).
 - **Paper benchmarks** ([Results](#results)):
-  - WildRF, full data: 91.22 vs 92.9 (-1.68, within 2 points).
+  - WildRF, full data: 91.22 vs 92.9 (-1.68): below the paper on all three platforms (Twitter -2.10).
   - BFree-Online, 807 of the 1,111 images: 96.93 vs 97.5.
   - AIGI-Bench, 9,000 images: 87.52 vs 88.8.
   - GenImage and AIGCDetect, subsets: 85.12 vs 91.7 and 83.82 vs 87.7.
-- **Float32 vs bf16** (WildRF): +0.12 accuracy.
+- **Float32 on an RTX A6000 vs bf16 on an RTX A5000** (WildRF): +0.12 accuracy (the precision and the GPU both change).
 
 ## Method
 The paper keeps two detectors with orthogonal supervision apart and ORs their verdicts:
@@ -70,7 +70,8 @@ official decision. SynthScope keeps the image:
 - if DDA says fake, the OR is fake whatever the VLM meant, and the verdict is "fake";
 - otherwise the verdict is "unparsed" and counts as wrong, as for `adb_vlm`. Its score is `max(0.5 - ulp, P_dda)`.
 
-There were no unparsed answers in any `adb_vlm` run so far.
+One answer of the paper benchmarks is unparsed: `SocialRF/1_fake/SocialRF_2365.png` (AIGI-Bench). DDA calls it fake
+(P 0.988), so it counts as fake; no other run had one.
 
 ## Inference
 | step | official (`predict.py`) | SynthScope (`Engine.predict_image`, `predict_kind="fusion"`) |
@@ -177,8 +178,9 @@ Per subset:
 - WildRF: Facebook 90.94 / Reddit 89.33 / Twitter 93.40 (paper 92.2 / 90.9 / 95.5).
 - AIGI-Bench: CommunityAI 91.20 / SocialRF 83.83 (paper 91.9 / 85.6).
 
-**Status.** WildRF is the one like-for-like row; it is within 2 points (the repository's tolerance), 1.68 below the
-paper. BFree-Online and AIGI-Bench are close (-0.57, -1.28) but not on the paper's exact data:
+**Status.** WildRF is the one like-for-like row. It is **below** the paper: -1.68 on the mean, inside the 2-point
+tolerance, but every platform is below (Facebook -1.26, Reddit -1.57, Twitter -2.10). This is labelled "below", as VINA's
+WildRF row is. BFree-Online and AIGI-Bench are close (-0.57, -1.28) but not on the paper's exact data:
 - BFree-Online: 807 of the 1,111 listed images are still online;
 - AIGI-Bench: CommunityAI is a quarter of its images, chosen as the first 1,500 per class.
 
@@ -201,12 +203,17 @@ above the full method on WildRF (93.98) and AIGI-Bench (89.65). DDA alone is abo
   fake (see [the rule](#synthscopes-score-for-auroc--ap)). No other row has one.
 - **File identity.** The two components scored the same files. For new runs the sha1 of each file is checked against
   the VLM record (AIGI-Bench, BFree-Online). For committed runs it is checked against the subset manifests (GenImage,
-  AIGCDetect, the 769-image BFree subset). For WildRF, both runs copied ivi-cn029's `WildRF/test`, each sha1-list
-  identical to it.
+  AIGCDetect, the 769-image BFree subset). The WildRF headline row uses the committed VLM records, which carry no sha1
+  (2,503 unchecked in `file_identity`), so its identity is indirect:
+  - the VLM run read a copy of ivi-cn029's `WildRF/test`, sha1-list identical to it when it was staged;
+  - the DDA run read another such copy, and its records carry each file's sha1;
+  - the float32 run's records also carry sha1s, and all 2,503 equal DDA's (`wildrf_full_fp32.json`).
 - **Reused VLM records.** WildRF, GenImage and AIGCDetect use the committed `adb_vlm` per-image records, as they are.
   BFree-Online reused 769 cached records on the same node after `migrate_vlm_cache.py` (rule `unchanged`). They are
   identical to the committed ones, and 38 images were new. AIGI-Bench was scored new; its 80 images shared with the
   committed slice give identical verdicts and logits (A5000 on ivi-cn027 vs ivi-cn026).
+- **Rounded logits.** P_vlm is the sigmoid of the record's logit, which `bench_eval` rounds to 4 decimals. No decision
+  changes (the VLM decision is its parsed text, DDA's probability is unrounded); AUROC / AP can change only through ties.
 - **GPU and precision.** bf16 greedy text depends on the GPU model (A5000 vs A6000: the same text on 7 of 16 fidelity
   images). Every row above is A5000.
 

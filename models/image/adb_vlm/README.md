@@ -312,6 +312,9 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
   - The FakeVLM integration edits `models/vlm/*.py` again (a new LLaVA family, image hooks and parser that ADB does not
     use), so the caches written by main e5749ae are re-keyed once more. `migrate_vlm_cache.py --model adb_vlm` carries
     them over byte for byte (rule `unchanged`, see its docstring).
+  - The Align, Don't Blend full-method branch (detector/adb-full) edits one docstring line of `models/vlm/parsers.py` (the
+    licence), so the caches of main ca433a7 (code version 4a950958ed) are re-keyed to 53f470222c. `migrate_vlm_cache.py`
+    carries them over byte for byte (rule `unchanged`), for adb_vlm, veritaspp and fakevlm.
 
 ## Availability
 - Not on the Hugging Face Space: a 7B model needs a GPU (17.26 GB peak).

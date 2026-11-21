@@ -278,9 +278,10 @@ VAL = {
     ("adb_vlm", "15 held benchmarks"): {"official": {"acc": 76.58, "auroc": 84.11}},
     # Align, Don't Blend, FULL method (adb_full = adb_vlm OR dda, the official rule of predict.py): official weights only, no
     # SynthScope-trained number. Every value traces to repro/adb_full/paper_comparison.json (results/<row>.json; fusion log
-    # repro/logs/adb_full_fuse.out; VLM logs adb_ivi_*.out and adbfull_bench_297122*.out, dda per-image logs adbfull_bench_297122.out).
-    # VLM bf16 greedy on RTX A5000. WildRF = full data (status computed); BFree-Online = the 807 held of 1,111; AIGI-Bench = SocialRF
-    # full + CommunityAI first 1,500 + 1,500; GenImage / AIGCDetect = vlm_bench subsets, fakes JPEG q96 (all "reference" by the spec).
+    # repro/logs/adb_full_fuse.out; VLM logs adb_ivi_*.out and adbfull_bench_297122*.out, the row's vlm_logs; dda per-image
+    # log adbfull_bench_297122.out). VLM bf16 greedy on RTX A5000. WildRF = full data ("below" by STATUS_OVERRIDE: every
+    # platform under the paper); BFree-Online = the 807 held of 1,111; AIGI-Bench = SocialRF full + CommunityAI first
+    # 1,500 + 1,500; GenImage / AIGCDetect = vlm_bench subsets, fakes JPEG q96 (all "reference" by the spec).
     ("adb_full", "WildRF"): {"official": {"acc": 91.22, "auroc": 99.22}},
     ("adb_full", "BFree-Online"): {"official": {"acc": 96.93, "auroc": 99.11}},
     ("adb_full", "AIGI-Bench"): {"official": {"acc": 87.52, "auroc": 97.35}},
@@ -325,6 +326,9 @@ VAL = {
 STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below",
                    ("vina", "SynthWildX (dalle3 / firefly / midjourney_v5)"): "below",
                    ("vina", "WildRF (facebook / reddit / twitter)"): "below",
+                   # Align, Don't Blend full method: -1.68 on the mean (inside the 2-pt tolerance), but every platform is below the
+                   # paper (Facebook -1.26, Reddit -1.57, Twitter -2.10), as VINA's WildRF row
+                   ("adb_full", "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images"): "below",
                    ("nsg_vd_pika", "GenVideo-Val, paper Table 1 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below",
                    ("nsg_vd_unbalance", "GenVideo-Val, paper Table 3 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below"}
 
