@@ -101,13 +101,13 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
                     status_code=400,
                     detail=f"'{spec.name}' is a video detector; please upload a video.",
                 )
-            if spec.vlm is not None:          # seconds per image: run off the event loop; the raw file (official loader)
+            if spec.has_vlm:          # seconds per image: run off the event loop; the raw file (official loader)
                 result = await asyncio.to_thread(_vlm_predict, engine, spec, data)
             else:
                 result = engine.predict_image(spec, media.decode_image(data))
             result["media_type"] = "image"
             return result
-        if spec.vlm is not None:
+        if spec.has_vlm:
             raise HTTPException(status_code=400, detail=vlm_images_only(spec))
 
         # video upload -> write to a temp file for the decoder
@@ -220,7 +220,7 @@ def _score_one(engine, key: str, real_img, gen_img, raw=None) -> dict:
         spec = get_spec(key)
         if spec.modality != "image" or not engine.is_available(spec):
             return {"detector": key, "error": "unavailable / not an image detector"}
-        if spec.vlm is not None and raw is not None:
+        if spec.has_vlm and raw is not None:
             real_img, gen_img = raw()
         rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
         return {"detector": key, "name": spec.name,
@@ -490,7 +490,7 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
     path = datasets.resolve_media(dataset, rel)          # may raise Permission/FileNotFound
     d = datasets.get_def(dataset)
     if d.modality == "video":
-        if spec.vlm is not None:
+        if spec.has_vlm:
             raise HTTPException(status_code=400, detail=vlm_images_only(spec))
         if spec.modality == "video":
             result = engine.predict_video_clip(spec, str(path))
@@ -503,7 +503,7 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
             raise HTTPException(status_code=400, detail=f"'{spec.name}' is a video detector; pick a video dataset.")
         with open(path, "rb") as fh:
             data = fh.read()
-        result = engine.predict_image(spec, media.decode_image_raw(data) if spec.vlm is not None else media.decode_image(data))
+        result = engine.predict_image(spec, media.decode_image_raw(data) if spec.has_vlm else media.decode_image(data))
         result["media_type"] = "image"
     gt = datasets.label_of(Path(rel))
     result["ground_truth"] = gt
@@ -550,7 +550,7 @@ def score_batch(payload: dict = Body(...)):
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
     out = []
-    for rel in rels[:SCORE_BATCH_CAP_VLM if spec.vlm is not None else SCORE_BATCH_CAP]:
+    for rel in rels[:SCORE_BATCH_CAP_VLM if spec.has_vlm else SCORE_BATCH_CAP]:
         try:
             r = _run_on_dataset_item(engine, spec, dataset, rel)
             out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})

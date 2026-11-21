@@ -1,0 +1,315 @@
+{
+ "pool": [
+  {
+   "image": "GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000030.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 3.625,
+   "dda_fake_probability": 0.025855237618088722
+  },
+  {
+   "image": "GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000046.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 3.875,
+   "dda_fake_probability": 0.12272875010967255
+  },
+  {
+   "image": "GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000152.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 9.625,
+   "dda_fake_probability": 0.06709995865821838
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_174.PNG",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -12.875,
+   "dda_fake_probability": 0.05776141956448555
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_34.PNG",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -19.875,
+   "dda_fake_probability": 0.7897753119468689
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_7.PNG",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -10.5,
+   "dda_fake_probability": 0.4485011696815491
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_85.PNG",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -4.875,
+   "dda_fake_probability": 0.9294722676277161
+  },
+  {
+   "image": "GenImage_val_full/test/adm/1_fake/0_adm_91.PNG",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -24.9375,
+   "dda_fake_probability": 0.18406949937343597
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000009.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 5.5,
+   "dda_fake_probability": 0.03003581054508686
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000101.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 9.125,
+   "dda_fake_probability": 0.044941578060388565
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 12.625,
+   "dda_fake_probability": 0.26814553141593933
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -23.1875,
+   "dda_fake_probability": 0.5115518569946289
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00039.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -21.5,
+   "dda_fake_probability": 0.45752260088920593
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00074.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -8.125,
+   "dda_fake_probability": 0.2682953476905823
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00127.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -20.9375,
+   "dda_fake_probability": 0.15207959711551666
+  },
+  {
+   "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00143.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -19.1875,
+   "dda_fake_probability": 0.9300051331520081
+  },
+  {
+   "image": "GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000066.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 5.25,
+   "dda_fake_probability": 0.03703116253018379
+  },
+  {
+   "image": "GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000159.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 7.375,
+   "dda_fake_probability": 0.07497098296880722
+  },
+  {
+   "image": "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00020.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -17.125,
+   "dda_fake_probability": 0.190007746219635
+  },
+  {
+   "image": "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -21.625,
+   "dda_fake_probability": 0.8589500784873962
+  },
+  {
+   "image": "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00039.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -6.0,
+   "dda_fake_probability": 0.22526434063911438
+  },
+  {
+   "image": "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00074.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -11.5,
+   "dda_fake_probability": 0.10912559181451797
+  },
+  {
+   "image": "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00143.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -0.5,
+   "dda_fake_probability": 0.06544678658246994
+  },
+  {
+   "image": "GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000023.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 8.875,
+   "dda_fake_probability": 0.03824526071548462
+  },
+  {
+   "image": "GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 12.75,
+   "dda_fake_probability": 0.4431856870651245
+  },
+  {
+   "image": "GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000282.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 11.375,
+   "dda_fake_probability": 0.15107157826423645
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000060.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 14.0,
+   "dda_fake_probability": 0.019718127325177193
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000170.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 6.75,
+   "dda_fake_probability": 0.021741800010204315
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000369.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 12.0,
+   "dda_fake_probability": 0.021894630044698715
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 18.875,
+   "dda_fake_probability": 0.29839473962783813
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000257.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 10.625,
+   "dda_fake_probability": 0.11983301490545273
+  },
+  {
+   "image": "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 15.375,
+   "dda_fake_probability": 0.3576059639453888
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000040.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 3.5,
+   "dda_fake_probability": 0.04656950756907463
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000117.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 6.625,
+   "dda_fake_probability": 0.12811414897441864
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000325.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 19.125,
+   "dda_fake_probability": 0.22082456946372986
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00020.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -16.75,
+   "dda_fake_probability": 0.2490914762020111
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00035.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -23.125,
+   "dda_fake_probability": 0.9592306017875671
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00127.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -20.1875,
+   "dda_fake_probability": 0.9579684734344482
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00143.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -20.0625,
+   "dda_fake_probability": 0.10597884654998779
+  },
+  {
+   "image": "GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_001_vqdm_00039.png",
+   "label_fake": 1,
+   "cached_vlm_verdict": "real",
+   "cached_vlm_logit": -18.0,
+   "dda_fake_probability": 0.20932507514953613
+  },
+  {
+   "image": "GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000070.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 13.5,
+   "dda_fake_probability": 0.03153678774833679
+  },
+  {
+   "image": "GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000107.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 3.25,
+   "dda_fake_probability": 0.05223919078707695
+  },
+  {
+   "image": "GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000143.JPEG",
+   "label_fake": 0,
+   "cached_vlm_verdict": "fake",
+   "cached_vlm_logit": 7.875,
+   "dda_fake_probability": 0.03291349485516548
+  }
+ ],
+ "selected": [
+  "GenImage_val_full/test/adm/1_fake/0_adm_34.PNG",
+  "GenImage_val_full/test/adm/1_fake/0_adm_85.PNG",
+  "GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG",
+  "GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png",
+  "GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png",
+  "GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG",
+  "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG",
+  "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG"
+ ]
+}

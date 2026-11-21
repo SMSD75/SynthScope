@@ -2,15 +2,17 @@
 
 **Paper:** Chen et al., *Align, Don't Blend: Orthogonal Supervision Disentanglement As the Key to Generalizable
 AI-Generated Image Detection*, ACM MM 2026 ([arXiv 2512.06746](https://arxiv.org/abs/2512.06746)).
-**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `f4b4794` (no licence file).
+**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `f4b4794` (Apache-2.0 since 2026-11-20,
+checked at `5d83e40`).
 **Weights:** LoRA adapter [Gaffeyzz/Align-Dont-Blend-VLM](https://huggingface.co/Gaffeyzz/Align-Dont-Blend-VLM) @
-`49975ccd` (no licence), on the base model [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
+`49975ccd` (Apache-2.0: the card's licence tag, added at `ff7973df` with identical adapter files), on the base model [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
 @ `cc594898` (Apache-2.0).
 
-**Status.** Inference only, with the official adapter. This is **the VLM branch alone**: the paper's detector also ORs
-in a pixel-artifact expert that is not released, so **the paper's headline numbers (VLM OR expert) cannot be
-reproduced**, and the paper prints no VLM-only number for the released adapter. It is not on the Space and not in the
-model zoo, because neither the code nor the adapter has a licence ([Licence](#licence)).
+**Status.** Inference only, with the official adapter. This is **the VLM branch alone**. The paper's detector ORs it
+with a pixel-artifact expert, the released DDA checkpoint (the authors confirmed this on 2026-11-20). That full method is
+the detector [`adb_full`](../adb_full/README.md), which carries the paper comparison. The paper prints no VLM-only number
+for the released adapter. It is not on the Space, because a 7B VLM needs a GPU, and the adapter is not mirrored to the
+model zoo ([Licence](#licence)).
 
 - **Fidelity** against the official ms-swift 4.4.2 inference (pt backend): identical text, tokens and verdicts on 16 / 16
   images ([Fidelity](#fidelity)).
@@ -20,15 +22,15 @@ model zoo, because neither the code nor the adapter has a licence ([Licence](#li
   - On older GAN and diffusion sets it is near chance: UFD-8 52.88 (last), ForenSynths 55.72.
   - Mean of the 15: 76.58 acc / 84.11 AUROC (Veritas++ 84.70 / 91.33).
 - **Full WildRF** (2,503 images): the VLM branch alone gives 93.98 balanced accuracy. The paper's full method prints
-  92.9.
+  92.9; `adb_full` (VLM OR DDA) gives 91.22 on the same images.
 
 ## Method
 The paper pairs two detectors and ORs their verdicts: a vision-language model trained to judge semantic plausibility,
-and a pixel-artifact expert. Only the **VLM branch** is released: a LoRA (r 16, alpha 32, 196 modules on the language
+and a pixel-artifact expert. This detector is the **VLM branch**: a LoRA (r 16, alpha 32, 196 modules on the language
 model's attention and MLP projections) on Qwen2.5-VL-7B-Instruct, trained with DPO on 5,000 real Unsplash images and
 5,000 semantically implausible Echo-4o images. It writes a short `<rationale>` and then answers inside `<answer>`:
-"This is an authentic image." or "This is an AI-generated image.". The expert is not released, so **this detector is
-the VLM branch alone**; the paper's tables (VLM OR expert) cannot be reproduced with it.
+"This is an authentic image." or "This is an AI-generated image.". The expert is the released DDA checkpoint
+([`dda`](../dda/README.md)); the two together, with the official decision rule, are [`adb_full`](../adb_full/README.md).
 
 ## Official inference, as SynthScope reproduces it
 `predict.py` writes a dataset file and runs ms-swift (`swift infer`; the vLLM backend by default, or the pt backend).
@@ -219,7 +221,7 @@ accuracy is below 50% on:
 - 4 of 7 ARForensics generators (Open-MAGVIT2 1.4, VAR 6.9, RAR 8.3, LlamaGen 15.3).
 
 This fits the method: the VLM branch is trained on semantic implausibility, and the paper leaves pixel artifacts to the
-expert, which is not released. On UFD-8 the real accuracy also drops, to 64.3.
+expert (DDA; see `adb_full`). On UFD-8 the real accuracy also drops, to 64.3.
 
 **Weak spots inside strong sets:**
 - RRDataset: transfer 13.2 and re-digitised 25.1 fake accuracy (original 94.6);
@@ -246,10 +248,11 @@ decoding is greedy.
 
 ### Comparison with the paper (arXiv 2512.06746 v3; balanced accuracy)
 
-**The paper's headline numbers are not reproducible.** Every AlignGemini number the paper prints is the **full method**:
-the VLM branch OR the pixel-artifact expert, and the expert is not released. **The paper prints no VLM-only number for
-the released adapter.** The printed full-method numbers below are therefore context, not targets, and no row gets a
-delta. Two other rows are listed because they also concern Qwen2.5-VL-7B, but neither is the released adapter:
+Every AlignGemini number the paper prints is the **full method**, the VLM branch OR the DDA expert. Its reproduction is
+in the [`adb_full` README](../adb_full/README.md#results) (`repro/adb_full/paper_comparison.json`). **The paper prints no
+VLM-only number for the released adapter**, so for this branch the printed numbers below are context, not targets, and
+no row gets a delta. Two other rows are listed because they also concern Qwen2.5-VL-7B, but neither is the released
+adapter:
 - Table 4's "Qwen2.5-VL-7B" row is ambiguous between the base model and a trained VLM;
 - Table 5's "Qwen2.5-VL-7B (Untrained)" row is the base model without the adapter.
 
@@ -264,7 +267,7 @@ delta. Two other rows are listed because they also concern Qwen2.5-VL-7B, but ne
 
 Notes on the rows:
 - **WildRF.** This is the one full-data paper benchmark. The released VLM branch alone gives 93.98; the paper's full
-  method prints 92.9. These are two different detectors, so this is not a reproduction of the paper's number.
+  method prints 92.9, and SynthScope's full method (`adb_full`) gives 91.22 on the same 2,503 images.
 - **GenImage.** The paper JPEG-compresses the fakes "following BFree" to match the reals' format, and gives no quality
   factor. We used q96 (`bench_eval --jpeg-fakes 96`, reals untouched); q96 is our choice, following DDA's published
   GenImage protocol.
@@ -288,8 +291,8 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
 ```
 
 ## Caveats
-- **VLM branch only.** The paper's detector is the VLM branch OR the unreleased pixel expert. No number here is the
-  paper's method.
+- **VLM branch only.** The paper's detector is the VLM branch OR the DDA pixel expert (`adb_full`). No number here is
+  the paper's method.
 - **Fidelity is against the ms-swift pt backend.** The official default is the vLLM backend, which was not compared.
 - **Most scores are near 0 or 1, not all.** On the 16 fidelity images the verdict-token gap is 5.1-25.3 logits in
   magnitude. Over the 19,286 scored benchmark images the median |gap| is 19.6; 512 (2.7%) have |gap| < 2.2, i.e.
@@ -309,19 +312,27 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
   - The FakeVLM integration edits `models/vlm/*.py` again (a new LLaVA family, image hooks and parser that ADB does not
     use), so the caches written by main e5749ae are re-keyed once more. `migrate_vlm_cache.py --model adb_vlm` carries
     them over byte for byte (rule `unchanged`, see its docstring).
+  - The Align, Don't Blend full-method branch (detector/adb-full) edits one docstring line of `models/vlm/parsers.py` (the
+    licence), so the caches of main ca433a7 (code version 4a950958ed) are re-keyed to 53f470222c. `migrate_vlm_cache.py`
+    carries them over byte for byte (rule `unchanged`), for adb_vlm, veritaspp and fakevlm.
 
 ## Availability
-- Not on the Hugging Face Space: no licence, and a 7B model needs a GPU (17.26 GB peak).
+- Not on the Hugging Face Space: a 7B model needs a GPU (17.26 GB peak).
 - Not in the model zoo (`NEVER_REDISTRIBUTE` in `synthscope/hub.py`). `synthscope.load("adb_vlm")` without the folders
   prints the download commands below.
 
 ## Licence
-Neither the code nor the adapter has a licence:
-- the code repository has no LICENSE file;
-- the Hugging Face and ModelScope adapter cards give none.
+The code and the VLM adapter are **Apache-2.0** (since 2026-11-20):
+- the code repository has an Apache-2.0 `LICENSE` (commit `4ce147f`; its README: "The code and VLM adapter are licensed
+  under Apache-2.0");
+- the Hugging Face adapter card has the `license: apache-2.0` tag and a `LICENSE` file since revision `ff7973df`. That
+  revision changes only the card and adds the licence: `adapter_model.safetensors` (sha256 `78b127c5c7623c01c25d9f57d039033bee4d6de608b077a507c326d293f11b5f`) and
+  `adapter_config.json` are byte-identical to the pinned `49975ccd`, so the pin is kept (it also keys the VLM caches).
 
-So the adapter is **not redistributed**: it is not in the model zoo and not on the Space. The base model Qwen2.5-VL-7B-Instruct is
-Apache-2.0. See [LICENSES.md](../../../LICENSES.md). Download both folders yourself into `$SYNTHSCOPE_CKPT_DIR`:
+The base model Qwen2.5-VL-7B-Instruct is Apache-2.0. Redistribution is therefore allowed, but the adapter is **not
+mirrored** to the model zoo: it needs the separate 16 GB base folder, and mirroring it is the maintainers' call (the key
+stays in `NEVER_REDISTRIBUTE`). See [LICENSES.md](../../../LICENSES.md). Download both folders yourself into
+`$SYNTHSCOPE_CKPT_DIR`:
 
 ```
 hf download Gaffeyzz/Align-Dont-Blend-VLM --revision 49975ccd8b28eaab8ef14650ffee0c545934d02b --local-dir $SYNTHSCOPE_CKPT_DIR/adb_vlm

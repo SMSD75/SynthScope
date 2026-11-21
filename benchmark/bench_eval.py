@@ -28,7 +28,9 @@ ForenSynths and AIGCDetect, to remove the PNG-fake/JPEG-real format bias).
 Use --degrade SPEC for a robustness slice: one deterministic degradation applied to EVERY image (reals and fakes) after it is
 loaded and before --jpeg-fakes (fakes only) and the detector's own transform, in that order. SPEC is one token:
 jpeg<Q> | down<F> | blur<S> | social | social2 (see ``parse_degrade``). Use --results-log PATH to append the run's summary line
-to PATH instead of repro/MASTER_RESULTS.jsonl.
+to PATH instead of repro/MASTER_RESULTS.jsonl. Use --per-image to record every image's P(fake) (with its key, relative to
+--data, and the file's sha1) in the output JSON (``per_image``) for a non-VLM detector, e.g. to fuse it with a VLM's records
+(Align, Don't Blend's full method, repro/adb_full/fuse.py).
 
 VLM detectors (registry ``predict_kind="vlm"``, e.g. veritaspp) are scored one image at a time through ``Engine.vlm_score`` on the
 file decoded without an RGB conversion (``media.decode_image_raw``; the model's own ``image_loader`` does the official EXIF / alpha
@@ -555,6 +557,13 @@ def main(argv=None) -> int:
     ap.add_argument("--vlm-seed", type=int, default=0, help="VLM detectors, --vlm-decoding official: the per-image seed")
     ap.add_argument("--vlm-cache", default=None, metavar="DIR",
                     help="VLM detectors: per-image result cache (resume); one subfolder per model / decoding / degradation")
+    ap.add_argument("--vlm-dtype", choices=["bfloat16", "float16", "float32"], default=None,
+                    help="VLM detectors: load the model in this dtype instead of the registry's (a precision check; part of "
+                         "the cache identity)")
+    ap.add_argument("--vlm-attn", choices=["sdpa", "eager", "flash_attention_2"], default=None,
+                    help="VLM detectors: this attention implementation instead of the registry's (part of the cache identity)")
+    ap.add_argument("--per-image", action="store_true",
+                    help="non-VLM detectors: record each image's key, sha1, label and P(fake) in the output JSON (per_image)")
     ap.add_argument("--device", default=None)
     ap.add_argument("--tag", help="run tag (output filename + log); default <model>_<dataset> (+ _<degrade> with --degrade and no --out)")
     ap.add_argument("--out", default=None)
@@ -601,10 +610,22 @@ def main(argv=None) -> int:
         det = Detector(spec, device=args.device, **load_kw)
     else:
         det = synthscope.load(args.model, device=args.device, **load_kw)
+    if getattr(det.spec, "predict_kind", None) == "fusion":
+        ap.error(f"{args.model} combines two detectors: score both per image (the VLM with --vlm-cache, the expert with "
+                 "--per-image) and fuse them with repro/adb_full/fuse.py (fuse_components, models/image/adb_full/adb_full.py)")
+    if (args.vlm_dtype or args.vlm_attn) and getattr(det.spec, "vlm", None) is None:
+        ap.error("--vlm-dtype / --vlm-attn apply to VLM detectors only")
+    if args.vlm_dtype or args.vlm_attn:
+        vlm_cfg = dataclasses.replace(det.spec.vlm, dtype=args.vlm_dtype or det.spec.vlm.dtype,
+                                      attn_implementation=args.vlm_attn or det.spec.vlm.attn_implementation)
+        det.spec = dataclasses.replace(det.spec, vlm=vlm_cfg)
+        print(f"[vlm] dtype={vlm_cfg.dtype} attn={vlm_cfg.attn_implementation} (override)", flush=True)
     det._ensure_weights()
     spec = det.spec
     model = det._engine._get_model(spec)
     is_vlm = getattr(spec, "predict_kind", None) == "vlm"
+    if args.per_image and is_vlm:
+        ap.error("--per-image is for non-VLM detectors (a VLM's per-image records are always written)")
     if is_vlm and (args.native_res or args.model_config):
         ap.error("--native-res / --model-config do not apply to VLM detectors")
     eval_transform = native_res_transform(spec.transform) if args.native_res else spec.transform
@@ -631,6 +652,8 @@ def main(argv=None) -> int:
         per_image = []
 
     per_gen, agg = {}, {"ap": [], "auroc": [], "acc": []}
+    if args.per_image:
+        per_image = []
     for name, reals, fakes in gens:
         if args.limit:
             reals, fakes = reals[:args.limit], fakes[:args.limit]
@@ -651,9 +674,15 @@ def main(argv=None) -> int:
             m = vlm_metrics(recs, labels.tolist())
             per_image += [{"generator": name, "key": r["key"], "label": int(y), "logit": round(r["logit"], 4),
                            "verdict": r["verdict"], "score_source": r["score_source"], "new_tokens": r["new_tokens"],
-                           "finished": r["finished"], "seconds": r["seconds"]} for r, y in zip(recs, labels.tolist())]
+                           "finished": r["finished"], "seconds": r["seconds"], "sha1": r["sha1"]}
+                          for r, y in zip(recs, labels.tolist())]
         else:
             m = metrics(probs, labels)
+            if args.per_image:
+                paths = reals + fakes
+                per_image += [{"generator": name, "key": image_key(paths[j], root, reals_root),
+                               "sha1": hashlib.sha1(paths[j].read_bytes()).hexdigest(), "label": int(y), "prob": float(p)}
+                              for j, y, p in zip(kept, labels.tolist(), probs.tolist())]
         if m is None:
             print(f"    skip {name}: one class only")
             continue
@@ -712,6 +741,12 @@ def main(argv=None) -> int:
                            "generators (ufd, synthbuster layouts) is counted once per generator; the headline acc is the "
                            "balanced mean over generators and is unaffected"}
         result["per_image"] = per_image
+        if args.vlm_dtype or args.vlm_attn:
+            result["vlm"]["dtype"], result["vlm"]["attn_implementation"] = spec.vlm.dtype, spec.vlm.attn_implementation
+    elif args.per_image:
+        result["per_image"] = per_image
+    if torch.cuda.is_available() and str(det._engine.device).startswith("cuda"):
+        result["gpu"] = torch.cuda.get_device_name(0)
     out = Path(args.out).expanduser() if args.out else (
         RESULTS_LOG.parent / "bench_results" / f"{args.tag}.json")
     out.parent.mkdir(parents=True, exist_ok=True)

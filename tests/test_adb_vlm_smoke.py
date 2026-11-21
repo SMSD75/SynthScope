@@ -432,9 +432,9 @@ def test_registry() -> None:
     assert ADB_VLM.base_model == "qwen2.5-vl-7b-instruct" and ADB_VLM.hf_repo == "Gaffeyzz/Align-Dont-Blend-VLM"
     assert ADB_VLM.hf_revision.startswith("49975ccd") and ADB_VLM.base_hf_revision.startswith("cc594898")
     assert "1.0 MP" in input_note(spec)["label"] and "EXIF" in input_note(spec)["explanation"]
-    assert "adb_vlm" in hub.NEVER_REDISTRIBUTE and "no licence" in hub.NEVER_REDISTRIBUTE["adb_vlm"]
+    assert "adb_vlm" in hub.NEVER_REDISTRIBUTE and "Apache-2.0" in hub.NEVER_REDISTRIBUTE["adb_vlm"]
     row = [line for line in Path(ROOT, "LICENSES.md").read_text().splitlines() if line.startswith("| `adb_vlm` |")]
-    assert len(row) == 1 and "no licence" in row[0] and "not in the model zoo" in row[0], row
+    assert len(row) == 1 and "Apache-2.0" in row[0] and "no licence" not in row[0] and "not mirrored" in row[0], row
     fetch = Path(ROOT, "deploy", "hf-space", "fetch_weights.py").read_text()
     default = ast.literal_eval(fetch.split("DEFAULT = ", 1)[1].split("]", 1)[0] + "]")
     assert "adb_vlm" not in default and "veritaspp" not in default
@@ -458,7 +458,7 @@ def test_registry() -> None:
             expect_raise(lambda: Detector(spec, device="cpu").predict(Path(tmp) / "clip.mp4"), ValueError, "still images only")
         finally:
             backend_config.CHECKPOINTS_DIR = original
-    print("    vlm spec, official greedy decoding (rep. penalty 1.05), note, NEVER_REDISTRIBUTE, LICENSES 'no licence', "
+    print("    vlm spec, official greedy decoding (rep. penalty 1.05), note, NEVER_REDISTRIBUTE, LICENSES Apache-2.0 (not mirrored), "
           "not on the Space, adapter + base download hint, missing base reported")
 
 

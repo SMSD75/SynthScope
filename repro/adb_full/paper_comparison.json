@@ -1,0 +1,434 @@
+{
+ "wildrf_full": {
+  "paper_benchmark": "WildRF",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 92.9,
+  "ours_acc": 91.22,
+  "delta": -1.68,
+  "ours_mauroc": 99.22,
+  "vlm_only_acc": 93.98,
+  "dda_only_acc": 90.2,
+  "per_generator": {
+   "facebook": {
+    "paper": 92.2,
+    "ours": 90.94,
+    "vlm": 93.12,
+    "dda": 93.12
+   },
+   "reddit": {
+    "paper": 90.9,
+    "ours": 89.33,
+    "vlm": 93.07,
+    "dda": 86.4
+   },
+   "twitter": {
+    "paper": 95.5,
+    "ours": 93.4,
+    "vlm": 95.75,
+    "dda": 91.07
+   }
+  },
+  "n_images": 2503,
+  "data": "full test split (Facebook, Reddit, Twitter)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "RTX A5000 (IVI, committed adb_vlm run)"
+  ],
+  "source": "repro/adb_full/results/wildrf_full.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "wildrf_full_fp32": {
+  "paper_benchmark": "WildRF",
+  "paper_table": "Table 1",
+  "main": false,
+  "paper_acc": 92.9,
+  "ours_acc": 91.34,
+  "delta": -1.56,
+  "ours_mauroc": 99.25,
+  "vlm_only_acc": 94.0,
+  "dda_only_acc": 90.2,
+  "per_generator": {
+   "facebook": {
+    "paper": 92.2,
+    "ours": 90.94,
+    "vlm": 93.12,
+    "dda": 93.12
+   },
+   "reddit": {
+    "paper": 90.9,
+    "ours": 89.67,
+    "vlm": 93.27,
+    "dda": 86.4
+   },
+   "twitter": {
+    "paper": 95.5,
+    "ours": 93.4,
+    "vlm": 95.61,
+    "dda": 91.07
+   }
+  },
+  "n_images": 2503,
+  "data": "full test split",
+  "vlm_precision": "float32 + eager attention",
+  "vlm_gpu": [
+   "NVIDIA RTX A6000"
+  ],
+  "source": "repro/adb_full/results/wildrf_full_fp32.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_fp32_297123.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "aigibench": {
+  "paper_benchmark": "AIGI-Bench",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 88.8,
+  "ours_acc": 87.52,
+  "delta": -1.28,
+  "ours_mauroc": 97.35,
+  "vlm_only_acc": 89.65,
+  "dda_only_acc": 82.41,
+  "per_generator": {
+   "CommunityAI": {
+    "paper": 91.9,
+    "ours": 91.2,
+    "vlm": 90.13,
+    "dda": 83.1
+   },
+   "SocialRF": {
+    "paper": 85.6,
+    "ours": 83.83,
+    "vlm": 89.17,
+    "dda": 81.73
+   }
+  },
+  "n_images": 9000,
+  "data": "SocialRF full (3,000 real + 3,000 fake); CommunityAI the first 1,500 real + 1,500 fake (sorted) of 6,000 + 6,000",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/aigibench.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_bench_297122.out",
+   "repro/logs/adbfull_bench_297122_w2.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "aigibench_subset": {
+  "paper_benchmark": "AIGI-Bench",
+  "paper_table": "Table 1",
+  "main": false,
+  "paper_acc": 88.8,
+  "ours_acc": 81.25,
+  "delta": -7.55,
+  "ours_mauroc": 94.12,
+  "vlm_only_acc": 82.5,
+  "dda_only_acc": 87.5,
+  "per_generator": {
+   "CommunityAI": {
+    "paper": 91.9,
+    "ours": 85.0,
+    "vlm": 85.0,
+    "dda": 87.5
+   },
+   "SocialRF": {
+    "paper": 85.6,
+    "ours": 77.5,
+    "vlm": 80.0,
+    "dda": 87.5
+   }
+  },
+  "n_images": 80,
+  "data": "the vlm_bench subset slice (20 real + 20 fake each)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "RTX A5000 (IVI, committed adb_vlm run)"
+  ],
+  "source": "repro/adb_full/results/aigibench_subset.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "bfree_online_full": {
+  "paper_benchmark": "BFree-Online",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 97.5,
+  "ours_acc": 96.93,
+  "delta": -0.57,
+  "ours_mauroc": 99.11,
+  "vlm_only_acc": 87.08,
+  "dda_only_acc": 94.98,
+  "per_generator": {
+   "viral": {
+    "paper": null,
+    "ours": 96.93,
+    "vlm": 87.08,
+    "dda": 94.98
+   }
+  },
+  "n_images": 807,
+  "data": "all held images (269 real + 538 fake still online of 1,111 listed)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/bfree_online_full.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_bench_297122_w2.out",
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "bfree_online_subset": {
+  "paper_benchmark": "BFree-Online",
+  "paper_table": "Table 1",
+  "main": false,
+  "paper_acc": 97.5,
+  "ours_acc": 97.08,
+  "delta": -0.42,
+  "ours_mauroc": 99.15,
+  "vlm_only_acc": 87.96,
+  "dda_only_acc": 94.93,
+  "per_generator": {
+   "viral": {
+    "paper": null,
+    "ours": 97.08,
+    "vlm": 87.96,
+    "dda": 94.93
+   }
+  },
+  "n_images": 769,
+  "data": "the vlm_bench subset (269 real + 500 fake)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "RTX A5000 (IVI, committed adb_vlm run)"
+  ],
+  "source": "repro/adb_full/results/bfree_online_subset.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "genimage_subset_jpegfakes96": {
+  "paper_benchmark": "GenImage",
+  "paper_table": "Table 6 (appendix)",
+  "main": true,
+  "paper_acc": 91.7,
+  "ours_acc": 85.12,
+  "delta": -6.58,
+  "ours_mauroc": 92.23,
+  "vlm_only_acc": 65.97,
+  "dda_only_acc": 87.3,
+  "per_generator": {
+   "adm": {
+    "paper": 77.2,
+    "ours": 73.81,
+    "vlm": 48.41,
+    "dda": 79.37
+   },
+   "biggan": {
+    "paper": 98.4,
+    "ours": 80.16,
+    "vlm": 51.59,
+    "dda": 81.75
+   },
+   "glide": {
+    "paper": 90.3,
+    "ours": 84.92,
+    "vlm": 61.11,
+    "dda": 83.33
+   },
+   "midjourney": {
+    "paper": 89.3,
+    "ours": 91.27,
+    "vlm": 83.33,
+    "dda": 95.24
+   },
+   "sdv1.4": {
+    "paper": 89.6,
+    "ours": 96.83,
+    "vlm": 69.84,
+    "dda": 99.21
+   },
+   "sdv1.5": {
+    "paper": 95.6,
+    "ours": 96.03,
+    "vlm": 80.95,
+    "dda": 98.41
+   },
+   "vqdm": {
+    "paper": 98.1,
+    "ours": 64.29,
+    "vlm": 54.76,
+    "dda": 62.7
+   },
+   "wukong": {
+    "paper": 98.3,
+    "ours": 93.65,
+    "vlm": 77.78,
+    "dda": 98.41
+   }
+  },
+  "n_images": 1008,
+  "data": "the vlm_bench subset (63 real + 63 fake per generator), fakes JPEG q96",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "RTX A5000 (IVI, committed adb_vlm run)"
+  ],
+  "source": "repro/adb_full/results/genimage_subset_jpegfakes96.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ },
+ "aigcdetect_subset_jpegfakes96": {
+  "paper_benchmark": "AIGCDetectBenchmark",
+  "paper_table": "Table 8 (appendix)",
+  "main": true,
+  "paper_acc": 87.7,
+  "ours_acc": 83.82,
+  "delta": -3.88,
+  "ours_mauroc": 90.05,
+  "vlm_only_acc": 63.92,
+  "dda_only_acc": 86.86,
+  "per_generator": {
+   "ADM": {
+    "paper": 89.3,
+    "ours": 68.33,
+    "vlm": 41.67,
+    "dda": 76.67
+   },
+   "DALLE2": {
+    "paper": 94.9,
+    "ours": 95.0,
+    "vlm": 55.0,
+    "dda": 98.33
+   },
+   "Glide": {
+    "paper": 90.3,
+    "ours": 93.33,
+    "vlm": 66.67,
+    "dda": 93.33
+   },
+   "Midjourney": {
+    "paper": 95.6,
+    "ours": 91.67,
+    "vlm": 83.33,
+    "dda": 95.0
+   },
+   "VQDM": {
+    "paper": 77.2,
+    "ours": 71.67,
+    "vlm": 61.67,
+    "dda": 66.67
+   },
+   "biggan": {
+    "paper": 90.4,
+    "ours": 81.67,
+    "vlm": 48.33,
+    "dda": 83.33
+   },
+   "cyclegan": {
+    "paper": 74.4,
+    "ours": 66.67,
+    "vlm": 61.67,
+    "dda": 75.0
+   },
+   "gaugan": {
+    "paper": 92.5,
+    "ours": 93.33,
+    "vlm": 68.33,
+    "dda": 91.67
+   },
+   "progan": {
+    "paper": 91.0,
+    "ours": 73.33,
+    "vlm": 58.33,
+    "dda": 90.0
+   },
+   "sd_xl": {
+    "paper": 99.1,
+    "ours": 100.0,
+    "vlm": 96.67,
+    "dda": 100.0
+   },
+   "stable_diffusion_v_1_4": {
+    "paper": 98.3,
+    "ours": 96.67,
+    "vlm": 80.0,
+    "dda": 100.0
+   },
+   "stable_diffusion_v_1_5": {
+    "paper": 98.1,
+    "ours": 96.67,
+    "vlm": 75.0,
+    "dda": 98.33
+   },
+   "stargan": {
+    "paper": 72.9,
+    "ours": 73.33,
+    "vlm": 58.33,
+    "dda": 73.33
+   },
+   "stylegan": {
+    "paper": 86.6,
+    "ours": 80.0,
+    "vlm": 50.0,
+    "dda": 86.67
+   },
+   "stylegan2": {
+    "paper": 89.2,
+    "ours": 91.67,
+    "vlm": 50.0,
+    "dda": 95.0
+   },
+   "whichfaceisreal": {
+    "paper": 52.6,
+    "ours": 58.33,
+    "vlm": 55.0,
+    "dda": 55.0
+   },
+   "wukong": {
+    "paper": 98.4,
+    "ours": 93.33,
+    "vlm": 76.67,
+    "dda": 98.33
+   }
+  },
+  "n_images": 1020,
+  "data": "the vlm_bench subset (30 real + 30 fake per generator), fakes JPEG q96 (inferred protocol)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "RTX A5000 (IVI, committed adb_vlm run)"
+  ],
+  "source": "repro/adb_full/results/aigcdetect_subset_jpegfakes96.json",
+  "vlm_logs": [
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ]
+ }
+}

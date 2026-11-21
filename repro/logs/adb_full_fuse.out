@@ -1,0 +1,17 @@
+=== RESULT adbfull_wildrf_full: mAP=99.18 mAUROC=99.22 acc=91.22 over 3 generators -> repro/adb_full/results/wildrf_full.json ===
+    WildRF: paper 92.9 | ours 91.22 (VLM 93.98, DDA 90.2) AUROC 99.22 | n=2503 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+=== RESULT adbfull_wildrf_full_fp32: mAP=99.2 mAUROC=99.25 acc=91.34 over 3 generators -> repro/adb_full/results/wildrf_full_fp32.json ===
+    WildRF: paper 92.9 | ours 91.34 (VLM 94.0, DDA 90.2) AUROC 99.25 | n=2503 | float32 + eager attention on ['NVIDIA RTX A6000']
+=== RESULT adbfull_aigibench: mAP=96.87 mAUROC=97.35 acc=87.52 over 2 generators -> repro/adb_full/results/aigibench.json ===
+    AIGI-Bench: paper 88.8 | ours 87.52 (VLM 89.65, DDA 82.41) AUROC 97.35 | n=9000 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_aigibench_subset: mAP=92.44 mAUROC=94.12 acc=81.25 over 2 generators -> repro/adb_full/results/aigibench_subset.json ===
+    AIGI-Bench: paper 88.8 | ours 81.25 (VLM 82.5, DDA 87.5) AUROC 94.12 | n=80 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+=== RESULT adbfull_bfree_online_full: mAP=99.46 mAUROC=99.11 acc=96.93 over 1 generators -> repro/adb_full/results/bfree_online_full.json ===
+    BFree-Online: paper 97.5 | ours 96.93 (VLM 87.08, DDA 94.98) AUROC 99.11 | n=807 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_bfree_online_subset: mAP=99.45 mAUROC=99.15 acc=97.08 over 1 generators -> repro/adb_full/results/bfree_online_subset.json ===
+    BFree-Online: paper 97.5 | ours 97.08 (VLM 87.96, DDA 94.93) AUROC 99.15 | n=769 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+=== RESULT adbfull_genimage_subset_jpegfakes96: mAP=86.53 mAUROC=92.23 acc=85.12 over 8 generators -> repro/adb_full/results/genimage_subset_jpegfakes96.json ===
+    GenImage: paper 91.7 | ours 85.12 (VLM 65.97, DDA 87.3) AUROC 92.23 | n=1008 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+=== RESULT adbfull_aigcdetect_subset_jpegfakes96: mAP=85.92 mAUROC=90.05 acc=83.82 over 17 generators -> repro/adb_full/results/aigcdetect_subset_jpegfakes96.json ===
+    AIGCDetectBenchmark: paper 87.7 | ours 83.82 (VLM 63.92, DDA 86.86) AUROC 90.05 | n=1020 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+wrote repro/adb_full/paper_comparison.json (8 rows)

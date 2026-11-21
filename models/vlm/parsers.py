@@ -8,12 +8,12 @@ None and the caller decides. Veritas++ (EricTan7/VeritasPP) releases no parser o
 its authors used for the earlier model.
 
 ``parse_adb`` is vendored from Align, Don't Blend's ``detector/core.py`` ``parse_vlm_verdict`` (github.com/GzZning/
-Align-Dont-Blend @ f4b4794; the repository has no licence file, see LICENSES.md), unchanged in behaviour: exactly one
-``<answer> ... </answer>`` whose whitespace-normalised, case-folded text is "this is an authentic image." or "this is an
-ai-generated image."; with no answer tag, a final line "This is an authentic / AI-generated image." (optionally
-followed by ``</answer>``). Any other output raises ``ValueError`` in the official code (``predict.py`` then stops);
-here it is returned as None (unparsed). ``adb_verdict_offset`` says where in the text that parser found a tag-less
-verdict, so that the score is read at the same word (``VLMConfig.verdict_offset``).
+Align-Dont-Blend @ f4b4794; Apache-2.0, the repository's LICENSE since commit 4ce147f, see LICENSES.md), unchanged in
+behaviour: exactly one ``<answer> ... </answer>`` whose whitespace-normalised, case-folded text is "this is an
+authentic image." or "this is an ai-generated image."; with no answer tag, a final line "This is an authentic /
+AI-generated image." (optionally followed by ``</answer>``). Any other output raises ``ValueError`` in the official code
+(``predict.py`` then stops); here it is returned as None (unparsed). ``adb_verdict_offset`` says where in the text that
+parser found a tag-less verdict, so that the score is read at the same word (``VLMConfig.verdict_offset``).
 
 ``parse_fakevlm`` is vendored from FakeVLM's ``scripts/eval.py`` ``validate`` (github.com/opendatalab/FakeVLM @ fdcdcf1;
 no licence file, see LICENSES.md): the per-output rule, unchanged in behaviour: the text after the last "?"

@@ -8,7 +8,10 @@ A unit is one ``benchmark/bench_eval.py`` subprocess:
                                 full:<gen> scores only that generator (bench_eval --select), so several workers of one node
                                 can fill the shared cache in parallel before the whole full unit reads it back;
                                 jpegfakes<Q> (bench_eval --jpeg-fakes Q: only the fakes JPEG-compressed, the DDA / BFree
-                                format-alignment protocol of a paper table, e.g. jpegfakes96 on GenImage / AIGCDetect)
+                                format-alignment protocol of a paper table, e.g. jpegfakes96 on GenImage / AIGCDetect);
+                                limit<N>[:<gen>] (the FULL data like full, but --limit N: the first N sorted reals and fakes
+                                per generator; same clean cache); fullfp32[:<gen>] (full, with the VLM in float32 + eager
+                                attention: bench_eval --vlm-dtype float32 --vlm-attn eager, its own cache folder)
     cmp:<det>:<bench>[:jpeg95]  a comparator detector on the same subset (bs 32)
 
 Every unit scores ``<subsets-root>/<bench>/data`` (+ ``reals``) with ``--limit L`` of the spec (a no-op on the subset, recorded in
@@ -66,14 +69,15 @@ def command(unit: str, spec: dict, args) -> tuple[list[str], Path]:
     else:
         raise ValueError(f"unit {unit!r}: expected vlm:<bench>[:variant] or cmp:<det>:<bench>[:jpeg95]")
     b = next(x for x in spec["benchmarks"] if x["key"] == bench)
-    gen = parts[3] if kind == "vlm" and variant == "full" and len(parts) > 3 else None
+    on_full = kind == "vlm" and (variant in ("full", "fullfp32") or re.fullmatch(r"limit\d+", variant) is not None)
+    gen = parts[3] if on_full and len(parts) > 3 else None
     stem = model + ("" if variant == "clean" else f"__{variant}") + (f"__{gen}" if gen else "")
     out = Path(args.out_root) / bench / f"{stem}.json"
     sub = Path(args.subsets_root) / bench
-    if variant == "full":
+    if on_full:
         full = json.loads(Path(args.full_data).read_text())
         data, reals = full[bench], full.get(f"{bench}.reals")
-        cmd_limit = []
+        cmd_limit = ["--limit", variant[len("limit"):]] if variant.startswith("limit") else []
     else:
         data, reals = sub / "data", (sub / "reals" if b.get("reals") else None)
         cmd_limit = ["--limit", str(b["limit"])]
@@ -88,14 +92,16 @@ def command(unit: str, spec: dict, args) -> tuple[list[str], Path]:
         cmd += ["--degrade", "jpeg95"]
     elif re.fullmatch(r"jpegfakes\d+", variant):
         cmd += ["--jpeg-fakes", variant[len("jpegfakes"):]]
-    elif variant not in ("clean", "official", "full"):
+    elif variant == "fullfp32":
+        cmd += ["--vlm-dtype", "float32", "--vlm-attn", "eager"]
+    elif variant not in ("clean", "official", "full") and not on_full:
         raise ValueError(f"unit {unit!r}: unknown variant {variant}")
     if kind == "vlm":
         cmd += ["--vlm-cache", str(Path(args.cache_root) / bench)]
         if variant == "official":
             cmd += ["--vlm-decoding", "official", "--vlm-seed", str(args.seed)]
     else:
-        if variant == "official" or variant == "full":
+        if variant in ("official", "full", "fullfp32") or re.fullmatch(r"limit\d+", variant):
             raise ValueError(f"unit {unit!r}: comparators run clean or jpeg95 only")
         cmd += ["--bs", str(args.bs)]
     return cmd, out

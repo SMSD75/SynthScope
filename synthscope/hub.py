@@ -41,7 +41,9 @@ NEVER_REDISTRIBUTE = {
     "nsg_vd_pika": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "nsg_vd_unbalance": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "vib_net_official": "VIB-Net official checkpoints: restricted download, weights licence not verified, not redistributed",
-    "adb_vlm": "Align, Don't Blend VLM adapter: no licence (no LICENSE in the code repo, none on the HF / ModelScope adapter cards)",
+    # Align, Don't Blend: Apache-2.0 since 2026-11-20 (repo LICENSE, HF card @ ff7973df), so redistribution is allowed;
+    # mirroring the adapter (a LoRA on a separate 16 GB base folder) to the zoo is the maintainers' call, not done yet.
+    "adb_vlm": "Align, Don't Blend VLM adapter: Apache-2.0 (repo LICENSE, HF card), but a LoRA on a separate 16 GB base folder; fetched from Gaffeyzz/Align-Dont-Blend-VLM at the pinned revision, not mirrored (maintainers' call)",
     "fakevlm": "FakeVLM weights: no licence (no LICENSE in the code repo, no licence or model card on the HF repo); base LLaVA-1.5 / Vicuna under the Llama 2 Community License",
     # Not a licence problem (Apache-2.0): the release is a 17.5 GB multi-file Hugging Face folder, which the zoo's
     # one-file-per-key layout does not hold; users fetch it from the authors' repo at the pinned revision.
