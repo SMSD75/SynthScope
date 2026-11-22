@@ -12,6 +12,8 @@
     BFree-Online: paper 97.5 | ours 97.08 (VLM 87.96, DDA 94.93) AUROC 99.15 | n=769 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
 === RESULT adbfull_genimage_subset_jpegfakes96: mAP=86.53 mAUROC=92.23 acc=85.12 over 8 generators -> repro/adb_full/results/genimage_subset_jpegfakes96.json ===
     GenImage: paper 91.7 | ours 85.12 (VLM 65.97, DDA 87.3) AUROC 92.23 | n=1008 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
+=== RESULT adbfull_genimage_10k_jpegfakes96: mAP=86.18 mAUROC=92.86 acc=86.7 over 8 generators -> repro/adb_full/results/genimage_10k_jpegfakes96.json ===
+    GenImage: paper 91.7 | ours 86.7 (VLM 61.05, DDA 89.35) AUROC 92.86 | n=10000 | bf16 on ['NVIDIA RTX A5000']
 === RESULT adbfull_aigcdetect_subset_jpegfakes96: mAP=85.92 mAUROC=90.05 acc=83.82 over 17 generators -> repro/adb_full/results/aigcdetect_subset_jpegfakes96.json ===
     AIGCDetectBenchmark: paper 87.7 | ours 83.82 (VLM 63.92, DDA 86.86) AUROC 90.05 | n=1020 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
-wrote repro/adb_full/paper_comparison.json (8 rows)
+wrote repro/adb_full/paper_comparison.json (9 rows)

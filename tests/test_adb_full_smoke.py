@@ -447,6 +447,18 @@ def test_benchmark_path() -> None:
     assert cmd[cmd.index("--vlm-dtype") + 1] == "float32" and cmd[cmd.index("--vlm-attn") + 1] == "eager"
     cmd, _ = run_units.command("vlm:wildrf:full", spec, args)
     assert "--vlm-dtype" not in cmd and "--limit" not in cmd
+    with open(args.full_data, "w") as fh:
+        json.dump({"aigibench25": "/full/aigi", "wildrf": "/full/wildrf", "genimage_val100k": "/full/gi"}, fh)
+    cmd, out = run_units.command("vlm:genimage_val100k:limit625_jpegfakes96:adm", spec, args)
+    assert out.name == "adb_vlm__limit625_jpegfakes96__adm.json" and cmd[cmd.index("--data") + 1] == "/full/gi"
+    assert cmd[cmd.index("--limit") + 1] == "625" and cmd[cmd.index("--jpeg-fakes") + 1] == "96"
+    assert trace_check.canonical("limit625_jpegfakes96") == "jpegfakes96" and trace_check.canonical("limit20") == "clean"
+    paper = {"a": 90.0, "b": 80.0}
+    res = {"per_generator": {"a": {"acc": 88.5}, "b": {"acc": 77.9}}}
+    assert fuse.status({"status": "per_generator_tolerance"}, res, paper) == "reference"            # b: -2.1
+    res["per_generator"]["b"]["acc"] = 78.0
+    assert fuse.status({"status": "per_generator_tolerance"}, res, paper) == "within tolerance (subsample)"
+    assert fuse.status({"status": "below"}, res, paper) == "below"
     os.unlink(f.name)
     assert trace_check.SHARED_CLEAN.fullmatch("limit1500") and trace_check.SHARED_CLEAN.fullmatch("full")
     assert not trace_check.SHARED_CLEAN.fullmatch("fullfp32")

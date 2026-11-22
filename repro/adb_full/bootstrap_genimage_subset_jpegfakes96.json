@@ -1,0 +1,279 @@
+{
+ "row": "genimage_subset_jpegfakes96",
+ "n_images": 1008,
+ "generators": [
+  "adm",
+  "biggan",
+  "glide",
+  "midjourney",
+  "sdv1.4",
+  "sdv1.5",
+  "vqdm",
+  "wukong"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "stratified by (generator, class), paired across detectors; means over generators",
+ "detectors": {
+  "adb_full": {
+   "acc": 85.12,
+   "acc_ci95": [
+    83.04,
+    87.1
+   ],
+   "mauroc": 92.23,
+   "mauroc_ci95": [
+    90.22,
+    94.18
+   ]
+  },
+  "vlm": {
+   "acc": 65.97,
+   "acc_ci95": [
+    63.79,
+    68.06
+   ],
+   "mauroc": 79.18,
+   "mauroc_ci95": [
+    76.47,
+    81.97
+   ]
+  },
+  "dda": {
+   "acc": 87.3,
+   "acc_ci95": [
+    85.62,
+    88.89
+   ],
+   "mauroc": 97.49,
+   "mauroc_ci95": [
+    96.49,
+    98.3
+   ]
+  }
+ },
+ "paired_differences": {
+  "adb_full-dda": {
+   "acc": -2.18,
+   "acc_ci95": [
+    -3.57,
+    -0.79
+   ],
+   "mauroc": -5.25,
+   "mauroc_ci95": [
+    -7.15,
+    -3.52
+   ]
+  },
+  "adb_full-vlm": {
+   "acc": 19.15,
+   "acc_ci95": [
+    16.96,
+    21.33
+   ],
+   "mauroc": 13.05,
+   "mauroc_ci95": [
+    10.62,
+    15.34
+   ]
+  },
+  "vlm-dda": {
+   "acc": -21.33,
+   "acc_ci95": [
+    -24.11,
+    -18.65
+   ],
+   "mauroc": -18.31,
+   "mauroc_ci95": [
+    -21.1,
+    -15.55
+   ]
+  }
+ },
+ "per_generator": {
+  "adm": {
+   "adb_full": {
+    "acc": 73.81,
+    "acc_ci95": [
+     65.87,
+     80.95
+    ]
+   },
+   "vlm": {
+    "acc": 48.41,
+    "acc_ci95": [
+     42.86,
+     53.97
+    ]
+   },
+   "dda": {
+    "acc": 79.37,
+    "acc_ci95": [
+     73.02,
+     85.71
+    ]
+   }
+  },
+  "biggan": {
+   "adb_full": {
+    "acc": 80.16,
+    "acc_ci95": [
+     73.02,
+     86.51
+    ]
+   },
+   "vlm": {
+    "acc": 51.59,
+    "acc_ci95": [
+     46.81,
+     57.14
+    ]
+   },
+   "dda": {
+    "acc": 81.75,
+    "acc_ci95": [
+     75.4,
+     87.3
+    ]
+   }
+  },
+  "glide": {
+   "adb_full": {
+    "acc": 84.92,
+    "acc_ci95": [
+     78.57,
+     90.48
+    ]
+   },
+   "vlm": {
+    "acc": 61.11,
+    "acc_ci95": [
+     55.56,
+     66.69
+    ]
+   },
+   "dda": {
+    "acc": 83.33,
+    "acc_ci95": [
+     76.98,
+     88.89
+    ]
+   }
+  },
+  "midjourney": {
+   "adb_full": {
+    "acc": 91.27,
+    "acc_ci95": [
+     86.51,
+     96.03
+    ]
+   },
+   "vlm": {
+    "acc": 83.33,
+    "acc_ci95": [
+     76.19,
+     89.68
+    ]
+   },
+   "dda": {
+    "acc": 95.24,
+    "acc_ci95": [
+     91.27,
+     98.41
+    ]
+   }
+  },
+  "sdv1.4": {
+   "adb_full": {
+    "acc": 96.83,
+    "acc_ci95": [
+     93.65,
+     99.21
+    ]
+   },
+   "vlm": {
+    "acc": 69.84,
+    "acc_ci95": [
+     62.7,
+     76.19
+    ]
+   },
+   "dda": {
+    "acc": 99.21,
+    "acc_ci95": [
+     97.62,
+     100.0
+    ]
+   }
+  },
+  "sdv1.5": {
+   "adb_full": {
+    "acc": 96.03,
+    "acc_ci95": [
+     92.86,
+     99.21
+    ]
+   },
+   "vlm": {
+    "acc": 80.95,
+    "acc_ci95": [
+     74.6,
+     87.3
+    ]
+   },
+   "dda": {
+    "acc": 98.41,
+    "acc_ci95": [
+     96.03,
+     100.0
+    ]
+   }
+  },
+  "vqdm": {
+   "adb_full": {
+    "acc": 64.29,
+    "acc_ci95": [
+     57.14,
+     71.43
+    ]
+   },
+   "vlm": {
+    "acc": 54.76,
+    "acc_ci95": [
+     49.21,
+     60.32
+    ]
+   },
+   "dda": {
+    "acc": 62.7,
+    "acc_ci95": [
+     57.14,
+     68.25
+    ]
+   }
+  },
+  "wukong": {
+   "adb_full": {
+    "acc": 93.65,
+    "acc_ci95": [
+     89.68,
+     97.62
+    ]
+   },
+   "vlm": {
+    "acc": 77.78,
+    "acc_ci95": [
+     70.63,
+     84.92
+    ]
+   },
+   "dda": {
+    "acc": 98.41,
+    "acc_ci95": [
+     96.03,
+     100.0
+    ]
+   }
+  }
+ }
+}

@@ -41,7 +41,8 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "below"
  },
  "wildrf_full_fp32": {
   "paper_benchmark": "WildRF",
@@ -85,7 +86,8 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "below"
  },
  "aigibench": {
   "paper_benchmark": "AIGI-Bench",
@@ -124,7 +126,8 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
  },
  "aigibench_subset": {
   "paper_benchmark": "AIGI-Bench",
@@ -162,7 +165,8 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
  },
  "bfree_online_full": {
   "paper_benchmark": "BFree-Online",
@@ -195,7 +199,8 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
  },
  "bfree_online_subset": {
   "paper_benchmark": "BFree-Online",
@@ -227,12 +232,13 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
  },
  "genimage_subset_jpegfakes96": {
   "paper_benchmark": "GenImage",
   "paper_table": "Table 6 (appendix)",
-  "main": true,
+  "main": false,
   "paper_acc": 91.7,
   "ours_acc": 85.12,
   "delta": -6.58,
@@ -301,7 +307,84 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
+ },
+ "genimage_10k_jpegfakes96": {
+  "paper_benchmark": "GenImage",
+  "paper_table": "Table 6 (appendix)",
+  "main": true,
+  "paper_acc": 91.7,
+  "ours_acc": 86.7,
+  "delta": -5.0,
+  "ours_mauroc": 92.86,
+  "vlm_only_acc": 61.05,
+  "dda_only_acc": 89.35,
+  "per_generator": {
+   "adm": {
+    "paper": 77.2,
+    "ours": 81.52,
+    "vlm": 48.24,
+    "dda": 85.6
+   },
+   "biggan": {
+    "paper": 98.4,
+    "ours": 80.08,
+    "vlm": 49.84,
+    "dda": 82.48
+   },
+   "glide": {
+    "paper": 90.3,
+    "ours": 87.6,
+    "vlm": 56.32,
+    "dda": 87.84
+   },
+   "midjourney": {
+    "paper": 89.3,
+    "ours": 92.96,
+    "vlm": 78.32,
+    "dda": 95.36
+   },
+   "sdv1.4": {
+    "paper": 89.6,
+    "ours": 94.32,
+    "vlm": 64.96,
+    "dda": 98.72
+   },
+   "sdv1.5": {
+    "paper": 95.6,
+    "ours": 95.12,
+    "vlm": 68.72,
+    "dda": 98.48
+   },
+   "vqdm": {
+    "paper": 98.1,
+    "ours": 66.48,
+    "vlm": 52.08,
+    "dda": 67.44
+   },
+   "wukong": {
+    "paper": 98.3,
+    "ours": 95.52,
+    "vlm": 69.92,
+    "dda": 98.88
+   }
+  },
+  "n_images": 10000,
+  "data": "GenImage val, the first 625 real + 625 fake per generator (sorted), fakes JPEG q96 (10,000; the 63-per-class subset is a prefix, its committed VLM records reused through seed_vlm_cache.py)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/genimage_10k_jpegfakes96.json",
+  "vlm_logs": [
+   "repro/logs/adbfull_gi10k_297930*.out",
+   "repro/logs/adb_ivi_*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_gi10k_297930.out"
+  ],
+  "status": "reference"
  },
  "aigcdetect_subset_jpegfakes96": {
   "paper_benchmark": "AIGCDetectBenchmark",
@@ -429,6 +512,7 @@
   ],
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
-  ]
+  ],
+  "status": "reference"
  }
 }

@@ -31,14 +31,14 @@
       "note": "9,000 images, VLM bf16 on RTX A5000: 87.52 balanced acc (CommunityAI 91.2 / SocialRF 83.83), AUROC 97.35 (-1.28); VLM alone 89.65, DDA alone 82.41. One VLM answer (a SocialRF fake) is unparsed (the official script would stop on it); DDA calls it fake, so it counts as fake. CommunityAI is a quarter of its images, so reference. The 20 + 20 vlm_bench slices: 81.25."
     },
     {
-      "benchmark": "GenImage (8 generators), subset of 63 real + 63 fake per generator, fakes JPEG q96",
+      "benchmark": "GenImage (8 generators), the first 625 real + 625 fake per generator of GenImage val (10,000), fakes JPEG q96",
       "metric": "balanced accuracy (mean over generators)",
       "paper": "acc=91.7",
-      "ours": "acc=85.12 / AUROC=92.23 (official wts)",
+      "ours": "acc=86.7 / AUROC=92.86 (official wts)",
       "ours_synthscope": "",
-      "ours_official": "acc=85.12 / AUROC=92.23",
+      "ours_official": "acc=86.7 / AUROC=92.86",
       "status": "reference",
-      "note": "Subset (1,008 images), VLM bf16 on RTX A5000: 85.12 balanced acc, AUROC 92.23 (-6.58); VLM alone 65.97, DDA alone 87.3 (DDA on the full data: 89.37). A subset, so reference."
+      "note": "10,000 images (a tenth of GenImage val), VLM bf16 on RTX A5000: 86.70 balanced acc [bootstrap 95% CI 86.10, 87.29], AUROC 92.86 (-5.00 vs the paper); VLM alone 61.05, DDA alone 89.35 (DDA on the full data: 89.37). Four generators more than 2 points below the paper's columns (BigGAN, VQDM, Wukong, GLIDE), so reference. The earlier 63-per-class subset (1,008, a prefix): 85.12."
     },
     {
       "benchmark": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
