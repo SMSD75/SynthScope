@@ -41,6 +41,7 @@ from models.image.adb_full.adb_full import fuse_components   # noqa: E402
 VB = REPO / "repro" / "vlm_bench"
 A5000_COMMITTED = "RTX A5000 (IVI, committed adb_vlm run)"
 DDA_LOG = "repro/logs/adbfull_bench_297122.out"
+TOL_ACC = 2.0                                  # interface/backend/build_repro_full.py TOL["acc"]
 
 # Paper (arXiv 2512.06746 v3), AlignGemini = the full method; balanced accuracy.
 PAPER = {
@@ -60,19 +61,23 @@ PAPER_TABLE = {"WildRF": "Table 1", "AIGI-Bench": "Table 1", "BFree-Online": "Ta
 # row -> sources. "vlm" / "dda": lists of JSONs (relative to the repo), joined; "generators": the generators kept
 # (None = all); "manifest": the subset manifest whose sha1s the expert's files must match (committed VLM runs); "vlm_logs":
 # the job logs whose per-image lines the VLM records trace to (trace_check.py; reused cached records trace to the log
-# of the run that scored them). Every dda record traces to repro/logs/adbfull_bench_297122.out.
+# of the run that scored them); "dda_logs" (default repro/logs/adbfull_bench_297122.out); "status" (the row's label,
+# see status()).
 ROWS = {
     "wildrf_full": {
+        "status": "below",
         "vlm_logs": ["repro/logs/adb_ivi_*.out"],
         "paper": "WildRF", "main": True, "data": "full test split (Facebook, Reddit, Twitter)", "precision": "bf16",
         "gpu": A5000_COMMITTED, "vlm": ["repro/vlm_bench/results/wildrf/adb_vlm__full.json"],
         "dda": ["repro/adb_full/dda/wildrf/dda__full.json"], "generators": None, "manifest": None},
     "wildrf_full_fp32": {
+        "status": "below",
         "vlm_logs": ["repro/logs/adbfull_fp32_297123.out"],
         "paper": "WildRF", "main": False, "data": "full test split", "precision": "float32 + eager attention",
         "gpu": None, "vlm": ["repro/adb_full/vlm/wildrf/adb_vlm__fullfp32.json"],
         "dda": ["repro/adb_full/dda/wildrf/dda__full.json"], "generators": None, "manifest": None},
     "aigibench": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adbfull_bench_297122.out", "repro/logs/adbfull_bench_297122_w2.out"],
         "paper": "AIGI-Bench", "main": True,
         "data": "SocialRF full (3,000 real + 3,000 fake); CommunityAI the first 1,500 real + 1,500 fake (sorted) of 6,000 + 6,000",
@@ -82,29 +87,45 @@ ROWS = {
         "dda": ["repro/adb_full/dda/aigibench25/dda__limit1500__CommunityAI.json",
                 "repro/adb_full/dda/aigibench25/dda__full__SocialRF.json"], "generators": None, "manifest": None},
     "aigibench_subset": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adb_ivi_*.out"],
         "paper": "AIGI-Bench", "main": False, "data": "the vlm_bench subset slice (20 real + 20 fake each)",
         "precision": "bf16", "gpu": A5000_COMMITTED, "vlm": ["repro/vlm_bench/results/aigibench25/adb_vlm.json"],
         "dda": ["repro/adb_full/dda/aigibench25/dda.json"], "generators": ["CommunityAI", "SocialRF"],
         "manifest": "aigibench25"},
     "bfree_online_full": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adbfull_bench_297122_w2.out", "repro/logs/adb_ivi_*.out"],
         "paper": "BFree-Online", "main": True, "data": "all held images (269 real + 538 fake still online of 1,111 listed)",
         "precision": "bf16", "gpu": None, "vlm": ["repro/adb_full/vlm/bfree_online/adb_vlm__full.json"],
         "dda": ["repro/adb_full/dda/bfree_online/dda__full.json"], "generators": None, "manifest": None},
     "bfree_online_subset": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adb_ivi_*.out"],
         "paper": "BFree-Online", "main": False, "data": "the vlm_bench subset (269 real + 500 fake)", "precision": "bf16",
         "gpu": A5000_COMMITTED, "vlm": ["repro/vlm_bench/results/bfree_online/adb_vlm.json"],
         "dda": ["repro/adb_full/dda/bfree_online/dda.json"], "generators": None, "manifest": "bfree_online"},
     "genimage_subset_jpegfakes96": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adb_ivi_*.out"],
-        "paper": "GenImage", "main": True, "data": "the vlm_bench subset (63 real + 63 fake per generator), fakes JPEG q96",
+        "paper": "GenImage", "main": False, "data": "the vlm_bench subset (63 real + 63 fake per generator), fakes JPEG q96",
         "precision": "bf16", "gpu": A5000_COMMITTED,
         "vlm": ["repro/vlm_bench/results/genimage_val100k/adb_vlm__jpegfakes96.json"],
         "dda": ["repro/adb_full/dda/genimage_val100k/dda__jpegfakes96.json"], "generators": None,
         "manifest": "genimage_val100k"},
+    "genimage_10k_jpegfakes96": {
+        "status": "per_generator_tolerance",
+        "vlm_logs": ["repro/logs/adbfull_gi10k_297930*.out", "repro/logs/adb_ivi_*.out"],
+        "dda_logs": ["repro/logs/adbfull_gi10k_297930.out"],
+        "paper": "GenImage", "main": True,
+        "data": "GenImage val, the first 625 real + 625 fake per generator (sorted), fakes JPEG q96 (10,000; the 63-per-class "
+                "subset is a prefix, its committed VLM records reused through seed_vlm_cache.py)",
+        "precision": "bf16", "gpu": None,
+        "vlm": [f"repro/adb_full/vlm/genimage_val100k/adb_vlm__limit625_jpegfakes96__{g}.json"
+                for g in ("adm", "biggan", "glide", "midjourney", "sdv1.4", "sdv1.5", "vqdm", "wukong")],
+        "dda": ["repro/adb_full/dda/genimage_val100k/dda__limit625_jpegfakes96.json"], "generators": None, "manifest": None},
     "aigcdetect_subset_jpegfakes96": {
+        "status": "reference",
         "vlm_logs": ["repro/logs/adb_ivi_*.out"],
         "paper": "AIGCDetectBenchmark", "main": True,
         "data": "the vlm_bench subset (30 real + 30 fake per generator), fakes JPEG q96 (inferred protocol)",
@@ -195,7 +216,7 @@ def fuse_row(name: str, cfg: dict) -> dict:
         "vlm_precision": cfg["precision"], "vlm_gpu": gpus, "dda_gpu": sorted({d.get("gpu", "?") for d in ddocs}),
         "jpeg_fakes": vdocs[0].get("jpeg_fakes"), "n_images": len(rows), "n_generators": len(per_gen), "means": means,
         "per_generator": per_gen, "sources": {"vlm": cfg["vlm"], "dda": cfg["dda"]},
-        "logs": {"vlm": cfg["vlm_logs"], "dda": [DDA_LOG], "fusion": "repro/logs/adb_full_fuse.out"},
+        "logs": {"vlm": cfg["vlm_logs"], "dda": cfg.get("dda_logs", [DDA_LOG]), "fusion": "repro/logs/adb_full_fuse.out"},
         "file_identity": {"sha1_vs_vlm_record": n_sha_vlm, "sha1_vs_subset_manifest": n_sha_manifest,
                           "unchecked": len(rows) - n_sha_vlm - n_sha_manifest},
         "vlm_means": [d["means"] for d in vdocs],
@@ -204,6 +225,16 @@ def fuse_row(name: str, cfg: dict) -> dict:
                        "the components alone on the same images",
         "per_image": rows,
     }
+
+
+def status(cfg: dict, res: dict, paper: dict) -> str:
+    """The row's label. Fixed per row (as the spec / build_repro_full label it), or for a subsample with the paper's
+    per-generator columns ("per_generator_tolerance"): "reference" unless every generator is within the repository's
+    2-point accuracy tolerance of the paper's column, then "within tolerance (subsample)"."""
+    if cfg["status"] != "per_generator_tolerance":
+        return cfg["status"]
+    within = all(paper.get(g) is not None and m["acc"] >= paper[g] - TOL_ACC for g, m in res["per_generator"].items())
+    return "within tolerance (subsample)" if within else "reference"
 
 
 def main() -> int:
@@ -228,7 +259,8 @@ def main() -> int:
             "per_generator": {g: {"paper": paper.get(g), "ours": pm["acc"], "vlm": pm["vlm_acc"], "dda": pm["dda_acc"]}
                               for g, pm in res["per_generator"].items()},
             "n_images": res["n_images"], "data": cfg["data"], "vlm_precision": cfg["precision"], "vlm_gpu": res["vlm_gpu"],
-            "source": f"repro/adb_full/results/{name}.json", "vlm_logs": cfg["vlm_logs"], "dda_logs": [DDA_LOG]}
+            "source": f"repro/adb_full/results/{name}.json", "vlm_logs": cfg["vlm_logs"],
+            "dda_logs": cfg.get("dda_logs", [DDA_LOG]), "status": status(cfg, res, paper)}
         print(f"    {cfg['paper']}: paper {paper['mean']} | ours {m['acc']} (VLM {m['vlm_acc']}, DDA {m['dda_acc']}) "
               f"AUROC {m['mauroc']} | n={res['n_images']} | {cfg['precision']} on {res['vlm_gpu']}", flush=True)
     (HERE / "paper_comparison.json").write_text(json.dumps(table, indent=1) + "\n")

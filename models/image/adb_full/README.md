@@ -18,7 +18,8 @@ expert is the released DDA checkpoint (2026-11-20). The official repository now 
   - WildRF, full data: 91.22 vs 92.9 (-1.68): below the paper on all three platforms (Twitter -2.10).
   - BFree-Online, 807 of the 1,111 images: 96.93 vs 97.5.
   - AIGI-Bench, 9,000 images: 87.52 vs 88.8.
-  - GenImage and AIGCDetect, subsets: 85.12 vs 91.7 and 83.82 vs 87.7.
+  - GenImage, 10,000 images (625 + 625 per generator): 86.70 [86.10, 87.29] vs 91.7; DDA alone 89.35.
+  - AIGCDetect, subset: 83.82 vs 87.7.
 - **Float32 on an RTX A6000 vs bf16 on an RTX A5000** (WildRF): +0.12 accuracy (the precision and the GPU both change).
 
 ## Method
@@ -170,7 +171,8 @@ committed `adb_vlm` runs. Sources: `repro/adb_full/paper_comparison.json` and `r
 | WildRF (Table 1) | **full** test split (2,503) | 92.9 | **91.22** | -1.68 | 99.22 | 93.98 | 90.20 |
 | BFree-Online (Table 1) | all held images: 269 real + 538 fake of the 1,111 listed (807) | 97.5 | **96.93** | -0.57 | 99.11 | 87.08 | 94.98 |
 | AIGI-Bench CommunityAI + SocialRF (Table 1) | SocialRF **full** (6,000); CommunityAI the first 1,500 + 1,500 of 6,000 + 6,000 (3,000) | 88.8 | **87.52** | -1.28 | 97.35 | 89.65 | 82.41 |
-| GenImage (Table 6), fakes JPEG q96 | **subset**, 63 + 63 per generator (1,008) | 91.7 | **85.12** | -6.58 | 92.23 | 65.97 | 87.30 |
+| GenImage (Table 6), fakes JPEG q96 | **10x sample**, 625 + 625 per generator (10,000); [below](#genimage-10x-larger-sample-10000-images) | 91.7 | **86.70** | -5.00 | 92.86 | 61.05 | 89.35 |
+| GenImage, the earlier subset | 63 + 63 per generator (1,008; a prefix of the 10,000) | 91.7 | 85.12 | -6.58 | 92.23 | 65.97 | 87.30 |
 | AIGCDetectBenchmark (Table 8), fakes JPEG q96 (**inferred protocol**) | **subset**, 30 + 30 per generator (1,020) | 87.7 | **83.82** | -3.88 | 90.05 | 63.92 | 86.86 |
 | CO-SPY-Bench in-the-wild (Table 1) | not held | 94.3 | — | | | | |
 
@@ -184,10 +186,10 @@ WildRF row is. BFree-Online and AIGI-Bench are close (-0.57, -1.28) but not on t
 - BFree-Online: 807 of the 1,111 listed images are still online;
 - AIGI-Bench: CommunityAI is a quarter of its images, chosen as the first 1,500 per class.
 
-GenImage and AIGCDetect are subsets of the VLM benchmark campaign: 63 or 30 images per class and generator, the
-affordable VLM cost. They are not reproductions. On these two sets DDA alone is above the fused number (87.30 vs 85.12,
-86.86 vs 83.82): the OR adds the VLM's false positives on reals. DDA on the full data gives 89.37 and 87.84
-([`dda` README](../dda/README.md)).
+GenImage is a 10,000-image sample: 625 per class and generator, about a tenth of GenImage val. AIGCDetect is a
+30-per-class subset of the VLM benchmark campaign. Neither is a reproduction. On both, DDA alone is above the fused
+number (GenImage 89.35 vs 86.70, AIGCDetect 86.86 vs 83.82): the OR adds the VLM's false positives on reals. DDA on the
+full data gives 89.37 and 87.84 ([`dda` README](../dda/README.md)).
 
 **What the OR does.** By construction, the fused real accuracy is below either component's and the fused fake accuracy
 above it. On full WildRF (all 2,503 images pooled), the real accuracy is 91.4 for the VLM alone, 89.0 for DDA alone and
@@ -217,6 +219,50 @@ above the full method on WildRF (93.98) and AIGI-Bench (89.65). DDA alone is abo
 - **GPU and precision.** bf16 greedy text depends on the GPU model (A5000 vs A6000: the same text on 7 of 16 fidelity
   images). Every row above is A5000.
 
+### GenImage, 10x larger sample (10,000 images)
+GenImage val, the first 625 real + 625 fake per generator (the sorted rule of `bench_eval --limit 625`), fakes JPEG
+q96. The 63-per-class subset above is a prefix of this sample: its 1,008 committed VLM records were reused. They were
+seeded into the cache by `repro/adb_full/seed_vlm_cache.py`, each file's sha1 checked against the subset manifest. The
+other 8,992 images were scored new. Run: job 297930, two RTX A5000 on ivi-cn029, VLM bf16 greedy, 6.0 h. Every record
+carries its file's sha1, and all 10,000 VLM and DDA sha1s are equal.
+
+Bootstrap 95% CIs (`repro/adb_full/bootstrap.py`, `bootstrap_genimage_10k_jpegfakes96.json`): 2,000 replicates, stratified
+by generator and class, paired across the three detectors.
+
+| detector (10,000 images) | balanced acc [95% CI] | mean AUROC [95% CI] |
+|---|---:|---:|
+| `adb_full` (VLM OR DDA) | **86.70** [86.10, 87.29] | 92.86 [92.26, 93.47] |
+| VLM alone (`adb_vlm`) | 61.05 [60.36, 61.72] | 74.72 [73.76, 75.66] |
+| DDA alone (`dda`) | 89.35 [88.85, 89.84] | 98.35 [98.12, 98.57] |
+| `adb_full` - DDA (paired) | -2.65 [-3.08, -2.24] | -5.49 [-6.07, -4.93] |
+| `adb_full` - VLM (paired) | +25.65 [+24.97, +26.33] | +18.14 [+17.31, +18.97] |
+
+| generator | paper (Table 6) | `adb_full` [95% CI] | real / fake acc | VLM alone | DDA alone |
+|---|---:|---:|---|---:|---:|
+| ADM | 77.2 | 81.52 [79.52, 83.68] | 88.96 / 74.08 | 48.24 | 85.60 |
+| BigGAN | 98.4 | 80.08 [77.92, 82.16] | 89.92 / 70.24 | 49.84 | 82.48 |
+| GLIDE | 90.3 | 87.60 [85.68, 89.28] | 93.12 / 82.08 | 56.32 | 87.84 |
+| Midjourney | 89.3 | 92.96 [91.52, 94.32] | 89.12 / 96.80 | 78.32 | 95.36 |
+| SD v1.4 | 89.6 | 94.32 [93.04, 95.52] | 89.12 / 99.52 | 64.96 | 98.72 |
+| SD v1.5 | 95.6 | 95.12 [93.92, 96.24] | 91.04 / 99.20 | 68.72 | 98.48 |
+| VQDM | 98.1 | 66.48 [64.16, 68.80] | 90.08 / 42.88 | 52.08 | 67.44 |
+| Wukong | 98.3 | 95.52 [94.40, 96.64] | 91.04 / 100.00 | 69.92 | 98.88 |
+| **mean** | **91.7** | **86.70** [86.10, 87.29] | | 61.05 | 89.35 |
+
+- **Against the paper:** 86.70 vs 91.7 (-5.00). The paper's value is outside the CI. Four generators are more than 2
+  points below their printed column: BigGAN -18.3, VQDM -31.6, Wukong -2.8 and GLIDE -2.7. So the row is "reference"
+  (a subsample that does not meet the tolerance). The paper's per-generator AlignGemini values share numbers with its
+  AIGCDetect table in permuted columns (see Notes above), so the per-generator comparison is weak evidence; the mean is
+  the comparable number.
+- **Against the 1,008-image subset:** 85.12 [83.04, 87.10] there, 86.70 [86.10, 87.29] here. The larger sample moves the
+  full method by +1.58, inside the subset's CI, and narrows the CI about 3.4x. On the same images the VLM alone falls
+  from 65.97 to 61.05 and DDA alone rises from 87.30 to 89.35.
+- **DDA for context:** DDA alone gives 89.35 on these 10,000 images and 89.37 on the full GenImage data
+  ([`dda` README](../dda/README.md)), so the sample is representative for DDA. The full method is 2.65 points below DDA
+  alone (paired CI [-3.08, -2.24]). Of the 5,000 reals, DDA calls 4,897 real; the VLM turns 382 of those into fakes.
+  Of the 5,000 fakes, the VLM catches only 117 that DDA misses (VQDM fake accuracy: 36.64 for DDA alone, 42.88 fused).
+- No unparsed answers.
+
 ### Precision spot check: float32 (the official README's command)
 WildRF full data, the VLM in float32 + eager attention on an RTX A6000 (job 297123), fused with the same DDA records:
 
@@ -232,9 +278,11 @@ WildRF full data, the VLM in float32 + eager attention on an RTX A6000 (job 2971
 ```bash
 sbatch --nodelist=ivi-cn027 repro/adb_full/bench_a5000.sbatch   # dda --per-image on every row + the new bf16 VLM units
 sbatch --nodelist=ivi-cn023 repro/adb_full/fp32_a6000.sbatch    # WildRF full, VLM float32 + eager
+sbatch --nodelist=ivi-cn029 repro/adb_full/genimage10k_a5000.sbatch   # GenImage 625 + 625 per generator (seeds the cache)
 python repro/adb_full/fuse.py | tee repro/logs/adb_full_fuse.out
+python repro/adb_full/bootstrap.py genimage_10k_jpegfakes96 genimage_subset_jpegfakes96   # 95% CIs
 python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adb_ivi_*.out,adbfull_*.out' --results repro/adb_full/vlm
-python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adbfull_bench_*.out' --results repro/adb_full/dda
+python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adbfull_bench_*.out,adbfull_gi10k_*.out' --results repro/adb_full/dda
 python repro/vlm_bench/trace_check.py --logs repro/logs --glob 'adb_full_fuse.out' --results repro/adb_full
 ```
 

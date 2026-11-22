@@ -281,11 +281,12 @@ VAL = {
     # repro/logs/adb_full_fuse.out; VLM logs adb_ivi_*.out and adbfull_bench_297122*.out, the row's vlm_logs; dda per-image
     # log adbfull_bench_297122.out). VLM bf16 greedy on RTX A5000. WildRF = full data ("below" by STATUS_OVERRIDE: every
     # platform under the paper); BFree-Online = the 807 held of 1,111; AIGI-Bench = SocialRF full + CommunityAI first
-    # 1,500 + 1,500; GenImage / AIGCDetect = vlm_bench subsets, fakes JPEG q96 (all "reference" by the spec).
+    # 1,500 + 1,500; GenImage = the first 625 + 625 per generator (10,000; job 297930, logs adbfull_gi10k_297930*.out);
+    # AIGCDetect = the vlm_bench subset; both fakes JPEG q96 (all "reference" by the spec).
     ("adb_full", "WildRF"): {"official": {"acc": 91.22, "auroc": 99.22}},
     ("adb_full", "BFree-Online"): {"official": {"acc": 96.93, "auroc": 99.11}},
     ("adb_full", "AIGI-Bench"): {"official": {"acc": 87.52, "auroc": 97.35}},
-    ("adb_full", "GenImage"): {"official": {"acc": 85.12, "auroc": 92.23}},
+    ("adb_full", "GenImage"): {"official": {"acc": 86.7, "auroc": 92.86}},   # 10,000 images (625 + 625 per generator)
     ("adb_full", "AIGCDetectBenchmark"): {"official": {"acc": 83.82, "auroc": 90.05}},
     # FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): the official weights only, inference only, greedy (the official
     # decoding), no SynthScope-trained number. None of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held,
