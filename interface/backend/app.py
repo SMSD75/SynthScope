@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from . import config, datasets, media
-from .engine import get_engine, vlm_images_only
+from .engine import InputTooLarge, get_engine, vlm_images_only
 from .registry import REPRO, REPRO_FULL, get_spec, input_note, list_specs
 
 app = FastAPI(title="SynthScope Detector Interface", version="1.0")
@@ -126,6 +126,8 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         return result
     except HTTPException:
         raise
+    except InputTooLarge as e:                      # SYNTHSCOPE_MAX_VIEWS (the CPU Space's guard)
+        raise HTTPException(status_code=413, detail=str(e))
     except FileNotFoundError as e:
         raise HTTPException(status_code=409, detail=str(e))
     except Exception as e:  # surface model/decoding errors as 500 with a message
@@ -525,6 +527,8 @@ def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str =
         return _run_on_dataset_item(engine, spec, dataset, rel)
     except HTTPException:
         raise
+    except InputTooLarge as e:
+        raise HTTPException(status_code=413, detail=str(e))
     except (KeyError, PermissionError, FileNotFoundError) as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:

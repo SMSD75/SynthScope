@@ -313,6 +313,28 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
     return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
+class InputTooLarge(ValueError):
+    """A request whose view bag is above ``config.MAX_VIEWS`` (the hosted CPU demo's guard; the web API answers 413)."""
+
+
+def check_views(spec: ModelSpec, x: torch.Tensor) -> None:
+    """Refuse an input that a native-resolution view-bag detector (``x`` = [B, views, 3, H, W] whose view count grows
+    with the image size: LTF's tiles, PROBE's patches) would read as more than ``config.MAX_VIEWS`` views in all (summed
+    over the frames of a video). No-op when the limit is 0 (the default) or for any other detector (AIDE's fixed five
+    views are not counted). The input is refused rather than resized, so every score the demo returns is the
+    detector's official score."""
+    if not config.MAX_VIEWS or not spec.native_res or x.dim() != 5:
+        return
+    views = int(x.shape[0]) * int(x.shape[1])
+    if views > config.MAX_VIEWS:
+        raise InputTooLarge(
+            f"{spec.name} reads this input at its own resolution as {views} views of {int(x.shape[-1])} px (tiles plus "
+            f"a global view); this server scores at most {config.MAX_VIEWS} per request, because each view takes about "
+            f"two seconds on its CPU. The image is not shrunk automatically, since that would change what the "
+            f"detector sees: upload a smaller or cropped image, or run SynthScope locally, which has no "
+            f"limit.")
+
+
 def vlm_images_only(spec: ModelSpec) -> str:
     what = "combines a VLM detector, which" if spec.fusion is not None else "is a VLM detector that"
     return (f"'{spec.key}' {what} writes a rationale per image (seconds per image on a GPU): it scores "
@@ -732,8 +754,10 @@ class Engine:
             return self._predict_vlm(spec, pil)
         if spec.predict_kind == "fusion":
             return self._predict_fusion(spec, pil)
+        x = spec.transform(pil).unsqueeze(0)
+        check_views(spec, x)                          # before the model loads: a refused input costs nothing
         model = self._get_model(spec)
-        x = spec.transform(pil).unsqueeze(0).to(self.device)
+        x = x.to(self.device)
         t0 = time.time()
         p = float(self._fake_prob(model, spec, x).item())
         res = self._result(spec, p, time.time() - t0)
@@ -764,8 +788,10 @@ class Engine:
             raise ValueError(f"'{spec.key}' scores the video file itself (Engine.predict_video_clip), not sampled frames.")
         if spec.predict_kind in ("vlm", "fusion"):
             raise ValueError(vlm_images_only(spec))
+        batch = torch.stack([spec.transform(f) for f in frames])
+        check_views(spec, batch)
         model = self._get_model(spec)
-        batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
+        batch = batch.to(self.device)
         t0 = time.time()
         per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
         elapsed = time.time() - t0

@@ -131,6 +131,7 @@ available). See `MANIFEST.md` there for status.
 | `SYNTHSCOPE_MAX_RESIDENT_MODELS` | `2` | models kept in GPU memory (LRU) |
 | `SYNTHSCOPE_VIDEO_IMAGE_FRAMES` | `16` | frames sampled when an image detector runs on a video |
 | `SYNTHSCOPE_MAX_UPLOAD_MB` | `200` | upload size limit |
+| `SYNTHSCOPE_MAX_VIEWS` | `0` (no limit) | most native-resolution views (LTF tiles, PROBE patches) one request may score; a larger input gets HTTP 413, it is never shrunk. The CPU Space sets 50 |
 | `SYNTHSCOPE_PORT` / `SYNTHSCOPE_HOST` | `8000` / `0.0.0.0` | backend bind |
 
 ## Deployment notes

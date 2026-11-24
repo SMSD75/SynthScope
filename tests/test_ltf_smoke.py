@@ -10,12 +10,16 @@ Builds the real model, so it needs the pinned CLIP ViT-L/14 (``$SYNTHSCOPE_LTF_B
 * only the frozen CLIP falls under ``pretrained_prefixes`` and it is frozen,
 * ``forward`` -> [B, 2] finite logits on a synthetic image in eval mode; ``compute_loss`` + backward reach the MIL head
   and not CLIP; ``compute_loss`` refuses non-view (4-D) input with a clear error (training is not ported),
-* the web UI "model input" preview un-normalizes with the CLIP mean / std and wraps many views into a grid.
+* the web UI "model input" preview un-normalizes with the CLIP mean / std and wraps many views into a grid,
+* the Space: ``fetch_weights.py`` serves ``ltf`` from the authors' repo (not the zoo, still in ``NEVER_REDISTRIBUTE``),
+  and ``SYNTHSCOPE_MAX_VIEWS`` refuses an over-limit image before the model loads, without touching normal sizes.
 """
 
 from __future__ import annotations
 
+import ast
 import base64
+import importlib.util
 import io
 import os
 import sys
@@ -35,8 +39,11 @@ from models.image.ltf.ltf import CORE_SHA256, SynthScopeLTFModel, sha256   # noq
 from models.image.ltf.preprocess import LTFViews              # noqa: E402
 from transformations import CLIP_MEAN, CLIP_STD               # noqa: E402
 from backend import config as backend_config                  # noqa: E402
-from backend.engine import Engine, _load_checkpoint                  # noqa: E402
+from backend.engine import Engine, InputTooLarge, _load_checkpoint, check_views   # noqa: E402
 from backend.registry import get_spec, remap_ltf              # noqa: E402
+from synthscope import hub                                    # noqa: E402
+
+ROOT = Path(__file__).resolve().parents[1]
 
 RELEASED_CORE = 37        # retained MIL / fusion tensors of the released checkpoint
 RELEASED_UNUSED = 27      # disconnected baseline tensors the official loader drops
@@ -45,6 +52,15 @@ RELEASED_UNUSED = 27      # disconnected baseline tensors the official loader dr
 def noise_pil(w: int, h: int, seed: int = 0) -> Image.Image:
     arr = np.random.default_rng(seed).integers(0, 256, (h, w, 3), dtype=np.uint8)
     return Image.fromarray(arr, "RGB")
+
+
+def refused(fn, *args) -> str:
+    """Call ``fn(*args)``, which must raise InputTooLarge; return its message."""
+    try:
+        fn(*args)
+    except InputTooLarge as e:
+        return str(e)
+    raise AssertionError("an over-limit input was accepted")
 
 
 def build_model() -> SynthScopeLTFModel:
@@ -166,6 +182,67 @@ def test_preview() -> None:
     print(f"    3 views {(3 * 224, 224)}; 31 views wrapped to {img.size}")
 
 
+def test_space_fetch() -> None:
+    print("[E] Space: ltf fetched from the authors' repo, never from / to the zoo ...")
+    path = ROOT / "deploy" / "hf-space" / "fetch_weights.py"
+    default = ast.literal_eval(path.read_text().split("DEFAULT = ", 1)[1].split("]", 1)[0] + "]")
+    assert "ltf" in default and "ltf" in hub.NEVER_REDISTRIBUTE
+    spec_ = importlib.util.spec_from_file_location("fetch_weights", path)
+    fetch = importlib.util.module_from_spec(spec_)
+    spec_.loader.exec_module(fetch)
+    assert set(fetch.UPSTREAM) == {"ltf"}
+    calls = []
+    real = ltf_module.fetch_core, ltf_module.resolve_backbone, hub.download
+    saved = {k: os.environ.get(k) for k in ("SYNTHSCOPE_HUB_REPO", "SYNTHSCOPE_SPACE_DETECTORS", "SYNTHSCOPE_CKPT_DIR")}
+    ltf_module.fetch_core = lambda d: calls.append(("core", Path(d)))
+    ltf_module.resolve_backbone = lambda path=None: calls.append(("backbone", path))
+    hub.download = lambda key, **kw: calls.append(("zoo", key))
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            os.environ["SYNTHSCOPE_CKPT_DIR"] = tmp
+            os.environ["SYNTHSCOPE_SPACE_DETECTORS"] = "ltf"
+            os.environ.pop("SYNTHSCOPE_HUB_REPO", None)          # the authors' repo needs no SynthScope weights repo
+            fetch.main()
+            assert calls == [("core", Path(tmp)), ("backbone", None)], calls
+            calls.clear()
+            os.environ["SYNTHSCOPE_HUB_REPO"] = "test/none"
+            Path(tmp, "ltf.pth").write_bytes(b"x")                 # already staged: only the backbone is checked
+            Path(tmp, "d3_calibration.json").write_text("{}")      # (keeps main() off the network)
+            fetch.main()
+            assert calls == [("backbone", None)], calls              # and never hub.download("ltf")
+    finally:
+        ltf_module.fetch_core, ltf_module.resolve_backbone, hub.download = real
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+    print("    DEFAULT and UPSTREAM hold ltf; fetched via fetch_core + resolve_backbone, no zoo download")
+
+
+def test_view_guard() -> None:
+    print("[F] SYNTHSCOPE_MAX_VIEWS guard ...")
+    spec, tf = get_spec("ltf"), get_spec("ltf").transform
+    big = tf(noise_pil(1300, 900)).unsqueeze(0)                      # 31 views
+    original = backend_config.MAX_VIEWS
+    try:
+        backend_config.MAX_VIEWS = 0                                   # default: no limit
+        check_views(spec, big)
+        backend_config.MAX_VIEWS = 31
+        check_views(spec, big)                                         # at the limit: scored as usual
+        check_views(get_spec("aide"), torch.zeros(16, 5, 3, 8, 8))     # fixed-view detectors are never counted
+        backend_config.MAX_VIEWS = 30
+        msg = refused(check_views, spec, big)
+        assert "31 views" in msg and "at most 30" in msg, msg
+        refused(check_views, spec, torch.zeros(2, 16, 3, 224, 224))     # video frames: views summed over the frames
+        engine = Engine(device="cpu")
+        refused(engine.predict_image, spec, noise_pil(1300, 900))
+        assert not engine._cache                                       # refused before the model is built
+    finally:
+        backend_config.MAX_VIEWS = original
+    print("    no limit by default; 31 views pass at 31 and are refused at 30 (before loading); AIDE not counted")
+
+
 if __name__ == "__main__":
     test_tiling()
     test_fetch_core()
@@ -173,4 +250,6 @@ if __name__ == "__main__":
     test_keys_and_frozen(m)
     test_forward_and_loss(m)
     test_preview()
+    test_space_fetch()
+    test_view_guard()
     print("LTF smoke test passed")

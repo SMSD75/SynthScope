@@ -82,6 +82,12 @@ CACHE_DIR = _DEFAULT_CACHE      # also holds the working files of detectors that
 
 # Upload / decoding limits.
 MAX_UPLOAD_BYTES = int(os.environ.get("SYNTHSCOPE_MAX_UPLOAD_MB", "200")) * 1024 * 1024
+# Most views one request may score, for detectors that read an image as a bag of native-resolution views (tiles or
+# patches; LTF: a global view + every 224x224 tile, so a 12 MP photo is 253 views). 0 = no limit (the default;
+# benchmarks and local use are never capped). The CPU Space sets it (deploy/hf-space/Dockerfile): each LTF view is a
+# CLIP ViT-L/14 forward, about 2 s on 2 vCPUs. Above the limit the request is refused, never shrunk (that would change
+# the score).
+MAX_VIEWS = int(os.environ.get("SYNTHSCOPE_MAX_VIEWS", "0"))
 # Number of frames sampled from a video when running an *image* detector frame-by-frame.
 VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 

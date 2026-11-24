@@ -143,9 +143,15 @@ python benchmark/bench_eval.py --model ltf --benchmark pergen --data /data/GenIm
 
 Scoring is one image at a time (`native_res`: the number of views depends on the size), about 2.7 images per second on the
 Midjourney subset (1024² fakes, ImageNet reals) and 7.4 on the BigGAN subset (128² fakes), official code including model
-load, on an RTX A5000 (job 277008).
+load, on an RTX A5000 (job 277008). On a CPU the cost is about 2 s per view with 2 threads (AMD EPYC 7453; 512², 10 views:
+19 s; 1024², 26 views: 50 s; 2048×1536, 71 views: 136 s; a 12 MP photo, 253 views: 8.4 min; peak RAM ~4.4 GB), so the
+CPU Space caps a request at 50 views (`SYNTHSCOPE_MAX_VIEWS`, about 2 MP) and refuses larger inputs instead of shrinking
+them, which would change the score.
 
-**Weights.** `ltf.pth` is not in the SynthScope weights zoo and the Space does not serve `ltf`: the Hugging Face weights card
-(`MuskAI/LTF-v3.3`) has no license tag; only the code (MIT) is licensed. Until the authors confirm the terms for the
-weights, fetch `weights/epoch_20.pth` from the official repository (SHA-256 `32e9fa2e…`, see `fetch_core` in `ltf.py`) and
-save it as `ltf.pth` yourself. See [LICENSES.md](../../../LICENSES.md).
+**Weights.** The code is MIT, and the first author confirmed on 2026-11-24 that the weights are under the same MIT
+terms and may be used in the free web demo with credit (the Hugging Face card `MuskAI/LTF-v3.3` has no license tag yet;
+the author will add MIT). The web demo (Space) loads `weights/epoch_20.pth` (as `ltf.pth`) and the pinned
+`backbones/ViT-L-14.pt` directly from the authors' repository at revision `a2a2e29c`
+(`deploy/hf-space/fetch_weights.py`). `ltf.pth` is not in the SynthScope weights zoo (the permission covers loading in
+the demo, not redistribution): locally, fetch `weights/epoch_20.pth` from the official repository (SHA-256 `32e9fa2e…`,
+see `fetch_core` in `ltf.py`) and save it as `ltf.pth`. See [LICENSES.md](../../../LICENSES.md).
