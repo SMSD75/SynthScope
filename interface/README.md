@@ -63,6 +63,11 @@ npm run dev
   plus a per-frame breakdown.
 * Models load lazily on first request and are kept in a small LRU (`SYNTHSCOPE_MAX_RESIDENT_MODELS`,
   default 2) so the GPU is not exhausted by the large backbones.
+* `/api/predict` scores in a worker thread (`asyncio.to_thread`), so a slow score (a minute for LTF on a CPU) does not
+  freeze the page or other requests. A detector is pinned while a request uses it (`Engine.pinned`): the LRU and
+  `release_gpu` never drop it mid-use; if every resident detector is pinned, a new load goes over the limit for the
+  moment and the cache is trimmed back when the pins are released. Loading itself still runs under the engine lock.
+* The page shows each detector's paper (arXiv) and official code (GitHub) as links (`DETECTOR_LINKS` in the registry).
 
 ## Detectors & helper scripts
 
@@ -131,7 +136,7 @@ available). See `MANIFEST.md` there for status.
 | `SYNTHSCOPE_MAX_RESIDENT_MODELS` | `2` | models kept in GPU memory (LRU) |
 | `SYNTHSCOPE_VIDEO_IMAGE_FRAMES` | `16` | frames sampled when an image detector runs on a video |
 | `SYNTHSCOPE_MAX_UPLOAD_MB` | `200` | upload size limit |
-| `SYNTHSCOPE_MAX_VIEWS` | `0` (no limit) | most native-resolution views (LTF tiles, PROBE patches) one request may score; a larger input gets HTTP 413, it is never shrunk. The CPU Space sets 50 |
+| `SYNTHSCOPE_MAX_VIEWS` | `0` (no limit) | most native-resolution views (LTF tiles, PROBE patches) one request may score; a larger input gets HTTP 413, it is never shrunk. When set, `/api/score_batch` also scores at most 4 items per call with these detectors (the rest come back with the reason). The CPU Space sets 50 |
 | `SYNTHSCOPE_PORT` / `SYNTHSCOPE_HOST` | `8000` / `0.0.0.0` | backend bind |
 
 ## Deployment notes
