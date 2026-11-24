@@ -1173,6 +1173,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const [sel, setSel] = useState(null);
       const [preds, setPreds] = useState({});      // rel -> {fake_probability, ground_truth, ...}
       const [scoring, setScoring] = useState(false);
+      const [batchCap, setBatchCap] = useState(null);   // {model, cap} when the server scored fewer items than sent
       const [fpr, setFpr] = useState(5);
       const [demo, setDemo] = useState(false);
       const [supported, setSupported] = useState(null);   // {image: n, video: n} datasets a local install can fetch
@@ -1238,6 +1239,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
           const m = {};
           for (const it of d.items) m[it.rel] = it;
           setPreds(p => ({ ...p, ...m }));
+          setBatchCap(d.cap != null && d.cap < items.length ? { model, cap: d.cap } : null);
           return d.items.filter(x => x.ground_truth && typeof x.fake_probability === "number")
                         .map(x => ({ p: x.fake_probability, gt: x.ground_truth }));
         } catch (e) { setError(String(e.message || e)); return []; }
@@ -1259,6 +1261,12 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const selItem = items.find(i => i.rel === sel);
       const selRes = sel ? preds[sel] : null;
       const stats = batchStats(scored, threshold);
+      // Calibration on part of the batch (a capped detector, or items that failed) must say so.
+      const capped = batchCap && batchCap.model === model ? batchCap.cap : null;
+      const calibNote = scored.length > 0 && scored.length < items.length
+        ? `Threshold tools use the ${scored.length} scored of ${items.length} items` +
+          (capped != null ? `: this server scores at most ${capped} items per batch with this detector (SYNTHSCOPE_MAX_VIEWS), so the calibration rests on very few images.` : ".")
+        : "";
 
       return html`
         <div class="explore">
@@ -1321,6 +1329,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
                   <button disabled=${scoring || !model} onClick=${applyFpr} title="Threshold that keeps real images wrongly flagged below this rate">Limit false alarms to</button>
                   <input type="number" min="0" max="50" step="1" value=${fpr} onChange=${e => setFpr(parseFloat(e.target.value) || 0)} />%
                 </div>
+                ${calibNote && html`<div class="meta calib-note">${calibNote}</div>`}
                 <${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold} />
               <//>
             </div>

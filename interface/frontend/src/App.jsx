@@ -512,6 +512,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   const [sel, setSel] = useState(null);
   const [preds, setPreds] = useState({});
   const [scoring, setScoring] = useState(false);
+  const [batchCap, setBatchCap] = useState(null);   // {model, cap} when the server scored fewer items than sent
   const [fpr, setFpr] = useState(5);
   const batchN = 24;
 
@@ -557,6 +558,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
       const d = await scoreBatch(dataset, model, items.map((i) => i.rel));
       const m = {}; for (const it of d.items) m[it.rel] = it;
       setPreds((p) => ({ ...p, ...m }));
+      setBatchCap(d.cap != null && d.cap < items.length ? { model, cap: d.cap } : null);
       return d.items.filter((x) => x.ground_truth && typeof x.fake_probability === "number")
                     .map((x) => ({ p: x.fake_probability, gt: x.ground_truth }));
     } catch (e) { setError(e.message); return []; }
@@ -566,6 +568,13 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   const scored = items.map((i) => preds[i.rel])
     .filter((x) => x && typeof x.fake_probability === "number" && x.ground_truth)
     .map((x) => ({ p: x.fake_probability, gt: x.ground_truth }));
+
+  // Calibration on part of the batch (a capped detector, or items that failed) must say so.
+  const capped = batchCap && batchCap.model === model ? batchCap.cap : null;
+  const calibNote = scored.length > 0 && scored.length < items.length
+    ? `Threshold tools use the ${scored.length} scored of ${items.length} items` +
+      (capped != null ? `: this server scores at most ${capped} items per batch with this detector (SYNTHSCOPE_MAX_VIEWS), so the calibration rests on very few images.` : ".")
+    : "";
 
   async function calibrate() { const s = scored.length ? scored : await scoreAll(); if (s.length) setThreshold(autoCalibrate(s)); }
   async function applyFpr() {
@@ -609,6 +618,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
             <button disabled={scoring || !model} onClick={applyFpr}>Target FPR</button>
             <input type="number" min="0" max="50" step="1" value={fpr} onChange={(e) => setFpr(parseFloat(e.target.value) || 0)} />%
           </div>
+          {calibNote && <div className="meta calib-note">{calibNote}</div>}
           {stats && (
             <div className="stat">batch ({stats.n} scored) @{threshold.toFixed(2)}: <b>acc {(stats.acc * 100).toFixed(0)}%</b>
               {stats.racc != null ? ` · real ${(stats.racc * 100).toFixed(0)}%` : ""}
