@@ -195,16 +195,29 @@ _SCORE_SLOTS: dict[int, threading.BoundedSemaphore] = {}
 _SLOTS_LOCK = threading.Lock()
 
 
+@contextlib.contextmanager
 def _score_slot():
     """One of ``config.MAX_CONCURRENT_SCORES`` scoring slots (``SYNTHSCOPE_MAX_CONCURRENT_SCORES``; 0, the local
     default, means no limit). Every web scoring path takes one inside its worker thread, BEFORE pinning or loading a
     detector, so on the CPU Space (2) at most that many detectors are in use and resident beyond the LRU at once, and
-    the 2 vCPUs are not oversubscribed; the event loop itself is never blocked by a waiting request."""
+    the 2 vCPUs are not oversubscribed; the event loop itself is never blocked by a waiting request. A request waits at
+    most ``config.SCORE_WAIT_S`` seconds (``SYNTHSCOPE_SCORE_WAIT_S``; no limit by default, 120 on the Space) and then
+    gets HTTP 503. A batch (``/api/score_batch``, the generator comparison) holds ONE slot for the whole call, so it
+    cannot re-take the slot item after item ahead of the requests waiting for it."""
     n = config.MAX_CONCURRENT_SCORES
     if n <= 0:
-        return contextlib.nullcontext()
+        yield
+        return
     with _SLOTS_LOCK:
-        return _SCORE_SLOTS.setdefault(n, threading.BoundedSemaphore(n))
+        slots = _SCORE_SLOTS.setdefault(n, threading.BoundedSemaphore(n))
+    if not slots.acquire(timeout=config.SCORE_WAIT_S):
+        raise HTTPException(status_code=503, headers={"Retry-After": "30"},
+                            detail=f"The server is busy (all {n} detector slots have been in use for "
+                                   f"{config.SCORE_WAIT_S:g} s): please retry shortly.")
+    try:
+        yield
+    finally:
+        slots.release()
 
 
 def _vlm_predict(engine, spec, data: bytes) -> dict:
@@ -267,9 +280,10 @@ def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dic
     raw = lambda: (media.decode_image_raw(real_bytes), media.decode_image_raw(gen_bytes))   # noqa: E731  (VLM detectors)
     engine = get_engine()
     results = []
-    for key in [d.strip() for d in detectors.split(",") if d.strip()]:
-        with _score_slot(), _GPU_LOCK:               # one detector at a time: concurrent requests queue, not race
-            results.append(_score_one(engine, key, real_img, gen_img, raw))
+    with _score_slot():                              # one slot for the whole comparison (see _score_slot)
+        for key in [d.strip() for d in detectors.split(",") if d.strip()]:
+            with _GPU_LOCK:                          # one detector at a time: concurrent requests queue, not race
+                results.append(_score_one(engine, key, real_img, gen_img, raw))
     return results
 
 
@@ -511,14 +525,14 @@ def dataset_media(key: str, rel: str = Query(...), thumb: int = 0):
     return FileResponse(str(path))
 
 
-def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
+def _run_on_dataset_item(engine, spec, dataset: str, rel: str, take_slot: bool = True) -> dict:
     """Run ``spec`` on an on-disk dataset file ``rel`` and attach ground-truth/correctness.
 
     Raises HTTPException for caller-facing errors. Shared by /api/predict_dataset (single item,
-    full result) and /api/score_batch (many items, scores only).
+    full result) and /api/score_batch (many items, scores only; it holds one slot for the batch: ``take_slot=False``).
     """
     path = datasets.resolve_media(dataset, rel)          # may raise Permission/FileNotFound
-    with _score_slot(), engine.pinned(spec):             # bounded; not evicted by a concurrent request while in use
+    with (_score_slot() if take_slot else contextlib.nullcontext()), engine.pinned(spec):   # bounded; not evicted
         return _score_dataset_item(engine, spec, dataset, rel, path)
 
 
@@ -547,8 +561,10 @@ def _score_dataset_item(engine, spec, dataset: str, rel: str, path) -> dict:
 
 
 @app.post("/api/predict_dataset")
-def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str = Form(...)):
-    """Run a detector on a dataset file already on disk (no re-upload) + return ground truth."""
+async def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str = Form(...)):
+    """Run a detector on a dataset file already on disk (no re-upload) + return ground truth. Scored in a worker thread
+    of the event loop's executor, not Starlette's sync pool, so requests waiting for a slot never delay /api/health,
+    /api/models or the page."""
     try:
         spec = get_spec(model)
     except KeyError as e:
@@ -557,7 +573,7 @@ def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str =
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
     try:
-        return _run_on_dataset_item(engine, spec, dataset, rel)
+        return await asyncio.to_thread(_run_on_dataset_item, engine, spec, dataset, rel)
     except HTTPException:
         raise
     except InputTooLarge as e:
@@ -582,8 +598,21 @@ def score_batch_cap(spec) -> int:
     return SCORE_BATCH_CAP_VLM if spec.has_vlm else SCORE_BATCH_CAP
 
 
+def _score_batch_items(engine, spec, dataset: str, rels: list) -> list[dict]:
+    """Score ``rels`` holding ONE scoring slot for the whole batch (a 503 if none frees up in time)."""
+    out = []
+    with _score_slot():
+        for rel in rels:
+            try:
+                r = _run_on_dataset_item(engine, spec, dataset, rel, take_slot=False)
+                out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})
+            except Exception as e:
+                out.append({"rel": rel, "error": f"{type(e).__name__}: {getattr(e, 'detail', e)}"})
+    return out
+
+
 @app.post("/api/score_batch")
-def score_batch(payload: dict = Body(...)):
+async def score_batch(payload: dict = Body(...)):
     """Score many dataset items at once (for threshold calibration). Body: {dataset, model, rels:[...]}.
 
     Returns ``{items:[{rel, fake_probability, ground_truth}]}`` -- per-item errors are reported inline
@@ -596,14 +625,8 @@ def score_batch(payload: dict = Body(...)):
     engine = get_engine()
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
-    out = []
     cap = score_batch_cap(spec)
-    for rel in rels[:cap]:
-        try:
-            r = _run_on_dataset_item(engine, spec, dataset, rel)
-            out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})
-        except Exception as e:
-            out.append({"rel": rel, "error": f"{type(e).__name__}: {getattr(e, 'detail', e)}"})
+    out = await asyncio.to_thread(_score_batch_items, engine, spec, dataset, rels[:cap])   # off the event loop
     if cap == SCORE_BATCH_CAP_VIEWS and len(rels) > cap:     # say why, instead of dropping the rest silently
         why = (f"not scored: {spec.name} reads each image as up to {config.MAX_VIEWS} native-resolution views, so "
                f"this server scores at most {cap} items per batch with it (SYNTHSCOPE_MAX_VIEWS); score them one by "

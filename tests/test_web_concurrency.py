@@ -12,7 +12,10 @@ downloads; the bit-identical check uses LTF's released weights when ``$SYNTHSCOP
 * ``SYNTHSCOPE_MAX_CONCURRENT_SCORES``: N concurrent requests on N detectors never score more than the limit at once,
 * a VLM request waiting for ``_GPU_LOCK`` is not pinned, so a generation's ``release_gpu`` drops the idle VLM,
 * a race (many threads x detectors, ``release_gpu`` firing, small ``MAX_RESIDENT_MODELS``, mocked models): no eviction
-  mid-use, no unpinned use, no double load, no hang; and a failing ``close()`` while trimming does not fail a request.
+  mid-use, no unpinned use, no double load, no hang; and a failing ``close()`` while trimming does not fail a request,
+* ``SYNTHSCOPE_SCORE_WAIT_S``: a request that cannot get a slot in time gets HTTP 503 (all three scoring endpoints); a
+  batch takes ONE slot for the whole call,
+* /api/health and /api/models stay responsive with 45 dataset calls queued for 2 slots.
 """
 
 from __future__ import annotations
@@ -156,7 +159,7 @@ def test_score_batch_cap() -> None:
     original = engine.is_available, web_app._run_on_dataset_item, backend_config.MAX_VIEWS
     scored = []
 
-    def fake_item(engine_, spec, dataset, rel):
+    def fake_item(engine_, spec, dataset, rel, take_slot=True):
         scored.append(rel)
         return {"fake_probability": 0.5, "ground_truth": "real"}
 
@@ -376,6 +379,117 @@ def test_race() -> None:
           "and the other runners are still closed")
 
 
+class CountingSlots(threading.BoundedSemaphore):
+    """A slot semaphore that counts successful acquisitions."""
+
+    def __init__(self, n):
+        super().__init__(n)
+        self.taken = 0
+
+    def acquire(self, blocking=True, timeout=None):
+        got = super().acquire(blocking, timeout)
+        self.taken += bool(got)
+        return got
+
+
+class DatasetMocks:
+    """No dataset on disk: resolve_media passes the name through and the score sleeps ``delay`` s."""
+
+    def __init__(self, delay: float):
+        self.delay, self.saved = delay, None
+
+    def __enter__(self):
+        engine = web_app.get_engine()
+        self.saved = (web_app.datasets.resolve_media, web_app._score_dataset_item, engine.is_available)
+        web_app.datasets.resolve_media = lambda dataset, rel: rel
+
+        def score(engine_, spec, dataset, rel, path):
+            time.sleep(self.delay)
+            return {"fake_probability": 0.4, "ground_truth": "real", "verdict": "real"}
+        web_app._score_dataset_item = score
+        engine.is_available = lambda spec: True
+        return self
+
+    def __exit__(self, *exc):
+        web_app.datasets.resolve_media, web_app._score_dataset_item, web_app.get_engine().is_available = self.saved
+
+
+def test_slot_timeout_and_batch_slot() -> None:
+    print("[H] SYNTHSCOPE_SCORE_WAIT_S: no slot in time -> 503; a batch holds one slot for the whole call ...")
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        from fastapi.testclient import TestClient
+    client = TestClient(web_app.app)
+    original = backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S, dict(web_app._SCORE_SLOTS)
+    backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S = 1, 0.3
+    web_app._SCORE_SLOTS[1] = slots = CountingSlots(1)
+    try:
+        with DatasetMocks(0.05):
+            engine = web_app.get_engine()
+            saved_predict = engine.predict_image
+            engine.predict_image = lambda spec, pil: {"model": spec.key, "fake_probability": 0.4, "verdict": "real"}
+            try:
+                with web_app._score_slot():                  # every slot busy (held by this test)
+                    t0 = time.perf_counter()
+                    r1 = client.post("/api/predict", data={"model": "cnn"},
+                                     files={"file": ("x.png", png_bytes(), "image/png")})
+                    r2 = client.post("/api/predict_dataset", data={"dataset": "d", "rel": "a.png", "model": "cnn"})
+                    r3 = client.post("/api/score_batch", json={"dataset": "d", "model": "cnn", "rels": ["a", "b"]})
+                    waited = time.perf_counter() - t0
+            finally:
+                engine.predict_image = saved_predict
+            for r in (r1, r2, r3):
+                assert r.status_code == 503 and "busy" in r.json()["detail"] and r.headers.get("retry-after"), r.text
+            assert 0.8 <= waited < 5, waited                 # three waits of 0.3 s, not forever
+            taken = slots.taken
+            r = client.post("/api/score_batch", json={"dataset": "d", "model": "cnn", "rels": [f"r{i}" for i in range(6)]})
+            assert r.status_code == 200 and len(r.json()["items"]) == 6, r.text
+            assert slots.taken - taken == 1, slots.taken - taken     # one slot for the 6 items
+            r = client.post("/api/predict_dataset", data={"dataset": "d", "rel": "a.png", "model": "cnn"})
+            assert r.status_code == 200 and slots.taken - taken == 2, (r.text, slots.taken)
+    finally:
+        backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S = original[:2]
+        web_app._SCORE_SLOTS.clear()
+        web_app._SCORE_SLOTS.update(original[2])
+    print(f"    /api/predict, /api/predict_dataset, /api/score_batch: 503 + Retry-After after the wait ({waited:.2f} s "
+          "for all three); a 6-item batch took 1 slot")
+
+
+def test_health_with_queue() -> None:
+    print("[I] /api/health and /api/models stay responsive with 45 dataset calls queued for 2 slots ...")
+    original = backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S
+    backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S = 2, None
+    try:
+        with DatasetMocks(1.5):        # long: a request stuck behind a held sync thread pool waits ~1.5 s
+            async def run():
+                transport = httpx.ASGITransport(app=web_app.app)
+                async with httpx.AsyncClient(transport=transport, base_url="http://test", timeout=120) as client:
+                    async def item(i):
+                        r = await client.post("/api/predict_dataset",
+                                              data={"dataset": "d", "rel": f"{i}.png", "model": "cnn"})
+                        return r.status_code
+
+                    async def probe(path):
+                        await asyncio.sleep(1.0)             # the queue is full by now
+                        t0 = time.perf_counter()
+                        r = await client.get(path)
+                        return r.status_code, time.perf_counter() - t0, time.perf_counter()
+                    t0 = time.perf_counter()
+                    out = await asyncio.gather(*[item(i) for i in range(45)], probe("/api/health"),
+                                               probe("/api/models"))
+                    return out, t0, time.perf_counter()
+
+            out, t0, t_end = asyncio.run(run())
+    finally:
+        backend_config.MAX_CONCURRENT_SCORES, backend_config.SCORE_WAIT_S = original
+    *codes, (health_code, health_s, health_done), (models_code, models_s, models_done) = out
+    assert codes == [200] * 45 and health_code == 200 and models_code == 200, (codes, health_code, models_code)
+    assert t_end - t0 > 25                                   # the 45 items really queued (2 at a time, 1.5 s each)
+    assert health_done < t_end - 0.5 and health_s < 0.75 and models_s < 0.75, (health_s, models_s, health_done, t_end)
+    print(f"    45 queued (done after {t_end - t0:.1f} s): /api/health in {health_s:.3f} s, /api/models in "
+          f"{models_s:.3f} s, both answered while the queue was still running")
+
+
 if __name__ == "__main__":
     test_pins()
     test_event_loop_not_blocked()
@@ -384,4 +498,6 @@ if __name__ == "__main__":
     test_score_slots()
     test_vlm_pin_order()
     test_race()
+    test_slot_timeout_and_batch_slot()
+    test_health_with_queue()
     print("web concurrency test passed")

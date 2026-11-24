@@ -449,6 +449,15 @@ def _external(model) -> bool:
     return callable(getattr(model, "close", None)) and not isinstance(model, torch.nn.Module)
 
 
+def _close_logged(model) -> None:
+    """``_close`` that logs a failure instead of raising: one evicted runner failing to stop must not skip the others or
+    fail the request that evicted it (its own score is unaffected)."""
+    try:
+        _close(model)
+    except Exception:                                   # noqa: BLE001
+        logger.exception("closing an evicted detector failed; continuing")
+
+
 def _close(model) -> None:
     """Stop what an evicted detector runs outside this process (an agent's runner); no-op for torch modules. An agent's
     ``close()`` first waits for the video in progress (up to ``close_timeout``), so callers run it OUTSIDE
@@ -549,11 +558,8 @@ class Engine:
         """Free evicted detectors OUTSIDE the lock (an agent's ``close()`` waits for its video in progress)."""
         if not dropped:
             return
-        for model in dropped:                           # one failing close() must not skip the others or fail the
-            try:                                        # request that released the pin (its score is already made)
-                _close(model)
-            except Exception:                           # noqa: BLE001
-                logger.exception("closing an evicted detector failed; continuing with the others")
+        for model in dropped:                           # a failing close() is logged, the others still close
+            _close_logged(model)
         del model
         dropped.clear()                                 # the caller's list: no reference keeps the models alive
         gc.collect()
@@ -563,13 +569,14 @@ class Engine:
     def release_gpu(self) -> None:
         """Drop every resident detector that no request is using (they reload lazily on the next request) so a heavy
         local image generator, which runs in its own process and wants most of the GPU, does not collide with them.
-        Pinned detectors stay, because a request is scoring with them. The web app calls this holding ``_GPU_LOCK``,
-        which only the VLM and generator-comparison scorers also take (and they pin after taking it), so a VLM is never
-        kept here; a non-VLM score in progress (``/api/predict``, ``/api/predict_dataset``) can be."""
+        Pinned detectors stay, because a request is scoring with them. The web app calls this holding ``_GPU_LOCK``.
+        Only ``/api/predict``'s VLM path and the generator comparison take that lock too (and pin after taking it), so
+        a detector scored there is never kept here. Anything scored without the lock can be kept while in use: every
+        non-VLM score, and a VLM scored through ``/api/predict_dataset`` or ``/api/score_batch``."""
         with self._lock:
             dropped = [self._cache.pop(key) for key in [k for k in self._cache if not self._pins[k]]]
         for model in dropped:                      # outside the lock: an agent finishes its video in progress first
-            _close(model)
+            _close_logged(model)
         del dropped
         gc.collect()
         if self.device == "cuda":
@@ -600,7 +607,7 @@ class Engine:
             # stop it OUTSIDE the lock (close() waits for that video), so the other resident detectors keep serving,
             # then take the lock again and load (the loop re-checks the cache, which may have changed meanwhile).
             for model in external:
-                _close(model)
+                _close_logged(model)
             del external
             gc.collect()
             if self.device == "cuda":

@@ -93,6 +93,9 @@ MAX_VIEWS = int(os.environ.get("SYNTHSCOPE_MAX_VIEWS", "0"))
 # 0 = no limit (the local default). The CPU Space sets 2 (deploy/hf-space/Dockerfile): it bounds both the CPU use and
 # how many detectors can be resident at once beyond MAX_RESIDENT_MODELS (a detector in use is never evicted).
 MAX_CONCURRENT_SCORES = int(os.environ.get("SYNTHSCOPE_MAX_CONCURRENT_SCORES", "0"))
+# Longest a request waits for a scoring slot before HTTP 503 "busy, retry" (seconds). Unset = wait as long as it takes
+# (the local default); the Space sets 120.
+SCORE_WAIT_S = float(os.environ["SYNTHSCOPE_SCORE_WAIT_S"]) if os.environ.get("SYNTHSCOPE_SCORE_WAIT_S") else None
 # Number of frames sampled from a video when running an *image* detector frame-by-frame.
 VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 
