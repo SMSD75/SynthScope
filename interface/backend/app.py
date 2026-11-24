@@ -9,6 +9,7 @@ Serves the built Vite frontend from ``frontend/dist`` if present, otherwise the 
 standalone page in ``static/index.html`` (works without Node).
 """
 import asyncio
+import contextlib
 import json
 import re
 import tempfile
@@ -65,27 +66,30 @@ def models():
 
 
 def _score_upload(engine, spec, kind: str, data: bytes, filename: str | None) -> dict:
-    """Score one uploaded image or video with ``spec`` (in a worker thread, see /api/predict)."""
-    with engine.pinned(spec):
-        if kind == "image":
-            if spec.has_vlm:                        # the raw file (official loader), under the GPU lock
-                result = _vlm_predict(engine, spec, data)
-            else:
-                result = engine.predict_image(spec, media.decode_image(data))
+    """Score one uploaded image or video with ``spec`` (in a worker thread, see /api/predict). Order: a scoring slot
+    (``_score_slot``), then for a VLM ``_GPU_LOCK``, then the pin, then the model load."""
+    with _score_slot():
+        if kind == "image" and spec.has_vlm:        # the raw file (official loader); pinned only once it holds the GPU
+            result = _vlm_predict(engine, spec, data)
             result["media_type"] = "image"
             return result
-        # video upload -> write to a temp file for the decoder
-        suffix = Path(filename or "video.mp4").suffix or ".mp4"
-        with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as tmp:
-            tmp.write(data)
-            tmp.flush()
-            if spec.modality == "video":            # native video detectors, the agent included
-                result = engine.predict_video_clip(spec, tmp.name)
-            else:
-                frames = media.sample_video_pil(tmp.name, config.VIDEO_IMAGE_FRAMES)
-                result = engine.predict_video_frames(spec, frames)
-        result["media_type"] = "video"
-        return result
+        with engine.pinned(spec):
+            if kind == "image":
+                result = engine.predict_image(spec, media.decode_image(data))
+                result["media_type"] = "image"
+                return result
+            # video upload -> write to a temp file for the decoder
+            suffix = Path(filename or "video.mp4").suffix or ".mp4"
+            with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as tmp:
+                tmp.write(data)
+                tmp.flush()
+                if spec.modality == "video":        # native video detectors, the agent included
+                    result = engine.predict_video_clip(spec, tmp.name)
+                else:
+                    frames = media.sample_video_pil(tmp.name, config.VIDEO_IMAGE_FRAMES)
+                    result = engine.predict_video_frames(spec, frames)
+            result["media_type"] = "video"
+            return result
 
 
 @app.post("/api/predict")
@@ -125,8 +129,10 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
         raise HTTPException(status_code=400, detail=vlm_images_only(spec))
     try:
         # Off the event loop, for every detector: a CPU score can take a minute (LTF), and the page, the dataset
-        # browser and other requests must keep answering meanwhile. The detector is pinned while in use, so another
-        # request cannot evict it (Engine.pinned); a VLM also takes _GPU_LOCK (_vlm_predict).
+        # browser and other requests must keep answering meanwhile. At most SYNTHSCOPE_MAX_CONCURRENT_SCORES scores run
+        # at once (_score_slot), and the detector is pinned while in use, so another request cannot evict it
+        # (Engine.pinned). Only a VLM takes _GPU_LOCK (_vlm_predict); other detectors do not, so on a local GPU they
+        # can overlap a heavy local generation, as they could before.
         return await asyncio.to_thread(_score_upload, engine, spec, kind, data, file.filename)
     except HTTPException:
         raise
@@ -182,14 +188,31 @@ def sota_real_image():
     return {"image_b64": _b64.b64encode(buf.getvalue()).decode(), "source": path.split("/")[-3:]}
 
 
-_GPU_LOCK = threading.Lock()   # detector scoring and heavy local generation never overlap on the GPU
+_GPU_LOCK = threading.Lock()   # VLM / generator-comparison scoring and heavy local generation never overlap on the GPU
+
+# Lock order, everywhere: a scoring slot, then _GPU_LOCK, then Engine._lock (taken briefly by pinned / _get_model).
+_SCORE_SLOTS: dict[int, threading.BoundedSemaphore] = {}
+_SLOTS_LOCK = threading.Lock()
+
+
+def _score_slot():
+    """One of ``config.MAX_CONCURRENT_SCORES`` scoring slots (``SYNTHSCOPE_MAX_CONCURRENT_SCORES``; 0, the local
+    default, means no limit). Every web scoring path takes one inside its worker thread, BEFORE pinning or loading a
+    detector, so on the CPU Space (2) at most that many detectors are in use and resident beyond the LRU at once, and
+    the 2 vCPUs are not oversubscribed; the event loop itself is never blocked by a waiting request."""
+    n = config.MAX_CONCURRENT_SCORES
+    if n <= 0:
+        return contextlib.nullcontext()
+    with _SLOTS_LOCK:
+        return _SCORE_SLOTS.setdefault(n, threading.BoundedSemaphore(n))
 
 
 def _vlm_predict(engine, spec, data: bytes) -> dict:
     """Score an uploaded image with a VLM detector (a 15-20 s, ~19 GB generation) on the raw file; it takes
     ``_GPU_LOCK`` like the other GPU work, so a heavy local generation (``release_gpu`` + a big pipeline) never starts
-    while the model is in use."""
-    with _GPU_LOCK:
+    while the model is in use. The detector is pinned only after the lock is held: a request waiting for the GPU does
+    not keep its VLM resident through a generation's ``release_gpu``."""
+    with _GPU_LOCK, engine.pinned(spec):
         return engine.predict_image(spec, media.decode_image_raw(data))
 
 
@@ -245,7 +268,7 @@ def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dic
     engine = get_engine()
     results = []
     for key in [d.strip() for d in detectors.split(",") if d.strip()]:
-        with _GPU_LOCK:                              # one detector at a time: concurrent requests queue, not race
+        with _score_slot(), _GPU_LOCK:               # one detector at a time: concurrent requests queue, not race
             results.append(_score_one(engine, key, real_img, gen_img, raw))
     return results
 
@@ -495,7 +518,7 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
     full result) and /api/score_batch (many items, scores only).
     """
     path = datasets.resolve_media(dataset, rel)          # may raise Permission/FileNotFound
-    with engine.pinned(spec):                            # not evicted by a concurrent request while in use
+    with _score_slot(), engine.pinned(spec):             # bounded; not evicted by a concurrent request while in use
         return _score_dataset_item(engine, spec, dataset, rel, path)
 
 

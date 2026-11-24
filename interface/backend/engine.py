@@ -318,30 +318,64 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
 def is_view_bag(spec: ModelSpec) -> bool:
     """Whether ``spec`` reads an image as a bag of native-resolution views whose count grows with the image size (LTF's
     tiles, PROBE's patches): the detectors ``SYNTHSCOPE_MAX_VIEWS`` and the web app's batch cap are about."""
+    return bag_views(spec, (1, 1)) is not None
+
+
+def bag_views(spec: ModelSpec, size: tuple[int, int]) -> int | None:
+    """How many views a view-bag detector's transform makes of a ``(width, height)`` image, computed from the size alone
+    (no pixels are touched), or None for any other detector. Mirrors the transforms: LTF = one global view + the
+    official tile grid (``LTFViews.start_positions`` per axis); PROBE = ``ProbePad`` (official ``pad_image``) then
+    non-overlapping ``SlidingPatches``. tests/test_ltf_smoke.py checks it equals the transform's count."""
     steps = spec.transform.transforms if spec.native_res and spec.transform is not None else []
-    return any(isinstance(t, (LTFViews, SlidingPatches)) for t in steps)
+    width, height = size
+    for step in steps:
+        if isinstance(step, LTFViews):
+            starts = LTFViews.start_positions
+            return 1 + len(starts(width, step.tile_size)) * len(starts(height, step.tile_size))
+    pads = [t for t in steps if isinstance(t, ProbePad)]
+    cuts = [t for t in steps if isinstance(t, SlidingPatches)]
+    if not cuts:
+        return None
+    if pads and not (width >= pads[0].size and height >= pads[0].size):
+        pad = pads[0].size
+        if pads[0].mode == "repeat":                     # pad_image: tile copies until both sides reach ``size``
+            width *= max(1, -(-pad // width))
+            height *= max(1, -(-pad // height))
+        else:                                            # centred on a black size x size square
+            width = height = pad
+    return (width // cuts[0].size) * (height // cuts[0].size)
 
 
 class InputTooLarge(ValueError):
     """A request whose view bag is above ``config.MAX_VIEWS`` (the hosted CPU demo's guard; the web API answers 413)."""
 
 
-def check_views(spec: ModelSpec, x: torch.Tensor) -> None:
-    """Refuse an input that a native-resolution view-bag detector (``x`` = [B, views, 3, H, W] whose view count grows
-    with the image size: LTF's tiles, PROBE's patches) would read as more than ``config.MAX_VIEWS`` views in all (summed
-    over the frames of a video). No-op when the limit is 0 (the default) or for any other detector (AIDE's fixed five
-    views are not counted). The input is refused rather than resized, so every score the demo returns is the
-    detector's official score."""
-    if not config.MAX_VIEWS or x.dim() != 5 or not is_view_bag(spec):
+def check_views(spec: ModelSpec, size: tuple[int, int], frames: int = 0) -> None:
+    """Refuse, before any preprocessing, an input that a native-resolution view-bag detector (LTF's tiles, PROBE's
+    patches) would read as more than ``config.MAX_VIEWS`` views: one image of ``size`` = (width, height), or ``frames``
+    sampled video frames of that size (their views add up). No-op when the limit is 0 (the default) or for any other
+    detector (AIDE's fixed five views are not counted). The input is refused rather than resized, so every score the
+    demo returns is the detector's official score."""
+    if not config.MAX_VIEWS:
         return
-    views = int(x.shape[0]) * int(x.shape[1])
-    if views > config.MAX_VIEWS:
+    per_image = bag_views(spec, size)
+    if per_image is None:
+        return
+    views = per_image * max(1, frames)
+    if views <= config.MAX_VIEWS:
+        return
+    why = (f"this server scores at most {config.MAX_VIEWS} views per request, because each view takes about two seconds "
+           "on its CPU")
+    if frames:
         raise InputTooLarge(
-            f"{spec.name} reads this input at its own resolution as {views} views of {int(x.shape[-1])} px (tiles plus "
-            f"a global view); this server scores at most {config.MAX_VIEWS} per request, because each view takes about "
-            f"two seconds on its CPU. The image is not shrunk automatically, since that would change what the "
-            f"detector sees: upload a smaller or cropped image, or run SynthScope locally, which has no "
-            f"limit.")
+            f"{spec.name} scores native-resolution tiles of each of the {frames} sampled video frames: this "
+            f"{size[0]}x{size[1]} video makes {views} views ({per_image} per frame), and {why}. Video input exceeds "
+            f"the demo's limit for {spec.name}: use a native video detector, upload a still image, or run SynthScope "
+            "locally, which has no limit.")
+    raise InputTooLarge(
+        f"{spec.name} reads this {size[0]}x{size[1]} image at its own resolution as {per_image} views (tiles or "
+        f"patches, as in the official code); {why}. The image is not shrunk automatically, since that would change "
+        "what the detector sees: upload a smaller or cropped image, or run SynthScope locally, which has no limit.")
 
 
 def vlm_images_only(spec: ModelSpec) -> str:
@@ -472,6 +506,10 @@ class Engine:
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
+        if spec.ckpt_kind == "official_ltf":        # ltf.pth AND the pinned CLIP backbone, so a load never downloads
+            from models.image.ltf.ltf import backbone_present
+            if not backbone_present():
+                return False
         if spec.predict_kind == "video_agent":     # adapters, base, OCR models, official code and the isolated runtime
             return not agent_missing(spec)
         p = self.checkpoint_path(spec)
@@ -511,8 +549,11 @@ class Engine:
         """Free evicted detectors OUTSIDE the lock (an agent's ``close()`` waits for its video in progress)."""
         if not dropped:
             return
-        for model in dropped:
-            _close(model)
+        for model in dropped:                           # one failing close() must not skip the others or fail the
+            try:                                        # request that released the pin (its score is already made)
+                _close(model)
+            except Exception:                           # noqa: BLE001
+                logger.exception("closing an evicted detector failed; continuing with the others")
         del model
         dropped.clear()                                 # the caller's list: no reference keeps the models alive
         gc.collect()
@@ -522,7 +563,9 @@ class Engine:
     def release_gpu(self) -> None:
         """Drop every resident detector that no request is using (they reload lazily on the next request) so a heavy
         local image generator, which runs in its own process and wants most of the GPU, does not collide with them.
-        Pinned detectors stay: the request using them finishes first (the web app also holds ``_GPU_LOCK``)."""
+        Pinned detectors stay, because a request is scoring with them. The web app calls this holding ``_GPU_LOCK``,
+        which only the VLM and generator-comparison scorers also take (and they pin after taking it), so a VLM is never
+        kept here; a non-VLM score in progress (``/api/predict``, ``/api/predict_dataset``) can be."""
         with self._lock:
             dropped = [self._cache.pop(key) for key in [k for k in self._cache if not self._pins[k]]]
         for model in dropped:                      # outside the lock: an agent finishes its video in progress first
@@ -808,10 +851,9 @@ class Engine:
             return self._predict_vlm(spec, pil)
         if spec.predict_kind == "fusion":
             return self._predict_fusion(spec, pil)
-        x = spec.transform(pil).unsqueeze(0)
-        check_views(spec, x)                          # before the model loads: a refused input costs nothing
+        check_views(spec, pil.size)                   # from the size alone: a refused input is never preprocessed
         model = self._get_model(spec)
-        x = x.to(self.device)
+        x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
         p = float(self._fake_prob(model, spec, x).item())
         res = self._result(spec, p, time.time() - t0)
@@ -842,10 +884,10 @@ class Engine:
             raise ValueError(f"'{spec.key}' scores the video file itself (Engine.predict_video_clip), not sampled frames.")
         if spec.predict_kind in ("vlm", "fusion"):
             raise ValueError(vlm_images_only(spec))
-        batch = torch.stack([spec.transform(f) for f in frames])
-        check_views(spec, batch)
+        if frames:
+            check_views(spec, frames[0].size, frames=len(frames))
         model = self._get_model(spec)
-        batch = batch.to(self.device)
+        batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
         t0 = time.time()
         per_frame = self._fake_prob(model, spec, batch).detach().float().cpu().tolist()
         elapsed = time.time() - t0

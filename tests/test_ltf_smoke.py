@@ -39,7 +39,7 @@ from models.image.ltf.ltf import CORE_SHA256, SynthScopeLTFModel, sha256   # noq
 from models.image.ltf.preprocess import LTFViews              # noqa: E402
 from transformations import CLIP_MEAN, CLIP_STD               # noqa: E402
 from backend import config as backend_config                  # noqa: E402
-from backend.engine import Engine, InputTooLarge, _load_checkpoint, check_views   # noqa: E402
+from backend.engine import Engine, InputTooLarge, _load_checkpoint, bag_views, check_views   # noqa: E402
 from backend.registry import get_spec, remap_ltf              # noqa: E402
 from synthscope import hub                                    # noqa: E402
 
@@ -52,6 +52,16 @@ RELEASED_UNUSED = 27      # disconnected baseline tensors the official loader dr
 def noise_pil(w: int, h: int, seed: int = 0) -> Image.Image:
     arr = np.random.default_rng(seed).integers(0, 256, (h, w, 3), dtype=np.uint8)
     return Image.fromarray(arr, "RGB")
+
+
+class NoCallTransform:
+    """A registry transform stand-in with the same steps (``bag_views`` reads them) that must never be applied."""
+
+    def __init__(self, transforms):
+        self.transforms = transforms
+
+    def __call__(self, image):
+        raise AssertionError("the transform ran for a refused input")
 
 
 def refused(fn, *args) -> str:
@@ -220,27 +230,79 @@ def test_space_fetch() -> None:
     print("    DEFAULT and UPSTREAM hold ltf; fetched via fetch_core + resolve_backbone, no zoo download")
 
 
+def test_view_count() -> None:
+    print("[F0] bag_views(size) == the transform's view count (LTF, PROBE, PROBE-ResNet) ...")
+    sizes = [(1, 1), (7, 300), (150, 200), (200, 150), (223, 224), (224, 224), (225, 224), (300, 200), (335, 337),
+             (336, 336), (448, 448), (449, 300), (500, 375), (672, 673), (900, 120), (1300, 900), (1920, 1080),
+             (2048, 1536)]
+    rng = np.random.default_rng(0)
+    sizes += [tuple(int(v) for v in rng.integers(1, 1400, 2)) for _ in range(12)]
+    checked = 0
+    for key in ("ltf", "probe", "probe_resnet"):
+        spec = get_spec(key)
+        for w, h in sizes:
+            n = int(spec.transform(Image.new("RGB", (w, h))).shape[0])
+            assert bag_views(spec, (w, h)) == n, (key, (w, h), bag_views(spec, (w, h)), n)
+            checked += 1
+    assert bag_views(get_spec("aide"), (500, 500)) is None and bag_views(get_spec("spai"), (500, 500)) is None
+    print(f"    {checked} (detector, size) pairs match; AIDE / SPAI are not view bags")
+
+
 def test_view_guard() -> None:
-    print("[F] SYNTHSCOPE_MAX_VIEWS guard ...")
-    spec, tf = get_spec("ltf"), get_spec("ltf").transform
-    big = tf(noise_pil(1300, 900)).unsqueeze(0)                      # 31 views
-    original = backend_config.MAX_VIEWS
+    print("[F] SYNTHSCOPE_MAX_VIEWS guard (from the image size, before any preprocessing) ...")
+    spec = get_spec("ltf")
+    original = backend_config.MAX_VIEWS, spec.transform
     try:
         backend_config.MAX_VIEWS = 0                                   # default: no limit
-        check_views(spec, big)
+        check_views(spec, (1300, 900))
         backend_config.MAX_VIEWS = 31
-        check_views(spec, big)                                         # at the limit: scored as usual
-        check_views(get_spec("aide"), torch.zeros(16, 5, 3, 8, 8))     # fixed-view detectors are never counted
+        check_views(spec, (1300, 900))                                 # 31 views, at the limit: scored as usual
+        check_views(get_spec("aide"), (4000, 3000), frames=16)         # fixed-view detectors are never counted
         backend_config.MAX_VIEWS = 30
-        msg = refused(check_views, spec, big)
-        assert "31 views" in msg and "at most 30" in msg, msg
-        refused(check_views, spec, torch.zeros(2, 16, 3, 224, 224))     # video frames: views summed over the frames
+        msg = refused(check_views, spec, (1300, 900))
+        assert "as 31 views" in msg and "at most 30" in msg and "smaller or cropped image" in msg, msg
+        msg = refused(check_views, spec, (300, 200), 16)               # video: 3 views x 16 frames = 48
+        assert "16 sampled video frames" in msg and "48 views (3 per frame)" in msg and "Video input" in msg, msg
         engine = Engine(device="cpu")
+
+        spec.transform = NoCallTransform(original[1].transforms)      # same steps; running it would fail the test
         refused(engine.predict_image, spec, noise_pil(1300, 900))
+        refused(engine.predict_video_frames, spec, [noise_pil(300, 200)] * 16)
         assert not engine._cache                                       # refused before the model is built
     finally:
-        backend_config.MAX_VIEWS = original
-    print("    no limit by default; 31 views pass at 31 and are refused at 30 (before loading); AIDE not counted")
+        backend_config.MAX_VIEWS = original[0]
+        spec.transform = original[1]
+    print("    no limit by default; 31 views pass at 31, refused at 30 before the transform and the load; "
+          "video message names the frames")
+
+
+def test_availability() -> None:
+    print("[G] ltf is available only with ltf.pth AND the pinned backbone (no download at request time) ...")
+    spec, engine = get_spec("ltf"), Engine(device="cpu")
+    saved = {k: os.environ.get(k) for k in ("SYNTHSCOPE_LTF_BACKBONE", "SYNTHSCOPE_CLIP_DIR")}
+    original_dir, original_cache = backend_config.CHECKPOINTS_DIR, ltf_module.try_to_load_from_cache
+    try:
+        with tempfile.TemporaryDirectory() as tmp:
+            backend_config.CHECKPOINTS_DIR = Path(tmp)
+            os.environ.pop("SYNTHSCOPE_LTF_BACKBONE", None)
+            os.environ["SYNTHSCOPE_CLIP_DIR"] = str(Path(tmp, "noclip"))
+            ltf_module.try_to_load_from_cache = lambda *a, **k: None   # not in the Hugging Face cache either
+            assert not engine.is_available(spec)                         # nothing
+            Path(tmp, "ltf.pth").write_bytes(b"x")
+            assert not ltf_module.backbone_present() and not engine.is_available(spec)   # checkpoint only
+            ltf_module.try_to_load_from_cache = lambda *a, **k: str(Path(tmp, "ltf.pth"))
+            assert ltf_module.backbone_present() and engine.is_available(spec)           # + backbone in the HF cache
+            ltf_module.try_to_load_from_cache = lambda *a, **k: None
+            os.environ["SYNTHSCOPE_LTF_BACKBONE"] = str(Path(tmp, "ltf.pth"))
+            assert engine.is_available(spec)                                             # + explicit backbone file
+    finally:
+        backend_config.CHECKPOINTS_DIR, ltf_module.try_to_load_from_cache = original_dir, original_cache
+        for k, v in saved.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+    print("    unavailable with the checkpoint alone; available once the backbone is cached or configured")
 
 
 if __name__ == "__main__":
@@ -251,5 +313,7 @@ if __name__ == "__main__":
     test_forward_and_loss(m)
     test_preview()
     test_space_fetch()
+    test_view_count()
     test_view_guard()
+    test_availability()
     print("LTF smoke test passed")

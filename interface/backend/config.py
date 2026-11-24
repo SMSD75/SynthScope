@@ -89,6 +89,10 @@ MAX_UPLOAD_BYTES = int(os.environ.get("SYNTHSCOPE_MAX_UPLOAD_MB", "200")) * 1024
 # the limit the request is refused, never shrunk (that would change the score); /api/score_batch also caps these
 # detectors at SCORE_BATCH_CAP_VIEWS items per call (app.py).
 MAX_VIEWS = int(os.environ.get("SYNTHSCOPE_MAX_VIEWS", "0"))
+# Most detector scores the web app runs at once (worker threads; the rest wait for a slot without blocking the page).
+# 0 = no limit (the local default). The CPU Space sets 2 (deploy/hf-space/Dockerfile): it bounds both the CPU use and
+# how many detectors can be resident at once beyond MAX_RESIDENT_MODELS (a detector in use is never evicted).
+MAX_CONCURRENT_SCORES = int(os.environ.get("SYNTHSCOPE_MAX_CONCURRENT_SCORES", "0"))
 # Number of frames sampled from a video when running an *image* detector frame-by-frame.
 VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 

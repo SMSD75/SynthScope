@@ -13,10 +13,12 @@ USER user
 # be roughly 4x faster if it scales with the cores (not measured). Requests above 50 views (about 2 MP; 1920x1080 = 46)
 # are refused with a message, not shrunk, so the scores stay the official ones (interface/backend/engine.py
 # check_views); /api/score_batch then scores at most 4 LTF / PROBE items per call (app.py SCORE_BATCH_CAP_VIEWS).
+# SYNTHSCOPE_MAX_CONCURRENT_SCORES=2: at most two detector scores at once (the page stays responsive meanwhile),
+# which bounds RAM (a detector in use is never evicted) and keeps the 2 vCPUs from being oversubscribed.
 ENV HOME=/home/user PATH=/home/user/.local/bin:$PATH PYTHONUNBUFFERED=1 \
     SYNTHSCOPE_CKPT_DIR=/home/user/ckpts SYNTHSCOPE_CACHE_DIR=/home/user/cache HF_HOME=/home/user/cache/hf \
     SYNTHSCOPE_MAX_UPLOAD_MB=20 SYNTHSCOPE_MAX_RESIDENT_MODELS=2 XFORMERS_DISABLED=1 SYNTHSCOPE_DEMO=1 \
-    SYNTHSCOPE_MAX_VIEWS=50 DINO_V3_REPO_DIR=/home/user/dinov3 \
+    SYNTHSCOPE_MAX_VIEWS=50 SYNTHSCOPE_MAX_CONCURRENT_SCORES=2 DINO_V3_REPO_DIR=/home/user/dinov3 \
     DINO_V3_WEIGHTS=/home/user/ckpts/dinov3/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth \
     DINO_V3_WEIGHTS_DIR=/home/user/ckpts/dinov3 SYNTHSCOPE_MFM_CKPT=/home/user/ckpts/mfm/mfm_pretrain_vit_base.pth
 WORKDIR /home/user/app

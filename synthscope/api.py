@@ -193,11 +193,19 @@ class Detector:
                 + download_hint(vlm, _config.CHECKPOINTS_DIR / self.spec.checkpoint, _config.CHECKPOINTS_DIR)
                 + ", or pass checkpoint=FOLDER."
             )
-        if not self._auto_download:
+        ltf_ckpt_present = self.spec.ckpt_kind == "official_ltf" and (_config.CHECKPOINTS_DIR / self.spec.checkpoint).exists()
+        if not self._auto_download and not ltf_ckpt_present:
             raise FileNotFoundError(
                 f"No local checkpoint for '{self.spec.key}'. Enable auto_download, place the "
                 f"file under $SYNTHSCOPE_CKPT_DIR, or pass checkpoint=PATH."
             )
+        if self.spec.ckpt_kind == "official_ltf":   # not in the zoo: the authors' repo at the pinned revision
+            from models.image.ltf.ltf import fetch_core, resolve_backbone
+            if not ltf_ckpt_present:
+                print("[synthscope] downloading 'ltf' weights/epoch_20.pth from MuskAI/LTF-v3.3 ...")
+                fetch_core(_config.CHECKPOINTS_DIR)
+            resolve_backbone()                      # the pinned CLIP ViT-L/14 (fetched now if it is not cached)
+            return
         from . import hub
 
         print(f"[synthscope] downloading '{self.spec.key}' weights from the model zoo ...")
