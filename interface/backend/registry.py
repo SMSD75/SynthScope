@@ -844,6 +844,52 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
 }
 
 
+# Paper and official-code links shown (clickable) with each detector on the web page: the credit the authors asked for
+# (LTF's first author, 2026-11-24: "credit and links to the repo and paper"). Sources: the model READMEs and the
+# upstream-repository column of LICENSES.md; every arXiv id was checked against its abstract page and every GitHub
+# repository resolved (2026-11-24). A detector without a verified link (or a SynthScope-only probe) has none.
+_GH, _AX = "https://github.com/", "https://arxiv.org/abs/"
+_LINKS: dict[tuple[str, ...], tuple[str | None, str | None]] = {
+    ("cnn",): (_AX + "1912.11035", _GH + "PeterWang512/CNNDetection"),
+    ("clip",): (_AX + "2302.10174", _GH + "WisconsinAIVision/UniversalFakeDetect"),
+    ("npr",): (_AX + "2312.10461", _GH + "chuangchuangtan/NPR-DeepfakeDetection"),
+    ("fat_former",): (_AX + "2312.16649", _GH + "Michel-liu/FatFormer"),
+    ("aide",): (_AX + "2406.19435", _GH + "shilinyan99/AIDE"),
+    ("co_spy",): (_AX + "2503.18286", _GH + "Megum1/CO-SPY"),
+    ("spai",): (_AX + "2411.19417", _GH + "mever-team/spai"),
+    ("safe",): (_AX + "2408.06741", _GH + "Ouxiang-Li/SAFE"),
+    ("pgc",): (None, _GH + "xiaoyu6868/PGC"),
+    ("cure",): (_AX + "2609.14316", _GH + "manic-cui/CuRe"),
+    ("d3qe",): (_AX + "2510.05891", _GH + "Zhangyr2022/D3QE"),
+    ("ltf",): (_AX + "2611.04529", _GH + "HuiGuanLab/LTF"),
+    ("dda",): (_AX + "2505.14359", _GH + "roy-ch/Dual-Data-Alignment"),
+    ("omniaid", "omniaid_v1", "omniaid_genimage"): (_AX + "2511.08423", _GH + "yunncheng/OmniAID"),
+    ("bfree",): (_AX + "2412.17671", _GH + "grip-unina/B-Free"),
+    ("mirror",): (_AX + "2602.02222", None),             # the code repository is 404 since 2026-11-12
+    ("vina", "vina_video"): (_AX + "2605.21977", _GH + "mgiant/VINA"),
+    ("probe", "probe_resnet"): (_AX + "2605.24906", _GH + "Amamiya-C/PROBE-AIGI-Detection"),
+    ("veritaspp",): (_AX + "2607.27113", _GH + "EricTan7/VeritasPP"),
+    ("adb_vlm", "adb_full"): (_AX + "2512.06746", _GH + "GzZning/Align-Dont-Blend"),
+    ("fakevlm",): (_AX + "2503.14905", _GH + "opendatalab/FakeVLM"),
+    ("moejepa",): (_AX + "2609.16778", _GH + "ALCOR-Lab-DIAG/MoE-JEPA"),
+    ("effort", "effort_chameleon"): (_AX + "2411.15633", _GH + "YZY-stack/Effort-AIGI-Detection"),
+    ("d3",): (None, _GH + "Zig-HS/D3"),
+    ("split",): (_AX + "2607.02886", _GH + "mldljyh/SPLIT"),
+    ("waverep", "waverep_g4"): (_AX + "2506.16802", _GH + "grip-unina/WaveRep-SyntheticVideoDetection"),
+    ("nsg_vd", "nsg_vd_pika", "nsg_vd_unbalance"): (_AX + "2510.08073", _GH + "ZSHsh98/NSG-VD"),
+    ("wevis",): (_AX + "2611.21373", _GH + "Tencent/WeVisForensics"),
+    ("stall",): (None, _GH + "OmerBenHayun/STALL"),
+}
+DETECTOR_LINKS: dict[str, dict[str, str]] = {
+    key: {kind: url for kind, url in (("paper", paper), ("code", code)) if url}
+    for keys, (paper, code) in _LINKS.items() for key in keys}
+
+
+def detector_links(key: str) -> dict:
+    """{"paper": url, "code": url} (either may be missing) for the web page's detector credit line."""
+    return dict(DETECTOR_LINKS.get(key, {}))
+
+
 def input_note(spec: ModelSpec) -> dict:
     """{label, explanation} describing the preprocessing of ``spec`` (frames for video models)."""
     if spec.video_sampler == "ffmpeg_fps_center":

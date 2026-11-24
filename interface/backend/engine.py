@@ -14,7 +14,8 @@ import shutil
 import threading
 import time
 import warnings
-from collections import OrderedDict
+from collections import Counter, OrderedDict
+from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
@@ -22,6 +23,7 @@ import torch
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
+from models.image.ltf.preprocess import LTFViews
 from models.image.probe.preprocess import ProbePad, SlidingPatches
 from models.image.adb_full.adb_full import fuse_components
 from models.video.wevis import wevis as wevis_agent
@@ -313,6 +315,13 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
     return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
+def is_view_bag(spec: ModelSpec) -> bool:
+    """Whether ``spec`` reads an image as a bag of native-resolution views whose count grows with the image size (LTF's
+    tiles, PROBE's patches): the detectors ``SYNTHSCOPE_MAX_VIEWS`` and the web app's batch cap are about."""
+    steps = spec.transform.transforms if spec.native_res and spec.transform is not None else []
+    return any(isinstance(t, (LTFViews, SlidingPatches)) for t in steps)
+
+
 class InputTooLarge(ValueError):
     """A request whose view bag is above ``config.MAX_VIEWS`` (the hosted CPU demo's guard; the web API answers 413)."""
 
@@ -323,7 +332,7 @@ def check_views(spec: ModelSpec, x: torch.Tensor) -> None:
     over the frames of a video). No-op when the limit is 0 (the default) or for any other detector (AIDE's fixed five
     views are not counted). The input is refused rather than resized, so every score the demo returns is the
     detector's official score."""
-    if not config.MAX_VIEWS or not spec.native_res or x.dim() != 5:
+    if not config.MAX_VIEWS or x.dim() != 5 or not is_view_bag(spec):
         return
     views = int(x.shape[0]) * int(x.shape[1])
     if views > config.MAX_VIEWS:
@@ -424,6 +433,9 @@ class Engine:
         self._cache: "OrderedDict[str, torch.nn.Module]" = OrderedDict()
         self._status: dict[str, str] = {}
         self._lock = threading.Lock()
+        # Detectors a request is using right now (``pinned``): the LRU never evicts them and ``release_gpu`` keeps them,
+        # so concurrent requests (the web app scores in worker threads) cannot drop a model mid-use.
+        self._pins: Counter = Counter()
 
     # -- availability -------------------------------------------------------
     def checkpoint_path(self, spec: ModelSpec):
@@ -468,12 +480,51 @@ class Engine:
         return bool(p and p.exists()) and (base is None or base.exists()) and (proc is None or proc.exists())
 
     # -- model lifecycle ----------------------------------------------------
-    def release_gpu(self) -> None:
-        """Drop every resident detector (they reload lazily on the next request) so a heavy local image generator,
-        which runs in its own process and wants most of the GPU, does not collide with them."""
+    @contextmanager
+    def pinned(self, spec: ModelSpec):
+        """Mark ``spec`` (and a fusion detector's two components) as in use for the ``with`` block: while pinned, the
+        LRU does not evict it and ``release_gpu`` keeps it. A load that finds every resident detector pinned goes over
+        ``MAX_RESIDENT_MODELS`` for the moment instead of waiting (no deadlock); the cache is trimmed back to the limit
+        when the pins are released. Pins count, so two requests may pin the same detector."""
+        keys = [spec.key] + ([part.key for part in fusion_components(spec)] if spec.fusion is not None else [])
         with self._lock:
-            dropped = list(self._cache.values())
-            self._cache.clear()
+            self._pins.update(keys)
+        try:
+            yield
+        finally:
+            with self._lock:
+                self._pins.subtract(keys)
+                self._pins += Counter()                 # drop the zero counts
+                dropped = []
+                while len(self._cache) > config.MAX_RESIDENT_MODELS:
+                    victim = self._unpinned_lru()
+                    if victim is None:
+                        break
+                    dropped.append(self._cache.pop(victim))
+            self._discard(dropped)
+
+    def _unpinned_lru(self):
+        """The least recently used resident detector that no request has pinned, or None; the caller holds the lock."""
+        return next((key for key in self._cache if not self._pins[key]), None)
+
+    def _discard(self, dropped: list) -> None:
+        """Free evicted detectors OUTSIDE the lock (an agent's ``close()`` waits for its video in progress)."""
+        if not dropped:
+            return
+        for model in dropped:
+            _close(model)
+        del model
+        dropped.clear()                                 # the caller's list: no reference keeps the models alive
+        gc.collect()
+        if self.device == "cuda":
+            torch.cuda.empty_cache()
+
+    def release_gpu(self) -> None:
+        """Drop every resident detector that no request is using (they reload lazily on the next request) so a heavy
+        local image generator, which runs in its own process and wants most of the GPU, does not collide with them.
+        Pinned detectors stay: the request using them finishes first (the web app also holds ``_GPU_LOCK``)."""
+        with self._lock:
+            dropped = [self._cache.pop(key) for key in [k for k in self._cache if not self._pins[k]]]
         for model in dropped:                      # outside the lock: an agent finishes its video in progress first
             _close(model)
         del dropped
@@ -488,10 +539,13 @@ class Engine:
                     self._cache.move_to_end(spec.key)
                     return self._cache[spec.key]
 
-                # Evict LRU entries if at capacity.
+                # Evict LRU entries if at capacity, never one a request has pinned (if all are, load over the limit).
                 external = []
                 while len(self._cache) >= config.MAX_RESIDENT_MODELS:
-                    old_key, old_model = self._cache.popitem(last=False)
+                    victim = self._unpinned_lru()
+                    if victim is None:
+                        break
+                    old_model = self._cache.pop(victim)
                     if _external(old_model):
                         external.append(old_model)
                     del old_model
