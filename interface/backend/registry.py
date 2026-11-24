@@ -844,10 +844,10 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
 }
 
 
-# Paper and official-code links shown (clickable) with each detector on the web page: the credit the authors asked for
-# (LTF's first author, 2026-11-24: "credit and links to the repo and paper"). Sources: the model READMEs and the
-# upstream-repository column of LICENSES.md; every arXiv id was checked against its abstract page and every GitHub
-# repository resolved (2026-11-24). A detector without a verified link (or a SynthScope-only probe) has none.
+# Paper and official-code links shown (clickable) with each detector on the web page, as credit to the authors (a
+# condition of serving LTF's weights in the demo). Sources: the model READMEs and the upstream-repository column of
+# LICENSES.md; every arXiv id was checked against its abstract page and every GitHub repository resolved (2026-11-24).
+# A detector without a verified link (or a SynthScope-only probe) has none.
 _GH, _AX = "https://github.com/", "https://arxiv.org/abs/"
 _LINKS: dict[tuple[str, ...], tuple[str | None, str | None]] = {
     ("cnn",): (_AX + "1912.11035", _GH + "PeterWang512/CNNDetection"),

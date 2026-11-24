@@ -151,9 +151,10 @@ view count, about 2 s per view at 2 threads: on 8 vCPU hardware ("CPU Upgrade") 
 with the cores (not measured).
 
 **Weights.** The code is MIT, and the first author confirmed on 2026-11-24 that the weights are under the same MIT
-terms and may be used in the free web demo with credit (the Hugging Face card `MuskAI/LTF-v3.3` has no license tag yet;
-the author will add MIT). The web demo (Space) loads `weights/epoch_20.pth` (as `ltf.pth`) and the pinned
-`backbones/ViT-L-14.pt` directly from the authors' repository at revision `a2a2e29c`
-(`deploy/hf-space/fetch_weights.py`). `ltf.pth` is not in the SynthScope weights zoo (the permission covers loading in
-the demo, not redistribution): locally, fetch `weights/epoch_20.pth` from the official repository (SHA-256 `32e9fa2e…`,
-see `fetch_core` in `ltf.py`) and save it as `ltf.pth`. See [LICENSES.md](../../../LICENSES.md).
+terms and may be used in the free web demo with credit (the Hugging Face card `MuskAI/LTF-v3.3` has no license tag
+yet). The web demo (Space) loads `weights/epoch_20.pth` (as `ltf.pth`) and the pinned `backbones/ViT-L-14.pt` directly
+from the authors' repository at revision `a2a2e29c` (`deploy/hf-space/fetch_weights.py`). `ltf.pth` is not in the
+SynthScope weights zoo (the permission covers loading in the demo, not redistribution): locally,
+`synthscope.load("ltf")` (auto-download on) fetches both from the official repository, or fetch `weights/epoch_20.pth`
+yourself (SHA-256 `32e9fa2e…`, see `fetch_core` in `ltf.py`) and save it as `ltf.pth`. The web page lists `ltf` as
+available only when both files are present, so a request never downloads. See [LICENSES.md](../../../LICENSES.md).
