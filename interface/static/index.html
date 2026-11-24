@@ -373,6 +373,8 @@ details.lead-card .repro-scroll { padding: 0 22px 18px; }
 
 /* ---- input note, centered image boxes, heatmap legend --------------------------------------------------------*/
 .inote { margin-top: 8px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.dlinks a { margin-left: 8px; color: var(--accent); font-weight: 600; }
+.credit { margin-top: 8px; }
 .itag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 9px; border-radius: 999px; margin-right: 6px;
   background: rgba(124,140,255,.18); border: 1px solid var(--accent); color: var(--text); white-space: nowrap; }
 .preview { align-items: center; min-height: 200px; }
@@ -477,6 +479,20 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
       const facc = fakes.length ? fakes.filter(s => s.p >= thr).length / fakes.length : null;
       const acc = scored.filter(s => verdictAt(s.p, thr) === s.gt).length / scored.length;
       return { n: scored.length, acc, racc, facc };
+    }
+
+    // The detector's paper (arXiv) and official code (GitHub) as links: the authors' credit (registry DETECTOR_LINKS).
+    function DetLinks({ m }) {
+      const l = (m && m.links) || {};
+      if (!l.paper && !l.code) return null;
+      return html`<span class="dlinks">
+        ${l.paper && html`<a href=${l.paper} target="_blank" rel="noopener">paper</a>`}
+        ${l.code && html`<a href=${l.code} target="_blank" rel="noopener">code</a>`}
+      </span>`;
+    }
+    function Credit({ m }) {
+      if (!m) return null;
+      return html`<div class="meta credit">${m.name} — ${m.paper}<${DetLinks} m=${m} /></div>`;
     }
 
     // Short label + plain-language explanation of what a detector does to the image before scoring it.
@@ -1121,6 +1137,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
 
             <label>Detector</label>
             <${ModelSelect} models=${models} model=${model} setModel=${setModel} onChange=${() => setResult(null)} />
+            <${Credit} m=${selected} />
             ${selected && selected.modality === "image" && isVideo && html`<div class="meta">This image detector scores sampled video frames and averages them.</div>`}
 
             <button class="go" disabled=${!file || !model || busy} onClick=${run}>
@@ -1128,7 +1145,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             </button>
             ${error && html`<div class="err">${error}</div>`}
             ${selected && html`<${Adv} title="About this detector">
-              <div class="meta">${selected.paper}${selected.notes ? " · " + selected.notes : ""}</div>
+              <div class="meta">${selected.paper}<${DetLinks} m=${selected} />${selected.notes ? " · " + selected.notes : ""}</div>
               <${InputNote} m=${selected} />
               <${ReproTable} m=${selected} />
             <//>`}
@@ -1138,7 +1155,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             <h2>Result</h2>
             ${!result && !busy && html`<div class="empty">Upload a file and press Analyze.</div>`}
             ${busy && html`<div class="empty">Running ${selected ? selected.name : "the detector"}… the first run loads the model and may take a while.</div>`}
-            ${result && html`<${Result} r=${result} threshold=${threshold} />`}
+            ${result && html`<${Result} r=${result} threshold=${threshold} m=${selected} />`}
             ${result && html`<${Adv} title="Advanced: decision threshold"><${ThresholdSlider} threshold=${threshold} setThreshold=${setThreshold} /><//>`}
           </div>
         </div>`;
@@ -1260,7 +1277,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
             ${trainDsKey && html`<div class="meta">Trained on${" "}
               <b>${(datasets.find(d=>d.key===trainDsKey)||{}).name || trainDsKey}</b>${" "}
               ${(trainMap[model]||{}).official ? html`<span class="badge">official weights</span>` : ""}</div>`}
-            <${Adv} title="About this detector"><${InputNote} m=${models.find(m => m.key === model)} /><${ReproTable} m=${models.find(m => m.key === model)} /><//>
+            <${Adv} title="About this detector"><${Credit} m=${models.find(m => m.key === model)} /><${InputNote} m=${models.find(m => m.key === model)} /><${ReproTable} m=${models.find(m => m.key === model)} /><//>
           </div>
           <div class="grid" style=${{gridTemplateColumns: "2fr 1fr", marginTop: 22}}>
             <div class="card">
@@ -1317,14 +1334,14 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
                 </div>
                 <div class="meta">${selItem.name} · ground truth: <b style=${{color: selItem.label==="fake"?"var(--fake)":"var(--real)"}}>${selItem.label}</b></div>
                 ${selRes && selRes.error && html`<div class="err">${selRes.error}</div>`}
-                ${selRes && !selRes.error && typeof selRes.fake_probability === "number" && html`<${Result} r=${selRes} threshold=${threshold} gt=${selItem.label} />`}
+                ${selRes && !selRes.error && typeof selRes.fake_probability === "number" && html`<${Result} r=${selRes} threshold=${threshold} gt=${selItem.label} m=${models.find(x => x.key === model)} />`}
               </div>`}
             </div>
           </div>
         </div>`;
     }
 
-    function Result({ r, threshold, gt }) {
+    function Result({ r, threshold, gt, m }) {
       const fakePct = r.fake_probability * 100, realPct = (1 - r.fake_probability) * 100;
       const verdict = verdictAt(r.fake_probability, threshold);
       const correct = gt ? (verdict === gt) : null;
@@ -1348,6 +1365,7 @@ pre.cmd { margin: 10px 0 0; padding: 10px 12px; background: rgba(0,0,0,.35); bor
           </div>
         </div>`}
         <div class="meta" style=${{textAlign:"center"}}>${[r.media_type ? r.media_type + (r.num_frames ? " · " + r.num_frames + " frames" : "") : "", r.elapsed_ms ? r.elapsed_ms + " ms" : ""].filter(Boolean).join(" · ")}</div>
+        <div style=${{textAlign:"center"}}><${Credit} m=${m} /></div>
         ${r.per_frame && r.per_frame.length > 1 && html`<div class="frames">
           <div class="meta">Per-frame P(fake) — ${r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
           <div class="spark">

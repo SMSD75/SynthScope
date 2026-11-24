@@ -305,6 +305,23 @@ const isVideoName = (name = "", type = "") =>
   type.startsWith("video") || /\.(mp4|mov|avi|mkv|webm|m4v)$/i.test(name);
 const optLabel = (m) => `${m.name} — ${m.paper} · ${wlabel(m)}${m.available ? "" : "  (no checkpoint)"}`;
 
+// The detector's paper (arXiv) and official code (GitHub) as links: the authors' credit (registry DETECTOR_LINKS).
+function DetLinks({ m }) {
+  const l = (m && m.links) || {};
+  if (!l.paper && !l.code) return null;
+  return (
+    <span className="dlinks">
+      {l.paper && <a href={l.paper} target="_blank" rel="noopener">paper</a>}
+      {l.code && <a href={l.code} target="_blank" rel="noopener">code</a>}
+    </span>
+  );
+}
+
+function Credit({ m }) {
+  if (!m) return null;
+  return <div className="meta credit">{m.name} — {m.paper}<DetLinks m={m} /></div>;
+}
+
 function ModelSelect({ models, model, setModel, onChange }) {
   const img = models.filter((m) => m.modality === "image");
   const vid = models.filter((m) => m.modality === "video");
@@ -450,6 +467,7 @@ function DetectView({ models, model, setModel, threshold, setThreshold }) {
         <h2>Input</h2>
         <label>Detector model</label>
         <ModelSelect models={models} model={model} setModel={setModel} onChange={() => setResult(null)} />
+        <Credit m={selected} />
         {selected && (
           <div className="meta">{selected.notes}
             {selected.modality === "image" ? " · On a video, runs frame-by-frame and averages." : " · Native video model."}</div>
@@ -475,7 +493,7 @@ function DetectView({ models, model, setModel, threshold, setThreshold }) {
         <h2>Result</h2>
         {!result && !busy && <div className="empty">No result yet.</div>}
         {busy && <div className="empty">Running {selected ? selected.name : ""}… first run loads the model and may take a while.</div>}
-        {result && <Result r={result} threshold={threshold} />}
+        {result && <Result r={result} threshold={threshold} m={selected} />}
         {result && <ThresholdSlider threshold={threshold} setThreshold={setThreshold} />}
       </section>
     </div>
@@ -628,7 +646,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
             </div>
             <div className="meta">{selItem.name} · ground truth: <b style={{ color: selItem.label === "fake" ? "var(--fake)" : "var(--real)" }}>{selItem.label}</b></div>
             {selRes && selRes.error && <div className="err">{selRes.error}</div>}
-            {selRes && !selRes.error && typeof selRes.fake_probability === "number" && <Result r={selRes} threshold={threshold} gt={selItem.label} />}
+            {selRes && !selRes.error && typeof selRes.fake_probability === "number" && <Result r={selRes} threshold={threshold} gt={selItem.label} m={models.find((x) => x.key === model)} />}
           </div>
         )}
       </section>
@@ -636,7 +654,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   );
 }
 
-function Result({ r, threshold, gt }) {
+function Result({ r, threshold, gt, m }) {
   const fakePct = r.fake_probability * 100, realPct = (1 - r.fake_probability) * 100;
   const verdict = verdictAt(r.fake_probability, threshold);
   const correct = gt ? verdict === gt : null;
@@ -658,6 +676,7 @@ function Result({ r, threshold, gt }) {
         {r.media_type && <Row k="Media" v={`${r.media_type}${r.num_frames ? " · " + r.num_frames + " frames" : ""}`} />}
         {r.elapsed_ms && <Row k="Inference" v={`${r.elapsed_ms} ms`} />}
       </div>
+      <Credit m={m} />
       {r.per_frame && r.per_frame.length > 1 && (
         <div className="frames">
           <div className="meta">Per-frame P(fake) — {r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>
