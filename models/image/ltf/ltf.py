@@ -29,7 +29,7 @@ from pathlib import Path
 
 import clip
 import torch.nn.functional as F
-from huggingface_hub import hf_hub_download
+from huggingface_hub import hf_hub_download, try_to_load_from_cache
 from omegaconf import DictConfig
 
 from .official.model import LTF
@@ -70,6 +70,19 @@ def resolve_backbone(path=None) -> Path:
     if sha256(path) != BACKBONE_SHA256:
         raise ValueError(f"{path}: SHA-256 differs from the pinned LTF backbone {BACKBONE_SHA256}")
     return path
+
+
+def backbone_present(path=None) -> bool:
+    """Whether ``resolve_backbone`` would find the pinned CLIP file WITHOUT downloading it (the same order: explicit
+    path > $SYNTHSCOPE_LTF_BACKBONE > the OpenAI clip cache > the Hugging Face cache at the pinned revision). Cheap: no
+    hashing (``resolve_backbone`` checks the SHA-256 when the model loads). The web engine uses it so ``ltf`` counts as
+    available only when nothing is left to download at request time."""
+    path = path or os.environ.get("SYNTHSCOPE_LTF_BACKBONE")
+    if path:
+        return Path(path).expanduser().is_file()
+    if (Path(os.environ.get("SYNTHSCOPE_CLIP_DIR") or Path.home() / ".cache" / "clip") / "ViT-L-14.pt").is_file():
+        return True
+    return isinstance(try_to_load_from_cache(HUB_REPO, BACKBONE_FILENAME, revision=HUB_REVISION), str)
 
 
 def fetch_core(dest_dir) -> Path:

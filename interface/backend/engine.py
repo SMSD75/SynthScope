@@ -14,7 +14,8 @@ import shutil
 import threading
 import time
 import warnings
-from collections import OrderedDict
+from collections import Counter, OrderedDict
+from contextlib import contextmanager
 from pathlib import Path
 
 import numpy as np
@@ -22,6 +23,7 @@ import torch
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
 
+from models.image.ltf.preprocess import LTFViews
 from models.image.probe.preprocess import ProbePad, SlidingPatches
 from models.image.adb_full.adb_full import fuse_components
 from models.video.wevis import wevis as wevis_agent
@@ -313,6 +315,69 @@ def patch_layout(spec: ModelSpec, pil: Image.Image, num_patches: int):
     return ((width, height), (rows, cols)) if rows * cols == num_patches else None
 
 
+def is_view_bag(spec: ModelSpec) -> bool:
+    """Whether ``spec`` reads an image as a bag of native-resolution views whose count grows with the image size (LTF's
+    tiles, PROBE's patches): the detectors ``SYNTHSCOPE_MAX_VIEWS`` and the web app's batch cap are about."""
+    return bag_views(spec, (1, 1)) is not None
+
+
+def bag_views(spec: ModelSpec, size: tuple[int, int]) -> int | None:
+    """How many views a view-bag detector's transform makes of a ``(width, height)`` image, computed from the size alone
+    (no pixels are touched), or None for any other detector. Mirrors the transforms: LTF = one global view + the
+    official tile grid (``LTFViews.start_positions`` per axis); PROBE = ``ProbePad`` (official ``pad_image``) then
+    non-overlapping ``SlidingPatches``. tests/test_ltf_smoke.py checks it equals the transform's count."""
+    steps = spec.transform.transforms if spec.native_res and spec.transform is not None else []
+    width, height = size
+    for step in steps:
+        if isinstance(step, LTFViews):
+            starts = LTFViews.start_positions
+            return 1 + len(starts(width, step.tile_size)) * len(starts(height, step.tile_size))
+    pads = [t for t in steps if isinstance(t, ProbePad)]
+    cuts = [t for t in steps if isinstance(t, SlidingPatches)]
+    if not cuts:
+        return None
+    if pads and not (width >= pads[0].size and height >= pads[0].size):
+        pad = pads[0].size
+        if pads[0].mode == "repeat":                     # pad_image: tile copies until both sides reach ``size``
+            width *= max(1, -(-pad // width))
+            height *= max(1, -(-pad // height))
+        else:                                            # centred on a black size x size square
+            width = height = pad
+    return (width // cuts[0].size) * (height // cuts[0].size)
+
+
+class InputTooLarge(ValueError):
+    """A request whose view bag is above ``config.MAX_VIEWS`` (the hosted CPU demo's guard; the web API answers 413)."""
+
+
+def check_views(spec: ModelSpec, size: tuple[int, int], frames: int = 0) -> None:
+    """Refuse, before any preprocessing, an input that a native-resolution view-bag detector (LTF's tiles, PROBE's
+    patches) would read as more than ``config.MAX_VIEWS`` views: one image of ``size`` = (width, height), or ``frames``
+    sampled video frames of that size (their views add up). No-op when the limit is 0 (the default) or for any other
+    detector (AIDE's fixed five views are not counted). The input is refused rather than resized, so every score the
+    demo returns is the detector's official score."""
+    if not config.MAX_VIEWS:
+        return
+    per_image = bag_views(spec, size)
+    if per_image is None:
+        return
+    views = per_image * max(1, frames)
+    if views <= config.MAX_VIEWS:
+        return
+    why = (f"this server scores at most {config.MAX_VIEWS} views per request, because each view takes about two seconds "
+           "on its CPU")
+    if frames:
+        raise InputTooLarge(
+            f"{spec.name} scores native-resolution tiles of each of the {frames} sampled video frames: this "
+            f"{size[0]}x{size[1]} video makes {views} views ({per_image} per frame), and {why}. Video input exceeds "
+            f"the demo's limit for {spec.name}: use a native video detector, upload a still image, or run SynthScope "
+            "locally, which has no limit.")
+    raise InputTooLarge(
+        f"{spec.name} reads this {size[0]}x{size[1]} image at its own resolution as {per_image} views (tiles or "
+        f"patches, as in the official code); {why}. The image is not shrunk automatically, since that would change "
+        "what the detector sees: upload a smaller or cropped image, or run SynthScope locally, which has no limit.")
+
+
 def vlm_images_only(spec: ModelSpec) -> str:
     what = "combines a VLM detector, which" if spec.fusion is not None else "is a VLM detector that"
     return (f"'{spec.key}' {what} writes a rationale per image (seconds per image on a GPU): it scores "
@@ -384,6 +449,15 @@ def _external(model) -> bool:
     return callable(getattr(model, "close", None)) and not isinstance(model, torch.nn.Module)
 
 
+def _close_logged(model) -> None:
+    """``_close`` that logs a failure instead of raising: one evicted runner failing to stop must not skip the others or
+    fail the request that evicted it (its own score is unaffected)."""
+    try:
+        _close(model)
+    except Exception:                                   # noqa: BLE001
+        logger.exception("closing an evicted detector failed; continuing")
+
+
 def _close(model) -> None:
     """Stop what an evicted detector runs outside this process (an agent's runner); no-op for torch modules. An agent's
     ``close()`` first waits for the video in progress (up to ``close_timeout``), so callers run it OUTSIDE
@@ -402,6 +476,9 @@ class Engine:
         self._cache: "OrderedDict[str, torch.nn.Module]" = OrderedDict()
         self._status: dict[str, str] = {}
         self._lock = threading.Lock()
+        # Detectors a request is using right now (``pinned``): the LRU never evicts them and ``release_gpu`` keeps them,
+        # so concurrent requests (the web app scores in worker threads) cannot drop a model mid-use.
+        self._pins: Counter = Counter()
 
     # -- availability -------------------------------------------------------
     def checkpoint_path(self, spec: ModelSpec):
@@ -438,6 +515,10 @@ class Engine:
             return False
         if spec.ckpt_kind == "none":  # training-free (D3)
             return True
+        if spec.ckpt_kind == "official_ltf":        # ltf.pth AND the pinned CLIP backbone, so a load never downloads
+            from models.image.ltf.ltf import backbone_present
+            if not backbone_present():
+                return False
         if spec.predict_kind == "video_agent":     # adapters, base, OCR models, official code and the isolated runtime
             return not agent_missing(spec)
         p = self.checkpoint_path(spec)
@@ -446,14 +527,56 @@ class Engine:
         return bool(p and p.exists()) and (base is None or base.exists()) and (proc is None or proc.exists())
 
     # -- model lifecycle ----------------------------------------------------
-    def release_gpu(self) -> None:
-        """Drop every resident detector (they reload lazily on the next request) so a heavy local image generator,
-        which runs in its own process and wants most of the GPU, does not collide with them."""
+    @contextmanager
+    def pinned(self, spec: ModelSpec):
+        """Mark ``spec`` (and a fusion detector's two components) as in use for the ``with`` block: while pinned, the
+        LRU does not evict it and ``release_gpu`` keeps it. A load that finds every resident detector pinned goes over
+        ``MAX_RESIDENT_MODELS`` for the moment instead of waiting (no deadlock); the cache is trimmed back to the limit
+        when the pins are released. Pins count, so two requests may pin the same detector."""
+        keys = [spec.key] + ([part.key for part in fusion_components(spec)] if spec.fusion is not None else [])
         with self._lock:
-            dropped = list(self._cache.values())
-            self._cache.clear()
+            self._pins.update(keys)
+        try:
+            yield
+        finally:
+            with self._lock:
+                self._pins.subtract(keys)
+                self._pins += Counter()                 # drop the zero counts
+                dropped = []
+                while len(self._cache) > config.MAX_RESIDENT_MODELS:
+                    victim = self._unpinned_lru()
+                    if victim is None:
+                        break
+                    dropped.append(self._cache.pop(victim))
+            self._discard(dropped)
+
+    def _unpinned_lru(self):
+        """The least recently used resident detector that no request has pinned, or None; the caller holds the lock."""
+        return next((key for key in self._cache if not self._pins[key]), None)
+
+    def _discard(self, dropped: list) -> None:
+        """Free evicted detectors OUTSIDE the lock (an agent's ``close()`` waits for its video in progress)."""
+        if not dropped:
+            return
+        for model in dropped:                           # a failing close() is logged, the others still close
+            _close_logged(model)
+        del model
+        dropped.clear()                                 # the caller's list: no reference keeps the models alive
+        gc.collect()
+        if self.device == "cuda":
+            torch.cuda.empty_cache()
+
+    def release_gpu(self) -> None:
+        """Drop every resident detector that no request is using (they reload lazily on the next request) so a heavy
+        local image generator, which runs in its own process and wants most of the GPU, does not collide with them.
+        Pinned detectors stay, because a request is scoring with them. The web app calls this holding ``_GPU_LOCK``.
+        Only ``/api/predict``'s VLM path and the generator comparison take that lock too (and pin after taking it), so
+        a detector scored there is never kept here. Anything scored without the lock can be kept while in use: every
+        non-VLM score, and a VLM scored through ``/api/predict_dataset`` or ``/api/score_batch``."""
+        with self._lock:
+            dropped = [self._cache.pop(key) for key in [k for k in self._cache if not self._pins[k]]]
         for model in dropped:                      # outside the lock: an agent finishes its video in progress first
-            _close(model)
+            _close_logged(model)
         del dropped
         gc.collect()
         if self.device == "cuda":
@@ -466,10 +589,13 @@ class Engine:
                     self._cache.move_to_end(spec.key)
                     return self._cache[spec.key]
 
-                # Evict LRU entries if at capacity.
+                # Evict LRU entries if at capacity, never one a request has pinned (if all are, load over the limit).
                 external = []
                 while len(self._cache) >= config.MAX_RESIDENT_MODELS:
-                    old_key, old_model = self._cache.popitem(last=False)
+                    victim = self._unpinned_lru()
+                    if victim is None:
+                        break
+                    old_model = self._cache.pop(victim)
                     if _external(old_model):
                         external.append(old_model)
                     del old_model
@@ -481,7 +607,7 @@ class Engine:
             # stop it OUTSIDE the lock (close() waits for that video), so the other resident detectors keep serving,
             # then take the lock again and load (the loop re-checks the cache, which may have changed meanwhile).
             for model in external:
-                _close(model)
+                _close_logged(model)
             del external
             gc.collect()
             if self.device == "cuda":
@@ -732,6 +858,7 @@ class Engine:
             return self._predict_vlm(spec, pil)
         if spec.predict_kind == "fusion":
             return self._predict_fusion(spec, pil)
+        check_views(spec, pil.size)                   # from the size alone: a refused input is never preprocessed
         model = self._get_model(spec)
         x = spec.transform(pil).unsqueeze(0).to(self.device)
         t0 = time.time()
@@ -764,6 +891,8 @@ class Engine:
             raise ValueError(f"'{spec.key}' scores the video file itself (Engine.predict_video_clip), not sampled frames.")
         if spec.predict_kind in ("vlm", "fusion"):
             raise ValueError(vlm_images_only(spec))
+        if frames:
+            check_views(spec, frames[0].size, frames=len(frames))
         model = self._get_model(spec)
         batch = torch.stack([spec.transform(f) for f in frames]).to(self.device)
         t0 = time.time()

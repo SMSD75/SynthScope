@@ -36,7 +36,10 @@ NEVER_REDISTRIBUTE = {
     "vina": "VINA weights: licence unclear (no licence tag on the HF repo, no LICENSE in the code repo)",
     "vina_video": "VINA weights: licence unclear (no licence tag on the HF repo, no LICENSE in the code repo)",
     "mirror": "MIRROR weights: licence unclear (README MIT badge but no LICENSE file)",
-    "ltf": "LTF weights: no licence tag on the HF model card; terms not confirmed by the authors",
+    # LTF: MIT (code repo; the first author confirmed the same terms for the weights on 2026-11-24, for loading in the
+    # free web demo with credit). The demo loads them from the authors' repo (deploy/hf-space/fetch_weights.py);
+    # the permission does not cover re-uploading them, so they are not mirrored to the zoo.
+    "ltf": "LTF weights: the demo loads them from the authors' repo MuskAI/LTF-v3.3 with permission (MIT, 2026-11-24); no redistribution via the zoo",
     "nsg_vd": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "nsg_vd_pika": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",
     "nsg_vd_unbalance": "NSG-VD: Apache-2.0 checkpoint, but it scores nothing without the MSR-VTT-derived reference file (research-use terms not yet checked) and the 2.2 GB diffusion model",

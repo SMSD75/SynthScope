@@ -18,5 +18,7 @@ they hold up against today's image generators. This Space runs on CPU: a detecto
 Code, benchmarks and documentation: **https://github.com/SMSD75/SynthScope**
 
 Each detector and its weights keep the license chosen by their authors (see the repository's `LICENSES.md`); this demo is
-free and non-commercial. If you are an author and would like your method removed or credited differently, please open an
+free and non-commercial. LTF (Chen et al., [paper](https://arxiv.org/abs/2611.04529),
+[code](https://github.com/HuiGuanLab/LTF), MIT) is loaded from the authors' own weights repository
+[MuskAI/LTF-v3.3](https://huggingface.co/MuskAI/LTF-v3.3) with their permission. If you are an author and would like your method removed or credited differently, please open an
 issue on GitHub.

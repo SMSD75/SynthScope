@@ -5,6 +5,8 @@ Configure the Space with two settings (Space -> Settings -> Variables and secret
   HF_TOKEN              secret; a read token for that repo (only needed if the repo is private)
 SYNTHSCOPE_SPACE_DETECTORS (comma list) overrides which detectors are fetched. Missing files are skipped, so a detector
 without weights simply shows as unavailable on the page. Training-free detectors (D3) need no file.
+Detectors in UPSTREAM are not in that repo: their weights come straight from the authors' own Hugging Face repo at the
+revision the registry pins (SHA-256 checked), also when SYNTHSCOPE_HUB_REPO is not set.
 """
 import os
 import sys
@@ -18,25 +20,49 @@ sys.path.insert(0, str(ROOT))
 # B-Free's GRIP license allows informational and nonprofit use, which this free demo is; Effort and STALL are CC BY-NC
 # 4.0 (STALL's and the DINOv3 probe's backbone is under the DINOv3 License); SPAI is Apache-2.0 but its MFM backbone is
 # under the S-Lab License (non-commercial use, which this free demo is). WaveRep (G1 and G4) is under the same GRIP license as
-# B-Free (informational and nonprofit use); the maintainer approved serving it in this free demo on 2026-11-11.
+# B-Free (informational and nonprofit use); the maintainer approved serving it in this free demo on 2026-11-11. LTF's code
+# is MIT; its first author confirmed on 2026-11-24 that the released weights are under the same MIT terms and may be loaded
+# in this free demo with credit (links to the code and the paper). They are loaded from the authors' repo MuskAI/LTF-v3.3
+# at the pinned revision and never mirrored into the SynthScope weights repo (``ltf`` stays in hub.NEVER_REDISTRIBUTE).
 DEFAULT = ["clip", "cnn", "npr", "safe", "aide", "co_spy", "fat_former", "pgc", "cure", "dda", "d3qe", "omniaid", "omniaid_v1",
            "omniaid_genimage", "bfree", "effort", "effort_chameleon", "moejepa", "vib_net", "dinov2", "dinov3", "adapted_dino", "spai",
-           "restrav", "stall", "waverep", "waverep_g4"]
+           "restrav", "stall", "waverep", "waverep_g4", "ltf"]
 DINOV3_FILE = "dinov3/dinov3_vitl16_pretrain_lvd1689m-8aa4cbdd.pth"
 # Backbones that are not a detector's own <key>.pth, fetched with their licenses when one of those detectors is served.
 BACKBONES = {"stall": [DINOV3_FILE, "dinov3/LICENSE.md"], "dinov3": [DINOV3_FILE, "dinov3/LICENSE.md"],
              "spai": ["mfm/mfm_pretrain_vit_base.pth", "mfm/LICENSE_S-Lab.txt", "licenses/SPAI_LICENSE.txt"]}
 
 
+def fetch_ltf(ckpt_dir: Path) -> None:
+    """LTF from the authors' repo (HF MuskAI/LTF-v3.3 @ a2a2e29c, see models/image/ltf/ltf.py): weights/epoch_20.pth
+    copied unchanged to <ckpt_dir>/ltf.pth, and the pinned backbones/ViT-L-14.pt into the Hugging Face cache, where the
+    model finds it when it loads. Both SHA-256 checked."""
+    from models.image.ltf.ltf import fetch_core, resolve_backbone
+    if not (ckpt_dir / "ltf.pth").exists():
+        fetch_core(ckpt_dir)
+    resolve_backbone()
+
+
+# Detectors whose weights are fetched from the authors' repo, not from SYNTHSCOPE_HUB_REPO (key -> fetch function).
+UPSTREAM = {"ltf": fetch_ltf}
+
+
 def main() -> None:
+    keys = [k for k in os.environ.get("SYNTHSCOPE_SPACE_DETECTORS", ",".join(DEFAULT)).split(",") if k]
+    ckpt_dir = Path(os.environ.get("SYNTHSCOPE_CKPT_DIR", "~/ckpts")).expanduser()
+    for key in [k for k in keys if k in UPSTREAM]:
+        try:
+            UPSTREAM[key](ckpt_dir)
+            print(f"[weights] {key} (authors' repo): ok", flush=True)
+        except Exception as e:                      # keep starting: the page marks the detector as unavailable
+            print(f"[weights] {key} (authors' repo): skipped ({type(e).__name__}: {str(e)[:400]})", flush=True)
+    keys = [k for k in keys if k not in UPSTREAM]
     repo = os.environ.get("SYNTHSCOPE_HUB_REPO")
     if not repo:
-        print("[weights] SYNTHSCOPE_HUB_REPO is not set: starting without detector weights", flush=True)
+        print("[weights] SYNTHSCOPE_HUB_REPO is not set: starting without the other detector weights", flush=True)
         return
-    keys = [k for k in os.environ.get("SYNTHSCOPE_SPACE_DETECTORS", ",".join(DEFAULT)).split(",") if k]
     from synthscope import hub
     token = os.environ.get("HF_TOKEN") or None
-    ckpt_dir = Path(os.environ.get("SYNTHSCOPE_CKPT_DIR", "~/ckpts")).expanduser()
     # D3 is training-free (no .pth) but turns its raw score into a probability with a small calibration file
     if not (ckpt_dir / "d3_calibration.json").exists():
         hub._maybe_download_aux("d3", repo, token)

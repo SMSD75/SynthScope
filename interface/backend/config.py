@@ -82,6 +82,20 @@ CACHE_DIR = _DEFAULT_CACHE      # also holds the working files of detectors that
 
 # Upload / decoding limits.
 MAX_UPLOAD_BYTES = int(os.environ.get("SYNTHSCOPE_MAX_UPLOAD_MB", "200")) * 1024 * 1024
+# Most views one request may score, for detectors that read an image as a bag of native-resolution views (tiles or
+# patches; LTF: a global view + every 224x224 tile, so a 12 MP photo is 253 views). 0 = no limit (the default;
+# benchmarks and local use are never capped). The CPU Space sets it (deploy/hf-space/Dockerfile): each LTF view is a
+# CLIP ViT-L/14 forward, about 2 s per view at 2 threads (8 vCPUs: roughly 4x faster, if it scales with the cores). Above
+# the limit the request is refused, never shrunk (that would change the score); /api/score_batch also caps these
+# detectors at SCORE_BATCH_CAP_VIEWS items per call (app.py).
+MAX_VIEWS = int(os.environ.get("SYNTHSCOPE_MAX_VIEWS", "0"))
+# Most detector scores the web app runs at once (worker threads; the rest wait for a slot without blocking the page).
+# 0 = no limit (the local default). The CPU Space sets 2 (deploy/hf-space/Dockerfile): it bounds both the CPU use and
+# how many detectors can be resident at once beyond MAX_RESIDENT_MODELS (a detector in use is never evicted).
+MAX_CONCURRENT_SCORES = int(os.environ.get("SYNTHSCOPE_MAX_CONCURRENT_SCORES", "0"))
+# Longest a request waits for a scoring slot before HTTP 503 "busy, retry" (seconds). Unset = wait as long as it takes
+# (the local default); the Space sets 120.
+SCORE_WAIT_S = float(os.environ["SYNTHSCOPE_SCORE_WAIT_S"]) if os.environ.get("SYNTHSCOPE_SCORE_WAIT_S") else None
 # Number of frames sampled from a video when running an *image* detector frame-by-frame.
 VIDEO_IMAGE_FRAMES = int(os.environ.get("SYNTHSCOPE_VIDEO_IMAGE_FRAMES", "16"))
 

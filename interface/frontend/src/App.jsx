@@ -305,6 +305,23 @@ const isVideoName = (name = "", type = "") =>
   type.startsWith("video") || /\.(mp4|mov|avi|mkv|webm|m4v)$/i.test(name);
 const optLabel = (m) => `${m.name} — ${m.paper} · ${wlabel(m)}${m.available ? "" : "  (no checkpoint)"}`;
 
+// The detector's paper (arXiv) and official code (GitHub) as links: the authors' credit (registry DETECTOR_LINKS).
+function DetLinks({ m }) {
+  const l = (m && m.links) || {};
+  if (!l.paper && !l.code) return null;
+  return (
+    <span className="dlinks">
+      {l.paper && <a href={l.paper} target="_blank" rel="noopener">paper</a>}
+      {l.code && <a href={l.code} target="_blank" rel="noopener">code</a>}
+    </span>
+  );
+}
+
+function Credit({ m }) {
+  if (!m) return null;
+  return <div className="meta credit">{m.name} — {m.paper}<DetLinks m={m} /></div>;
+}
+
 function ModelSelect({ models, model, setModel, onChange }) {
   const img = models.filter((m) => m.modality === "image");
   const vid = models.filter((m) => m.modality === "video");
@@ -450,6 +467,7 @@ function DetectView({ models, model, setModel, threshold, setThreshold }) {
         <h2>Input</h2>
         <label>Detector model</label>
         <ModelSelect models={models} model={model} setModel={setModel} onChange={() => setResult(null)} />
+        <Credit m={selected} />
         {selected && (
           <div className="meta">{selected.notes}
             {selected.modality === "image" ? " · On a video, runs frame-by-frame and averages." : " · Native video model."}</div>
@@ -475,7 +493,7 @@ function DetectView({ models, model, setModel, threshold, setThreshold }) {
         <h2>Result</h2>
         {!result && !busy && <div className="empty">No result yet.</div>}
         {busy && <div className="empty">Running {selected ? selected.name : ""}… first run loads the model and may take a while.</div>}
-        {result && <Result r={result} threshold={threshold} />}
+        {result && <Result r={result} threshold={threshold} m={selected} />}
         {result && <ThresholdSlider threshold={threshold} setThreshold={setThreshold} />}
       </section>
     </div>
@@ -494,6 +512,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   const [sel, setSel] = useState(null);
   const [preds, setPreds] = useState({});
   const [scoring, setScoring] = useState(false);
+  const [batchCap, setBatchCap] = useState(null);   // {model, cap} when the server scored fewer items than sent
   const [fpr, setFpr] = useState(5);
   const batchN = 24;
 
@@ -539,6 +558,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
       const d = await scoreBatch(dataset, model, items.map((i) => i.rel));
       const m = {}; for (const it of d.items) m[it.rel] = it;
       setPreds((p) => ({ ...p, ...m }));
+      setBatchCap(d.cap != null && d.cap < items.length ? { model, cap: d.cap } : null);
       return d.items.filter((x) => x.ground_truth && typeof x.fake_probability === "number")
                     .map((x) => ({ p: x.fake_probability, gt: x.ground_truth }));
     } catch (e) { setError(e.message); return []; }
@@ -548,6 +568,13 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   const scored = items.map((i) => preds[i.rel])
     .filter((x) => x && typeof x.fake_probability === "number" && x.ground_truth)
     .map((x) => ({ p: x.fake_probability, gt: x.ground_truth }));
+
+  // Calibration on part of the batch (a capped detector, or items that failed) must say so.
+  const capped = batchCap && batchCap.model === model ? batchCap.cap : null;
+  const calibNote = scored.length > 0 && scored.length < items.length
+    ? `Threshold tools use the ${scored.length} scored of ${items.length} items` +
+      (capped != null ? `: this server scores at most ${capped} items per batch with this detector (SYNTHSCOPE_MAX_VIEWS), so the calibration rests on very few images.` : ".")
+    : "";
 
   async function calibrate() { const s = scored.length ? scored : await scoreAll(); if (s.length) setThreshold(autoCalibrate(s)); }
   async function applyFpr() {
@@ -591,6 +618,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
             <button disabled={scoring || !model} onClick={applyFpr}>Target FPR</button>
             <input type="number" min="0" max="50" step="1" value={fpr} onChange={(e) => setFpr(parseFloat(e.target.value) || 0)} />%
           </div>
+          {calibNote && <div className="meta calib-note">{calibNote}</div>}
           {stats && (
             <div className="stat">batch ({stats.n} scored) @{threshold.toFixed(2)}: <b>acc {(stats.acc * 100).toFixed(0)}%</b>
               {stats.racc != null ? ` · real ${(stats.racc * 100).toFixed(0)}%` : ""}
@@ -628,7 +656,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
             </div>
             <div className="meta">{selItem.name} · ground truth: <b style={{ color: selItem.label === "fake" ? "var(--fake)" : "var(--real)" }}>{selItem.label}</b></div>
             {selRes && selRes.error && <div className="err">{selRes.error}</div>}
-            {selRes && !selRes.error && typeof selRes.fake_probability === "number" && <Result r={selRes} threshold={threshold} gt={selItem.label} />}
+            {selRes && !selRes.error && typeof selRes.fake_probability === "number" && <Result r={selRes} threshold={threshold} gt={selItem.label} m={models.find((x) => x.key === model)} />}
           </div>
         )}
       </section>
@@ -636,7 +664,7 @@ function ExploreView({ models, model, setModel, threshold, setThreshold }) {
   );
 }
 
-function Result({ r, threshold, gt }) {
+function Result({ r, threshold, gt, m }) {
   const fakePct = r.fake_probability * 100, realPct = (1 - r.fake_probability) * 100;
   const verdict = verdictAt(r.fake_probability, threshold);
   const correct = gt ? verdict === gt : null;
@@ -658,6 +686,7 @@ function Result({ r, threshold, gt }) {
         {r.media_type && <Row k="Media" v={`${r.media_type}${r.num_frames ? " · " + r.num_frames + " frames" : ""}`} />}
         {r.elapsed_ms && <Row k="Inference" v={`${r.elapsed_ms} ms`} />}
       </div>
+      <Credit m={m} />
       {r.per_frame && r.per_frame.length > 1 && (
         <div className="frames">
           <div className="meta">Per-frame P(fake) — {r.per_frame.length} frames sampled (dashed line = 50% threshold):</div>

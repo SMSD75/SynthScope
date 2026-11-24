@@ -9,6 +9,7 @@ Serves the built Vite frontend from ``frontend/dist`` if present, otherwise the 
 standalone page in ``static/index.html`` (works without Node).
 """
 import asyncio
+import contextlib
 import json
 import re
 import tempfile
@@ -21,8 +22,8 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from . import config, datasets, media
-from .engine import get_engine, vlm_images_only
-from .registry import REPRO, REPRO_FULL, get_spec, input_note, list_specs
+from .engine import InputTooLarge, get_engine, is_view_bag, vlm_images_only
+from .registry import REPRO, REPRO_FULL, detector_links, get_spec, input_note, list_specs
 
 app = FastAPI(title="SynthScope Detector Interface", version="1.0")
 app.add_middleware(
@@ -51,6 +52,7 @@ def models():
             "key": spec.key,
             "name": spec.name,
             "paper": spec.paper,
+            "links": detector_links(spec.key),   # {"paper": arXiv url, "code": GitHub url}, shown as links on the page
             "modality": spec.modality,
             "available": engine.is_available(spec),
             "checkpoint": spec.checkpoint,
@@ -61,6 +63,33 @@ def models():
             "repro_full": REPRO_FULL.get(spec.key),
         })
     return {"models": out, "device": config.device()}
+
+
+def _score_upload(engine, spec, kind: str, data: bytes, filename: str | None) -> dict:
+    """Score one uploaded image or video with ``spec`` (in a worker thread, see /api/predict). Order: a scoring slot
+    (``_score_slot``), then for a VLM ``_GPU_LOCK``, then the pin, then the model load."""
+    with _score_slot():
+        if kind == "image" and spec.has_vlm:        # the raw file (official loader); pinned only once it holds the GPU
+            result = _vlm_predict(engine, spec, data)
+            result["media_type"] = "image"
+            return result
+        with engine.pinned(spec):
+            if kind == "image":
+                result = engine.predict_image(spec, media.decode_image(data))
+                result["media_type"] = "image"
+                return result
+            # video upload -> write to a temp file for the decoder
+            suffix = Path(filename or "video.mp4").suffix or ".mp4"
+            with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as tmp:
+                tmp.write(data)
+                tmp.flush()
+                if spec.modality == "video":        # native video detectors, the agent included
+                    result = engine.predict_video_clip(spec, tmp.name)
+                else:
+                    frames = media.sample_video_pil(tmp.name, config.VIDEO_IMAGE_FRAMES)
+                    result = engine.predict_video_frames(spec, frames)
+            result["media_type"] = "video"
+            return result
 
 
 @app.post("/api/predict")
@@ -94,38 +123,21 @@ async def predict(file: UploadFile = File(...), model: str = Form(...)):
     except ValueError as e:
         raise HTTPException(status_code=415, detail=str(e))
 
+    if kind == "image" and spec.modality == "video":
+        raise HTTPException(status_code=400, detail=f"'{spec.name}' is a video detector; please upload a video.")
+    if kind != "image" and spec.has_vlm:
+        raise HTTPException(status_code=400, detail=vlm_images_only(spec))
     try:
-        if kind == "image":
-            if spec.modality == "video":
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"'{spec.name}' is a video detector; please upload a video.",
-                )
-            if spec.has_vlm:          # seconds per image: run off the event loop; the raw file (official loader)
-                result = await asyncio.to_thread(_vlm_predict, engine, spec, data)
-            else:
-                result = engine.predict_image(spec, media.decode_image(data))
-            result["media_type"] = "image"
-            return result
-        if spec.has_vlm:
-            raise HTTPException(status_code=400, detail=vlm_images_only(spec))
-
-        # video upload -> write to a temp file for the decoder
-        suffix = Path(file.filename or "video.mp4").suffix or ".mp4"
-        with tempfile.NamedTemporaryFile(suffix=suffix, delete=True) as tmp:
-            tmp.write(data)
-            tmp.flush()
-            if spec.agent is not None:      # an agent (about a minute per video): run off the event loop
-                result = await asyncio.to_thread(engine.predict_video_clip, spec, tmp.name)
-            elif spec.modality == "video":
-                result = engine.predict_video_clip(spec, tmp.name)
-            else:
-                frames = media.sample_video_pil(tmp.name, config.VIDEO_IMAGE_FRAMES)
-                result = engine.predict_video_frames(spec, frames)
-        result["media_type"] = "video"
-        return result
+        # Off the event loop, for every detector: a CPU score can take a minute (LTF), and the page, the dataset
+        # browser and other requests must keep answering meanwhile. At most SYNTHSCOPE_MAX_CONCURRENT_SCORES scores run
+        # at once (_score_slot), and the detector is pinned while in use, so another request cannot evict it
+        # (Engine.pinned). Only a VLM takes _GPU_LOCK (_vlm_predict); other detectors do not, so on a local GPU they
+        # can overlap a heavy local generation, as they could before.
+        return await asyncio.to_thread(_score_upload, engine, spec, kind, data, file.filename)
     except HTTPException:
         raise
+    except InputTooLarge as e:                      # SYNTHSCOPE_MAX_VIEWS (the CPU Space's guard)
+        raise HTTPException(status_code=413, detail=str(e))
     except FileNotFoundError as e:
         raise HTTPException(status_code=409, detail=str(e))
     except Exception as e:  # surface model/decoding errors as 500 with a message
@@ -176,14 +188,44 @@ def sota_real_image():
     return {"image_b64": _b64.b64encode(buf.getvalue()).decode(), "source": path.split("/")[-3:]}
 
 
-_GPU_LOCK = threading.Lock()   # detector scoring and heavy local generation never overlap on the GPU
+_GPU_LOCK = threading.Lock()   # VLM / generator-comparison scoring and heavy local generation never overlap on the GPU
+
+# Lock order, everywhere: a scoring slot, then _GPU_LOCK, then Engine._lock (taken briefly by pinned / _get_model).
+_SCORE_SLOTS: dict[int, threading.BoundedSemaphore] = {}
+_SLOTS_LOCK = threading.Lock()
+
+
+@contextlib.contextmanager
+def _score_slot():
+    """One of ``config.MAX_CONCURRENT_SCORES`` scoring slots (``SYNTHSCOPE_MAX_CONCURRENT_SCORES``; 0, the local
+    default, means no limit). Every web scoring path takes one inside its worker thread, BEFORE pinning or loading a
+    detector, so on the CPU Space (2) at most that many detectors are in use and resident beyond the LRU at once, and
+    the 2 vCPUs are not oversubscribed; the event loop itself is never blocked by a waiting request. A request waits at
+    most ``config.SCORE_WAIT_S`` seconds (``SYNTHSCOPE_SCORE_WAIT_S``; no limit by default, 120 on the Space) and then
+    gets HTTP 503. A batch (``/api/score_batch``, the generator comparison) holds ONE slot for the whole call, so it
+    cannot re-take the slot item after item ahead of the requests waiting for it."""
+    n = config.MAX_CONCURRENT_SCORES
+    if n <= 0:
+        yield
+        return
+    with _SLOTS_LOCK:
+        slots = _SCORE_SLOTS.setdefault(n, threading.BoundedSemaphore(n))
+    if not slots.acquire(timeout=config.SCORE_WAIT_S):
+        raise HTTPException(status_code=503, headers={"Retry-After": "30"},
+                            detail=f"The server is busy (all {n} detector slots have been in use for "
+                                   f"{config.SCORE_WAIT_S:g} s): please retry shortly.")
+    try:
+        yield
+    finally:
+        slots.release()
 
 
 def _vlm_predict(engine, spec, data: bytes) -> dict:
     """Score an uploaded image with a VLM detector (a 15-20 s, ~19 GB generation) on the raw file; it takes
     ``_GPU_LOCK`` like the other GPU work, so a heavy local generation (``release_gpu`` + a big pipeline) never starts
-    while the model is in use."""
-    with _GPU_LOCK:
+    while the model is in use. The detector is pinned only after the lock is held: a request waiting for the GPU does
+    not keep its VLM resident through a generation's ``release_gpu``."""
+    with _GPU_LOCK, engine.pinned(spec):
         return engine.predict_image(spec, media.decode_image_raw(data))
 
 
@@ -222,7 +264,8 @@ def _score_one(engine, key: str, real_img, gen_img, raw=None) -> dict:
             return {"detector": key, "error": "unavailable / not an image detector"}
         if spec.has_vlm and raw is not None:
             real_img, gen_img = raw()
-        rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
+        with engine.pinned(spec):
+            rr, gr = engine.predict_image(spec, real_img), engine.predict_image(spec, gen_img)
         return {"detector": key, "name": spec.name,
                 "real_fake_prob": round(rr["fake_probability"], 4),
                 "gen_fake_prob": round(gr["fake_probability"], 4),
@@ -237,9 +280,10 @@ def _sota_score(real_bytes: bytes, gen_bytes: bytes, detectors: str) -> list[dic
     raw = lambda: (media.decode_image_raw(real_bytes), media.decode_image_raw(gen_bytes))   # noqa: E731  (VLM detectors)
     engine = get_engine()
     results = []
-    for key in [d.strip() for d in detectors.split(",") if d.strip()]:
-        with _GPU_LOCK:                              # one detector at a time: concurrent requests queue, not race
-            results.append(_score_one(engine, key, real_img, gen_img, raw))
+    with _score_slot():                              # one slot for the whole comparison (see _score_slot)
+        for key in [d.strip() for d in detectors.split(",") if d.strip()]:
+            with _GPU_LOCK:                          # one detector at a time: concurrent requests queue, not race
+                results.append(_score_one(engine, key, real_img, gen_img, raw))
     return results
 
 
@@ -481,13 +525,18 @@ def dataset_media(key: str, rel: str = Query(...), thumb: int = 0):
     return FileResponse(str(path))
 
 
-def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
+def _run_on_dataset_item(engine, spec, dataset: str, rel: str, take_slot: bool = True) -> dict:
     """Run ``spec`` on an on-disk dataset file ``rel`` and attach ground-truth/correctness.
 
     Raises HTTPException for caller-facing errors. Shared by /api/predict_dataset (single item,
-    full result) and /api/score_batch (many items, scores only).
+    full result) and /api/score_batch (many items, scores only; it holds one slot for the batch: ``take_slot=False``).
     """
     path = datasets.resolve_media(dataset, rel)          # may raise Permission/FileNotFound
+    with (_score_slot() if take_slot else contextlib.nullcontext()), engine.pinned(spec):   # bounded; not evicted
+        return _score_dataset_item(engine, spec, dataset, rel, path)
+
+
+def _score_dataset_item(engine, spec, dataset: str, rel: str, path) -> dict:
     d = datasets.get_def(dataset)
     if d.modality == "video":
         if spec.has_vlm:
@@ -512,8 +561,10 @@ def _run_on_dataset_item(engine, spec, dataset: str, rel: str) -> dict:
 
 
 @app.post("/api/predict_dataset")
-def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str = Form(...)):
-    """Run a detector on a dataset file already on disk (no re-upload) + return ground truth."""
+async def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str = Form(...)):
+    """Run a detector on a dataset file already on disk (no re-upload) + return ground truth. Scored in a worker thread
+    of the event loop's executor, not Starlette's sync pool, so requests waiting for a slot never delay /api/health,
+    /api/models or the page."""
     try:
         spec = get_spec(model)
     except KeyError as e:
@@ -522,21 +573,46 @@ def predict_dataset(dataset: str = Form(...), rel: str = Form(...), model: str =
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
     try:
-        return _run_on_dataset_item(engine, spec, dataset, rel)
+        return await asyncio.to_thread(_run_on_dataset_item, engine, spec, dataset, rel)
     except HTTPException:
         raise
+    except InputTooLarge as e:
+        raise HTTPException(status_code=413, detail=str(e))
     except (KeyError, PermissionError, FileNotFoundError) as e:
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{type(e).__name__}: {e}")
 
 
-# Items scored per /api/score_batch call; a VLM detector writes a rationale per image (seconds each on a GPU).
-SCORE_BATCH_CAP, SCORE_BATCH_CAP_VLM = 200, 20
+# Items scored per /api/score_batch call; a VLM detector writes a rationale per image (seconds each on a GPU). With
+# SYNTHSCOPE_MAX_VIEWS set (the CPU Space), a view-bag detector (LTF, PROBE: up to MAX_VIEWS CLIP / DINOv2 forwards per
+# image, about 2 s each on 2 vCPUs) scores at most SCORE_BATCH_CAP_VIEWS items per call; the rest come back with an
+# error saying so (a local install, MAX_VIEWS 0, keeps the usual cap).
+SCORE_BATCH_CAP, SCORE_BATCH_CAP_VLM, SCORE_BATCH_CAP_VIEWS = 200, 20, 4
+
+
+def score_batch_cap(spec) -> int:
+    """Most items one /api/score_batch call scores with ``spec``."""
+    if config.MAX_VIEWS and is_view_bag(spec):
+        return SCORE_BATCH_CAP_VIEWS
+    return SCORE_BATCH_CAP_VLM if spec.has_vlm else SCORE_BATCH_CAP
+
+
+def _score_batch_items(engine, spec, dataset: str, rels: list) -> list[dict]:
+    """Score ``rels`` holding ONE scoring slot for the whole batch (a 503 if none frees up in time)."""
+    out = []
+    with _score_slot():
+        for rel in rels:
+            try:
+                r = _run_on_dataset_item(engine, spec, dataset, rel, take_slot=False)
+                out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})
+            except Exception as e:
+                out.append({"rel": rel, "error": f"{type(e).__name__}: {getattr(e, 'detail', e)}"})
+    return out
 
 
 @app.post("/api/score_batch")
-def score_batch(payload: dict = Body(...)):
+async def score_batch(payload: dict = Body(...)):
     """Score many dataset items at once (for threshold calibration). Body: {dataset, model, rels:[...]}.
 
     Returns ``{items:[{rel, fake_probability, ground_truth}]}`` -- per-item errors are reported inline
@@ -549,14 +625,14 @@ def score_batch(payload: dict = Body(...)):
     engine = get_engine()
     if not engine.is_available(spec):
         raise HTTPException(status_code=409, detail=f"No checkpoint available for '{spec.key}'.")
-    out = []
-    for rel in rels[:SCORE_BATCH_CAP_VLM if spec.has_vlm else SCORE_BATCH_CAP]:
-        try:
-            r = _run_on_dataset_item(engine, spec, dataset, rel)
-            out.append({"rel": rel, "fake_probability": r["fake_probability"], "ground_truth": r["ground_truth"]})
-        except Exception as e:
-            out.append({"rel": rel, "error": f"{type(e).__name__}: {getattr(e, 'detail', e)}"})
-    return {"dataset": dataset, "model": model, "items": out}
+    cap = score_batch_cap(spec)
+    out = await asyncio.to_thread(_score_batch_items, engine, spec, dataset, rels[:cap])   # off the event loop
+    if cap == SCORE_BATCH_CAP_VIEWS and len(rels) > cap:     # say why, instead of dropping the rest silently
+        why = (f"not scored: {spec.name} reads each image as up to {config.MAX_VIEWS} native-resolution views, so "
+               f"this server scores at most {cap} items per batch with it (SYNTHSCOPE_MAX_VIEWS); score them one by "
+               "one, or run SynthScope locally")
+        out += [{"rel": rel, "error": why} for rel in rels[cap:SCORE_BATCH_CAP]]
+    return {"dataset": dataset, "model": model, "items": out, "cap": cap}
 
 
 # --- static / SPA serving ----------------------------------------------------
