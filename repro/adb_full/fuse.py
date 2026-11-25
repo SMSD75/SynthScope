@@ -133,6 +133,69 @@ ROWS = {
         "vlm": ["repro/vlm_bench/results/aigcdetect17/adb_vlm__jpegfakes96.json"],
         "dda": ["repro/adb_full/dda/aigcdetect17/dda__jpegfakes96.json"], "generators": None, "manifest": "aigcdetect17"},
 }
+for _row in ROWS.values():                      # every row above: the VLM request of upstream f4b4794 / 5d83e40
+    _row.setdefault("vlm_request", "f4b4794")
+
+# The rows after the upstream sync (fix/adb-upstream-sync): the VLM request of predict.py @ cf168db (the DPO user prompt,
+# max_pixels 1,210,000, repetition penalty 1.0; an unparsed answer Real), bf16 greedy on three RTX A5000 of ivi-cn029 (job
+# 301129, repro/adb_full/upstream_sync_a5000.sbatch); the DDA records are the earlier rows' (the expert did not change), new
+# only for the two new samples. "before": the f4b4794 row on the same images, for the paired comparison (bootstrap.py).
+SYNC = "repro/adb_full/vlm_cf168db"
+SYNC_LOGS = ["repro/logs/adbsync_301129*.out"]
+GI_GENS = ("adm", "biggan", "glide", "midjourney", "sdv1.4", "sdv1.5", "vqdm", "wukong")
+AD_GENS = ("ADM", "DALLE2", "Glide", "Midjourney", "VQDM", "biggan", "cyclegan", "gaugan", "progan", "sd_xl",
+           "stable_diffusion_v_1_4", "stable_diffusion_v_1_5", "stargan", "stylegan", "stylegan2", "whichfaceisreal", "wukong")
+_SYNC_COMMON = {"vlm_request": "cf168db", "precision": "bf16", "gpu": None, "vlm_logs": SYNC_LOGS, "manifest": None,
+                "generators": None}
+ROWS.update({
+    "wildrf_full_cf168db": {**_SYNC_COMMON, "status": "full_data", "paper": "WildRF", "main": True,
+                            "before": "wildrf_full", "data": "full test split (Facebook, Reddit, Twitter)",
+                            "vlm": [f"{SYNC}/wildrf/adb_vlm__full__{g}.json" for g in ("facebook", "reddit", "twitter")],
+                            "dda": ["repro/adb_full/dda/wildrf/dda__full.json"]},
+    "bfree_online_full_cf168db": {**_SYNC_COMMON, "status": "reference", "paper": "BFree-Online", "main": True,
+                                  "before": "bfree_online_full",
+                                  "data": "all held images (269 real + 538 fake still online of 1,111 listed)",
+                                  "vlm": [f"{SYNC}/bfree_online/adb_vlm__full.json"],
+                                  "dda": ["repro/adb_full/dda/bfree_online/dda__full.json"]},
+    "aigibench_cf168db": {**_SYNC_COMMON, "status": "reference", "paper": "AIGI-Bench", "main": False, "before": "aigibench",
+                          "data": "SocialRF full (3,000 real + 3,000 fake); CommunityAI the first 1,500 real + 1,500 fake "
+                                  "(sorted) of 6,000 + 6,000",
+                          "vlm": [f"{SYNC}/aigibench25/adb_vlm__limit1500__CommunityAI.json",
+                                  f"{SYNC}/aigibench25/adb_vlm__full__SocialRF.json"],
+                          "dda": ["repro/adb_full/dda/aigibench25/dda__limit1500__CommunityAI.json",
+                                  "repro/adb_full/dda/aigibench25/dda__full__SocialRF.json"]},
+    "aigibench_full_cf168db": {**_SYNC_COMMON, "status": "full_data", "paper": "AIGI-Bench", "main": True,
+                               "before": None, "data": "CommunityAI + SocialRF, full (6,000 + 6,000 and 3,000 + 3,000)",
+                               "vlm": [f"{SYNC}/aigibench25/adb_vlm__full__CommunityAI.json",
+                                       f"{SYNC}/aigibench25/adb_vlm__full__SocialRF.json"],
+                               "dda": ["repro/adb_full/dda/aigibench25/dda__full__CommunityAI.json",
+                                       "repro/adb_full/dda/aigibench25/dda__full__SocialRF.json"]},
+    "genimage_10k_jpegfakes96_cf168db": {**_SYNC_COMMON, "status": "per_generator_tolerance", "paper": "GenImage",
+                                         "main": True, "before": "genimage_10k_jpegfakes96",
+                                         "data": "GenImage val, the first 625 real + 625 fake per generator (sorted), fakes "
+                                                 "JPEG q96 (10,000; the same images as the f4b4794 row)",
+                                         "vlm": [f"{SYNC}/genimage_val100k/adb_vlm__limit625_jpegfakes96__{g}.json"
+                                                 for g in GI_GENS],
+                                         "dda": ["repro/adb_full/dda/genimage_val100k/dda__limit625_jpegfakes96.json"]},
+    "aigcdetect_3400_jpegfakes96_cf168db": {**_SYNC_COMMON, "status": "per_generator_tolerance",
+                                            "paper": "AIGCDetectBenchmark", "main": True, "before": None,
+                                            "data": "the first 100 real + 100 fake per generator (sorted), fakes JPEG q96 "
+                                                    "(3,400; the 30-per-class subset is a prefix)",
+                                            "vlm": [f"{SYNC}/aigcdetect17/adb_vlm__limit100_jpegfakes96__{g}.json"
+                                                    for g in AD_GENS],
+                                            "dda": ["repro/adb_full/dda/aigcdetect17/dda__limit100_jpegfakes96.json"]},
+    "aigcdetect_subset_jpegfakes96_cf168db": {**_SYNC_COMMON, "status": "reference", "paper": "AIGCDetectBenchmark",
+                                              "main": False, "before": "aigcdetect_subset_jpegfakes96",
+                                              "data": "the vlm_bench subset (30 real + 30 fake per generator) within the "
+                                                      "3,400-image sample, fakes JPEG q96",
+                                              "keys_manifest": "aigcdetect17",
+                                              "vlm": [f"{SYNC}/aigcdetect17/adb_vlm__limit100_jpegfakes96__{g}.json"
+                                                      for g in AD_GENS],
+                                              "dda": ["repro/adb_full/dda/aigcdetect17/dda__limit100_jpegfakes96.json"]},
+})
+for _name, _row in ROWS.items():               # the f4b4794 rows are superseded as headline rows by their cf168db rows
+    if _row["vlm_request"] == "f4b4794":
+        _row["main"] = False
 
 
 def sigmoid(x: float) -> float:
@@ -174,8 +237,15 @@ def fuse_row(name: str, cfg: dict) -> dict:
     vdocs, vrecs = load(cfg["vlm"])
     ddocs, drecs = load(cfg["dda"])
     keep = set(cfg["generators"]) if cfg["generators"] else None
-    vmap = {(r["generator"], r["key"]): r for r in vrecs if keep is None or r["generator"] in keep}
-    dmap = {(r["generator"], r["key"]): r for r in drecs if keep is None or r["generator"] in keep}
+    only = None                                 # keys_manifest: only the images of that subset manifest (a nested sample)
+    if cfg.get("keys_manifest"):
+        only = set(json.loads((VB / "subsets" / f"{cfg['keys_manifest']}.json").read_text())["files"])
+    vmap = {(r["generator"], r["key"]): r for r in vrecs if (keep is None or r["generator"] in keep)
+            and (only is None or r["key"] in only)}
+    dmap = {(r["generator"], r["key"]): r for r in drecs if (keep is None or r["generator"] in keep)
+            and (only is None or r["key"] in only)}
+    if only is not None and len(vmap) != len(only):
+        raise SystemExit(f"{name}: {len(vmap)} of the {len(only)} images of {cfg['keys_manifest']} found")
     if vmap.keys() != dmap.keys():
         raise SystemExit(f"{name}: VLM and DDA records differ ({len(vmap.keys() - dmap.keys())} VLM-only, "
                          f"{len(dmap.keys() - vmap.keys())} DDA-only)")
@@ -213,6 +283,7 @@ def fuse_row(name: str, cfg: dict) -> dict:
     gpus = sorted({d.get("gpu") or cfg["gpu"] or "?" for d in vdocs})
     return {
         "tag": f"adbfull_{name}", "model": "adb_full", "row": name, "paper_benchmark": cfg["paper"], "data": cfg["data"],
+        "vlm_request": f"github.com/GzZning/Align-Dont-Blend @ {cfg['vlm_request']}", "before": cfg.get("before"),
         "vlm_precision": cfg["precision"], "vlm_gpu": gpus, "dda_gpu": sorted({d.get("gpu", "?") for d in ddocs}),
         "jpeg_fakes": vdocs[0].get("jpeg_fakes"), "n_images": len(rows), "n_generators": len(per_gen), "means": means,
         "per_generator": per_gen, "sources": {"vlm": cfg["vlm"], "dda": cfg["dda"]},
@@ -230,7 +301,11 @@ def fuse_row(name: str, cfg: dict) -> dict:
 def status(cfg: dict, res: dict, paper: dict) -> str:
     """The row's label. Fixed per row (as the spec / build_repro_full label it), or for a subsample with the paper's
     per-generator columns ("per_generator_tolerance"): "reference" unless every generator is within the repository's
-    2-point accuracy tolerance of the paper's column, then "within tolerance (subsample)"."""
+    2-point accuracy tolerance of the paper's column, then "within tolerance (subsample)"; or for the paper's full data
+    ("full_data"): "within tolerance" when the mean is at least the paper's minus the tolerance (as build_repro_full), else
+    "below"; the per-subset deltas are in the row's per_generator."""
+    if cfg["status"] == "full_data":           # the paper's full data: the mean within the (one-sided) tolerance
+        return "within tolerance" if res["means"]["acc"] >= paper["mean"] - TOL_ACC else "below"
     if cfg["status"] != "per_generator_tolerance":
         return cfg["status"]
     within = all(paper.get(g) is not None and m["acc"] >= paper[g] - TOL_ACC for g, m in res["per_generator"].items())
@@ -260,7 +335,8 @@ def main() -> int:
                               for g, pm in res["per_generator"].items()},
             "n_images": res["n_images"], "data": cfg["data"], "vlm_precision": cfg["precision"], "vlm_gpu": res["vlm_gpu"],
             "source": f"repro/adb_full/results/{name}.json", "vlm_logs": cfg["vlm_logs"],
-            "dda_logs": cfg.get("dda_logs", [DDA_LOG]), "status": status(cfg, res, paper)}
+            "dda_logs": cfg.get("dda_logs", [DDA_LOG]), "status": status(cfg, res, paper),
+            "vlm_request": cfg["vlm_request"], "before": cfg.get("before")}
         print(f"    {cfg['paper']}: paper {paper['mean']} | ours {m['acc']} (VLM {m['vlm_acc']}, DDA {m['dda_acc']}) "
               f"AUROC {m['mauroc']} | n={res['n_images']} | {cfg['precision']} on {res['vlm_gpu']}", flush=True)
     (HERE / "paper_comparison.json").write_text(json.dumps(table, indent=1) + "\n")
