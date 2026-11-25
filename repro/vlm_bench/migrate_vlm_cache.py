@@ -35,6 +35,16 @@ Known re-keys (``PREDECESSORS``):
   ``fakevlm__greedy__ee254109e9`` and ``fakevlm__greedy__jpeg95__ee254109e9``) to 4a950958ed. The only change for FakeVLM
   is the load check, which its config passes (all three fields are in ``processor_overrides``); rule ``unchanged``.
 
+* veritaspp and fakevlm, fix/adb-upstream-sync (2026-11-25): from code version 53f470222c (main 1b607c1) to bbad7ab02d.
+  ``models/vlm/image.py``: ``swift_qwen_vl_resize`` caps ``fetch_image`` at the token-rounded ``max_pixels // 784 * 784``
+  (``swift_fetch_max_pixels``), as swift does; ``models/vlm/parsers.py``: ``parse_adb_default_real`` added, docstrings.
+  Neither detector uses either function (Veritas++: ``vllm_rgb``; FakeVLM: ``transformers_rgb`` +
+  ``clip_resize_center_crop``) and every other identity field is equal, so every record is kept (rule ``unchanged``).
+  adb_vlm has NO entry for this re-key: its prompt, decoding, pixel cap and parser changed with the upstream commits
+  2f0adbc / 898b607, so its earlier records are not reused (they stay in their old folders; ``migrate_folder`` refuses any
+  folder whose prompt or decoding differs from the current identity). bbad7ab02d is also added to the earlier entries'
+  targets, so a veritaspp / fakevlm folder not yet migrated goes straight to it.
+
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model adb_vlm [--dry-run]
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model veritaspp
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model fakevlm
@@ -63,8 +73,10 @@ from interface.backend.registry import get_spec                     # noqa: E402
 # main e5749ae -> detector/fakevlm: only the code version differs (see the module doc); identities as bench_eval.vlm_identity
 # printed them at e5749ae (adb_vlm's official decoding is greedy too, so it shares the greedy identity)
 _MAIN_E5749AE = "b490c64477"
-_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed", "53f470222c"]   # 53f470222c: detector/adb-full's docstring-only edit
-_ADB_FULL_BRANCH = ["53f470222c"]
+# 53f470222c: detector/adb-full's docstring-only edit; bbad7ab02d: fix/adb-upstream-sync (veritaspp / fakevlm unchanged; an
+# adb_vlm folder never matches it: its prompt and decoding changed, which migrate_folder refuses before any rule)
+_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed", "53f470222c", "bbad7ab02d"]
+_ADB_FULL_BRANCH = ["53f470222c", "bbad7ab02d"]
 _ADB_E5749AE = {
     "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
     "ckpt": None, "max_new_tokens": 512, "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05},
@@ -86,6 +98,11 @@ _FAKEVLM_02852ACF62 = {
 
 # main ca433a7 (code version 4a950958ed): the identities its runs wrote, the same as e5749ae's apart from the code version
 _CA433A7 = "4a950958ed"
+# main 1b607c1 (code version 53f470222c) -> fix/adb-upstream-sync (bbad7ab02d): veritaspp and fakevlm only (see the module doc)
+_MAIN_1B607C1 = "53f470222c"
+_ADB_SYNC_BRANCH = ["bbad7ab02d"]
+# the code versions under which adb_vlm still sent the f4b4794 request (prompt 91db63b292, repetition penalty 1.05, 1,003,520 px)
+_ADB_F4B4794_REQUEST = [_MAIN_E5749AE, "02852acf62", _CA433A7, _MAIN_1B607C1]
 
 
 def _at(identity: dict, code_version: str) -> dict:
@@ -93,14 +110,15 @@ def _at(identity: dict, code_version: str) -> dict:
 
 
 # {model: [{"identity": an older cache identity, "rule": how its records carry over, "to_code_versions": (rule "unchanged")
-# the code versions it may be migrated to}]}
+# the code versions it may be migrated to; also checked for the other rules when given}]}. A folder whose prompt or decoding
+# differs from the current identity's is never migrated.
 PREDECESSORS = {
     "adb_vlm": [
         {"identity": {
             "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "ckpt": None, "max_new_tokens": 512,
             "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05},
             "prompt_sha1": "91db63b292", "config_sha1": "65977eff07", "code_version": "cf179eee30",
-        }, "rule": "adb_verdict_offset"},
+        }, "rule": "adb_verdict_offset", "to_code_versions": _ADB_F4B4794_REQUEST},
         {"identity": _ADB_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _at(_ADB_E5749AE, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
     ],
@@ -109,10 +127,13 @@ PREDECESSORS = {
         {"identity": _VPP_E5749AE_OFFICIAL, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _at(_VPP_E5749AE, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
         {"identity": _at(_VPP_E5749AE_OFFICIAL, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
+        {"identity": _at(_VPP_E5749AE, _MAIN_1B607C1), "rule": "unchanged", "to_code_versions": _ADB_SYNC_BRANCH},
+        {"identity": _at(_VPP_E5749AE_OFFICIAL, _MAIN_1B607C1), "rule": "unchanged", "to_code_versions": _ADB_SYNC_BRANCH},
     ],
     "fakevlm": [
         {"identity": _FAKEVLM_02852ACF62, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _at(_FAKEVLM_02852ACF62, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
+        {"identity": _at(_FAKEVLM_02852ACF62, _MAIN_1B607C1), "rule": "unchanged", "to_code_versions": _ADB_SYNC_BRANCH},
     ],
 }
 
@@ -156,6 +177,11 @@ def migrate_folder(old: Path, model: str, dry_run: bool) -> dict:
     entry = next((e for e in PREDECESSORS.get(model, []) if e["identity"] == old_id), None)
     if entry is None:
         return {"folder": str(old), "status": "unknown identity, left alone"}
+    if (old_id["prompt_sha1"], old_id["generation"]) != (new_id["prompt_sha1"], new_id["generation"]):
+        return {"folder": str(old), "status": "the prompt or the decoding changed: no re-key, left alone"}
+    if "to_code_versions" in entry and new_id["code_version"] not in entry["to_code_versions"]:
+        return {"folder": str(old), "status": f"no checked re-key to the current identity (code version "
+                                              f"{new_id['code_version']}), left alone"}
     if entry["rule"] == "unchanged":
         same = {k: v for k, v in old_id.items() if k != "code_version"} == {k: v for k, v in new_id.items() if k != "code_version"}
         if not same or new_id["code_version"] not in entry["to_code_versions"]:

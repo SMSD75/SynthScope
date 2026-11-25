@@ -19,7 +19,10 @@
   carried with its line byte-equal (unscored ones too), bench_eval opens the new folder with the same records, an
   already-carried cf179eee30 source is skipped in favour of its e5749ae folder, and a target code version the entry does
   not name, or another identity field that differs, leaves the folder alone; the fakevlm folders its benchmark jobs
-  wrote (code version 02852acf62, plain and JPEG95) are carried to the current code version byte for byte.
+  wrote (code version 02852acf62, plain and JPEG95) are carried to the current code version byte for byte. Both adb_vlm
+  checks run under adb_vlm's identity of main 1b607c1 (the f4b4794 request), for which they were written;
+* migrate_vlm_cache, fix/adb-upstream-sync: under the cf168db request (new prompt, decoding, pixel cap) no older adb_vlm
+  folder is carried over (refused before any rule), while veritaspp / fakevlm folders of main 1b607c1 are, byte for byte.
 """
 from __future__ import annotations
 
@@ -172,6 +175,47 @@ def check_trace_model_keying(tmp: Path) -> None:
     assert "MISMATCH b/vb.json" in out.getvalue() and "1 do not" in out.getvalue(), out.getvalue()
 
 
+@contextlib.contextmanager
+def adb_identity_of_main_1b607c1():
+    """adb_vlm's cache identity as main 1b607c1 computed it (the f4b4794 request, code version 53f470222c): the adb_vlm
+    migrations below were written for it. Under the cf168db request no adb_vlm folder migrates (check_migrate_adb_sync)."""
+    real = bench_eval.vlm_identity
+    old = migrate_vlm_cache._at(migrate_vlm_cache._ADB_E5749AE, "53f470222c")
+    bench_eval.vlm_identity = lambda spec, decoding, ckpt=None: dict(old) if spec.key == "adb_vlm" else real(spec, decoding, ckpt)
+    try:
+        yield
+    finally:
+        bench_eval.vlm_identity = real
+
+
+def check_migrate_adb_sync(tmp: Path) -> None:
+    """fix/adb-upstream-sync: no older adb_vlm folder is carried into the cf168db identity (new prompt, decoding, pixel cap);
+    a veritaspp / fakevlm folder of main 1b607c1 is (rule unchanged, byte for byte)."""
+    mv = migrate_vlm_cache
+    cur = bench_eval.vlm_identity(bench_eval.get_spec("adb_vlm"), "greedy")
+    assert cur["generation"]["repetition_penalty"] == 1.0 and cur["prompt_sha1"] != "91db63b292"
+    for i, entry in enumerate(mv.PREDECESSORS["adb_vlm"]):
+        folder = tmp / "sync" / f"b{i}" / f"adb_vlm__greedy__{mv.identity_hash(entry['identity'])}"
+        folder.mkdir(parents=True)
+        (folder / "identity.json").write_text(json.dumps(entry["identity"]))
+        (folder / "h.1.jsonl").write_text('{"key": "g/x.png", "sha1": "x", "verdict": "real", "score_source": "verdict_token"}\n')
+        res = mv.migrate_folder(folder, "adb_vlm", dry_run=False)
+        assert res["status"] == "the prompt or the decoding changed: no re-key, left alone", res
+        assert sorted(p.name for p in folder.parent.iterdir()) == [folder.name]
+    for model, ident in (("veritaspp", mv._at(mv._VPP_E5749AE, mv._MAIN_1B607C1)),
+                         ("fakevlm", mv._at(mv._FAKEVLM_02852ACF62, mv._MAIN_1B607C1))):
+        now = bench_eval.vlm_identity(bench_eval.get_spec(model), "greedy")
+        assert now["code_version"] in mv._ADB_SYNC_BRANCH, now
+        src = tmp / "sync" / model / f"{model}__greedy__{mv.identity_hash(ident)}"
+        src.mkdir(parents=True)
+        (src / "identity.json").write_text(json.dumps(ident))
+        line = json.dumps({"key": "g/1_fake/x.png", "sha1": "x", "verdict": "fake", "score_source": "verdict_token"})
+        (src / "n.1.jsonl").write_text(line + "\n")
+        res = mv.migrate_folder(src, model, dry_run=False)
+        assert res["status"] == "migrated" and Path(res["to"]).name.endswith(mv.identity_hash(now)), res
+        assert (Path(res["to"]) / f"migrated.{mv.identity_hash(ident)}.jsonl").read_text() == line + "\n"
+
+
 def check_migrate_cache(tmp: Path) -> None:
     old_id = migrate_vlm_cache.PREDECESSORS["adb_vlm"][0]["identity"]
     root = tmp / "cache"
@@ -320,8 +364,10 @@ def main() -> None:
         check_compare_ranks(tmp)
         check_compare_in_distribution(tmp)
         check_trace_model_keying(tmp)
-        check_migrate_cache(tmp)
-        check_migrate_unchanged(tmp)
+        with adb_identity_of_main_1b607c1():
+            check_migrate_cache(tmp)
+            check_migrate_unchanged(tmp)
+        check_migrate_adb_sync(tmp)
     print("vlm_bench units: all checks passed")
 
 

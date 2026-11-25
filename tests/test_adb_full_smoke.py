@@ -3,18 +3,18 @@ downloads, no released weights needed.
 
 Checks:
 [A] the decision rule == the official one: the UNMODIFIED official ``predict.py`` (github.com/GzZning/Align-Dont-Blend @
-    5d83e40, $ADB_FULL_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/Align-Dont-Blend-20261120; skipped without it) is
+    cf168db, $ADB_FULL_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db; skipped without it) is
     run with ``--vlm-results`` / ``--expert-results`` on mocked component outputs: tagged and tag-less answers, both
-    verdicts, expert probabilities 0, 0.3, the float just below 0.5, exactly 0.5 (fake: ``>=``), the float just above
+    verdicts, answers its parser rejects (Real since 898b607, ``vlm_answer_parsed: false``), expert probabilities 0, 0.3, the float just below 0.5, exactly 0.5 (fake: ``>=``), the float just above
     0.5, 0.9 and 1; its final, VLM and expert decisions equal ``fuse_components`` on ``adb_vlm``'s parse of the same
     answers, for VLM P(fake) values on either side of 0.5 and against their verdict (the raw gap is not the decision);
 [B] the score: ``score >= 0.5`` exactly when the decision is fake (also at the edges above, and at P_vlm = 0.5 with the
     verdict "real"); the order of the scores within each side; invalid expert probabilities are refused as
-    ``read_expert_results`` refuses them; an unparsed answer (the official script stops on it: checked) is "fake" when
-    the expert says fake and "unparsed" otherwise;
+    ``read_expert_results`` refuses them; an unparsed answer is Real on the VLM side (the official script decides so
+    since 898b607: checked), so the final decision is the expert's;
 [C] the expert == the official ``detector.expert``: its transform (built by the official ``PixelArtifactExpert``) equals
     the ``dda`` registry transform on RGB, RGBA, palette, greyscale, small (zero-padded) and odd-sized images, tensor for
-    tensor; the official ``DDAExpert`` (its vendored DINOv2 + LoRA) loads SynthScope's ``dda`` state dict strictly and
+    tensor; the official ``ExpertModel`` (``DDAExpert`` before ff5c349; its vendored DINOv2 + LoRA) loads SynthScope's ``dda`` state dict strictly and
     gives the same logits (random weights; skipped without the official clone or the DINOv2 hub code);
 [D] the registry spec, the input note, the zoo / Space / licence rows, and the engine path with mocked components: the
     VLM gets the decoded file unconverted (RGBA kept), the expert its RGB conversion; the verdict follows the rule where
@@ -23,13 +23,19 @@ Checks:
 [E] the benchmark path: ``bench_eval --per-image`` (stub expert) records each image's key, sha1, label and P(fake);
     ``repro/adb_full/fuse.py`` joins it with VLM records (sha1 checked, labels checked, a missing image refused) and its
     accuracy / AUROC equal a hand computation of the rule; ``run_units`` maps ``limit<N>`` / ``fullfp32`` units to the full data
-    with ``--limit N`` / ``--vlm-dtype float32 --vlm-attn eager``; ``trace_check`` checks such results by their RESULT line.
+    with ``--limit N`` / ``--vlm-dtype float32 --vlm-attn eager``; ``trace_check`` checks such results by their RESULT line;
+[F] the evaluation preprocessing == the official ``tools/jpeg96.py`` (cf168db) ``prepare_image``: ``bench_eval
+    --jpeg-fakes 96`` gives each branch the same pixels as ``prepare_image(image, "GenImage" / "AIGCDetectBenchmark",
+    label)`` (fakes: in-memory PIL JPEG q96; reals: the RGB conversion only), on RGB / RGBA / palette / greyscale PNGs and
+    a JPEG, for the VLM's input (``swift_rgb`` then ``_jpeg``) and the expert's (``_open_rgb`` then ``_jpeg``); other
+    datasets are not recompressed (skipped without the official clone).
 """
 
 from __future__ import annotations
 
 import contextlib
 import dataclasses
+import importlib.util
 import io
 import json
 import math
@@ -56,10 +62,10 @@ from interface.backend import config as backend_config               # noqa: E40
 from interface.backend import media                                  # noqa: E402
 from interface.backend.engine import Engine                          # noqa: E402
 from interface.backend.registry import get_spec, input_note          # noqa: E402
-from models.image.adb_full.adb_full import (ADB_FULL, EXPERT_THRESHOLD, REAL_CAP, expert_decision,  # noqa: E402
-                                            fuse_components, fused_score, fused_verdict)
+from models.image.adb_full.adb_full import (ADB_FULL, EXPERT_THRESHOLD, JPEG96_DATASETS, JPEG96_QUALITY,  # noqa: E402
+                                            REAL_CAP, expert_decision, fuse_components, fused_score, fused_verdict)
 from models.image.dda.dda import SynthScopeDDAModel                  # noqa: E402
-from models.vlm.parsers import parse_adb                             # noqa: E402
+from models.vlm.parsers import parse_adb, parse_adb_default_real     # noqa: E402
 from synthscope import hub                                           # noqa: E402
 from synthscope.api import Detector                                  # noqa: E402
 import bench_eval                                                    # noqa: E402
@@ -67,13 +73,16 @@ from repro.adb_full import fuse                                      # noqa: E40
 from repro.vlm_bench import run_units, trace_check                   # noqa: E402
 
 OFFICIAL_DIR = Path(os.environ.get("ADB_FULL_OFFICIAL_DIR",
-                                   "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-20261120"))
+                                   "/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db"))
 HAS_OFFICIAL = (OFFICIAL_DIR / "predict.py").exists() and (OFFICIAL_DIR / "detector" / "expert.py").exists()
 
 TAGGED = "<rationale>The hands look fine and the light is coherent.</rationale>\n<answer>\nThis is an {} image.\n</answer>"
 TAGLESS = "<rationale>An AI-generated look? No: the reflections agree.</rationale>\nThis is an {} image."
+UNPARSABLE = ["<rationale>Hard to say.</rationale>\n<answer>\nMaybe.\n</answer>",
+              "<rationale>The image has strong AI-generated characteristics.",                  # truncated, no answer
+              "<answer>This is an authentic image.</answer><answer>This is an AI-generated image.</answer>"]
 RESPONSES = [TAGGED.format("AI-generated"), TAGGED.format("authentic"), TAGLESS.format("AI-generated"),
-             TAGLESS.format("authentic")]
+             TAGLESS.format("authentic")] + UNPARSABLE
 EXPERT_PS = [0.0, 0.3, REAL_CAP, 0.5, math.nextafter(0.5, 1.0), 0.9, 1.0]
 VLM_PS = [0.0, 0.2, REAL_CAP, 0.5, 0.97, 1.0]          # also against the verdict: the raw gap can disagree with the text
 
@@ -109,9 +118,11 @@ def test_official_rule() -> None:
     assert len(official) == len(cases)
     n_fake = 0
     for (response, p_expert, p_vlm), off in zip(cases, official):
-        verdict = parse_adb(response)
+        verdict = parse_adb_default_real(response)            # adb_vlm's parser: the official decision
         ours = fuse_components(p_vlm, verdict, p_expert)
+        assert fuse_components(p_vlm, parse_adb(response), p_expert) == ours   # a None verdict is read as Real too
         assert off["vlm_response"] == response
+        assert off["vlm_answer_parsed"] == (parse_adb(response) is not None), (response, off)
         assert (ours["vlm_verdict"] == "fake") == off["vlm_fake"], (response, off)
         assert (ours["expert_verdict"] == "fake") == off["expert_fake"], (p_expert, off)
         assert (ours["verdict"] == "fake") == off["fake"], (response, p_expert, p_vlm, off)
@@ -119,8 +130,10 @@ def test_official_rule() -> None:
         n_fake += off["fake"]
     edge = {e: o["expert_fake"] for (_, e, _), o in zip(cases, official)}
     assert edge[0.5] and not edge[REAL_CAP] and edge[math.nextafter(0.5, 1.0)]
-    print(f"    {len(cases)} cases ({n_fake} fake): final, VLM and expert decisions identical; P(expert) 0.5 is fake, "
-          f"the float below it real; the VLM decision is its parsed text, not the sign of its gap")
+    n_unparsed = sum(not o["vlm_answer_parsed"] for o in official)
+    print(f"    {len(cases)} cases ({n_fake} fake, {n_unparsed} with an unparsed answer): final, VLM and expert decisions "
+          f"and vlm_answer_parsed identical; P(expert) 0.5 is fake, the float below it real; the VLM decision is its "
+          f"parsed text (Real when unparsed), not the sign of its gap")
 
 
 def test_score() -> None:
@@ -131,8 +144,7 @@ def test_score() -> None:
                 s = fused_score(p_vlm, vlm_verdict, p_expert)
                 v = fused_verdict(vlm_verdict, p_expert)
                 assert (s >= 0.5) == (v == "fake"), (vlm_verdict, p_vlm, p_expert, s, v)
-                assert v == ("fake" if vlm_verdict == "fake" or p_expert >= 0.5 else
-                             "real" if vlm_verdict == "real" else "unparsed")
+                assert v == ("fake" if vlm_verdict == "fake" or p_expert >= 0.5 else "real")
     assert fused_score(0.5, "real", 0.3) == REAL_CAP < 0.5 and round(REAL_CAP, 6) == 0.5    # rounds to 0.5: see [D]
     assert fused_score(0.2, "fake", 0.1) == 0.5 and fused_score(0.97, "real", 0.1) == REAL_CAP
     assert fused_score(0.1, "real", 0.4) == 0.4 and fused_score(0.45, "real", 0.4) == 0.45      # order kept in a side
@@ -145,18 +157,19 @@ def test_score() -> None:
         else:
             raise AssertionError(f"{bad!r} accepted")
     assert expert_decision(1) and not expert_decision(0) and EXPERT_THRESHOLD == ADB_FULL.expert_threshold == 0.5
-    assert fuse_components(0.5, None, 0.7)["verdict"] == "fake" and fuse_components(0.5, None, 0.3)["verdict"] == "unparsed"
-    assert fuse_components(0.5, None, 0.3)["vlm_verdict"] == "unparsed" and fuse_components(0.5, None, 0.3)["score"] < 0.5
+    assert fuse_components(0.5, None, 0.7)["verdict"] == "fake" and fuse_components(0.5, None, 0.3)["verdict"] == "real"
+    assert fuse_components(0.5, None, 0.3)["vlm_verdict"] == "real" and fuse_components(0.5, None, 0.3)["score"] < 0.5
     assert [fuse_components(0.9, "fake", e)["decided_by"] for e in (0.9, 0.1)] == ["both", "vlm"]
     assert [fuse_components(0.1, "real", e)["decided_by"] for e in (0.9, 0.1)] == ["expert", "neither"]
-    unparsable = "<rationale>Hard to say.</rationale>\n<answer>\nMaybe.\n</answer>"
-    assert parse_adb(unparsable) is None
+    for unparsable in UNPARSABLE:
+        assert parse_adb(unparsable) is None and parse_adb_default_real(unparsable) == "real"
     if HAS_OFFICIAL:
         with tempfile.TemporaryDirectory() as tmp:
-            proc = run_official(Path(tmp), [unparsable], [0.9])
-            assert proc.returncode != 0 and "Unrecognized VLM verdict" in proc.stderr, proc.stderr[-500:]
-        print("    the official script stops on an unparsable answer (checked); SynthScope: fake if the expert says "
-              "fake, else unparsed")
+            proc = run_official(Path(tmp), [UNPARSABLE[0]] * 2, [0.9, 0.1])
+            assert proc.returncode == 0, proc.stderr[-500:]
+            rows = [json.loads(line) for line in (Path(tmp) / "out.jsonl").read_text().splitlines()]
+        assert [(r["vlm_fake"], r["vlm_answer_parsed"], r["fake"]) for r in rows] == [(False, False, True), (False, False, False)]
+        print("    the official script decides Real for an unparsable answer (checked); the OR is then the expert's")
     print("    score >= 0.5 <=> fake for every case; 0.5 - ulp rounds to 0.5 (the verdict, not the rounded score, "
           "decides)")
 
@@ -173,7 +186,7 @@ def official_expert_module():
 def official_transform(expert):
     """The transform the official ``PixelArtifactExpert`` builds (on a meta-device model: no weights needed)."""
     with torch.device("meta"):
-        state = expert.DDAExpert().state_dict()
+        state = expert.ExpertModel().state_dict()
     with tempfile.NamedTemporaryFile(suffix=".pth") as f:
         saved = torch.load
         torch.load = lambda *a, **k: state
@@ -222,7 +235,7 @@ def test_expert() -> None:
         for name, p in ours.named_parameters():
             if ".lora.lora_B" in name or name.startswith("base_model.fc."):
                 p.normal_(0, 0.02)                                    # LoRA B is zero-initialised: make it count
-    off = expert.DDAExpert().eval()
+    off = expert.ExpertModel().eval()
     off.load_state_dict(ours.state_dict(), strict=True)
     assert set(off.state_dict()) == set(ours.state_dict()) and len(ours.state_dict()) == 537
     x = torch.stack([ours_tf(media.to_rgb(im)) for im in images[:2]])
@@ -230,7 +243,7 @@ def test_expert() -> None:
         lo, lt = off(x), ours(x)
     diff = float((lo - lt).abs().max())
     assert torch.allclose(lo, lt, atol=1e-5, rtol=0), diff
-    print(f"    architecture: the official DDAExpert loads SynthScope's 537 dda tensors strictly; logits max |diff| "
+    print(f"    architecture: the official ExpertModel loads SynthScope's 537 dda tensors strictly; logits max |diff| "
           f"{diff:.2e} (random weights, CPU)")
 
 
@@ -273,7 +286,7 @@ def test_registry_and_engine() -> None:
     assert spec.transform is None and spec.vlm is None and spec.overrides == [] and spec.eval_batch_size(32) == 1
     assert get_spec("adb_vlm").has_vlm and not get_spec("dda").has_vlm
     note = input_note(spec)
-    assert "336" in note["label"] and "1,003,520" in note["explanation"]
+    assert "336" in note["label"] and "1,210,000" in note["explanation"]
     assert "adb_full" not in hub.NEVER_REDISTRIBUTE and "adb_vlm" in hub.NEVER_REDISTRIBUTE
     assert "Apache-2.0" in hub.NEVER_REDISTRIBUTE["adb_vlm"]
     licences = (ROOT / "LICENSES.md").read_text().splitlines()
@@ -289,14 +302,14 @@ def test_registry_and_engine() -> None:
                                                  (("real", 0.02, 0.5), "fake", "expert"),
                                                  (("fake", 0.3, 0.1), "fake", "vlm"),
                                                  (("fake", 0.99, 0.97), "fake", "both"),
-                                                 ((None, 0.5, 0.2), "unparsed", "neither")):
+                                                 ((None, 0.5, 0.2), "real", "neither")):
         stub = _Stub(vlm_out(verdict, p_vlm), p_expert)
         res = engine_with(stub).predict_image(spec, rgba)
         assert stub.seen == {"vlm": ("adb_vlm", "RGBA"), "expert": ("dda", "RGB")}, stub.seen
         assert res["verdict"] == want and res["decided_by"] == by, (verdict, p_vlm, p_expert, res["verdict"])
         assert (res["fused_score"] >= 0.5) == (want == "fake") and res["model"] == "adb_full"
         assert res["components"]["dda"]["fake_probability"] == p_expert and res["components"]["dda"]["threshold"] == 0.5
-        assert res["components"]["adb_vlm"]["verdict"] == (verdict or "unparsed")
+        assert res["components"]["adb_vlm"]["verdict"] == (verdict or "real")
         assert res["response"] == "stub response" and res["orig_size"] == [40, 30]
     stub = _Stub(vlm_out("real", 0.5), 0.3)
     res = engine_with(stub).predict_image(spec, rgba)
@@ -466,6 +479,41 @@ def test_benchmark_path() -> None:
           "missing image refused; limit<N> / fullfp32 units; trace_check variants")
 
 
+def test_jpeg96() -> None:
+    jpeg96 = OFFICIAL_DIR / "tools" / "jpeg96.py"
+    if not jpeg96.exists():
+        print("[F] official tools/jpeg96.py not found: skipped")
+        return
+    print("[F] --jpeg-fakes 96 == the official tools/jpeg96.py prepare_image ...")
+    spec = importlib.util.spec_from_file_location("adb_official_jpeg96", jpeg96)
+    official = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(official)
+    rng = np.random.RandomState(7)
+    images = {"rgb": Image.fromarray((rng.rand(97, 131, 3) * 255).astype("uint8")),
+              "rgba": Image.fromarray((rng.rand(64, 80, 4) * 255).astype("uint8"), "RGBA"),
+              "palette": Image.fromarray((rng.rand(50, 70, 3) * 255).astype("uint8")).convert("P"),
+              "gray": Image.fromarray((rng.rand(45, 61) * 255).astype("uint8"), "L")}
+    n = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, img in images.items():
+            for fmt in ("PNG", "JPEG") if name == "rgb" else ("PNG",):
+                path = Path(tmp) / f"{name}.{fmt.lower()}"
+                img.save(path, fmt)
+                for dataset in ("GenImage", "AIGCDetectBenchmark", "WildRF"):
+                    for label in (0, 1):
+                        want = np.asarray(official.prepare_image(Image.open(path), dataset, label))
+                        jpeg = label == 1 and dataset in JPEG96_DATASETS
+                        vlm = get_spec("adb_vlm").vlm.image_loader(media.decode_image_raw(path.read_bytes()))
+                        expert = bench_eval._open_rgb(path)
+                        if jpeg:
+                            vlm, expert = bench_eval._jpeg(vlm, JPEG96_QUALITY), bench_eval._jpeg(expert, JPEG96_QUALITY)
+                        assert np.array_equal(np.asarray(vlm), want) and np.array_equal(np.asarray(expert), want), \
+                            (name, fmt, dataset, label)
+                        n += 1
+    print(f"    {n} cases (RGB / RGBA / P / L PNGs, a JPEG; GenImage, AIGCDetectBenchmark, another dataset; real, fake): "
+          f"the VLM's and the expert's pixels == prepare_image's")
+
+
 if __name__ == "__main__":
     with contextlib.suppress(Exception):
         import transformers
@@ -475,4 +523,5 @@ if __name__ == "__main__":
     test_expert()
     test_registry_and_engine()
     test_benchmark_path()
+    test_jpeg96()
     print("adb_full smoke test passed")
