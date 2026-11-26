@@ -4,6 +4,8 @@
  "row": "aigcdetect_subset_jpegfakes96",
  "paper_benchmark": "AIGCDetectBenchmark",
  "data": "the vlm_bench subset (30 real + 30 fake per generator), fakes JPEG q96 (inferred protocol)",
+ "vlm_request": "github.com/GzZning/Align-Dont-Blend @ f4b4794",
+ "before": null,
  "vlm_precision": "bf16",
  "vlm_gpu": [
   "RTX A5000 (IVI, committed adb_vlm run)"

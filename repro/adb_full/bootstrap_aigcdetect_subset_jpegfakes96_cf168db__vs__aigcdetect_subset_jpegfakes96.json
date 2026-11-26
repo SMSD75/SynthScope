@@ -1,0 +1,235 @@
+{
+ "before": "aigcdetect_subset_jpegfakes96",
+ "after": "aigcdetect_subset_jpegfakes96_cf168db",
+ "n_images": 1020,
+ "generators": [
+  "ADM",
+  "DALLE2",
+  "Glide",
+  "Midjourney",
+  "VQDM",
+  "biggan",
+  "cyclegan",
+  "gaugan",
+  "progan",
+  "sd_xl",
+  "stable_diffusion_v_1_4",
+  "stable_diffusion_v_1_5",
+  "stargan",
+  "stylegan",
+  "stylegan2",
+  "whichfaceisreal",
+  "wukong"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "paired: one stratified (generator, class) resampling of the shared images for both rows; means over generators; difference = after - before",
+ "changed_decisions": {
+  "vlm_verdict": 108,
+  "verdict": 45
+ },
+ "max_abs_dda_prob_diff": 4.51505184173584e-05,
+ "rows": {
+  "aigcdetect_subset_jpegfakes96": {
+   "adb_full": {
+    "acc": 83.82,
+    "acc_ci95": [
+     81.96,
+     85.78
+    ],
+    "mauroc": 90.05,
+    "mauroc_ci95": [
+     88.1,
+     92.02
+    ]
+   },
+   "vlm": {
+    "acc": 63.92,
+    "acc_ci95": [
+     61.86,
+     65.98
+    ],
+    "mauroc": 70.55,
+    "mauroc_ci95": [
+     67.65,
+     73.38
+    ]
+   },
+   "dda": {
+    "acc": 86.86,
+    "acc_ci95": [
+     85.29,
+     88.53
+    ],
+    "mauroc": 96.53,
+    "mauroc_ci95": [
+     95.47,
+     97.53
+    ]
+   }
+  },
+  "aigcdetect_subset_jpegfakes96_cf168db": {
+   "adb_full": {
+    "acc": 84.71,
+    "acc_ci95": [
+     82.94,
+     86.57
+    ],
+    "mauroc": 92.61,
+    "mauroc_ci95": [
+     90.86,
+     94.25
+    ]
+   },
+   "vlm": {
+    "acc": 59.61,
+    "acc_ci95": [
+     57.94,
+     61.27
+    ],
+    "mauroc": 67.8,
+    "mauroc_ci95": [
+     64.64,
+     70.84
+    ]
+   },
+   "dda": {
+    "acc": 86.86,
+    "acc_ci95": [
+     85.29,
+     88.53
+    ],
+    "mauroc": 96.53,
+    "mauroc_ci95": [
+     95.47,
+     97.53
+    ]
+   }
+  }
+ },
+ "after_minus_before": {
+  "adb_full": {
+   "acc": 0.88,
+   "acc_ci95": [
+    -0.29,
+    2.06
+   ],
+   "mauroc": 2.56,
+   "mauroc_ci95": [
+    1.08,
+    4.06
+   ]
+  },
+  "vlm": {
+   "acc": -4.31,
+   "acc_ci95": [
+    -6.18,
+    -2.45
+   ],
+   "mauroc": -2.75,
+   "mauroc_ci95": [
+    -5.69,
+    0.0
+   ]
+  },
+  "dda": {
+   "acc": 0.0,
+   "acc_ci95": [
+    0.0,
+    0.0
+   ],
+   "mauroc": 0.0,
+   "mauroc_ci95": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "per_generator": {
+  "ADM": {
+   "adb_full": 5.0,
+   "vlm": 5.0,
+   "dda": 0.0
+  },
+  "DALLE2": {
+   "adb_full": 1.67,
+   "vlm": -3.33,
+   "dda": 0.0
+  },
+  "Glide": {
+   "adb_full": 0.0,
+   "vlm": -10.0,
+   "dda": 0.0
+  },
+  "Midjourney": {
+   "adb_full": 1.67,
+   "vlm": 3.33,
+   "dda": 0.0
+  },
+  "VQDM": {
+   "adb_full": -5.0,
+   "vlm": -11.67,
+   "dda": 0.0
+  },
+  "biggan": {
+   "adb_full": 1.67,
+   "vlm": 1.67,
+   "dda": 0.0
+  },
+  "cyclegan": {
+   "adb_full": -3.33,
+   "vlm": -18.33,
+   "dda": 0.0
+  },
+  "gaugan": {
+   "adb_full": -1.67,
+   "vlm": -11.67,
+   "dda": 0.0
+  },
+  "progan": {
+   "adb_full": 8.33,
+   "vlm": 5.0,
+   "dda": 0.0
+  },
+  "sd_xl": {
+   "adb_full": 0.0,
+   "vlm": 1.67,
+   "dda": 0.0
+  },
+  "stable_diffusion_v_1_4": {
+   "adb_full": 1.67,
+   "vlm": -10.0,
+   "dda": 0.0
+  },
+  "stable_diffusion_v_1_5": {
+   "adb_full": 0.0,
+   "vlm": -6.67,
+   "dda": 0.0
+  },
+  "stargan": {
+   "adb_full": 0.0,
+   "vlm": -5.0,
+   "dda": 0.0
+  },
+  "stylegan": {
+   "adb_full": 3.33,
+   "vlm": -3.33,
+   "dda": 0.0
+  },
+  "stylegan2": {
+   "adb_full": 0.0,
+   "vlm": 0.0,
+   "dda": 0.0
+  },
+  "whichfaceisreal": {
+   "adb_full": -1.67,
+   "vlm": -1.67,
+   "dda": 0.0
+  },
+  "wukong": {
+   "adb_full": 3.33,
+   "vlm": -8.33,
+   "dda": 0.0
+  }
+ }
+}

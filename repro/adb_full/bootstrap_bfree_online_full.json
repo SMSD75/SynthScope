@@ -1,0 +1,111 @@
+{
+ "row": "bfree_online_full",
+ "n_images": 807,
+ "generators": [
+  "viral"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "stratified by (generator, class), paired across detectors; means over generators",
+ "detectors": {
+  "adb_full": {
+   "acc": 96.93,
+   "acc_ci95": [
+    95.45,
+    98.14
+   ],
+   "mauroc": 99.11,
+   "mauroc_ci95": [
+    98.38,
+    99.67
+   ]
+  },
+  "vlm": {
+   "acc": 87.08,
+   "acc_ci95": [
+    85.22,
+    89.03
+   ],
+   "mauroc": 98.19,
+   "mauroc_ci95": [
+    97.31,
+    98.94
+   ]
+  },
+  "dda": {
+   "acc": 94.98,
+   "acc_ci95": [
+    93.4,
+    96.38
+   ],
+   "mauroc": 98.86,
+   "mauroc_ci95": [
+    98.25,
+    99.35
+   ]
+  }
+ },
+ "paired_differences": {
+  "adb_full-dda": {
+   "acc": 1.95,
+   "acc_ci95": [
+    0.65,
+    3.16
+   ],
+   "mauroc": 0.26,
+   "mauroc_ci95": [
+    -0.55,
+    0.99
+   ]
+  },
+  "adb_full-vlm": {
+   "acc": 9.85,
+   "acc_ci95": [
+    7.71,
+    11.8
+   ],
+   "mauroc": 0.92,
+   "mauroc_ci95": [
+    0.4,
+    1.51
+   ]
+  },
+  "vlm-dda": {
+   "acc": -7.9,
+   "acc_ci95": [
+    -10.32,
+    -5.39
+   ],
+   "mauroc": -0.67,
+   "mauroc_ci95": [
+    -1.68,
+    0.31
+   ]
+  }
+ },
+ "per_generator": {
+  "viral": {
+   "adb_full": {
+    "acc": 96.93,
+    "acc_ci95": [
+     95.45,
+     98.14
+    ]
+   },
+   "vlm": {
+    "acc": 87.08,
+    "acc_ci95": [
+     85.22,
+     89.03
+    ]
+   },
+   "dda": {
+    "acc": 94.98,
+    "acc_ci95": [
+     93.4,
+     96.38
+    ]
+   }
+  }
+ }
+}

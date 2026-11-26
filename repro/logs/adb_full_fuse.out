@@ -16,4 +16,18 @@
     GenImage: paper 91.7 | ours 86.7 (VLM 61.05, DDA 89.35) AUROC 92.86 | n=10000 | bf16 on ['NVIDIA RTX A5000']
 === RESULT adbfull_aigcdetect_subset_jpegfakes96: mAP=85.92 mAUROC=90.05 acc=83.82 over 17 generators -> repro/adb_full/results/aigcdetect_subset_jpegfakes96.json ===
     AIGCDetectBenchmark: paper 87.7 | ours 83.82 (VLM 63.92, DDA 86.86) AUROC 90.05 | n=1020 | bf16 on ['RTX A5000 (IVI, committed adb_vlm run)']
-wrote repro/adb_full/paper_comparison.json (9 rows)
+=== RESULT adbfull_wildrf_full_cf168db: mAP=99.38 mAUROC=99.47 acc=93.01 over 3 generators -> repro/adb_full/results/wildrf_full_cf168db.json ===
+    WildRF: paper 92.9 | ours 93.01 (VLM 95.96, DDA 90.2) AUROC 99.47 | n=2503 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_bfree_online_full_cf168db: mAP=99.66 mAUROC=99.41 acc=96.84 over 1 generators -> repro/adb_full/results/bfree_online_full_cf168db.json ===
+    BFree-Online: paper 97.5 | ours 96.84 (VLM 81.69, DDA 94.98) AUROC 99.41 | n=807 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_aigibench_cf168db: mAP=98.05 mAUROC=98.15 acc=89.49 over 2 generators -> repro/adb_full/results/aigibench_cf168db.json ===
+    AIGI-Bench: paper 88.8 | ours 89.49 (VLM 90.71, DDA 82.41) AUROC 98.15 | n=9000 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_aigibench_full_cf168db: mAP=97.82 mAUROC=98.03 acc=89.22 over 2 generators -> repro/adb_full/results/aigibench_full_cf168db.json ===
+    AIGI-Bench: paper 88.8 | ours 89.22 (VLM 88.81, DDA 83.18) AUROC 98.03 | n=18000 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_genimage_10k_jpegfakes96_cf168db: mAP=93.08 mAUROC=96.47 acc=88.86 over 8 generators -> repro/adb_full/results/genimage_10k_jpegfakes96_cf168db.json ===
+    GenImage: paper 91.7 | ours 88.86 (VLM 59.5, DDA 89.35) AUROC 96.47 | n=10000 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_aigcdetect_3400_jpegfakes96_cf168db: mAP=88.86 mAUROC=92.93 acc=84.76 over 17 generators -> repro/adb_full/results/aigcdetect_3400_jpegfakes96_cf168db.json ===
+    AIGCDetectBenchmark: paper 87.7 | ours 84.76 (VLM 59.06, DDA 85.94) AUROC 92.93 | n=3400 | bf16 on ['NVIDIA RTX A5000']
+=== RESULT adbfull_aigcdetect_subset_jpegfakes96_cf168db: mAP=89.69 mAUROC=92.61 acc=84.71 over 17 generators -> repro/adb_full/results/aigcdetect_subset_jpegfakes96_cf168db.json ===
+    AIGCDetectBenchmark: paper 87.7 | ours 84.71 (VLM 59.61, DDA 86.86) AUROC 92.61 | n=1020 | bf16 on ['NVIDIA RTX A5000']
+wrote repro/adb_full/paper_comparison.json (16 rows)

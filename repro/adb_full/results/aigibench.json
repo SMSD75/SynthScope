@@ -4,6 +4,8 @@
  "row": "aigibench",
  "paper_benchmark": "AIGI-Bench",
  "data": "SocialRF full (3,000 real + 3,000 fake); CommunityAI the first 1,500 real + 1,500 fake (sorted) of 6,000 + 6,000",
+ "vlm_request": "github.com/GzZning/Align-Dont-Blend @ f4b4794",
+ "before": null,
  "vlm_precision": "bf16",
  "vlm_gpu": [
   "NVIDIA RTX A5000"
@@ -62,7 +64,7 @@
     "both": 2566,
     "neither": 2050
    },
-   "n_unparsed": 1
+   "n_unparsed": 0
   }
  },
  "sources": {
@@ -97858,7 +97860,7 @@
    "verdict": "fake",
    "score": 0.9882716536521912,
    "decided_by": "expert",
-   "vlm_verdict": "unparsed",
+   "vlm_verdict": "real",
    "vlm_logit": 0.0,
    "vlm_new_tokens": 52,
    "dda_prob": 0.9882716536521912,

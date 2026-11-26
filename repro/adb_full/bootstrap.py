@@ -11,7 +11,7 @@ as the headline numbers are computed. 2,000 replicates, seed 0; CI = the 2.5 and
 
 ``--pair BEFORE AFTER`` (the same images scored twice, e.g. the f4b4794 and the cf168db VLM request): one resampling of the
 shared images drives both rows, so the CI of AFTER - BEFORE is paired; for the full method, the VLM alone and DDA alone
-(DDA is the same records in both rows, so its difference is 0). Output ``bootstrap_<AFTER>__vs__<BEFORE>.json``.
+(DDA: the same files, the same decisions; its probabilities may differ by float noise, at most 1e-3, recorded). Output ``bootstrap_<AFTER>__vs__<BEFORE>.json``.
 
     python repro/adb_full/bootstrap.py --pair genimage_10k_jpegfakes96 genimage_10k_jpegfakes96_cf168db
 """
@@ -100,9 +100,14 @@ def run_pair(before: str, after: str) -> dict:
         rows[name] = {(r["generator"], r["key"]): r for r in res["per_image"]}
     if rows[before].keys() != rows[after].keys():
         raise SystemExit(f"{before} and {after} differ in images ({len(rows[before].keys() ^ rows[after].keys())} not shared)")
+    dda_diff = 0.0                              # the same files; DDA reruns in other batches differ by float noise only
     for k, r in rows[before].items():
-        if (r["label"], r["dda_prob"]) != (rows[after][k]["label"], rows[after][k]["dda_prob"]):
-            raise SystemExit(f"{k}: label or DDA record differs between {before} and {after}")
+        o = rows[after][k]
+        if r["label"] != o["label"] or (r["dda_prob"] >= 0.5) != (o["dda_prob"] >= 0.5):
+            raise SystemExit(f"{k}: label or DDA decision differs between {before} and {after}")
+        dda_diff = max(dda_diff, abs(r["dda_prob"] - o["dda_prob"]))
+    if dda_diff > 1e-3:
+        raise SystemExit(f"DDA probabilities differ by up to {dda_diff} between {before} and {after}")
     gens = sorted({g for g, _ in rows[before]})
     rng = np.random.default_rng(SEED)
     acc = {(n, d): np.zeros((B, len(gens))) for n in (before, after) for d in DETECTORS}
@@ -130,7 +135,7 @@ def run_pair(before: str, after: str) -> dict:
     out = {"before": before, "after": after, "n_images": len(rows[before]), "generators": gens, "replicates": B,
            "seed": SEED, "method": "paired: one stratified (generator, class) resampling of the shared images for both "
                                    "rows; means over generators; difference = after - before",
-           "changed_decisions": changed, "rows": {}, "after_minus_before": {}}
+           "changed_decisions": changed, "max_abs_dda_prob_diff": dda_diff, "rows": {}, "after_minus_before": {}}
     for n in (before, after):
         out["rows"][n] = {d: {"acc": round(float(np.mean(point_acc[n, d])), 2), "acc_ci95": ci(acc[n, d].mean(axis=1)),
                               "mauroc": round(float(np.mean(point_auc[n, d])), 2), "mauroc_ci95": ci(auc[n, d].mean(axis=1))}

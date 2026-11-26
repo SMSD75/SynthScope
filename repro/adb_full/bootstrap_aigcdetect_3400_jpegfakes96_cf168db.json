@@ -1,0 +1,495 @@
+{
+ "row": "aigcdetect_3400_jpegfakes96_cf168db",
+ "n_images": 3400,
+ "generators": [
+  "ADM",
+  "DALLE2",
+  "Glide",
+  "Midjourney",
+  "VQDM",
+  "biggan",
+  "cyclegan",
+  "gaugan",
+  "progan",
+  "sd_xl",
+  "stable_diffusion_v_1_4",
+  "stable_diffusion_v_1_5",
+  "stargan",
+  "stylegan",
+  "stylegan2",
+  "whichfaceisreal",
+  "wukong"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "stratified by (generator, class), paired across detectors; means over generators",
+ "detectors": {
+  "adb_full": {
+   "acc": 84.76,
+   "acc_ci95": [
+    83.82,
+    85.74
+   ],
+   "mauroc": 92.93,
+   "mauroc_ci95": [
+    91.92,
+    93.87
+   ]
+  },
+  "vlm": {
+   "acc": 59.06,
+   "acc_ci95": [
+    58.09,
+    60.0
+   ],
+   "mauroc": 65.7,
+   "mauroc_ci95": [
+    63.92,
+    67.45
+   ]
+  },
+  "dda": {
+   "acc": 85.94,
+   "acc_ci95": [
+    85.0,
+    86.88
+   ],
+   "mauroc": 96.7,
+   "mauroc_ci95": [
+    96.15,
+    97.24
+   ]
+  }
+ },
+ "paired_differences": {
+  "adb_full-dda": {
+   "acc": -1.18,
+   "acc_ci95": [
+    -1.76,
+    -0.59
+   ],
+   "mauroc": -3.77,
+   "mauroc_ci95": [
+    -4.59,
+    -2.97
+   ]
+  },
+  "adb_full-vlm": {
+   "acc": 25.71,
+   "acc_ci95": [
+    24.56,
+    26.85
+   ],
+   "mauroc": 27.23,
+   "mauroc_ci95": [
+    25.5,
+    28.95
+   ]
+  },
+  "vlm-dda": {
+   "acc": -26.88,
+   "acc_ci95": [
+    -28.21,
+    -25.59
+   ],
+   "mauroc": -31.0,
+   "mauroc_ci95": [
+    -32.84,
+    -29.17
+   ]
+  }
+ },
+ "per_generator": {
+  "ADM": {
+   "adb_full": {
+    "acc": 76.5,
+    "acc_ci95": [
+     71.0,
+     81.5
+    ]
+   },
+   "vlm": {
+    "acc": 50.5,
+    "acc_ci95": [
+     48.0,
+     53.0
+    ]
+   },
+   "dda": {
+    "acc": 78.0,
+    "acc_ci95": [
+     73.0,
+     82.51
+    ]
+   }
+  },
+  "DALLE2": {
+   "adb_full": {
+    "acc": 95.5,
+    "acc_ci95": [
+     92.5,
+     98.0
+    ]
+   },
+   "vlm": {
+    "acc": 53.5,
+    "acc_ci95": [
+     50.5,
+     56.5
+    ]
+   },
+   "dda": {
+    "acc": 96.0,
+    "acc_ci95": [
+     93.5,
+     98.5
+    ]
+   }
+  },
+  "Glide": {
+   "adb_full": {
+    "acc": 84.0,
+    "acc_ci95": [
+     79.49,
+     88.5
+    ]
+   },
+   "vlm": {
+    "acc": 53.0,
+    "acc_ci95": [
+     50.5,
+     55.5
+    ]
+   },
+   "dda": {
+    "acc": 84.5,
+    "acc_ci95": [
+     80.0,
+     89.0
+    ]
+   }
+  },
+  "Midjourney": {
+   "adb_full": {
+    "acc": 94.5,
+    "acc_ci95": [
+     91.5,
+     97.5
+    ]
+   },
+   "vlm": {
+    "acc": 84.5,
+    "acc_ci95": [
+     79.5,
+     89.0
+    ]
+   },
+   "dda": {
+    "acc": 94.5,
+    "acc_ci95": [
+     91.0,
+     97.5
+    ]
+   }
+  },
+  "VQDM": {
+   "adb_full": {
+    "acc": 64.5,
+    "acc_ci95": [
+     59.5,
+     69.5
+    ]
+   },
+   "vlm": {
+    "acc": 50.0,
+    "acc_ci95": [
+     48.5,
+     51.5
+    ]
+   },
+   "dda": {
+    "acc": 65.0,
+    "acc_ci95": [
+     60.0,
+     70.0
+    ]
+   }
+  },
+  "biggan": {
+   "adb_full": {
+    "acc": 87.0,
+    "acc_ci95": [
+     82.5,
+     91.5
+    ]
+   },
+   "vlm": {
+    "acc": 52.5,
+    "acc_ci95": [
+     50.5,
+     55.0
+    ]
+   },
+   "dda": {
+    "acc": 87.0,
+    "acc_ci95": [
+     82.5,
+     91.5
+    ]
+   }
+  },
+  "cyclegan": {
+   "adb_full": {
+    "acc": 75.0,
+    "acc_ci95": [
+     68.5,
+     81.0
+    ]
+   },
+   "vlm": {
+    "acc": 59.5,
+    "acc_ci95": [
+     53.49,
+     66.0
+    ]
+   },
+   "dda": {
+    "acc": 77.5,
+    "acc_ci95": [
+     72.49,
+     82.5
+    ]
+   }
+  },
+  "gaugan": {
+   "adb_full": {
+    "acc": 92.5,
+    "acc_ci95": [
+     88.5,
+     96.0
+    ]
+   },
+   "vlm": {
+    "acc": 57.5,
+    "acc_ci95": [
+     53.5,
+     61.5
+    ]
+   },
+   "dda": {
+    "acc": 93.5,
+    "acc_ci95": [
+     90.0,
+     96.51
+    ]
+   }
+  },
+  "progan": {
+   "adb_full": {
+    "acc": 78.0,
+    "acc_ci95": [
+     73.5,
+     83.0
+    ]
+   },
+   "vlm": {
+    "acc": 57.0,
+    "acc_ci95": [
+     50.5,
+     63.0
+    ]
+   },
+   "dda": {
+    "acc": 87.5,
+    "acc_ci95": [
+     83.5,
+     91.5
+    ]
+   }
+  },
+  "sd_xl": {
+   "adb_full": {
+    "acc": 100.0,
+    "acc_ci95": [
+     100.0,
+     100.0
+    ]
+   },
+   "vlm": {
+    "acc": 95.5,
+    "acc_ci95": [
+     92.5,
+     98.0
+    ]
+   },
+   "dda": {
+    "acc": 100.0,
+    "acc_ci95": [
+     100.0,
+     100.0
+    ]
+   }
+  },
+  "stable_diffusion_v_1_4": {
+   "adb_full": {
+    "acc": 97.5,
+    "acc_ci95": [
+     95.0,
+     99.5
+    ]
+   },
+   "vlm": {
+    "acc": 60.0,
+    "acc_ci95": [
+     56.0,
+     64.5
+    ]
+   },
+   "dda": {
+    "acc": 98.5,
+    "acc_ci95": [
+     96.5,
+     100.0
+    ]
+   }
+  },
+  "stable_diffusion_v_1_5": {
+   "adb_full": {
+    "acc": 97.5,
+    "acc_ci95": [
+     95.0,
+     99.5
+    ]
+   },
+   "vlm": {
+    "acc": 62.0,
+    "acc_ci95": [
+     57.5,
+     66.5
+    ]
+   },
+   "dda": {
+    "acc": 98.0,
+    "acc_ci95": [
+     96.0,
+     99.5
+    ]
+   }
+  },
+  "stargan": {
+   "adb_full": {
+    "acc": 72.0,
+    "acc_ci95": [
+     66.5,
+     77.5
+    ]
+   },
+   "vlm": {
+    "acc": 52.5,
+    "acc_ci95": [
+     50.0,
+     55.0
+    ]
+   },
+   "dda": {
+    "acc": 71.0,
+    "acc_ci95": [
+     65.49,
+     76.5
+    ]
+   }
+  },
+  "stylegan": {
+   "adb_full": {
+    "acc": 84.0,
+    "acc_ci95": [
+     79.0,
+     89.0
+    ]
+   },
+   "vlm": {
+    "acc": 48.0,
+    "acc_ci95": [
+     44.5,
+     51.5
+    ]
+   },
+   "dda": {
+    "acc": 87.5,
+    "acc_ci95": [
+     83.0,
+     92.0
+    ]
+   }
+  },
+  "stylegan2": {
+   "adb_full": {
+    "acc": 90.0,
+    "acc_ci95": [
+     85.5,
+     94.0
+    ]
+   },
+   "vlm": {
+    "acc": 48.5,
+    "acc_ci95": [
+     45.5,
+     51.5
+    ]
+   },
+   "dda": {
+    "acc": 92.0,
+    "acc_ci95": [
+     88.0,
+     95.5
+    ]
+   }
+  },
+  "whichfaceisreal": {
+   "adb_full": {
+    "acc": 55.5,
+    "acc_ci95": [
+     51.0,
+     60.0
+    ]
+   },
+   "vlm": {
+    "acc": 53.5,
+    "acc_ci95": [
+     49.5,
+     57.5
+    ]
+   },
+   "dda": {
+    "acc": 53.0,
+    "acc_ci95": [
+     51.0,
+     55.5
+    ]
+   }
+  },
+  "wukong": {
+   "adb_full": {
+    "acc": 97.0,
+    "acc_ci95": [
+     94.5,
+     99.0
+    ]
+   },
+   "vlm": {
+    "acc": 66.0,
+    "acc_ci95": [
+     61.0,
+     71.0
+    ]
+   },
+   "dda": {
+    "acc": 97.5,
+    "acc_ci95": [
+     95.49,
+     99.5
+    ]
+   }
+  }
+ }
+}

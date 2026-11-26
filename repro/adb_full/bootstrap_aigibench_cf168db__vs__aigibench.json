@@ -1,0 +1,145 @@
+{
+ "before": "aigibench",
+ "after": "aigibench_cf168db",
+ "n_images": 9000,
+ "generators": [
+  "CommunityAI",
+  "SocialRF"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "paired: one stratified (generator, class) resampling of the shared images for both rows; means over generators; difference = after - before",
+ "changed_decisions": {
+  "vlm_verdict": 661,
+  "verdict": 434
+ },
+ "max_abs_dda_prob_diff": 0.0,
+ "rows": {
+  "aigibench": {
+   "adb_full": {
+    "acc": 87.52,
+    "acc_ci95": [
+     86.87,
+     88.16
+    ],
+    "mauroc": 97.35,
+    "mauroc_ci95": [
+     96.99,
+     97.67
+    ]
+   },
+   "vlm": {
+    "acc": 89.65,
+    "acc_ci95": [
+     89.0,
+     90.29
+    ],
+    "mauroc": 97.14,
+    "mauroc_ci95": [
+     96.79,
+     97.47
+    ]
+   },
+   "dda": {
+    "acc": 82.42,
+    "acc_ci95": [
+     81.6,
+     83.18
+    ],
+    "mauroc": 91.34,
+    "mauroc_ci95": [
+     90.75,
+     91.9
+    ]
+   }
+  },
+  "aigibench_cf168db": {
+   "adb_full": {
+    "acc": 89.49,
+    "acc_ci95": [
+     88.89,
+     90.09
+    ],
+    "mauroc": 98.14,
+    "mauroc_ci95": [
+     97.84,
+     98.42
+    ]
+   },
+   "vlm": {
+    "acc": 90.71,
+    "acc_ci95": [
+     90.08,
+     91.3
+    ],
+    "mauroc": 98.46,
+    "mauroc_ci95": [
+     98.19,
+     98.7
+    ]
+   },
+   "dda": {
+    "acc": 82.42,
+    "acc_ci95": [
+     81.6,
+     83.18
+    ],
+    "mauroc": 91.34,
+    "mauroc_ci95": [
+     90.75,
+     91.9
+    ]
+   }
+  }
+ },
+ "after_minus_before": {
+  "adb_full": {
+   "acc": 1.97,
+   "acc_ci95": [
+    1.5,
+    2.47
+   ],
+   "mauroc": 0.79,
+   "mauroc_ci95": [
+    0.54,
+    1.04
+   ]
+  },
+  "vlm": {
+   "acc": 1.06,
+   "acc_ci95": [
+    0.48,
+    1.67
+   ],
+   "mauroc": 1.31,
+   "mauroc_ci95": [
+    1.1,
+    1.55
+   ]
+  },
+  "dda": {
+   "acc": 0.0,
+   "acc_ci95": [
+    0.0,
+    0.0
+   ],
+   "mauroc": 0.0,
+   "mauroc_ci95": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "per_generator": {
+  "CommunityAI": {
+   "adb_full": 2.1,
+   "vlm": -0.47,
+   "dda": 0.0
+  },
+  "SocialRF": {
+   "adb_full": 1.85,
+   "vlm": 2.58,
+   "dda": 0.0
+  }
+ }
+}

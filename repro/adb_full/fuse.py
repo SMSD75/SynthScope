@@ -283,7 +283,7 @@ def fuse_row(name: str, cfg: dict) -> dict:
     gpus = sorted({d.get("gpu") or cfg["gpu"] or "?" for d in vdocs})
     return {
         "tag": f"adbfull_{name}", "model": "adb_full", "row": name, "paper_benchmark": cfg["paper"], "data": cfg["data"],
-        "vlm_request": f"github.com/GzZning/Align-Dont-Blend @ {cfg['vlm_request']}", "before": cfg.get("before"),
+        "vlm_request": f"github.com/GzZning/Align-Dont-Blend @ {cfg.get('vlm_request', 'cf168db')}", "before": cfg.get("before"),
         "vlm_precision": cfg["precision"], "vlm_gpu": gpus, "dda_gpu": sorted({d.get("gpu", "?") for d in ddocs}),
         "jpeg_fakes": vdocs[0].get("jpeg_fakes"), "n_images": len(rows), "n_generators": len(per_gen), "means": means,
         "per_generator": per_gen, "sources": {"vlm": cfg["vlm"], "dda": cfg["dda"]},
@@ -336,7 +336,7 @@ def main() -> int:
             "n_images": res["n_images"], "data": cfg["data"], "vlm_precision": cfg["precision"], "vlm_gpu": res["vlm_gpu"],
             "source": f"repro/adb_full/results/{name}.json", "vlm_logs": cfg["vlm_logs"],
             "dda_logs": cfg.get("dda_logs", [DDA_LOG]), "status": status(cfg, res, paper),
-            "vlm_request": cfg["vlm_request"], "before": cfg.get("before")}
+            "vlm_request": cfg.get("vlm_request", "cf168db"), "before": cfg.get("before")}
         print(f"    {cfg['paper']}: paper {paper['mean']} | ours {m['acc']} (VLM {m['vlm_acc']}, DDA {m['dda_acc']}) "
               f"AUROC {m['mauroc']} | n={res['n_images']} | {cfg['precision']} on {res['vlm_gpu']}", flush=True)
     (HERE / "paper_comparison.json").write_text(json.dumps(table, indent=1) + "\n")

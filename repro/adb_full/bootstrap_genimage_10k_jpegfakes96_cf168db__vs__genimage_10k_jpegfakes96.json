@@ -1,0 +1,181 @@
+{
+ "before": "genimage_10k_jpegfakes96",
+ "after": "genimage_10k_jpegfakes96_cf168db",
+ "n_images": 10000,
+ "generators": [
+  "adm",
+  "biggan",
+  "glide",
+  "midjourney",
+  "sdv1.4",
+  "sdv1.5",
+  "vqdm",
+  "wukong"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "paired: one stratified (generator, class) resampling of the shared images for both rows; means over generators; difference = after - before",
+ "changed_decisions": {
+  "vlm_verdict": 979,
+  "verdict": 380
+ },
+ "max_abs_dda_prob_diff": 0.0,
+ "rows": {
+  "genimage_10k_jpegfakes96": {
+   "adb_full": {
+    "acc": 86.7,
+    "acc_ci95": [
+     86.1,
+     87.29
+    ],
+    "mauroc": 92.86,
+    "mauroc_ci95": [
+     92.26,
+     93.47
+    ]
+   },
+   "vlm": {
+    "acc": 61.05,
+    "acc_ci95": [
+     60.36,
+     61.72
+    ],
+    "mauroc": 74.72,
+    "mauroc_ci95": [
+     73.76,
+     75.66
+    ]
+   },
+   "dda": {
+    "acc": 89.35,
+    "acc_ci95": [
+     88.85,
+     89.84
+    ],
+    "mauroc": 98.35,
+    "mauroc_ci95": [
+     98.12,
+     98.57
+    ]
+   }
+  },
+  "genimage_10k_jpegfakes96_cf168db": {
+   "adb_full": {
+    "acc": 88.86,
+    "acc_ci95": [
+     88.32,
+     89.38
+    ],
+    "mauroc": 96.47,
+    "mauroc_ci95": [
+     96.04,
+     96.86
+    ]
+   },
+   "vlm": {
+    "acc": 59.5,
+    "acc_ci95": [
+     58.98,
+     59.99
+    ],
+    "mauroc": 67.41,
+    "mauroc_ci95": [
+     66.34,
+     68.48
+    ]
+   },
+   "dda": {
+    "acc": 89.35,
+    "acc_ci95": [
+     88.85,
+     89.84
+    ],
+    "mauroc": 98.35,
+    "mauroc_ci95": [
+     98.12,
+     98.57
+    ]
+   }
+  }
+ },
+ "after_minus_before": {
+  "adb_full": {
+   "acc": 2.16,
+   "acc_ci95": [
+    1.77,
+    2.53
+   ],
+   "mauroc": 3.6,
+   "mauroc_ci95": [
+    3.08,
+    4.14
+   ]
+  },
+  "vlm": {
+   "acc": -1.55,
+   "acc_ci95": [
+    -2.13,
+    -0.99
+   ],
+   "mauroc": -7.31,
+   "mauroc_ci95": [
+    -8.21,
+    -6.35
+   ]
+  },
+  "dda": {
+   "acc": 0.0,
+   "acc_ci95": [
+    0.0,
+    0.0
+   ],
+   "mauroc": 0.0,
+   "mauroc_ci95": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "per_generator": {
+  "adm": {
+   "adb_full": 3.12,
+   "vlm": 1.68,
+   "dda": 0.0
+  },
+  "biggan": {
+   "adb_full": 1.84,
+   "vlm": 0.24,
+   "dda": 0.0
+  },
+  "glide": {
+   "adb_full": 0.8,
+   "vlm": -2.96,
+   "dda": 0.0
+  },
+  "midjourney": {
+   "adb_full": 2.64,
+   "vlm": 3.76,
+   "dda": 0.0
+  },
+  "sdv1.4": {
+   "adb_full": 3.44,
+   "vlm": -1.2,
+   "dda": 0.0
+  },
+  "sdv1.5": {
+   "adb_full": 2.48,
+   "vlm": -4.8,
+   "dda": 0.0
+  },
+  "vqdm": {
+   "adb_full": 0.72,
+   "vlm": -1.6,
+   "dda": 0.0
+  },
+  "wukong": {
+   "adb_full": 2.24,
+   "vlm": -7.52,
+   "dda": 0.0
+  }
+ }
+}

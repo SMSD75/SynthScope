@@ -1,0 +1,159 @@
+{
+ "row": "wildrf_full",
+ "n_images": 2503,
+ "generators": [
+  "facebook",
+  "reddit",
+  "twitter"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "stratified by (generator, class), paired across detectors; means over generators",
+ "detectors": {
+  "adb_full": {
+   "acc": 91.22,
+   "acc_ci95": [
+    90.01,
+    92.54
+   ],
+   "mauroc": 99.22,
+   "mauroc_ci95": [
+    98.9,
+    99.48
+   ]
+  },
+  "vlm": {
+   "acc": 93.98,
+   "acc_ci95": [
+    92.81,
+    95.09
+   ],
+   "mauroc": 98.78,
+   "mauroc_ci95": [
+    98.35,
+    99.15
+   ]
+  },
+  "dda": {
+   "acc": 90.2,
+   "acc_ci95": [
+    88.9,
+    91.52
+   ],
+   "mauroc": 96.14,
+   "mauroc_ci95": [
+    95.5,
+    96.79
+   ]
+  }
+ },
+ "paired_differences": {
+  "adb_full-dda": {
+   "acc": 1.03,
+   "acc_ci95": [
+    -0.08,
+    2.2
+   ],
+   "mauroc": 3.08,
+   "mauroc_ci95": [
+    2.39,
+    3.78
+   ]
+  },
+  "adb_full-vlm": {
+   "acc": -2.76,
+   "acc_ci95": [
+    -3.98,
+    -1.55
+   ],
+   "mauroc": 0.44,
+   "mauroc_ci95": [
+    0.23,
+    0.7
+   ]
+  },
+  "vlm-dda": {
+   "acc": 3.78,
+   "acc_ci95": [
+    2.02,
+    5.49
+   ],
+   "mauroc": 2.64,
+   "mauroc_ci95": [
+    1.87,
+    3.4
+   ]
+  }
+ },
+ "per_generator": {
+  "facebook": {
+   "adb_full": {
+    "acc": 90.94,
+    "acc_ci95": [
+     88.12,
+     94.06
+    ]
+   },
+   "vlm": {
+    "acc": 93.12,
+    "acc_ci95": [
+     90.31,
+     95.62
+    ]
+   },
+   "dda": {
+    "acc": 93.12,
+    "acc_ci95": [
+     90.31,
+     95.94
+    ]
+   }
+  },
+  "reddit": {
+   "adb_full": {
+    "acc": 89.33,
+    "acc_ci95": [
+     87.87,
+     90.73
+    ]
+   },
+   "vlm": {
+    "acc": 93.07,
+    "acc_ci95": [
+     91.73,
+     94.33
+    ]
+   },
+   "dda": {
+    "acc": 86.4,
+    "acc_ci95": [
+     84.67,
+     88.13
+    ]
+   }
+  },
+  "twitter": {
+   "adb_full": {
+    "acc": 93.4,
+    "acc_ci95": [
+     91.5,
+     95.16
+    ]
+   },
+   "vlm": {
+    "acc": 95.75,
+    "acc_ci95": [
+     94.14,
+     97.22
+    ]
+   },
+   "dda": {
+    "acc": 91.07,
+    "acc_ci95": [
+     88.87,
+     92.97
+    ]
+   }
+  }
+ }
+}

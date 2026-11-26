@@ -4,6 +4,8 @@
  "row": "genimage_10k_jpegfakes96",
  "paper_benchmark": "GenImage",
  "data": "GenImage val, the first 625 real + 625 fake per generator (sorted), fakes JPEG q96 (10,000; the 63-per-class subset is a prefix, its committed VLM records reused through seed_vlm_cache.py)",
+ "vlm_request": "github.com/GzZning/Align-Dont-Blend @ f4b4794",
+ "before": null,
  "vlm_precision": "bf16",
  "vlm_gpu": [
   "NVIDIA RTX A5000"

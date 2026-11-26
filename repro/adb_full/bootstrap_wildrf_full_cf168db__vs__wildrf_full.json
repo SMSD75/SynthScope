@@ -1,0 +1,151 @@
+{
+ "before": "wildrf_full",
+ "after": "wildrf_full_cf168db",
+ "n_images": 2503,
+ "generators": [
+  "facebook",
+  "reddit",
+  "twitter"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "paired: one stratified (generator, class) resampling of the shared images for both rows; means over generators; difference = after - before",
+ "changed_decisions": {
+  "vlm_verdict": 128,
+  "verdict": 85
+ },
+ "max_abs_dda_prob_diff": 0.0,
+ "rows": {
+  "wildrf_full": {
+   "adb_full": {
+    "acc": 91.22,
+    "acc_ci95": [
+     90.01,
+     92.54
+    ],
+    "mauroc": 99.22,
+    "mauroc_ci95": [
+     98.9,
+     99.48
+    ]
+   },
+   "vlm": {
+    "acc": 93.98,
+    "acc_ci95": [
+     92.81,
+     95.09
+    ],
+    "mauroc": 98.78,
+    "mauroc_ci95": [
+     98.35,
+     99.15
+    ]
+   },
+   "dda": {
+    "acc": 90.2,
+    "acc_ci95": [
+     88.9,
+     91.52
+    ],
+    "mauroc": 96.14,
+    "mauroc_ci95": [
+     95.5,
+     96.79
+    ]
+   }
+  },
+  "wildrf_full_cf168db": {
+   "adb_full": {
+    "acc": 93.01,
+    "acc_ci95": [
+     91.87,
+     94.17
+    ],
+    "mauroc": 99.47,
+    "mauroc_ci95": [
+     99.22,
+     99.67
+    ]
+   },
+   "vlm": {
+    "acc": 95.96,
+    "acc_ci95": [
+     95.01,
+     96.83
+    ],
+    "mauroc": 99.08,
+    "mauroc_ci95": [
+     98.71,
+     99.4
+    ]
+   },
+   "dda": {
+    "acc": 90.2,
+    "acc_ci95": [
+     88.9,
+     91.52
+    ],
+    "mauroc": 96.14,
+    "mauroc_ci95": [
+     95.5,
+     96.79
+    ]
+   }
+  }
+ },
+ "after_minus_before": {
+  "adb_full": {
+   "acc": 1.79,
+   "acc_ci95": [
+    0.98,
+    2.65
+   ],
+   "mauroc": 0.25,
+   "mauroc_ci95": [
+    0.07,
+    0.47
+   ]
+  },
+  "vlm": {
+   "acc": 1.98,
+   "acc_ci95": [
+    0.89,
+    3.12
+   ],
+   "mauroc": 0.31,
+   "mauroc_ci95": [
+    0.01,
+    0.6
+   ]
+  },
+  "dda": {
+   "acc": 0.0,
+   "acc_ci95": [
+    0.0,
+    0.0
+   ],
+   "mauroc": 0.0,
+   "mauroc_ci95": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "per_generator": {
+  "facebook": {
+   "adb_full": 2.5,
+   "vlm": 3.13,
+   "dda": 0.0
+  },
+  "reddit": {
+   "adb_full": 2.87,
+   "vlm": 3.53,
+   "dda": 0.0
+  },
+  "twitter": {
+   "adb_full": 0.0,
+   "vlm": -0.73,
+   "dda": 0.0
+  }
+ }
+}

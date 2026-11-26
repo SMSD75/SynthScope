@@ -1,0 +1,135 @@
+{
+ "row": "aigibench_full_cf168db",
+ "n_images": 18000,
+ "generators": [
+  "CommunityAI",
+  "SocialRF"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "stratified by (generator, class), paired across detectors; means over generators",
+ "detectors": {
+  "adb_full": {
+   "acc": 89.22,
+   "acc_ci95": [
+    88.75,
+    89.69
+   ],
+   "mauroc": 98.04,
+   "mauroc_ci95": [
+    97.86,
+    98.2
+   ]
+  },
+  "vlm": {
+   "acc": 88.81,
+   "acc_ci95": [
+    88.35,
+    89.23
+   ],
+   "mauroc": 97.43,
+   "mauroc_ci95": [
+    97.23,
+    97.62
+   ]
+  },
+  "dda": {
+   "acc": 83.18,
+   "acc_ci95": [
+    82.6,
+    83.76
+   ],
+   "mauroc": 91.74,
+   "mauroc_ci95": [
+    91.29,
+    92.2
+   ]
+  }
+ },
+ "paired_differences": {
+  "adb_full-dda": {
+   "acc": 6.04,
+   "acc_ci95": [
+    5.53,
+    6.55
+   ],
+   "mauroc": 6.3,
+   "mauroc_ci95": [
+    5.84,
+    6.75
+   ]
+  },
+  "adb_full-vlm": {
+   "acc": 0.41,
+   "acc_ci95": [
+    -0.01,
+    0.83
+   ],
+   "mauroc": 0.6,
+   "mauroc_ci95": [
+    0.44,
+    0.77
+   ]
+  },
+  "vlm-dda": {
+   "acc": 5.63,
+   "acc_ci95": [
+    4.95,
+    6.33
+   ],
+   "mauroc": 5.7,
+   "mauroc_ci95": [
+    5.22,
+    6.17
+   ]
+  }
+ },
+ "per_generator": {
+  "CommunityAI": {
+   "adb_full": {
+    "acc": 92.75,
+    "acc_ci95": [
+     92.29,
+     93.19
+    ]
+   },
+   "vlm": {
+    "acc": 85.87,
+    "acc_ci95": [
+     85.28,
+     86.46
+    ]
+   },
+   "dda": {
+    "acc": 84.62,
+    "acc_ci95": [
+     84.02,
+     85.23
+    ]
+   }
+  },
+  "SocialRF": {
+   "adb_full": {
+    "acc": 85.68,
+    "acc_ci95": [
+     84.88,
+     86.47
+    ]
+   },
+   "vlm": {
+    "acc": 91.75,
+    "acc_ci95": [
+     91.05,
+     92.42
+    ]
+   },
+   "dda": {
+    "acc": 81.73,
+    "acc_ci95": [
+     80.78,
+     82.75
+    ]
+   }
+  }
+ }
+}
