@@ -86,7 +86,11 @@ images still rank by the larger of the two probabilities. The result's `fake_pro
 decimals; `verdict` comes from the rule, not from the rounded number. So a "real" image whose score is `0.5 - ulp` shows
 `fake_probability` 0.5 with the verdict "real". The unrounded score is `fused_score`.
 
-**Unparsed VLM answers** are Real, as in `predict.py` since `898b607`; the final decision is then the expert's. Most of
+**Unparsed VLM answers** are Real, as in `predict.py` since `898b607`; the final decision is then the expert's.
+`adb_vlm` reports them (`answer_parsed: false`; `bench_eval` counts them in `n_unparsed`) and keeps their P(fake) on the
+Real side (logit at most 0) even if the text holds a verdict word. The result JSONs of job 301129 were written before
+that count existed (they show them as `n_unscored`); their unparsed answers are listed in `unparsed_answers.json`. None
+of the 287 holds a verdict word, so the clamp changes no committed score. Most of
 them are a rationale with no verdict line. With the cf168db request, 287 of the 34,710 benchmark answers below are
 unparsed (0.8%: WildRF 19, BFree-Online 11, AIGI-Bench 96, GenImage 113, AIGCDetect 48;
 `repro/adb_full/vlm_cf168db/unparsed_answers.json`). With the earlier request there was one, a SocialRF fake.
@@ -183,6 +187,10 @@ default vLLM backend was not compared.
   code exactly at a given precision and GPU, but the VLM text itself is not stable across precisions (and, as the earlier
   check showed, across GPU models).
 - The 24 images are not a benchmark. The final decision is correct on 21 of 24, the VLM on 15 and DDA on 23.
+- **Not covered end to end by this run:** none of the 24 answers is unparsed, no image falls in the band where the
+  token-rounded cap (1,209,712) changes the resize, and JPEG96 is not part of `predict.py`. These three paths are checked
+  on the CPU against the official code instead: the decision rule on unparsed answers ([A]), `prepare_image` ([F]) and
+  the ms-swift resize (`tests/test_adb_vlm_smoke.py` [C]).
 
 ## Results
 **The paper's benchmarks, full method, official weights** (SynthScope did not train either component). Balanced

@@ -269,9 +269,11 @@ VAL = {
     # repro/vlm_bench/comparison.json (paper_comparison.adb_vlm / subset_means.adb_vlm; results/<bench>/adb_vlm*.json; logs
     # repro/logs/adb_ivi_*.out). WildRF = FULL data (2,503 images, results/wildrf/adb_vlm__full*.json); BFree-Online = 269 real +
     # 500 fake subset; AIGI-Bench = the CommunityAI + SocialRF slices of the subset (20 + 20 each); GenImage / AIGCDetect = subsets
-    # with the fakes JPEG q96 (adb_vlm__jpegfakes96.json; the AIGCDetect protocol is our inference); the last row is the
+    # with the fakes JPEG q96 (adb_vlm__jpegfakes96.json; the official protocol since upstream cf168db); the last row is the
     # unweighted mean of the 15 subsampled benchmark accuracies / AUROCs. CO-SPY in-the-wild is not held (no entry).
-    ("adb_vlm", "WildRF"): {"official": {"acc": 93.98, "auroc": 98.78}},
+    # WildRF: the cf168db request on the same 2,503 images (repro/adb_full/vlm_cf168db/wildrf/adb_vlm__full__*.json, job 301129;
+    # the per-platform means of their RESULT lines); the f4b4794 93.98 / 98.78 is in the note.
+    ("adb_vlm", "WildRF"): {"official": {"acc": 95.96, "auroc": 99.08}},
     ("adb_vlm", "BFree-Online"): {"official": {"acc": 87.96, "auroc": 98.36}},
     ("adb_vlm", "AIGI-Bench"): {"official": {"acc": 82.5}},
     ("adb_vlm", "GenImage"): {"official": {"acc": 65.97, "auroc": 79.18}},

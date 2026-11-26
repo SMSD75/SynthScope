@@ -37,7 +37,7 @@ Three upstream commits after `5d83e40` change the VLM request and decision; Synt
 | upstream commit | change | SynthScope |
 |---|---|---|
 | `2f0adbc` "Use the DPO user prompt for inference" | the task prompt moves from the system message to the user message, directly after `<image>` (no newline), and loses its "only" wording; the system message is "You are a helpful assistant."; `--max_pixels` 1,003,520 -> 1,210,000; `--repetition_penalty 1.0` and `--top_p 1.0` are passed (before, swift left the penalty unset and the base model's 1.05 applied) | `SYSTEM_PROMPT` / `USER_PROMPT_OFFICIAL` verbatim; `MAX_PIXELS = 1210000`; greedy with repetition penalty 1.0 (top_p does not matter for greedy decoding). The old request is kept as `*_F4B4794` constants |
-| `898b607` "Default unparsed VLM answers to Real before OR fusion" | an answer `parse_vlm_verdict` rejects is Real (`vlm_fake: false`, `vlm_answer_parsed: false`); before, the script stopped | the parser is `parse_adb_default_real`: the official verdict, "real" where the official parser raises. `parse_adb` still returns None there, for reporting |
+| `898b607` "Default unparsed VLM answers to Real before OR fusion" | an answer `parse_vlm_verdict` rejects is Real (`vlm_fake: false`, `vlm_answer_parsed: false`); before, the script stopped | the parser is `parse_adb_default_real`: the official verdict, "real" where the official parser raises. `adb_answer_parsed` (`VLMConfig.answer_parsed`) flags such an answer: it is reported unparsed (`answer_parsed: false`, counted in `bench_eval`'s `n_unparsed`) and its P(fake) stays on the Real side (logit clamped to at most 0, the raw gap kept as `logit_unclamped`) |
 | `cf168db` "Add in-memory JPEG96 evaluation preprocessing" | `tools/jpeg96.py`: fakes of GenImage and AIGCDetectBenchmark re-encoded as PIL JPEG q96 in memory | `bench_eval --jpeg-fakes 96`, pixel-identical (`tests/test_adb_full_smoke.py` [F]); see [`adb_full`](../adb_full/README.md) |
 
 One detail of the new pixel cap: swift turns `MAX_PIXELS=1210000` into qwen-vl-utils' `IMAGE_MAX_TOKEN_NUM` =
@@ -297,17 +297,18 @@ adapter:
 | BFree-Online, subset of **269 real + 500 fake** (769 images) | 97.5 | 82.9 / 77.6 | **87.96**; AUROC 98.36 |
 | AIGI-Bench CommunityAI + SocialRF, **subset slice** (20 real + 20 fake each) | 88.8 (91.9 / 85.6) | 80.4 / 75.7 | **82.50** (85.0 / 80.0) |
 | GenImage, **subset** (63 + 63 per generator), fakes JPEG q96 | 91.7 | n/a | **65.97**; AUROC 79.18 (clean: 68.05) |
-| AIGCDetectBenchmark, **subset** (30 + 30 per generator), fakes JPEG q96 (**inferred protocol**) | 87.7 | n/a | **63.92**; AUROC 70.55 (clean: 65.20) |
+| AIGCDetectBenchmark, **subset** (30 + 30 per generator), fakes JPEG q96 (the official protocol) | 87.7 | n/a | **63.92**; AUROC 70.55 (clean: 65.20) |
 | CO-SPY-Bench in-the-wild | 94.3 | 67.6 / 57.4 | **not held** (only the synthetic Co-Spy-Bench is held: subset acc 78.36 above) |
 
 Notes on the rows:
-- **WildRF.** This is the one full-data paper benchmark. The released VLM branch alone gives 93.98; the paper's full
-  method prints 92.9, and SynthScope's full method (`adb_full`) gives 91.22 on the same 2,503 images.
+- **WildRF.** This is the one full-data paper benchmark. The released VLM branch alone gives 93.98 (95.96 with the
+  cf168db request); the paper's full method prints 92.9, and SynthScope's full method (`adb_full`) gives 91.22 on the
+  same 2,503 images (93.01 with the cf168db request).
 - **GenImage.** The paper JPEG-compresses the fakes "following BFree" to match the reals' format, and gives no quality
-  factor. We used q96 (`bench_eval --jpeg-fakes 96`, reals untouched); q96 is our choice, following DDA's published
-  GenImage protocol.
-- **AIGCDetectBenchmark.** The paper states the fake-JPEG step for GenImage only; its AIGCDetectBenchmark table does not
-  mention it. Applying it here, at q96, is **our inference**. The clean run is in the subset table.
+  factor. We used q96 (`bench_eval --jpeg-fakes 96`, reals untouched), following DDA's published GenImage protocol; it is
+  the official protocol since upstream cf168db (`tools/jpeg96.py`).
+- **AIGCDetectBenchmark.** The paper states the fake-JPEG step for GenImage only, so SynthScope applied it here as its own
+  inference; it is the official protocol since upstream cf168db (`tools/jpeg96.py`), which names AIGCDetectBenchmark. The clean run is in the subset table.
 - **BFree-Online.** The subset has 269 reals because the benchmark folder holds only 269. Accuracy is balanced, so the
   imbalance does not weight it.
 
