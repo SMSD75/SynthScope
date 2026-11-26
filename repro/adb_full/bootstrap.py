@@ -3,14 +3,15 @@ the VLM alone and DDA alone, and their paired differences, on the same images.
 
 Resampling: stratified by (generator, class), with replacement within each stratum, so every replicate keeps the row's
 images per generator and class. The same resampled images serve all three detectors (paired). Per replicate: balanced
-accuracy per generator (fused: the official decision, an unparsed answer wrong; VLM: the parsed verdict; DDA: P >= 0.5),
+accuracy per generator (fused: the official decision, an answer the official parser rejects Real; VLM: its decision,
+the same; DDA: P >= 0.5),
 AUROC per generator (fused score / VLM logit / DDA P, rank-based with ties as half), then their means over generators,
 as the headline numbers are computed. 2,000 replicates, seed 0; CI = the 2.5 and 97.5 percentiles.
 
     python repro/adb_full/bootstrap.py genimage_10k_jpegfakes96 genimage_subset_jpegfakes96
 
-``--pair BEFORE AFTER`` (the same images scored twice, e.g. the f4b4794 and the cf168db VLM request): one resampling of the
-shared images drives both rows, so the CI of AFTER - BEFORE is paired; for the full method, the VLM alone and DDA alone
+``--pair BEFORE AFTER`` (the same images scored twice, e.g. the f4b4794 and the cf168db VLM request; matched by generator,
+key and file sha1, with the same labels and DDA decisions): one resampling of the shared images drives both rows, so the CI of AFTER - BEFORE is paired; for the full method, the VLM alone and DDA alone
 (DDA: the same files, the same decisions; its probabilities may differ by float noise, at most 1e-3, recorded). Output ``bootstrap_<AFTER>__vs__<BEFORE>.json``.
 
     python repro/adb_full/bootstrap.py --pair genimage_10k_jpegfakes96 genimage_10k_jpegfakes96_cf168db
@@ -103,6 +104,8 @@ def run_pair(before: str, after: str) -> dict:
     dda_diff = 0.0                              # the same files; DDA reruns in other batches differ by float noise only
     for k, r in rows[before].items():
         o = rows[after][k]
+        if r.get("sha1") is None or r.get("sha1") != o.get("sha1"):
+            raise SystemExit(f"{k}: file sha1 missing or different between {before} and {after}")
         if r["label"] != o["label"] or (r["dda_prob"] >= 0.5) != (o["dda_prob"] >= 0.5):
             raise SystemExit(f"{k}: label or DDA decision differs between {before} and {after}")
         dda_diff = max(dda_diff, abs(r["dda_prob"] - o["dda_prob"]))

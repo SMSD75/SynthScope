@@ -255,7 +255,10 @@ def fuse_row(name: str, cfg: dict) -> dict:
         manifest = json.loads((VB / "subsets" / f"{cfg['manifest']}.json").read_text())["files"]
     n_sha_vlm = n_sha_manifest = 0
     unparsed = set()                            # cf168db records keep the decision (Real), the text is in the VLM cache
-    if cfg.get("vlm_request") == "cf168db" and UNPARSED.exists():
+    if cfg.get("vlm_request") == "cf168db":
+        if not UNPARSED.exists():
+            raise SystemExit(f"{name}: {UNPARSED.relative_to(REPO)} is missing (repro/adb_full/unparsed_answers.py writes it); "
+                             "without it the unparsed answers of this row cannot be counted")
         unparsed = {(a["key"].split("/", 1)[0], a["key"]) for b in json.loads(UNPARSED.read_text())["benchmarks"].values()
                     for a in b["unparsed_answers"]}
     rows = []
@@ -273,7 +276,7 @@ def fuse_row(name: str, cfg: dict) -> dict:
             n_sha_manifest += 1
         p_vlm = sigmoid(v["logit"])
         fused = fuse_components(p_vlm, v["verdict"], d["prob"])
-        rows.append({"generator": k[0], "key": k[1], "label": v["label"], "verdict": fused["verdict"],
+        rows.append({"generator": k[0], "key": k[1], "sha1": d["sha1"], "label": v["label"], "verdict": fused["verdict"],
                      "score": fused["score"], "decided_by": fused["decided_by"], "vlm_verdict": fused["vlm_verdict"],
                      "vlm_logit": v["logit"], "vlm_new_tokens": v["new_tokens"], "dda_prob": d["prob"],
                      "dda_fake": fused["expert_verdict"] == "fake",

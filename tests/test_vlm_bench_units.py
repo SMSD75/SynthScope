@@ -194,7 +194,7 @@ def check_migrate_adb_sync(tmp: Path) -> None:
     mv = migrate_vlm_cache
     cur = bench_eval.vlm_identity(bench_eval.get_spec("adb_vlm"), "greedy")
     assert cur["generation"]["repetition_penalty"] == 1.0 and cur["prompt_sha1"] != "91db63b292"
-    for i, entry in enumerate(mv.PREDECESSORS["adb_vlm"]):
+    for i, entry in enumerate(e for e in mv.PREDECESSORS["adb_vlm"] if e["rule"] != "adb_answer_parsed"):
         folder = tmp / "sync" / f"b{i}" / f"adb_vlm__greedy__{mv.identity_hash(entry['identity'])}"
         folder.mkdir(parents=True)
         (folder / "identity.json").write_text(json.dumps(entry["identity"]))
@@ -202,6 +202,40 @@ def check_migrate_adb_sync(tmp: Path) -> None:
         res = mv.migrate_folder(folder, "adb_vlm", dry_run=False)
         assert res["status"] == "the prompt or the decoding changed: no re-key, left alone", res
         assert sorted(p.name for p in folder.parent.iterdir()) == [folder.name]
+    # the cf168db folder of job 301129 (code version bbad7ab02d): carried to the review fix's identity, records as written;
+    # a rejected answer with a positive gap (it would now be clamped) stops it
+    old_id = mv._ADB_CF168DB_BBAD7AB02D
+    assert {k: v for k, v in cur.items() if k not in ("code_version", "config_sha1")} == \
+        {k: v for k, v in old_id.items() if k not in ("code_version", "config_sha1")}
+    rejected = "<rationale>\nNo verdict line.\n</rationale>"
+    lines = [json.dumps({"key": "g/1_fake/a.png", "sha1": "a", "verdict": "real", "score_source": "unscored", "logit": 0.0,
+                         "response": rejected}),
+             json.dumps({"key": "g/0_real/b.png", "sha1": "b", "verdict": "real", "score_source": "verdict_token",
+                         "logit": -5.5, "response": "<answer>\nThis is an authentic image.\n</answer>"})]
+    src = tmp / "sync" / "cf" / f"adb_vlm__greedy__jpegfakes96__{mv.identity_hash(old_id)}"
+    src.mkdir(parents=True)
+    (src / "identity.json").write_text(json.dumps(old_id))
+    (src / "n.1.jsonl").write_text("\n".join(lines) + "\n")
+    res = mv.migrate_folder(src, "adb_vlm", dry_run=False)
+    assert res["status"] == "migrated" and (res["kept"], res["dropped"]) == (2, 0), res
+    assert Path(res["to"]).name == bench_eval.vlm_variant("adb_vlm", "greedy", None, None, 96, cur)
+    assert sorted((Path(res["to"]) / f"migrated.{mv.identity_hash(old_id)}.jsonl").read_text().splitlines()) == sorted(lines)
+    with contextlib.redirect_stdout(io.StringIO()):
+        cache = bench_eval.VLMCache(Path(res["to"]).parent, Path(res["to"]).name, cur)
+    spec = bench_eval.get_spec("adb_vlm")
+    assert [bench_eval.answer_parsed(cache.records[k], spec.vlm) for k in ("g/1_fake/a.png", "g/0_real/b.png")] == [False, True]
+    bad = tmp / "sync" / "cf2" / src.name
+    bad.mkdir(parents=True)
+    (bad / "identity.json").write_text(json.dumps(old_id))
+    (bad / "n.1.jsonl").write_text(json.dumps({"key": "g/1_fake/c.png", "sha1": "c", "verdict": "real",
+                                               "score_source": "verdict_token", "logit": 2.0,
+                                               "response": "<answer>x</answer><answer>This is an AI-generated image.</answer>"}) + "\n")
+    try:
+        mv.migrate_folder(bad, "adb_vlm", dry_run=False)
+    except SystemExit as e:
+        assert "would now be clamped" in str(e)
+    else:
+        raise AssertionError("a rejected answer with a positive gap was carried over")
     for model, ident in (("veritaspp", mv._at(mv._VPP_E5749AE, mv._MAIN_1B607C1)),
                          ("fakevlm", mv._at(mv._FAKEVLM_02852ACF62, mv._MAIN_1B607C1))):
         now = bench_eval.vlm_identity(bench_eval.get_spec(model), "greedy")

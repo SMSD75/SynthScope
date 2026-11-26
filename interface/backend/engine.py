@@ -825,7 +825,8 @@ class Engine:
             vspec.key: {"verdict": out["vlm_verdict"], "fake_probability": vlm["fake_probability"],
                         "logit": round(vlm["logit"], 6), "score_source": vlm["score_source"],
                         "verdict_token": vlm["verdict_token"], "new_tokens": vlm["new_tokens"],
-                        "finished": vlm["finished"], "input_size": vlm["input_size"]},
+                        "finished": vlm["finished"], "input_size": vlm["input_size"],
+                        "answer_parsed": vlm.get("answer_parsed", vlm["verdict"] is not None)},
             espec.key: {"verdict": out["expert_verdict"], "fake_probability": out["expert_fake_probability"],
                         "threshold": spec.fusion.expert_threshold},
         }
@@ -842,6 +843,8 @@ class Engine:
         # The official parser's answer; under greedy decoding it agrees with the sign of the logit, except for an
         # answer naming both words (the parser checks "real" first). No parsable answer: "unparsed".
         res["verdict"] = out["verdict"] or "unparsed"
+        res["answer_parsed"] = out.get("answer_parsed", out["verdict"] is not None)   # False: the official parser rejected
+        #                                                                               it (adb_vlm: the verdict is Real)
         res["logit"] = round(out["logit"], 6)
         for key in ("rationale", "response", "verdict_token", "score_source", "new_tokens", "finished", "decoding"):
             res[key] = out[key]
@@ -969,7 +972,9 @@ class Engine:
         t0 = time.time()
         out = self.agent_score(spec, path)
         res = self._result(spec, out["fake_probability"], time.time() - t0)
-        res["verdict"] = out["verdict"] or "unparsed"     # the agent's answer; no valid answer counts as wrong
+        res["verdict"] = out["verdict"] or "unparsed"
+        res["answer_parsed"] = out.get("answer_parsed", out["verdict"] is not None)   # False: the official parser rejected
+        #                                                                               it (adb_vlm: the verdict is Real)     # the agent's answer; no valid answer counts as wrong
         res["logit"] = round(out["logit"], 6)
         for key in ("score_source", "status", "verdict_token", "trace", "cost"):
             res[key] = out.get(key)

@@ -14,7 +14,8 @@ text is "this is an authentic image." or "this is an ai-generated image."; with 
 authentic / AI-generated image." (optionally followed by ``</answer>``). Any other output raises ``ValueError``; here it
 is returned as None (unparsed). ``parse_adb_default_real`` is the decision ``predict.py`` takes from it since commit
 898b607 ("Default unparsed VLM answers to Real before OR fusion"; before, the script stopped): an output the parser
-rejects is Real (``vlm_fake: false``, ``vlm_answer_parsed: false``). ``adb_verdict_offset`` says where in the text that
+rejects is Real (``vlm_fake: false``, ``vlm_answer_parsed: false``; ``adb_answer_parsed`` is that flag).
+``adb_verdict_offset`` says where in the text that
 parser found a tag-less verdict, so that the score is read at the same word (``VLMConfig.verdict_offset``).
 
 ``parse_fakevlm`` is vendored from FakeVLM's ``scripts/eval.py`` ``validate`` (github.com/opendatalab/FakeVLM @ fdcdcf1;
@@ -77,6 +78,11 @@ def parse_adb(output: str) -> Optional[str]:
         return "fake" if adb_parse_vlm_verdict(output) else "real"
     except ValueError:
         return None
+
+
+def adb_answer_parsed(output: str) -> bool:
+    """Whether the official ``parse_vlm_verdict`` read a verdict (``predict.py``'s ``vlm_answer_parsed``)."""
+    return parse_adb(output) is not None
 
 
 def parse_adb_default_real(output: str) -> str:

@@ -45,6 +45,14 @@ Known re-keys (``PREDECESSORS``):
   folder whose prompt or decoding differs from the current identity). bbad7ab02d is also added to the earlier entries'
   targets, so a veritaspp / fakevlm folder not yet migrated goes straight to it.
 
+* adb_vlm, veritaspp and fakevlm, the review fix of fix/adb-upstream-sync (2026-11-26): code version bbad7ab02d ->
+  893bc9da97. ``VLMConfig.answer_parsed`` is new (adb_vlm: ``parsers.adb_answer_parsed``): an answer the official parser
+  rejects is reported unparsed and its score clamped to the Real side (logit <= 0). The fingerprint takes the field only
+  when set, so veritaspp / fakevlm keep their config fingerprint (rule ``unchanged``). adb_vlm's cf168db folder (config
+  55962cc25d) moves to config 12b10e4e76 by rule ``adb_answer_parsed``: every record is kept as written, after checking
+  that no rejected answer has a positive gap (none of job 301129's 287 does: all are "unscored", logit 0); bench_eval
+  reads ``answer_parsed`` from the stored response for records written before the field.
+
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model adb_vlm [--dry-run]
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model veritaspp
     python repro/vlm_bench/migrate_vlm_cache.py --cache-root /ssdstore/ssalehi/SynthScope/vpp/cache --model fakevlm
@@ -75,8 +83,9 @@ from interface.backend.registry import get_spec                     # noqa: E402
 _MAIN_E5749AE = "b490c64477"
 # 53f470222c: detector/adb-full's docstring-only edit; bbad7ab02d: fix/adb-upstream-sync (veritaspp / fakevlm unchanged; an
 # adb_vlm folder never matches it: its prompt and decoding changed, which migrate_folder refuses before any rule)
-_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed", "53f470222c", "bbad7ab02d"]
-_ADB_FULL_BRANCH = ["53f470222c", "bbad7ab02d"]
+# 893bc9da97: the review fix of the same branch (VLMConfig.answer_parsed, unset for veritaspp / fakevlm)
+_FAKEVLM_BRANCH = ["02852acf62", "4a950958ed", "53f470222c", "bbad7ab02d", "893bc9da97"]
+_ADB_FULL_BRANCH = ["53f470222c", "bbad7ab02d", "893bc9da97"]
 _ADB_E5749AE = {
     "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
     "ckpt": None, "max_new_tokens": 512, "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05},
@@ -100,7 +109,14 @@ _FAKEVLM_02852ACF62 = {
 _CA433A7 = "4a950958ed"
 # main 1b607c1 (code version 53f470222c) -> fix/adb-upstream-sync (bbad7ab02d): veritaspp and fakevlm only (see the module doc)
 _MAIN_1B607C1 = "53f470222c"
-_ADB_SYNC_BRANCH = ["bbad7ab02d"]
+_ADB_SYNC_BRANCH = ["bbad7ab02d", "893bc9da97"]
+# adb_vlm with the cf168db request as job 301129 wrote it (code version bbad7ab02d), and the review fix's target
+_ADB_CF168DB_BBAD7AB02D = {
+    "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b", "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+    "ckpt": None, "max_new_tokens": 512, "generation": {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.0},
+    "prompt_sha1": "307de351a8", "config_sha1": "55962cc25d", "code_version": "bbad7ab02d",
+}
+_ADB_REVIEW_FIX = {"code_version": "893bc9da97", "config_sha1": "12b10e4e76"}
 # the code versions under which adb_vlm still sent the f4b4794 request (prompt 91db63b292, repetition penalty 1.05, 1,003,520 px)
 _ADB_F4B4794_REQUEST = [_MAIN_E5749AE, "02852acf62", _CA433A7, _MAIN_1B607C1]
 
@@ -121,6 +137,7 @@ PREDECESSORS = {
         }, "rule": "adb_verdict_offset", "to_code_versions": _ADB_F4B4794_REQUEST},
         {"identity": _ADB_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
         {"identity": _at(_ADB_E5749AE, _CA433A7), "rule": "unchanged", "to_code_versions": _ADB_FULL_BRANCH},
+        {"identity": _ADB_CF168DB_BBAD7AB02D, "rule": "adb_answer_parsed", "to": _ADB_REVIEW_FIX},
     ],
     "veritaspp": [
         {"identity": _VPP_E5749AE, "rule": "unchanged", "to_code_versions": _FAKEVLM_BRANCH},
@@ -182,6 +199,12 @@ def migrate_folder(old: Path, model: str, dry_run: bool) -> dict:
     if "to_code_versions" in entry and new_id["code_version"] not in entry["to_code_versions"]:
         return {"folder": str(old), "status": f"no checked re-key to the current identity (code version "
                                               f"{new_id['code_version']}), left alone"}
+    if entry["rule"] == "adb_answer_parsed":   # only the code version and the config fingerprint may change, to these
+        same = ({k: v for k, v in old_id.items() if k not in entry["to"]} == {k: v for k, v in new_id.items() if k not in entry["to"]}
+                and all(new_id[k] == v for k, v in entry["to"].items()))
+        if not same:
+            return {"folder": str(old), "status": f"no checked re-key to the current identity (code version "
+                                                  f"{new_id['code_version']}), left alone"}
     if entry["rule"] == "unchanged":
         same = {k: v for k, v in old_id.items() if k != "code_version"} == {k: v for k, v in new_id.items() if k != "code_version"}
         if not same or new_id["code_version"] not in entry["to_code_versions"]:
@@ -197,6 +220,14 @@ def migrate_folder(old: Path, model: str, dry_run: bool) -> dict:
     if entry["rule"] == "unchanged":            # the scoring path is unchanged: every record as it is
         dropped = []
         kept = list(records.values())
+    elif entry["rule"] == "adb_answer_parsed":  # unchanged unless a rejected answer was scored on the Fake side
+        dropped = []
+        kept = list(records.values())
+        hook = spec.vlm.answer_parsed
+        changed = [r["key"] for r in kept if r["verdict"] is not None and not hook(r["response"]) and r["logit"] > 0]
+        if changed:
+            raise SystemExit(f"{old}: {len(changed)} rejected answer(s) with a positive gap would now be clamped, "
+                             f"e.g. {changed[:3]}")
     else:                                       # adb_verdict_offset
         dropped = sorted(k for k, r in records.items() if unscored(r))
         kept = [r for r in records.values() if not unscored(r)]

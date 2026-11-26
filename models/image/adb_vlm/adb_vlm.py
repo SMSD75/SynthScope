@@ -39,11 +39,13 @@ rejects (commit 898b607; before, the script stopped on it). P(fake) is read wher
 first "AI" / "authentic" token after ``<answer>``, or, for a tag-less output, at the "AI" / "authentic" token of the
 final line (``adb_verdict_offset``). It is the sigmoid of the RAW LM-head logit gap l(AI) - l(authentic) of the emitted
 token and its same-spelling counterpart ("ĠAI" / "Ġauthentic"); with the repetition penalty at 1.0 the raw and the
-processed logits are the same, so the emitted word is the sign of the gap. An unparsed output whose verdict word is not
-found has P 0.5 (logit 0, "unscored").
+processed logits are the same, so the emitted word is the sign of the gap. An answer the official parser rejects is
+reported unparsed (``answer_parsed: False``, ``adb_answer_parsed``) and scored on the Real side: P 0.5 (logit 0) when
+its verdict word is not found ("unscored"), otherwise the gap clamped to at most 0 (the raw one kept as
+``logit_unclamped``), so the score agrees with the Real decision.
 """
 from models.vlm.image import swift_qwen_vl_resize, swift_rgb
-from models.vlm.parsers import adb_verdict_offset, parse_adb_default_real
+from models.vlm.parsers import adb_answer_parsed, adb_verdict_offset, parse_adb_default_real
 from models.vlm.vlm import QWEN_VL, VLMConfig
 
 # detector/core.py @ cf168db, verbatim (the user prompt without its leading "<image>" tag, which becomes the image). The
@@ -93,6 +95,7 @@ ADB_VLM = VLMConfig(
     system_prompt=SYSTEM_PROMPT,
     user_prompt=USER_PROMPT,
     parser=parse_adb_default_real,     # predict.py @ 898b607: an answer parse_vlm_verdict rejects is Real
+    answer_parsed=adb_answer_parsed,   # ... reported unparsed (vlm_answer_parsed: false), scored on the Real side
     verdict_offset=adb_verdict_offset,     # a tag-less final line: the score is read at its verdict word
     answer_marker="<answer>",
     answer_end="</answer>",

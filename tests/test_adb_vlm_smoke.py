@@ -30,10 +30,14 @@ Checks:
     logit == the RAW ``output_logits`` gap (repetition penalty 1.0: equal to the processed ``output_scores`` gap, though
     the tiny base's generation_config says 1.05), parsed verdict; forced TAG-LESS answers (no ``<answer>``, the final line "This is an ... image."): the
     score is read at the final line's verdict word ("verdict_word"), not the rationale's "AI"; a parsed verdict whose word
-    is not locatable is "unscored" (P 0.5, logit 0); free greedy tokens == a direct peft generate; the key-rename hook: an adapter saved under
+    is not locatable is "unscored" (P 0.5, logit 0); answers the official parser rejects (two answer tags, an
+    unknown answer) are "real", ``answer_parsed`` False, and scored on the Real side (logit = min(gap, 0), forced and
+    with a stub gap of either sign); free greedy tokens == a direct peft generate; the key-rename hook: an adapter saved under
     the pre-4.52 key layout loads and passes the strict check (and fails it without the hook), an unknown key still
     fails, a pre-4.52 vision-tower LoRA (which peft leaves unloaded) fails;
 [G] with the released adapter + base and a GPU: the engine loads strictly and scores one image (skipped otherwise).
+[H] bench_eval counts an answer the official parser rejects as unparsed (the record's ``answer_parsed``, or the
+    hook on the stored response for older records) while its accuracy uses the Real verdict.
 """
 
 from __future__ import annotations
@@ -77,9 +81,10 @@ from models.image.adb_vlm.adb_vlm import (ADB_VLM, GREEDY_DECODING, MAX_PIXELS, 
                                           USER_PROMPT_OFFICIAL)
 from models.vlm.image import (QWEN_VL_MIN_PIXELS, qwen_vl_smart_resize, swift_fetch_max_pixels,   # noqa: E402
                               swift_qwen_vl_resize, swift_rgb)
-from models.vlm.parsers import adb_verdict_offset, parse_adb, parse_adb_default_real   # noqa: E402
-from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, load_lora_unmerged,   # noqa: E402
-                            locate_verdict, offset_step, token_pieces, verdict_pair_map, verdict_score)
+from models.vlm.parsers import adb_answer_parsed, adb_verdict_offset, parse_adb, parse_adb_default_real   # noqa: E402
+from models.vlm import vlm as vlm_module                                            # noqa: E402
+from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, gap_fields,   # noqa: E402
+                            load_lora_unmerged, locate_verdict, offset_step, token_pieces, verdict_pair_map, verdict_score)
 from synthscope import hub                                                          # noqa: E402
 from synthscope.api import Detector                                                 # noqa: E402
 
@@ -442,7 +447,7 @@ def test_registry() -> None:
     assert ADB_VLM.decoding == ADB_VLM.official_decoding == GREEDY_DECODING == \
         {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.0}
     assert ADB_VLM.image_loader is swift_rgb and ADB_VLM.preprocess is swift_qwen_vl_resize
-    assert ADB_VLM.parser is parse_adb_default_real
+    assert ADB_VLM.parser is parse_adb_default_real and ADB_VLM.answer_parsed is adb_answer_parsed
     assert ADB_VLM.verdict_offset is adb_verdict_offset
     assert MAX_PIXELS == 1210000 and ADB_VLM.max_pixels is None and ADB_VLM.preprocess_kwargs == {"max_pixels": MAX_PIXELS}
     assert ADB_VLM.processor_kwargs == {"images_kwargs": {"do_resize": False}}
@@ -587,6 +592,43 @@ def test_tiny_lora() -> None:
                 else:
                     assert (out["score_source"], out["logit"], out["fake_probability"], out["verdict_step"]) == \
                         ("unscored", 0.0, 0.5, None), out
+            # answers the official parser rejects (two answer tags; an unknown answer): verdict "real" (predict.py @
+            # 898b607), reported unparsed, and the score on the Real side whatever the verdict word's gap: logit =
+            # min(raw gap, 0), the raw gap kept as logit_unclamped when it was positive
+            for answer in (ANSWER_FAKE + "\n" + ANSWER_FAKE, ANSWER_FAKE.replace("AI-generated image.", "AI-generated photo.")):
+                assert parse_adb(answer) is None and parse_adb_default_real(answer) == "real"
+                script = tok.encode(answer, add_special_tokens=False)
+                forcing = LogitsProcessorList([ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)])
+                vlm.cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "max_new_tokens": len(script) + 2,
+                                                             "logits_processor": forcing})
+                with quiet():
+                    out = engine.vlm_score(spec, image)
+                    with torch.inference_mode():
+                        ref = direct.generate(**inputs, **{**vlm.cfg.decoding, "logits_processor": forcing},
+                                              output_logits=True, return_dict_in_generate=True)
+                assert out["response"] == answer and out["verdict"] == "real" and out["answer_parsed"] is False
+                assert out["score_source"] == "verdict_token" and out["verdict_token"] == "ĠAI"
+                step = out["verdict_step"]
+                raw_gap = float(ref.logits[step][0, f].float() - ref.logits[step][0, r].float())
+                assert out["logit"] == min(raw_gap, 0.0) and out["fake_probability"] <= 0.5, (out["logit"], raw_gap)
+                assert out.get("logit_unclamped") == (raw_gap if raw_gap > 0 else None)
+                assert raw_gap <= 0 or out["fake_probability"] == 0.5
+            # the clamp on both sides of 0, independent of the tiny model's gap: a stub scorer through the same code
+            for gap in (4.25, -4.25):
+                stub_cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "max_new_tokens": len(script) + 2,
+                                                              "logits_processor": forcing})
+                vlm.cfg = stub_cfg
+                saved_vs = vlm_module.verdict_score
+                vlm_module.verdict_score = lambda *a, _g=gap, **k: {**gap_fields(_g), "score_source": "verdict_token",
+                                                                     "verdict_step": 0, "verdict_token": f, "pair_ids": (f, r)}
+                try:
+                    with quiet():
+                        out = engine.vlm_score(spec, image)
+                finally:
+                    vlm_module.verdict_score = saved_vs
+                assert out["answer_parsed"] is False and out["verdict"] == "real"
+                assert out["logit"] == min(gap, 0.0) and out["fake_probability"] <= 0.5
+                assert out.get("logit_unclamped") == (gap if gap > 0 else None)
             # free greedy decoding (repetition penalty 1.0): the engine's tokens == a direct peft generate
             vlm.cfg = cfg
             with quiet():
@@ -659,6 +701,30 @@ def test_released_weights() -> None:
           f"{out['fake_probability']:.6f}, {out['new_tokens']} tokens)")
 
 
+def test_unparsed_counts() -> None:
+    print("[H] bench_eval: answers the official parser rejects are Real for accuracy and counted as unparsed ...")
+    sys.path.insert(0, os.path.join(ROOT, "benchmark"))
+    import bench_eval
+    rejected = "<rationale>\nNo verdict line.\n</rationale>"
+    recs = [  # a record written before the answer_parsed field (read from the response) and one written with it
+        {"verdict": "real", "logit": 0.0, "score_source": "unscored", "new_tokens": 5, "finished": True,
+         "response": rejected},
+        {"verdict": "real", "logit": -2.0, "score_source": "verdict_token", "new_tokens": 5, "finished": True,
+         "response": ANSWER_REAL, "answer_parsed": True},
+        {"verdict": "fake", "logit": 3.0, "score_source": "verdict_token", "new_tokens": 5, "finished": True,
+         "response": ANSWER_FAKE},
+        {"verdict": "real", "logit": 0.0, "score_source": "unscored", "new_tokens": 5, "finished": True,
+         "response": rejected, "answer_parsed": False}]
+    labels = [1, 0, 1, 0]
+    m = bench_eval.vlm_metrics(recs, labels, ADB_VLM)
+    assert (m["n_unparsed"], m["n_unscored"]) == (2, 0), m
+    assert m["fake_acc"] == 50.0 and m["real_acc"] == 100.0       # the rejected fake counts as Real (wrong), the real right
+    assert m["fake_acc_drop"] == 100.0 and m["real_acc_drop"] == 100.0
+    assert [bench_eval.answer_parsed(r, ADB_VLM) for r in recs] == [False, True, True, False]
+    assert bench_eval.vlm_metrics(recs, labels)["n_unparsed"] == 1     # without the hook only the stored flag counts
+    print("    2 of 4 unparsed (one from the stored response, one from the record's flag), scored as Real; *_drop leave them out")
+
+
 if __name__ == "__main__":
     transformers.logging.set_verbosity_error()
     transformers.utils.logging.disable_progress_bar()
@@ -669,5 +735,6 @@ if __name__ == "__main__":
     test_score_words()
     test_registry()
     test_tiny_lora()
+    test_unparsed_counts()
     test_released_weights()
     print("adb_vlm smoke test passed")
