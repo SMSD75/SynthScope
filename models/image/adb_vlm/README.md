@@ -14,6 +14,12 @@ the detector [`adb_full`](../adb_full/README.md), which carries the paper compar
 for the released adapter. It is not on the Space, because a 7B VLM needs a GPU, and the adapter is not mirrored to the
 model zoo ([Licence](#licence)).
 
+- **Upstream sync to cf168db** (new prompt, repetition penalty 1.0, 1,210,000 pixels, unparsed answers Real): identical
+  text and decisions against the unmodified `predict.py` @ cf168db on 24 images, bf16 and float32 (checked with the
+  expert, in [`adb_full`](../adb_full/README.md#fidelity)). VLM alone on the paper benchmarks with the new request
+  ([below](#paper-benchmarks-with-the-cf168db-request)): full WildRF 95.96, AIGI-Bench full 88.81, BFree-Online 81.69,
+  GenImage 10,000 59.50, AIGCDetect 3,400 59.06.
+- **The sections below the Upstream sync are the f4b4794 request** unless they say otherwise:
 - **Fidelity** against the official ms-swift 4.4.2 inference (pt backend): identical text, tokens and verdicts on 16 / 16
   images ([Fidelity](#fidelity)).
 - **15 benchmarks**, each subsampled and scored on the same images as Veritas++ and 27 other detectors
@@ -21,8 +27,8 @@ model zoo ([Licence](#licence)).
   - In the wild it ranks 5th to 8th of 28: WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset, RealChain.
   - On older GAN and diffusion sets it is near chance: UFD-8 52.88 (last), ForenSynths 55.72.
   - Mean of the 15: 76.58 acc / 84.11 AUROC (Veritas++ 84.70 / 91.33).
-- **Full WildRF** (2,503 images): the VLM branch alone gives 93.98 balanced accuracy. The paper's full method prints
-  92.9; `adb_full` (VLM OR DDA) gives 91.22 on the same images.
+- **Full WildRF** (2,503 images), f4b4794 request: the VLM branch alone gives 93.98 balanced accuracy (95.96 with the
+  cf168db request). The paper's full method prints 92.9; `adb_full` gives 93.01 on the same images (cf168db).
 
 ## Upstream sync (cf168db)
 Three upstream commits after `5d83e40` change the VLM request and decision; SynthScope follows them (branch
@@ -309,6 +315,25 @@ Sources: `paper_comparison.adb_vlm` and `paper_note.adb_vlm` in `comparison.json
 `results/wildrf/adb_vlm__full*.json`, `results/{genimage_val100k,aigcdetect17}/adb_vlm__jpegfakes96.json`,
 `results/bfree_online/adb_vlm.json` and `results/aigibench25/adb_vlm.json`.
 
+### Paper benchmarks with the cf168db request
+VLM alone, bf16 greedy on RTX A5000 (job 301129), the records fused in [`adb_full`](../adb_full/README.md#results)
+(`repro/adb_full/vlm_cf168db/<bench>/adb_vlm*.json`; the paired change is from `repro/adb_full/bootstrap_*__vs__*.json`).
+No paper number exists for the branch alone.
+
+| benchmark (images) | f4b4794 request | cf168db request (acc / AUROC) | paired change [95% CI] |
+|---|---:|---|---:|
+| WildRF full (2,503) | 93.98 | 95.96 / 99.08 | +1.98 [+0.89, +3.12] |
+| BFree-Online held (807) | 87.08 | 81.69 / 96.84 | -5.39 [-7.34, -3.35] |
+| AIGI-Bench, SocialRF full + CommunityAI 3,000 (9,000) | 89.65 | 90.71 / 98.45 | +1.06 [+0.48, +1.67] |
+| AIGI-Bench full (18,000) | — | 88.81 / 97.43 | |
+| GenImage 625 + 625 per generator, fakes JPEG q96 (10,000) | 61.05 | 59.50 / 67.41 | -1.55 [-2.13, -0.99] |
+| AIGCDetect 30 + 30 per generator, fakes JPEG q96 (1,020) | 63.92 | 59.61 / 67.80 | -4.31 [-6.18, -2.45] |
+| AIGCDetect 100 + 100 per generator (3,400) | — | 59.06 / 65.70 | |
+
+With the new request the VLM calls fewer images AI-generated: higher real accuracy, lower fake recall (BFree-Online fake
+accuracy 63.75). 287 of the 34,710 answers (0.8%) are unparsed and count as Real (`unparsed_answers.json`); with the old
+request there were none in these runs except one AIGI-Bench answer.
+
 ### Reproduce
 
 ```bash
@@ -344,6 +369,11 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
   - The Align, Don't Blend full-method branch (detector/adb-full) edits one docstring line of `models/vlm/parsers.py` (the
     licence), so the caches of main ca433a7 (code version 4a950958ed) are re-keyed to 53f470222c. `migrate_vlm_cache.py`
     carries them over byte for byte (rule `unchanged`), for adb_vlm, veritaspp and fakevlm.
+  - The upstream sync (fix/adb-upstream-sync) changes `models/vlm/image.py` (the token-rounded fetch cap) and
+    `parsers.py` (`parse_adb_default_real`): code version `bbad7ab02d`. Veritas++ and FakeVLM use neither function, so
+    their folders are carried over (rule `unchanged`). ADB's request itself changed (prompt, decoding, `max_pixels`
+    1,210,000, parser), so its old records are never reused: `migrate_vlm_cache.py` refuses a folder whose prompt or
+    decoding differs.
 
 ## Availability
 - Not on the Hugging Face Space: a 7B model needs a GPU (17.26 GB peak).

@@ -3,7 +3,7 @@
     "paper": "Align, Don't Blend: Orthogonal Supervision Disentanglement As the Key to Generalizable AI-Generated Image Detection (Chen et al., ACM MM 2026, arXiv 2512.06746 v3)",
     "arxiv_id": "2512.06746",
     "official_repo": "https://github.com/GzZning/Align-Dont-Blend",
-    "training_set_in_paper": "Not trained in SynthScope. The full method as released: the official VLM adapter (adb_vlm: Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd on Qwen2.5-VL-7B-Instruct @ cc594898, greedy, bf16) OR the official pixel expert (the released DDA checkpoint DDA_ckpt.pth = dda.pth; the authors confirmed DDA is the expert, 2026-11-20), with the official rule of predict.py (GzZning/Align-Dont-Blend @ 5d83e40): fake if the VLM's parsed verdict is AI-generated or DDA P(fake) >= 0.5. Per image, the committed or new adb_vlm records are fused with dda records on the same files (repro/adb_full/fuse.py); every row is in repro/adb_full/paper_comparison.json and repro/adb_full/results/. Balanced accuracy, mean over the paper's subsets.",
+    "training_set_in_paper": "Not trained in SynthScope. The full method as released: the official VLM adapter (adb_vlm: Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd on Qwen2.5-VL-7B-Instruct @ cc594898, greedy, bf16, the request of predict.py @ cf168db: the task prompt as the user message, repetition penalty 1.0, max 1,210,000 pixels, an unparsed answer Real) OR the official pixel expert (the released DDA checkpoint DDA_ckpt.pth = dda.pth; the authors confirmed DDA is the expert, 2026-11-20), with the official rule of predict.py (GzZning/Align-Dont-Blend @ cf168db): fake if the VLM's verdict is AI-generated or DDA P(fake) >= 0.5. GenImage and AIGCDetect fakes JPEG q96 in memory (the official tools/jpeg96.py). Per image, adb_vlm records (job 301129, RTX A5000) are fused with dda records on the same files (repro/adb_full/fuse.py); every row is in repro/adb_full/paper_comparison.json and repro/adb_full/results/. Balanced accuracy, mean over the paper's subsets.",
     "benchmarks": [
         {
             "name": "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images",
@@ -15,9 +15,9 @@
                 "acc": 92.9,
                 "note": "Table 1: 92.2 / 90.9 / 95.5"
             },
-            "our_status": "below",
+            "our_status": "official",
             "our_number": {
-                "note": "Full data, VLM bf16 greedy on RTX A5000 (the committed adb_vlm run) OR dda: 91.22 balanced acc (facebook 90.94 / reddit 89.33 / twitter 93.4), AUROC 99.22 (-1.68 vs the paper; every platform below it: Facebook -1.26, Reddit -1.57, Twitter -2.10, so below, as VINA's WildRF row). VLM alone 93.98, DDA alone 90.2. Float32 + eager VLM (the README command) on an RTX A6000 (precision and GPU both change): 91.34 (AUROC 99.25)."
+                "note": "Full data, VLM bf16 greedy on RTX A5000 (the cf168db request) OR dda: 93.01 balanced acc [bootstrap 95% CI 91.87, 94.17] (facebook 93.44 / reddit 92.2 / twitter 93.4), AUROC 99.47 (+0.11 vs the paper; Twitter -2.10). VLM alone 95.96, DDA alone 90.2. With the earlier request (upstream f4b4794): 91.22; the paired change is +1.79 [0.98, 2.65]."
             }
         },
         {
@@ -32,11 +32,11 @@
             },
             "our_status": "reference",
             "our_number": {
-                "note": "807 of the paper's 1,111 images (the rest are offline): 96.93 balanced acc, AUROC 99.11 (-0.57); VLM alone 87.08, DDA alone 94.98; VLM bf16 on RTX A5000. The vlm_bench subset (269 + 500): 97.08. Not the paper's full set, so reference."
+                "note": "807 of the paper's 1,111 images (the rest are offline): 96.84 balanced acc [95.44, 98.05], AUROC 99.41 (-0.66); VLM alone 81.69, DDA alone 94.98; VLM bf16 on RTX A5000, the cf168db request. Earlier request: 96.93 (paired change -0.09 [-1.02, 0.84]). Not the paper's full set, so reference."
             }
         },
         {
-            "name": "AIGI-Bench CommunityAI + SocialRF (SocialRF full; CommunityAI the first 1,500 real + 1,500 fake of 12,000)",
+            "name": "AIGI-Bench CommunityAI + SocialRF, full data (12,000 + 6,000 images)",
             "datasets": [
                 "AIGIBench"
             ],
@@ -45,9 +45,9 @@
                 "acc": 88.8,
                 "note": "Table 1: CommunityAI 91.9 / SocialRF 85.6"
             },
-            "our_status": "reference",
+            "our_status": "official",
             "our_number": {
-                "note": "9,000 images, VLM bf16 on RTX A5000: 87.52 balanced acc (CommunityAI 91.2 / SocialRF 83.83), AUROC 97.35 (-1.28); VLM alone 89.65, DDA alone 82.41. One VLM answer (a SocialRF fake) is unparsed (the official script would stop on it); DDA calls it fake, so it counts as fake. CommunityAI is a quarter of its images, so reference. The 20 + 20 vlm_bench slices: 81.25."
+                "note": "Full data (18,000), VLM bf16 on RTX A5000, the cf168db request: 89.22 balanced acc [88.75, 89.69] (CommunityAI 92.75 / SocialRF 85.68), AUROC 98.03 (+0.42); VLM alone 88.81, DDA alone 83.18. 96 VLM answers unparsed (Real, as predict.py). On the earlier 9,000-image selection (SocialRF full + CommunityAI first 1,500 + 1,500): 89.49, vs 87.52 with the earlier request (paired change +1.97 [1.50, 2.47])."
             }
         },
         {
@@ -58,26 +58,26 @@
             "metric": "balanced accuracy (mean over generators)",
             "paper_number": {
                 "acc": 91.7,
-                "note": "appendix Table 6; fakes JPEG-compressed 'following BFree', no quality given (q96 is our choice)"
+                "note": "appendix Table 6; fakes JPEG-compressed 'following BFree': JPEG q96 in memory, fakes only (the official tools/jpeg96.py)"
             },
             "our_status": "reference",
             "our_number": {
-                "note": "10,000 images (a tenth of GenImage val), VLM bf16 on RTX A5000: 86.70 balanced acc [bootstrap 95% CI 86.10, 87.29], AUROC 92.86 (-5.00 vs the paper); VLM alone 61.05, DDA alone 89.35 (DDA on the full data: 89.37). Four generators more than 2 points below the paper's columns (BigGAN, VQDM, Wukong, GLIDE), so reference. The earlier 63-per-class subset (1,008, a prefix): 85.12."
+                "note": "10,000 images (a tenth of GenImage val), VLM bf16 on RTX A5000, the cf168db request: 88.86 balanced acc [88.32, 89.38], AUROC 96.47 (-2.84 vs the paper); VLM alone 59.5, DDA alone 89.35 (DDA on the full data: 89.37; fused - DDA = -0.49 [-0.73, -0.27]). Earlier request: 86.70 (paired change +2.16 [1.77, 2.53]). A sample, so reference."
             }
         },
         {
-            "name": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
+            "name": "AIGCDetectBenchmark (17 generators), sample of 100 real + 100 fake per generator (3,400), fakes JPEG q96",
             "datasets": [
                 "AIGCDetect"
             ],
             "metric": "balanced accuracy (mean over generators)",
             "paper_number": {
                 "acc": 87.7,
-                "note": "appendix Table 8; the fake-JPEG step is stated for GenImage only (our inference here)"
+                "note": "appendix Table 8; fakes JPEG q96 in memory (the official tools/jpeg96.py names AIGCDetectBenchmark)"
             },
             "our_status": "reference",
             "our_number": {
-                "note": "Subset (1,020 images), VLM bf16 on RTX A5000: 83.82 balanced acc, AUROC 90.05 (-3.88); VLM alone 63.92, DDA alone 86.86 (DDA on the full data: 87.84). A subset and an inferred protocol, so reference."
+                "note": "3,400 images, VLM bf16 on RTX A5000, the cf168db request: 84.76 balanced acc [83.82, 85.74], AUROC 92.93 (-2.94); VLM alone 59.06, DDA alone 85.94 (DDA on the full data: 87.84). On the earlier 1,020-image subset (a prefix): 84.71 vs 83.82 with the earlier request (paired change +0.88 [-0.29, 2.06]). A sample, so reference."
             }
         },
         {
