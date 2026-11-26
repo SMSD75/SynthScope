@@ -141,6 +141,7 @@ for _row in ROWS.values():                      # every row above: the VLM reque
 # 301129, repro/adb_full/upstream_sync_a5000.sbatch); the DDA records are the earlier rows' (the expert did not change), new
 # only for the two new samples. "before": the f4b4794 row on the same images, for the paired comparison (bootstrap.py).
 SYNC = "repro/adb_full/vlm_cf168db"
+UNPARSED = REPO / SYNC / "unparsed_answers.json"    # unparsed_answers.py: the answers the official parser rejects
 SYNC_LOGS = ["repro/logs/adbsync_301129*.out"]
 GI_GENS = ("adm", "biggan", "glide", "midjourney", "sdv1.4", "sdv1.5", "vqdm", "wukong")
 AD_GENS = ("ADM", "DALLE2", "Glide", "Midjourney", "VQDM", "biggan", "cyclegan", "gaugan", "progan", "sd_xl",
@@ -229,7 +230,7 @@ def gen_metrics(rows: list[dict]) -> dict:
         "dda_acc": round((dr + df) / 2, 2), "dda_auroc": round(100 * roc_auc_score(labels, [r["dda_prob"] for r in rows]), 2),
         "n_real": labels.count(0), "n_fake": labels.count(1),
         "decided_by": {k: sum(r["decided_by"] == k for r in rows) for k in ("vlm", "expert", "both", "neither")},
-        "n_unparsed": sum(r["vlm_verdict"] == "unparsed" for r in rows),
+        "n_unparsed": sum(not r["vlm_answer_parsed"] for r in rows),     # answers parse_vlm_verdict rejects (Real)
     }
 
 
@@ -253,6 +254,10 @@ def fuse_row(name: str, cfg: dict) -> dict:
     if cfg["manifest"]:
         manifest = json.loads((VB / "subsets" / f"{cfg['manifest']}.json").read_text())["files"]
     n_sha_vlm = n_sha_manifest = 0
+    unparsed = set()                            # cf168db records keep the decision (Real), the text is in the VLM cache
+    if cfg.get("vlm_request") == "cf168db" and UNPARSED.exists():
+        unparsed = {(a["key"].split("/", 1)[0], a["key"]) for b in json.loads(UNPARSED.read_text())["benchmarks"].values()
+                    for a in b["unparsed_answers"]}
     rows = []
     for k in sorted(vmap):
         v, d = vmap[k], dmap[k]
@@ -271,7 +276,8 @@ def fuse_row(name: str, cfg: dict) -> dict:
         rows.append({"generator": k[0], "key": k[1], "label": v["label"], "verdict": fused["verdict"],
                      "score": fused["score"], "decided_by": fused["decided_by"], "vlm_verdict": fused["vlm_verdict"],
                      "vlm_logit": v["logit"], "vlm_new_tokens": v["new_tokens"], "dda_prob": d["prob"],
-                     "dda_fake": fused["expert_verdict"] == "fake"})
+                     "dda_fake": fused["expert_verdict"] == "fake",
+                     "vlm_answer_parsed": v["verdict"] is not None and (k[0], k[1]) not in unparsed})
     gens = sorted({r["generator"] for r in rows})
     per_gen = {g: gen_metrics([r for r in rows if r["generator"] == g]) for g in gens}
 
