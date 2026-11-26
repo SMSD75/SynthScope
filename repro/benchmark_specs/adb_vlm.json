@@ -16,7 +16,7 @@
       },
       "our_status": "reference",
       "our_number": {
-        "note": "VLM branch alone, official adapter, greedy, full data: 93.98 balanced acc (Facebook 93.13 / Reddit 93.06 / Twitter 95.75), AUROC 98.78, 0 unparsed, 0 unscored (51 tag-less answers scored at their final line's verdict word). The paper prints no VLM-only number; its full method (VLM OR the DDA expert) prints 92.9, and adb_full gives 91.22 on the same images. These are different detectors, so this row is not a reproduction."
+        "note": "cf168db request (the upstream sync), full data, VLM branch alone, bf16 greedy on RTX A5000 (job 301129): 95.96 balanced acc (Facebook 96.25 / Reddit 96.6 / Twitter 95.02), AUROC 99.08; the paired change from the f4b4794 request on the same images is +1.98 [0.89, 3.12]. With the f4b4794 request: VLM branch alone, official adapter, greedy, full data: 93.98 balanced acc (Facebook 93.13 / Reddit 93.06 / Twitter 95.75), AUROC 98.78, 0 unparsed, 0 unscored (51 tag-less answers scored at their final line's verdict word). The paper prints no VLM-only number; its full method (VLM OR the DDA expert) prints 92.9, and adb_full gives 93.01 on the same images (91.22 with the f4b4794 request). These are different detectors, so this row is not a reproduction."
       }
     },
     {
@@ -30,7 +30,7 @@
       },
       "our_status": "reference",
       "our_number": {
-        "note": "Subset (the benchmark folder holds only 269 reals), VLM branch alone, greedy: 87.96 balanced acc, AUROC 98.36 (real 98.5, fake 77.4). Ranks 6th of 28 detectors on the same images. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 97.5, context only."
+        "note": "Upstream f4b4794 request (before the cf168db sync; cf168db VLM-alone numbers in models/image/adb_vlm/README.md): Subset (the benchmark folder holds only 269 reals), VLM branch alone, greedy: 87.96 balanced acc, AUROC 98.36 (real 98.5, fake 77.4). Ranks 6th of 28 detectors on the same images. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 97.5, context only."
       }
     },
     {
@@ -44,7 +44,7 @@
       },
       "our_status": "reference",
       "our_number": {
-        "note": "A 40-image slice of each subset (the full sets are 12,000 + 6,000 images, not run), VLM branch alone, greedy: 82.50 (CommunityAI 85.0 / SocialRF 80.0). Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 88.8, context only."
+        "note": "Upstream f4b4794 request (before the cf168db sync; cf168db VLM-alone numbers in models/image/adb_vlm/README.md): A 40-image slice of each subset (the full sets are 12,000 + 6,000 images, not run), VLM branch alone, greedy: 82.50 (CommunityAI 85.0 / SocialRF 80.0). Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 88.8, context only."
       }
     },
     {
@@ -58,21 +58,21 @@
       },
       "our_status": "reference",
       "our_number": {
-        "note": "Subset, fakes JPEG q96 (bench_eval --jpeg-fakes 96, reals untouched), VLM branch alone, greedy: 65.97 balanced acc, AUROC 79.18; clean subset 68.05. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 91.7, context only."
+        "note": "Upstream f4b4794 request (before the cf168db sync; cf168db VLM-alone numbers in models/image/adb_vlm/README.md): Subset, fakes JPEG q96 (bench_eval --jpeg-fakes 96, reals untouched), VLM branch alone, greedy: 65.97 balanced acc, AUROC 79.18; clean subset 68.05. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 91.7, context only."
       }
     },
     {
-      "name": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (inferred protocol)",
+      "name": "AIGCDetectBenchmark (17 generators), subset of 30 real + 30 fake per generator, fakes JPEG q96 (the official protocol: upstream tools/jpeg96.py @ cf168db)",
       "datasets": [
         "AIGCDetect"
       ],
       "metric": "balanced accuracy (mean over generators)",
       "paper_number": {
-        "note": "No VLM-only number in the paper. Full method (VLM OR the DDA expert, adb_full), appendix AIGCDetectBenchmark table: 87.7; context only. The paper states the fake-JPEG step for GenImage only; applying it here, at q96, is our inference."
+        "note": "No VLM-only number in the paper. Full method (VLM OR the DDA expert, adb_full), appendix AIGCDetectBenchmark table: 87.7; context only. The paper states the fake-JPEG step for GenImage only; applying it here, at q96, is the official protocol since upstream cf168db (tools/jpeg96.py)."
       },
       "our_status": "reference",
       "our_number": {
-        "note": "Subset, fakes JPEG q96 (an inferred protocol), VLM branch alone, greedy: 63.92 balanced acc, AUROC 70.55; clean subset 65.20. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 87.7, context only."
+        "note": "Upstream f4b4794 request (before the cf168db sync; cf168db VLM-alone numbers in models/image/adb_vlm/README.md): Subset, fakes JPEG q96 (the official protocol since upstream cf168db, tools/jpeg96.py), VLM branch alone, greedy: 63.92 balanced acc, AUROC 70.55; clean subset 65.20. Paper: no VLM-only number; full method (VLM OR the DDA expert, adb_full) 87.7, context only."
       }
     },
     {
@@ -114,7 +114,7 @@
       },
       "our_status": "reference",
       "our_number": {
-        "note": "Subsampled, official adapter, greedy, 0 unparsed, 0 unscored; mean of the 15 accuracies 76.58, AUROC 84.11 (Veritas++ 84.70 / 91.33). 5th-8th of 28 on WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset and RealChain; last on UFD-8 (52.88). JPEG95: DiTFake +0.30, UFD-8 -0.70 acc."
+        "note": "Upstream f4b4794 request (before the cf168db sync; cf168db VLM-alone numbers in models/image/adb_vlm/README.md): Subsampled, official adapter, greedy, 0 unparsed, 0 unscored; mean of the 15 accuracies 76.58, AUROC 84.11 (Veritas++ 84.70 / 91.33). 5th-8th of 28 on WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset and RealChain; last on UFD-8 (52.88). JPEG95: DiTFake +0.30, UFD-8 -0.70 acc."
       }
     }
   ]

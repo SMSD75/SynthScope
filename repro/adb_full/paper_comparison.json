@@ -2,7 +2,7 @@
  "wildrf_full": {
   "paper_benchmark": "WildRF",
   "paper_table": "Table 1",
-  "main": true,
+  "main": false,
   "paper_acc": 92.9,
   "ours_acc": 91.22,
   "delta": -1.68,
@@ -42,7 +42,9 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "below"
+  "status": "below",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "wildrf_full_fp32": {
   "paper_benchmark": "WildRF",
@@ -87,12 +89,14 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "below"
+  "status": "below",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "aigibench": {
   "paper_benchmark": "AIGI-Bench",
   "paper_table": "Table 1",
-  "main": true,
+  "main": false,
   "paper_acc": 88.8,
   "ours_acc": 87.52,
   "delta": -1.28,
@@ -127,7 +131,9 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "aigibench_subset": {
   "paper_benchmark": "AIGI-Bench",
@@ -166,12 +172,14 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "bfree_online_full": {
   "paper_benchmark": "BFree-Online",
   "paper_table": "Table 1",
-  "main": true,
+  "main": false,
   "paper_acc": 97.5,
   "ours_acc": 96.93,
   "delta": -0.57,
@@ -200,7 +208,9 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "bfree_online_subset": {
   "paper_benchmark": "BFree-Online",
@@ -233,7 +243,9 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "genimage_subset_jpegfakes96": {
   "paper_benchmark": "GenImage",
@@ -308,12 +320,14 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "genimage_10k_jpegfakes96": {
   "paper_benchmark": "GenImage",
   "paper_table": "Table 6 (appendix)",
-  "main": true,
+  "main": false,
   "paper_acc": 91.7,
   "ours_acc": 86.7,
   "delta": -5.0,
@@ -384,12 +398,14 @@
   "dda_logs": [
    "repro/logs/adbfull_gi10k_297930.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
  },
  "aigcdetect_subset_jpegfakes96": {
   "paper_benchmark": "AIGCDetectBenchmark",
   "paper_table": "Table 8 (appendix)",
-  "main": true,
+  "main": false,
   "paper_acc": 87.7,
   "ours_acc": 83.82,
   "delta": -3.88,
@@ -513,6 +529,511 @@
   "dda_logs": [
    "repro/logs/adbfull_bench_297122.out"
   ],
-  "status": "reference"
+  "status": "reference",
+  "vlm_request": "f4b4794",
+  "before": null
+ },
+ "wildrf_full_cf168db": {
+  "paper_benchmark": "WildRF",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 92.9,
+  "ours_acc": 93.01,
+  "delta": 0.11,
+  "ours_mauroc": 99.47,
+  "vlm_only_acc": 95.96,
+  "dda_only_acc": 90.2,
+  "per_generator": {
+   "facebook": {
+    "paper": 92.2,
+    "ours": 93.44,
+    "vlm": 96.25,
+    "dda": 93.12
+   },
+   "reddit": {
+    "paper": 90.9,
+    "ours": 92.2,
+    "vlm": 96.6,
+    "dda": 86.4
+   },
+   "twitter": {
+    "paper": 95.5,
+    "ours": 93.4,
+    "vlm": 95.02,
+    "dda": 91.07
+   }
+  },
+  "n_images": 2503,
+  "data": "full test split (Facebook, Reddit, Twitter)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/wildrf_full_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "within tolerance",
+  "vlm_request": "cf168db",
+  "before": "wildrf_full"
+ },
+ "bfree_online_full_cf168db": {
+  "paper_benchmark": "BFree-Online",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 97.5,
+  "ours_acc": 96.84,
+  "delta": -0.66,
+  "ours_mauroc": 99.41,
+  "vlm_only_acc": 81.69,
+  "dda_only_acc": 94.98,
+  "per_generator": {
+   "viral": {
+    "paper": null,
+    "ours": 96.84,
+    "vlm": 81.69,
+    "dda": 94.98
+   }
+  },
+  "n_images": 807,
+  "data": "all held images (269 real + 538 fake still online of 1,111 listed)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/bfree_online_full_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "reference",
+  "vlm_request": "cf168db",
+  "before": "bfree_online_full"
+ },
+ "aigibench_cf168db": {
+  "paper_benchmark": "AIGI-Bench",
+  "paper_table": "Table 1",
+  "main": false,
+  "paper_acc": 88.8,
+  "ours_acc": 89.49,
+  "delta": 0.69,
+  "ours_mauroc": 98.15,
+  "vlm_only_acc": 90.71,
+  "dda_only_acc": 82.41,
+  "per_generator": {
+   "CommunityAI": {
+    "paper": 91.9,
+    "ours": 93.3,
+    "vlm": 89.67,
+    "dda": 83.1
+   },
+   "SocialRF": {
+    "paper": 85.6,
+    "ours": 85.68,
+    "vlm": 91.75,
+    "dda": 81.73
+   }
+  },
+  "n_images": 9000,
+  "data": "SocialRF full (3,000 real + 3,000 fake); CommunityAI the first 1,500 real + 1,500 fake (sorted) of 6,000 + 6,000",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/aigibench_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "reference",
+  "vlm_request": "cf168db",
+  "before": "aigibench"
+ },
+ "aigibench_full_cf168db": {
+  "paper_benchmark": "AIGI-Bench",
+  "paper_table": "Table 1",
+  "main": true,
+  "paper_acc": 88.8,
+  "ours_acc": 89.22,
+  "delta": 0.42,
+  "ours_mauroc": 98.03,
+  "vlm_only_acc": 88.81,
+  "dda_only_acc": 83.18,
+  "per_generator": {
+   "CommunityAI": {
+    "paper": 91.9,
+    "ours": 92.75,
+    "vlm": 85.87,
+    "dda": 84.62
+   },
+   "SocialRF": {
+    "paper": 85.6,
+    "ours": 85.68,
+    "vlm": 91.75,
+    "dda": 81.73
+   }
+  },
+  "n_images": 18000,
+  "data": "CommunityAI + SocialRF, full (6,000 + 6,000 and 3,000 + 3,000)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/aigibench_full_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "within tolerance",
+  "vlm_request": "cf168db",
+  "before": null
+ },
+ "genimage_10k_jpegfakes96_cf168db": {
+  "paper_benchmark": "GenImage",
+  "paper_table": "Table 6 (appendix)",
+  "main": true,
+  "paper_acc": 91.7,
+  "ours_acc": 88.86,
+  "delta": -2.84,
+  "ours_mauroc": 96.47,
+  "vlm_only_acc": 59.5,
+  "dda_only_acc": 89.35,
+  "per_generator": {
+   "adm": {
+    "paper": 77.2,
+    "ours": 84.64,
+    "vlm": 49.92,
+    "dda": 85.6
+   },
+   "biggan": {
+    "paper": 98.4,
+    "ours": 81.92,
+    "vlm": 50.08,
+    "dda": 82.48
+   },
+   "glide": {
+    "paper": 90.3,
+    "ours": 88.4,
+    "vlm": 53.36,
+    "dda": 87.84
+   },
+   "midjourney": {
+    "paper": 89.3,
+    "ours": 95.6,
+    "vlm": 82.08,
+    "dda": 95.36
+   },
+   "sdv1.4": {
+    "paper": 89.6,
+    "ours": 97.76,
+    "vlm": 63.76,
+    "dda": 98.72
+   },
+   "sdv1.5": {
+    "paper": 95.6,
+    "ours": 97.6,
+    "vlm": 63.92,
+    "dda": 98.48
+   },
+   "vqdm": {
+    "paper": 98.1,
+    "ours": 67.2,
+    "vlm": 50.48,
+    "dda": 67.44
+   },
+   "wukong": {
+    "paper": 98.3,
+    "ours": 97.76,
+    "vlm": 62.4,
+    "dda": 98.88
+   }
+  },
+  "n_images": 10000,
+  "data": "GenImage val, the first 625 real + 625 fake per generator (sorted), fakes JPEG q96 (10,000; the same images as the f4b4794 row)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/genimage_10k_jpegfakes96_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "reference",
+  "vlm_request": "cf168db",
+  "before": "genimage_10k_jpegfakes96"
+ },
+ "aigcdetect_3400_jpegfakes96_cf168db": {
+  "paper_benchmark": "AIGCDetectBenchmark",
+  "paper_table": "Table 8 (appendix)",
+  "main": true,
+  "paper_acc": 87.7,
+  "ours_acc": 84.76,
+  "delta": -2.94,
+  "ours_mauroc": 92.93,
+  "vlm_only_acc": 59.06,
+  "dda_only_acc": 85.94,
+  "per_generator": {
+   "ADM": {
+    "paper": 89.3,
+    "ours": 76.5,
+    "vlm": 50.5,
+    "dda": 78.0
+   },
+   "DALLE2": {
+    "paper": 94.9,
+    "ours": 95.5,
+    "vlm": 53.5,
+    "dda": 96.0
+   },
+   "Glide": {
+    "paper": 90.3,
+    "ours": 84.0,
+    "vlm": 53.0,
+    "dda": 84.5
+   },
+   "Midjourney": {
+    "paper": 95.6,
+    "ours": 94.5,
+    "vlm": 84.5,
+    "dda": 94.5
+   },
+   "VQDM": {
+    "paper": 77.2,
+    "ours": 64.5,
+    "vlm": 50.0,
+    "dda": 65.0
+   },
+   "biggan": {
+    "paper": 90.4,
+    "ours": 87.0,
+    "vlm": 52.5,
+    "dda": 87.0
+   },
+   "cyclegan": {
+    "paper": 74.4,
+    "ours": 75.0,
+    "vlm": 59.5,
+    "dda": 77.5
+   },
+   "gaugan": {
+    "paper": 92.5,
+    "ours": 92.5,
+    "vlm": 57.5,
+    "dda": 93.5
+   },
+   "progan": {
+    "paper": 91.0,
+    "ours": 78.0,
+    "vlm": 57.0,
+    "dda": 87.5
+   },
+   "sd_xl": {
+    "paper": 99.1,
+    "ours": 100.0,
+    "vlm": 95.5,
+    "dda": 100.0
+   },
+   "stable_diffusion_v_1_4": {
+    "paper": 98.3,
+    "ours": 97.5,
+    "vlm": 60.0,
+    "dda": 98.5
+   },
+   "stable_diffusion_v_1_5": {
+    "paper": 98.1,
+    "ours": 97.5,
+    "vlm": 62.0,
+    "dda": 98.0
+   },
+   "stargan": {
+    "paper": 72.9,
+    "ours": 72.0,
+    "vlm": 52.5,
+    "dda": 71.0
+   },
+   "stylegan": {
+    "paper": 86.6,
+    "ours": 84.0,
+    "vlm": 48.0,
+    "dda": 87.5
+   },
+   "stylegan2": {
+    "paper": 89.2,
+    "ours": 90.0,
+    "vlm": 48.5,
+    "dda": 92.0
+   },
+   "whichfaceisreal": {
+    "paper": 52.6,
+    "ours": 55.5,
+    "vlm": 53.5,
+    "dda": 53.0
+   },
+   "wukong": {
+    "paper": 98.4,
+    "ours": 97.0,
+    "vlm": 66.0,
+    "dda": 97.5
+   }
+  },
+  "n_images": 3400,
+  "data": "the first 100 real + 100 fake per generator (sorted), fakes JPEG q96 (3,400; the 30-per-class subset is a prefix)",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/aigcdetect_3400_jpegfakes96_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "reference",
+  "vlm_request": "cf168db",
+  "before": null
+ },
+ "aigcdetect_subset_jpegfakes96_cf168db": {
+  "paper_benchmark": "AIGCDetectBenchmark",
+  "paper_table": "Table 8 (appendix)",
+  "main": false,
+  "paper_acc": 87.7,
+  "ours_acc": 84.71,
+  "delta": -2.99,
+  "ours_mauroc": 92.61,
+  "vlm_only_acc": 59.61,
+  "dda_only_acc": 86.86,
+  "per_generator": {
+   "ADM": {
+    "paper": 89.3,
+    "ours": 73.33,
+    "vlm": 46.67,
+    "dda": 76.67
+   },
+   "DALLE2": {
+    "paper": 94.9,
+    "ours": 96.67,
+    "vlm": 51.67,
+    "dda": 98.33
+   },
+   "Glide": {
+    "paper": 90.3,
+    "ours": 93.33,
+    "vlm": 56.67,
+    "dda": 93.33
+   },
+   "Midjourney": {
+    "paper": 95.6,
+    "ours": 93.33,
+    "vlm": 86.67,
+    "dda": 95.0
+   },
+   "VQDM": {
+    "paper": 77.2,
+    "ours": 66.67,
+    "vlm": 50.0,
+    "dda": 66.67
+   },
+   "biggan": {
+    "paper": 90.4,
+    "ours": 83.33,
+    "vlm": 50.0,
+    "dda": 83.33
+   },
+   "cyclegan": {
+    "paper": 74.4,
+    "ours": 63.33,
+    "vlm": 43.33,
+    "dda": 75.0
+   },
+   "gaugan": {
+    "paper": 92.5,
+    "ours": 91.67,
+    "vlm": 56.67,
+    "dda": 91.67
+   },
+   "progan": {
+    "paper": 91.0,
+    "ours": 81.67,
+    "vlm": 63.33,
+    "dda": 90.0
+   },
+   "sd_xl": {
+    "paper": 99.1,
+    "ours": 100.0,
+    "vlm": 98.33,
+    "dda": 100.0
+   },
+   "stable_diffusion_v_1_4": {
+    "paper": 98.3,
+    "ours": 98.33,
+    "vlm": 70.0,
+    "dda": 100.0
+   },
+   "stable_diffusion_v_1_5": {
+    "paper": 98.1,
+    "ours": 96.67,
+    "vlm": 68.33,
+    "dda": 98.33
+   },
+   "stargan": {
+    "paper": 72.9,
+    "ours": 73.33,
+    "vlm": 53.33,
+    "dda": 73.33
+   },
+   "stylegan": {
+    "paper": 86.6,
+    "ours": 83.33,
+    "vlm": 46.67,
+    "dda": 86.67
+   },
+   "stylegan2": {
+    "paper": 89.2,
+    "ours": 91.67,
+    "vlm": 50.0,
+    "dda": 95.0
+   },
+   "whichfaceisreal": {
+    "paper": 52.6,
+    "ours": 56.67,
+    "vlm": 53.33,
+    "dda": 55.0
+   },
+   "wukong": {
+    "paper": 98.4,
+    "ours": 96.67,
+    "vlm": 68.33,
+    "dda": 98.33
+   }
+  },
+  "n_images": 1020,
+  "data": "the vlm_bench subset (30 real + 30 fake per generator) within the 3,400-image sample, fakes JPEG q96",
+  "vlm_precision": "bf16",
+  "vlm_gpu": [
+   "NVIDIA RTX A5000"
+  ],
+  "source": "repro/adb_full/results/aigcdetect_subset_jpegfakes96_cf168db.json",
+  "vlm_logs": [
+   "repro/logs/adbsync_301129*.out"
+  ],
+  "dda_logs": [
+   "repro/logs/adbfull_bench_297122.out"
+  ],
+  "status": "reference",
+  "vlm_request": "cf168db",
+  "before": "aigcdetect_subset_jpegfakes96"
  }
 }

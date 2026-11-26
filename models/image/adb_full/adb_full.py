@@ -1,12 +1,15 @@
 """Align, Don't Blend (arXiv 2512.06746, ACM MM 2026), the FULL method: the VLM branch (``adb_vlm``) OR the
 pixel-artifact expert (``dda``), with the official final-decision rule.
 
-Official code: github.com/GzZning/Align-Dont-Blend @ 5d83e40 (Apache-2.0). ``predict.py`` runs the VLM (``swift infer``,
+Official code: github.com/GzZning/Align-Dont-Blend @ cf168db (Apache-2.0; first integrated at 5d83e40). ``predict.py``
+runs the VLM (``swift infer``,
 as ``adb_vlm`` reproduces it) and the expert command of its README, ``python -m detector.expert --checkpoint
 weights/DDA_ckpt.pth`` (DDA's DINOv2 ViT-L/14 + LoRA; CenterCrop(336), ToTensor, CLIP normalisation; P = sigmoid(logit)),
 on the same files, and writes per image (``detector/core.py``):
 
-* ``vlm_fake    = parse_vlm_verdict(response)``: True / False, or a ValueError, which stops the script;
+* ``vlm_fake    = parse_vlm_verdict(response)``: True / False; where it raises ValueError, False (Real), with
+  ``vlm_answer_parsed: false`` (commit 898b607, "Default unparsed VLM answers to Real before OR fusion"; at 5d83e40 the
+  script stopped);
 * ``expert_fake = fake_probability >= expert_threshold`` (``read_expert_results``; ``--expert-threshold``, default 0.5,
   so a probability of exactly 0.5 is fake);
 * ``fake        = fuse(vlm_fake, expert_fake) = vlm_fake or expert_fake``.
@@ -27,10 +30,15 @@ unrounded; ``0.5 - ulp`` is the largest float below 0.5. Clamping ``P_vlm`` to t
 repetition penalty picks the text; a bf16 gap of exactly 0 gives P_vlm = 0.5 with the verdict "real"). Within each side
 the order of the scores is kept: real-side scores rank by the larger of the two P(fake)s, fake-side ones likewise.
 
-An answer ``parse_vlm_verdict`` rejects stops the official script, so it has no official decision. SynthScope keeps
-the image: if the expert says fake, the OR is fake whatever the VLM meant (the verdict is "fake"); otherwise the verdict
-is "unparsed" (counted wrong, as for ``adb_vlm``). Its score treats the VLM side as "real": ``adb_vlm`` gives an unparsed
-answer P_vlm = 0.5, so ``s_vlm = 0.5 - ulp`` and ``score = max(0.5 - ulp, P_dda)``.
+An answer ``parse_vlm_verdict`` rejects is Real on the VLM side (``predict.py`` since 898b607; ``adb_vlm``'s parser,
+``parse_adb_default_real``, already returns "real" for it, and a None verdict is read the same way here): the final
+decision is the expert's. Its score is ``max(min(P_vlm, 0.5 - ulp), P_dda)``.
+
+Evaluation preprocessing (``tools/jpeg96.py`` @ cf168db, ``prepare_image(image, dataset, label)``): RGB, and for
+GenImage and AIGCDetectBenchmark only, the FAKE images (label 1) re-encoded in memory as PIL JPEG quality 96 (Pillow's
+default 4:2:0 chroma subsampling) and decoded again, before both branches; real images are not recompressed. This is
+``bench_eval --jpeg-fakes 96`` (``_jpeg``: the same PIL save and decode), applied after the VLM's ``swift_rgb`` and the
+expert's RGB conversion (the same ``convert("RGB")``).
 """
 import math
 from dataclasses import dataclass
@@ -50,11 +58,14 @@ class FusionConfig:
 
 
 ADB_FULL = FusionConfig(vlm="adb_vlm", expert="dda", expert_threshold=EXPERT_THRESHOLD,
-                        code="github.com/GzZning/Align-Dont-Blend @ 5d83e40 (detector/core.py fuse, read_expert_results)")
+                        code="github.com/GzZning/Align-Dont-Blend @ cf168db (predict.py, detector/core.py fuse, "
+                             "read_expert_results)")
+JPEG96_DATASETS = ("GenImage", "AIGCDetectBenchmark")  # tools/jpeg96.py @ cf168db: the fakes of these, JPEG q96 in memory
+JPEG96_QUALITY = 96
 
 
 def fuse(vlm_fake: bool, expert_fake: bool) -> bool:
-    """``detector/core.py`` ``fuse``, verbatim."""
+    """``detector/core.py`` ``fuse`` for two booleans (``predict.py`` passes it no None since 898b607): the OR."""
     return vlm_fake or expert_fake
 
 
@@ -70,7 +81,8 @@ def expert_decision(probability: float, threshold: float = EXPERT_THRESHOLD) -> 
 
 
 def vlm_side_score(p_vlm: float, vlm_verdict) -> float:
-    """``P_vlm`` clamped to the side of the parsed verdict: >= 0.5 for "fake", < 0.5 for "real" or an unparsed answer."""
+    """``P_vlm`` clamped to the side of the VLM decision: >= 0.5 for "fake", < 0.5 for "real" (an unparsed answer is
+    Real)."""
     if vlm_verdict == "fake":
         return max(float(p_vlm), 0.5)
     return min(float(p_vlm), REAL_CAP)
@@ -83,17 +95,14 @@ def fused_score(p_vlm: float, vlm_verdict, p_expert: float) -> float:
 
 
 def fused_verdict(vlm_verdict, p_expert: float, threshold: float = EXPERT_THRESHOLD) -> str:
-    """The official final decision as "fake" / "real"; "unparsed" when the VLM answer has no verdict and the expert says
-    real (the official script stops on such an answer; with the expert's "fake" the OR is fake either way)."""
-    expert_fake = expert_decision(p_expert, threshold)
-    if vlm_verdict not in VERDICTS:
-        return "fake" if expert_fake else "unparsed"
-    return "fake" if fuse(vlm_verdict == "fake", expert_fake) else "real"
+    """The official final decision as "fake" / "real": a VLM verdict other than "fake" (also None, an unparsed answer)
+    is Real, as ``predict.py`` decides since 898b607."""
+    return "fake" if fuse(vlm_verdict == "fake", expert_decision(p_expert, threshold)) else "real"
 
 
 def fuse_components(p_vlm: float, vlm_verdict, p_expert: float) -> dict:
     """The fused decision and score from the two components' outputs (unrounded probabilities; ``vlm_verdict`` =
-    "fake" / "real" / None as ``adb_vlm``'s parser returns it)."""
+    "fake" / "real" as ``adb_vlm``'s parser returns it; None, an unparsed answer, is Real)."""
     verdict = fused_verdict(vlm_verdict, p_expert)
     score = fused_score(p_vlm, vlm_verdict, p_expert)
     if (score >= 0.5) != (verdict == "fake"):          # cannot happen (see the module docstring); kept as a guard
@@ -101,5 +110,5 @@ def fuse_components(p_vlm: float, vlm_verdict, p_expert: float) -> dict:
     expert_fake = expert_decision(p_expert)
     vlm_fake = vlm_verdict == "fake"
     decided_by = ("both" if vlm_fake and expert_fake else "vlm" if vlm_fake else "expert" if expert_fake else "neither")
-    return {"verdict": verdict, "score": score, "vlm_verdict": vlm_verdict if vlm_verdict in VERDICTS else "unparsed",
+    return {"verdict": verdict, "score": score, "vlm_verdict": "fake" if vlm_fake else "real",
             "expert_verdict": "fake" if expert_fake else "real", "decided_by": decided_by}

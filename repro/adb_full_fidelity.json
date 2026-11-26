@@ -1,5 +1,5 @@
 {
- "official_code": "github.com/GzZning/Align-Dont-Blend @ 5d83e40 (predict.py, detector/expert.py, unmodified)",
+ "official_code": "github.com/GzZning/Align-Dont-Blend @ cf168db (predict.py, detector/expert.py, unmodified)",
  "versions": {
   "torch": "2.11.0+cu126",
   "transformers": "5.5.4",
@@ -370,19 +370,19 @@
    "fused_score": 0.03103150799870491,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.0467401685178159e-08,
-   "vlm_logit": -18.375,
+   "vlm_fake_probability": 1.2790354113008496e-13,
+   "vlm_logit": -29.6875,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 95,
+   "vlm_new_tokens": 102,
    "vlm_input_size": [
     504,
     364
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.03103150799870491,
-   "response": "<rationale>\nThe image shows macarons with realistic textures and lighting, typical of high-resolution photography. However, the uniformity and slight imperfections in the macarons' appearance, along with the natural shadows and reflections, suggest it could be from a real photograph rather than an AI-generated image. AI images often have more uniform coloration and less variation in texture and lighting.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 13.65,
-   "peak_GB": 18.12
+   "response": "<rationale>\nThe image displays a realistic texture and lighting typical of food photography. The macarons have consistent colors and shadows that are natural and not overly uniform, which is common in real-life photography. There are no telltale signs of AI, such as imperfections, unusual angles, or inconsistent lighting patterns that are often present in AI-generated images. The composition and detail are consistent with real-world food presentation.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 13.07,
+   "peak_GB": 18.11
   },
   {
    "image": "GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG",
@@ -396,18 +396,18 @@
    "fused_score": 0.23865802586078644,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 4.553681482736176e-11,
-   "vlm_logit": -23.8125,
+   "vlm_fake_probability": 9.806704671607711e-14,
+   "vlm_logit": -29.953125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 95,
+   "vlm_new_tokens": 102,
    "vlm_input_size": [
     504,
     336
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.23865802586078644,
-   "response": "<rationale>\nThe image shows natural details such as water droplets, plant life, and the texture of a tadpole's skin, which are consistent with real-life photography. There are no telltale signs of AI generation like unusual symmetry, perfect lighting, or lack of imperfections. The composition and lighting are realistic, capturing the environment of a tadpole in its natural habitat.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.74,
+   "response": "<rationale>\nThe image shows a detailed, realistic depiction of a tadpole in a natural aquatic environment, with textures and lighting consistent with real-life photography. There are no telltale signs of AI generation, such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The presence of water droplets and the natural positioning of the tadpole are typical of wildlife photography and not commonly seen in AI-generated images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.03,
    "peak_GB": 18.11
   },
   {
@@ -422,18 +422,18 @@
    "fused_score": 0.16525302827358246,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 3.581747929000289e-10,
-   "vlm_logit": -21.75,
+   "vlm_fake_probability": 1.0940169625169293e-13,
+   "vlm_logit": -29.84375,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 104,
+   "vlm_new_tokens": 119,
    "vlm_input_size": [
     504,
     336
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.16525302827358246,
-   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and subtle imperfections typical of real photographs. The composition includes a human baby with soft, natural skin tones and realistic sleeping posture. There are no telltale signs of AI generation such as exaggerated features, inconsistent lighting, or unnatural details. The background and objects like the stuffed animals and bed are detailed but not overly stylized, which aligns with real-life photography.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.1,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and a candid moment that is typical of real-life photography. The details, such as the baby's skin texture, the softness of the bedding, and the arrangement of the stuffed toys, are consistent with human photography. There are no telltale signs of AI generation, such as imperfections, unnatural lighting, or overly perfect details. The overall composition and the presence of a real baby in a real environment are indicative of a genuine photograph.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.84,
    "peak_GB": 18.11
   },
   {
@@ -448,19 +448,19 @@
    "fused_score": 0.6109493970870972,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 0.320821300824607,
-   "vlm_logit": -0.75,
+   "vlm_fake_probability": 0.005911068856243796,
+   "vlm_logit": -5.125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 105,
+   "vlm_new_tokens": 153,
    "vlm_input_size": [
-    980,
-    980
+    1036,
+    1036
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.6109493970870972,
-   "response": "<rationale>\nThe image displays a realistic underwater scene with natural lighting and details that are consistent with real fish photography. However, the uniformity and slight imperfections in the lighting and texture could be indicative of AI generation, as these are often areas where AI struggles to replicate the exact nuances found in real-world images. Additionally, the absence of any imperfections or anomalies that are typically present in high-resolution real photos further supports this analysis.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.55,
-   "peak_GB": 18.47
+   "response": "<rationale>\nThe image displays a level of detail and lighting that is highly consistent with real underwater photography, but the uniformity and the slight imperfections in the fish's texture and coloration are not typical of natural variations. Additionally, the clarity and the absence of any imperfections that are often seen in AI-generated images, such as slight distortions or unnatural patterns, suggest it could be real. However, the uniformity and the lack of any imperfections that are often seen in AI-generated images, such as slight distortions or unnatural patterns, are not typical of real images. The image lacks the slight imperfections and the variability that are characteristic of AI-generated images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 7.9,
+   "peak_GB": 18.52
   },
   {
    "image": "GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png",
@@ -471,21 +471,21 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9998204720306533,
-   "decided_by": "both",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9998204720306533,
-   "vlm_logit": 8.625,
+   "fused_score": 0.9873742461204529,
+   "decided_by": "expert",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 0.004070137715896128,
+   "vlm_logit": -5.5,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 111,
+   "vlm_new_tokens": 154,
    "vlm_input_size": [
     504,
     504
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9873742461204529,
-   "response": "<rationale>\nThe image shows a fish with a smooth texture and uniform coloration that lacks the imperfections and variability typically seen in real fish. The lighting and shadows are consistent and lack the natural variation found in organic materials. There are no visible imperfections like scales or natural wear, which are common in real fish images. Additionally, the image does not contain any background elements that would be expected in a real-world setting, further suggesting it is not authentic.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.5,
+   "response": "<rationale>\nThe image shows a realistic texture and lighting that is consistent with a real fish, but the uniformity and lack of imperfections are more typical of a high-resolution photograph of a real fish. However, the angle and the absence of any background elements that would typically be present in a real-world setting make it less likely to be a completely authentic photograph. Real fish images usually have more varied textures and imperfections, and the lighting in this image is too even and controlled, which is less common in natural settings. Additionally, the image lacks the subtle variations in color and detail that are often present in AI-generated images but can be hard to replicate perfectly in real photography.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 7.56,
    "peak_GB": 18.15
   },
   {
@@ -500,18 +500,18 @@
    "fused_score": 0.47470757365226746,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.902311985211097e-06,
-   "vlm_logit": -12.75,
+   "vlm_fake_probability": 1.4187427838012187e-12,
+   "vlm_logit": -27.28125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 100,
+   "vlm_new_tokens": 136,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.47470757365226746,
-   "response": "<rationale>\nThe image shows natural lighting and shadows consistent with outdoor photography. The texture of the fish and the person's clothing have realistic imperfections. However, there are no telltale signs of AI artifacts such as unusual proportions, inconsistent lighting, or unnatural details. The background appears to be a real outdoor setting with vegetation, which is common in authentic photos but can also be convincingly replicated by AI.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.86,
+   "response": "<rationale>\nThe image shows natural lighting, realistic skin texture, and a detailed background that includes vegetation and a natural outdoor setting. There are no telltale signs of AI manipulation such as inconsistent shadows, unusual proportions, or unnatural details. The person's clothing and the fish are consistent with real-world photography. However, the image quality and the sharpness do not exhibit the high-resolution anomalies often seen in AI-generated images. The overall composition and the person's pose are natural and unposed, which is less common in AI-generated images where such details are often more controlled and less varied.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.61,
    "peak_GB": 18.06
   },
   {
@@ -526,18 +526,18 @@
    "fused_score": 0.03548572584986687,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.8189616842444243e-09,
-   "vlm_logit": -20.125,
+   "vlm_fake_probability": 1.5917852879087354e-13,
+   "vlm_logit": -29.46875,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 74,
+   "vlm_new_tokens": 89,
    "vlm_input_size": [
     672,
     1008
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.03548572584986687,
-   "response": "<rationale>\nThe image shows detailed human features and a realistic texture consistent with photographs of real individuals. There are no telltale signs of AI generation such as unnatural lighting, imperfections, or inconsistencies in facial features. The context and style align with candid photography of public figures.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 3.9,
+   "response": "<rationale>\nThe image displays natural lighting, realistic skin texture, and a detailed background that includes natural elements like trees, which are consistent with real photography. There are no telltale signs of AI manipulation such as unnatural symmetry, altered features, or inconsistent lighting. The composition and clarity are typical of high-resolution real-world photographs taken in a candid setting.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.63,
    "peak_GB": 18.34
   },
   {
@@ -552,18 +552,18 @@
    "fused_score": 0.10631993412971497,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.9693733273054213e-10,
-   "vlm_logit": -21.9375,
+   "vlm_fake_probability": 1.2015425731770343e-13,
+   "vlm_logit": -29.75,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 98,
+   "vlm_new_tokens": 129,
    "vlm_input_size": [
     1036,
     672
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.10631993412971497,
-   "response": "<rationale>\nThe image shows detailed human features, natural lighting, and a realistic setting with people in traditional religious attire. There are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or lack of imperfections typical in AI images. The scene captures a moment that aligns with historical and cultural contexts, which is challenging for AI to replicate accurately without specific training data.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.05,
+   "response": "<rationale>\nThe image displays a high level of detail in the clothing, lighting, and background, including the presence of a crowd and religious attire that is consistent with real-world events. The natural lighting and shadows, along with the specific context of a religious ceremony, are typical of real photographs taken in such settings. There are no telltale signs of AI generation, such as inconsistencies in texture, unusual proportions, or imperfections that are common in AI images. The image captures a moment that aligns with documented historical or contemporary events involving religious leaders.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.58,
    "peak_GB": 18.35
   },
   {
@@ -578,19 +578,19 @@
    "fused_score": 0.05973216891288757,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 3.5464107046484124e-11,
-   "vlm_logit": -24.0625,
+   "vlm_fake_probability": 6.233520752064696e-14,
+   "vlm_logit": -30.40625,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 90,
+   "vlm_new_tokens": 148,
    "vlm_input_size": [
-    1232,
-    812
+    1344,
+    896
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.05973216891288757,
-   "response": "<rationale>\nThe image shows a person in traditional papal attire, which aligns with historical and current depictions of Pope Francis. The lighting, shadows, and details such as the microphone and the background architecture are consistent with real-world photography. There are no telltale signs of AI generation, such as imperfections, inconsistent textures, or unnatural proportions.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.87,
-   "peak_GB": 18.49
+   "response": "<rationale>\nThe image features a person in papal attire, which includes a distinctive white outfit, a cross necklace, and a white skullcap, all of which are characteristic of a Pope. The setting appears to be a public address, with a microphone and a document, which is typical for papal speeches. The lighting, shadows, and the texture of the clothing and background are consistent with real-life photography. There are no telltale signs of AI generation, such as inconsistencies in lighting, unusual proportions, or imperfections that are often present in AI images. The overall composition and details align with known photographs of Pope Francis during public appearances.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 7.74,
+   "peak_GB": 18.58
   },
   {
    "image": "SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg",
@@ -601,22 +601,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999999988255901,
+   "fused_score": 0.9999999999999933,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999988255901,
-   "vlm_logit": 20.5625,
+   "vlm_fake_probability": 0.9999999999999933,
+   "vlm_logit": 32.65625,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 88,
+   "vlm_new_tokens": 156,
    "vlm_input_size": [
-    980,
-    980
+    1036,
+    1036
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9920044541358948,
-   "response": "<rationale>\nThe image displays highly detailed and unnatural elements such as the artificial-looking hand of the man, which is not typical in real photographs. Additionally, the lighting and overall composition have a polished quality often associated with AI-generated images. Real images usually do not feature such precise and uniform details, especially in the context of a prosthetic limb.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.72,
-   "peak_GB": 18.47
+   "response": "<rationale>\nThe image displays highly detailed and unrealistic textures, such as the artificial appearance of the prosthetic arm and the overall composition that includes an improbable combination of elements like a small dog and a rugged, aged appearance. Real images do not typically feature such a perfect blend of human and animal features, nor do they include advanced prosthetics in a natural setting. The lighting and shadows are too uniform and idealized, lacking the imperfections seen in real photography. Additionally, the level of detail in the clothing and the backpack is beyond what is typically seen in real-world images, which often have more varied and less consistent textures and lighting. These characteristics are hallmarks of AI-generated images.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 8.03,
+   "peak_GB": 18.52
   },
   {
    "image": "SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg",
@@ -627,22 +627,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999999991407833,
+   "fused_score": 0.9999999999999838,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999991407833,
-   "vlm_logit": 20.875,
+   "vlm_fake_probability": 0.9999999999999838,
+   "vlm_logit": 31.75,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 102,
+   "vlm_new_tokens": 125,
    "vlm_input_size": [
-    980,
-    980
+    1092,
+    1092
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9869579672813416,
-   "response": "<rationale>\nThe image features a level of detail and lighting that is highly consistent with AI-generated images, including the perfect symmetry and the slightly unnatural placement of the party hat. Real photographs typically have more variance in lighting and less uniformity in details like the texture of fur and the exact positioning of objects. Additionally, the overall composition and the way the light interacts with the subject are not typical of real-world photography.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.4,
-   "peak_GB": 18.47
+   "response": "<rationale>\nThe image features an unusual combination of a dog wearing a party hat, which is not a common sight in real life. The lighting and details, such as the hat's texture and the dog's fur, have a uniformity and clarity that is more typical of AI-generated images. Real images usually have more variability in lighting and less perfect alignment of elements. Additionally, the overall composition and the way the dog is presented with a party hat is highly stylized, which is a telltale sign of AI generation.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 6.61,
+   "peak_GB": 18.57
   },
   {
    "image": "SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg",
@@ -653,21 +653,21 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.999999974890009,
+   "fused_score": 0.9999999895325983,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.999999974890009,
-   "vlm_logit": 17.5,
+   "vlm_fake_probability": 0.9999999895325983,
+   "vlm_logit": 18.375,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 88,
+   "vlm_new_tokens": 127,
    "vlm_input_size": [
     1204,
     672
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9837949275970459,
-   "response": "<rationale>\nThe image displays a high level of detail and symmetry that is often characteristic of AI-generated images. The uniformity in the arrangement of the hot air balloons and the perfect lighting and colors are not typically found in real-world photographs. Additionally, the absence of imperfections or natural variations that are present in real images further supports this conclusion.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.63,
+   "response": "<rationale>\nThe image displays a high level of detail and symmetry that is often challenging to achieve in real photography, especially with such a large number of hot air balloons in a uniform and vibrant arrangement. Real-world images typically have minor imperfections, variations in lighting, and less uniformity in object placement. Additionally, the vivid colors and the perfect alignment of the balloons suggest a level of post-processing or a controlled environment that is more characteristic of AI-generated images. The absence of any visible imperfections or real-world anomalies further supports this conclusion.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 6.53,
    "peak_GB": 18.4
   },
   {
@@ -679,22 +679,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.999981074851754,
+   "fused_score": 0.9999999999999667,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.999981074851754,
-   "vlm_logit": 10.875,
+   "vlm_fake_probability": 0.9999999999999667,
+   "vlm_logit": 31.03125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 98,
+   "vlm_new_tokens": 117,
    "vlm_input_size": [
-    1232,
-    812
+    1344,
+    896
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9909789562225342,
-   "response": "<rationale>\nThe image features a detailed and realistic depiction of a person working at a computer with vintage technology, including a CRT monitor and a keyboard with a design typical of older computers. The lighting and shadows are well-crafted but not entirely natural for a real photograph, and the overall composition and clarity suggest advanced digital rendering capabilities. Real photographs often have more varied imperfections and less uniform lighting.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.24,
-   "peak_GB": 18.49
+   "response": "<rationale>\nThe image features a highly detailed and stylized aesthetic that includes anachronistic technology, such as the monitor and keyboard, which are not typical of the 1980s era. The lighting and color grading are too uniform and perfect, lacking the imperfections seen in real photographs. Additionally, the overall composition and the level of detail in the clothing and environment are indicative of advanced AI capabilities in image generation, surpassing the capabilities of real photography from that time period.</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 6.21,
+   "peak_GB": 18.58
   },
   {
    "image": "WildRF/test/reddit/0_real/000219_0219.png",
@@ -708,18 +708,18 @@
    "fused_score": 0.06375599652528763,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 9.545034922749522e-12,
-   "vlm_logit": -25.375,
+   "vlm_fake_probability": 1.4493369977332248e-13,
+   "vlm_logit": -29.5625,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 79,
+   "vlm_new_tokens": 90,
    "vlm_input_size": [
     644,
     476
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.06375599652528763,
-   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and human details consistent with real-life photography. There are no telltale signs of AI generation such as imperfections, inconsistent lighting, or unnatural proportions. The scene includes everyday objects and people in a setting that aligns with real-world environments.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 3.96,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and details such as the clothing, computer setup, and background that are consistent with real-life photography. There are no telltale signs of AI generation, such as imperfections, unusual lighting, or unrealistic proportions. The scene includes everyday objects and people in a manner typical of documentary or candid photography.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.51,
    "peak_GB": 18.17
   },
   {
@@ -730,22 +730,22 @@
     962
    ],
    "mode": "RGBA",
-   "verdict": "fake",
-   "fused_score": 0.9982992775885648,
-   "decided_by": "vlm",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9982992775885648,
-   "vlm_logit": 6.375,
+   "verdict": "real",
+   "fused_score": 0.12399419397115707,
+   "decided_by": "neither",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 6.953994911974943e-14,
+   "vlm_logit": -30.296875,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 135,
+   "vlm_new_tokens": 97,
    "vlm_input_size": [
     728,
     952
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.12399419397115707,
-   "response": "<rationale>\nThe image shows realistic details such as natural lighting, shadows, and textures consistent with real-life photography. However, the size of the fish appears unusually large compared to typical real-world catches, which might be a telltale sign of AI generation. Additionally, the uniformity and clarity of the image do not exhibit the slight imperfections often seen in authentic photos. These factors, combined with the lack of any\u6c34\u5370\u6216AI\u751f\u6210\u7684\u6807\u5fd7\uff0c\u4f7f\u5f97\u96be\u4ee5\u786e\u5b9a\u5176\u771f\u5b9e\u6027\uff0c\u4f46\u57fa\u4e8e\u89c6\u89c9\u7279\u5f81\u548c\u5e38\u89c1AI\u751f\u6210\u56fe\u50cf\u7684\u7279\u70b9\uff0c\u6b64\u56fe\u66f4\u503e\u5411\u4e8eAI\u751f\u6210\u3002\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.84,
+   "response": "<rationale>\nThe image shows realistic details such as natural lighting, shadows, and textures on the fish and clothing. The posture and activity of the individuals are consistent with real-life fishing practices. There are no telltale signs of AI manipulation, such as inconsistent lighting, unusual proportions, or unnatural details. The setting and context are typical of rural fishing scenes, which are commonly captured in photographs.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.02,
    "peak_GB": 18.35
   },
   {
@@ -760,19 +760,19 @@
    "fused_score": 0.48800161480903625,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.67520579918995e-11,
-   "vlm_logit": -24.8125,
+   "vlm_fake_probability": 3.900837610180563e-14,
+   "vlm_logit": -30.875,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 90,
+   "vlm_new_tokens": 108,
    "vlm_input_size": [
-    868,
-    1148
+    952,
+    1260
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.48800161480903625,
-   "response": "<rationale>\nThe image displays natural lighting, realistic color gradients, and detailed textures consistent with real-world photography. It features a specific geological formation and vegetation typical of the Grand Canyon, which are challenging to replicate accurately in AI-generated images. There are no telltale signs of AI manipulation such as unnatural symmetry, inconsistent lighting, or lack of real-world imperfections.\n\n</rationale>\n<answer>\nThis is an authentic image.</answer>",
-   "seconds": 4.88,
-   "peak_GB": 18.48
+   "response": "<rationale>\nThe image displays natural geological features, such as the Grand Canyon, with realistic lighting, shadows, and textures. It includes a tree that appears to be growing naturally, which is consistent with real-world conditions. There are no telltale signs of AI manipulation, such as unnatural symmetry, inconsistent lighting, or lack of real-world imperfections. The composition and clarity are typical of high-resolution photographs taken by a camera in a natural setting.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.86,
+   "peak_GB": 18.58
   },
   {
    "image": "GenImage_val_full/test/adm/1_fake/0_adm_34.PNG",
@@ -786,18 +786,18 @@
    "fused_score": 0.7897753119468689,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.1940866052503027e-09,
-   "vlm_logit": -19.9375,
+   "vlm_fake_probability": 7.402489051140281e-14,
+   "vlm_logit": -30.234375,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 90,
+   "vlm_new_tokens": 96,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.7897753119468689,
-   "response": "<rationale>\nThe image shows natural lighting, realistic skin texture, and a detailed background with plants, which are typical of real photographs. However, there are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or imperfections that are often present in AI images. The overall composition and clarity align with human photography rather than AI rendering.\n\n</rationale>\n<answer>\nThis is an authentic image.</answer>",
-   "seconds": 4.38,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and details such as the fish's scales, the person's clothing, and the background vegetation, which are consistent with real-life photography. There are no telltale signs of AI generation, such as imperfections, unusual proportions, or inconsistent lighting. The overall composition and clarity are typical of a photograph taken by a human photographer.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.68,
    "peak_GB": 18.06
   },
   {
@@ -812,18 +812,18 @@
    "fused_score": 0.9294722676277161,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 0.02931223075135632,
-   "vlm_logit": -3.5,
+   "vlm_fake_probability": 1.016063678543807e-11,
+   "vlm_logit": -25.3125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 79,
+   "vlm_new_tokens": 121,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9294722676277161,
-   "response": "The image shows natural lighting and shadows that are consistent with real-world conditions. The texture of the clothing and the grass appears realistic, but there's a slight lack of detail in the background that isn't typical of high-resolution real photos. However, without more advanced analysis tools, it's challenging to definitively determine if this is AI-generated.\n\n<answer>This is an authentic image.</answer>",
-   "seconds": 3.85,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and a consistent color palette that aligns with real-world photography. There are no telltale signs of AI artifacts, such as unusual proportions, inconsistent lighting, or imperfections typical of AI-generated images. The scene includes a person in a natural outdoor setting, which is common in real photographs but less frequent in AI-generated images, which often lack such details. The overall composition and details are consistent with human photography rather than the synthetic nature of AI images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.89,
    "peak_GB": 18.06
   },
   {
@@ -834,23 +834,23 @@
     375
    ],
    "mode": "RGB",
-   "verdict": "fake",
-   "fused_score": 0.9999982396567868,
-   "decided_by": "vlm",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999982396567868,
-   "vlm_logit": 13.25,
+   "verdict": "real",
+   "fused_score": 0.26814553141593933,
+   "decided_by": "neither",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 0.07585818002124355,
+   "vlm_logit": -2.5,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 93,
+   "vlm_new_tokens": 116,
    "vlm_input_size": [
     504,
     364
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.26814553141593933,
-   "response": "<rationale>\nThe image displays a high level of detail and a specific pattern that is characteristic of AI-generated images, such as uniformity and lack of natural imperfections. The lighting and texture do not align with typical real-world photography, which often includes variations and imperfections. Additionally, the symmetry and clarity suggest a synthetic origin rather than a photograph of a jellyfish.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.58,
-   "peak_GB": 18.12
+   "response": "<rationale>\nThe image displays natural lighting and texture consistent with a real jellyfish in an aquarium or ocean setting. However, the image quality, including the slight graininess and color saturation, is not typical of high-resolution real-world photography. These characteristics are more aligned with the output of AI image generation, which can sometimes mimic real-world images but may have subtle imperfections or stylized elements. The uniformity and slight noise are less common in authentic photographs and more indicative of AI rendering.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.7,
+   "peak_GB": 18.11
   },
   {
    "image": "GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png",
@@ -864,18 +864,18 @@
    "fused_score": 0.5115518569946289,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.0261879630648827e-10,
-   "vlm_logit": -23.0,
+   "vlm_fake_probability": 5.058683183025225e-13,
+   "vlm_logit": -28.3125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 85,
+   "vlm_new_tokens": 102,
    "vlm_input_size": [
     140,
     140
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.5115518569946289,
-   "response": "<rationale>\nThe image shows a close-up of what appears to be a natural object with organic textures and imperfections typical of real-world objects. There are no telltale signs of AI generation such as unnatural symmetry, lack of detail, or inconsistent lighting. The image lacks the uniformity and precision often seen in AI-generated images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.14,
+   "response": "<rationale>\nThe image shows a close-up of a fish with natural textures and colors, which are consistent with real fish but lack the uniformity and idealized features typically seen in AI-generated images. The lighting and shadows are realistic, and there are no telltale signs of digital manipulation or AI-specific artifacts. The image appears to be a photograph of a real fish, possibly taken in a natural or controlled environment.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.93,
    "peak_GB": 18.04
   },
   {
@@ -890,18 +890,18 @@
    "fused_score": 0.8589500784873962,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 9.640143774110972e-11,
-   "vlm_logit": -23.0625,
+   "vlm_fake_probability": 1.7482341282707512e-13,
+   "vlm_logit": -29.375,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 78,
+   "vlm_new_tokens": 91,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.8589500784873962,
-   "response": "<rationale>\nThe image shows natural lighting and texture consistent with a real photograph of a cat. There are no telltale signs of AI generation such as unnatural symmetry, lack of imperfections, or inconsistent lighting patterns. The details in the fur and background are typical of a high-resolution real photo.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 3.81,
+   "response": "<rationale>\nThe image shows natural lighting, realistic fur texture, and a clear, unaltered background that is typical of a photograph taken outdoors. There are no telltale signs of AI generation such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The image quality and details are consistent with a real photograph of a cat in a natural setting.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.44,
    "peak_GB": 18.06
   },
   {
@@ -913,21 +913,21 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.999999694097773,
+   "fused_score": 0.9998911030899734,
    "decided_by": "vlm",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.999999694097773,
-   "vlm_logit": 15.0,
+   "vlm_fake_probability": 0.9998911030899734,
+   "vlm_logit": 9.125,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 94,
+   "vlm_new_tokens": 123,
    "vlm_input_size": [
     504,
     504
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.4431856870651245,
-   "response": "<rationale>\nThe image features a highly stylized and unrealistic representation of a fish with exaggerated features and a smooth, almost ethereal quality. Real photographs typically do not have such uniform lighting, lack the sharpness of details, and do not exhibit the uniform coloration seen here. Additionally, the absence of natural imperfections and the overall polished look are indicative of AI generation.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.67,
+   "response": "<rationale>\nThe image displays a high level of detail and a unique combination of natural and surreal elements, such as the ethereal quality of the fish and the unusual lighting. Real photographs typically do not capture such a perfect blend of organic and otherworldly features without post-processing. The lighting and color gradient are not consistent with natural lighting, which is more uniform. Additionally, the clarity and the way the fish is presented defy the typical imperfections found in real images, which often have more variation in texture and lighting.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 6.07,
    "peak_GB": 18.15
   },
   {
@@ -939,11 +939,11 @@
    ],
    "mode": "L",
    "verdict": "fake",
-   "fused_score": 0.9999999907625504,
+   "fused_score": 0.9999999999999749,
    "decided_by": "vlm",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999907625504,
-   "vlm_logit": 18.5,
+   "vlm_fake_probability": 0.9999999999999749,
+   "vlm_logit": 31.3125,
    "vlm_score_source": "verdict_token",
    "vlm_new_tokens": 104,
    "vlm_input_size": [
@@ -952,8 +952,8 @@
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.29839473962783813,
-   "response": "<rationale>\nThe image features a uniform, symmetrical pattern with clean lines and a lack of natural imperfections or variations that are typically present in real-world objects. The precision and uniformity suggest a digital creation rather than a photograph of a physical object. Additionally, there are no shadows, textures, or gradients that would be expected in a real-world image. This level of detail and perfection is characteristic of AI-generated images.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.14,
+   "response": "<rationale>\nThe image displays a high level of symmetry and uniformity that is characteristic of AI-generated graphics. Real-world objects typically have imperfections or variations in texture and shading. Additionally, the image lacks the complexity and variability that would be present in a photograph or a hand-drawn image. The clean, perfect lines and the absence of any real-world context or imperfections further support the conclusion that this is AI-generated.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 5.17,
    "peak_GB": 18.15
   },
   {
@@ -964,22 +964,22 @@
     500
    ],
    "mode": "RGB",
-   "verdict": "fake",
-   "fused_score": 0.9999997617630899,
-   "decided_by": "vlm",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999997617630899,
-   "vlm_logit": 15.25,
+   "verdict": "real",
+   "fused_score": 0.3576059639453888,
+   "decided_by": "neither",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 1.7482341282707512e-13,
+   "vlm_logit": -29.375,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 111,
+   "vlm_new_tokens": 112,
    "vlm_input_size": [
     448,
     504
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.3576059639453888,
-   "response": "<rationale>\nThe image displays a high level of detail and uniformity in texture and coloration that is characteristic of AI-generated images, particularly those designed to mimic natural patterns like coral. Real corals typically have more variation in color and structure, and the image lacks the imperfections and inconsistencies found in natural specimens. Additionally, the vivid, almost perfect symmetry and the lack of any environmental context (like water or other marine life) are indicative of AI creation.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.48,
+   "response": "<rationale>\nThe image displays intricate, natural patterns and textures that are characteristic of real-life brain coral, which are complex and detailed. These features, including the consistent color gradient and the organic, irregular shapes, are highly detailed and typical of underwater photography. AI-generated images usually lack the imperfections, natural variations, and the specific biological patterns seen here. Additionally, the image resolution and lighting are consistent with high-quality, real-world photography, not typical of AI outputs.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.53,
    "peak_GB": 18.13
   }
  ],
@@ -992,13 +992,15 @@
    "final_equal": "24/24",
    "dda_equal": "24/24",
    "vlm_equal": "24/24",
+   "vlm_answer_parsed_equal": "24/24",
    "text_equal": "24/24",
    "score_side_ok": "24/24",
+   "official_vlm_answers_unparsed": 0,
    "all_decisions_identical": true,
    "max_abs_dda_probability_diff": 2.115964889526367e-06,
-   "disagreements_vlm_vs_dda": 10,
-   "decided_by_expert_only": 5,
-   "decided_by_vlm_only": 5
+   "disagreements_vlm_vs_dda": 8,
+   "decided_by_expert_only": 6,
+   "decided_by_vlm_only": 2
   },
   "per_image": [
    {
@@ -1010,6 +1012,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1025,6 +1028,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1040,6 +1044,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1055,6 +1060,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1065,11 +1071,12 @@
     "image": "GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png",
     "official": {
      "fake": true,
-     "vlm_fake": true,
+     "vlm_fake": false,
      "expert_fake": true
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1085,6 +1092,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1100,6 +1108,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1115,6 +1124,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1130,6 +1140,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1145,6 +1156,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1160,6 +1172,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1175,6 +1188,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1190,6 +1204,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1205,6 +1220,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1214,12 +1230,13 @@
    {
     "image": "WildRF/test/reddit/0_real/000032_0032.png",
     "official": {
-     "fake": true,
-     "vlm_fake": true,
+     "fake": false,
+     "vlm_fake": false,
      "expert_fake": false
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1235,6 +1252,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1250,6 +1268,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1265,6 +1284,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1274,12 +1294,13 @@
    {
     "image": "GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG",
     "official": {
-     "fake": true,
-     "vlm_fake": true,
+     "fake": false,
+     "vlm_fake": false,
      "expert_fake": false
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1295,6 +1316,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1310,6 +1332,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1325,6 +1348,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1340,6 +1364,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1349,12 +1374,13 @@
    {
     "image": "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG",
     "official": {
-     "fake": true,
-     "vlm_fake": true,
+     "fake": false,
+     "vlm_fake": false,
      "expert_fake": false
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -1376,18 +1402,18 @@
    "fused_score": 0.03103150799870491,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.18923639184082e-10,
-   "vlm_logit": -22.242298,
+   "vlm_fake_probability": 1.1230968138050079e-13,
+   "vlm_logit": -29.817516,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 94,
+   "vlm_new_tokens": 102,
    "vlm_input_size": [
     504,
     364
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.03103150799870491,
-   "response": "<rationale>\nThe image shows macarons with realistic textures and lighting, typical of high-resolution photography. However, the uniformity and slight imperfections in color and shadow are not always consistent with AI-generated images, which often have more uniform and less varied details. The natural imperfections and the way the macarons are arranged suggest a real photograph rather than a synthetic creation.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 13.35,
+   "response": "<rationale>\nThe image displays a realistic texture and lighting typical of food photography. The macarons have consistent colors and shadows that are natural and not overly uniform, which is common in real-life photography. There are no telltale signs of AI, such as imperfections, unusual angles, or inconsistent lighting patterns that are often present in AI-generated images. The composition and detail are consistent with real-world food presentation.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 14.24,
    "peak_GB": 34.77
   },
   {
@@ -1402,18 +1428,18 @@
    "fused_score": 0.23865802586078644,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.5430812524311426e-11,
-   "vlm_logit": -24.39506,
+   "vlm_fake_probability": 1.137734349186486e-13,
+   "vlm_logit": -29.804567,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 95,
+   "vlm_new_tokens": 120,
    "vlm_input_size": [
     504,
     336
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.23865802586078644,
-   "response": "<rationale>\nThe image shows natural details such as water droplets, plant life, and the texture of a tadpole's skin, which are consistent with real-life photography. There are no telltale signs of AI generation like unusual symmetry, perfect lighting, or lack of imperfections. The composition and lighting are realistic, capturing the environment of a tadpole in its natural habitat.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.09,
+   "response": "<rationale>\nThe image displays natural textures, lighting, and imperfections typical of a real photograph, such as the clarity of the tadpole's features, the presence of water droplets, and the organic background. These elements are consistent with real-world photography and not characteristic of AI-generated images, which often lack the subtle imperfections and natural imperfections found in real-life subjects. Additionally, the composition and focus are consistent with macro photography of aquatic life, which is not a common output of AI image generation.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.32,
    "peak_GB": 34.76
   },
   {
@@ -1428,18 +1454,18 @@
    "fused_score": 0.16525302827358246,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.280614297142e-10,
-   "vlm_logit": -22.778511,
+   "vlm_fake_probability": 1.4914529375299528e-13,
+   "vlm_logit": -29.533855,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 94,
+   "vlm_new_tokens": 129,
    "vlm_input_size": [
     504,
     336
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.16525302827358246,
-   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and subtle imperfections typical of real photographs. There are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or lack of variability in details. The scene includes a human baby with soft, natural skin tones and realistic sleeping posture, which are challenging for AI to replicate accurately without human intervention.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.04,
+   "response": "<rationale>\nThe image displays natural lighting, realistic textures, and a candid moment that is typical of real-life photography. The details, such as the baby's skin texture, the softness of the bedding, and the arrangement of the stuffed toys, are consistent with human photography. There are no telltale signs of AI manipulation, such as unnatural symmetry, overly perfect details, or inconsistencies in lighting and shadows that are common in AI-generated images. The overall composition and the presence of a real baby in a real environment are indicative of a genuine photograph.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.76,
    "peak_GB": 34.76
   },
   {
@@ -1451,22 +1477,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9925120763095021,
+   "fused_score": 0.7691615239742093,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9925120763095021,
-   "vlm_logit": 4.886948,
+   "vlm_fake_probability": 0.7691615239742093,
+   "vlm_logit": 1.203583,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 106,
+   "vlm_new_tokens": 140,
    "vlm_input_size": [
-    980,
-    980
+    1036,
+    1036
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.6109493970870972,
-   "response": "<rationale>\nThe image displays a level of detail and lighting that is characteristic of high-quality underwater photography but lacks the imperfections and variability typically seen in real-world images. The uniformity and clarity of the fish's features, along with the absence of natural imperfections like slight blurriness or minor inconsistencies, suggest it could be AI-generated. Real images often have more subtle variations due to environmental factors and the limitations of human photography.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 7.38,
-   "peak_GB": 37.87
+   "response": "<rationale>\nThe image displays a level of detail and lighting that is consistent with real underwater photography, but the uniformity and the slight imperfections in the fish's texture and coloration are not typical of natural variability. Additionally, the clarity and the absence of any imperfections that are often seen in AI-generated images, such as slight distortions or unnatural patterns, suggest it could be real. However, the absence of any environmental context that would be unique to a specific location or species, and the perfect lighting, are more indicative of AI generation. Real images often have more subtle variations and imperfections.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 9.45,
+   "peak_GB": 38.66
   },
   {
    "image": "GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png",
@@ -1478,20 +1504,20 @@
    "mode": "RGB",
    "verdict": "fake",
    "fused_score": 0.9873742461204529,
-   "decided_by": "both",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9840126445539576,
-   "vlm_logit": 4.119841,
+   "decided_by": "expert",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 1.0033021127454113e-05,
+   "vlm_logit": -11.509619,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 78,
+   "vlm_new_tokens": 123,
    "vlm_input_size": [
     504,
     504
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9873742461204529,
-   "response": "<rationale>\nThe image shows a fish with a texture and lighting that are consistent with real fish but lacks the imperfections and variability typically seen in natural images. The uniformity and lack of environmental context suggest it could be AI-generated. Real fish often have more varied scales and slight imperfections.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.43,
+   "response": "<rationale>\nThe image shows a realistic texture and lighting that is typical of real fish, but the uniformity and lack of imperfections are more consistent with a high-resolution photograph of a real fish. However, the angle and the absence of environmental context make it difficult to definitively determine authenticity. Real fish images usually have more varied textures and slight imperfections. Additionally, the image lacks the subtle variations and imperfections that are common in AI-generated images, such as slight inconsistencies in color or lighting that are not present here.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.67,
    "peak_GB": 34.85
   },
   {
@@ -1506,18 +1532,18 @@
    "fused_score": 0.47470757365226746,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.156603824303064e-09,
-   "vlm_logit": -20.577778,
+   "vlm_fake_probability": 1.004390405818184e-12,
+   "vlm_logit": -27.62664,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 92,
+   "vlm_new_tokens": 121,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.47470757365226746,
-   "response": "<rationale>\nThe image shows natural lighting and shadows consistent with outdoor photography. The texture of the fish and the person's clothing appear realistic but not overly detailed, which is typical for authentic photos. However, there are no telltale signs of AI generation such as imperfections, inconsistent lighting, or unusual proportions. The background and overall composition seem natural, supporting its authenticity.\n\n</rationale>\n<answer>\nThis is an authentic image.</answer>",
-   "seconds": 4.74,
+   "response": "<rationale>\nThe image shows natural lighting, realistic skin texture, and a detailed background that includes vegetation and a natural outdoor setting. There are no telltale signs of AI manipulation such as inconsistent shadows, unnatural proportions, or a lack of imperfections typical in AI-generated images. The person's expression and the fish's details are consistent with real-life photography. However, without advanced analysis tools, it's challenging to definitively rule out minor AI enhancements, but the overall composition and realism are consistent with authentic photography.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.16,
    "peak_GB": 34.68
   },
   {
@@ -1532,18 +1558,18 @@
    "fused_score": 0.03548572584986687,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.5221724328342676e-09,
-   "vlm_logit": -20.303127,
+   "vlm_fake_probability": 1.3002581386222077e-13,
+   "vlm_logit": -29.671043,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 85,
+   "vlm_new_tokens": 100,
    "vlm_input_size": [
     672,
     1008
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.03548572584986687,
-   "response": "<rationale>\nThe image shows detailed human features and a realistic texture consistent with photographs of real individuals. There are no telltale signs of AI generation such as imperfections, unnatural lighting, or inconsistencies in detail that are common in AI images. The lighting and shadowing are natural, and the person's expression and attire appear genuine.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 5.61,
+   "response": "<rationale>\nThe image displays natural lighting, realistic skin texture, and a detailed background that includes natural elements like trees, which are consistent with real photography. There are no telltale signs of AI manipulation such as unnatural symmetry, altered features, or inconsistent lighting. The attire and style are consistent with real-world appearances. These elements are characteristic of high-resolution, real-world photographs taken by professional photographers or cameras.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.41,
    "peak_GB": 36.26
   },
   {
@@ -1558,18 +1584,18 @@
    "fused_score": 0.10631993412971497,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.978783772121119e-10,
-   "vlm_logit": -22.343369,
+   "vlm_fake_probability": 1.1226920228451439e-13,
+   "vlm_logit": -29.817877,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 98,
+   "vlm_new_tokens": 118,
    "vlm_input_size": [
     1036,
     672
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.10631993412971497,
-   "response": "<rationale>\nThe image shows detailed human features, natural lighting, and a realistic setting with people in traditional religious attire. There are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or lack of imperfections typical in AI images. The scene captures a moment that aligns with historical and cultural contexts, which is challenging for AI to replicate accurately without specific training data.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 6.37,
+   "response": "<rationale>\nThe image displays a high level of detail, including the textures of the clothing, the lighting, and the background with people and architectural features. It captures a moment with natural human interaction and expressions, which are consistent with real-life photography. There are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or imperfections typical of AI images. The scene is a real-world event, and the quality aligns with professional photography of significant public or religious gatherings.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 7.42,
    "peak_GB": 36.35
   },
   {
@@ -1584,19 +1610,19 @@
    "fused_score": 0.05973216891288757,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 4.03464600527841e-11,
-   "vlm_logit": -23.933517,
+   "vlm_fake_probability": 6.903116730433265e-14,
+   "vlm_logit": -30.304218,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 105,
+   "vlm_new_tokens": 128,
    "vlm_input_size": [
-    1232,
-    812
+    1344,
+    896
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.05973216891288757,
-   "response": "<rationale>\nThe image shows a person in traditional papal attire, which includes a white robe and a cross necklace, consistent with historical photographs of Pope Francis. The lighting, shadows, and details such as the microphone and the background architecture are realistic and not typical of AI-generated images, which often lack natural imperfections or have an overly perfect quality. There are no telltale signs of AI manipulation like inconsistent textures or unusual proportions.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 7.43,
-   "peak_GB": 38.14
+   "response": "<rationale>\nThe image features a person in papal attire, which includes a distinctive white outfit, a cross necklace, and a white skullcap, all of which are characteristic of a real-life Pope. The setting appears to be a public space with architectural elements typical of the Vatican. The lighting, shadows, and the person's posture are consistent with real-life photography. There are no telltale signs of AI generation such as imperfections, inconsistent lighting, or unnatural details. The image quality and composition are consistent with professional photography of public figures.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 9.16,
+   "peak_GB": 39.68
   },
   {
    "image": "SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg",
@@ -1607,22 +1633,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999999990601576,
+   "fused_score": 0.9999999999999956,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999990601576,
-   "vlm_logit": 20.785309,
+   "vlm_fake_probability": 0.9999999999999956,
+   "vlm_logit": 33.036575,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 83,
+   "vlm_new_tokens": 115,
    "vlm_input_size": [
-    980,
-    980
+    1036,
+    1036
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9920044541358948,
-   "response": "<rationale>\nThe image displays highly detailed and unnatural elements such as the artificial-looking hand of the man, which is not typical of real human anatomy. Additionally, the overall composition and lighting have a polished, almost cinematic quality that is characteristic of AI-generated images. Real images usually lack the uniformity and precision seen here.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.16,
-   "peak_GB": 37.87
+   "response": "<rationale>\nThe image displays highly detailed and unrealistic features such as the perfect alignment of the characters, the unnatural lighting, and the presence of a non-human element (the artificial hand) which is not typical in real-life photography. Additionally, the level of detail in the textures and the overall composition surpasses what is commonly seen in real images, which are often less uniform and have more variability. These elements are characteristic of AI-generated images, where such inconsistencies and enhancements are common.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 8.13,
+   "peak_GB": 38.66
   },
   {
    "image": "SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg",
@@ -1633,22 +1659,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999999997720712,
+   "fused_score": 0.9999999999999929,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999997720712,
-   "vlm_logit": 22.201988,
+   "vlm_fake_probability": 0.9999999999999929,
+   "vlm_logit": 32.571365,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 97,
+   "vlm_new_tokens": 125,
    "vlm_input_size": [
-    980,
-    980
+    1092,
+    1092
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9869579672813416,
-   "response": "<rationale>\nThe image features a level of detail and lighting that is highly consistent with AI-generated images, including the perfect symmetry and the slightly unnatural placement of the party hat. Real photographs typically do not have such uniformity in lighting or the exact positioning of objects. Additionally, the overall composition and the way the fur is rendered suggest advanced AI capabilities that are not present in most authentic photos.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.9,
-   "peak_GB": 37.87
+   "response": "<rationale>\nThe image features an unusual combination of a dog wearing a party hat, which is not a common sight in real life. The lighting and details, such as the hat's texture and the dog's fur, have a uniformity and clarity that is more typical of AI-generated images. Real images usually have more variability in lighting and less perfect alignment of elements. Additionally, the overall composition and the way the dog is presented with a party hat is highly stylized, which is a telltale sign of AI generation.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 8.95,
+   "peak_GB": 39.59
   },
   {
    "image": "SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg",
@@ -1659,21 +1685,21 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999999761309691,
+   "fused_score": 0.9999999483780004,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999761309691,
-   "vlm_logit": 17.550684,
+   "vlm_fake_probability": 0.9999999483780004,
+   "vlm_logit": 16.779318,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 88,
+   "vlm_new_tokens": 123,
    "vlm_input_size": [
     1204,
     672
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9837949275970459,
-   "response": "<rationale>\nThe image displays a high level of detail and symmetry that is often characteristic of AI-generated images. The uniformity in the arrangement of the hot air balloons and the perfect lighting and colors are not typically found in real-world photographs. Additionally, the absence of imperfections or natural variations that are common in real images further supports this conclusion.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.09,
+   "response": "<rationale>\nThe image displays a high level of detail and symmetry that is often challenging to achieve in real photography, especially with such a uniform and vibrant color palette. The lighting and shadows are perfectly balanced, which is less common in real-world images. Additionally, the uniformity in the arrangement of the hot air balloons and the lack of imperfections or natural variations suggest a level of control and precision that is typical of AI-generated images. Real-world images usually have more variability in lighting, shadows, and natural imperfections.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 7.93,
    "peak_GB": 36.94
   },
   {
@@ -1685,22 +1711,22 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999998728806749,
+   "fused_score": 0.9999999999999905,
    "decided_by": "both",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999998728806749,
-   "vlm_logit": 15.878139,
+   "vlm_fake_probability": 0.9999999999999905,
+   "vlm_logit": 32.28688,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 89,
+   "vlm_new_tokens": 117,
    "vlm_input_size": [
-    1232,
-    812
+    1344,
+    896
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9909789562225342,
-   "response": "<rationale>\nThe image features a high level of detail and lighting that is characteristic of AI-generated images, including the uniformity and slight imperfections in texture that are not typically found in real photographs. The scene includes retro computer equipment and a specific lighting setup that aligns with a particular aesthetic often used in AI image generation for historical or nostalgic themes.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.59,
-   "peak_GB": 38.14
+   "response": "<rationale>\nThe image displays a highly detailed and stylized aesthetic that is not typical of real-world photography. The lighting, color grading, and the specific arrangement of objects, including the vintage computer and the precise shadows, are indicative of advanced AI image generation. Real images do not often feature such uniform and controlled lighting, nor do they include the level of detail in textures and reflections. Additionally, the overall composition and the slight imperfections that are common in AI-generated images are present here.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 8.54,
+   "peak_GB": 39.68
   },
   {
    "image": "WildRF/test/reddit/0_real/000219_0219.png",
@@ -1714,18 +1740,18 @@
    "fused_score": 0.06375599652528763,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 7.54515823865619e-12,
-   "vlm_logit": -25.610115,
+   "vlm_fake_probability": 1.658569953451568e-13,
+   "vlm_logit": -29.42765,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 83,
+   "vlm_new_tokens": 109,
    "vlm_input_size": [
     644,
     476
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.06375599652528763,
-   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and human behavior consistent with real-life scenarios. There are no telltale signs of AI generation such as imperfections, inconsistent lighting, or unnatural details. The scene includes everyday objects and clothing that appear genuine without any stylized or exaggerated features typical of AI images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.81,
+   "response": "<rationale>\nThe image displays natural lighting, realistic textures, and details such as the clothing, computer setup, and background that are consistent with real-life photography. There are no telltale signs of AI manipulation, such as inconsistencies in shadows, unusual proportions, or unnatural lighting. The scene includes human interaction with technology in a manner typical of real-world settings. No elements are out of place or overly stylized, which are common in AI-generated images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.11,
    "peak_GB": 34.96
   },
   {
@@ -1740,18 +1766,18 @@
    "fused_score": 0.12399419397115707,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.596393007431916e-10,
-   "vlm_logit": -22.071728,
+   "vlm_fake_probability": 6.868051137913219e-14,
+   "vlm_logit": -30.309311,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 95,
+   "vlm_new_tokens": 94,
    "vlm_input_size": [
     728,
     952
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.12399419397115707,
-   "response": "<rationale>\nThe image shows realistic details such as natural lighting, shadows, and textures consistent with real-life photography. The posture of the individuals and the context of handling large fish are plausible but not common in AI-generated images, which often lack subtle imperfections or realistic human movement. There are no telltale signs of AI manipulation like inconsistent lighting, unusual proportions, or unnatural details.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 6.22,
+   "response": "<rationale>\nThe image shows realistic details such as natural lighting, shadows, and textures on the fish and clothing. The posture and activity are consistent with human behavior in a real-world setting. There are no telltale signs of AI manipulation, such as inconsistent lighting, unusual proportions, or unnatural details. The scene includes everyday objects and clothing that are typical in real-life photographs.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.15,
    "peak_GB": 36.33
   },
   {
@@ -1766,19 +1792,19 @@
    "fused_score": 0.48800161480903625,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.6508360612545286e-11,
-   "vlm_logit": -24.827154,
+   "vlm_fake_probability": 3.3212992136887324e-14,
+   "vlm_logit": -31.035835,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 90,
+   "vlm_new_tokens": 115,
    "vlm_input_size": [
-    868,
-    1148
+    952,
+    1260
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.48800161480903625,
-   "response": "<rationale>\nThe image displays natural lighting, realistic color gradients, and detailed textures consistent with real-world photography. It features a specific geological formation and vegetation typical of the Grand Canyon, which are challenging to replicate accurately in AI-generated images. There are no telltale signs of AI manipulation such as unnatural symmetry, inconsistent lighting, or lack of real-world imperfections.\n\n</rationale>\n<answer>\nThis is an authentic image.</answer>",
-   "seconds": 6.67,
-   "peak_GB": 38.11
+   "response": "<rationale>\nThe image displays natural geological features, such as the Grand Canyon, with realistic lighting, shadows, and textures. It includes a tree that appears weathered and typical of the environment, which is consistent with real-world photography. There are no telltale signs of AI manipulation, such as unnatural symmetry, inconsistent lighting, or imperfections that are often present in AI-generated images. The composition and clarity are typical of high-resolution photographs taken by a camera in real-world conditions.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 8.51,
+   "peak_GB": 39.64
   },
   {
    "image": "GenImage_val_full/test/adm/1_fake/0_adm_34.PNG",
@@ -1792,18 +1818,18 @@
    "fused_score": 0.7897753119468689,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 2.0901089269085795e-09,
-   "vlm_logit": -19.98605,
+   "vlm_fake_probability": 2.302955483424122e-13,
+   "vlm_logit": -29.099413,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 90,
+   "vlm_new_tokens": 122,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.7897753119468689,
-   "response": "<rationale>\nThe image shows natural lighting, realistic skin texture, and a detailed background with plants, which are typical of real photographs. However, there are no telltale signs of AI generation such as inconsistencies in lighting, unusual proportions, or imperfections that are often present in AI images. The overall composition and clarity align with human photography rather than AI rendering.\n\n</rationale>\n<answer>\nThis is an authentic image.</answer>",
-   "seconds": 4.64,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and details such as the fish's scales, the person's clothing, and the background vegetation. These elements are consistent with real-life photography but lack the imperfections or anomalies often seen in AI-generated images. The composition and clarity are typical of amateur or professional fishing photos, which are not common in AI outputs. There are no\u6c34\u5370\u6216\u6c34\u5370\uff0cwhich are often present in AI-generated images. The overall quality and imperfections align with real-world photography.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.21,
    "peak_GB": 34.68
   },
   {
@@ -1818,18 +1844,18 @@
    "fused_score": 0.9294722676277161,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 0.02625905581691653,
-   "vlm_logit": -3.613134,
+   "vlm_fake_probability": 1.7469143883832615e-09,
+   "vlm_logit": -20.165415,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 79,
+   "vlm_new_tokens": 113,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.9294722676277161,
-   "response": "The image shows natural lighting and shadows that are consistent with real-world conditions. The texture of the clothing and the grass appears realistic but not overly detailed, which could be a characteristic of AI-generated images. However, the overall composition and imperfections are more aligned with human photography rather than the uniform perfection often seen in AI-generated images.\n\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.11,
+   "response": "<rationale>\nThe image shows natural lighting, realistic textures, and a consistent color palette typical of real-world photography. However, the uniformity and slight imperfections in the person's appearance, such as the lack of subtle variations in skin tone or clothing texture, are not characteristic of AI-generated images. Additionally, the setting and composition are straightforward and lack the complexity often seen in AI-generated scenes. Real images usually have more nuanced details and variations that AI struggles to replicate perfectly.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.77,
    "peak_GB": 34.68
   },
   {
@@ -1844,18 +1870,18 @@
    "fused_score": 0.26814553141593933,
    "decided_by": "neither",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 7.92913342197482e-06,
-   "vlm_logit": -11.744959,
+   "vlm_fake_probability": 4.8403631255455345e-12,
+   "vlm_logit": -26.054031,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 83,
+   "vlm_new_tokens": 104,
    "vlm_input_size": [
     504,
     364
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.26814553141593933,
-   "response": "<rationale>\nThe image exhibits a high level of detail and a specific color gradient that is characteristic of real jellyfish but not typical of AI-generated images, which often lack the nuanced imperfections and natural variations seen here. The lighting and texture also align with real-world photography rather than the uniformity usually associated with AI outputs.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.52,
+   "response": "<rationale>\nThe image displays natural lighting and texture consistent with a real jellyfish in water, including the subtle variations in color and the organic shape. However, the image quality and the slight noise could be indicative of a high-resolution photograph, but the imperfections and the specific lighting are not typical of AI-generated images, which often have more uniform and less varied textures. The absence of any AI-specific artifacts further supports its authenticity.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.57,
    "peak_GB": 34.77
   },
   {
@@ -1870,18 +1896,18 @@
    "fused_score": 0.5115518569946289,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 8.603125255407945e-09,
-   "vlm_logit": -18.57114,
+   "vlm_fake_probability": 6.279910161375636e-13,
+   "vlm_logit": -28.096251,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 99,
+   "vlm_new_tokens": 109,
    "vlm_input_size": [
     140,
     140
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.5115518569946289,
-   "response": "<rationale>\nThe image shows a close-up of what appears to be a natural object with organic textures and imperfections typical of real-world objects. However, the lighting and clarity do not exhibit the uniformity or the lack of detail often seen in AI-generated images. There are no telltale signs such as inconsistent shadows, perfect symmetry, or the absence of real-world noise that AI images commonly have.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.99,
+   "response": "<rationale>\nThe image shows a close-up of a biological specimen with natural textures and imperfections, such as color variations and irregularities, which are typical of real-life photographs. There are no telltale signs of AI generation, such as unnatural symmetry, lack of real-world imperfections, or inconsistent lighting. The image appears to be a photograph of a real object, possibly a fish or a similar creature, given the visible scales and body structure.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 5.48,
    "peak_GB": 34.65
   },
   {
@@ -1896,18 +1922,18 @@
    "fused_score": 0.8589500784873962,
    "decided_by": "expert",
    "vlm_verdict": "real",
-   "vlm_fake_probability": 1.1970792010880078e-10,
-   "vlm_logit": -22.845966,
+   "vlm_fake_probability": 1.5562349125122991e-13,
+   "vlm_logit": -29.491337,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 78,
+   "vlm_new_tokens": 95,
    "vlm_input_size": [
     252,
     252
    ],
    "dda_verdict": "fake",
    "dda_fake_probability": 0.8589500784873962,
-   "response": "<rationale>\nThe image shows natural lighting and texture consistent with a real photograph of a cat. There are no telltale signs of AI generation such as unnatural symmetry, lack of imperfections, or inconsistent lighting patterns. The details in the fur and background are typical of a high-resolution real photo.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
-   "seconds": 4.06,
+   "response": "<rationale>\nThe image shows natural lighting, realistic fur texture, and a clear, unaltered background that is consistent with a photograph of a real cat. There are no telltale signs of AI manipulation such as unnatural symmetry, inconsistent lighting, or a lack of real-world imperfections. The image quality and details are typical of a high-resolution photograph taken with a standard camera.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 4.9,
    "peak_GB": 34.68
   },
   {
@@ -1919,21 +1945,21 @@
    ],
    "mode": "RGB",
    "verdict": "fake",
-   "fused_score": 0.9999987395874451,
+   "fused_score": 0.9999989241405796,
    "decided_by": "vlm",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999987395874451,
-   "vlm_logit": 13.58407,
+   "vlm_fake_probability": 0.9999989241405796,
+   "vlm_logit": 13.74239,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 108,
+   "vlm_new_tokens": 130,
    "vlm_input_size": [
     504,
     504
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.4431856870651245,
-   "response": "<rationale>\nThe image features an unusual combination of a fish and a human-like hand, which is not a typical natural occurrence. The lighting and coloration are highly stylized and uniform, lacking the variability and imperfections found in real photographs. Additionally, the blending of elements is too perfect, which is characteristic of AI image generation techniques that can manipulate and combine disparate elements in ways that mimic artistic styles but do not align with real-world constraints.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 5.91,
+   "response": "<rationale>\nThe image displays a high level of detail and a unique combination of features that are not typical of real fish, such as the ethereal quality and the way light interacts with the subject. Real fish do not have such a smooth, almost translucent appearance, and the lighting and color gradient are not consistent with natural lighting. Additionally, the image lacks the imperfections and variations seen in real photographs. These characteristics are more aligned with AI-generated images, which can manipulate and combine elements in ways that mimic but often exceed the limits of real-world photography.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 7.02,
    "peak_GB": 34.85
   },
   {
@@ -1945,21 +1971,21 @@
    ],
    "mode": "L",
    "verdict": "fake",
-   "fused_score": 0.9999999958985448,
+   "fused_score": 0.9999999999999793,
    "decided_by": "vlm",
    "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999999958985448,
-   "vlm_logit": 19.311924,
+   "vlm_fake_probability": 0.9999999999999793,
+   "vlm_logit": 31.506516,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 84,
+   "vlm_new_tokens": 106,
    "vlm_input_size": [
     504,
     504
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.29839473962783813,
-   "response": "<rationale>\nThe image displays a high level of symmetry and uniformity, which is characteristic of AI-generated images. Real-world objects typically have imperfections or variations not present here. Additionally, the lack of any context or background elements is common in AI-generated images, as they often focus solely on the subject without environmental details.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 4.73,
+   "response": "<rationale>\nThe image displays a high level of symmetry and uniformity that is characteristic of AI-generated graphics. Real-world objects typically have imperfections or variations in texture and shading that are absent here. Additionally, the precise, clean lines and lack of real-world context suggest it is not a photograph of a physical object. The uniformity in the pattern and the absence of any real-world imperfections are hallmarks of AI image generation.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
+   "seconds": 5.83,
    "peak_GB": 34.85
   },
   {
@@ -1970,22 +1996,22 @@
     500
    ],
    "mode": "RGB",
-   "verdict": "fake",
-   "fused_score": 0.9999321080126666,
-   "decided_by": "vlm",
-   "vlm_verdict": "fake",
-   "vlm_fake_probability": 0.9999321080126666,
-   "vlm_logit": 9.597525,
+   "verdict": "real",
+   "fused_score": 0.3576059639453888,
+   "decided_by": "neither",
+   "vlm_verdict": "real",
+   "vlm_fake_probability": 1.5414346439716904e-13,
+   "vlm_logit": -29.500893,
    "vlm_score_source": "verdict_token",
-   "vlm_new_tokens": 119,
+   "vlm_new_tokens": 113,
    "vlm_input_size": [
     448,
     504
    ],
    "dda_verdict": "real",
    "dda_fake_probability": 0.3576059639453888,
-   "response": "<rationale>\nThe image displays a high level of detail and uniformity in texture and coloration that is characteristic of brain coral but not typically seen in natural variations. Brain corals have unique patterns that can vary slightly due to environmental factors, but this image lacks the subtle imperfections and random variations found in real-world specimens. Additionally, the vivid, almost perfect symmetry and the lack of any imperfections or irregularities are more aligned with AI-generated images, which can produce highly detailed and consistent patterns.\n\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>",
-   "seconds": 6.39,
+   "response": "<rationale>\nThe image displays intricate, natural patterns and textures that are characteristic of real-life brain coral, which are complex and detailed. These features, including the consistent color gradient and the organic, irregular shapes, are highly detailed and typical of underwater photography. AI-generated images usually lack the nuanced imperfections and the specific biological patterns found in real coral. Additionally, the image resolution and lighting are consistent with natural photography, not the uniform and sometimes unrealistic quality of AI-generated images.\n\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>",
+   "seconds": 6.11,
    "peak_GB": 34.81
   }
  ],
@@ -1994,13 +2020,15 @@
    "final_equal": "24/24",
    "dda_equal": "24/24",
    "vlm_equal": "24/24",
+   "vlm_answer_parsed_equal": "24/24",
    "text_equal": "24/24",
    "score_side_ok": "24/24",
+   "official_vlm_answers_unparsed": 0,
    "all_decisions_identical": true,
    "max_abs_dda_probability_diff": 2.115964889526367e-06,
    "disagreements_vlm_vs_dda": 7,
-   "decided_by_expert_only": 4,
-   "decided_by_vlm_only": 3
+   "decided_by_expert_only": 5,
+   "decided_by_vlm_only": 2
   },
   "per_image": [
    {
@@ -2012,6 +2040,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2027,6 +2056,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2042,6 +2072,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2057,6 +2088,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2067,11 +2099,12 @@
     "image": "GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png",
     "official": {
      "fake": true,
-     "vlm_fake": true,
+     "vlm_fake": false,
      "expert_fake": true
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2087,6 +2120,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2102,6 +2136,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2117,6 +2152,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2132,6 +2168,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2147,6 +2184,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2162,6 +2200,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2177,6 +2216,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2192,6 +2232,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2207,6 +2248,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2222,6 +2264,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2237,6 +2280,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2252,6 +2296,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2267,6 +2312,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2282,6 +2328,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2297,6 +2344,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2312,6 +2360,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2327,6 +2376,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2342,6 +2392,7 @@
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2351,12 +2402,13 @@
    {
     "image": "GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG",
     "official": {
-     "fake": true,
-     "vlm_fake": true,
+     "fake": false,
+     "vlm_fake": false,
      "expert_fake": false
     },
     "final_equal": true,
     "vlm_equal": true,
+    "vlm_answer_parsed_equal": true,
     "dda_equal": true,
     "text_equal": true,
     "score_side_ok": true,
@@ -2366,10 +2418,10 @@
   ]
  },
  "official_bf16_vs_fp32": {
-  "final_equal": "22/24",
-  "vlm_equal": "21/24",
+  "final_equal": "24/24",
+  "vlm_equal": "23/24",
   "dda_equal": "24/24",
-  "text_equal": "5/24"
+  "text_equal": "2/24"
  },
  "summary": {
   "n_images": 24,
@@ -2377,44 +2429,48 @@
    "final_equal": "24/24",
    "dda_equal": "24/24",
    "vlm_equal": "24/24",
+   "vlm_answer_parsed_equal": "24/24",
    "text_equal": "24/24",
    "score_side_ok": "24/24",
+   "official_vlm_answers_unparsed": 0,
    "all_decisions_identical": true,
    "max_abs_dda_probability_diff": 2.115964889526367e-06,
-   "disagreements_vlm_vs_dda": 10,
-   "decided_by_expert_only": 5,
-   "decided_by_vlm_only": 5
+   "disagreements_vlm_vs_dda": 8,
+   "decided_by_expert_only": 6,
+   "decided_by_vlm_only": 2
   },
   "fp32_eager": {
    "final_equal": "24/24",
    "dda_equal": "24/24",
    "vlm_equal": "24/24",
+   "vlm_answer_parsed_equal": "24/24",
    "text_equal": "24/24",
    "score_side_ok": "24/24",
+   "official_vlm_answers_unparsed": 0,
    "all_decisions_identical": true,
    "max_abs_dda_probability_diff": 2.115964889526367e-06,
    "disagreements_vlm_vs_dda": 7,
-   "decided_by_expert_only": 4,
-   "decided_by_vlm_only": 3
+   "decided_by_expert_only": 5,
+   "decided_by_vlm_only": 2
   },
   "official_bf16_vs_fp32": {
-   "final_equal": "22/24",
-   "vlm_equal": "21/24",
+   "final_equal": "24/24",
+   "vlm_equal": "23/24",
    "dda_equal": "24/24",
-   "text_equal": "5/24"
+   "text_equal": "2/24"
   },
   "correct_bf16": {
-   "final": 18,
-   "vlm": 13,
+   "final": 21,
+   "vlm": 15,
    "dda": 23
   },
-  "engine_bf16_seconds_per_image": 5.21,
-  "engine_bf16_peak_GB_max": 18.49,
-  "engine_fp32_seconds_per_image": 5.93,
-  "engine_fp32_peak_GB_max": 38.14,
+  "engine_bf16_seconds_per_image": 6.26,
+  "engine_bf16_peak_GB_max": 18.58,
+  "engine_fp32_seconds_per_image": 7.24,
+  "engine_fp32_peak_GB_max": 39.68,
   "official_wall_seconds_incl_load": {
-   "bf16": 163,
-   "fp32": 159
+   "bf16": 176,
+   "fp32": 191
   }
  }
 }

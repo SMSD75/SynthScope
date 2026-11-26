@@ -27,9 +27,10 @@ ModelScope team) and qwen-vl-utils 0.0.14 (Apache-2.0, Copyright the Qwen team, 
        image above ``--max_pixels`` with ``rescale_image`` (torchvision ``Resize`` to int(sqrt(max_pixels / ratio)) rows,
        bilinear), then the Qwen-VL template's ``replace_tag`` calls qwen-vl-utils ``fetch_image``: ``to_rgb`` and a PIL
        ``resize`` (Pillow's default filter, bicubic) to ``smart_resize``'s size (both sides multiples of 28 = patch 14 x
-       merge 2, pixels within [min_pixels, max_pixels]; swift sets qwen-vl-utils' IMAGE_MAX_TOKEN_NUM from the
-       MAX_PIXELS environment variable, i.e. max_pixels / 28^2 tokens). The processor is then called with
-       ``do_resize=False`` (``Qwen2VLTemplate._encode``).
+       merge 2, pixels within [min_pixels, fetch cap]; swift's ``compat_qwen_vl_utils`` sets qwen-vl-utils'
+       IMAGE_MAX_TOKEN_NUM to ``int(MAX_PIXELS) // 28^2`` tokens, so the fetch cap is ``max_pixels // 784 * 784``:
+       ``max_pixels`` itself when it is a multiple of 784 (1,003,520), 1,209,712 for 1,210,000). The processor is then
+       called with ``do_resize=False`` (``Qwen2VLTemplate._encode``).
 
 transformers 4.45.2 CLIP image processor (FakeVLM: its official ``eval.py`` pins transformers 4.45.2 and calls the
 llava-hf LLaVA-1.5 processor on the file as ``Image.open`` returns it). Ported from transformers 4.45.2 (Apache-2.0,
@@ -167,10 +168,19 @@ def qwen_vl_fetch_image(image: Image.Image, min_pixels: int = QWEN_VL_MIN_PIXELS
     return image.resize((resized_width, resized_height))
 
 
+def swift_fetch_max_pixels(max_pixels: int) -> int:
+    """qwen-vl-utils' ``fetch_image`` cap under ``MAX_PIXELS=max_pixels``: swift's ``compat_qwen_vl_utils`` sets
+    IMAGE_MAX_TOKEN_NUM = ``int(max_pixels) // 28**2`` and ``fetch_image`` multiplies it back by 28**2."""
+    return int(max_pixels) // QWEN_VL_FACTOR ** 2 * QWEN_VL_FACTOR ** 2
+
+
 def swift_qwen_vl_resize(image: Image.Image, max_pixels: int, min_pixels: int = QWEN_VL_MIN_PIXELS) -> Image.Image:
-    """What ``swift infer --max_pixels max_pixels`` does to an (already ``swift_rgb``) image of a Qwen2-VL / Qwen2.5-VL
-    model before the processor (called with ``do_resize=False``): ``rescale_image``, then ``fetch_image``."""
-    return qwen_vl_fetch_image(swift_rescale_image(image, max_pixels), min_pixels=min_pixels, max_pixels=max_pixels)
+    """What ``swift infer --max_pixels max_pixels`` (with ``MAX_PIXELS=max_pixels`` in the environment, as the official
+    ``predict.py`` sets it) does to an (already ``swift_rgb``) image of a Qwen2-VL / Qwen2.5-VL model before the
+    processor (called with ``do_resize=False``): ``rescale_image`` at ``max_pixels``, then ``fetch_image`` at the
+    token-rounded cap ``swift_fetch_max_pixels(max_pixels)``."""
+    return qwen_vl_fetch_image(swift_rescale_image(image, max_pixels), min_pixels=min_pixels,
+                               max_pixels=swift_fetch_max_pixels(max_pixels))
 
 
 # --- transformers 4.45.2 CLIPImageProcessor (LLaVA-1.5 / FakeVLM) ------------------------------------------------------

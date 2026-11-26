@@ -59,6 +59,8 @@ def main(argv=None) -> int:
     ok = bad = 0
     for f in sorted(Path(args.results).glob("*/*.json")):
         r = json.loads(f.read_text())
+        if "means" not in r or "tag" not in r:     # not a bench_eval / fuse.py result (e.g. unparsed_answers.json)
+            continue
         if only and r["model"] not in only:
             continue
         means = (r["means"]["map"], r["means"]["mauroc"], r["means"]["acc"])

@@ -22,13 +22,13 @@ export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTORCH_CUDA_ALLOC_CONF=expandabl
 SRC=/ssdstore/ssalehi/SynthScope                        # ivi-cn029: weights + images
 G=/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared
 SWIFT_BIN=$G/vlm_gate/bin/swift                         # ms-swift 4.4.2 entry point (pip --target in vlm_pydeps/swift442)
-REF=$G/vlm_ref/Align-Dont-Blend-20261120                # official code, commit 5d83e40
+REF=$G/vlm_ref/Align-Dont-Blend-cf168db                 # official code, commit cf168db (the 5d83e40 run: job 296802)
 PY=/home/ssalehi/miniconda3/envs/AGID/bin/python        # the SynthScope env (symlinked as envs/SynthScope)
 DDA_SHA=b27a31d39374803ddeff02bfabb2be76e190b04300490cddfafb24f683f37e3e   # HF Junwei-Xi/Dual-Data-Alignment DDA_ckpt.pth (LFS)
 WT=${SYNTHSCOPE_REPO:-${SLURM_SUBMIT_DIR:-$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)}}
 [ -f "$WT/repro/adb_full_fidelity.py" ] || { echo "$WT is not the SynthScope repo root (submit from it, or set SYNTHSCOPE_REPO)"; exit 4; }
 [ "$(git -C $WT status --short --untracked-files=no | wc -l)" = 0 ] || { echo "worktree has uncommitted tracked files"; exit 5; }
-[ "$(git -C $REF rev-parse --short=7 HEAD)" = 5d83e40 ] || { echo "official clone is not at 5d83e40"; exit 5; }
+[ "$(git -C $REF rev-parse --short=7 HEAD)" = cf168db ] || { echo "official clone is not at cf168db"; exit 5; }
 [ -z "$(git -C $REF status --short)" ] || { echo "official clone is modified"; exit 5; }
 ONSRC=0
 if [ "$(hostname -s)" = ivi-cn029 ]; then S=$SRC; ONSRC=1
@@ -97,6 +97,8 @@ if [ $ONSRC = 1 ]; then rsync -a --files-from=$J/files.txt $SRC/ $J/data/
 else rsync -a --files-from=$J/files.txt ssalehi@ivi-cn029:$SRC/ $J/data/; fi
 (cd $J/data && sha1sum $(cat $J/files.txt))
 $PY repro/adb_full_fidelity.py select --data $J/data --out $J/selection.json --inputs $J/inputs.txt
+$PY -c "import json,sys; a,b=(json.load(open(f))['selected'] for f in sys.argv[1:]); assert a==b, (a,b); print('the 8 selected images == the committed selection')" \
+   $J/selection.json $WT/repro/adb_full_fidelity_official/selection.json
 $PY -c "
 from PIL import Image
 for p in open('$J/inputs.txt').read().split():

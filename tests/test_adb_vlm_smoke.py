@@ -3,21 +3,23 @@ files needed.
 
 Checks:
 [A] the verdict parser = the official ``parse_vlm_verdict`` (``detector/core.py``; True -> "fake", False -> "real", a
-    ValueError -> None): with the official clone ($ADB_OFFICIAL_DIR, default SynthScope_shared/vlm_ref/Align-Dont-Blend)
-    the official function itself is run on every case (skipped otherwise); ``adb_verdict_offset`` points at the verdict
-    word exactly when the parser read a tag-less final line;
-[B] the prompts equal ``VLM_SYSTEM_PROMPT`` / ``VLM_USER_PROMPT`` of the official file (the user prompt minus its
-    "<image>" tag; skipped without the clone); ``VLMFamily.prompt`` sends [system, user: [image, text]]; with the
-    released base folder ($SYNTHSCOPE_CKPT_DIR/qwen2.5-vl-7b-instruct) the rendered request equals the gate check's
-    (skipped otherwise);
+    ValueError -> None) and the detector's parser ``parse_adb_default_real`` = ``predict.py``'s decision since 898b607 (a
+    ValueError -> "real"): with the official clone ($ADB_OFFICIAL_DIR, default
+    SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db) the official function itself is run on every case (skipped
+    otherwise); ``adb_verdict_offset`` points at the verdict word exactly when the parser read a tag-less final line;
+[B] the prompts equal ``VLM_SYSTEM_PROMPT`` / ``VLM_USER_PROMPT`` of the official file @ cf168db (the user prompt minus
+    its "<image>" tag, no newline after it; skipped without the clone); ``VLMFamily.prompt`` sends [system, user: [image,
+    text]]; with the released base folder ($SYNTHSCOPE_CKPT_DIR/qwen2.5-vl-7b-instruct) the rendered request equals the
+    Qwen2.5-VL request swift builds (skipped otherwise);
 [C] image handling = ms-swift's: ``swift_rgb`` (no EXIF rotation, alpha dropped) and ``swift_qwen_vl_resize`` against
     ms-swift 4.4.2's own ``load_image`` / ``rescale_image`` (compiled from $SWIFT_DIR/swift/template/vision_utils.py) and
     qwen-vl-utils' own ``fetch_image`` with swift's IMAGE_MAX_TOKEN_NUM patch, pixel for pixel, on images below the
-    minimum, between, above the 1,003,520-pixel cap and with a 7:1 aspect ratio (skipped where a package is missing);
+    minimum, between, above the 1,210,000-pixel cap, in the band where the token-rounded fetch cap (1,209,712) and
+    1,210,000 give different sizes, and with a 7:1 aspect ratio (skipped where a package is missing);
 [D] the score words on a stub byte-level vocabulary: "ĠAI" <-> "Ġauthentic" pairs, an "AI" in the rationale (before
     "<answer>") is not the verdict; ``offset_step``: the token holding the parser's offset (the final line's "AI", not the
     rationale's), None where the text does not match or the token is no verdict word;
-[E] the registry spec, the decoding (greedy, 512 tokens, repetition penalty 1.05 = official), the input note, the zoo
+[E] the registry spec, the decoding (greedy, 512 tokens, repetition penalty 1.0 = official), the input note, the zoo
     block list, the LICENSES row, the Space allow-list, the download hint naming both the adapter and the base, a missing
     base folder (not available; the engine names it);
 [F] a tiny random Qwen2.5-VL (patch 14, merge 2) + a tiny local processor + a tiny LoRA (no released files) through the
@@ -25,13 +27,17 @@ Checks:
     socket connection while loading (the adapter config names the base by its Hub id, as the release does), unmerged,
     forward == a direct peft load; the preprocess hook (input size, prompt tokens and pixel values == the
     processor on the swift-resized image with ``do_resize=False``); a forced answer: the verdict step after "<answer>",
-    logit == the RAW ``output_logits`` gap (repetition penalty 1.05 active; the penalised ``output_scores`` gap differs and
-    is not used), parsed verdict; forced TAG-LESS answers (no ``<answer>``, the final line "This is an ... image."): the
+    logit == the RAW ``output_logits`` gap (repetition penalty 1.0: equal to the processed ``output_scores`` gap, though
+    the tiny base's generation_config says 1.05), parsed verdict; forced TAG-LESS answers (no ``<answer>``, the final line "This is an ... image."): the
     score is read at the final line's verdict word ("verdict_word"), not the rationale's "AI"; a parsed verdict whose word
-    is not locatable is "unscored" (P 0.5, logit 0); free greedy tokens == a direct peft generate; the key-rename hook: an adapter saved under
+    is not locatable is "unscored" (P 0.5, logit 0); answers the official parser rejects (two answer tags, an
+    unknown answer) are "real", ``answer_parsed`` False, and scored on the Real side (logit = min(gap, 0), forced and
+    with a stub gap of either sign); free greedy tokens == a direct peft generate; the key-rename hook: an adapter saved under
     the pre-4.52 key layout loads and passes the strict check (and fails it without the hook), an unknown key still
     fails, a pre-4.52 vision-tower LoRA (which peft leaves unloaded) fails;
 [G] with the released adapter + base and a GPU: the engine loads strictly and scores one image (skipped otherwise).
+[H] bench_eval counts an answer the official parser rejects as unparsed (the record's ``answer_parsed``, or the
+    hook on the stored response for older records) while its accuracy uses the Real verdict.
 """
 
 from __future__ import annotations
@@ -73,21 +79,25 @@ from interface.backend.engine import Engine                                     
 from interface.backend.registry import get_spec, input_note                         # noqa: E402
 from models.image.adb_vlm.adb_vlm import (ADB_VLM, GREEDY_DECODING, MAX_PIXELS, SYSTEM_PROMPT, USER_PROMPT,   # noqa: E402
                                           USER_PROMPT_OFFICIAL)
-from models.vlm.image import QWEN_VL_MIN_PIXELS, swift_qwen_vl_resize, swift_rgb   # noqa: E402
-from models.vlm.parsers import adb_verdict_offset, parse_adb                        # noqa: E402
-from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, load_lora_unmerged,   # noqa: E402
-                            locate_verdict, offset_step, token_pieces, verdict_pair_map, verdict_score)
+from models.vlm.image import (QWEN_VL_MIN_PIXELS, qwen_vl_smart_resize, swift_fetch_max_pixels,   # noqa: E402
+                              swift_qwen_vl_resize, swift_rgb)
+from models.vlm.parsers import adb_answer_parsed, adb_verdict_offset, parse_adb, parse_adb_default_real   # noqa: E402
+from models.vlm import vlm as vlm_module                                            # noqa: E402
+from models.vlm.vlm import (QWEN_VL, LogitRecorder, ProcessedLogitRecorder, SynthScopeVLM, gap_fields,   # noqa: E402
+                            load_lora_unmerged, locate_verdict, offset_step, token_pieces, verdict_pair_map, verdict_score)
 from synthscope import hub                                                          # noqa: E402
 from synthscope.api import Detector                                                 # noqa: E402
 
 SHARED = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared")
-ADB_DIR = Path(os.environ.get("ADB_OFFICIAL_DIR", SHARED / "vlm_ref" / "Align-Dont-Blend"))
+ADB_DIR = Path(os.environ.get("ADB_OFFICIAL_DIR", SHARED / "vlm_ref" / "Align-Dont-Blend-cf168db"))
 SWIFT_DIR = Path(os.environ.get("SWIFT_DIR", SHARED / "vlm_pydeps" / "swift442"))
 BASE_FOLDER = backend_config.CHECKPOINTS_DIR / ADB_VLM.base_model
 ADAPTER_FOLDER = backend_config.CHECKPOINTS_DIR / "adb_vlm"
-# The request the 2026-11-16 gate check sent (vlm_gate/out/adb_score_unmerged_pil_rep1.05.json, "prompt_text").
-GATE_PROMPT = ("<|im_start|>system\n" + SYSTEM_PROMPT + "<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|>"
-               "<|vision_end|>\nWhether the image is authentic or AI-generated?<|im_end|>\n<|im_start|>assistant\n")
+# The Qwen2.5-VL request swift builds from predict.py's messages @ cf168db: swift replaces "<image>" with the vision tokens,
+# so the task prompt follows <|vision_end|> directly (no newline).
+GATE_PROMPT = ("<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|>"
+               "<|vision_end|>Role: AI visual assistant\n" + USER_PROMPT.split("\n", 1)[1] + "<|im_end|>\n"
+               "<|im_start|>assistant\n")
 PARSER_CASES = {
     "<rationale>\nx\n</rationale>\n<answer>\nThis is an AI-generated image.\n</answer>": "fake",
     "<rationale>\nx\n</rationale>\n<answer>\nThis is an authentic image.\n</answer>": "real",
@@ -252,6 +262,7 @@ def test_parser() -> None:
     print("[A] parser = the official parse_vlm_verdict ...")
     for text, expected in PARSER_CASES.items():
         assert parse_adb(text) == expected, (text, parse_adb(text))
+        assert parse_adb_default_real(text) == (expected or "real"), text
         # the verdict-offset hook: set exactly when the parser read a tag-less final line, at its verdict word
         offset = adb_verdict_offset(text)
         if expected is not None and re.search(r"<answer>.*?</answer>", text, re.IGNORECASE | re.DOTALL) is None:
@@ -274,7 +285,9 @@ def test_parser() -> None:
         except ValueError:
             want = None
         assert want == parse_adb(text), (text, want)
-    print(f"    {len(PARSER_CASES)} cases, identical to the official parse_vlm_verdict (ValueError -> unparsed)")
+        assert parse_adb_default_real(text) == (want or "real"), text           # predict.py @ 898b607: ValueError -> Real
+    print(f"    {len(PARSER_CASES)} cases, identical to the official parse_vlm_verdict (ValueError -> unparsed; the "
+          f"detector's decision: Real, as predict.py)")
 
 
 class StubProcessor:
@@ -296,9 +309,10 @@ def test_prompt() -> None:
         print("    system / user prompts identical to the official detector/core.py")
     else:
         print("    official detector/core.py not found, prompt comparison skipped")
-    assert USER_PROMPT_OFFICIAL == "<image>" + USER_PROMPT and USER_PROMPT == "\nWhether the image is authentic or AI-generated?"
+    assert USER_PROMPT_OFFICIAL == "<image>" + USER_PROMPT and USER_PROMPT.startswith("Role: AI visual assistant\n")
+    assert SYSTEM_PROMPT == "You are a helpful assistant." and "Whether the image" not in USER_PROMPT
+    assert "only output" not in USER_PROMPT and "AI-generated. \n\nTasks:" in USER_PROMPT   # 2f0adbc; trailing space kept
     assert ADB_VLM.system_prompt == SYSTEM_PROMPT and ADB_VLM.user_prompt == USER_PROMPT
-    assert "“This is an authentic image.”" in SYSTEM_PROMPT and "•" in SYSTEM_PROMPT     # curly quotes, bullets kept
     stub = StubProcessor()
     assert QWEN_VL.prompt(stub, ADB_VLM) == "rendered"
     messages, kwargs = stub.calls[0]
@@ -309,7 +323,7 @@ def test_prompt() -> None:
         with quiet():
             processor = transformers.AutoProcessor.from_pretrained(str(BASE_FOLDER), local_files_only=True)
         assert QWEN_VL.prompt(processor, ADB_VLM) == GATE_PROMPT
-        print("    rendered request == the gate check's request (released base processor)")
+        print("    rendered request == swift's Qwen2.5-VL request (released base processor)")
     else:
         print("    released base processor not found here, rendered-request check skipped (tiny processor: [F])")
 
@@ -330,6 +344,7 @@ def test_image_handling() -> None:
                            ("mid_jpeg", rgb_image(504, 364, 3), "JPEG"),
                            ("above_cap", rgb_image(1024, 1024, 4), "PNG"),             # rescale_image, then fetch_image
                            ("wide_above_cap", rgb_image(2800, 400, 5), "JPEG"),        # 7:1
+                           ("cap_band", rgb_image(1304, 911, 7), "PNG"),                # fetch cap 1,209,712 vs 1,210,000
                            ("rgba", Image.fromarray((rng.rand(300, 220, 4) * 255).astype("uint8"), "RGBA"), "PNG"),
                            ("gray", Image.fromarray((rng.rand(90, 120) * 255).astype("uint8"), "L"), "PNG"),
                            ("exif_rot", rgb_image(53, 37, 6), "JPEG")):
@@ -342,6 +357,12 @@ def test_image_handling() -> None:
         assert w % 28 == 0 and h % 28 == 0 and QWEN_VL_MIN_PIXELS <= w * h <= MAX_PIXELS, (n, im.size)
         assert ADB_VLM.preprocess(swift_rgb(media.decode_image_raw(files[n])), **ADB_VLM.preprocess_kwargs).tobytes() == im.tobytes()
     assert ours["gate_adm_like"].size == (252, 252)
+    # 1304 x 911 (1,187,944 px, below the cap: not rescaled): fetch_image's cap is 1,543 tokens (1,209,712 px; swift's
+    # MAX_PIXELS -> IMAGE_MAX_TOKEN_NUM rounding), giving 1288 x 896; a cap of 1,210,000 would give 1316 x 896
+    assert swift_fetch_max_pixels(MAX_PIXELS) == 1543 * 784 == 1209712
+    assert qwen_vl_smart_resize(911, 1304, max_pixels=1209712) == (896, 1288)
+    assert qwen_vl_smart_resize(911, 1304, max_pixels=MAX_PIXELS) == (896, 1316)
+    assert ours["cap_band"].size == (1288, 896)
     vision_utils = SWIFT_DIR / "swift" / "template" / "vision_utils.py"
     try:
         from qwen_vl_utils import vision_process
@@ -360,7 +381,7 @@ def test_image_handling() -> None:
             assert official.size == ours[n].size and official.tobytes() == ours[n].tobytes(), (n, official.size, ours[n].size)
     finally:
         vision_process.IMAGE_MAX_TOKEN_NUM = saved
-    print(f"    {len(files)} files (RGBA, L, EXIF, below / above the cap, 7:1): pixel-identical to ms-swift 4.4.2 "
+    print(f"    {len(files)} files (RGBA, L, EXIF, below / above the cap, the token-rounding band, 7:1): pixel-identical to ms-swift 4.4.2 "
           f"load_image + rescale_image and qwen-vl-utils fetch_image; alpha dropped, no EXIF rotation")
 
 
@@ -424,14 +445,15 @@ def test_registry() -> None:
     assert (ADB_VLM.answer_marker, ADB_VLM.answer_end, ADB_VLM.verdict_mode, ADB_VLM.logits) == \
         ("<answer>", "</answer>", "generate", "raw")
     assert ADB_VLM.decoding == ADB_VLM.official_decoding == GREEDY_DECODING == \
-        {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.05}
-    assert ADB_VLM.image_loader is swift_rgb and ADB_VLM.preprocess is swift_qwen_vl_resize and ADB_VLM.parser is parse_adb
+        {"do_sample": False, "max_new_tokens": 512, "repetition_penalty": 1.0}
+    assert ADB_VLM.image_loader is swift_rgb and ADB_VLM.preprocess is swift_qwen_vl_resize
+    assert ADB_VLM.parser is parse_adb_default_real and ADB_VLM.answer_parsed is adb_answer_parsed
     assert ADB_VLM.verdict_offset is adb_verdict_offset
-    assert MAX_PIXELS == 1003520 and ADB_VLM.max_pixels is None and ADB_VLM.preprocess_kwargs == {"max_pixels": MAX_PIXELS}
+    assert MAX_PIXELS == 1210000 and ADB_VLM.max_pixels is None and ADB_VLM.preprocess_kwargs == {"max_pixels": MAX_PIXELS}
     assert ADB_VLM.processor_kwargs == {"images_kwargs": {"do_resize": False}}
     assert ADB_VLM.base_model == "qwen2.5-vl-7b-instruct" and ADB_VLM.hf_repo == "Gaffeyzz/Align-Dont-Blend-VLM"
     assert ADB_VLM.hf_revision.startswith("49975ccd") and ADB_VLM.base_hf_revision.startswith("cc594898")
-    assert "1.0 MP" in input_note(spec)["label"] and "EXIF" in input_note(spec)["explanation"]
+    assert "1.2 MP" in input_note(spec)["label"] and "EXIF" in input_note(spec)["explanation"]
     assert "adb_vlm" in hub.NEVER_REDISTRIBUTE and "Apache-2.0" in hub.NEVER_REDISTRIBUTE["adb_vlm"]
     row = [line for line in Path(ROOT, "LICENSES.md").read_text().splitlines() if line.startswith("| `adb_vlm` |")]
     assert len(row) == 1 and "Apache-2.0" in row[0] and "no licence" not in row[0] and "not mirrored" in row[0], row
@@ -458,7 +480,7 @@ def test_registry() -> None:
             expect_raise(lambda: Detector(spec, device="cpu").predict(Path(tmp) / "clip.mp4"), ValueError, "still images only")
         finally:
             backend_config.CHECKPOINTS_DIR = original
-    print("    vlm spec, official greedy decoding (rep. penalty 1.05), note, NEVER_REDISTRIBUTE, LICENSES Apache-2.0 (not mirrored), "
+    print("    vlm spec, official greedy decoding (rep. penalty 1.0), note, NEVER_REDISTRIBUTE, LICENSES Apache-2.0 (not mirrored), "
           "not on the Space, adapter + base download hint, missing base reported")
 
 
@@ -540,10 +562,11 @@ def test_tiny_lora() -> None:
                 raw_gap = float(ref.logits[step][0, f].float() - ref.logits[step][0, r].float())
                 assert out["logit"] == raw_gap, (out["logit"], raw_gap)                 # RAW logits
                 assert torch.equal(rec.stacked(), torch.stack([row[0, vlm.record_ids] for row in ref.logits]).cpu())
-                # the processed (penalised) scores, before the forcing, differ: the score does not use them
+                # the processed scores, before the forcing: equal, as the repetition penalty is 1.0 (the decoding's
+                # value overrides the base generation_config's 1.05)
                 processed = rec_scores.stacked()[step]
                 proc_gap = float(processed[vlm.column[f]] - processed[vlm.column[r]])
-                assert proc_gap != raw_gap, "repetition penalty 1.05 should change the gap (AI / authentic are in the prompt)"
+                assert proc_gap == raw_gap, "repetition penalty 1.0: the processed gap should equal the raw one"
             # forced TAG-LESS answers: the parser reads the final line, the score is read at its verdict word; with the
             # offset pointing at a token that is no verdict word, the parsed verdict is "unscored" (P 0.5, logit 0)
             for answer, verdict, hook in ((TAGLESS_FAKE, "fake", ADB_VLM.verdict_offset),
@@ -569,7 +592,44 @@ def test_tiny_lora() -> None:
                 else:
                     assert (out["score_source"], out["logit"], out["fake_probability"], out["verdict_step"]) == \
                         ("unscored", 0.0, 0.5, None), out
-            # free greedy decoding (repetition penalty 1.05): the engine's tokens == a direct peft generate
+            # answers the official parser rejects (two answer tags; an unknown answer): verdict "real" (predict.py @
+            # 898b607), reported unparsed, and the score on the Real side whatever the verdict word's gap: logit =
+            # min(raw gap, 0), the raw gap kept as logit_unclamped when it was positive
+            for answer in (ANSWER_FAKE + "\n" + ANSWER_FAKE, ANSWER_FAKE.replace("AI-generated image.", "AI-generated photo.")):
+                assert parse_adb(answer) is None and parse_adb_default_real(answer) == "real"
+                script = tok.encode(answer, add_special_tokens=False)
+                forcing = LogitsProcessorList([ForceTokens(script, tok.convert_tokens_to_ids("<|im_end|>"), n_prompt)])
+                vlm.cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "max_new_tokens": len(script) + 2,
+                                                             "logits_processor": forcing})
+                with quiet():
+                    out = engine.vlm_score(spec, image)
+                    with torch.inference_mode():
+                        ref = direct.generate(**inputs, **{**vlm.cfg.decoding, "logits_processor": forcing},
+                                              output_logits=True, return_dict_in_generate=True)
+                assert out["response"] == answer and out["verdict"] == "real" and out["answer_parsed"] is False
+                assert out["score_source"] == "verdict_token" and out["verdict_token"] == "ĠAI"
+                step = out["verdict_step"]
+                raw_gap = float(ref.logits[step][0, f].float() - ref.logits[step][0, r].float())
+                assert out["logit"] == min(raw_gap, 0.0) and out["fake_probability"] <= 0.5, (out["logit"], raw_gap)
+                assert out.get("logit_unclamped") == (raw_gap if raw_gap > 0 else None)
+                assert raw_gap <= 0 or out["fake_probability"] == 0.5
+            # the clamp on both sides of 0, independent of the tiny model's gap: a stub scorer through the same code
+            for gap in (4.25, -4.25):
+                stub_cfg = dataclasses.replace(cfg, decoding={**cfg.decoding, "max_new_tokens": len(script) + 2,
+                                                              "logits_processor": forcing})
+                vlm.cfg = stub_cfg
+                saved_vs = vlm_module.verdict_score
+                vlm_module.verdict_score = lambda *a, _g=gap, **k: {**gap_fields(_g), "score_source": "verdict_token",
+                                                                     "verdict_step": 0, "verdict_token": f, "pair_ids": (f, r)}
+                try:
+                    with quiet():
+                        out = engine.vlm_score(spec, image)
+                finally:
+                    vlm_module.verdict_score = saved_vs
+                assert out["answer_parsed"] is False and out["verdict"] == "real"
+                assert out["logit"] == min(gap, 0.0) and out["fake_probability"] <= 0.5
+                assert out.get("logit_unclamped") == (gap if gap > 0 else None)
+            # free greedy decoding (repetition penalty 1.0): the engine's tokens == a direct peft generate
             vlm.cfg = cfg
             with quiet():
                 free = engine.vlm_score(spec, image)
@@ -615,8 +675,8 @@ def test_tiny_lora() -> None:
             backend_config.CHECKPOINTS_DIR = original
             os.environ.update({k: v for k, v in hub_env.items() if v is not None})
     print(f"    {len(saved)} LoRA tensors unmerged via the engine (no network access, base named by Hub id) == direct peft; preprocess -> 308x196, pixel values == "
-          f"processor(do_resize=False); forced answers: verdict after <answer>, logit == RAW output_logits gap (penalised "
-          f"gap differs); tag-less answers scored at the final line's word, an unlocatable word unscored; greedy tokens == peft generate; pre-4.52 keys load with the hook, fail without it; unknown key and "
+          f"processor(do_resize=False); forced answers: verdict after <answer>, logit == RAW output_logits gap (== the "
+          f"processed gap at repetition penalty 1.0); tag-less answers scored at the final line's word, an unlocatable word unscored; greedy tokens == peft generate; pre-4.52 keys load with the hook, fail without it; unknown key and "
           f"old vision-tower LoRA refused (peft {peft.__version__})")
 
 
@@ -641,6 +701,30 @@ def test_released_weights() -> None:
           f"{out['fake_probability']:.6f}, {out['new_tokens']} tokens)")
 
 
+def test_unparsed_counts() -> None:
+    print("[H] bench_eval: answers the official parser rejects are Real for accuracy and counted as unparsed ...")
+    sys.path.insert(0, os.path.join(ROOT, "benchmark"))
+    import bench_eval
+    rejected = "<rationale>\nNo verdict line.\n</rationale>"
+    recs = [  # a record written before the answer_parsed field (read from the response) and one written with it
+        {"verdict": "real", "logit": 0.0, "score_source": "unscored", "new_tokens": 5, "finished": True,
+         "response": rejected},
+        {"verdict": "real", "logit": -2.0, "score_source": "verdict_token", "new_tokens": 5, "finished": True,
+         "response": ANSWER_REAL, "answer_parsed": True},
+        {"verdict": "fake", "logit": 3.0, "score_source": "verdict_token", "new_tokens": 5, "finished": True,
+         "response": ANSWER_FAKE},
+        {"verdict": "real", "logit": 0.0, "score_source": "unscored", "new_tokens": 5, "finished": True,
+         "response": rejected, "answer_parsed": False}]
+    labels = [1, 0, 1, 0]
+    m = bench_eval.vlm_metrics(recs, labels, ADB_VLM)
+    assert (m["n_unparsed"], m["n_unscored"]) == (2, 0), m
+    assert m["fake_acc"] == 50.0 and m["real_acc"] == 100.0       # the rejected fake counts as Real (wrong), the real right
+    assert m["fake_acc_drop"] == 100.0 and m["real_acc_drop"] == 100.0
+    assert [bench_eval.answer_parsed(r, ADB_VLM) for r in recs] == [False, True, True, False]
+    assert bench_eval.vlm_metrics(recs, labels)["n_unparsed"] == 1     # without the hook only the stored flag counts
+    print("    2 of 4 unparsed (one from the stored response, one from the record's flag), scored as Real; *_drop leave them out")
+
+
 if __name__ == "__main__":
     transformers.logging.set_verbosity_error()
     transformers.utils.logging.disable_progress_bar()
@@ -651,5 +735,6 @@ if __name__ == "__main__":
     test_score_words()
     test_registry()
     test_tiny_lora()
+    test_unparsed_counts()
     test_released_weights()
     print("adb_vlm smoke test passed")

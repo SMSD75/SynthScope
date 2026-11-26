@@ -1,0 +1,688 @@
+node=ivi-cn023 job=301130 Wed Nov 25 09:07:19 CET 2026 code=ae94d73 adb_full / adb_vlm: sync to upstream Align-Dont-Blend @ cf168db (prompt, decoding, pixel cap (ae94d73b57a33977eab88e9c96ca993a2d3a7aec, copied to /hddstore/ssalehi/SynthScope/adbfull_fid/301130/code)
+official=cf168db Add in-memory JPEG96 evaluation preprocessing
+NVIDIA RTX A6000, 49140 MiB
+staging qwen2.5-vl-7b-instruct from ivi-cn029 09:07:19
+staging align_dont_blend_vlm from ivi-cn029 09:07:19
+dda.pth sha256 == HF DDA_ckpt.pth (/hddstore/ssalehi/SynthScope/zoo_ckpts/dda.pth)
+=== weights: pinned revisions (hf download metadata) + sha256 ===
+adb_vlm: 4 files from Gaffeyzz/Align-Dont-Blend-VLM @ 49975ccd8b28eaab8ef14650ffee0c545934d02b; safetensors etags == SHA256SUMS
+qwen2.5-vl-7b-instruct: 16 files from Qwen/Qwen2.5-VL-7B-Instruct @ cc594898137f460bfe9f0759e9844b3ce807cfb5; safetensors etags == SHA256SUMS
+adb_vlm sha256 OK
+qwen2.5-vl-7b-instruct sha256 OK
+=== images: the 16 adb_vlm fidelity images + the GenImage disagreement pool ===
+7043c9d21cc43f1128d5834e61898b9cab4c0370  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+41227e2fb233af5f7fc93ea38ff1005f9519b902  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+cef224052a229610d5e86f7ccecf3037985a4e95  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+c72dc3dcba991e3cb7dd771d7786c64f4dac7c7e  GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+462ce1c5d95e7c225d3917abc54c0d9c78d74e98  GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+ecabd1a00ad31a429cbea8c003a357eaae017d86  GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+dea667805fff8397148d3e36a973df822804cf3a  SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+4997988e160ae956e301c2eeb342f6b7423a5730  SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+606d20f52b601a702381de9e3b97a7a731d1b184  SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+15bb160780e2998c7d449fb673e238d57b3a935c  SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+0a57109daee27f9d09903ce35f3252f8ff8ba3ef  SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+fabfd62b54d8b5cc2e6758380829b8d9a3f4f255  SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+1c80b0cc10203f02087cf0e53c3b978ecf8e074a  SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+ee9b84aa96da90e5914bef528df66f555a9a7d68  WildRF/test/reddit/0_real/000219_0219.png
+90118c951dec1b8979bb0d91f8bc1b3a0b2bcb6b  WildRF/test/reddit/0_real/000032_0032.png
+22ace0827cc0e2afb020806d0eac46cffa23226c  WildRF/test/reddit/0_real/000030_0030.jpg
+3ad1673378a9c7ac9e4f219fa75f25f425c52aae  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000030.JPEG
+0dc3f9375d46eb0423e48338f72e63380604addb  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000046.JPEG
+eb013ba76ae839bf96ef8ca7390c81b036d9ca4e  GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000152.JPEG
+1bfb0d2d61179e4ccf9a927e660a3bee06d94791  GenImage_val_full/test/adm/1_fake/0_adm_174.PNG
+c1aa445603c389503f9d74312e8dbf800d7976be  GenImage_val_full/test/adm/1_fake/0_adm_34.PNG
+808e04fa23674689b8f581795461965762da9d98  GenImage_val_full/test/adm/1_fake/0_adm_7.PNG
+b388ea97dfb779086a816b85dc00b850b9c5d2b7  GenImage_val_full/test/adm/1_fake/0_adm_85.PNG
+0d61e2067d7c55f96dc43b358fa6166a81f4102b  GenImage_val_full/test/adm/1_fake/0_adm_91.PNG
+d5293e9c8f4e986c2bfc5192cb8b585ef0234cb3  GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000009.JPEG
+16e2d6ef84bb5e03e34935c4bc89e572ce9ee7aa  GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000101.JPEG
+a7ca312786acf629769b224572af2a083fa4864b  GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG
+8018ff8a28193680cb247534cc23d61867ef8297  GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png
+595a649e683167d05b6301936848c837ebee94bb  GenImage_val_full/test/biggan/1_fake/000_biggan_00039.png
+4b57e4d146c11438b5c33d0d4c9324a8996e6a87  GenImage_val_full/test/biggan/1_fake/000_biggan_00074.png
+113c089919a036a1fb714257a1b6e4e048374694  GenImage_val_full/test/biggan/1_fake/000_biggan_00127.png
+e0d08c59616369d471961e4260186dc2ca07ede0  GenImage_val_full/test/biggan/1_fake/000_biggan_00143.png
+678eac62765dd81d14f8363662eff5e2ff81a6ea  GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000066.JPEG
+b52927cd9636d544534cfec1c39da8fe78b75eea  GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000159.JPEG
+fa9324e4a121f5fe0401ef1e3a01327b69591b3f  GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00020.png
+c5eafd6f03a9f263f5a3caa49074b0b8adbaa24b  GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png
+0b6fc226542da6ea91e89d9b5eb168878940db42  GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00039.png
+551086f208862f810c5b7dc58a21b1995577f96e  GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00074.png
+3e3ff88407bc17df5e2b0b9652f8411cfef03936  GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00143.png
+f2bee416a4cbefb46ab6785f28c8df99ef7d65ce  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000023.JPEG
+33d34a33578f1a1d6ebab096770328a9499be97a  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG
+71ed6ffe1ba4f21cafbc3649b348718a711382a2  GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000282.JPEG
+e9c45a4cb3532045e1eb7b8e947d239d27905d5e  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000060.JPEG
+fab31c9f5b58e95a216ebf78d80fca7d84244d55  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000170.JPEG
+fb75c695984eac12be643ede313a4c95374817c0  GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000369.JPEG
+50d08c79bcaa6dab7845f0f6e148307c332b5f70  GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG
+22ffd1002c5eb9349cd0568a9b4e49fb560d6fbb  GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000257.JPEG
+d9dad454ee786c4b924222e160031d82b187ad95  GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG
+043caab0d7036336c1fe034301f50e131bc84e3c  GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000040.JPEG
+7fa03f6c98cb1d46deead28e8e38297a6c251fb8  GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000117.JPEG
+3770564d0b33fd7823c76b445b8abab54a5dd81c  GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000325.JPEG
+0d15c23731c0b4886f40b6286ff0577e7bce9f36  GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00020.png
+03bc791950e5e29a810a45ea37ae8b117ea45ae7  GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00035.png
+743c2cd5a76535d37b36af6bd258be332dc4c1bd  GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00127.png
+ed1e39356bd4e301b68004d88e689eaa7a252c76  GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00143.png
+f21d56c4cdbc38ecefe7254f5df0e49780f2ec1d  GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_001_vqdm_00039.png
+861681b31b69b83e2c8dcee87c02f8528a882067  GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000070.JPEG
+e920058ce3deb62095c6113d97bcca9d889bf71d  GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000107.JPEG
+b84525f0eb22d2ac8bc4c1e7cf4027267bf5a97c  GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000143.JPEG
+Using cache found in /home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/swiglu_ffn.py:43: UserWarning: xFormers is available (SwiGLU)
+  warnings.warn("xFormers is available (SwiGLU)")
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/attention.py:27: UserWarning: xFormers is available (Attention)
+  warnings.warn("xFormers is available (Attention)")
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/block.py:33: UserWarning: xFormers is available (Block)
+  warnings.warn("xFormers is available (Block)")
+[pool] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000030.JPEG vlm(cached)=fake dda=0.025855
+[pool] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000046.JPEG vlm(cached)=fake dda=0.122729
+[pool] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000152.JPEG vlm(cached)=fake dda=0.067100
+[pool] GenImage_val_full/test/adm/1_fake/0_adm_174.PNG vlm(cached)=real dda=0.057761
+[pool] GenImage_val_full/test/adm/1_fake/0_adm_34.PNG vlm(cached)=real dda=0.789775
+[pool] GenImage_val_full/test/adm/1_fake/0_adm_7.PNG vlm(cached)=real dda=0.448501
+[pool] GenImage_val_full/test/adm/1_fake/0_adm_85.PNG vlm(cached)=real dda=0.929472
+[pool] GenImage_val_full/test/adm/1_fake/0_adm_91.PNG vlm(cached)=real dda=0.184069
+[pool] GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000009.JPEG vlm(cached)=fake dda=0.030036
+[pool] GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000101.JPEG vlm(cached)=fake dda=0.044942
+[pool] GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG vlm(cached)=fake dda=0.268146
+[pool] GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png vlm(cached)=real dda=0.511552
+[pool] GenImage_val_full/test/biggan/1_fake/000_biggan_00039.png vlm(cached)=real dda=0.457523
+[pool] GenImage_val_full/test/biggan/1_fake/000_biggan_00074.png vlm(cached)=real dda=0.268295
+[pool] GenImage_val_full/test/biggan/1_fake/000_biggan_00127.png vlm(cached)=real dda=0.152080
+[pool] GenImage_val_full/test/biggan/1_fake/000_biggan_00143.png vlm(cached)=real dda=0.930005
+[pool] GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000066.JPEG vlm(cached)=fake dda=0.037031
+[pool] GenImage_val_full/test/glide/0_real/ILSVRC2012_val_00000159.JPEG vlm(cached)=fake dda=0.074971
+[pool] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00020.png vlm(cached)=real dda=0.190008
+[pool] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png vlm(cached)=real dda=0.858950
+[pool] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00039.png vlm(cached)=real dda=0.225264
+[pool] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00074.png vlm(cached)=real dda=0.109126
+[pool] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00143.png vlm(cached)=real dda=0.065447
+[pool] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000023.JPEG vlm(cached)=fake dda=0.038245
+[pool] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG vlm(cached)=fake dda=0.443186
+[pool] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000282.JPEG vlm(cached)=fake dda=0.151072
+[pool] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000060.JPEG vlm(cached)=fake dda=0.019718
+[pool] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000170.JPEG vlm(cached)=fake dda=0.021742
+[pool] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000369.JPEG vlm(cached)=fake dda=0.021895
+[pool] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG vlm(cached)=fake dda=0.298395
+[pool] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000257.JPEG vlm(cached)=fake dda=0.119833
+[pool] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG vlm(cached)=fake dda=0.357606
+[pool] GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000040.JPEG vlm(cached)=fake dda=0.046570
+[pool] GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000117.JPEG vlm(cached)=fake dda=0.128114
+[pool] GenImage_val_full/test/vqdm/0_real/ILSVRC2012_val_00000325.JPEG vlm(cached)=fake dda=0.220825
+[pool] GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00020.png vlm(cached)=real dda=0.249091
+[pool] GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00035.png vlm(cached)=real dda=0.959231
+[pool] GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00127.png vlm(cached)=real dda=0.957968
+[pool] GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_000_vqdm_00143.png vlm(cached)=real dda=0.105979
+[pool] GenImage_val_full/test/vqdm/1_fake/VQDM_1000_200_00_001_vqdm_00039.png vlm(cached)=real dda=0.209325
+[pool] GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000070.JPEG vlm(cached)=fake dda=0.031537
+[pool] GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000107.JPEG vlm(cached)=fake dda=0.052239
+[pool] GenImage_val_full/test/wukong/0_real/ILSVRC2012_val_00000143.JPEG vlm(cached)=fake dda=0.032913
+[select] pool 43; selected 8: ['GenImage_val_full/test/adm/1_fake/0_adm_34.PNG', 'GenImage_val_full/test/adm/1_fake/0_adm_85.PNG', 'GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG', 'GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png', 'GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png', 'GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG', 'GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG', 'GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG']
+the 8 selected images == the committed selection
+(500, 375) RGB GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG
+(500, 333) RGB GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG
+(500, 333) RGB GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG
+(1024, 1024) RGB GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png
+(512, 512) RGB GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png
+(256, 256) RGBA GenImage_val_full/test/adm/1_fake/0_adm_153.PNG
+(662, 1000) RGB SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg
+(1024, 682) RGB SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg
+(2048, 1365) RGB SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg
+(1024, 1024) RGB SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg
+(2048, 2048) RGB SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg
+(1200, 686) RGB SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg
+(1344, 896) RGB SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg
+(643, 481) RGBA WildRF/test/reddit/0_real/000219_0219.png
+(720, 962) RGBA WildRF/test/reddit/0_real/000032_0032.png
+(2448, 3264) RGB WildRF/test/reddit/0_real/000030_0030.jpg
+(256, 256) RGBA GenImage_val_full/test/adm/1_fake/0_adm_34.PNG
+(256, 256) RGBA GenImage_val_full/test/adm/1_fake/0_adm_85.PNG
+(500, 375) RGB GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG
+(128, 128) RGB GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png
+(256, 256) RGB GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png
+(500, 500) RGB GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG
+(500, 500) L GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG
+(439, 500) RGB GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG
+=== official: predict.py (unmodified), ms-swift 4.4.2 pt backend (bf16) + the expert command 09:08:36 ===
+run sh: `/home/ssalehi/miniconda3/envs/AGID/bin/python /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/cli/infer.py --adapters /hddstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm --infer_backend pt --max_model_len 8192 --max_pixels 1210000 --write_batch_size 500 --temperature 0 --max_new_tokens 512 --repetition_penalty 1.0 --top_p 1.0 --val_dataset /hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-byhdwl9u/vlm_input.jsonl --result_path /hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-byhdwl9u/vlm_result.jsonl --seed 42 --model /hddstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct --load_args false`
+[INFO:swift] Successfully registered `/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/dataset/data/dataset_info.json`.
+[WARNING:swift] args.infer_backend: `pt` is deprecated, please use args.infer_backend: `transformers`.
+[INFO:swift] rank: -1, local_rank: -1, world_size: 1, local_world_size: 1
+`torch_dtype` is deprecated! Use `dtype` instead!
+[INFO:swift] Setting torch_dtype: torch.bfloat16
+[INFO:swift] Because len(args.val_dataset) > 0, setting split_dataset_ratio: 0.0
+[INFO:swift] Setting args.eval_human: False
+[INFO:swift] Setting args.lazy_tokenize: True
+[INFO:swift] args: InferArguments(use_ray=False, ray_exp_name=None, device_groups=None, model='/hddstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct', model_type='qwen2_5_vl', model_revision=None, task_type='causal_lm', torch_dtype=torch.bfloat16, attn_impl=None, experts_impl=None, new_special_tokens=[], num_labels=None, problem_type=None, rope_scaling=None, device_map=None, max_memory={}, max_model_len=8192, local_repo_path=None, init_strategy=None, template='qwen2_5_vl', system=None, max_length=128000, truncation_strategy='delete', max_pixels=1210000, agent_template=None, norm_bbox=None, use_chat_template=True, padding_side='right', padding_free=False, loss_scale='default', sequence_parallel_size=1, is_binary_loss_scale=None, template_backend='swift', response_prefix=None, enable_thinking=None, preserve_thinking=None, add_non_thinking_prefix=True, disable_ignore_empty_think=False, dataset=[], val_dataset=['/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-byhdwl9u/vlm_input.jsonl'], cached_dataset=[], cached_val_dataset=[], split_dataset_ratio=0.0, data_seed=42, dataset_num_proc=1, load_from_cache_file=False, dataset_shuffle=True, val_dataset_shuffle=False, streaming=False, interleave_prob=None, stopping_strategy='first_exhausted', shuffle_buffer_size=1000, download_mode='reuse_dataset_if_exists', columns={}, strict=False, remove_unused_columns=True, disable_auto_column_mapping=False, model_name=None, model_author=None, custom_dataset_info=[], quant_method=None, quant_bits=None, hqq_axis=None, bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True, bnb_4bit_quant_storage=None, max_new_tokens=512, temperature=0.0, top_k=None, top_p=1.0, repetition_penalty=1.0, num_beams=1, stream=False, stop_words=[], logprobs=False, top_logprobs=None, structured_outputs_regex=None, tuner_backend='peft', tuner_type='lora', adapters=['/hddstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm'], external_plugins=[], custom_register_path=[], seed=42, model_kwargs={}, enable_npu_model_patch=True, load_args=False, load_data_args=False, packing=False, packing_length=None, packing_num_proc=1, packing_strategy='binpack', lazy_tokenize=True, use_hf=False, hub_token=None, ddp_timeout=18000000, ddp_backend=None, ignore_args_error=False, use_swift_lora=False, vllm_gpu_memory_utilization=0.9, vllm_tensor_parallel_size=1, vllm_pipeline_parallel_size=1, vllm_enable_expert_parallel=False, vllm_max_num_seqs=256, vllm_max_model_len=None, vllm_disable_custom_all_reduce=True, vllm_enforce_eager=False, vllm_limit_mm_per_prompt=None, vllm_max_lora_rank=16, vllm_enable_prefix_caching=None, vllm_use_async_engine=False, vllm_quantization=None, vllm_reasoning_parser=None, vllm_disable_cascade_attn=False, vllm_mm_processor_cache_gb=None, vllm_speculative_config=None, vllm_engine_kwargs={}, vllm_data_parallel_size=1, sglang_tp_size=1, sglang_pp_size=1, sglang_dp_size=1, sglang_ep_size=1, sglang_enable_ep_moe=False, sglang_mem_fraction_static=None, sglang_context_length=None, sglang_disable_cuda_graph=False, sglang_quantization=None, sglang_kv_cache_dtype='auto', sglang_enable_dp_attention=False, sglang_disable_custom_all_reduce=True, sglang_speculative_algorithm=None, sglang_speculative_num_steps=None, sglang_speculative_eagle_topk=None, sglang_speculative_num_draft_tokens=None, lmdeploy_tp=1, lmdeploy_session_len=None, lmdeploy_cache_max_entry_count=0.8, lmdeploy_quant_policy=0, lmdeploy_vision_batch_size=1, merge_lora=False, safe_serialization=True, max_shard_size='5GB', infer_backend='transformers', result_path='/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-byhdwl9u/vlm_result.jsonl', write_batch_size=500, metric=None, max_batch_size=1, val_dataset_sample=None, reranker_use_activation=True)
+[INFO:swift] Global seed set to 42
+[INFO:swift] Setting max_ratio: 200. You can adjust this hyperparameter through the environment variable: `MAX_RATIO`.
+[INFO:swift] Setting frame_factor: 2. You can adjust this hyperparameter through the environment variable: `FRAME_FACTOR`.
+[INFO:swift] Setting fps: 2.0. You can adjust this hyperparameter through the environment variable: `FPS`.
+[INFO:swift] Setting fps_min_frames: 4. You can adjust this hyperparameter through the environment variable: `FPS_MIN_FRAMES`.
+[INFO:swift] Setting fps_max_frames: 768. You can adjust this hyperparameter through the environment variable: `FPS_MAX_FRAMES`.
+[INFO:swift] Using environment variable `IMAGE_MAX_TOKEN_NUM`, Setting image_max_token_num: 1543.
+[INFO:swift] Setting image_min_token_num: 4. You can adjust this hyperparameter through the environment variable: `IMAGE_MIN_TOKEN_NUM`.
+[INFO:swift] Setting spatial_merge_size: 2. You can adjust this hyperparameter through the environment variable: `SPATIAL_MERGE_SIZE`.
+[INFO:swift] Setting video_max_token_num: 768. You can adjust this hyperparameter through the environment variable: `VIDEO_MAX_TOKEN_NUM`.
+[INFO:swift] Setting video_min_token_num: 128. You can adjust this hyperparameter through the environment variable: `VIDEO_MIN_TOKEN_NUM`.
+[INFO:swift] model_kwargs: {'device_map': 'cuda:0', 'dtype': torch.bfloat16}
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 2/729 [00:00<01:05, 11.15it/s]Loading weights:   4%|▍         | 29/729 [00:00<00:05, 118.96it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:04, 161.56it/s]Loading weights:  11%|█         | 82/729 [00:00<00:03, 201.76it/s]Loading weights:  15%|█▌        | 112/729 [00:00<00:02, 225.16it/s]Loading weights:  19%|█▊        | 136/729 [00:00<00:02, 223.53it/s]Loading weights:  22%|██▏       | 162/729 [00:00<00:02, 227.44it/s]Loading weights:  26%|██▌       | 190/729 [00:00<00:02, 242.80it/s]Loading weights:  30%|██▉       | 216/729 [00:01<00:02, 247.30it/s]Loading weights:  33%|███▎      | 243/729 [00:01<00:01, 247.65it/s]Loading weights:  37%|███▋      | 269/729 [00:01<00:01, 245.09it/s]Loading weights:  40%|████      | 294/729 [00:01<00:01, 239.65it/s]Loading weights:  44%|████▍     | 324/729 [00:01<00:01, 255.18it/s]Loading weights:  65%|██████▍   | 473/729 [00:01<00:00, 609.65it/s]Loading weights: 100%|█████████▉| 726/729 [00:01<00:00, 1167.02it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 436.14it/s] 
+[INFO:swift] default_system: 'You are a helpful assistant.'
+[INFO:swift] max_length: 128000
+[INFO:swift] response_prefix: None
+[INFO:swift] agent_template: hermes
+[INFO:swift] norm_bbox: none
+[INFO:swift] Setting ROOT_IMAGE_DIR: None. You can adjust this hyperparameter through the environment variable: `ROOT_IMAGE_DIR`.
+[INFO:swift] Setting QWENVL_BBOX_FORMAT: legacy. You can adjust this hyperparameter through the environment variable: `QWENVL_BBOX_FORMAT`.
+[INFO:swift] model: PeftModelForCausalLM(
+  (base_model): LoraModel(
+    (model): Qwen2_5_VLForConditionalGeneration(
+      (model): Qwen2_5_VLModel(
+        (visual): Qwen2_5_VisionTransformerPretrainedModel(
+          (patch_embed): Qwen2_5_VisionPatchEmbed(
+            (proj): Conv3d(3, 1280, kernel_size=(2, 14, 14), stride=(2, 14, 14), bias=False)
+          )
+          (rotary_pos_emb): Qwen2_5_VisionRotaryEmbedding()
+          (blocks): ModuleList(
+            (0-31): 32 x Qwen2_5_VLVisionBlock(
+              (norm1): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (norm2): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (attn): Qwen2_5_VLVisionAttention(
+                (qkv): Linear(in_features=1280, out_features=3840, bias=True)
+                (proj): Linear(in_features=1280, out_features=1280, bias=True)
+              )
+              (mlp): Qwen2_5_VLMLP(
+                (gate_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (up_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (down_proj): Linear(in_features=3420, out_features=1280, bias=True)
+                (act_fn): SiLUActivation()
+              )
+            )
+          )
+          (merger): Qwen2_5_VLPatchMerger(
+            (ln_q): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+            (mlp): Sequential(
+              (0): Linear(in_features=5120, out_features=5120, bias=True)
+              (1): GELU(approximate='none')
+              (2): Linear(in_features=5120, out_features=3584, bias=True)
+            )
+          )
+        )
+        (language_model): Qwen2_5_VLTextModel(
+          (embed_tokens): Embedding(152064, 3584)
+          (layers): ModuleList(
+            (0-27): 28 x Qwen2_5_VLDecoderLayer(
+              (self_attn): Qwen2_5_VLAttention(
+                (q_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (k_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (v_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (o_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+              )
+              (mlp): Qwen2MLP(
+                (gate_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (up_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (down_proj): lora.Linear(
+                  (base_layer): Linear(in_features=18944, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=18944, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (act_fn): SiLUActivation()
+              )
+              (input_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+              (post_attention_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+            )
+          )
+          (norm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+          (rotary_emb): Qwen2_5_VLRotaryEmbedding()
+        )
+      )
+      (lm_head): Linear(in_features=3584, out_features=152064, bias=False)
+    )
+  )
+)
+[INFO:swift] Start time of running main: 2026-11-25 09:09:01.511952
+[INFO:swift] swift.__version__: 4.4.2
+[INFO:swift] request_config: RequestConfig(max_tokens=512, temperature=0.0, top_k=None, top_p=1.0, repetition_penalty=1.0, num_beams=1, stop=[], seed=None, stream=False, logprobs=False, top_logprobs=None, prompt_logprobs=None, n=1, best_of=None, presence_penalty=0.0, frequency_penalty=0.0, length_penalty=1.0, return_details=False, structured_outputs_regex=None)
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 24 examples [00:00, 2458.68 examples/s]
+Map (num_proc=1):   0%|          | 0/24 [00:00<?, ? examples/s]Map (num_proc=1): 100%|██████████| 24/24 [00:00<00:00, 144.82 examples/s]
+[INFO:swift] val_dataset: Dataset({
+    features: ['messages', 'images', 'dataset'],
+    num_rows: 24
+})
+  0%|          | 0/24 [00:00<?, ?it/s]  4%|▍         | 1/24 [00:06<02:20,  6.09s/it]  8%|▊         | 2/24 [00:11<01:58,  5.40s/it] 12%|█▎        | 3/24 [00:16<01:56,  5.54s/it] 17%|█▋        | 4/24 [00:24<02:08,  6.42s/it] 21%|██        | 5/24 [00:31<02:09,  6.79s/it] 25%|██▌       | 6/24 [00:38<02:00,  6.69s/it] 29%|██▉       | 7/24 [00:43<01:42,  6.01s/it] 33%|███▎      | 8/24 [00:49<01:38,  6.16s/it] 38%|███▊      | 9/24 [00:57<01:39,  6.63s/it] 42%|████▏     | 10/24 [01:05<01:38,  7.04s/it] 46%|████▌     | 11/24 [01:11<01:29,  6.91s/it] 50%|█████     | 12/24 [01:18<01:21,  6.77s/it] 54%|█████▍    | 13/24 [01:24<01:12,  6.58s/it] 58%|█████▊    | 14/24 [01:28<00:59,  5.94s/it] 62%|██████▎   | 15/24 [01:33<00:50,  5.65s/it] 67%|██████▋   | 16/24 [01:39<00:45,  5.68s/it] 71%|███████   | 17/24 [01:44<00:37,  5.37s/it] 75%|███████▌  | 18/24 [01:49<00:32,  5.49s/it] 79%|███████▉  | 19/24 [01:55<00:27,  5.51s/it] 83%|████████▎ | 20/24 [02:00<00:21,  5.32s/it] 88%|████████▊ | 21/24 [02:04<00:15,  5.03s/it] 92%|█████████▏| 22/24 [02:10<00:10,  5.31s/it] 96%|█████████▌| 23/24 [02:15<00:05,  5.23s/it]100%|██████████| 24/24 [02:21<00:00,  5.29s/it]100%|██████████| 24/24 [02:21<00:00,  5.88s/it]
+{'num_prompt_tokens': 18789, 'num_generated_tokens': 2817, 'num_samples': 24, 'runtime': 141.18713632499566, 'samples/s': 0.16998715764554437, 'tokens/s': 19.95224262864577}
+[INFO:swift] The inference results have been saved to result_path: `/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-byhdwl9u/vlm_result.jsonl`.
+[INFO:swift] End time of running main: 2026-11-25 09:11:22.980777
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/swiglu_ffn.py:43: UserWarning: xFormers is available (SwiGLU)
+  warnings.warn("xFormers is available (SwiGLU)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/attention.py:27: UserWarning: xFormers is available (Attention)
+  warnings.warn("xFormers is available (Attention)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/block.py:33: UserWarning: xFormers is available (Block)
+  warnings.warn("xFormers is available (Block)")
+=== official expert alone (probabilities) 09:11:32 ===
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/swiglu_ffn.py:43: UserWarning: xFormers is available (SwiGLU)
+  warnings.warn("xFormers is available (SwiGLU)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/attention.py:27: UserWarning: xFormers is available (Attention)
+  warnings.warn("xFormers is available (Attention)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/block.py:33: UserWarning: xFormers is available (Block)
+  warnings.warn("xFormers is available (Block)")
+=== official: predict.py with the README command (float32, eager, device_map auto) 09:11:37 ===
+run sh: `/home/ssalehi/miniconda3/envs/AGID/bin/python /ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/cli/infer.py --adapters /hddstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm --infer_backend pt --max_model_len 8192 --max_pixels 1210000 --write_batch_size 500 --temperature 0 --max_new_tokens 512 --repetition_penalty 1.0 --top_p 1.0 --val_dataset /hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-40tk1o0j/vlm_input.jsonl --result_path /hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-40tk1o0j/vlm_result.jsonl --seed 42 --model /hddstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct --load_args false --torch_dtype float32 --attn_impl eager --device_map auto`
+[INFO:swift] Successfully registered `/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_pydeps/swift442/swift/dataset/data/dataset_info.json`.
+[WARNING:swift] args.infer_backend: `pt` is deprecated, please use args.infer_backend: `transformers`.
+[INFO:swift] rank: -1, local_rank: -1, world_size: 1, local_world_size: 1
+`torch_dtype` is deprecated! Use `dtype` instead!
+[INFO:swift] Because len(args.val_dataset) > 0, setting split_dataset_ratio: 0.0
+[INFO:swift] Setting args.eval_human: False
+[INFO:swift] Setting args.lazy_tokenize: True
+[INFO:swift] args: InferArguments(use_ray=False, ray_exp_name=None, device_groups=None, model='/hddstore/ssalehi/SynthScope/vlm_ckpts/qwen2.5-vl-7b-instruct', model_type='qwen2_5_vl', model_revision=None, task_type='causal_lm', torch_dtype=torch.float32, attn_impl='eager', experts_impl=None, new_special_tokens=[], num_labels=None, problem_type=None, rope_scaling=None, device_map='auto', max_memory={}, max_model_len=8192, local_repo_path=None, init_strategy=None, template='qwen2_5_vl', system=None, max_length=128000, truncation_strategy='delete', max_pixels=1210000, agent_template=None, norm_bbox=None, use_chat_template=True, padding_side='right', padding_free=False, loss_scale='default', sequence_parallel_size=1, is_binary_loss_scale=None, template_backend='swift', response_prefix=None, enable_thinking=None, preserve_thinking=None, add_non_thinking_prefix=True, disable_ignore_empty_think=False, dataset=[], val_dataset=['/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-40tk1o0j/vlm_input.jsonl'], cached_dataset=[], cached_val_dataset=[], split_dataset_ratio=0.0, data_seed=42, dataset_num_proc=1, load_from_cache_file=False, dataset_shuffle=True, val_dataset_shuffle=False, streaming=False, interleave_prob=None, stopping_strategy='first_exhausted', shuffle_buffer_size=1000, download_mode='reuse_dataset_if_exists', columns={}, strict=False, remove_unused_columns=True, disable_auto_column_mapping=False, model_name=None, model_author=None, custom_dataset_info=[], quant_method=None, quant_bits=None, hqq_axis=None, bnb_4bit_compute_dtype=torch.float32, bnb_4bit_quant_type='nf4', bnb_4bit_use_double_quant=True, bnb_4bit_quant_storage=None, max_new_tokens=512, temperature=0.0, top_k=None, top_p=1.0, repetition_penalty=1.0, num_beams=1, stream=False, stop_words=[], logprobs=False, top_logprobs=None, structured_outputs_regex=None, tuner_backend='peft', tuner_type='lora', adapters=['/hddstore/ssalehi/SynthScope/vlm_ckpts/align_dont_blend_vlm'], external_plugins=[], custom_register_path=[], seed=42, model_kwargs={}, enable_npu_model_patch=True, load_args=False, load_data_args=False, packing=False, packing_length=None, packing_num_proc=1, packing_strategy='binpack', lazy_tokenize=True, use_hf=False, hub_token=None, ddp_timeout=18000000, ddp_backend=None, ignore_args_error=False, use_swift_lora=False, vllm_gpu_memory_utilization=0.9, vllm_tensor_parallel_size=1, vllm_pipeline_parallel_size=1, vllm_enable_expert_parallel=False, vllm_max_num_seqs=256, vllm_max_model_len=None, vllm_disable_custom_all_reduce=True, vllm_enforce_eager=False, vllm_limit_mm_per_prompt=None, vllm_max_lora_rank=16, vllm_enable_prefix_caching=None, vllm_use_async_engine=False, vllm_quantization=None, vllm_reasoning_parser=None, vllm_disable_cascade_attn=False, vllm_mm_processor_cache_gb=None, vllm_speculative_config=None, vllm_engine_kwargs={}, vllm_data_parallel_size=1, sglang_tp_size=1, sglang_pp_size=1, sglang_dp_size=1, sglang_ep_size=1, sglang_enable_ep_moe=False, sglang_mem_fraction_static=None, sglang_context_length=None, sglang_disable_cuda_graph=False, sglang_quantization=None, sglang_kv_cache_dtype='auto', sglang_enable_dp_attention=False, sglang_disable_custom_all_reduce=True, sglang_speculative_algorithm=None, sglang_speculative_num_steps=None, sglang_speculative_eagle_topk=None, sglang_speculative_num_draft_tokens=None, lmdeploy_tp=1, lmdeploy_session_len=None, lmdeploy_cache_max_entry_count=0.8, lmdeploy_quant_policy=0, lmdeploy_vision_batch_size=1, merge_lora=False, safe_serialization=True, max_shard_size='5GB', infer_backend='transformers', result_path='/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-40tk1o0j/vlm_result.jsonl', write_batch_size=500, metric=None, max_batch_size=1, val_dataset_sample=None, reranker_use_activation=True)
+[INFO:swift] Global seed set to 42
+[INFO:swift] attn_impl: eager
+[INFO:swift] Setting max_ratio: 200. You can adjust this hyperparameter through the environment variable: `MAX_RATIO`.
+[INFO:swift] Setting frame_factor: 2. You can adjust this hyperparameter through the environment variable: `FRAME_FACTOR`.
+[INFO:swift] Setting fps: 2.0. You can adjust this hyperparameter through the environment variable: `FPS`.
+[INFO:swift] Setting fps_min_frames: 4. You can adjust this hyperparameter through the environment variable: `FPS_MIN_FRAMES`.
+[INFO:swift] Setting fps_max_frames: 768. You can adjust this hyperparameter through the environment variable: `FPS_MAX_FRAMES`.
+[INFO:swift] Using environment variable `IMAGE_MAX_TOKEN_NUM`, Setting image_max_token_num: 1543.
+[INFO:swift] Setting image_min_token_num: 4. You can adjust this hyperparameter through the environment variable: `IMAGE_MIN_TOKEN_NUM`.
+[INFO:swift] Setting spatial_merge_size: 2. You can adjust this hyperparameter through the environment variable: `SPATIAL_MERGE_SIZE`.
+[INFO:swift] Setting video_max_token_num: 768. You can adjust this hyperparameter through the environment variable: `VIDEO_MAX_TOKEN_NUM`.
+[INFO:swift] Setting video_min_token_num: 128. You can adjust this hyperparameter through the environment variable: `VIDEO_MIN_TOKEN_NUM`.
+[INFO:swift] model_kwargs: {'device_map': 'auto', 'dtype': torch.float32}
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 1/729 [00:00<03:23,  3.59it/s]Loading weights:   4%|▍         | 28/729 [00:00<00:08, 80.84it/s]Loading weights:   6%|▌         | 41/729 [00:00<00:07, 95.05it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:06, 101.21it/s]Loading weights:   9%|▉         | 66/729 [00:00<00:06, 106.19it/s]Loading weights:  11%|█         | 78/729 [00:00<00:05, 109.84it/s]Loading weights:  12%|█▏        | 90/729 [00:00<00:05, 112.43it/s]Loading weights:  14%|█▍        | 102/729 [00:01<00:05, 114.03it/s]Loading weights:  16%|█▌        | 114/729 [00:01<00:05, 115.52it/s]Loading weights:  18%|█▊        | 132/729 [00:01<00:04, 133.78it/s]Loading weights:  20%|██        | 146/729 [00:01<00:04, 135.00it/s]Loading weights:  22%|██▏       | 160/729 [00:01<00:04, 114.46it/s]Loading weights:  24%|██▎       | 173/729 [00:01<00:05, 108.36it/s]Loading weights:  25%|██▌       | 185/729 [00:01<00:04, 110.78it/s]Loading weights:  27%|██▋       | 197/729 [00:01<00:04, 113.03it/s]Loading weights:  30%|██▉       | 216/729 [00:01<00:04, 124.49it/s]Loading weights:  32%|███▏      | 232/729 [00:02<00:04, 120.84it/s]Loading weights:  34%|███▎      | 245/729 [00:02<00:04, 116.80it/s]Loading weights:  35%|███▌      | 257/729 [00:02<00:04, 117.01it/s]Loading weights:  37%|███▋      | 269/729 [00:02<00:04, 113.51it/s]Loading weights:  39%|███▊      | 281/729 [00:02<00:03, 113.88it/s]Loading weights:  41%|████      | 300/729 [00:02<00:03, 134.40it/s]Loading weights:  43%|████▎     | 314/729 [00:02<00:03, 123.90it/s]Loading weights:  45%|████▍     | 328/729 [00:02<00:03, 118.89it/s]Loading weights:  58%|█████▊    | 425/729 [00:03<00:00, 341.18it/s]Loading weights:  76%|███████▋  | 557/729 [00:03<00:00, 607.03it/s]Loading weights:  95%|█████████▍| 691/729 [00:03<00:00, 805.31it/s]Loading weights: 100%|██████████| 729/729 [00:03<00:00, 222.52it/s]
+[INFO:swift] default_system: 'You are a helpful assistant.'
+[INFO:swift] max_length: 128000
+[INFO:swift] response_prefix: None
+[INFO:swift] agent_template: hermes
+[INFO:swift] norm_bbox: none
+[INFO:swift] Setting ROOT_IMAGE_DIR: None. You can adjust this hyperparameter through the environment variable: `ROOT_IMAGE_DIR`.
+[INFO:swift] Setting QWENVL_BBOX_FORMAT: legacy. You can adjust this hyperparameter through the environment variable: `QWENVL_BBOX_FORMAT`.
+[INFO:swift] model: PeftModelForCausalLM(
+  (base_model): LoraModel(
+    (model): Qwen2_5_VLForConditionalGeneration(
+      (model): Qwen2_5_VLModel(
+        (visual): Qwen2_5_VisionTransformerPretrainedModel(
+          (patch_embed): Qwen2_5_VisionPatchEmbed(
+            (proj): Conv3d(3, 1280, kernel_size=(2, 14, 14), stride=(2, 14, 14), bias=False)
+          )
+          (rotary_pos_emb): Qwen2_5_VisionRotaryEmbedding()
+          (blocks): ModuleList(
+            (0-31): 32 x Qwen2_5_VLVisionBlock(
+              (norm1): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (norm2): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+              (attn): Qwen2_5_VLVisionAttention(
+                (qkv): Linear(in_features=1280, out_features=3840, bias=True)
+                (proj): Linear(in_features=1280, out_features=1280, bias=True)
+              )
+              (mlp): Qwen2_5_VLMLP(
+                (gate_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (up_proj): Linear(in_features=1280, out_features=3420, bias=True)
+                (down_proj): Linear(in_features=3420, out_features=1280, bias=True)
+                (act_fn): SiLUActivation()
+              )
+            )
+          )
+          (merger): Qwen2_5_VLPatchMerger(
+            (ln_q): Qwen2_5_VLRMSNorm((1280,), eps=1e-06)
+            (mlp): Sequential(
+              (0): Linear(in_features=5120, out_features=5120, bias=True)
+              (1): GELU(approximate='none')
+              (2): Linear(in_features=5120, out_features=3584, bias=True)
+            )
+          )
+        )
+        (language_model): Qwen2_5_VLTextModel(
+          (embed_tokens): Embedding(152064, 3584)
+          (layers): ModuleList(
+            (0-27): 28 x Qwen2_5_VLDecoderLayer(
+              (self_attn): Qwen2_5_VLAttention(
+                (q_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (k_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (v_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=512, bias=True)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=512, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (o_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+              )
+              (mlp): Qwen2MLP(
+                (gate_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (up_proj): lora.Linear(
+                  (base_layer): Linear(in_features=3584, out_features=18944, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=3584, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=18944, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (down_proj): lora.Linear(
+                  (base_layer): Linear(in_features=18944, out_features=3584, bias=False)
+                  (lora_dropout): ModuleDict(
+                    (default): Dropout(p=0.05, inplace=False)
+                  )
+                  (lora_A): ModuleDict(
+                    (default): Linear(in_features=18944, out_features=16, bias=False)
+                  )
+                  (lora_B): ModuleDict(
+                    (default): Linear(in_features=16, out_features=3584, bias=False)
+                  )
+                  (lora_embedding_A): ParameterDict()
+                  (lora_embedding_B): ParameterDict()
+                  (lora_magnitude_vector): ModuleDict()
+                )
+                (act_fn): SiLUActivation()
+              )
+              (input_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+              (post_attention_layernorm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+            )
+          )
+          (norm): Qwen2_5_VLRMSNorm((3584,), eps=1e-06)
+          (rotary_emb): Qwen2_5_VLRotaryEmbedding()
+        )
+      )
+      (lm_head): Linear(in_features=3584, out_features=152064, bias=False)
+    )
+  )
+)
+[INFO:swift] Start time of running main: 2026-11-25 09:11:54.898164
+[INFO:swift] swift.__version__: 4.4.2
+[INFO:swift] request_config: RequestConfig(max_tokens=512, temperature=0.0, top_k=None, top_p=1.0, repetition_penalty=1.0, num_beams=1, stop=[], seed=None, stream=False, logprobs=False, top_logprobs=None, prompt_logprobs=None, n=1, best_of=None, presence_penalty=0.0, frequency_penalty=0.0, length_penalty=1.0, return_details=False, structured_outputs_regex=None)
+Generating train split: 0 examples [00:00, ? examples/s]Generating train split: 24 examples [00:00, 16641.31 examples/s]
+Map (num_proc=1):   0%|          | 0/24 [00:00<?, ? examples/s]Map (num_proc=1): 100%|██████████| 24/24 [00:00<00:00, 144.27 examples/s]
+[INFO:swift] val_dataset: Dataset({
+    features: ['messages', 'images', 'dataset'],
+    num_rows: 24
+})
+  0%|          | 0/24 [00:00<?, ?it/s]  4%|▍         | 1/24 [00:05<02:12,  5.75s/it]  8%|▊         | 2/24 [00:11<02:12,  6.04s/it] 12%|█▎        | 3/24 [00:18<02:13,  6.33s/it] 17%|█▋        | 4/24 [00:28<02:30,  7.54s/it] 21%|██        | 5/24 [00:34<02:16,  7.20s/it] 25%|██▌       | 6/24 [00:40<02:02,  6.82s/it] 29%|██▉       | 7/24 [00:47<01:53,  6.67s/it] 33%|███▎      | 8/24 [00:54<01:50,  6.89s/it] 38%|███▊      | 9/24 [01:03<01:53,  7.58s/it] 42%|████▏     | 10/24 [01:11<01:48,  7.73s/it] 46%|████▌     | 11/24 [01:20<01:45,  8.09s/it] 50%|█████     | 12/24 [01:28<01:36,  8.03s/it] 54%|█████▍    | 13/24 [01:36<01:29,  8.16s/it] 58%|█████▊    | 14/24 [01:42<01:15,  7.53s/it] 62%|██████▎   | 15/24 [01:49<01:03,  7.10s/it] 67%|██████▋   | 16/24 [01:57<01:00,  7.51s/it] 71%|███████   | 17/24 [02:03<00:49,  7.10s/it] 75%|███████▌  | 18/24 [02:09<00:40,  6.68s/it] 79%|███████▉  | 19/24 [02:14<00:31,  6.32s/it] 83%|████████▎ | 20/24 [02:20<00:24,  6.05s/it] 88%|████████▊ | 21/24 [02:25<00:17,  5.69s/it] 92%|█████████▏| 22/24 [02:32<00:12,  6.06s/it] 96%|█████████▌| 23/24 [02:37<00:05,  5.97s/it]100%|██████████| 24/24 [02:43<00:00,  6.00s/it]100%|██████████| 24/24 [02:43<00:00,  6.83s/it]
+{'num_prompt_tokens': 18789, 'num_generated_tokens': 2771, 'num_samples': 24, 'runtime': 163.88507312297588, 'samples/s': 0.146444087570995, 'tokens/s': 16.9081902774678}
+[INFO:swift] The inference results have been saved to result_path: `/hddstore/ssalehi/SynthScope/adbfull_fid/301130/tmp/detector-40tk1o0j/vlm_result.jsonl`.
+[INFO:swift] End time of running main: 2026-11-25 09:14:39.007091
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/swiglu_ffn.py:43: UserWarning: xFormers is available (SwiGLU)
+  warnings.warn("xFormers is available (SwiGLU)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/attention.py:27: UserWarning: xFormers is available (Attention)
+  warnings.warn("xFormers is available (Attention)")
+/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared/vlm_ref/Align-Dont-Blend-cf168db/detector/third_party/dinov2/layers/block.py:33: UserWarning: xFormers is available (Block)
+  warnings.warn("xFormers is available (Block)")
+predict.py wall seconds (model loads included): bf16 176s, fp32 191s
+=== engine comparison 09:14:48 ===
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 1/729 [00:00<02:07,  5.71it/s]Loading weights:   4%|▍         | 28/729 [00:00<00:05, 118.53it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:04, 166.68it/s]Loading weights:  11%|█         | 82/729 [00:00<00:03, 204.37it/s]Loading weights:  15%|█▌        | 112/729 [00:00<00:02, 228.89it/s]Loading weights:  19%|█▉        | 137/729 [00:00<00:02, 230.04it/s]Loading weights:  22%|██▏       | 162/729 [00:00<00:02, 230.86it/s]Loading weights:  26%|██▋       | 192/729 [00:00<00:02, 250.81it/s]Loading weights:  30%|███       | 220/729 [00:01<00:02, 251.46it/s]Loading weights:  34%|███▎      | 246/729 [00:01<00:02, 239.28it/s]Loading weights:  38%|███▊      | 276/729 [00:01<00:01, 256.05it/s]Loading weights:  42%|████▏     | 303/729 [00:01<00:01, 244.88it/s]Loading weights:  45%|████▌     | 330/729 [00:01<00:01, 247.72it/s]Loading weights:  79%|███████▉  | 576/729 [00:01<00:00, 867.72it/s]Loading weights: 100%|██████████| 729/729 [00:01<00:00, 442.70it/s]
+Using cache found in /home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/swiglu_ffn.py:43: UserWarning: xFormers is available (SwiGLU)
+  warnings.warn("xFormers is available (SwiGLU)")
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/attention.py:27: UserWarning: xFormers is available (Attention)
+  warnings.warn("xFormers is available (Attention)")
+/home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main/dinov2/layers/block.py:33: UserWarning: xFormers is available (Block)
+  warnings.warn("xFormers is available (Block)")
+[bf16] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG final=real vlm=real dda=real (p 0.031032) score=0.031032 13.07s 18.11GB
+[bf16] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG final=real vlm=real dda=real (p 0.238658) score=0.238658 5.03s 18.11GB
+[bf16] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG final=real vlm=real dda=real (p 0.165253) score=0.165253 5.84s 18.11GB
+[bf16] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png final=fake vlm=real dda=fake (p 0.610949) score=0.610949 7.9s 18.52GB
+[bf16] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png final=fake vlm=real dda=fake (p 0.987374) score=0.987374 7.56s 18.15GB
+[bf16] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG final=real vlm=real dda=real (p 0.474708) score=0.474708 6.61s 18.06GB
+[bf16] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg final=real vlm=real dda=real (p 0.035486) score=0.035486 4.63s 18.34GB
+[bf16] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg final=real vlm=real dda=real (p 0.106320) score=0.106320 6.58s 18.35GB
+[bf16] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg final=real vlm=real dda=real (p 0.059732) score=0.059732 7.74s 18.58GB
+[bf16] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg final=fake vlm=fake dda=fake (p 0.992004) score=1.000000 8.03s 18.52GB
+[bf16] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg final=fake vlm=fake dda=fake (p 0.986958) score=1.000000 6.61s 18.57GB
+[bf16] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg final=fake vlm=fake dda=fake (p 0.983795) score=1.000000 6.53s 18.4GB
+[bf16] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg final=fake vlm=fake dda=fake (p 0.990979) score=1.000000 6.21s 18.58GB
+[bf16] WildRF/test/reddit/0_real/000219_0219.png final=real vlm=real dda=real (p 0.063756) score=0.063756 4.51s 18.17GB
+[bf16] WildRF/test/reddit/0_real/000032_0032.png final=real vlm=real dda=real (p 0.123994) score=0.123994 5.02s 18.35GB
+[bf16] WildRF/test/reddit/0_real/000030_0030.jpg final=real vlm=real dda=real (p 0.488002) score=0.488002 5.86s 18.58GB
+[bf16] GenImage_val_full/test/adm/1_fake/0_adm_34.PNG final=fake vlm=real dda=fake (p 0.789775) score=0.789775 4.68s 18.06GB
+[bf16] GenImage_val_full/test/adm/1_fake/0_adm_85.PNG final=fake vlm=real dda=fake (p 0.929472) score=0.929472 5.89s 18.06GB
+[bf16] GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG final=real vlm=real dda=real (p 0.268146) score=0.268146 5.7s 18.11GB
+[bf16] GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png final=fake vlm=real dda=fake (p 0.511552) score=0.511552 4.93s 18.04GB
+[bf16] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png final=fake vlm=real dda=fake (p 0.858950) score=0.858950 4.44s 18.06GB
+[bf16] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG final=fake vlm=fake dda=real (p 0.443186) score=0.999891 6.07s 18.15GB
+[bf16] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG final=fake vlm=fake dda=real (p 0.298395) score=1.000000 5.17s 18.15GB
+[bf16] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG final=real vlm=real dda=real (p 0.357606) score=0.357606 5.53s 18.13GB
+[bf16] {"final_equal": "24/24", "dda_equal": "24/24", "vlm_equal": "24/24", "vlm_answer_parsed_equal": "24/24", "text_equal": "24/24", "score_side_ok": "24/24", "official_vlm_answers_unparsed": 0, "all_decisions_identical": true, "max_abs_dda_probability_diff": 2.115964889526367e-06, "disagreements_vlm_vs_dda": 8, "decided_by_expert_only": 6, "decided_by_vlm_only": 2}
+Loading weights:   0%|          | 0/729 [00:00<?, ?it/s]Loading weights:   0%|          | 1/729 [00:00<02:55,  4.14it/s]Loading weights:   0%|          | 2/729 [00:00<02:13,  5.44it/s]Loading weights:   4%|▍         | 29/729 [00:00<00:07, 88.00it/s]Loading weights:   6%|▌         | 42/729 [00:00<00:07, 94.93it/s]Loading weights:   7%|▋         | 54/729 [00:00<00:06, 101.93it/s]Loading weights:   9%|▉         | 66/729 [00:00<00:06, 106.81it/s]Loading weights:  12%|█▏        | 84/729 [00:00<00:05, 120.10it/s]Loading weights:  14%|█▎        | 100/729 [00:01<00:05, 114.56it/s]Loading weights:  16%|█▌        | 113/729 [00:01<00:05, 114.36it/s]Loading weights:  17%|█▋        | 125/729 [00:01<00:05, 112.27it/s]Loading weights:  19%|█▉        | 137/729 [00:01<00:05, 113.19it/s]Loading weights:  21%|██        | 150/729 [00:01<00:04, 117.25it/s]Loading weights:  23%|██▎       | 166/729 [00:01<00:04, 128.96it/s]Loading weights:  25%|██▍       | 180/729 [00:01<00:04, 130.26it/s]Loading weights:  27%|██▋       | 194/729 [00:01<00:04, 132.82it/s]Loading weights:  29%|██▊       | 208/729 [00:01<00:04, 112.53it/s]Loading weights:  30%|███       | 220/729 [00:02<00:04, 105.56it/s]Loading weights:  32%|███▏      | 234/729 [00:02<00:04, 105.36it/s]Loading weights:  35%|███▍      | 255/729 [00:02<00:03, 130.61it/s]Loading weights:  37%|███▋      | 269/729 [00:02<00:04, 112.62it/s]Loading weights:  39%|███▊      | 282/729 [00:02<00:03, 116.13it/s]Loading weights:  40%|████      | 295/729 [00:02<00:03, 118.54it/s]Loading weights:  43%|████▎     | 312/729 [00:02<00:03, 125.87it/s]Loading weights:  45%|████▍     | 328/729 [00:03<00:03, 118.02it/s]Loading weights:  59%|█████▊    | 427/729 [00:03<00:00, 331.70it/s]Loading weights:  76%|███████▋  | 557/729 [00:03<00:00, 583.08it/s]Loading weights:  95%|█████████▍| 691/729 [00:03<00:00, 782.72it/s]Loading weights: 100%|██████████| 729/729 [00:03<00:00, 217.04it/s]
+Using cache found in /home/ssalehi/.cache/agid/cache/torch/hub/facebookresearch_dinov2_main
+[fp32] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000008.JPEG final=real vlm=real dda=real (p 0.031032) score=0.031032 14.24s 34.77GB
+[fp32] GenImage_val_full/test/sdv1.4/0_real/ILSVRC2012_val_00000037.JPEG final=real vlm=real dda=real (p 0.238658) score=0.238658 6.32s 34.76GB
+[fp32] GenImage_val_full/test/adm/0_real/ILSVRC2012_val_00000005.JPEG final=real vlm=real dda=real (p 0.165253) score=0.165253 6.76s 34.76GB
+[fp32] GenImage_val_full/test/midjourney/1_fake/0_midjourney_100.png final=fake vlm=fake dda=fake (p 0.610949) score=0.769162 9.45s 38.66GB
+[fp32] GenImage_val_full/test/sdv1.4/1_fake/000_sdv4_00020.png final=fake vlm=real dda=fake (p 0.987374) score=0.987374 6.67s 34.85GB
+[fp32] GenImage_val_full/test/adm/1_fake/0_adm_153.PNG final=real vlm=real dda=real (p 0.474708) score=0.474708 6.16s 34.68GB
+[fp32] SynthWildX/test/dalle3/0_real/00000_Cb1RvxXW4AAGFd7.jpg final=real vlm=real dda=real (p 0.035486) score=0.035486 6.41s 36.26GB
+[fp32] SynthWildX/test/dalle3/0_real/00001_CwHUi2yWcAEzM1d.jpg final=real vlm=real dda=real (p 0.106320) score=0.106320 7.42s 36.35GB
+[fp32] SynthWildX/test/dalle3/0_real/00002_DKvym1KW4AEet37.jpg final=real vlm=real dda=real (p 0.059732) score=0.059732 9.16s 39.68GB
+[fp32] SynthWildX/test/dalle3/1_fake/00000_F-7R0_TW8AA8IZx.jpg final=fake vlm=fake dda=fake (p 0.992004) score=1.000000 8.13s 38.66GB
+[fp32] SynthWildX/test/firefly/1_fake/00000_F-A4b03W8AAoa-_.jpg final=fake vlm=fake dda=fake (p 0.986958) score=1.000000 8.95s 39.59GB
+[fp32] SynthWildX/test/firefly/1_fake/00002_F-Ai0-DbYAAWm2g.jpg final=fake vlm=fake dda=fake (p 0.983795) score=1.000000 7.93s 36.94GB
+[fp32] SynthWildX/test/midjourney_v5/1_fake/00000_F-0U2WDXkAAaKOI.jpg final=fake vlm=fake dda=fake (p 0.990979) score=1.000000 8.54s 39.68GB
+[fp32] WildRF/test/reddit/0_real/000219_0219.png final=real vlm=real dda=real (p 0.063756) score=0.063756 6.11s 34.96GB
+[fp32] WildRF/test/reddit/0_real/000032_0032.png final=real vlm=real dda=real (p 0.123994) score=0.123994 6.15s 36.33GB
+[fp32] WildRF/test/reddit/0_real/000030_0030.jpg final=real vlm=real dda=real (p 0.488002) score=0.488002 8.51s 39.64GB
+[fp32] GenImage_val_full/test/adm/1_fake/0_adm_34.PNG final=fake vlm=real dda=fake (p 0.789775) score=0.789775 6.21s 34.68GB
+[fp32] GenImage_val_full/test/adm/1_fake/0_adm_85.PNG final=fake vlm=real dda=fake (p 0.929472) score=0.929472 5.77s 34.68GB
+[fp32] GenImage_val_full/test/biggan/0_real/ILSVRC2012_val_00000386.JPEG final=real vlm=real dda=real (p 0.268146) score=0.268146 5.57s 34.77GB
+[fp32] GenImage_val_full/test/biggan/1_fake/000_biggan_00020.png final=fake vlm=real dda=fake (p 0.511552) score=0.511552 5.48s 34.65GB
+[fp32] GenImage_val_full/test/glide/1_fake/GLIDE_1000_200_00_000_glide_00035.png final=fake vlm=real dda=fake (p 0.858950) score=0.858950 4.9s 34.68GB
+[fp32] GenImage_val_full/test/midjourney/0_real/ILSVRC2012_val_00000236.JPEG final=fake vlm=fake dda=real (p 0.443186) score=0.999999 7.02s 34.85GB
+[fp32] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000118.JPEG final=fake vlm=fake dda=real (p 0.298395) score=1.000000 5.83s 34.85GB
+[fp32] GenImage_val_full/test/sdv1.5/0_real/ILSVRC2012_val_00000371.JPEG final=real vlm=real dda=real (p 0.357606) score=0.357606 6.11s 34.81GB
+[fp32] {"final_equal": "24/24", "dda_equal": "24/24", "vlm_equal": "24/24", "vlm_answer_parsed_equal": "24/24", "text_equal": "24/24", "score_side_ok": "24/24", "official_vlm_answers_unparsed": 0, "all_decisions_identical": true, "max_abs_dda_probability_diff": 2.115964889526367e-06, "disagreements_vlm_vs_dda": 7, "decided_by_expert_only": 5, "decided_by_vlm_only": 2}
+[summary] {
+ "n_images": 24,
+ "bf16": {
+  "final_equal": "24/24",
+  "dda_equal": "24/24",
+  "vlm_equal": "24/24",
+  "vlm_answer_parsed_equal": "24/24",
+  "text_equal": "24/24",
+  "score_side_ok": "24/24",
+  "official_vlm_answers_unparsed": 0,
+  "all_decisions_identical": true,
+  "max_abs_dda_probability_diff": 2.115964889526367e-06,
+  "disagreements_vlm_vs_dda": 8,
+  "decided_by_expert_only": 6,
+  "decided_by_vlm_only": 2
+ },
+ "fp32_eager": {
+  "final_equal": "24/24",
+  "dda_equal": "24/24",
+  "vlm_equal": "24/24",
+  "vlm_answer_parsed_equal": "24/24",
+  "text_equal": "24/24",
+  "score_side_ok": "24/24",
+  "official_vlm_answers_unparsed": 0,
+  "all_decisions_identical": true,
+  "max_abs_dda_probability_diff": 2.115964889526367e-06,
+  "disagreements_vlm_vs_dda": 7,
+  "decided_by_expert_only": 5,
+  "decided_by_vlm_only": 2
+ },
+ "official_bf16_vs_fp32": {
+  "final_equal": "24/24",
+  "vlm_equal": "23/24",
+  "dda_equal": "24/24",
+  "text_equal": "2/24"
+ },
+ "correct_bf16": {
+  "final": 21,
+  "vlm": 15,
+  "dda": 23
+ },
+ "engine_bf16_seconds_per_image": 6.26,
+ "engine_bf16_peak_GB_max": 18.58,
+ "engine_fp32_seconds_per_image": 7.24,
+ "engine_fp32_peak_GB_max": 39.68,
+ "official_wall_seconds_incl_load": {
+  "bf16": 176,
+  "fp32": 191
+ }
+}
+done Wed Nov 25 09:20:26 CET 2026
+removed the code copy and caches (kept /hddstore/ssalehi/SynthScope/adbfull_fid/301130/data and the official outputs)

@@ -1,0 +1,139 @@
+{
+ "before": "bfree_online_full",
+ "after": "bfree_online_full_cf168db",
+ "n_images": 807,
+ "generators": [
+  "viral"
+ ],
+ "replicates": 2000,
+ "seed": 0,
+ "method": "paired: one stratified (generator, class) resampling of the shared images for both rows; means over generators; difference = after - before",
+ "changed_decisions": {
+  "vlm_verdict": 111,
+  "verdict": 12
+ },
+ "max_abs_dda_prob_diff": 0.0,
+ "rows": {
+  "bfree_online_full": {
+   "adb_full": {
+    "acc": 96.93,
+    "acc_ci95": [
+     95.45,
+     98.14
+    ],
+    "mauroc": 99.11,
+    "mauroc_ci95": [
+     98.38,
+     99.67
+    ]
+   },
+   "vlm": {
+    "acc": 87.08,
+    "acc_ci95": [
+     85.22,
+     89.03
+    ],
+    "mauroc": 98.19,
+    "mauroc_ci95": [
+     97.31,
+     98.94
+    ]
+   },
+   "dda": {
+    "acc": 94.98,
+    "acc_ci95": [
+     93.4,
+     96.38
+    ],
+    "mauroc": 98.86,
+    "mauroc_ci95": [
+     98.25,
+     99.35
+    ]
+   }
+  },
+  "bfree_online_full_cf168db": {
+   "adb_full": {
+    "acc": 96.84,
+    "acc_ci95": [
+     95.44,
+     98.05
+    ],
+    "mauroc": 99.41,
+    "mauroc_ci95": [
+     98.87,
+     99.77
+    ]
+   },
+   "vlm": {
+    "acc": 81.69,
+    "acc_ci95": [
+     79.65,
+     83.83
+    ],
+    "mauroc": 96.84,
+    "mauroc_ci95": [
+     95.67,
+     97.84
+    ]
+   },
+   "dda": {
+    "acc": 94.98,
+    "acc_ci95": [
+     93.4,
+     96.38
+    ],
+    "mauroc": 98.86,
+    "mauroc_ci95": [
+     98.25,
+     99.35
+    ]
+   }
+  }
+ },
+ "after_minus_before": {
+  "adb_full": {
+   "acc": -0.09,
+   "acc_ci95": [
+    -1.02,
+    0.84
+   ],
+   "mauroc": 0.29,
+   "mauroc_ci95": [
+    -0.45,
+    1.09
+   ]
+  },
+  "vlm": {
+   "acc": -5.39,
+   "acc_ci95": [
+    -7.34,
+    -3.35
+   ],
+   "mauroc": -1.35,
+   "mauroc_ci95": [
+    -2.4,
+    -0.38
+   ]
+  },
+  "dda": {
+   "acc": 0.0,
+   "acc_ci95": [
+    0.0,
+    0.0
+   ],
+   "mauroc": 0.0,
+   "mauroc_ci95": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "per_generator": {
+  "viral": {
+   "adb_full": -0.09,
+   "vlm": -5.39,
+   "dda": 0.0
+  }
+ }
+}

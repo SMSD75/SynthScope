@@ -262,32 +262,35 @@ VAL = {
     ("veritaspp", "RealChain"): {"official": {"acc": 82.74}},
     ("veritaspp", "EvalGEN"): {"official": {"acc": 98.2}},
     ("veritaspp", "15 held benchmarks"): {"official": {"acc": 84.7, "auroc": 91.33}},
-    # Align, Don't Blend, VLM branch (Chen et al., arXiv 2512.06746): the official LoRA adapter only, inference only, greedy (the
+    # Align, Don't Blend, VLM branch (Chen et al., arXiv 2512.06746), measured with the upstream f4b4794 request (before the cf168db
+    # sync; not rerun on these subsets): the official LoRA adapter only, inference only, greedy (the
     # official decoding), no SynthScope-trained number. The paper's detector is VLM OR the DDA pixel expert (adb_full, below) and
     # the paper prints no VLM-only number, so the spec gives no paper number and every row is "reference". Every value traces to
     # repro/vlm_bench/comparison.json (paper_comparison.adb_vlm / subset_means.adb_vlm; results/<bench>/adb_vlm*.json; logs
     # repro/logs/adb_ivi_*.out). WildRF = FULL data (2,503 images, results/wildrf/adb_vlm__full*.json); BFree-Online = 269 real +
     # 500 fake subset; AIGI-Bench = the CommunityAI + SocialRF slices of the subset (20 + 20 each); GenImage / AIGCDetect = subsets
-    # with the fakes JPEG q96 (adb_vlm__jpegfakes96.json; the AIGCDetect protocol is our inference); the last row is the
+    # with the fakes JPEG q96 (adb_vlm__jpegfakes96.json; the official protocol since upstream cf168db); the last row is the
     # unweighted mean of the 15 subsampled benchmark accuracies / AUROCs. CO-SPY in-the-wild is not held (no entry).
-    ("adb_vlm", "WildRF"): {"official": {"acc": 93.98, "auroc": 98.78}},
+    # WildRF: the cf168db request on the same 2,503 images (repro/adb_full/vlm_cf168db/wildrf/adb_vlm__full__*.json, job 301129;
+    # the per-platform means of their RESULT lines); the f4b4794 93.98 / 98.78 is in the note.
+    ("adb_vlm", "WildRF"): {"official": {"acc": 95.96, "auroc": 99.08}},
     ("adb_vlm", "BFree-Online"): {"official": {"acc": 87.96, "auroc": 98.36}},
     ("adb_vlm", "AIGI-Bench"): {"official": {"acc": 82.5}},
     ("adb_vlm", "GenImage"): {"official": {"acc": 65.97, "auroc": 79.18}},
     ("adb_vlm", "AIGCDetectBenchmark"): {"official": {"acc": 63.92, "auroc": 70.55}},
     ("adb_vlm", "15 held benchmarks"): {"official": {"acc": 76.58, "auroc": 84.11}},
-    # Align, Don't Blend, FULL method (adb_full = adb_vlm OR dda, the official rule of predict.py): official weights only, no
-    # SynthScope-trained number. Every value traces to repro/adb_full/paper_comparison.json (results/<row>.json; fusion log
-    # repro/logs/adb_full_fuse.out; VLM logs adb_ivi_*.out and adbfull_bench_297122*.out, the row's vlm_logs; dda per-image
-    # log adbfull_bench_297122.out). VLM bf16 greedy on RTX A5000. WildRF = full data ("below" by STATUS_OVERRIDE: every
-    # platform under the paper); BFree-Online = the 807 held of 1,111; AIGI-Bench = SocialRF full + CommunityAI first
-    # 1,500 + 1,500; GenImage = the first 625 + 625 per generator (10,000; job 297930, logs adbfull_gi10k_297930*.out);
-    # AIGCDetect = the vlm_bench subset; both fakes JPEG q96 (all "reference" by the spec).
-    ("adb_full", "WildRF"): {"official": {"acc": 91.22, "auroc": 99.22}},
-    ("adb_full", "BFree-Online"): {"official": {"acc": 96.93, "auroc": 99.11}},
-    ("adb_full", "AIGI-Bench"): {"official": {"acc": 87.52, "auroc": 97.35}},
-    ("adb_full", "GenImage"): {"official": {"acc": 86.7, "auroc": 92.86}},   # 10,000 images (625 + 625 per generator)
-    ("adb_full", "AIGCDetectBenchmark"): {"official": {"acc": 83.82, "auroc": 90.05}},
+    # Align, Don't Blend, FULL method (adb_full = adb_vlm OR dda, the official rule of predict.py @ cf168db): official weights only,
+    # no SynthScope-trained number. Every value traces to repro/adb_full/paper_comparison.json, the *_cf168db rows (results/<row>.json;
+    # fusion log repro/logs/adb_full_fuse.out; VLM logs adbsync_301129*.out, job 301129, VLM bf16 greedy on RTX A5000 with the
+    # cf168db request; dda per-image logs adbfull_bench_297122.out / adbfull_gi10k_297930.out / adbsync_301129.out). WildRF and
+    # AIGI-Bench = the paper's full data (2,503; 18,000); BFree-Online = the 807 held of 1,111; GenImage = the first 625 + 625 per
+    # generator (10,000); AIGCDetect = the first 100 + 100 per generator (3,400); both fakes JPEG q96 (the official tools/jpeg96.py;
+    # samples, "reference" by the spec).
+    ("adb_full", "WildRF"): {"official": {"acc": 93.01, "auroc": 99.47}},
+    ("adb_full", "BFree-Online"): {"official": {"acc": 96.84, "auroc": 99.41}},
+    ("adb_full", "AIGI-Bench"): {"official": {"acc": 89.22, "auroc": 98.03}},
+    ("adb_full", "GenImage"): {"official": {"acc": 88.86, "auroc": 96.47}},   # 10,000 images (625 + 625 per generator)
+    ("adb_full", "AIGCDetectBenchmark"): {"official": {"acc": 84.76, "auroc": 92.93}},   # 3,400 images (100 + 100 per generator)
     # FakeVLM (Wen et al., NeurIPS'25, arXiv 2503.14905): the official weights only, inference only, greedy (the official
     # decoding), no SynthScope-trained number. None of the paper's benchmarks (FakeClue, LOKI, DMimage, DD-VQA, FF++) is held,
     # so those rows are "missing" (no entry) and the two rows below are "reference". GenImage is IN-DISTRIBUTION (FakeClue
@@ -327,9 +330,6 @@ VAL = {
 STATUS_OVERRIDE = {("mirror", "RRDataset (pooled folder)"): "below",
                    ("vina", "SynthWildX (dalle3 / firefly / midjourney_v5)"): "below",
                    ("vina", "WildRF (facebook / reddit / twitter)"): "below",
-                   # Align, Don't Blend full method: -1.68 on the mean (inside the 2-pt tolerance), but every platform is below the
-                   # paper (Facebook -1.26, Reddit -1.57, Twitter -2.10), as VINA's WildRF row
-                   ("adb_full", "WildRF (Facebook, Reddit, Twitter test sets), full data, 2,503 images"): "below",
                    ("nsg_vd_pika", "GenVideo-Val, paper Table 1 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below",
                    ("nsg_vd_unbalance", "GenVideo-Val, paper Table 3 (120 per generator; L120, Sora 56 + 51) vs the released checkpoints"): "below"}
 

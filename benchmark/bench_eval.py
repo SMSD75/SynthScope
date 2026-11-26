@@ -359,6 +359,9 @@ VLM_CONFIG_FIELDS = ("model_class", "family", "max_pixels", "verdict_pairs", "ve
                      "teacher_forced_suffix", "logits", "answer_marker", "answer_end", "parser", "verdict_offset",
                      "image_loader", "preprocess", "preprocess_kwargs", "processor", "processor_overrides",
                      "processor_kwargs", "base_model", "dtype", "attn_implementation")
+# VLMConfig fields added later: part of the fingerprint only when set, so the identities of detectors that leave them unset
+# (and the caches keyed by them) do not change
+VLM_CONFIG_FIELDS_IF_SET = ("answer_parsed",)
 NO_SCORE_SOURCES = ("unparsed", "unscored")      # score_source of a record without a verdict token (P 0.5, logit 0)
 
 
@@ -373,7 +376,9 @@ def vlm_config_fingerprint(cfg) -> str:
         if hasattr(v, "__class__") and type(v).__module__ != "builtins" and not isinstance(v, (dict, list, tuple)):
             return f"{type(v).__module__}.{type(v).__qualname__}"
         return v
-    blob = json.dumps({f: name(getattr(cfg, f, None)) for f in VLM_CONFIG_FIELDS}, sort_keys=True, default=str)
+    fields = {f: name(getattr(cfg, f, None)) for f in VLM_CONFIG_FIELDS}
+    fields.update({f: name(getattr(cfg, f)) for f in VLM_CONFIG_FIELDS_IF_SET if getattr(cfg, f, None) is not None})
+    blob = json.dumps(fields, sort_keys=True, default=str)
     return hashlib.sha1(blob.encode()).hexdigest()[:10]
 
 
@@ -471,6 +476,8 @@ def score_vlm(det, spec, paths: list[Path], keys: list[str], labels: list[int], 
             out = det._engine.vlm_score(spec, image, decoding=decoding, seed=seed)
             dt = time.time() - t0
             rec = {"key": key, "sha1": sha1, "logit": out["logit"], "verdict": out["verdict"],
+                   "answer_parsed": out.get("answer_parsed", out["verdict"] is not None),
+                   **({"logit_unclamped": out["logit_unclamped"]} if "logit_unclamped" in out else {}),
                    "score_source": out["score_source"], "new_tokens": out["new_tokens"], "finished": out["finished"],
                    "verdict_token": out["verdict_token"], "input_size": out["input_size"], "seconds": round(dt, 3),
                    "decoding": decoding, "seed": seed, "response": out["response"]}
@@ -487,7 +494,19 @@ def score_vlm(det, spec, paths: list[Path], keys: list[str], labels: list[int], 
     return recs, kept
 
 
-def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
+def answer_parsed(rec: dict, cfg=None) -> bool:
+    """Whether the official parser read the record's answer: the record's ``answer_parsed`` (written since the field
+    exists), else a verdict and, for a config with an ``answer_parsed`` hook (ADB: a rejected answer defaults to Real),
+    the hook on the stored response."""
+    if "answer_parsed" in rec:
+        return bool(rec["answer_parsed"])
+    if rec["verdict"] is None:
+        return False
+    hook = getattr(cfg, "answer_parsed", None) if cfg is not None else None
+    return True if hook is None else bool(hook(rec.get("response", "")))
+
+
+def vlm_metrics(recs: list[dict], labels: list[int], cfg=None) -> dict | None:
     """Accuracy from the parsed verdicts (unparsed = wrong; ``*_drop``: unparsed answers left out, as the authors'
     ``cal_metrics.py``), AUROC / AP from the fake-minus-real logit (float64, rank-based), plus counts (``n_unscored``: a
     parsed verdict without a verdict token, i.e. logit 0 / P 0.5 in AUROC / AP)."""
@@ -500,7 +519,7 @@ def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
         return round(100.0 * sum(hits) / len(hits), 2) if hits else None
 
     correct = [v == ("fake" if y else "real") for v, y in zip(verdicts, labels)]
-    parsed = [v is not None for v in verdicts]
+    parsed = [answer_parsed(r, cfg) for r in recs]
     by_class = {y: [c for c, l in zip(correct, labels) if l == y] for y in (0, 1)}
     by_class_drop = {y: [c for c, l, ok in zip(correct, labels, parsed) if l == y and ok] for y in (0, 1)}
     real_acc, fake_acc = pct(by_class[0]), pct(by_class[1])
@@ -514,7 +533,7 @@ def vlm_metrics(recs: list[dict], labels: list[int]) -> dict | None:
             "acc_pooled_drop": pct([c for c, ok in zip(correct, parsed) if ok]),
             "n_real": len(by_class[0]), "n_fake": len(by_class[1]),
             "n_unparsed": parsed.count(False),
-            "n_unscored": sum(v is not None and r["score_source"] in NO_SCORE_SOURCES for v, r in zip(verdicts, recs)),
+            "n_unscored": sum(ok and r["score_source"] in NO_SCORE_SOURCES for ok, r in zip(parsed, recs)),
             "n_unfinished": sum(not r["finished"] for r in recs),
             "n_logit_verdict_disagree": sum(v is not None and (v == "fake") != (r["logit"] > 0)
                                             for v, r in zip(verdicts, recs)),
@@ -671,9 +690,10 @@ def main(argv=None) -> int:
             print(f"    {labels.numel() - len(kept)} unreadable image(s) left out of {name}", flush=True)
             labels = labels[kept]
         if is_vlm:
-            m = vlm_metrics(recs, labels.tolist())
+            m = vlm_metrics(recs, labels.tolist(), spec.vlm)
             per_image += [{"generator": name, "key": r["key"], "label": int(y), "logit": round(r["logit"], 4),
-                           "verdict": r["verdict"], "score_source": r["score_source"], "new_tokens": r["new_tokens"],
+                           "verdict": r["verdict"], "answer_parsed": answer_parsed(r, spec.vlm),
+                           "score_source": r["score_source"], "new_tokens": r["new_tokens"],
                            "finished": r["finished"], "seconds": r["seconds"], "sha1": r["sha1"]}
                           for r, y in zip(recs, labels.tolist())]
         else:
@@ -722,18 +742,20 @@ def main(argv=None) -> int:
         result["limit"] = args.limit
     if is_vlm:
         n = len(per_image)
-        unparsed = sum(r["verdict"] is None for r in per_image)
+        unparsed = sum(not r["answer_parsed"] for r in per_image)
         result["vlm"] = {
             "decoding": args.vlm_decoding, "seed": vlm_seed, "n_images": n, "n_unparsed": unparsed,
-            "n_unscored": sum(r["verdict"] is not None and r["score_source"] in NO_SCORE_SOURCES for r in per_image),
+            "n_unscored": sum(r["answer_parsed"] and r["score_source"] in NO_SCORE_SOURCES for r in per_image),
             "n_unfinished": sum(not r["finished"] for r in per_image),
             "mean_tokens": round(sum(r["new_tokens"] for r in per_image) / n, 1),
             "mean_seconds_scored": round(sum(r["seconds"] for r in per_image) / n, 2),
             "acc_pooled": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image) / n, 2),
-            "acc_pooled_drop": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image)
-                                     / (n - unparsed), 2) if n > unparsed else None,
+            "acc_pooled_drop": round(100 * sum(r["verdict"] == ("fake" if r["label"] else "real") for r in per_image
+                                               if r["answer_parsed"]) / (n - unparsed), 2) if n > unparsed else None,
             "cache": str(cache.folder) if cache.folder else None, "identity": identity,
-            "metric_note": "acc / real_acc / fake_acc from the parsed verdict, unparsed = wrong; *_drop leave unparsed "
+            "metric_note": "acc / real_acc / fake_acc from the parsed verdict: an unparsed answer is wrong, or, for a "
+                           "detector whose official decision gives it a default verdict (adb_vlm: Real), that verdict; "
+                           "n_unparsed counts both kinds; *_drop leave unparsed "
                            "answers out (the authors' cal_metrics.py); AUROC / AP from the fake-minus-real logit at the "
                            "verdict token (n_unscored: a parsed verdict without a verdict token enters AUROC / AP with "
                            "logit 0, P(fake) 0.5). "

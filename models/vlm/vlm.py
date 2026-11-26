@@ -47,6 +47,9 @@ parser's word not a verdict token): P(fake) = 0.5, logit 0 and "unparsed" when t
 (ruling U1), "unscored" when it did (the verdict counts for accuracy, the 0.5 for AUROC; bench_eval reports the count).
 Under greedy decoding with ``logits="processed"`` (or raw logits without a logits processor) the emitted token is the
 argmax, so the sign of the logit is the emitted word.
+``answer_parsed`` (with ``VLMConfig.answer_parsed``, for a parser that gives a rejected answer a default verdict, ADB's
+Real): False for such an answer, which is then reported unparsed and scored on the Real side (logit <= 0; a positive gap is
+kept as ``logit_unclamped``); True for every other answer with a verdict.
 
 Relative ``base_model`` / ``processor`` folders are resolved against the checkpoint root (``SynthScopeVLM(root=...)``;
 the engine passes ``$SYNTHSCOPE_CKPT_DIR``). Batch size 1 only. Inference only: there is no training path.
@@ -246,6 +249,11 @@ class VLMConfig:
     verdict_pairs: tuple = (("fake", "real"),)        # (fake word, real word) with the same spelling
     verdict_sequences: Optional[tuple] = None         # ((fake tokens...), (real tokens...)) as token strings; None =
                                                       # the family's (the first pair with a leading space, encoded)
+    answer_parsed: Optional[Callable[[str], bool]] = None   # paired with a parser that gives an answer the official
+                                                      # parser rejects a default verdict (ADB: Real): response -> did the
+                                                      # official parser read it? False: reported unparsed
+                                                      # (``answer_parsed``) and the score clamped to the Real side
+                                                      # (logit <= 0); None = every parsed verdict counts as parsed
     verdict_offset: Optional[Callable[[str], Optional[int]]] = None   # paired with the parser: response -> character
                                                       # offset of the verdict word it read when that is not after
                                                       # answer_marker (else None); None = always the marker search
@@ -558,6 +566,15 @@ class SynthScopeVLM(torch.nn.Module):
                                 self.cfg.answer_end, offset=offset, text=response)
             if out["verdict_step"] is None and verdict is not None:
                 out["score_source"] = "unscored"      # a parsed verdict without a verdict token: P 0.5, reported
+            out["answer_parsed"] = verdict is not None and (self.cfg.answer_parsed is None
+                                                            or bool(self.cfg.answer_parsed(response)))
+            if verdict is not None and not out["answer_parsed"]:
+                # the official parser rejected the answer and the parser's default verdict stands (ADB: Real): the score
+                # stays on the Real side, whatever verdict word the text holds (e.g. two answer tags)
+                if verdict != "real":
+                    raise ValueError(f"answer_parsed hook: default verdict {verdict!r}, expected 'real'")
+                if out["logit"] > 0:
+                    out.update({"logit_unclamped": out["logit"], **gap_fields(0.0)})
             rationale = response.split(self.cfg.answer_marker)[0].strip() if self.cfg.answer_marker else response
             out.update({
                 "verdict": verdict,
@@ -582,7 +599,8 @@ class SynthScopeVLM(torch.nn.Module):
                     "verdict": "fake" if out["logit"] > 0 else "real", "verdict_token": None,
                     "pair_tokens": self.tokenizer.convert_ids_to_tokens(list(self.pair)),
                     "forced_prefix": self.tokenizer.convert_ids_to_tokens(prefix),
-                    "response": "", "rationale": "", "new_tokens": 0, "finished": True, "generated_ids": []})
+                    "response": "", "rationale": "", "new_tokens": 0, "finished": True, "generated_ids": [],
+                    "answer_parsed": True})
         return self._common(out, inputs, inputs["input_ids"].shape[1], "teacher_forced")
 
     def _common(self, out: dict, inputs: dict, n_prompt: int, decoding: str) -> dict:

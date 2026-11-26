@@ -2,8 +2,8 @@
 
 **Paper:** Chen et al., *Align, Don't Blend: Orthogonal Supervision Disentanglement As the Key to Generalizable
 AI-Generated Image Detection*, ACM MM 2026 ([arXiv 2512.06746](https://arxiv.org/abs/2512.06746)).
-**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `f4b4794` (Apache-2.0 since 2026-11-20,
-checked at `5d83e40`).
+**Code:** [GzZning/Align-Dont-Blend](https://github.com/GzZning/Align-Dont-Blend) @ `cf168db` (Apache-2.0 since 2026-11-20;
+first integrated at `f4b4794`, see [Upstream sync](#upstream-sync-cf168db)).
 **Weights:** LoRA adapter [Gaffeyzz/Align-Dont-Blend-VLM](https://huggingface.co/Gaffeyzz/Align-Dont-Blend-VLM) @
 `49975ccd` (Apache-2.0: the card's licence tag, added at `ff7973df` with identical adapter files), on the base model [Qwen/Qwen2.5-VL-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct)
 @ `cc594898` (Apache-2.0).
@@ -14,6 +14,12 @@ the detector [`adb_full`](../adb_full/README.md), which carries the paper compar
 for the released adapter. It is not on the Space, because a 7B VLM needs a GPU, and the adapter is not mirrored to the
 model zoo ([Licence](#licence)).
 
+- **Upstream sync to cf168db** (new prompt, repetition penalty 1.0, 1,210,000 pixels, unparsed answers Real): identical
+  text and decisions against the unmodified `predict.py` @ cf168db on 24 images, bf16 and float32 (checked with the
+  expert, in [`adb_full`](../adb_full/README.md#fidelity)). VLM alone on the paper benchmarks with the new request
+  ([below](#paper-benchmarks-with-the-cf168db-request)): full WildRF 95.96, AIGI-Bench full 88.81, BFree-Online 81.69,
+  GenImage 10,000 59.50, AIGCDetect 3,400 59.06.
+- **The sections below the Upstream sync are the f4b4794 request** unless they say otherwise:
 - **Fidelity** against the official ms-swift 4.4.2 inference (pt backend): identical text, tokens and verdicts on 16 / 16
   images ([Fidelity](#fidelity)).
 - **15 benchmarks**, each subsampled and scored on the same images as Veritas++ and 27 other detectors
@@ -21,8 +27,30 @@ model zoo ([Licence](#licence)).
   - In the wild it ranks 5th to 8th of 28: WildRF, EvalGEN, BFree-Online, SynthWildX, RRDataset, RealChain.
   - On older GAN and diffusion sets it is near chance: UFD-8 52.88 (last), ForenSynths 55.72.
   - Mean of the 15: 76.58 acc / 84.11 AUROC (Veritas++ 84.70 / 91.33).
-- **Full WildRF** (2,503 images): the VLM branch alone gives 93.98 balanced accuracy. The paper's full method prints
-  92.9; `adb_full` (VLM OR DDA) gives 91.22 on the same images.
+- **Full WildRF** (2,503 images), f4b4794 request: the VLM branch alone gives 93.98 balanced accuracy (95.96 with the
+  cf168db request). The paper's full method prints 92.9; `adb_full` gives 93.01 on the same images (cf168db).
+
+## Upstream sync (cf168db)
+Three upstream commits after `5d83e40` change the VLM request and decision; SynthScope follows them (branch
+`fix/adb-upstream-sync`):
+
+| upstream commit | change | SynthScope |
+|---|---|---|
+| `2f0adbc` "Use the DPO user prompt for inference" | the task prompt moves from the system message to the user message, directly after `<image>` (no newline), and loses its "only" wording; the system message is "You are a helpful assistant."; `--max_pixels` 1,003,520 -> 1,210,000; `--repetition_penalty 1.0` and `--top_p 1.0` are passed (before, swift left the penalty unset and the base model's 1.05 applied) | `SYSTEM_PROMPT` / `USER_PROMPT_OFFICIAL` verbatim; `MAX_PIXELS = 1210000`; greedy with repetition penalty 1.0 (top_p does not matter for greedy decoding). The old request is kept as `*_F4B4794` constants |
+| `898b607` "Default unparsed VLM answers to Real before OR fusion" | an answer `parse_vlm_verdict` rejects is Real (`vlm_fake: false`, `vlm_answer_parsed: false`); before, the script stopped | the parser is `parse_adb_default_real`: the official verdict, "real" where the official parser raises. `adb_answer_parsed` (`VLMConfig.answer_parsed`) flags such an answer: it is reported unparsed (`answer_parsed: false`, counted in `bench_eval`'s `n_unparsed`) and its P(fake) stays on the Real side (logit clamped to at most 0, the raw gap kept as `logit_unclamped`) |
+| `cf168db` "Add in-memory JPEG96 evaluation preprocessing" | `tools/jpeg96.py`: fakes of GenImage and AIGCDetectBenchmark re-encoded as PIL JPEG q96 in memory | `bench_eval --jpeg-fakes 96`, pixel-identical (`tests/test_adb_full_smoke.py` [F]); see [`adb_full`](../adb_full/README.md) |
+
+One detail of the new pixel cap: swift turns `MAX_PIXELS=1210000` into qwen-vl-utils' `IMAGE_MAX_TOKEN_NUM` =
+1210000 // 784 = 1,543 tokens, so `fetch_image` caps at 1,209,712 pixels while `rescale_image` uses 1,210,000.
+`swift_qwen_vl_resize` now does the same (`swift_fetch_max_pixels`; at the old cap, a multiple of 784, nothing changes).
+Only sizes near the cap are affected: of the 400,000 sizes from 700 to 1,499 px wide and 900 to 1,399 px high, 518
+(0.13%) get a different resize than with 1,210,000 in both steps.
+
+**Which numbers use which request.** The end-to-end check against the unmodified `predict.py` @ cf168db (24 images, bf16
+and float32: identical text and decisions) is in [`adb_full`](../adb_full/README.md#fidelity), and so are the paper
+benchmarks rescored with the new request, VLM alone included. The [Fidelity](#fidelity) section and the 15-benchmark
+[Results](#results) below are the **f4b4794 request** (the old prompt, repetition penalty 1.05, 1,003,520 pixels); they
+were not rerun. The cache identity changed with the request, so no old record is reused.
 
 ## Method
 The paper pairs two detectors and ORs their verdicts: a vision-language model trained to judge semantic plausibility,
@@ -42,10 +70,10 @@ kernels can give a different greedy text.
 |---|---|---|
 | model | base + `--adapters` (LoRA, unmerged in the pt backend) | `Qwen2_5_VLForConditionalGeneration` from the local base folder, peft `PeftModel` unmerged, as the pt backend runs it |
 | image loading | `load_image`: `convert("RGB")`, no EXIF rotation, alpha channel dropped | `swift_rgb` (`models/vlm/image.py`), same |
-| resize | `--max_pixels 1003520`: `rescale_image` above the cap (bilinear), then qwen-vl-utils `fetch_image` (multiples of 28, 3,136-1,003,520 px, bicubic); processor with `do_resize=False` | `preprocess` hook `swift_qwen_vl_resize` (ported, pixel-identical in `tests/test_adb_vlm_smoke.py`); processor with `do_resize=False` |
-| prompt | `VLM_SYSTEM_PROMPT`; user `"<image>\nWhether the image is authentic or AI-generated?"` | verbatim; the `<image>` tag becomes the image |
-| decoding | `--temperature 0 --max_new_tokens 512 --seed 42`; repetition penalty unset in swift, so 1.05 from the base `generation_config.json` | greedy, 512 new tokens, repetition penalty 1.05 (default and "official" decoding are the same) |
-| verdict | `parse_vlm_verdict` (raises on anything else; the script stops) | the same function (`models/vlm/parsers.py`); a rejected answer is "unparsed" (counted wrong) |
+| resize | `--max_pixels 1210000` (`MAX_PIXELS` in the environment): `rescale_image` above 1,210,000 px (bilinear), then qwen-vl-utils `fetch_image` (multiples of 28, 3,136-1,209,712 px, bicubic); processor with `do_resize=False` | `preprocess` hook `swift_qwen_vl_resize` (ported, pixel-identical in `tests/test_adb_vlm_smoke.py`, including the token-rounded cap); processor with `do_resize=False` |
+| prompt | system `"You are a helpful assistant."`; user `VLM_USER_PROMPT` = `"<image>Role: AI visual assistant\n..."` (the task prompt) | verbatim; the `<image>` tag becomes the image |
+| decoding | `--temperature 0 --max_new_tokens 512 --repetition_penalty 1.0 --top_p 1.0 --seed 42` | greedy, 512 new tokens, repetition penalty 1.0 (default and "official" decoding are the same) |
+| verdict | `parse_vlm_verdict`; an answer it rejects is Real (`vlm_answer_parsed: false`) | `parse_adb_default_real` (`models/vlm/parsers.py`): the same function, "real" where it raises |
 
 **Score.** P(fake) = sigmoid(l(ĠAI) - l(Ġauthentic)) at the verdict word the official parser read, from the **raw**
 LM-head logits: the first "AI" / "authentic" token after `<answer>` (`score_source: "verdict_token"`), or, when the
@@ -53,9 +81,10 @@ model omits the tags and ends with the bare line "This is an AI-generated / auth
 `parse_vlm_verdict` also accepts), the "AI" / "authentic" token of that line (`"verdict_word"`; the parser-paired hook
 `adb_verdict_offset` gives its character offset, and the engine finds the token holding it on the same incremental
 decode as the `<answer>` search). A parsed verdict whose word cannot be located would get P(fake) 0.5 and
-`score_source: "unscored"`, counted as `n_unscored` in every result JSON; there were none (below). The repetition
-penalty is applied only to choose the generated tokens (both words occur in the prompt, so it shrinks both logits). The
-penalised gap is recorded in the fidelity JSON for comparison.
+`score_source: "unscored"`, counted as `n_unscored` in every result JSON. With the repetition penalty at 1.0 the raw and
+the processed logits are the same, so the sign of the gap is the emitted word. (Under the f4b4794 request the penalty was
+1.05: it shrank both logits, as both words occur in the prompt, and only chose the generated tokens; the penalised gap is
+in `repro/adb_vlm_fidelity.json`.)
 
 **Loading.** Strict and offline: the base loads with no missing or unexpected tensor, and the adapter's tensors must equal
 the file's key for key. For Qwen-VL adapters saved before the transformers 4.52 module rename, a family hook maps the
@@ -69,6 +98,9 @@ r = det.predict("photo.jpg")                   # fake_probability, logit, verdic
 ```
 
 ## Fidelity
+**This section is the f4b4794 request** (job 293634). The cf168db request is checked end to end, with the expert, in
+[`adb_full`](../adb_full/README.md#fidelity): identical VLM text and decisions on 24 images in bf16 and float32.
+
 `repro/adb_vlm_fidelity.py` / `.sbatch`. Results: `repro/adb_vlm_fidelity.json` and `repro/logs/adb_vlm_fidelity_293634.out`
 (job 293634, RTX A5000, bf16, SDPA, transformers 5.5.4, peft 0.21.3).
 
@@ -109,11 +141,14 @@ exactly:
 |---|---|
 | transformers + peft instead of `swift infer` | ms-swift is not in the SynthScope environment. The request is the official one, and the output matches the pt backend token for token (above). The vLLM backend (the official default) was not compared. |
 | P(fake) from the raw verdict-token logits | the official output is text only. The logit gap is the continuous score that agrees with the text, and AUROC needs it. The raw gap does not depend on the repetition penalty. |
-| unparsed answers kept and flagged | the official script stops on an answer `parse_vlm_verdict` rejects. SynthScope records it as `verdict: "unparsed"`, counts it wrong and gives it logit 0. There were none in any run below. |
+| unparsed answers | since upstream 898b607 the official decision for an answer `parse_vlm_verdict` rejects is Real, and SynthScope's is too. Before, the script stopped and SynthScope recorded `verdict: "unparsed"` (counted wrong); there were none in the f4b4794 runs below. |
 | tag-less answers scored at the parser's word | `parse_vlm_verdict` accepts a final line "This is an AI-generated / authentic image." without tags; 386 of the 19,286 images scored here end that way. The score is read at that line's "AI" / "authentic" token, the word the parser read. (Before the final-review fix these had P(fake) 0.5; the 386 were rescored with identical text, tokens and verdicts, so no accuracy changed.) |
 | inference only, still images only, one image per call | the training (DPO in ms-swift) is not ported. |
 
 ## Results
+
+**The f4b4794 request** (see [Upstream sync](#upstream-sync-cf168db)); not rerun with the cf168db request, whose VLM-alone
+numbers on the paper benchmarks are in the [`adb_full` README](../adb_full/README.md#results).
 
 **Inference only, with the official adapter, VLM branch only.** SynthScope did not train this model. The tables below
 compare robustness and generalisation; they do not reproduce a training recipe or the paper's full method.
@@ -262,23 +297,43 @@ adapter:
 | BFree-Online, subset of **269 real + 500 fake** (769 images) | 97.5 | 82.9 / 77.6 | **87.96**; AUROC 98.36 |
 | AIGI-Bench CommunityAI + SocialRF, **subset slice** (20 real + 20 fake each) | 88.8 (91.9 / 85.6) | 80.4 / 75.7 | **82.50** (85.0 / 80.0) |
 | GenImage, **subset** (63 + 63 per generator), fakes JPEG q96 | 91.7 | n/a | **65.97**; AUROC 79.18 (clean: 68.05) |
-| AIGCDetectBenchmark, **subset** (30 + 30 per generator), fakes JPEG q96 (**inferred protocol**) | 87.7 | n/a | **63.92**; AUROC 70.55 (clean: 65.20) |
+| AIGCDetectBenchmark, **subset** (30 + 30 per generator), fakes JPEG q96 (the official protocol) | 87.7 | n/a | **63.92**; AUROC 70.55 (clean: 65.20) |
 | CO-SPY-Bench in-the-wild | 94.3 | 67.6 / 57.4 | **not held** (only the synthetic Co-Spy-Bench is held: subset acc 78.36 above) |
 
 Notes on the rows:
-- **WildRF.** This is the one full-data paper benchmark. The released VLM branch alone gives 93.98; the paper's full
-  method prints 92.9, and SynthScope's full method (`adb_full`) gives 91.22 on the same 2,503 images.
+- **WildRF.** This is the one full-data paper benchmark. The released VLM branch alone gives 93.98 (95.96 with the
+  cf168db request); the paper's full method prints 92.9, and SynthScope's full method (`adb_full`) gives 91.22 on the
+  same 2,503 images (93.01 with the cf168db request).
 - **GenImage.** The paper JPEG-compresses the fakes "following BFree" to match the reals' format, and gives no quality
-  factor. We used q96 (`bench_eval --jpeg-fakes 96`, reals untouched); q96 is our choice, following DDA's published
-  GenImage protocol.
-- **AIGCDetectBenchmark.** The paper states the fake-JPEG step for GenImage only; its AIGCDetectBenchmark table does not
-  mention it. Applying it here, at q96, is **our inference**. The clean run is in the subset table.
+  factor. We used q96 (`bench_eval --jpeg-fakes 96`, reals untouched), following DDA's published GenImage protocol; it is
+  the official protocol since upstream cf168db (`tools/jpeg96.py`).
+- **AIGCDetectBenchmark.** The paper states the fake-JPEG step for GenImage only, so SynthScope applied it here as its own
+  inference; it is the official protocol since upstream cf168db (`tools/jpeg96.py`), which names AIGCDetectBenchmark. The clean run is in the subset table.
 - **BFree-Online.** The subset has 269 reals because the benchmark folder holds only 269. Accuracy is balanced, so the
   imbalance does not weight it.
 
 Sources: `paper_comparison.adb_vlm` and `paper_note.adb_vlm` in `comparison.json`, built from
 `results/wildrf/adb_vlm__full*.json`, `results/{genimage_val100k,aigcdetect17}/adb_vlm__jpegfakes96.json`,
 `results/bfree_online/adb_vlm.json` and `results/aigibench25/adb_vlm.json`.
+
+### Paper benchmarks with the cf168db request
+VLM alone, bf16 greedy on RTX A5000 (job 301129), the records fused in [`adb_full`](../adb_full/README.md#results)
+(`repro/adb_full/vlm_cf168db/<bench>/adb_vlm*.json`; the paired change is from `repro/adb_full/bootstrap_*__vs__*.json`).
+No paper number exists for the branch alone.
+
+| benchmark (images) | f4b4794 request | cf168db request (acc / AUROC) | paired change [95% CI] |
+|---|---:|---|---:|
+| WildRF full (2,503) | 93.98 | 95.96 / 99.08 | +1.98 [+0.89, +3.12] |
+| BFree-Online held (807) | 87.08 | 81.69 / 96.84 | -5.39 [-7.34, -3.35] |
+| AIGI-Bench, SocialRF full + CommunityAI 3,000 (9,000) | 89.65 | 90.71 / 98.45 | +1.06 [+0.48, +1.67] |
+| AIGI-Bench full (18,000) | — | 88.81 / 97.43 | |
+| GenImage 625 + 625 per generator, fakes JPEG q96 (10,000) | 61.05 | 59.50 / 67.41 | -1.55 [-2.13, -0.99] |
+| AIGCDetect 30 + 30 per generator, fakes JPEG q96 (1,020) | 63.92 | 59.61 / 67.80 | -4.31 [-6.18, -2.45] |
+| AIGCDetect 100 + 100 per generator (3,400) | — | 59.06 / 65.70 | |
+
+With the new request the VLM calls fewer images AI-generated: higher real accuracy, lower fake recall (BFree-Online fake
+accuracy 63.75). 287 of the 34,710 answers (0.8%) are unparsed and count as Real (`unparsed_answers.json`); with the old
+request there were none in these runs except one AIGI-Bench answer.
 
 ### Reproduce
 
@@ -315,6 +370,11 @@ python repro/vlm_bench/trace_check.py --logs repro/logs   # every result JSON an
   - The Align, Don't Blend full-method branch (detector/adb-full) edits one docstring line of `models/vlm/parsers.py` (the
     licence), so the caches of main ca433a7 (code version 4a950958ed) are re-keyed to 53f470222c. `migrate_vlm_cache.py`
     carries them over byte for byte (rule `unchanged`), for adb_vlm, veritaspp and fakevlm.
+  - The upstream sync (fix/adb-upstream-sync) changes `models/vlm/image.py` (the token-rounded fetch cap) and
+    `parsers.py` (`parse_adb_default_real`): code version `bbad7ab02d`. Veritas++ and FakeVLM use neither function, so
+    their folders are carried over (rule `unchanged`). ADB's request itself changed (prompt, decoding, `max_pixels`
+    1,210,000, parser), so its old records are never reused: `migrate_vlm_cache.py` refuses a folder whose prompt or
+    decoding differs.
 
 ## Availability
 - Not on the Hugging Face Space: a 7B model needs a GPU (17.26 GB peak).

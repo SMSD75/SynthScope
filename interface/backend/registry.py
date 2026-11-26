@@ -663,17 +663,18 @@ _add(ModelSpec(
     overrides=[], vlm=ADB_VLM, native_res=True,
     notes="The VLM branch of Align, Don't Blend: Qwen2.5-VL-7B with the authors' LoRA writes a short rationale and then "
           "answers \"This is an authentic / AI-generated image.\" inside <answer> tags. Uses the OFFICIAL adapter, prompt "
-          "and greedy decoding (repetition penalty 1.05 from the base model). P(fake) = sigmoid of the AI-minus-"
-          "authentic logit at the verdict word the official parser reads (the answer tag, or a tag-less final line, "
-          "about 2% of outputs); mostly near 0 or 1 (2.7% of benchmark images between 0.1 and 0.9). The verdict is the "
-          "parsed answer. This is the VLM branch alone; the paper's full method ORs it with the DDA pixel expert "
+          "and greedy decoding of the official predict.py (GzZning/Align-Dont-Blend @ cf168db: the task prompt in the "
+          "user message, repetition penalty 1.0, max 1,210,000 pixels). P(fake) = sigmoid of the AI-minus-"
+          "authentic logit at the verdict word the official parser reads (the answer tag, or a tag-less final line); "
+          "mostly near 0 or 1. The verdict is the parsed answer; an answer the official parser rejects is Real, as in "
+          "predict.py. This is the VLM branch alone; the paper's full method ORs it with the DDA pixel expert "
           "(adb_full). Still images only. Apache-2.0 code and adapter; not on the Space (a 7B VLM needs a GPU).",
 ))
 _add(ModelSpec(
     key="adb_full", name="Align, Don't Blend (VLM + DDA)", paper="Chen et al., ACM MM'26 (arXiv 2512.06746)",
     modality="image", predict_kind="fusion", checkpoint=None, ckpt_kind="fusion", weights="official",
-    # The official final decision of predict.py (GzZning/Align-Dont-Blend @ 5d83e40): adb_vlm's parsed verdict OR dda's
-    # P(fake) >= 0.5. The expert is the released DDA_ckpt.pth (= dda.pth); no weights of its own.
+    # The official final decision of predict.py (GzZning/Align-Dont-Blend @ cf168db): adb_vlm's parsed verdict (an
+    # unparsed answer is Real) OR dda's P(fake) >= 0.5. The expert is the released DDA_ckpt.pth (= dda.pth); no weights of its own.
     overrides=[], fusion=ADB_FULL, native_res=True,
     notes="The full Align, Don't Blend detector: the VLM branch (adb_vlm: Qwen2.5-VL-7B + the authors' LoRA judges "
           "semantic plausibility) OR the pixel-artifact expert (dda: the released DDA checkpoint, DINOv2 ViT-L/14 + "
@@ -824,13 +825,13 @@ INPUT_NOTES: dict[str, tuple[str, str]] = {
                   "upright by its EXIF orientation and any transparency is filled with white; then the whole image goes "
                   "to the vision-language model at its own resolution, resized only to a multiple of 32 px (between "
                   "0.07 and 16.8 megapixels)."),
-    "adb_vlm": ("Resized to at most 1.0 MP (multiples of 28)", "As the official ms-swift pipeline loads it, the image is "
-                "converted to RGB (no EXIF rotation; any transparency channel is dropped); an image above 1,003,520 "
+    "adb_vlm": ("Resized to at most 1.2 MP (multiples of 28)", "As the official ms-swift pipeline loads it, the image is "
+                "converted to RGB (no EXIF rotation; any transparency channel is dropped); an image above 1,210,000 "
                 "pixels is first shrunk to about that size (bilinear), then the whole image is resized (bicubic) so "
                 "both sides are multiples of 28 px, keeping the aspect ratio, and goes to the vision-language model."),
-    "adb_full": ("Two views: whole image ≤1.0 MP + center-crop 336", "The vision-language model sees the whole image as "
+    "adb_full": ("Two views: whole image ≤1.2 MP + center-crop 336", "The vision-language model sees the whole image as "
                  "the official ms-swift pipeline loads it (RGB, no EXIF rotation, transparency dropped; shrunk to at "
-                 "most 1,003,520 pixels, sides multiples of 28 px). The pixel expert (DDA) sees the central 336×336 "
+                 "most 1,210,000 pixels, sides multiples of 28 px). The pixel expert (DDA) sees the central 336×336 "
                  "pixels exactly as they are, with no scaling (a smaller image is padded with black)."),
     "fakevlm": ("Resize + center-crop 336", "As the official code loads it, the image is converted to RGB (no EXIF "
                 "rotation; any transparency channel is dropped), the shorter side is scaled to 336 px (bicubic) and the "

@@ -1,6 +1,9 @@
 """Align, Don't Blend FULL method (``adb_full``: VLM branch OR the DDA pixel expert) fidelity check: SynthScope's
-``Engine.predict_image`` vs the official ``predict.py`` (github.com/GzZning/Align-Dont-Blend @ 5d83e40), unmodified, with
-its README's expert command (``python -m detector.expert --checkpoint DDA_ckpt.pth``), on the same GPU.
+``Engine.predict_image`` vs the official ``predict.py`` (github.com/GzZning/Align-Dont-Blend @ cf168db; first run at 5d83e40),
+unmodified, with its README's expert command (``python -m detector.expert --checkpoint <the DDA checkpoint>``), on the same
+GPU. At cf168db ``predict.py`` sends the task prompt as the user message (system "You are a helpful assistant."), caps
+images at 1,210,000 pixels, decodes with repetition penalty 1.0, and decides Real for an answer its parser rejects
+(``vlm_answer_parsed: false``).
 
 Images: the 16 of ``repro/adb_vlm_fidelity.py`` plus up to 8 GenImage val images on which the two components disagree
 (``select``): a pool of 43 GenImage subset images whose cached ``adb_vlm`` verdict is wrong (fakes the VLM calls real,
@@ -47,10 +50,11 @@ from interface.backend import registry                               # noqa: E40
 from interface.backend.engine import Engine                          # noqa: E402
 from interface.backend.registry import get_spec                      # noqa: E402
 from models.image.adb_full.adb_full import EXPERT_THRESHOLD          # noqa: E402
+from models.vlm.parsers import parse_adb                             # noqa: E402
 from repro.adb_vlm_fidelity import IMAGES                            # noqa: E402
 
 SHARED = Path("/ivi/zfs/s0/original_homes/ssalehi/SynthScope_shared")
-OFFICIAL_DIR = SHARED / "vlm_ref" / "Align-Dont-Blend-20261120"        # github.com/GzZning/Align-Dont-Blend @ 5d83e40
+OFFICIAL_DIR = SHARED / "vlm_ref" / "Align-Dont-Blend-cf168db"         # github.com/GzZning/Align-Dont-Blend @ cf168db
 SWIFT_DIR = SHARED / "vlm_pydeps" / "swift442"
 GENIMAGE = "GenImage_val_full/test"
 POOL_RESULTS = ROOT / "repro" / "vlm_bench" / "results" / "genimage_val100k" / "adb_vlm.json"
@@ -142,7 +146,8 @@ def check(ours: list[dict], official: dict, data: Path, expert: dict | None = No
         row = {"image": o["image"],
                "official": {"fake": a["fake"], "vlm_fake": a["vlm_fake"], "expert_fake": a["expert_fake"]},
                "final_equal": (o["verdict"] == "fake") == a["fake"],
-               "vlm_equal": (o["vlm_verdict"] == "fake") == a["vlm_fake"] and o["vlm_verdict"] != "unparsed",
+               "vlm_equal": (o["vlm_verdict"] == "fake") == a["vlm_fake"],
+               "vlm_answer_parsed_equal": (parse_adb(o["response"]) is not None) == a["vlm_answer_parsed"],
                "dda_equal": (o["dda_verdict"] == "fake") == a["expert_fake"],
                "text_equal": o["response"] == a["vlm_response"],
                "score_side_ok": (o["fused_score"] >= 0.5) == (o["verdict"] == "fake")}
@@ -152,7 +157,9 @@ def check(ours: list[dict], official: dict, data: Path, expert: dict | None = No
             row["dda_abs_diff"] = abs(p - o["dda_fake_probability"])
         rows.append(row)
     summary = {k: f"{sum(r[k] for r in rows)}/{n}"
-               for k in ("final_equal", "dda_equal", "vlm_equal", "text_equal", "score_side_ok")}
+               for k in ("final_equal", "dda_equal", "vlm_equal", "vlm_answer_parsed_equal", "text_equal", "score_side_ok")}
+    summary["official_vlm_answers_unparsed"] = sum(not official[str((data / o["image"]).resolve())]["vlm_answer_parsed"]
+                                                   for o in ours)
     summary["all_decisions_identical"] = all(r["final_equal"] and r["dda_equal"] and r["vlm_equal"] for r in rows)
     if expert is not None:
         summary["max_abs_dda_probability_diff"] = max(r["dda_abs_diff"] for r in rows)
@@ -180,7 +187,7 @@ def compare(args) -> int:
     selection = json.loads(Path(args.selection).read_text())
     labels = {c["image"]: c["label_fake"] for c in selection["pool"]}
     images = list(IMAGES) + [(rel, labels[rel]) for rel in selection["selected"]]
-    result = {"official_code": "github.com/GzZning/Align-Dont-Blend @ 5d83e40 (predict.py, detector/expert.py, unmodified)",
+    result = {"official_code": "github.com/GzZning/Align-Dont-Blend @ cf168db (predict.py, detector/expert.py, unmodified)",
               "versions": versions(), "n_images": len(images), "images": [rel for rel, _ in images],
               "selection": selection, "expert_threshold": EXPERT_THRESHOLD}
     out_path = Path(args.out)

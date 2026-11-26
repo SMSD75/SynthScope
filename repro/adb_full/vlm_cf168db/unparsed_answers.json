@@ -1,0 +1,1775 @@
+{
+ "identity": {
+  "weights_revision": "49975ccd8b28eaab8ef14650ffee0c545934d02b",
+  "base_weights_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+  "ckpt": null,
+  "max_new_tokens": 512,
+  "generation": {
+   "do_sample": false,
+   "max_new_tokens": 512,
+   "repetition_penalty": 1.0
+  },
+  "prompt_sha1": "307de351a8",
+  "config_sha1": "55962cc25d",
+  "code_version": "bbad7ab02d"
+ },
+ "benchmarks": {
+  "aigcdetect17": {
+   "records": 3400,
+   "result_records_checked": 3400,
+   "unparsed": 48,
+   "unparsed_answers": [
+    {
+     "key": "ADM/0_real/000039_ILSVRC2012_val_00000315.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n and focus are typical of human photography, and the subject's gaze and expression are human-like but not overly stylized, which is common in authentic photos."
+    },
+    {
+     "key": "ADM/0_real/000063_ILSVRC2012_val_00000508.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, or imperfections typical of AI-generated images. The person's pose and equipment are typical of real-life snorkeling or diving activities."
+    },
+    {
+     "key": "DALLE2/0_real/000028_000000016012.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", or a lack of real-world imperfections. The presence of a Ryder truck and outdoor setting with natural elements further supports the authenticity of the image."
+    },
+    {
+     "key": "Glide/0_real/000002_ILSVRC2012_val_00000013.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The depth of field and focus are typical of a high-resolution wildlife photograph."
+    },
+    {
+     "key": "Glide/0_real/000015_ILSVRC2012_val_00000100.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "erfections, or inconsistencies in texture or detail. The composition and clarity are typical of high-resolution wildlife photography taken in a natural habitat."
+    },
+    {
+     "key": "Glide/0_real/000037_ILSVRC2012_val_00000275.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ulation such as inconsistent shadows, unusual proportions, or unnatural textures. The scene is consistent with real-life photography, capturing a candid moment."
+    },
+    {
+     "key": "Glide/0_real/000045_ILSVRC2012_val_00000355.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "as inconsistencies in lighting, unusual proportions, or unnatural details. The composition and clarity are consistent with a high-resolution, real-life capture."
+    },
+    {
+     "key": "Glide/0_real/000074_ILSVRC2012_val_00000587.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lack of imperfections, or inconsistent lighting. The composition and lighting are typical of a real photograph taken indoors with blinds and a wooden structure."
+    },
+    {
+     "key": "Glide/1_fake/000033_GLIDE_1000_200_00_005_glide_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "t lighting, or absence of imperfections. The image quality and composition are consistent with underwater photography taken by a camera or a human photographer."
+    },
+    {
+     "key": "Midjourney/0_real/000045_ILSVRC2012_val_00000457.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "atural angles, or imperfections common in AI-generated images. The composition and detail are consistent with a high-resolution, real-life capture of a pet dog."
+    },
+    {
+     "key": "Midjourney/1_fake/000002_0_midjourney_197.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "perfections, are characteristic of AI-generated images. Real fish do not have such uniform and perfect features, and the background is too idealized to be real."
+    },
+    {
+     "key": "VQDM/0_real/000012_ILSVRC2012_val_00000090.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " inconsistencies in lighting, unusual angles, or unnatural elements. The watermark and date also indicate it is a real photograph taken by a human photographer."
+    },
+    {
+     "key": "VQDM/0_real/000058_ILSVRC2012_val_00000412.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, unnatural proportions, or lack of human imperfections. The context and lighting are consistent with a real-life photograph taken outdoors."
+    },
+    {
+     "key": "VQDM/0_real/000081_ILSVRC2012_val_00000580.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nsistencies in lighting, unusual proportions, or lack of real-world imperfections. The CIBC logo and product placement are accurate and common in such settings."
+    },
+    {
+     "key": "VQDM/0_real/000093_ILSVRC2012_val_00000672.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "atural symmetry, lack of imperfections, or inconsistent lighting. The composition and the dog's fur texture are typical of a high-resolution, real-life capture."
+    },
+    {
+     "key": "VQDM/1_fake/000039_VQDM_1000_200_00_006_vqdm_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "consistencies in lighting, unusual proportions, or unnatural details. The image captures a real-life scenario with typical marine life and environment features."
+    },
+    {
+     "key": "biggan/0_real/000008_101--n01871265_6562.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ry, lack of imperfections, or inconsistent lighting. The composition, shadows, and the overall quality align with those of a high-resolution, real-life capture."
+    },
+    {
+     "key": "biggan/1_fake/000056_00011773.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "uch as imperfections, unusual lighting, or unrealistic details. The composition and clarity are typical of high-resolution photos taken in a greenhouse setting."
+    },
+    {
+     "key": "cyclegan/0_real/000065_n07740461_13950_real.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nnatural colors, or lack of real-world imperfections. The composition and detail are consistent with a high-resolution photograph taken in a real-world setting."
+    },
+    {
+     "key": "cyclegan/0_real/000087_n07740461_14811_real.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "on such as inconsistent lighting, unusual angles, or unnatural details. The composition and focus are consistent with a real-life scenario captured by a camera."
+    },
+    {
+     "key": "gaugan/0_real/000027_000000002299.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "are characteristic of AI-generated images. The uniformity and quality of the image, including the shadows and lighting, align with real photographs of that era."
+    },
+    {
+     "key": "gaugan/0_real/000050_000000005193.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "t shadows, unnatural details, or a lack of real-world imperfections. The composition and context are consistent with a photograph taken in a real-life scenario."
+    },
+    {
+     "key": "progan/0_real/000057_05560.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lighting, or unusual proportions. The watermark and the style of the image also align with traditional photo documentation rather than modern AI image creation."
+    },
+    {
+     "key": "sd_xl/0_real/000068_116291.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ctions, unnatural angles, or inconsistent lighting. The composition and elements are typical of a photograph taken outdoors in a residential area during autumn."
+    },
+    {
+     "key": "sd_xl/0_real/000085_121812.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ctions, or inconsistent lighting. The composition and details, including the raindrops on the car window, are typical of a real photograph taken from a vehicle."
+    },
+    {
+     "key": "stable_diffusion_v_1_5/0_real/000067_ILSVRC2012_val_00000425.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ng, unusual proportions, or synthetic details. The lighting, shadows, and overall composition are consistent with a photograph taken in a real-life environment."
+    },
+    {
+     "key": "stargan/0_real/000013_0013.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent textures, or imperfections typical of AI-generated images. The context and style align with candid photography of a public figure at a social event."
+    },
+    {
+     "key": "stargan/0_real/000026_0026.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "portions, or unnatural details. The image quality and composition are consistent with photographs of real individuals taken in a candid or professional setting."
+    },
+    {
+     "key": "stargan/0_real/000048_0048.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", unnatural lighting, or inconsistencies in the image's details. The background and lighting also appear to be natural, typical of a real-life event photograph."
+    },
+    {
+     "key": "stargan/0_real/000085_0085.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ymmetry, inconsistent lighting, or imperfections typical in AI-generated images. The composition and quality align with mid-20th-century photography techniques."
+    },
+    {
+     "key": "stargan/0_real/000089_0089.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ting, pixelation, or imperfections typical in AI-generated images. The image quality and details align with those of a photograph taken in a real-world setting."
+    },
+    {
+     "key": "stargan/1_fake/000072_0072.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "nsistent textures, unnatural lighting, or imperfections typical in AI-generated images. The composition and detail are typical of candid, real-life photographs."
+    },
+    {
+     "key": "stargan/1_fake/000084_0084.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "mperfections, or inconsistencies in the image's composition. The image quality and realism are typical of high-resolution photographs taken of real individuals."
+    },
+    {
+     "key": "stylegan/1_fake/000068_002659.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ns, unusual lighting, or inconsistencies in shadows and details. The composition and clarity are consistent with a real-life photograph taken in a home setting."
+    },
+    {
+     "key": "stylegan2/0_real/000041_00041.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " as inconsistencies in shadows, unusual proportions, or lack of real-world imperfections. The composition and details align with typical real-world photographs."
+    },
+    {
+     "key": "stylegan2/0_real/000071_00071.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "such as anomalies in texture, inconsistent lighting, or unrealistic details. The vehicle model and design are consistent with real-world automotive photography."
+    },
+    {
+     "key": "stylegan2/0_real/000098_00098.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ons, inconsistent lighting, or unusual proportions. The environment, including the dealership setting and signage, is typical of real-world car sales locations."
+    },
+    {
+     "key": "stylegan2/1_fake/000036_000036.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "roportions, inconsistent textures, or lack of real-world imperfections. The license plate and overall condition of the car are typical of a real vehicle in use."
+    },
+    {
+     "key": "stylegan2/1_fake/000075_000075.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " such as imperfections, inconsistent lighting, or unusual proportions. The license plate and overall condition are consistent with a real vehicle from that era."
+    },
+    {
+     "key": "stylegan2/1_fake/000077_000077.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "erfections, unusual angles, or inconsistent textures. The car's design, wear, and environment are typical of a real-world vehicle captured in a natural setting."
+    },
+    {
+     "key": "stylegan2/1_fake/000081_000081.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "eration, such as imperfections, unusual proportions, or inconsistent textures. The license plate and overall composition are typical of a real-world photograph."
+    },
+    {
+     "key": "whichfaceisreal/0_real/000044_00044.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al proportions, or unnatural details. The subjects' features and the overall composition are typical of a photograph taken with a camera, not a generated image."
+    },
+    {
+     "key": "whichfaceisreal/0_real/000046_00046.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "portions, or lack of human imperfections. The background and lighting also appear natural, typical of candid photos taken outdoors during a graduation ceremony."
+    },
+    {
+     "key": "whichfaceisreal/0_real/000060_00060.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ncies in lighting, unusual proportions, or synthetic features. The image quality and detail are consistent with high-resolution photographs of real individuals."
+    },
+    {
+     "key": "whichfaceisreal/0_real/000065_00065.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "mperfections. The background and lighting are typical of a real-life setting, and the image quality aligns with high-resolution photographs of real individuals."
+    },
+    {
+     "key": "wukong/0_real/000059_ILSVRC2012_val_00000448.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " be a real-world location with no anomalies typical of AI-generated images. The person's clothing and posture are consistent with human movement and appearance."
+    },
+    {
+     "key": "wukong/0_real/000067_ILSVRC2012_val_00000516.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s candid and captures a moment that is typical of real-life photography, including the casual setting and the presence of everyday objects like a pan and a box."
+    },
+    {
+     "key": "wukong/1_fake/000060_109_wukong_image128.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ons and imperfections found in real-world images. Additionally, the color and lighting are too uniform and lack the natural variation seen in real brain tissue."
+    }
+   ]
+  },
+  "aigibench25": {
+   "records": 18000,
+   "result_records_checked": 21000,
+   "unparsed": 96,
+   "unparsed_answers": [
+    {
+     "key": "CommunityAI/0_real/04b489a2-64bc-4f00-af30-4dbd76750cf5.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "th high-resolution, real-life captures. Additionally, the presence of a person with a natural pose and casual attire is typical in authentic street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/0b55e725-de3d-4b62-8991-3de70cc0d209.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " AI-generated images. The background and the subject's features are detailed and natural, typical of a high-resolution photograph taken by a human photographer."
+    },
+    {
+     "key": "CommunityAI/0_real/1147ed32-a460-44ad-9f78-f8db8f30cc21.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ts, inconsistent shadows, or imperfections typical of AI-generated images. The composition and elements are typical of urban street scenes captured by a camera."
+    },
+    {
+     "key": "CommunityAI/0_real/18c38b50-d1d4-4c47-9a05-d6a88cb641f4.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nd depth of field are typical of human photography, and the scene includes elements like a bicycle and a bridge, which are common in real-life outdoor settings."
+    },
+    {
+     "key": "CommunityAI/0_real/2065bd3a-d4c6-420a-91d8-eadd12d91fcc.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " inconsistent lighting, or absence of real-world imperfections. The scene includes everyday objects and people in a manner typical of candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/269488e5-255a-4444-8653-01ea78cf1ce5.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "neration, such as imperfections, unusual lighting, or unrealistic elements. The composition and shadows align with natural urban scenes captured during the day."
+    },
+    {
+     "key": "CommunityAI/0_real/3007965c-4e2d-4db9-91a0-d1cabef9e2f3.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " of imperfections, or inconsistent lighting. The composition and the presence of everyday objects like a van and a street lamp further support its authenticity."
+    },
+    {
+     "key": "CommunityAI/0_real/300cf405-045b-432e-b3c6-314ec34c6a50.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " manipulation, such as unusual proportions, inconsistent lighting, or unrealistic details. The composition and clarity are typical of candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/300d6c7d-2b22-4db6-b340-756d14c9b2d7.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ent lighting, or absence of real-world imperfections. The composition and clarity are typical of high-resolution photographs taken in a natural outdoor setting."
+    },
+    {
+     "key": "CommunityAI/0_real/30a4e223-6b33-4cbc-ac11-8edc17941016.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "rtions, or unnatural details. The composition and quality align with real-world photography, capturing a moment in a public space with a focus on everyday life."
+    },
+    {
+     "key": "CommunityAI/0_real/3443f0a4-845d-40c1-8f99-8ba21b06098c.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ions typical in AI-generated images. The composition and depth are typical of human photography, capturing a real-life scene with a person in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/4626f622-a3f4-4a14-983b-266d4134109a.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "symmetry, lack of imperfections, or inconsistent lighting. The scene includes everyday objects and people in a way that is typical of candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/4b14c9a3-edda-4317-a411-e88482f4dd00.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "as imperfections, unnatural angles, or inconsistent lighting. The scene includes a mix of moving and stationary elements typical of a bustling city environment."
+    },
+    {
+     "key": "CommunityAI/0_real/523430f4-9a8a-4069-8fe9-a38c24b0210a.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ighting. The composition and context, including the presence of flags and the density of the crowd, are typical of real-life protest or public gathering photos."
+    },
+    {
+     "key": "CommunityAI/0_real/55168949-baf2-42a3-b8f0-57be3bcf9f9d.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ry, inconsistent lighting, or lack of real-world imperfections. The composition and clarity are typical of documentary-style photography capturing a live event."
+    },
+    {
+     "key": "CommunityAI/0_real/5f906acc-d3f8-455e-bdf6-cd92e40b82ad.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "consistent lighting, or anomalies in human features. The composition and depth are typical of human photography, capturing a candid moment in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/6065f00c-8708-40c7-b731-5ff8a992fd30.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n shadows, unusual proportions, or lack of real-world imperfections. The composition and clarity are typical of documentary-style photos taken at public events."
+    },
+    {
+     "key": "CommunityAI/0_real/66674391-15da-45e8-a8b9-e02ae7650917.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " such as inconsistencies in shadows, unusual proportions, or unnatural textures. The composition and clarity are typical of candid photography in public spaces."
+    },
+    {
+     "key": "CommunityAI/0_real/68bf07fc-4732-43a9-bc77-e908867c7594.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " inconsistencies in lighting, unusual proportions, or unnatural textures. The composition, shadows, and overall realism align with authentic street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/695c4009-fb04-4bcb-96dd-608cdde7713d.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tions. The gazebo and people are in a style consistent with real-world photography, and the overall composition and texture are not indicative of AI generation."
+    },
+    {
+     "key": "CommunityAI/0_real/71982f01-63cc-431b-b4a4-a2948b1ec1eb.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ion such as imperfections, inconsistent lighting, or unnatural angles. The composition and clarity are consistent with high-quality, real-world wildlife images."
+    },
+    {
+     "key": "CommunityAI/0_real/72aa80ba-d9db-4616-b9ff-c64d7ac649f0.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tural symmetry, lack of imperfections, or inconsistent lighting. The composition and clarity are typical of candid, high-resolution photos taken at live events."
+    },
+    {
+     "key": "CommunityAI/0_real/75ef240a-5a79-4ec2-96a0-e61f1487010a.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "uch as unusual lighting, perfect symmetry, or lack of imperfections. The overall composition and details are typical of a photograph taken in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/7cef24e4-f4e3-434e-88c7-dd9f1b0430fa.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s inconsistent lighting, unnatural angles, or lack of real-world imperfections. The composition and context align with documented street events or celebrations."
+    },
+    {
+     "key": "CommunityAI/0_real/7e947070-7287-4ed1-9896-df5b07661d72.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al proportions, or inconsistent lighting patterns. The composition and clarity are typical of high-resolution, real-world photographs taken in a public setting."
+    },
+    {
+     "key": "CommunityAI/0_real/84fd72df-d36a-410a-a1e5-2b6de6124d98.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "eal urban environment. The presence of the Willis Tower (formerly known as the Sears Tower) is a specific landmark that is well-documented in real-world images."
+    },
+    {
+     "key": "CommunityAI/0_real/8568d27e-0bb4-4373-8e1e-bac6d52f60c7.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, or lack of real-world imperfections. The composition and detail are typical of a high-resolution photograph taken in a real-world setting."
+    },
+    {
+     "key": "CommunityAI/0_real/85b8574d-4a23-4962-a4be-c3845e7e9493.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "istent lighting, or imperfections common in AI-generated images. The squirrel's pose and the natural setting are consistent with real-life wildlife photography."
+    },
+    {
+     "key": "CommunityAI/0_real/883167b7-7253-47ad-be03-0514c9ec3332.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "unnatural colors, inconsistent shadows, or imperfections typical of AI-generated images. The composition and details align with real-world wildlife photography."
+    },
+    {
+     "key": "CommunityAI/0_real/8f8626ae-0543-475c-b30e-2e8f652a2e7d.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "cies in lighting, unusual proportions, or unnatural textures. The composition and clarity are typical of candid, unposed photos taken by a camera or smartphone."
+    },
+    {
+     "key": "CommunityAI/0_real/94501359-db24-48b1-9c34-d4d2ce64edff.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, or lack of real-world imperfections. The composition and detail are typical of a high-resolution photograph taken in a real-world setting."
+    },
+    {
+     "key": "CommunityAI/0_real/99b7bdec-cf3e-4589-aa46-31f2bfe9be21.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "les, or imperfections typical in AI-generated images. The composition and detail are consistent with a high-resolution photograph taken by a human photographer."
+    },
+    {
+     "key": "CommunityAI/0_real/9a6034d0-c61b-4888-a10a-543e87e19533.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nnatural proportions, or lack of real-world imperfections. The scene includes everyday objects and people in a way that is typical of candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/9b39526a-9413-4b64-964a-52a63eeb9bde.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ncludes a diverse group of people, typical of public street performances, and the overall composition and details are consistent with candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/a026db46-e07e-41b9-92be-9cad38940c0f.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " as inconsistent shadows, unnatural textures, or errors in human features. The composition and context are consistent with a photograph taken at a public event."
+    },
+    {
+     "key": "CommunityAI/0_real/a3ee0f38-039b-4cb1-b99c-7c886015775a.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "phy. The presence of a camera on a tripod and the casual attire of the individuals are also indicative of a real-life scenario rather than a staged AI creation."
+    },
+    {
+     "key": "CommunityAI/0_real/aa56e3ec-a55b-4ff2-8589-49575bcc2cc2.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "istent lighting, unnatural details, or a lack of real-world imperfections. The composition and clarity are consistent with a high-resolution, real-life capture."
+    },
+    {
+     "key": "CommunityAI/0_real/b1db2ca4-d504-4f9f-8b4f-f74e34f74e09.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ns. The composition and details, including the person's clothing and the surrounding environment, are typical of a high-resolution photograph taken by a camera."
+    },
+    {
+     "key": "CommunityAI/0_real/b86a851d-2c75-4339-879c-6d428f2bea1b.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " unnatural symmetry, inconsistent lighting, or absence of real-world imperfections. The composition and depth of field are typical of candid street photography."
+    },
+    {
+     "key": "CommunityAI/0_real/b9ff73a1-2a08-4737-a509-b9060b4ab430.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "onsistent lighting, or imperfections typical in AI-generated images. The composition, lighting, and human features align with real-world photography techniques."
+    },
+    {
+     "key": "CommunityAI/0_real/c51dcaff-4f1b-4367-bd17-bc5b48d720eb.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "as inconsistencies in lighting, unusual angles, or synthetic elements. The composition and detail are consistent with photographs taken in a real-world setting."
+    },
+    {
+     "key": "CommunityAI/0_real/c595794d-351c-429a-ad99-d45f17fa4236.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ent. The composition and details, including the person's clothing and the surrounding vegetation, are typical of a high-resolution photograph taken by a camera."
+    },
+    {
+     "key": "CommunityAI/0_real/c63e9249-244c-4e32-b0f9-2c43f962a4da.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "hting, or unrealistic proportions. The composition and clarity are typical of photographs taken by a camera with a wide-angle lens, capturing a real-life scene."
+    },
+    {
+     "key": "CommunityAI/0_real/cd936a42-139f-4998-bad7-ae38c10ab0bf.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " lighting, unusual proportions, or lack of real-world imperfections. The composition and details are consistent with photographs taken in real-world conditions."
+    },
+    {
+     "key": "CommunityAI/0_real/cf1df4f5-500d-40c0-9845-1f305f0d0e78.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ion such as inconsistencies in lighting, unusual proportions, or imperfections typical of AI outputs. The context and clarity align with real-world photography."
+    },
+    {
+     "key": "CommunityAI/0_real/cf8746f2-60b8-42bc-b51b-81ee06a4edcf.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "vity are consistent with real-world scenarios, and the details like the hairdresser's uniform and the environment are typical of a real-life street barber shop."
+    },
+    {
+     "key": "CommunityAI/0_real/d1bfe63d-09b3-478e-8a7b-0d1eeef9a155.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s inconsistent lighting, unusual proportions, or unnatural details. The composition and clarity are consistent with high-quality, real-world animal photography."
+    },
+    {
+     "key": "CommunityAI/0_real/d299ac30-75e3-4691-8862-b4d838d4a90c.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " of AI generation, such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The composition and context align with documented street scenes."
+    },
+    {
+     "key": "CommunityAI/0_real/d549826e-0efa-4793-89fa-43602c9bd458.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " inconsistent lighting, or lack of real-world imperfections. The composition and clarity are typical of a high-resolution photograph taken in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/d86804d8-73f7-41a6-bb4a-ccf3c1d66cc1.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "encies in shadows, unusual proportions, or lack of real-world imperfections. The composition and clarity are consistent with photographs taken at public events."
+    },
+    {
+     "key": "CommunityAI/0_real/ddec0c8a-bc9a-4c45-a02d-0a93922845e4.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "istent textures, or absence of real-world imperfections. The composition and detail are consistent with a high-resolution photograph taken in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/e1c56ecc-5528-463a-9c27-ddacd78597cf.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "inconsistent lighting, or unusual proportions. The composition and detail are typical of human photography, with a focus on natural human features and movement."
+    },
+    {
+     "key": "CommunityAI/0_real/e3a46d07-a931-4eeb-b2c4-e0cdb1439986.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ect lighting, or absence of real-world imperfections. The composition and depth of field are typical of a high-resolution photograph taken in a natural setting."
+    },
+    {
+     "key": "CommunityAI/0_real/e66062b9-1edb-4ec8-9858-d3cd2de8b945.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s inconsistent shadows, unnatural proportions, or a lack of environmental imperfections. The composition and details are consistent with real-world photography."
+    },
+    {
+     "key": "CommunityAI/0_real/ed983e4e-63a4-44e5-9314-66e661d74f13.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n shadows, unusual proportions, or lack of real-world imperfections. The composition and clarity are typical of documentary-style photos taken at public events."
+    },
+    {
+     "key": "CommunityAI/0_real/f628021a-de1e-43fb-b6c0-74b22eab57f3.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "in a candid, unposed manner, typical of street photography. The composition and depth of field are characteristic of human photography rather than AI rendering."
+    },
+    {
+     "key": "CommunityAI/0_real/f9e40ee9-234c-4486-a6cf-16abaf48fcbb.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "an generated by AI. Additionally, the presence of a crowd, flags, and a mix of individuals in casual and uniform attire is typical of real-world protest scenes."
+    },
+    {
+     "key": "CommunityAI/0_real/fbf56181-4f1e-45fe-b6c1-aa6bee757bf7.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " depth of field are typical of human photography, and the scene includes human subjects in a candid, unposed manner, which is not common in AI-generated images."
+    },
+    {
+     "key": "CommunityAI/0_real/fca96161-a442-4196-89d9-ec3ddd9eef64.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n settings. Additionally, the presence of a \"One Way\" sign and the style of the building align with known historical and architectural features found in cities."
+    },
+    {
+     "key": "CommunityAI/0_real/ff0a6ef5-b6f6-44f9-b193-274996498b48.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "I-generated images. The composition and clarity are typical of human photography, capturing a candid moment with a focus on the subjects and the ocean backdrop."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_31.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ges. Additionally, the combination of elements like the boat, the flowers, and the mountainous backdrop in such harmony is not common in real-world photography."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_3366.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "be AI-generated. Real images usually have more variability in lighting and shadows, and the sparkler's glow is too consistent and perfect for a real photograph."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_3503.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " skin tone, posture, and minor imperfections. Additionally, the lighting and shadows are too consistent and lack the subtle variations seen in real photography."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_4311.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "person's pose and the overall scene are consistent with human photography and do not exhibit the uniformity or imperfections often seen in AI-generated content."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_4525.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "rfections and less uniformity in such details. Additionally, the lighting and focus are too perfect, lacking the slight imperfections seen in real-world images."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_4650.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "acteristic of AI-generated images. Additionally, the uniformity in clothing and the perfect alignment of the subjects are not typical of real-world photography."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_4760.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ght imperfections. Additionally, the clarity and symmetry in the image's details, such as the dress and the background, are not common in authentic photography."
+    },
+    {
+     "key": "CommunityAI/1_fake/communityAI_5172.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ting and less perfect symmetry. Additionally, the texture and quality of the clothing and the background details are too uniform and idealized for a real photo."
+    },
+    {
+     "key": "SocialRF/0_real/image_1195.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "he combination of high-resolution and the specific styling of the outfit and accessories is more aligned with AI capabilities than human photography techniques."
+    },
+    {
+     "key": "SocialRF/0_real/image_1379.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nusual proportions, or lack of real-world imperfections. The clothing, accessories, and overall composition are typical of candid photos taken in public spaces."
+    },
+    {
+     "key": "SocialRF/0_real/image_1380.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "usual proportions, or lack of real-world imperfections. The scene includes everyday objects and people in a manner consistent with real-life urban environments."
+    },
+    {
+     "key": "SocialRF/0_real/image_1398.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "xtures. The scene captures a candid moment that is typical of real-life photography, including the slight imperfections and natural expressions of the subjects."
+    },
+    {
+     "key": "SocialRF/0_real/image_1424.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "imperfections and details that are hard to replicate in AI generation, such as the slight imperfections in the puppy's fur and the realistic human skin texture."
+    },
+    {
+     "key": "SocialRF/0_real/image_1439.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " The scene includes a person in casual attire, a real-world setting with a cafe, and a clear, detailed environment that is typical of candid street photography."
+    },
+    {
+     "key": "SocialRF/0_real/image_156.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "etry. The presence of a watermark also indicates it is a real photograph taken by a photographer, Glenn Bartley, as evidenced by the signature and website link."
+    },
+    {
+     "key": "SocialRF/0_real/image_1889.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "of a high-resolution, real-world capture. The lighting and shadows are natural, and the motion blur is consistent with human hand movement during a real action."
+    },
+    {
+     "key": "SocialRF/0_real/image_1915.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "e are no inconsistencies or AI-specific elements like unusual symmetry or perfect lighting. The composition and imperfections align with real-world photography."
+    },
+    {
+     "key": "SocialRF/0_real/image_1961.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "onsistencies in shadows, unusual proportions, or lack of real-world imperfections. The context and quality align with photos taken in real-life social settings."
+    },
+    {
+     "key": "SocialRF/0_real/image_2246.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "I-generated images. The overall composition and clarity are consistent with real photography, including the subtle variations in skin tone and clothing texture."
+    },
+    {
+     "key": "SocialRF/0_real/image_2299.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s typical in AI-generated images. The composition and lighting suggest a human photographer's work, with a focus on natural human features and clothing details."
+    },
+    {
+     "key": "SocialRF/0_real/image_2488.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "fect lighting, or unrealistic details. The perspective and composition are consistent with a real photograph taken from a first-person viewpoint at a racetrack."
+    },
+    {
+     "key": "SocialRF/0_real/image_2564.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al-world imperfections. The composition and details, including the clothing, background, and people's expressions, are typical of candid, real-life photographs."
+    },
+    {
+     "key": "SocialRF/0_real/image_2593.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " as unnatural symmetry, lack of imperfections, or inconsistent lighting. The composition and clarity are typical of handheld photography without AI enhancement."
+    },
+    {
+     "key": "SocialRF/0_real/image_2598.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "inconsistent shadows, unnatural colors, or imperfections typical of AI-generated images. The composition and details are consistent with real-world photography."
+    },
+    {
+     "key": "SocialRF/0_real/image_2615.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", such as unusual proportions, perfect symmetry, or unrealistic details. The composition and clarity align with real-world urban scenes captured during the day."
+    },
+    {
+     "key": "SocialRF/0_real/image_2771.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "detailed, matching typical outdoor hiking scenarios. The overall composition and lighting are natural, lacking the uniformity often seen in AI-generated images."
+    },
+    {
+     "key": "SocialRF/0_real/image_2901.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ark \"@birdbud88\" suggests a real-life capture rather than a synthetic creation. The background and lighting are consistent with outdoor photography of wildlife."
+    },
+    {
+     "key": "SocialRF/0_real/image_2934.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "k of shadows, or imperfections typical of AI images. The sign's placement and the wall's condition are consistent with physical objects in a real-world setting."
+    },
+    {
+     "key": "SocialRF/0_real/image_2945.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", lack of real-world imperfections, or inconsistent lighting. The composition and focus are consistent with a high-resolution camera capture of a natural scene."
+    },
+    {
+     "key": "SocialRF/0_real/image_2994.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nt textures, or imperfections. The composition and details, including the reflections and shadows, are typical of a candid photograph taken in a public setting."
+    },
+    {
+     "key": "SocialRF/0_real/image_378.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ural alignment, perfect symmetry, or lack of imperfections. The architectural details and the overall composition are consistent with real-world urban settings."
+    },
+    {
+     "key": "SocialRF/0_real/image_397.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " real photography to attribute the image. The bird's posture and the background blur are typical of high-quality wildlife photos taken by skilled photographers."
+    },
+    {
+     "key": "SocialRF/0_real/image_700.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tail that are common in AI-generated images. The packaging and the way the food is presented are also consistent with real-world food photography and packaging."
+    },
+    {
+     "key": "SocialRF/0_real/image_990.png",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nd the text on the screen are also very clear and sharp, which is less common in real-world photos where such details might be less defined or slightly blurred."
+    },
+    {
+     "key": "SocialRF/1_fake/SocialRF_1049.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "rom the era they appear to represent. The overall composition and details are too surreal and inconsistent with real-world scenarios to be considered authentic."
+    },
+    {
+     "key": "SocialRF/1_fake/SocialRF_689.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " the light interacts with the food are too perfect, which is a common trait in AI-generated images. Real food often has imperfections and less uniform lighting."
+    }
+   ]
+  },
+  "bfree_online": {
+   "records": 807,
+   "result_records_checked": 807,
+   "unparsed": 11,
+   "unparsed_answers": [
+    {
+     "key": "viral/0_real/00087_img01016.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ". The image captures a moment that aligns with documented historical events, which are often photographed by professional journalists or official photographers."
+    },
+    {
+     "key": "viral/0_real/00132_img01919.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al proportions, or lack of real-world imperfections. The image quality and context align with documented photographs of public figures in military environments."
+    },
+    {
+     "key": "viral/0_real/00185_img03278.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ections, unusual proportions, or inconsistent textures. The person's appearance and the context align with historical photographs of a well-known public figure."
+    },
+    {
+     "key": "viral/0_real/00213_img03430.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ections, unusual proportions, or inconsistent textures. The person's appearance and the context align with historical photographs of a well-known public figure."
+    },
+    {
+     "key": "viral/1_fake/00135_img04899.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "-generated images. Real-world images do not typically feature such dramatic and staged scenarios involving public figures and law enforcement in a single frame."
+    },
+    {
+     "key": "viral/1_fake/00161_img05216.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "e involving a public figure and law enforcement. Additionally, the lighting and shadows are too uniform and lack the variability seen in real-world photographs."
+    },
+    {
+     "key": "viral/1_fake/00186_img05448.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "is characteristic of AI-generated images. Real images do not typically feature such dramatic and improbable scenarios involving public figures in such a manner."
+    },
+    {
+     "key": "viral/1_fake/00200_img05499.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "t typically feature such a specific and intense scenario with a single individual in the center, surrounded by uniformed officers in a highly controlled manner."
+    },
+    {
+     "key": "viral/1_fake/00224_img04983.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "f multiple individuals in a staged manner are indicative of AI generation, as real-life images do not typically capture such a specific and controlled scenario."
+    },
+    {
+     "key": "viral/1_fake/00234_img05034.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "not typically include such uniformed figures in such a manner, and the level of detail and symmetry is not characteristic of human photography or video footage."
+    },
+    {
+     "key": "viral/1_fake/00293_img05642.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " authenticity. Real images of public figures in such a setting are rare and would not include uniformed officers in a running formation with a person in a suit."
+    }
+   ]
+  },
+  "genimage_val100k": {
+   "records": 10000,
+   "result_records_checked": 10000,
+   "unparsed": 113,
+   "unparsed_answers": [
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00000315.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n and focus are typical of human photography, and the subject's gaze and expression are human-like but not overly stylized, which is common in authentic photos."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00000508.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, or imperfections typical of AI-generated images. The person's pose and equipment are typical of real-life snorkeling or diving activities."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00001425.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " unusual proportions, inconsistent lighting, or lack of real-world imperfections. The dog's expression and the setting are consistent with a real-life scenario."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00001627.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "unusual proportions, or unnatural lighting. The composition and details, including the expressions and the environment, are typical of candid human photography."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00002993.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lighting, or imperfections typical of AI-generated images. The person's posture and the context of the environment are typical of real-life agricultural scenes."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00003194.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "eration, such as unnatural lighting, imperfections, or inconsistencies in motion. The watermark and date also indicate it is a photograph taken at a real event."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00004404.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "unnatural background, imperfections, or inconsistencies in texture or lighting. The composition and clarity are typical of a high-resolution, real-life capture."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00004823.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lighting. The composition and details, including the collar and the relaxed posture of the dogs, are consistent with a photograph taken by a human photographer."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00005219.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ies in lighting, unusual proportions, or lack of real-world imperfections. The setting, attire, and activity are consistent with real-world sailing experiences."
+    },
+    {
+     "key": "adm/0_real/ILSVRC2012_val_00005322.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "generation, such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The composition and details align with documented wildlife photography."
+    },
+    {
+     "key": "adm/1_fake/122_adm_153.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": ", unnatural details, or a lack of real-world imperfections. The composition and quality align with those of a real, unaltered photo taken in a domestic setting."
+    },
+    {
+     "key": "adm/1_fake/151_adm_7.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ent lighting, unnatural angles, or lack of imperfections. The composition and detail are consistent with a photograph taken of a real pet in a home environment."
+    },
+    {
+     "key": "adm/1_fake/153_adm_7.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "stencies in lighting, unusual proportions, or lack of real-world imperfections. The image quality and details are consistent with a photograph of a real animal."
+    },
+    {
+     "key": "adm/1_fake/165_adm_34.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "s, inconsistent lighting, or unnatural details. The background and the person's clothing also appear natural and not stylized, which is typical for real photos."
+    },
+    {
+     "key": "adm/1_fake/177_adm_7.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "e of the people are consistent with real-world scenarios. The image lacks the high-resolution anomalies or the uniformity typically seen in AI-generated images."
+    },
+    {
+     "key": "adm/1_fake/189_adm_7.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "tent lighting, unusual proportions, or unnatural details. The image quality and composition are consistent with a photograph of a real animal taken by a camera."
+    },
+    {
+     "key": "adm/1_fake/192_adm_153.PNG",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "f AI manipulation such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The composition and focus are typical of a candid, unposed photo."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00000442.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s inconsistent shadows, unusual proportions, or unnatural details. The setting and composition are typical of a personal photo taken in a real-life environment."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00000698.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nusual proportions, or unnatural details. The scene is consistent with real-life photography, capturing a person in a domestic setting performing a common task."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00000939.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ymmetry, lack of imperfections, or inconsistent lighting. The composition and focus are typical of a high-resolution photograph taken by a skilled photographer."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00000945.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " such as unnatural symmetry, inconsistent lighting, or imperfections common in AI outputs. The composition and clarity align with real-world animal photography."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00001322.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", or lack of real-world anomalies. The composition and details, including the \"Property of the United States\" sticker, are consistent with historical mailboxes."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00002667.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al proportions, or a lack of human imperfections. The setting and composition are typical of candid, personal photos taken with a standard camera or smartphone."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00003184.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ion such as inconsistencies in lighting, unusual proportions, or unnatural details. The person's attire and the environment are typical of a real-life scenario."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00003507.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "g, unusual proportions, or imperfections that are often present in AI images. The person's expression and the setting are consistent with real-life photography."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00003905.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ies in lighting, unusual proportions, or a lack of real-world imperfections. The dog's expression and the natural setting are consistent with a real photograph."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00004350.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tions, or unnatural details. The photograph captures a real-life moment with a high level of detail and depth, which is characteristic of authentic photography."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00004434.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", inconsistent lighting, or lack of imperfections. The setting and details, including the dog's collar and the fabric texture, are typical of a real photograph."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00005287.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "mmetry, lack of imperfections, or inconsistent lighting. The background blur and depth of field are typical of high-quality wildlife photos taken with a camera."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00005340.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "und, lack of imperfections, or inconsistent lighting. The composition and details are consistent with a photograph of a real animal taken in a home environment."
+    },
+    {
+     "key": "biggan/0_real/ILSVRC2012_val_00005478.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "and lighting are realistic, and the details, like the weathered wood and the natural wear on the canister, are typical of outdoor scenes captured with a camera."
+    },
+    {
+     "key": "biggan/1_fake/000_biggan_00143.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "lighting, unusual proportions, or lack of real-world imperfections. The details in the fish and the person's clothing are consistent with real-life photography."
+    },
+    {
+     "key": "biggan/1_fake/007_biggan_00020.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ing, unusual proportions, or lack of real-world imperfections. The composition and detail are consistent with a high-resolution, real-life capture of a rooster."
+    },
+    {
+     "key": "biggan/1_fake/037_biggan_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "as unusual symmetry, perfect lighting, or lack of imperfections. The coloration, patterns, and overall composition are typical of a photograph of a real turtle."
+    },
+    {
+     "key": "biggan/1_fake/093_biggan_00035.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ural angles, or inconsistent lighting. The composition and clarity are typical of high-resolution wildlife images taken by photographers or captured by cameras."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000013.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The depth of field and focus are typical of a high-resolution wildlife photograph."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000100.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "erfections, or inconsistencies in texture or detail. The composition and clarity are typical of high-resolution wildlife photography taken in a natural habitat."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000275.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ulation such as inconsistent shadows, unusual proportions, or unnatural textures. The scene is consistent with real-life photography, capturing a candid moment."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000355.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "as inconsistencies in lighting, unusual proportions, or unnatural details. The composition and clarity are consistent with a high-resolution, real-life capture."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000587.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lack of imperfections, or inconsistent lighting. The composition and lighting are typical of a real photograph taken indoors with blinds and a wooden structure."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00000883.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ighting, or imperfections typical of AI images. The dog's expression and the bandana are lifelike, and the overall composition is typical of a candid pet photo."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00001124.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "on, such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The presence of human hands and clothing also aligns with a real-life scenario."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00003150.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nrealistic environment. The focus and blurriness are typical of a real-life capture, and the color and detail are consistent with a fish in an aquarium setting."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00004655.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "such as unnatural symmetry, lack of imperfections, or inconsistent lighting. The image quality and composition are consistent with a real-life underwater photo."
+    },
+    {
+     "key": "glide/0_real/ILSVRC2012_val_00004746.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ural symmetry, lack of imperfections, or inconsistent lighting. The composition and clarity are consistent with real-world wildlife images captured by a camera."
+    },
+    {
+     "key": "glide/1_fake/GLIDE_1000_200_00_005_glide_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "t lighting, or absence of imperfections. The image quality and composition are consistent with underwater photography taken by a camera or a human photographer."
+    },
+    {
+     "key": "midjourney/0_real/ILSVRC2012_val_00000457.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "atural angles, or imperfections common in AI-generated images. The composition and detail are consistent with a high-resolution, real-life capture of a pet dog."
+    },
+    {
+     "key": "midjourney/0_real/ILSVRC2012_val_00002252.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "t shadows, unnatural angles, or imperfections typical in AI-generated images. The composition and clarity are typical of candid photos taken in social settings."
+    },
+    {
+     "key": "midjourney/1_fake/0_midjourney_197.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "perfections, are characteristic of AI-generated images. Real fish do not have such uniform and perfect features, and the background is too idealized to be real."
+    },
+    {
+     "key": "midjourney/1_fake/13_midjourney_88.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "he overall composition and the way the bird is positioned and the background is rendered are more aligned with AI capabilities than with real-world photography."
+    },
+    {
+     "key": "midjourney/1_fake/158_midjourney_198.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "generated images. Real images usually have more variance in lighting and texture, and the pose is highly idealized, which is less common in natural photography."
+    },
+    {
+     "key": "midjourney/1_fake/15_midjourney_198.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": ". The bird's plumage and the grass are typical of a real-world setting, and the focus and depth of field are characteristic of a high-resolution camera capture."
+    },
+    {
+     "key": "midjourney/1_fake/173_midjourney_88.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "racteristic of AI-generated images. Real images usually have more variance in lighting and texture, and the background appears too idealized for a real setting."
+    },
+    {
+     "key": "midjourney/1_fake/189_midjourney_34.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ally, the background and the natural setting are rendered with a level of clarity and detail that goes beyond what is commonly seen in high-quality real photos."
+    },
+    {
+     "key": "midjourney/1_fake/190_midjourney_197.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " imperfections, are more characteristic of AI-generated images. The lighting and shadows are perfectly balanced, which is less common in real-world photography."
+    },
+    {
+     "key": "midjourney/1_fake/190_midjourney_34.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "mperfections are more indicative of AI generation. Additionally, the angle and composition are highly controlled, which is less common in authentic photographs."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00001775.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ing, or imperfections typical of AI-generated images. The timestamp and signature are also indicative of a real photograph taken by a person named Trev in 2009."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00001929.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " unnatural symmetry, inconsistent lighting, or anomalies in the dog's features. The composition and clarity are typical of a high-resolution, real-life capture."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00002303.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " proportions, unnatural lighting, or lack of real-world imperfections. The scene includes people, dogs, and objects that are consistent with a real-world event."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00002612.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": ", unusual angles, or synthetic textures. The scene is consistent with a real-world setting during winter, which is a common time for such vehicles to be in use."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00002639.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "actions and the casual setting are typical of candid family photos. The image lacks the high-resolution detail and uniformity often seen in AI-generated images."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00003229.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ltale signs of AI generation, such as unusual textures, inconsistent lighting, or imperfections. The arrangement and objects are plausible for a real workspace."
+    },
+    {
+     "key": "sdv1.4/0_real/ILSVRC2012_val_00003306.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "stent lighting, unusual proportions, or unnatural details. The puppy's expression and the overall composition are consistent with a photograph of a real animal."
+    },
+    {
+     "key": "sdv1.4/1_fake/032_sdv4_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "detail that are often present in AI images. The frog's eyes, skin texture, and the surrounding environment are typical of a high-resolution wildlife photograph."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00000425.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ng, unusual proportions, or synthetic details. The lighting, shadows, and overall composition are consistent with a photograph taken in a real-life environment."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00000737.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "-world context. The focus and depth of field are typical of a camera capture, and the object's design and wear are consistent with a common household appliance."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00001704.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "n texture, inconsistent lighting, or unrealistic details. The presence of a physical label and the layout of the controls are characteristic of actual products."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00001862.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "as inconsistencies in lighting, unusual proportions, or unnatural details. The composition and clarity are consistent with a high-resolution, real-life capture."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00002662.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "lies in the image's composition. The lighting, shadows, and details in the clothing and background are typical of a real photograph taken in a clinical setting."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00002950.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al-world imperfections. The attire, props, and background are typical of a wedding scene, and the quality and composition are consistent with human photography."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00003044.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ch as inconsistent shadows, unnatural colors, or imperfections. The composition and clarity are consistent with real-world wildlife images captured by a camera."
+    },
+    {
+     "key": "sdv1.5/0_real/ILSVRC2012_val_00003811.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ons typical of AI images. The details, such as the scuba gear and the underwater environment, are typical of photos taken by divers or underwater photographers."
+    },
+    {
+     "key": "sdv1.5/1_fake/036_sdv5_00039.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " than real-world photography. Real turtles have more varied and less symmetrical patterns, and their skin texture is not as smooth and uniform as depicted here."
+    },
+    {
+     "key": "sdv1.5/1_fake/043_sdv5_00009.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "xity. The lighting and focus are sharp and consistent with real-world photography, and the color gradients and patterns are typical of a living creature's skin."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00000090.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " inconsistencies in lighting, unusual angles, or unnatural elements. The watermark and date also indicate it is a real photograph taken by a human photographer."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00000412.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nconsistent lighting, unnatural proportions, or lack of human imperfections. The context and lighting are consistent with a real-life photograph taken outdoors."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00000580.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nsistencies in lighting, unusual proportions, or lack of real-world imperfections. The CIBC logo and product placement are accurate and common in such settings."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00000672.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "atural symmetry, lack of imperfections, or inconsistent lighting. The composition and the dog's fur texture are typical of a high-resolution, real-life capture."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00000819.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "t lighting. The image captures the intricate details of the beetle's exoskeleton and its environment, which are typical of high-resolution wildlife photography."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00001244.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "imperfections, unusual proportions, or inconsistent lighting. The composition and clarity are consistent with a high-resolution camera capture of a live animal."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00001531.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "NEW ENGLAND KITCHEN \u00a9 2010\" is a real-world indicator, and the image quality aligns with that of a professional food photograph taken in a real kitchen setting."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00002150.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ons typical of AI-generated images. The interaction between the dog and the leash is lifelike, and the overall composition is typical of candid pet photography."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00002549.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " unusual proportions, or unnatural details. The composition and clarity are consistent with a high-resolution camera capture of a real animal in a home setting."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00002940.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ing, or imperfections common in AI-generated images. The details in the dogs' expressions and the environment are consistent with real-world animal photography."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00003059.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "istent lighting, or imperfections typical of AI images. The setting appears to be a real construction site with typical equipment and urban background elements."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00003196.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al symmetry, lack of imperfections, or inconsistent lighting. The composition and clarity are consistent with a high-resolution, real-life capture of a pet dog."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00003925.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "I manipulation such as inconsistent shadows, unnatural details, or a staged environment. The composition and details are consistent with real-world photography."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00003931.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tion such as inconsistent lighting, unusual proportions, or unnatural details. The setting and subject are consistent with a real-life scenario involving a pet."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00003940.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al symmetry, lack of imperfections, or inconsistent details. The scene is consistent with wildlife photography, capturing a real animal in a real-world habitat."
+    },
+    {
+     "key": "vqdm/0_real/ILSVRC2012_val_00004065.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ion and focus are consistent with human photography, and the presence of a leash and human legs in the background adds to the authenticity of a real-life scene."
+    },
+    {
+     "key": "vqdm/1_fake/VQDM_1000_200_00_006_vqdm_00074.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "consistencies in lighting, unusual proportions, or unnatural details. The image captures a real-life scenario with typical marine life and environment features."
+    },
+    {
+     "key": "vqdm/1_fake/VQDM_1000_200_00_037_vqdm_00020.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "tural symmetry, inconsistent lighting, or lack of real-world imperfections. The image resolution and lighting are consistent with a photograph of a live animal."
+    },
+    {
+     "key": "vqdm/1_fake/VQDM_1000_200_00_037_vqdm_00143.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "atural symmetry, lack of imperfections, or inconsistent lighting. The image captures realistic colors and patterns typical of a box turtle in a natural setting."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00000448.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " be a real-world location with no anomalies typical of AI-generated images. The person's clothing and posture are consistent with human movement and appearance."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00000516.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s candid and captures a moment that is typical of real-life photography, including the casual setting and the presence of everyday objects like a pan and a box."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00001081.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " or detail that are often present in AI images. The controller is a known real-world object with a specific design and branding that matches the actual product."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00001085.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "orner are human-written, further indicating the image's authenticity. The camera and its details are clear and consistent with real-world photography equipment."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00001328.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "l symmetry, lack of shadows, or inconsistent details. The composition and context, including the tableware and background, are typical of a real dining setting."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00001361.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " unusual lighting, or inconsistencies in detail that are common in AI-generated images. The watermark and date also suggest a real photograph taken by a person."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00002222.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "h as unnatural symmetry, lack of imperfections, or inconsistent lighting. The composition and clarity are consistent with a high-resolution, real-world capture."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00002257.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "h as inconsistent lighting, perfect symmetry, or unrealistic details. The composition and elements are consistent with a photograph taken of a real-world scene."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00003046.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "istent lighting. The composition and details, including the leaves and the pepper's shape, are consistent with a photograph of a real plant in a garden setting."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00003085.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "adows, unnatural proportions, or a lack of environmental context. The person's expression and the overall composition are consistent with real-life photography."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00003413.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "I generation such as imperfections, unusual proportions, or unnatural lighting. The composition and clarity are typical of a high-resolution, real-life capture."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00004824.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "eration such as imperfections, unusual lighting, or unrealistic details. The composition and clarity are typical of a high-resolution photograph taken outdoors."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00005173.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "that are often present in AI-generated images. The composition and the way the subjects interact with their instruments are typical of candid, real-life scenes."
+    },
+    {
+     "key": "wukong/0_real/ILSVRC2012_val_00005175.JPEG",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "h as unusual lighting, perfect symmetry, or unnatural details. The image quality and composition are consistent with a photograph taken by a human photographer."
+    },
+    {
+     "key": "wukong/1_fake/109_wukong_image128.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ons and imperfections found in real-world images. Additionally, the color and lighting are too uniform and lack the natural variation seen in real brain tissue."
+    },
+    {
+     "key": "wukong/1_fake/147_wukong_image88.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "clarity are too perfect, which is characteristic of AI-generated images. Real images of marine animals have more variation in color, texture, and imperfections."
+    },
+    {
+     "key": "wukong/1_fake/155_wukong_image86.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "r minor blemishes, are indicative of AI generation. Additionally, the symmetry and the perfect grooming style are highly unlikely in a real photograph of a dog."
+    },
+    {
+     "key": "wukong/1_fake/161_wukong_image198.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+    },
+    {
+     "key": "wukong/1_fake/182_wukong_image86.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "uch as inconsistent shadows, unusual proportions, or unnatural textures. The setting and attire are consistent with real-world events involving dogs and humans."
+    },
+    {
+     "key": "wukong/1_fake/189_wukong_image86.png",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "al symmetry, inconsistent lighting, or lack of real-world imperfections. The composition and detail are typical of a high-resolution photograph of a living dog."
+    }
+   ]
+  },
+  "wildrf": {
+   "records": 2503,
+   "result_records_checked": 2503,
+   "unparsed": 19,
+   "unparsed_answers": [
+    {
+     "key": "facebook/0_real/000139_0139.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " The scene includes a person in casual attire, a real-world setting with a cafe, and a clear, detailed environment that is typical of candid street photography."
+    },
+    {
+     "key": "facebook/0_real/000148_0148.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "of a high-resolution, real-world capture. The lighting and shadows are natural, and the motion blur is consistent with human hand movement during a real action."
+    },
+    {
+     "key": "facebook/1_fake/000117_0117.jpg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": "ration, where such fantastical scenarios are common. Additionally, the lighting and shadows are uniform and lack the variability seen in real-world photography."
+    },
+    {
+     "key": "reddit/0_real/000121_0121.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ymmetry, inconsistent textures, or absence of real-world imperfections. The composition and details are consistent with a photograph taken in a natural setting."
+    },
+    {
+     "key": "reddit/0_real/000271_0271.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nusual proportions, inconsistent lighting, or unrealistic details. The scene is detailed and coherent, typical of a real photograph taken in a home environment."
+    },
+    {
+     "key": "reddit/0_real/000351_0351.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "I-generated images. The name tag and the dog's expression are lifelike, and the overall composition is typical of pet photography taken by a human photographer."
+    },
+    {
+     "key": "reddit/0_real/000491_0491.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tions. The scene includes people in casual attire, which is common in urban settings, and the overall composition and context are typical of street photography."
+    },
+    {
+     "key": "reddit/0_real/000514_0514.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "s, or anomalies that are characteristic of AI-generated images. The composition and quality align with those of a candid, real-life capture at a sporting event."
+    },
+    {
+     "key": "reddit/0_real/000583_0583.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "colors, perfect symmetry, or lack of real-world imperfections. The perspective and composition are consistent with a real photograph taken outdoors in daylight."
+    },
+    {
+     "key": "reddit/0_real/000649_0649.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": " such as inconsistent lighting, unusual proportions, or unnatural details. The composition and clarity are consistent with a high-resolution, real-life capture."
+    },
+    {
+     "key": "reddit/0_real/000654_0654.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ng, unusual proportions, or unrealistic textures. The presence of a person and the variety of objects in a real-world setting further supports its authenticity."
+    },
+    {
+     "key": "reddit/0_real/000727_0727.jpg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al-world imperfections. The image resolution, color saturation, and the presence of a watermark also align with authentic photography rather than AI generation."
+    },
+    {
+     "key": "twitter/0_real/000038_0038.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "tail that are common in AI-generated images. The packaging and the way the food is presented are also consistent with real-world food photography and packaging."
+    },
+    {
+     "key": "twitter/0_real/000104_0104.jpeg",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "nd the text on the screen are also very clear and sharp, which is less common in real-world photos where such details might be less defined or slightly blurred."
+    },
+    {
+     "key": "twitter/0_real/000252_0252.jfif",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "xtures. The scene captures a candid moment that is typical of real-life photography, including the slight imperfections and natural expressions of the subjects."
+    },
+    {
+     "key": "twitter/0_real/000262_0262.jfif",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "onsistencies in shadows, unusual proportions, or lack of real-world imperfections. The context and quality align with photos taken in real-life social settings."
+    },
+    {
+     "key": "twitter/0_real/000308_0308.jfif",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "ural alignment, perfect symmetry, or lack of imperfections. The architectural details and the overall composition are consistent with real-world urban settings."
+    },
+    {
+     "key": "twitter/0_real/000330_0330.jfif",
+     "label": 0,
+     "score_source": "unscored",
+     "response_end": "al-world imperfections. The composition and details, including the clothing, background, and people's expressions, are typical of candid, real-life photographs."
+    },
+    {
+     "key": "twitter/1_fake/000012_0012.jpeg",
+     "label": 1,
+     "score_source": "unscored",
+     "response_end": " and consistency that is more characteristic of AI-generated images. The lighting and shadows are perfectly even, which is not common in real-world photography."
+    }
+   ]
+  }
+ }
+}
